@@ -111,8 +111,6 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     size_t p = 0;
     size_t count = 0;
     bool first = true;
-//    Latitude lat;
-//    Longitude lon;
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
@@ -125,8 +123,8 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
         if (bbox.contains(point.lat, point.lon)) {
 
-            const Latitude lat = point.lat;
-            Longitude lon = bbox.normalise(point.lon);
+            const Latitude& lat = point.lat;
+            const Longitude lon = point.lon.normalise(bbox.west());
 
             if (first) {
                 n = s = lat;

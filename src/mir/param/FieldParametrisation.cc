@@ -17,10 +17,12 @@
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
-#include "eckit/types/Fraction.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "eckit/memory/Owned.h"
+#include "eckit/memory/SharedPtr.h"
 #include "eckit/parser/YAMLParser.h"
+#include "eckit/types/Fraction.h"
+#include "mir/config/LibMir.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -43,75 +45,96 @@ inline double shift(const double& a, const double& b, double increment) {
 
     return shift;
 }
-}  // (anonymous namespace)
 
 
+// handle memory correctly due to copying of SimpleParametrisations
+struct CountedParametrisation : SimpleParametrisation, eckit::OwnedLock {};
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static std::map<long, SimpleParametrisation*> parameters_;
+static std::map< long, eckit::SharedPtr<CountedParametrisation> > parameters_;
+
+
+}  // (anonymous namespace)
 
 
 static void init() {
+    std::map< std::string, eckit::SharedPtr<CountedParametrisation> > allClasses;
 
 
-    eckit::Value c = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+    eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
+    for (auto i : classes) {
+        const std::string& klass = i.first;
+        eckit::ValueMap values = i.second;
 
-    // c.dump(std::cout) << std::endl;MIRConfiguration
+        if (values.find("dimension") != values.end()) {
+            throw eckit::UserError("Class cannot use reserved key 'dimension' ('" + klass + "')");
+        }
 
-    eckit::ValueMap classes = c;
+        CountedParametrisation* s = new CountedParametrisation();
 
-    std::map<std::string, SimpleParametrisation*> p;
-
-    for (auto i = classes.begin(); i != classes.end(); ++i) {
-        const std::string& klass = (*i).first;
-        eckit::ValueMap values = (*i).second;
-
-        SimpleParametrisation* s = new SimpleParametrisation();
-
-        for (auto j = values.begin(); j != values.end(); ++j) {
-
-            std::string name = (*j).first;
-            eckit::Value value = (*j).second;
-
+        for (auto j : values) {
+            std::string name = j.first;
+            eckit::Value value = j.second;
             s->set(name, std::string(value));
         }
 
-        p[klass] = s;
+        allClasses[klass].reset(s);
     }
 
 
-    eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
-    for (auto i = parameters.begin(); i != parameters.end(); ++i) {
-        const std::string& klass = (*i).first;
+    eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
+    for (auto i : parameterClass) {
+        const std::string& klass = i.first;
 
-        auto j = p.find(klass);
-        if (j == p.end()) {
-            std::ostringstream oss;
-            oss << "Unknown class [" << klass << "]";
-            throw eckit::SeriousBug(oss.str());
+        auto j = allClasses.find(klass);
+        if (j == allClasses.end()) {
+            throw eckit::UserError("Class unknown '" + klass + "'");
         }
 
-        eckit::ValueList l = (*i).second;
-        // std::cout << l << std::endl;
+        eckit::ValueList list = i.second;
+        // std::cout << list << std::endl;
 
-        for (auto p = l.begin(); p != l.end(); ++p) {
-
-            long paramId = *p;
-
-            auto k = parameters_.find(paramId);
-            if (k != parameters_.end()) {
-                std::ostringstream oss;
-                oss << "More than one class defined for paramId=" << paramId;
-                throw eckit::SeriousBug(oss.str());
+        for (long paramId : list) {
+            if (parameters_.find(paramId) != parameters_.end()) {
+                throw eckit::UserError("Parameter class is set more than once, for paramId=" + std::to_string(paramId));
             }
-
-            parameters_[paramId] = (*j).second;
+            parameters_[paramId].reset(j->second);
         }
     }
 
-}
 
+    eckit::ValueMap parameterDimension = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-dimension.yaml");
+    for (auto i : parameterDimension) {
+        const std::string& dimension = i.first;
+        eckit::ValueList list = i.second;
+
+        for (long paramId : list) {
+
+            // paramId-specific 'dimension' value
+            CountedParametrisation* s = new CountedParametrisation();
+            s->set("dimension", dimension);
+
+            auto p = parameters_.find(paramId);
+            if (p != parameters_.end()) {
+
+                // known parameter: copy class settings to new entry
+                std::string d;
+                if (p->second->get("dimension", d)) {
+                    throw eckit::UserError("Parameter dimension is set more than once, for paramId=" + std::to_string(paramId));
+                }
+                p->second->copyValuesTo(*s);
+                p->second.reset(s);
+
+            } else {
+
+                // unknown parameter: set dimension only
+                parameters_[paramId].reset(s);
+
+            }
+        }
+    }
+}
 
 
 FieldParametrisation::FieldParametrisation() {}
@@ -262,8 +285,8 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     const auto j = parameters_.find(paramId);
 
     if (j == parameters_.end()) {
-        eckit::Log::warning() << "No interpolation information for paramId=" << paramId << ", using defaults" << std::endl;
-        parameters_[paramId] = new SimpleParametrisation();
+        eckit::Log::warning() << "No information for paramId=" << paramId << ", using defaults" << std::endl;
+        parameters_[paramId].reset(new CountedParametrisation());
         return false;
     }
 

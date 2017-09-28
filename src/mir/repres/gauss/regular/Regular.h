@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -92,6 +93,9 @@ protected:
 
     bool isPeriodicWestEast() const;
 
+    size_t numberOfPoints() const;
+    bool getLongestElementDiagonal(double &d) const;
+
     // -- Class members
 
     class RegularIterator {
@@ -146,6 +150,7 @@ private:
 
 
 }  // namespace regular
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

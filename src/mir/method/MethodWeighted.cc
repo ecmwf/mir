@@ -31,10 +31,10 @@
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
+#include "mir/data/Dimension.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/decompose/Decompose.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -192,12 +192,11 @@ void MethodWeighted::setOperandMatricesFromVectors(
     // FIXME: remove const_cast once Matrix provides read-only view
     WeightMatrix::Matrix Bwrap(const_cast<double *>(Bvector.data()), Bvector.size(), 1);
 
-    std::string decomposition;
-    parametrisation_.get("decomposition", decomposition);
+    std::string dimension;
+    parametrisation_.get("dimension", dimension);
 
-    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
-    decomp.setMissingValue(missingValue);
-    decomp.decompose(Bwrap, B);
+    const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
+    dim.linearise(Bwrap, B, missingValue);
 
     // set output matrix A (from A = W × B)
     // reuses output values vector if handling a column vector, otherwise allocates new matrix
@@ -227,12 +226,11 @@ void MethodWeighted::setVectorFromOperandMatrix(
     ASSERT(Avector.size() == A.rows());
     WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
 
-    std::string decomposition;
-    parametrisation_.get("decomposition", decomposition);
+    std::string dimension;
+    parametrisation_.get("dimension", dimension);
 
-    const decompose::Decompose& decomp = decompose::DecomposeChooser::lookup(decomposition);
-    decomp.setMissingValue(missingValue);
-    decomp.recompose(A, Awrap);
+    const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
+    dim.unlinearise(A, Awrap, missingValue);
 }
 
 
@@ -290,25 +288,18 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         ASSERT(mi.rows() == npts_inp);
         ASSERT(mo.rows() == npts_out);
 
-        if (field.hasMissing()) {
-
+        {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(field.hasMissing()), eckit::Log::debug<LibMir>());
 
-            eckit::Timer t("Matrix-Multiply-MissingValues", eckit::Log::debug<LibMir>());
+            if (field.hasMissing()) {
+                WeightMatrix M;
+                applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
 
-            WeightMatrix MW;
-            applyMissingValues(W, field.values(i), field.missingValue(), MW); // Don't assume compiler can do return value optimization !!!
-
-            MW.multiply(mi, mo);
-
-        } else {
-
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
-
-            eckit::Timer t("Matrix-Multiply-Standard", eckit::Log::debug<LibMir>());
-
-            W.multiply(mi, mo);
-
+                M.multiply(mi, mo);
+            } else {
+                W.multiply(mi, mo);
+            }
         }
 
         // update field values with interpolation result
@@ -337,17 +328,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     }
 
-    // TODO: move logic to MIRField
-    // update if missing values are present
-    if (field.hasMissing()) {
-        const util::compare::IsMissingFn isMissing(field.missingValue());
-        bool still_has_missing = false;
-        for (size_t i = 0; i < field.dimensions() && !still_has_missing; ++i) {
-            const std::vector< double >& values = field.values(i);
-            still_has_missing = (std::find_if(values.begin(), values.end(), isMissing) != values.end());
-        }
-        field.hasMissing(still_has_missing);
-    }
+    // interpolation could change if missing values are (still) present, re-check
+    field.checkMissing();
 }
 
 

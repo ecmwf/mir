@@ -13,9 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef DummyInput_H
-#define DummyInput_H
-
+#ifndef mir_input_EmptyInput_h
+#define mir_input_EmptyInput_h
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -47,7 +46,6 @@ public:
     // -- Methods
     // None
 
-
     // -- Overridden methods
     // None
 
@@ -63,7 +61,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -76,20 +74,15 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    EmptyInput(const EmptyInput &);
-    EmptyInput &operator=(const EmptyInput &);
-
     // -- Members
 
     size_t calls_;
     param::SimpleParametrisation parametrisation_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
-    // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
@@ -103,6 +96,7 @@ private:
 
     virtual void latitudes(std::vector<double> &) const;
     virtual void longitudes(std::vector<double> &) const;
+
     // -- Class members
     // None
 
@@ -119,5 +113,7 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

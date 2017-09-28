@@ -101,9 +101,19 @@ void LongitudeFraction::decode(eckit::Stream& s) {
 }
 
 bool LongitudeFraction::sameWithGrib1Accuracy(const LongitudeFraction& other) const {
-    const double GRIB1EPSILON = 0.001;
-    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
-    return cmp(value_, other.value_);
+    static const double GRIB1EPSILON = 0.001;
+    return eckit::types::is_approximately_equal(value(), other.value(), GRIB1EPSILON);
+}
+
+LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum) const {
+    LongitudeFraction lon(*this);
+    while (lon < minimum) {
+        lon += GLOBE;
+    }
+    while (lon >= minimum + GLOBE) {
+        lon -= GLOBE;
+    }
+    return lon;
 }
 
 

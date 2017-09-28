@@ -13,35 +13,19 @@
 /// @date Apr 2015
 
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/style/MIRStyle.h"
-#include "mir/param/MIRParametrisation.h"
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace style {
-namespace {
-
-
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string,MIRStyleFactory*> *m = 0;
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map<std::string,MIRStyleFactory*>();
-}
-
-
-}  // (anonymous namespace)
-
-
 MIRStyle::MIRStyle(const param::MIRParametrisation &parametrisation):
     parametrisation_(parametrisation) {
 }
@@ -50,15 +34,29 @@ MIRStyle::MIRStyle(const param::MIRParametrisation &parametrisation):
 MIRStyle::~MIRStyle() {
 }
 
-//-----------------------------------------------------------------------------
+
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, MIRStyleFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, MIRStyleFactory* >();
+}
+}  // (anonymous namespace)
 
 
 MIRStyleFactory::MIRStyleFactory(const std::string& name):
     name_(name) {
-
     pthread_once(&once,init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("MIRStyleFactory: duplicate '" + name + "'");
+    }
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -67,32 +65,26 @@ MIRStyleFactory::MIRStyleFactory(const std::string& name):
 
 MIRStyleFactory::~MIRStyleFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    m->erase(name_);
 
+    m->erase(name_);
 }
 
 
 MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
-
     pthread_once(&once,init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name;
-
-    if(!params.get("style", name)) {
-        throw eckit::SeriousBug("MIRStyleFactory cannot get style");
+    if (!params.get("style", name)) {
+        throw eckit::SeriousBug("MIRStyleFactory: cannot get 'style'");
     }
 
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, MIRStyleFactory*>::const_iterator j = m->find(name);
+    eckit::Log::debug<LibMir>() << "MIRStyleFactory: looking for '" << name << "'" << std::endl;
 
-    eckit::Log::debug<LibMir>() << "Looking for MIRStyleFactory [" << name << "]" << std::endl;
-
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No MIRStyleFactory for [" << name << "]" << std::endl;
-        eckit::Log::error() << "MIRStyleFactories are:" << std::endl;
-        for(j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No MIRStyleFactory called ") + name);
+        list(eckit::Log::error() << "MIRStyleFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("MIRStyleFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(params);
@@ -101,12 +93,11 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
 
 void MIRStyleFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, MIRStyleFactory *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
+    for (auto j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

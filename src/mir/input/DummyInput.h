@@ -13,9 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef DummyInput_H
-#define DummyInput_H
-
+#ifndef mir_input_DummyInput_h
+#define mir_input_DummyInput_h
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -26,7 +25,7 @@ namespace input {
 
 
 class DummyInput : public MIRInput {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -47,7 +46,6 @@ class DummyInput : public MIRInput {
     // -- Methods
     // None
 
-
     // -- Overridden methods
     // None
 
@@ -57,13 +55,13 @@ class DummyInput : public MIRInput {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -74,12 +72,7 @@ class DummyInput : public MIRInput {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    DummyInput(const DummyInput &);
-    DummyInput &operator=(const DummyInput &);
+private:
 
     // -- Members
 
@@ -87,9 +80,9 @@ class DummyInput : public MIRInput {
     param::SimpleParametrisation parametrisation_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
-    // From MIRInput
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
@@ -115,5 +108,7 @@ class DummyInput : public MIRInput {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

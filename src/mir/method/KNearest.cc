@@ -15,20 +15,14 @@
 
 #include "mir/method/KNearest.h"
 
-#include <string>
-#include "eckit/utils/MD5.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace method {
 
 
-KNearest::KNearest(const param::MIRParametrisation &param) :
-    Nearest(param),
-    nclosest_(4) {
-    param.get("nclosest", nclosest_);
+KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
 }
 
 
@@ -36,29 +30,13 @@ KNearest::~KNearest() {
 }
 
 
-const char *KNearest::name() const {
-    return  "k-nearest";
-}
-
-
-size_t KNearest::nclosest() const {
-    return nclosest_;
-}
-
-
-void KNearest::hash( eckit::MD5& md5) const {
-    Nearest::hash(md5);
-    md5 << nclosest_;
-}
-
-
-void KNearest::print(std::ostream &out) const {
-    out << "KNearest[nclosest=" << nclosest_ << "]";
+const char* KNearest::name() const {
+    return "k-nearest";
 }
 
 
 namespace {
-static MethodBuilder< KNearest > __knearest("k-nearest");
+static MethodBuilder< KNearest > __method("k-nearest");
 }
 
 

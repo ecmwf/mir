@@ -40,17 +40,17 @@ Gridded::Gridded(const util::BoundingBox& bbox) :
 Gridded::~Gridded() {}
 
 
-void Gridded::setComplexPacking(grib_info &info) const {
+void Gridded::setComplexPacking(grib_info& info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_COMPLEX;
 }
 
 
-void Gridded::setSimplePacking(grib_info &info) const {
+void Gridded::setSimplePacking(grib_info& info) const {
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SIMPLE;
 }
 
 
-void Gridded::setGivenPacking(grib_info &info) const {
+void Gridded::setGivenPacking(grib_info&) const {
     // The packing_type is set by the caller
 }
 
@@ -73,6 +73,11 @@ util::Domain Gridded::domain() const {
     const Longitude& e = isPeriodicWestEast()? bbox_.west() + Longitude::GLOBE : bbox_.east();
 
     return util::Domain(n, w, s, e);
+}
+
+
+bool Gridded::getLongestElementDiagonal(double&) const {
+    return false;
 }
 
 

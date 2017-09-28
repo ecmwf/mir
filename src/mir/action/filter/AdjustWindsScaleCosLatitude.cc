@@ -18,7 +18,6 @@
 #include <functional>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"

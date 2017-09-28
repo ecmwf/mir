@@ -52,11 +52,17 @@ public:
         MeshGenParams();
         MeshGenParams(const std::string& label, const param::MIRParametrisation&);
         void hash(eckit::MD5&) const;
+        void print(std::ostream&) const;
         std::string meshGenerator_;
         bool meshParallelEdgesConnectivity_;
         bool meshXYZField_;
         bool meshCellCentres_;
-        std::string dump_;
+        std::string file_;
+    private:
+        friend std::ostream& operator<<(std::ostream& s, const MeshGenParams& p) {
+            p.print(s);
+            return s;
+        }
     };
 
     // -- Contructors
@@ -69,6 +75,7 @@ public:
 
     const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
     const atlas::Mesh& mesh() const;
+    double getMeshLongestElementDiagonal() const;
 
     void hash(eckit::MD5&) const;
 

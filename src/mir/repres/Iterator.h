@@ -41,6 +41,11 @@ public:
         point_ll_t(const Latitude& latitude =0, const Longitude& longitude =0) : lat(latitude), lon(longitude) {}
         Latitude lat;
         Longitude lon;
+        void print(std::ostream&) const;
+        friend std::ostream& operator<<(std::ostream& s, const point_ll_t& p) {
+            p.print(s);
+            return s;
+        }
     };
 
     typedef eckit::geometry::Point2 point_2d_t;
@@ -51,8 +56,7 @@ public:
 
     // -- Contructors
 
-    Iterator();
-    Iterator(const util::Rotation&);
+    Iterator(const util::Rotation& = util::Rotation());
 
     // -- Destructor
 
@@ -92,9 +96,7 @@ protected:
     point_2d_t point_;
     point_ll_t pointUnrotated_;
 
-    util::Rotation rotation_;
-
-    atlas::Projection projection_;
+    atlas::util::Rotation rotation_;
 
     // -- Methods
 

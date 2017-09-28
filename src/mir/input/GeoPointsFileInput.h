@@ -13,9 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GeoPointsInput_H
-#define GeoPointsInput_H
-
+#ifndef mir_input_GeoPointsFileInput_h
+#define mir_input_GeoPointsFileInput_h
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -45,11 +44,11 @@ public:
     // None
 
     // -- Methods
-    // None
 
     const std::vector<double>& latitudes() const;
     const std::vector<double>& longitudes() const;
     const std::vector<double>& values() const;
+
     // -- Overridden methods
     // None
 
@@ -65,7 +64,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -78,26 +77,26 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    GeoPointsFileInput(const GeoPointsFileInput &);
-    GeoPointsFileInput &operator=(const GeoPointsFileInput &);
-
     // -- Members
 
     std::string path_;
-    param::SimpleParametrisation parametrisation_;
+    param::SimpleParametrisation fieldParametrisation_;
     int which_;
+    size_t dimensions_;
+    bool hasMissing_;
+    double missingValue_;
 
-    mutable std::vector<double> latitudes_;
-    mutable std::vector<double> longitudes_;
-    mutable std::vector<double> values_;
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
+    std::vector<double> values_;
 
     // -- Methods
 
-    // -- Overridden methods
-    // From MIRInput
+    bool resetMissingValue(double& missingValue);
 
+    // -- Overridden methods
+
+    // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
@@ -105,11 +104,7 @@ private:
     virtual data::MIRField field() const;
 
     virtual bool next();
-
-
-    // From FieldParametrisation
-    virtual void latitudes(std::vector<double> &) const;
-    virtual void longitudes(std::vector<double> &) const;
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None
@@ -127,5 +122,7 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

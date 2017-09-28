@@ -38,11 +38,11 @@ void NamedRegular::print(std::ostream &out) const {
 }
 
 const repres::Representation *NamedRegular::representation() const {
-    return new repres::regular::RegularGG(N_);
+    return new repres::gauss::regular::RegularGG(N_);
 }
 
 const repres::Representation *NamedRegular::representation(const util::Rotation &rotation) const {
-    return new repres::regular::RotatedGG(N_, util::BoundingBox(), rotation);
+    return new repres::gauss::regular::RotatedGG(N_, util::BoundingBox(), rotation);
 }
 
 size_t NamedRegular::gaussianNumber() const {

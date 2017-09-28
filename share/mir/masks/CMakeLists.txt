@@ -3,8 +3,8 @@ set(_dir "share/mir/masks")
 foreach( _f
     "lsm.N640.grib"
     "lsm.N320.grib"
-    "ten-minutes.mask"  # copy of libemos/tables/interpol/lsm_xx_lsm10m01
-    "1km-lsm.mask" )
+    "lsm.10min.mask"  # copy of libemos/tables/interpol/lsm_xx_lsm10m01
+    "lsm.1km.mask" )
 
   # guarantee destination directory exists
   ecbuild_info("Downloading LSM: ${_dir}/${_f}")

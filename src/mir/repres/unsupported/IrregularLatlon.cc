@@ -18,6 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
+#include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 
@@ -72,6 +73,37 @@ size_t IrregularLatlon::numberOfPoints() const {
 }
 
 
+bool IrregularLatlon::getLongestElementDiagonal(double& d) const {
+
+    // Look for a majorant of all element diagonals, using the difference of
+    // latitudes closest/furthest from equator and largest longitude difference
+
+    ASSERT(latitudes_.size() >= 2);
+    ASSERT(longitudes_.size() >= 2);
+
+    // largest longitude difference
+    double lonMin;
+    double lonMax;
+    double we;
+    range(longitudes_, lonMin, lonMax, we);
+
+    d = 0.;
+    for (size_t j = 1; j < latitudes_.size(); ++j) {
+        const bool away(std::abs(latitudes_[j - 1]) > std::abs(latitudes_[j]));
+        const double&
+                latAwayFromEquator(latitudes_[ away? j - 1 : j ]),
+                latCloserToEquator(latitudes_[ away? j : j - 1 ]);
+
+        d = std::max(d, atlas::util::Earth::distanceInMeters(
+                         atlas::PointLonLat(0., latCloserToEquator),
+                         atlas::PointLonLat(we, latAwayFromEquator) ));
+    }
+
+    ASSERT(d > 0.);
+    return true;
+}
+
+
 void IrregularLatlon::print(std::ostream &out) const {
     out << "IrregularLatlon[latitudes=" << latitudes_.size()
         << ",longitudes=" << longitudes_.size()
@@ -104,10 +136,10 @@ void IrregularLatlon::fill(grib_info &info) const  {
 
 
 util::Domain IrregularLatlon::domain() const {
-    return util::Domain(includesNorthPole() ? 90 : north_,
+    return util::Domain(includesNorthPole() ? Latitude::NORTH_POLE.value() : north_,
                         west_,
-                        includesSouthPole() ? -90 : south_,
-                        isPeriodicWestEast() ? west_ + 360 : east_);
+                        includesSouthPole() ? Latitude::SOUTH_POLE.value() : south_,
+                        isPeriodicWestEast() ? west_ + Longitude::GLOBE.value() : east_);
 }
 
 class IrregularLatlonIterator: public Iterator {
@@ -170,17 +202,17 @@ Iterator* IrregularLatlon::iterator() const {
 
 
 bool IrregularLatlon::isPeriodicWestEast() const {
-    return (east_ - west_) + west_east_ >= 360;
+    return (east_ - west_) + west_east_ >= Longitude::GLOBE.value();
 }
 
 
 bool IrregularLatlon::includesNorthPole() const {
-    return north_ + south_north_ >= 90;
+    return north_ + south_north_ >= Latitude::NORTH_POLE.value();
 }
 
 
 bool IrregularLatlon::includesSouthPole() const {
-    return south_ - south_north_ <= -90;
+    return south_ - south_north_ <= Latitude::SOUTH_POLE.value();
 }
 
 

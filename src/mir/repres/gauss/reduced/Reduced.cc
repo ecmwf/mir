@@ -15,16 +15,14 @@
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <sstream>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
-
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -32,8 +30,6 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-
-#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -73,7 +69,7 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
     const long maxpl = *std::max_element(pl.begin(), pl.end());
     ASSERT(maxpl);
 
-    return eckit::Fraction(360, maxpl);
+    return Longitude::GLOBE.fraction() / maxpl;
 }
 
 
@@ -83,8 +79,8 @@ void Reduced::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
     Longitude e = bbox.east();
     Longitude w = bbox.west();
 
-    if ((e - w + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value())
-            || (e - w + inc > Longitude::GLOBE )) {
+    if ((e - w + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+        (e - w + inc > Longitude::GLOBE )) {
         e = w + Longitude::GLOBE - inc;
     }
 
@@ -93,15 +89,11 @@ void Reduced::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
 
 
 bool Reduced::isPeriodicWestEast() const {
-    const std::vector<long>& pl = pls();
-    ASSERT(pl.size());
-    const long maxpl = *std::max_element(pl.begin(), pl.end());
-
     const Longitude we = bbox_.east() - bbox_.west();
-    const Longitude inc = eckit::Fraction(360, maxpl);
+    const Longitude inc = getSmallestIncrement();
 
-    return (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE.value())
-           || (we + inc >= Longitude::GLOBE.value());
+    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+            (we + inc >= Longitude::GLOBE);
 }
 
 
@@ -191,8 +183,9 @@ bool ReducedIterator::next(Latitude& lat, Longitude& lon) {
             if (j_ < nj_) {
                 ASSERT(p_ < pl_.size());
                 ni_ = size_t(pl_[p_++]);
-                lon_ = eckit::Fraction(0.0);
-                inc_ = eckit::Fraction(360, ni_);
+                ASSERT(ni_);
+                lon_ = eckit::Fraction(0);
+                inc_ = Longitude::GLOBE.fraction() / ni_;
                 i_ = 0;
 
 
@@ -410,12 +403,13 @@ void Reduced::initTrans(Trans_t& trans) const {
     ASSERT(pl.size() == pli.size());
 
     for (size_t i = 0; i < pl.size(); ++i) {
-        pli[i] = pl[i];
+        pli[i] = int(pl[i]);
     }
 
-    ASSERT(trans_set_resol(&trans, pli.size(), &pli[0]) == 0);
+    ASSERT(trans_set_resol(&trans, int(pli.size()), &pli[0]) == 0);
 
 }
+
 
 size_t Reduced::numberOfPoints() const {
     size_t total = 0;
@@ -436,6 +430,37 @@ size_t Reduced::numberOfPoints() const {
     return total;
 }
 
+
+bool Reduced::getLongestElementDiagonal(double& d) const {
+
+    // Look for a majorant of all element diagonals, using the difference of
+    // latitudes closest/furthest from equator and longitude furthest from
+    // Greenwich
+
+    const std::vector<double>& lats = latitudes();
+    const std::vector<long>& pl = pls();
+    ASSERT(pl.size() == lats.size());
+    ASSERT(pl.size() == N_ * 2);
+
+    d = 0.;
+    Latitude l1(Latitude::NORTH_POLE);
+    Latitude l2(lats[0]);
+
+    for (size_t j = 1; j < lats.size(); ++j, l1 = l2, l2 = lats[j]) {
+
+        const eckit::Fraction we = Longitude::GLOBE.fraction() / (std::min(pl[j - 1], pl[j]));
+        const Latitude&
+                latAwayFromEquator(std::abs(l1.value()) > std::abs(l2.value())? l1 : l2),
+                latCloserToEquator(std::abs(l1.value()) > std::abs(l2.value())? l2 : l1);
+
+        d = std::max(d, atlas::util::Earth::distanceInMeters(
+                         atlas::PointLonLat(0., latCloserToEquator.value()),
+                         atlas::PointLonLat(we, latAwayFromEquator.value()) ));
+    }
+
+    ASSERT(d > 0.);
+    return true;
+}
 
 
 }  // namespace reduced

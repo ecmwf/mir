@@ -18,6 +18,7 @@
 
 #include <string>
 #include <iosfwd>
+#include "eckit/memory/NonCopyable.h"
 
 
 // Forward declaration only, not need for grib_api
@@ -38,7 +39,7 @@ namespace mir {
 namespace input {
 
 
-class MIRInput {
+class MIRInput : private eckit::NonCopyable {
 
 protected:
 
@@ -97,11 +98,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    MIRInput(const MIRInput&);
-    MIRInput& operator=(const MIRInput&);
-
     // -- Members
     // None
 
@@ -133,13 +129,13 @@ class MIRInputFactory {
 
     virtual MIRInput *make(const std::string &path) = 0;
 
-  protected:
+protected:
 
     MIRInputFactory(unsigned long magic);
 
     virtual ~MIRInputFactory();
 
-  public:
+public:
 
     static MIRInput *build(const std::string&);
 
@@ -153,9 +149,10 @@ class MIRInputBuilder : public MIRInputFactory {
     virtual MIRInput *make(const std::string& path) {
         return new T(path);
     }
-  public:
+public:
     MIRInputBuilder(unsigned long magic) : MIRInputFactory(magic) {}
 };
+
 
 }  // namespace input
 }  // namespace mir

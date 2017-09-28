@@ -86,7 +86,6 @@ private:
     // -- Members
 
     std::vector<long> pl_;
-    size_t Nj_;
 
     // -- Methods
     // None
@@ -103,7 +102,9 @@ private:
 
     void makeName(std::ostream&) const;
     bool sameAs(const Representation& other) const;
+
     virtual size_t numberOfPoints() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

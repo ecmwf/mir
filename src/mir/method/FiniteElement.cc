@@ -31,8 +31,8 @@
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
 #include "atlas/interpolation/method/Ray.h"
-#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/ElementType.h"
+#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Nodes.h"
 #include "atlas/output/Gmsh.h"
 #include "mir/config/LibMir.h"
@@ -48,11 +48,8 @@ namespace method {
 namespace {
 
 
-// try to project to 20% of total number elements before giving up
-static const double maxFractionElemsToTry = 0.2;
-
 // epsilon used to scale edge tolerance when projecting ray to intesect element
-static const double parametricEpsilon = 1e-16;
+static const double parametricEpsilon = 1e-15;
 
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
@@ -60,31 +57,8 @@ typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
 
 
-struct MeshStats {
+static void normalise(triplet_vector_t& triplets) {
 
-    size_t inp_ncells;
-    size_t inp_npts;
-    size_t out_npts;
-
-    MeshStats(): inp_ncells(0), inp_npts(0), out_npts(0) {}
-
-    void print(std::ostream &s) const {
-        s << "MeshStats["
-          "nb_cells=" << eckit::BigNum(inp_ncells)
-          << ",inp_npts=" << eckit::BigNum(inp_npts)
-          << ",out_npts=" << eckit::BigNum(out_npts)
-          << "]";
-    }
-
-    friend std::ostream &operator<<(std::ostream &s, const MeshStats &p) {
-        p.print(s);
-        return s;
-    }
-};
-
-
-static void normalise(triplet_vector_t& triplets)
-{
     // sum all calculated weights for normalisation
     double sum = 0.0;
     for (size_t j = 0; j < triplets.size(); ++j) {
@@ -101,16 +75,16 @@ static void normalise(triplet_vector_t& triplets)
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
-    size_t nbInputPoints,
-    const atlas::array::ArrayView<double, 2> &icoords,
-    const atlas::mesh::HybridElements::Connectivity& connectivity,
-    const repres::Iterator::point_3d_t& p,
-    size_t ip,
-    size_t firstVirtualPoint,
-    element_tree_t::NodeList::const_iterator start,
-    element_tree_t::NodeList::const_iterator finish ) {
+        size_t nbInputPoints,
+        const atlas::array::ArrayView<double, 2>& icoords,
+        const atlas::mesh::HybridElements::Connectivity& connectivity,
+        const repres::Iterator::point_3d_t& p,
+        size_t ip,
+        size_t firstVirtualPoint,
+        size_t& nbProjectionAttempts,
+        const element_tree_t::NodeList& closest ) {
 
-    ASSERT(start != finish);
+    ASSERT(!closest.empty());
 
     triplet_vector_t triplets;
 
@@ -119,9 +93,11 @@ static triplet_vector_t projectPointTo3DElements(
     double w[4];
     atlas::interpolation::method::Ray ray( p.data() );
 
-    for (element_tree_t::NodeList::const_iterator itc = start; itc != finish; ++itc) {
+    nbProjectionAttempts = 0;
+    for (auto close : closest) {
+        ++nbProjectionAttempts;
 
-        const size_t elem_id = (*itc).value().payload();
+        const size_t elem_id = close.value().payload();
         ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
@@ -290,33 +266,35 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     eckit::ScopedPtr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
-        eckit::TraceTimer<LibMir> timer("FiniteElement::assemble create k-d tree");
+        eckit::TraceTimer<LibMir> timer("k-d tree: create");
         eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
     }
 
+    double R = 0.;
+    if (!in.getLongestElementDiagonal(R)) {
+        R = gin.getMeshLongestElementDiagonal();
+    }
+    ASSERT(R > 0.);
+    eckit::Log::debug<LibMir>() << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
+
 
     // some statistics
-    MeshStats stats;
-    stats.inp_ncells = inMesh.cells().size();
-    stats.inp_npts   = inNodes.size();
-    stats.out_npts   = out.numberOfPoints();
-    eckit::Log::debug<LibMir>() << stats << std::endl;
-
-
-    // weights -- one per vertex of element, triangles (3) or quads (4)
-    triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
-    weights_triplets.reserve( stats.out_npts * 4 );        // preallocate space as if all elements where quads
-
-
-    // search nearest k cell centres
-    const size_t nbElementsMaximum = std::max<size_t>(1, stats.inp_ncells * maxFractionElemsToTry);
-    size_t nbElementsSearched = 0;
+    const size_t nbInputPoints = inNodes.size();
+    const size_t nbOutputPoints = out.numberOfPoints();
+    size_t nbMinElementsSearched = std::numeric_limits<size_t>::max();
+    size_t nbMaxElementsSearched = 0;
+    size_t nbMaxProjectionAttempts = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
 
+
+    // weights -- one per vertex of element, triangles (3) or quads (4)
+    triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
+    weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
+
     {
-        eckit::ProgressTimer progress("Projecting", stats.out_npts, "point", double(5), eckit::Log::debug<LibMir>());
+        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -326,46 +304,39 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         size_t ip = 0;
 
         while (it->next()) {
-            ASSERT(ip < stats.out_npts);
+            ASSERT(ip < nbOutputPoints);
             ++progress;
 
             if (inDomain.contains(it->pointUnrotated())) {
-                bool success = false;
 
                 // 3D point to lookup
                 repres::Iterator::point_3d_t p(it->point3D());
 
-                // 3D projection
-                for (size_t k = 0, kPrevious = 0; !success && k < nbElementsMaximum; kPrevious = k) {
-                    k = std::min(k ? 2 * k : 1, nbElementsMaximum);
-                    nbElementsSearched = std::max(k, nbElementsSearched);
+                // 3D projection, trying elements closest to p first
+                element_tree_t::NodeList closest = eTree->findInSphere(p, R);
 
-                    // loop over closest elements (enlarging range if failing projection)
-                    // TODO: the k-d tree does not always return the same order of points,
-                    // enlarging range to include the last element (-1) might not be enough
-                    element_tree_t::NodeList cs = eTree->kNearestNeighbours(p, k);
+                size_t nbProjectionAttempts;
+                triplet_vector_t triplets = projectPointTo3DElements(
+                            nbInputPoints,
+                            icoords,
+                            connectivity,
+                            p,
+                            ip,
+                            firstVirtualPoint,
+                            nbProjectionAttempts,
+                            closest );
 
-                    triplet_vector_t triplets = projectPointTo3DElements(
-                                                    stats.inp_npts,
-                                                    icoords,
-                                                    connectivity,
-                                                    p,
-                                                    ip,
-                                                    firstVirtualPoint,
-                                                    cs.begin() + element_tree_t::NodeList::difference_type(kPrevious? kPrevious - 1 : 0),
-                                                    cs.end() );
+                nbMaxElementsSearched = std::max(nbMaxElementsSearched, closest.size());
+                nbMinElementsSearched = std::min(nbMinElementsSearched, closest.size());
+                nbMaxProjectionAttempts = std::max(nbMaxProjectionAttempts, nbProjectionAttempts);
 
-                    if (triplets.size()) {
-                        std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                        success = true;
-                        ++nbProjections;
-                    }
-                }
-
-                if (!success) {
-                    // If this fails, consider lowering atlas::grid::parametricEpsilon
+                if (triplets.empty()) {
+                    // If this fails, consider lowering parametricEpsilon
                     failures.push_front(failed_projection_t(ip, it->pointUnrotated()));
                     ++nbFailures;
+                } else {
+                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+                    ++nbProjections;
                 }
             }
 
@@ -375,9 +346,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     eckit::Log::debug<LibMir>()
             << "Projected " << eckit::BigNum(nbProjections)
-            << " of " << eckit::Plural(stats.out_npts, "point")
+            << " of " << eckit::Plural(nbOutputPoints, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
-            << "Maximum neighbours searched was " << eckit::Plural(nbElementsSearched, "element")
+            << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and " << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to " << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
             << std::endl;
 
     if (nbFailures) {
@@ -386,7 +357,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
         for (const failed_projection_t& f : failures) {
-            eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " (lon, lat) = (" << f.second.lon.value() << ", " << f.second.lat.value() << ")";
+            eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";
                 break;

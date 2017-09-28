@@ -13,26 +13,29 @@
 /// @date Apr 2015
 
 
+#include "mir/input/GeoPointsFileInput.h"
+
 #include <fstream>
 #include <iostream>
-
-#include "mir/data/MIRField.h"
-
-#include "mir/input/GeoPointsFileInput.h"
-#include "mir/repres/other/UnstructuredGrid.h"
-
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/log/Plural.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
-#include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
+#include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/GlobaliseUnstructured.h"
+
 
 namespace mir {
 namespace input {
 
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
-GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
+GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
-    which_(which) {
+    which_(which),
+    hasMissing_(false) {
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
@@ -57,9 +60,9 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
                 break;
             }
 
-            parametrisation_.reset();
-            parametrisation_.set("gridType", "unstructured_grid");
-            parametrisation_.set("gridded", true);
+            fieldParametrisation_.reset();
+            fieldParametrisation_.set("gridType", "unstructured_grid");
+            fieldParametrisation_.set("gridded", true);
 
             data = false;
             latitudes_.clear();
@@ -73,7 +76,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
             // eckit::Log::info() << "PARSE " << line +2 << std::endl;
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
-            parametrisation_.set(v[0], v[1]);
+            fieldParametrisation_.set(v[0], v[1]);
 
             // eckit::Log::info() << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
         }
@@ -87,12 +90,13 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
             }
             continue;
         }
+
         if (data) {
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                latitudes_.push_back(s2d(v[0]));
-                longitudes_.push_back(s2d(v[1]));
+                longitudes_.push_back(s2d(v[0]));
+                latitudes_.push_back(s2d(v[1]));
                 values_.push_back(s2d(v.back()));
             }
         }
@@ -115,10 +119,71 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which):
         oss << path_ << " contains " << count << " fields, requested index is " << which;
         throw eckit::SeriousBug(oss.str());
     }
+
+    // set dimensions
+    dimensions_ = size_t(count);
+    ASSERT(dimensions_);
+#if 0
+
+    // reset missing values to something acceptable
+    hasMissing_ = resetMissingValue(missingValue_);
+    // globalise, appending missing values if necessary
+    util::GlobaliseUnstructured globalise(parametrisation_);
+    size_t nbExtraValues = globalise.appendGlobalPoints(latitudes_, longitudes_);
+    if (nbExtraValues) {
+        eckit::Log::info() << "GeoPointsFileInput: appending " << eckit::Plural(nbExtraValues, "missing value") << std::endl;
+
+        ASSERT(latitudes_.size() == values_.size() + nbExtraValues);
+        ASSERT(latitudes_.size() == longitudes_.size());
+        values_.insert(values_.end(), nbExtraValues, missingValue_);
+    }
+#endif
 }
 
 
 GeoPointsFileInput::~GeoPointsFileInput() {}
+
+
+bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
+
+    // geopoints hard-coded value, all values have to be below
+    missingValue = 3e38;
+    bool hasMissing = (values_.end() != std::find(values_.begin(), values_.end(), missingValue));
+
+    // find the non-missing max value
+    bool allMissing = true;
+    double max = missingValue;
+    for (const double& v : values_) {
+        ASSERT(v <= missingValue);
+        if (v != missingValue) {
+            allMissing = false;
+            if (max == missingValue || max < v)
+                max = v;
+        }
+    }
+
+    // if all values are missing set an acceptable value, otherwise use max + 1
+    if (allMissing) {
+        missingValue = 999.;
+        values_.assign(values_.size(), missingValue);
+        return true;
+    }
+
+    const double tempMissingValue = max + 1.;
+    ASSERT(tempMissingValue == tempMissingValue);
+
+    if (hasMissing) {
+        for (double& v : values_) {
+            if (v == missingValue)
+                v = tempMissingValue;
+        }
+    }
+
+    missingValue = tempMissingValue;
+    ASSERT(missingValue_ < 3e38);
+
+    return hasMissing;
+}
 
 
 bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
@@ -126,37 +191,39 @@ bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
     return o && (path_ == o->path_);
 }
 
+
 bool GeoPointsFileInput::next() {
     return values_.size() != 0;
 }
 
 
+size_t GeoPointsFileInput::dimensions() const {
+    return dimensions_;
+}
+
+
 const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    return parametrisation_;
+    return fieldParametrisation_;
 }
 
 
 data::MIRField GeoPointsFileInput::field() const {
 
-    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), false, 999.0);
-    field.update(values_, 0);
+    NOTIMP;
+    // data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
+    // field.update(values_, 0);
 
-    return field;
+    // return field;
 }
 
 
 void GeoPointsFileInput::print(std::ostream &out) const {
-    out << "GeoPointsFileInput[path=" << path_ << ",which=" << which_ << "]";
-}
-
-// From FieldParametrisation
-void GeoPointsFileInput::latitudes(std::vector<double> &latitudes) const {
-    latitudes = latitudes_;
-}
-
-void GeoPointsFileInput::longitudes(std::vector<double> &longitudes) const {
-    longitudes = longitudes_;
+    out << "GeoPointsFileInput["
+        "path=" << path_
+        << ",which=" << which_
+        << ",dimensions=" << dimensions_
+        << "]";
 }
 
 const std::vector<double>& GeoPointsFileInput::latitudes() const {

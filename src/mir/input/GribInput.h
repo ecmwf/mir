@@ -16,11 +16,10 @@
 #ifndef mir_input_GribInput_h
 #define mir_input_GribInput_h
 
-
 #include "eckit/thread/Mutex.h"
 #include "mir/input/MIRInput.h"
-#include "mir/param/FieldParametrisation.h"
 #include "mir/param/CachedParametrisation.h"
+#include "mir/param/FieldParametrisation.h"
 
 
 namespace mir {
@@ -82,10 +81,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-    GribInput(const GribInput&);
-    GribInput& operator=(const GribInput&);
 
     // -- Members
 

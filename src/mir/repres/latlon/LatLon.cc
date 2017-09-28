@@ -17,22 +17,15 @@
 
 #include <algorithm>
 #include <iostream>
-
-
-#include "mir/api/Atlas.h"
-
-
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
-
-#include "mir/action/misc/AreaCropper.h"
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -193,6 +186,17 @@ size_t LatLon::numberOfPoints() const {
     ASSERT(ni_);
     ASSERT(nj_);
     return ni_ * nj_;
+}
+
+
+bool LatLon::getLongestElementDiagonal(double& d) const {
+    const eckit::Fraction& sn = increments_.south_north();
+    const eckit::Fraction& we = increments_.west_east();
+
+    d = atlas::util::Earth::distanceInMeters(
+                atlas::PointLonLat(0., 0.),
+                atlas::PointLonLat(we, sn) );
+    return true;
 }
 
 

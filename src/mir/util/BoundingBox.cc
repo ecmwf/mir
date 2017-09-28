@@ -82,20 +82,6 @@ BoundingBox::~BoundingBox() {
 }
 
 
-Longitude BoundingBox::normalise(Longitude lon) const {
-
-    while (lon > east_) {
-        lon -= Longitude::GLOBE;
-    }
-
-    while (lon < west_) {
-        lon += Longitude::GLOBE;
-    }
-
-    return lon;
-}
-
-
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
         <<  "north=" << north_
@@ -136,39 +122,24 @@ void BoundingBox::fill(api::MIRJob &job) const  {
 
 
 void BoundingBox::normalise() {
+    Longitude eastNormalised = east_.normalise(west_);
 
-    bool same = west_ == east_;
-
-//    while (west_ < Longitude::MINUS_DATE_LINE) {
-//        west_ += Longitude::GLOBE;
-//    }
-
-//    while (west_ >= Longitude::GLOBE) {
-//        west_ -= Longitude::GLOBE;
-//    }
-
-    while (east_ <= west_) {
-        east_ += Longitude::GLOBE;
-    }
-
-    while ((east_  - west_ ) > Longitude::GLOBE) {
-        east_ -= Longitude::GLOBE;
-    }
-
-    if (same) {
-        east_ = west_;
+    if (west_ != east_) {
+        if (eastNormalised == west_) {
+            eastNormalised += Longitude::GLOBE;
+        }
+        east_ = eastNormalised;
     }
 
     ASSERT(west_ <= east_);
+    ASSERT(east_ <= west_ + Longitude::GLOBE);
 }
 
 
 bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
-    const Longitude nlon = normalise(lon);
     return (lat <= north_) &&
            (lat >= south_) &&
-           (nlon >= west_) &&
-            (nlon <= east_);
+            (lon.normalise(west_) <= east_);
 }
 
 

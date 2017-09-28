@@ -77,6 +77,9 @@ protected:
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
 
+    eckit::Fraction getSmallestIncrement() const;
+    void adjustBoundingBoxEastWest(util::BoundingBox&);
+
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
@@ -84,10 +87,6 @@ protected:
     virtual void fill(api::MIRJob&) const;
 
     virtual bool sameAs(const Representation&) const;
-
-    eckit::Fraction getSmallestIncrement() const;
-
-    void adjustBoundingBoxEastWest(util::BoundingBox&);
 
     bool isPeriodicWestEast() const;
 
@@ -113,7 +112,9 @@ private:
     virtual void validate(const std::vector<double>& values) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     virtual void initTrans(Trans_t&) const;
+
     virtual size_t numberOfPoints() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

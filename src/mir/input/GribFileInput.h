@@ -13,9 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GribFileInput_H
-#define GribFileInput_H
-
+#ifndef mir_input_GribFileInput_h
+#define mir_input_GribFileInput_h
 
 #include "eckit/filesystem/PathName.h"
 #include "mir/input/GribStreamInput.h"
@@ -65,7 +64,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -78,11 +77,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    GribFileInput(const GribFileInput&);
-    GribFileInput& operator=(const GribFileInput&);
-
     // -- Members
 
     eckit::PathName path_;
@@ -92,15 +86,13 @@ private:
     // None
 
     // -- Overridden methods
-    // From MIRInput
 
+    // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput
-
     virtual eckit::DataHandle& dataHandle();
-
 
     // -- Class members
     // None
@@ -118,5 +110,7 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

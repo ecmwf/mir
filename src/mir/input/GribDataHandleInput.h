@@ -12,10 +12,11 @@
 /// @date   Jul 2017
 
 
-#ifndef GribDataHandleInput_H
-#define GribDataHandleInput_H
+#ifndef mir_input_GribDataHandleInput_h
+#define mir_input_GribDataHandleInput_h
 
 #include "mir/input/GribStreamInput.h"
+
 
 namespace mir {
 namespace input {
@@ -47,6 +48,7 @@ public:
     // None
 
     // -- Overridden methods
+
     virtual size_t dimensions() const;
 
     // -- Class members
@@ -61,7 +63,7 @@ protected:
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -74,11 +76,6 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    GribDataHandleInput(const GribDataHandleInput&);
-    GribDataHandleInput& operator=(const GribDataHandleInput&);
-
     // -- Members
 
     eckit::DataHandle& handle_;
@@ -87,15 +84,13 @@ private:
     // None
 
     // -- Overridden methods
-    // From MIRInput
 
+    // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput
-
     virtual eckit::DataHandle& dataHandle();
-
 
     // -- Class members
     // None
@@ -113,4 +108,6 @@ private:
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif

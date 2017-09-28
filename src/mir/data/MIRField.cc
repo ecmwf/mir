@@ -13,11 +13,14 @@
 /// @date Apr 2015
 
 
+#include "mir/data/MIRField.h"
+
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/Field.h"
-#include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/repres/Representation.h"
 
@@ -181,6 +184,20 @@ bool MIRField::hasMissing() const {
 }
 
 
+bool MIRField::checkMissing() {
+    const double miss = missingValue();
+    bool stillMissing = false;
+
+    for (size_t i = 0; i < dimensions() && !stillMissing; ++i) {
+        const std::vector<double>& v = values(i);
+        stillMissing = std::find(v.begin(), v.end(), miss) != v.end();
+    }
+
+    hasMissing(stillMissing);
+    return stillMissing;
+}
+
+
 double MIRField::missingValue() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
@@ -205,6 +222,65 @@ void MIRField::missingValue(double value)  {
         copyOnWrite();
         field_->missingValue(value);
     }
+}
+
+
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, FieldFactory* >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< std::string, FieldFactory* >();
+}
+}  // (anonymous namespace)
+
+
+FieldFactory::FieldFactory(const std::string& name):
+    name_(name) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    ASSERT(m->find(name) == m->end());
+    (*m)[name] = this;
+}
+
+
+FieldFactory::~FieldFactory() {
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    m->erase(name_);
+}
+
+
+void FieldFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (auto j : *m) {
+        out << sep << j.first;
+        sep = ", ";
+    }
+}
+
+
+MIRField* FieldFactory::build(const std::string& name, const param::MIRParametrisation& params, bool hasMissing, double missingValue) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "FieldFactory: looking for '" << name << "'" << std::endl;
+
+    auto j = m->find(name);
+    if (j == m->end()) {
+        list(eckit::Log::error() << "FieldFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("FieldFactory: unknown '" + name + "'");
+    }
+
+    return (*j).second->make(params, hasMissing, missingValue);
 }
 
 

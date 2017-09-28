@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef CustomParametrisation_H
-#define CustomParametrisation_H
+#ifndef mir_param_CustomParametrisation_h
+#define mir_param_CustomParametrisation_h
 
 #include "mir/param/MIRParametrisation.h"
 #include <vector>
@@ -27,53 +27,48 @@ namespace style {
 class CustomParametrisation : public param::MIRParametrisation {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     CustomParametrisation( const std::string& name,
-        const std::map<std::string, std::vector<std::string> >& params,
+                           const std::map<std::string, std::vector<std::string> >& params,
                            const param::MIRParametrisation &parametrisation);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~CustomParametrisation(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
+    // None
 
-
-
-// -- Methods
+    // -- Methods
 
     template<class T>
     bool _get(const std::string& name,  T& value) const;
 
-
-// -- Overridden methods
-    // virtual bool has(const std::string& name) const;
+    // -- Overridden methods
 
     virtual bool has(const std::string& name) const;
 
@@ -92,42 +87,35 @@ protected:
 
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
 
-    CustomParametrisation(const CustomParametrisation&);
-    CustomParametrisation& operator=(const CustomParametrisation&);
-
-// -- Members
+    // -- Members
 
     std::string name_;
-
     std::map<std::string, std::vector<std::string> > params_;
     const param::MIRParametrisation &parametrisation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
+    // -- Friends
+    // None
 
 };
 

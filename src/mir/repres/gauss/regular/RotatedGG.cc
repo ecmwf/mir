@@ -16,13 +16,13 @@
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
 #include <iostream>
-
-#include "mir/util/Grib.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -105,17 +105,9 @@ Iterator* RotatedGG::iterator() const {
 }
 
 
-
-size_t RotatedGG::numberOfPoints() const {
-    ASSERT(isGlobal());
-    return Ni_ * Nj_;
-}
-
-
 atlas::Grid RotatedGG::atlasGrid() const {
     return rotation_.rotate(Regular::atlasGrid());
 }
-
 
 
 namespace {
@@ -124,6 +116,7 @@ static RepresentationBuilder<RotatedGG> rotatedGG("rotated_gg"); // Name is what
 
 
 }  // namespace reduced
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

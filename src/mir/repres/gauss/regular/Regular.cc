@@ -19,20 +19,18 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/types/FloatCompare.h"
-#include "eckit/types/Fraction.h"
-
+#include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "eckit/utils/MD5.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -153,7 +151,56 @@ void Regular::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
 
 bool Regular::isPeriodicWestEast() const {
     const Longitude inc = Longitude(eckit::Fraction(90, N_));
-    return (bbox_.east() - bbox_.west() + inc).sameWithGrib1Accuracy(360.0);
+    return (bbox_.east() - bbox_.west() + inc).sameWithGrib1Accuracy(Longitude::GLOBE);
+}
+
+
+size_t Regular::numberOfPoints() const {
+    if (isGlobal()) {
+        ASSERT(Nj_ == N_ * 2);
+        ASSERT(Ni_ == N_ * 4);
+        return Ni_ * Nj_;
+    }
+    else {
+        size_t total = 0;
+        eckit::ScopedPtr<repres::Iterator> iter(iterator());
+        while (iter->next()) {
+            total++;
+        }
+        return total;
+    }
+}
+
+
+bool Regular::getLongestElementDiagonal(double& d) const {
+
+    // Look for a majorant of all element diagonals, using the difference of
+    // latitudes closest/furthest from equator and longitude furthest from
+    // Greenwich
+
+    const std::vector<double>& lats = latitudes();
+    ASSERT(N_ * 2 == lats.size());
+    ASSERT(N_);
+
+    d = 0.;
+    Latitude l1(Latitude::NORTH_POLE);
+    Latitude l2(lats[0]);
+
+    for (size_t j = 1; j < lats.size(); ++j, l1 = l2, l2 = lats[j]) {
+
+        const eckit::Fraction we = Longitude::GLOBE.fraction() / (N_ * 4);
+        const Latitude&
+                latAwayFromEquator(std::abs(l1.value()) > std::abs(l2.value())? l1 : l2),
+                latCloserToEquator(std::abs(l1.value()) > std::abs(l2.value())? l2 : l1);
+
+        d = std::max(d, atlas::util::Earth::distanceInMeters(
+                         atlas::PointLonLat(0., latCloserToEquator.value()),
+                         atlas::PointLonLat(we, latAwayFromEquator.value()) ));
+    }
+
+    ASSERT(d > 0.);
+    return true;
+
 }
 
 
@@ -163,19 +210,7 @@ atlas::Grid Regular::atlasGrid() const {
 
 
 void Regular::validate(const std::vector<double>& values) const {
-    const util::Domain dom = domain();
-    long long count = 0;
-
-    if (dom.isGlobal()) {
-        count = (N_ * 2) * (N_ * 4);
-    } else {
-        eckit::ScopedPtr<Iterator> it(iterator());
-        while (it->next()) {
-            if (dom.contains(it->pointUnrotated())) {
-                ++count;
-            }
-        }
-    }
+    const size_t count = numberOfPoints();
 
     eckit::Log::debug<LibMir>() << "Regular::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;
     ASSERT(values.size() == size_t(count));
@@ -313,6 +348,7 @@ bool Regular::RegularIterator::next(Latitude& lat, Longitude& lon) {
 
 
 }  // namespace regular
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
 

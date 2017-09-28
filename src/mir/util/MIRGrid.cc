@@ -16,10 +16,13 @@
 
 #include "mir/util/MIRGrid.h"
 
+#include <limits>
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
+#include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/mesh/actions/BuildCellCentres.h"
 #include "atlas/mesh/actions/BuildXYZField.h"
 #include "atlas/output/Gmsh.h"
@@ -48,25 +51,25 @@ MIRGrid::MeshGenParams::MeshGenParams() :
     meshParallelEdgesConnectivity_(true),
     meshXYZField_(true),
     meshCellCentres_(true),
-    dump_("") {
+    file_("") {
     set("three_dimensional", true);
     set("patch_pole",        true);
     set("include_pole",      false);
     set("triangulate",       false);
     set("angle",             0.);
-
 }
 
 
 MIRGrid::MeshGenParams::MeshGenParams(const std::string& label, const param::MIRParametrisation& param) {
 
+    // use defaults
     *this = MeshGenParams();
 
 //    param.get(label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
 //    param.get(label + "-mesh-add-field-xyz", meshXYZField_);
 //    param.get(label + "-mesh-add-field-cell-centres", meshCellCentres_);
     param.get(label + "-mesh-generator", meshGenerator_);
-    param.get(label + "-mesh-dump", dump_);
+    param.get(label + "-mesh-file", file_);
 }
 
 
@@ -86,6 +89,21 @@ void MIRGrid::MeshGenParams::hash(eckit::MD5& md5) const {
         << meshParallelEdgesConnectivity_
         << meshXYZField_
         << meshCellCentres_;
+}
+
+
+void MIRGrid::MeshGenParams::print(std::ostream& s) const {
+    s << "MeshGenParams["
+      <<  "meshGenerator="                 << meshGenerator_
+      << ",meshParallelEdgesConnectivity=" << meshParallelEdgesConnectivity_
+      << ",meshXYZField="                  << meshXYZField_
+      << ",meshCellCentres="               << meshCellCentres_
+      << ",three_dimensional=" << getBool("three_dimensional")
+      << ",patch_pole="        << getBool("patch_pole")
+      << ",include_pole="      << getBool("include_pole")
+      << ",triangulate="       << getBool("triangulate")
+      << ",angle="             << getDouble("angle")
+      << "]";
 }
 
 
@@ -113,8 +131,65 @@ const atlas::Mesh& MIRGrid::mesh() const {
 }
 
 
+double MIRGrid::getMeshLongestElementDiagonal() const {
+    ASSERT(mesh_.generated());
+    using atlas::util::Earth;
+
+    const atlas::mesh::HybridElements::Connectivity& connectivity = mesh_.cells().node_connectivity();
+    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >( mesh_.nodes().field( "xyz" ));
+//    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >( mesh_.nodes().lonlat() );
+
+    // set maximum to Earth radius
+    const double dMax = Earth::radiusInMeters();
+
+    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
+    if (mesh_.nodes().metadata().has("NbRealPts")) {
+        firstVirtualPoint = mesh_.nodes().metadata().get<size_t>("NbRealPts");
+    }
+
+    // assumes:
+    // - nb_cols == 3 implies triangle
+    // - nb_cols == 4 implies quadrilateral
+    // - no other element is supported at this time
+    double d = 0.;
+
+    atlas::PointXYZ P[4];
+//    atlas::PointLonLat P[4];
+    for (size_t e = 0; e < connectivity.rows(); ++e) {
+        const size_t nb_cols = connectivity.cols(e);
+        ASSERT(nb_cols == 3 || nb_cols == 4);
+
+        // test edges and diagonals (quadrilaterals only)
+        // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
+        for (size_t ni = 0; ni < nb_cols; ++ni) {
+            const size_t i = size_t(connectivity(e, ni));
+            P[ni].assign(coords[i].data());
+        }
+
+        for (size_t ni = 0; ni < nb_cols - 1; ++ni) {
+            const size_t i = size_t(connectivity(e, ni));
+            for (size_t nj = ni + 1; nj < nb_cols; ++nj) {
+                const size_t j = size_t(connectivity(e, nj));
+
+                if (i < firstVirtualPoint && j < firstVirtualPoint) {
+                    d = std::max(d, Earth::distanceInMeters(P[ni], P[nj]));
+                    if (d > dMax) {
+                        eckit::Log::warning() << "MIRGrid::getMeshLongestElementDiagonal: limited to maximum " << dMax << "m";
+                        return dMax;
+                    }
+                }
+
+            }
+        }
+    }
+
+    ASSERT(d > 0.);
+    return d;
+}
+
+
 atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
-    eckit::ResourceUsage usage("MESH for " + std::to_string(grid_));
+    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")");
     InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings
@@ -164,11 +239,19 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }
 
-        // Dump
-        if (!meshGenParams.dump_.empty()) {
-            atlas::output::PathName path(meshGenParams.dump_);
+        // Some information
+        eckit::Log::debug<LibMir>() << "Mesh["
+                                        "cells=" << eckit::BigNum(mesh.cells().size())
+                                    << ",nodes=" << eckit::BigNum(mesh.nodes().size())
+                                    << "," << meshGenParams
+                                    << "]"
+                                    << std::endl;
 
-            eckit::Log::debug<LibMir>() << "Dumping mesh to '" << path << "'" << std::endl;
+        // Write file
+        if (!meshGenParams.file_.empty()) {
+            atlas::output::PathName path(meshGenParams.file_);
+
+            eckit::Log::debug<LibMir>() << "Mesh: writing to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
         }
 

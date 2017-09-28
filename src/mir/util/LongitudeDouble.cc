@@ -43,7 +43,7 @@ bool LongitudeDouble::operator<(double value) const {
 }
 
 bool LongitudeDouble::operator<=(double value) const {
-    return eckit::types::is_approximately_lesser_or_equal<double>(value_, value);
+    return eckit::types::is_approximately_lesser_or_equal(value_, value);
 }
 
 bool LongitudeDouble::operator>(double value) const {
@@ -51,15 +51,15 @@ bool LongitudeDouble::operator>(double value) const {
 }
 
 bool LongitudeDouble::operator>=(double value) const {
-    return eckit::types::is_approximately_greater_or_equal<double>(value_, value);
+    return eckit::types::is_approximately_greater_or_equal(value_, value);
 }
 
 bool LongitudeDouble::operator==(double value) const {
-    return eckit::types::is_approximately_equal<double>(value_, value);
+    return eckit::types::is_approximately_equal(value_, value);
 }
 
 bool LongitudeDouble::operator!=(double value) const {
-    return !eckit::types::is_approximately_equal<double>(value_, value);
+    return !eckit::types::is_approximately_equal(value_, value);
 }
 
 void LongitudeDouble::hash(eckit::MD5& md5) const {
@@ -75,9 +75,19 @@ void LongitudeDouble::decode(eckit::Stream& s) {
 }
 
 bool LongitudeDouble::sameWithGrib1Accuracy(const LongitudeDouble& other) const {
-    const double GRIB1EPSILON = 0.001;
-    eckit::types::CompareApproximatelyEqual<double> cmp(GRIB1EPSILON);
-    return cmp(value_, other.value_);
+    static const double GRIB1EPSILON = 0.001;
+    return eckit::types::is_approximately_equal(value_, other.value_, GRIB1EPSILON);
+}
+
+LongitudeDouble LongitudeDouble::normalise(const LongitudeDouble& minimum) const {
+    LongitudeDouble lon(*this);
+    while (lon < minimum) {
+        lon += GLOBE;
+    }
+    while (lon >= minimum + GLOBE) {
+        lon -= GLOBE;
+    }
+    return lon;
 }
 
 

@@ -38,7 +38,6 @@ VorDivToUV_t new_vordiv_to_UV()
     NOTIMP;
 }
 
-
 int trans_distspec(DistSpec_t*)
 {
     NOTIMP;
@@ -104,17 +103,17 @@ const char* trans_error_msg(int)
     NOTIMP;
 }
 
-void trans_use_mpi(bool)
+int trans_use_mpi(bool)
 {
     NOTIMP;
 }
 
-void trans_init()
+int trans_init()
 {
     NOTIMP;
 }
 
-void trans_finalize()
+int trans_finalize()
 {
     NOTIMP;
 }
@@ -122,45 +121,97 @@ void trans_finalize()
 #endif
 
 #ifndef HAVE_ATLAS
+namespace atlas {
 
-void atlas::util::gaussian_latitudes_npole_spole(int, double*)
+PointLonLat::PointLonLat()
 {
     NOTIMP;
 }
 
-atlas::Projection::operator bool() const
+PointLonLat::PointLonLat(double, double)
 {
     NOTIMP;
 }
 
-double atlas::PointLonLat::lat() const
+double PointLonLat::lat() const
 {
     NOTIMP;
 }
 
-double atlas::PointLonLat::lon() const
+double PointLonLat::lon() const
 {
     NOTIMP;
 }
 
-atlas::Projection atlas::Grid::projection() const
+void util::gaussian_latitudes_npole_spole(int, double*)
 {
     NOTIMP;
 }
 
-const std::vector<long>& atlas::Grid::nx() const
+double util::Earth::radiusInMeters()
 {
     NOTIMP;
 }
 
-atlas::util::Config atlas::Grid::spec() const
+double util::Earth::radiusInKm()
 {
     NOTIMP;
 }
 
-atlas::Grid::operator bool() const
+double util::Earth::distanceInMeters(const PointLonLat&, const PointLonLat&)
 {
     NOTIMP;
 }
 
+double util::Earth::distanceInMeters(const PointXYZ&, const PointXYZ&)
+{
+    NOTIMP;
+}
+
+void util::Earth::convertGeodeticToGeocentric(const PointLonLat&, PointXYZ&, const double&, const double&)
+{
+    NOTIMP;
+}
+
+util::Rotation::Rotation(const PointLonLat&)
+{
+    NOTIMP;
+}
+
+bool util::Rotation::rotated() const
+{
+    NOTIMP;
+}
+
+void util::Rotation::rotate(double[]) const
+{
+    NOTIMP;
+}
+
+Projection::operator bool() const
+{
+    NOTIMP;
+}
+
+Projection Grid::projection() const
+{
+    NOTIMP;
+}
+
+const std::vector<long>& Grid::nx() const
+{
+    NOTIMP;
+}
+
+util::Config Grid::spec() const
+{
+    NOTIMP;
+}
+
+Grid::operator bool() const
+{
+    NOTIMP;
+}
+
+}  // namespace atlas
 #endif

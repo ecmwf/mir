@@ -19,35 +19,30 @@ namespace mir {
 namespace param {
 
 DefaultParametrisation::DefaultParametrisation() {
-    set("style", "mars");
+    set("style", "ecmwf");
     set("executor", "simple");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
-    set("decomposition", "none");
-    set("stats", "scalar");
+    set("dimension", "1d.linear");
+
     set("caching", true);
     set("kd-trees.caching", true);
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
 
-    set("lsm-selection", "auto");
+    set("lsm-selection", "none");
     set("lsm-interpolation", "nearest-neighbour");
     set("lsm-weight-adjustment", 0.2);
     set("lsm-value-threshold", 0.5);
 
-    set("spectral-mapping", "linear");
+    set("spectral-order", "linear");
+    set("spectral-grid", "regular-gaussian");
 
-    set("tolerance", 1e-10);
-
-
+    set("absolute-error", 1e-10);
 }
 
 DefaultParametrisation::~DefaultParametrisation() {
-}
-
-void DefaultParametrisation::print(std::ostream &out) const {
-    out << "DefaultParametrisation[]";
 }
 
 

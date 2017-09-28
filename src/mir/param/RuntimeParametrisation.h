@@ -13,12 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef RuntimeParametrisation_H
-#define RuntimeParametrisation_H
+#ifndef mir_param_RuntimeParametrisation_h
+#define mir_param_RuntimeParametrisation_h
 
-#include <string>
 #include <set>
-
+#include <string>
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -27,26 +26,26 @@ namespace param {
 
 
 class RuntimeParametrisation : public SimpleParametrisation {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     RuntimeParametrisation(const param::MIRParametrisation& owner);
 
-// -- Destructor
+    // -- Destructor
 
     ~RuntimeParametrisation(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
     void hide(const std::string& name);
 
@@ -57,9 +56,12 @@ class RuntimeParametrisation : public SimpleParametrisation {
     MIRParametrisation& set(const std::string& name, double value);
     MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
-// -- Overridden methods
+    // -- Overridden methods
 
+    // From MIRParametrisation
     virtual bool has(const std::string& name) const;
+
+    // From SimpleParametrisation
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
     virtual bool get(const std::string& name, long& value) const;
@@ -67,42 +69,37 @@ class RuntimeParametrisation : public SimpleParametrisation {
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    // void print(ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+private:
 
-    RuntimeParametrisation(const RuntimeParametrisation&);
-    RuntimeParametrisation& operator=(const RuntimeParametrisation&);
+    // -- Members
 
-// -- Members
     const param::MIRParametrisation& owner_;
     std::set<std::string> hidden_;
 
-// -- Methods
+    // -- Methods
 
     template<class T>
     void _set(const std::string&, const T&);
@@ -110,27 +107,26 @@ class RuntimeParametrisation : public SimpleParametrisation {
     template<class T>
     bool _get(const std::string&, T&) const;
 
-// -- Overridden methods
+    // -- Overridden methods
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const RuntimeParametrisation& p)
-    //  { p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
 }  // namespace param
 }  // namespace mir
+
+
 #endif
 

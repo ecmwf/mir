@@ -13,17 +13,16 @@
 /// @date Apr 2015
 
 
-#ifndef RotatedGG_H
-#define RotatedGG_H
-
+#ifndef mir_repres_gauss_regular_RotatedGG_h
+#define mir_repres_gauss_regular_RotatedGG_h
 
 #include "mir/repres/gauss/regular/Regular.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
 
 namespace mir {
 namespace repres {
+namespace gauss {
 namespace regular {
 
 
@@ -97,7 +96,6 @@ class RotatedGG : public Regular {
     virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
-    virtual size_t numberOfPoints() const;
 
     // -- Class members
     // None
@@ -114,8 +112,10 @@ class RotatedGG : public Regular {
 
 
 }  // namespace regular
+}  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
 
 #endif
 

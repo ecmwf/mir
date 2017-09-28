@@ -24,7 +24,9 @@ class MD5;
 class Stream;
 }
 
+
 namespace mir {
+
 
 class LongitudeFraction {
 public:
@@ -38,14 +40,12 @@ public:
     // None
 
     // -- Contructors
+
     LongitudeFraction(double value = 0): value_(value) {}
     LongitudeFraction(const eckit::Fraction& value): value_(value) {}
 
-    double value() const { return value_; }
-    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
+    // -- Operators
 
-    bool sameWithGrib1Accuracy(const LongitudeFraction& other) const;
-    //========================================
     bool operator==(double other) const;
     bool operator!=(double other) const;
 
@@ -119,9 +119,7 @@ public:
     LongitudeFraction operator*(const eckit::Fraction& value) const {
         return LongitudeFraction(value_ * value);
     }
-    //======================================
 
-    //========================================
     //========================================
 
     LongitudeFraction& operator+=(const LongitudeFraction& other) {
@@ -142,20 +140,29 @@ public:
         return LongitudeFraction(value_ - other.value_);
     }
 
-    bool operator==(const LongitudeFraction& other) const ;
+    bool operator==(const LongitudeFraction& other) const;
 
     bool operator!=(const LongitudeFraction& other) const;
 
-    bool operator>(const LongitudeFraction& other) const ;
+    bool operator>(const LongitudeFraction& other) const;
 
-    bool operator<(const LongitudeFraction& other) const  ;
+    bool operator<(const LongitudeFraction& other) const;
 
     bool operator>=(const LongitudeFraction& other) const;
 
     bool operator<=(const LongitudeFraction& other) const;
 
+    // -- Methods
+
     void hash(eckit::MD5&) const;
-    // None
+
+    double value() const { return value_; }
+
+    eckit::Fraction fraction() const { return eckit::Fraction(value_); }
+
+    bool sameWithGrib1Accuracy(const LongitudeFraction& other) const;
+
+    LongitudeFraction normalise(const LongitudeFraction& minimum) const;
 
 protected:
 
@@ -216,7 +223,6 @@ private:
     }
 
 };
-
 
 
 }  // namespace mir

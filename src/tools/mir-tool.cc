@@ -18,13 +18,12 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "eckit/types/Fraction.h"
-
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
+
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/caching/interpolator/InterpolatorLoader.h"
@@ -36,16 +35,16 @@
 #include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
+#include "mir/method/distance/DistanceWeighting.h"
 #include "mir/mir_ecbuild_config.h"
 #include "mir/output/GeoPointsFileOutput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/packing/Packer.h"
-#include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
-#include "mir/style/Mapping.h"
+#include "mir/style/SpectralGrid.h"
+#include "mir/style/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
-
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -69,9 +68,8 @@ public:
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
-        options_.push_back(new FactoryOption<mir::style::MappingFactory>("spectral-mapping", "Spectral/gridded order-of-accuracy)"));
-        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded intermediate Gaussian grid type (via)"));
-        options_.push_back(new SimpleOption<std::string>("spectral-intermediate-gridname", "Spectral/gridded intermediate grid name (via)"));
+        options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
+        options_.push_back(new FactoryOption<mir::style::SpectralGridFactory>("spectral-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
 
@@ -89,15 +87,16 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
-        options_.push_back(new SimpleOption<size_t>("nclosest", "Used by methods k-nearest"));
+        options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by methods k-nearest"));
+        options_.push_back(new FactoryOption<mir::method::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Input mesh generator"));
-        options_.push_back(new SimpleOption<std::string>("input-mesh-dump", "Input mesh dump to file (default <empty>)"));
+        options_.push_back(new SimpleOption<std::string>("input-mesh-file", "Input mesh file (default <empty>)"));
         options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
-        options_.push_back(new SimpleOption<std::string>("output-mesh-dump", "Output mesh dump to file (default <empty>)"));
+        options_.push_back(new SimpleOption<std::string>("output-mesh-file", "Output mesh file (default <empty>)"));
 
-        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of KD-trees"));
+        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
@@ -105,6 +104,8 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
+        options_.push_back(new SimpleOption<std::string>("globalise-gridname", "Unstructured grid globalise using gridname (default O16)"));
+        options_.push_back(new SimpleOption<std::string>("globalise-missing-radius", "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
@@ -146,7 +147,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used on not"));
+        options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));

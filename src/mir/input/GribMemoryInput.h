@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GribMemoryInput_H
-#define GribMemoryInput_H
+#ifndef mir_input_GribMemoryInput_h
+#define mir_input_GribMemoryInput_h
 
 #include "mir/input/GribInput.h"
 
@@ -24,7 +24,7 @@ namespace input {
 
 
 class GribMemoryInput : public GribInput {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -55,13 +55,13 @@ class GribMemoryInput : public GribInput {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -72,17 +72,13 @@ class GribMemoryInput : public GribInput {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    GribMemoryInput(const GribMemoryInput &);
-    GribMemoryInput &operator=(const GribMemoryInput &);
+private:
 
     // -- Members
-
+    // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 
@@ -107,5 +103,7 @@ class GribMemoryInput : public GribInput {
 
 }  // namespace input
 }  // namespace mir
+
+
 #endif
 

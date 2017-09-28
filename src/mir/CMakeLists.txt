@@ -102,44 +102,6 @@ list(
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/ShScalarToGridded.cc
-    action/transform/ShScalarToGridded.h
-    action/transform/ShScalarToNamedGrid.cc
-    action/transform/ShScalarToNamedGrid.h
-    action/transform/ShScalarToOctahedralGG.cc
-    action/transform/ShScalarToOctahedralGG.h
-    action/transform/ShScalarToReducedGG.cc
-    action/transform/ShScalarToReducedGG.h
-    action/transform/ShScalarToReducedGGPLGiven.cc
-    action/transform/ShScalarToReducedGGPLGiven.h
-    action/transform/ShScalarToRegularGG.cc
-    action/transform/ShScalarToRegularGG.h
-    action/transform/ShScalarToRegularLL.cc
-    action/transform/ShScalarToRegularLL.h
-    action/transform/ShToGridded.cc
-    action/transform/ShToGridded.h
-    action/transform/ShTruncate.cc
-    action/transform/ShTruncate.h
-    action/transform/ShVodToUV.cc
-    action/transform/ShVodToUV.h
-    action/transform/ShVodTouvGridded.cc
-    action/transform/ShVodTouvGridded.h
-    action/transform/ShVodTouvNamedGrid.cc
-    action/transform/ShVodTouvNamedGrid.h
-    action/transform/ShVodTouvOctahedralGG.cc
-    action/transform/ShVodTouvOctahedralGG.h
-    action/transform/ShVodTouvReducedGG.cc
-    action/transform/ShVodTouvReducedGG.h
-    action/transform/ShVodTouvReducedGGPLGiven.cc
-    action/transform/ShVodTouvReducedGGPLGiven.h
-    action/transform/ShVodTouvRegularGG.cc
-    action/transform/ShVodTouvRegularGG.h
-    action/transform/ShVodTouvRegularLL.cc
-    action/transform/ShVodTouvRegularLL.h
-    action/transform/TransCache.cc
-    action/transform/TransCache.h
-    action/transform/TransInitor.cc
-    action/transform/TransInitor.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIRJob.cc
@@ -196,14 +158,28 @@ list(
     compare/Spectral.h
     config/LibMir.cc
     config/LibMir.h
+    data/CartesianVector2DField.cc
+    data/CartesianVector2DField.h
+    data/Dimension.cc
+    data/Dimension.h
     data/Field.cc
     data/Field.h
-    data/FieldInfo.cc
-    data/FieldInfo.h
     data/MIRField.cc
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
+    data/dimension/Dimension1DAngleT.cc
+    data/dimension/Dimension1DAngleT.h
+    data/dimension/Dimension1DLinear.cc
+    data/dimension/Dimension1DLinear.h
+    data/dimension/Dimension2DCartesian.cc
+    data/dimension/Dimension2DCartesian.h
+    data/dimension/Dimension3DCartesian.cc
+    data/dimension/Dimension3DCartesian.h
+    data/dimension/DimensionLinear.cc
+    data/dimension/DimensionLinear.h
+    data/dimension/DimensionLogarithmic.cc
+    data/dimension/DimensionLogarithmic.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
@@ -250,32 +226,38 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
-    method/decompose/Decompose.cc
-    method/decompose/Decompose.h
-    method/decompose/DecomposeToCartesian.cc
-    method/decompose/DecomposeToCartesian.h
-    method/decompose/None.cc
-    method/decompose/None.h
-    method/decompose/PolarAngleToCartesian.cc
-    method/decompose/PolarAngleToCartesian.h
     method/KNearest.cc
     method/KNearest.h
-    method/KNearestLSM.cc
-    method/KNearestLSM.h
+    method/KNearestNeighbours.cc
+    method/KNearestNeighbours.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/Nearest.cc
-    method/Nearest.h
+    method/NearestLSM.cc
+    method/NearestLSM.h
     method/NearestNeighbour.cc
     method/NearestNeighbour.h
     method/PseudoLaplace.cc
     method/PseudoLaplace.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/distance/DistanceWeighting.cc
+    method/distance/DistanceWeighting.h
+    method/distance/InverseDistanceWeighting.cc
+    method/distance/InverseDistanceWeighting.h
+    method/distance/InverseDistanceWeightingSquared.cc
+    method/distance/InverseDistanceWeightingSquared.h
+    method/distance/NearestLSM.cc
+    method/distance/NearestLSM.h
+    method/distance/NearestLSMWithLowestIndex.cc
+    method/distance/NearestLSMWithLowestIndex.h
+    method/distance/NearestNeighbour.cc
+    method/distance/NearestNeighbour.h
+    method/distance/NearestNeighbourWithLowestIndex.cc
+    method/distance/NearestNeighbourWithLowestIndex.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc
@@ -428,11 +410,8 @@ list(
     repres/unsupported/StretchedSH.h
     repres/unsupported/TransverseMercator.cc
     repres/unsupported/TransverseMercator.h
-    stats/Angle.cc
-    stats/Angle.h
     stats/CountOutsideRange.cc
     stats/CountOutsideRange.h
-    stats/detail/Angle.h
     stats/detail/CountMissingValuesFn.h
     stats/detail/CountOutsideRangeFn.h
     stats/detail/MinMaxStatistics.h
@@ -458,28 +437,22 @@ list(
     style/CustomParametrisation.h
     style/CustomStyle.cc
     style/CustomStyle.h
-    style/DisseminationStyle.cc
-    style/DisseminationStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
-    style/IntermediateGaussianGrid.cc
-    style/IntermediateGaussianGrid.h
-    style/IntermediateGrid.cc
-    style/IntermediateGrid.h
-    style/IntermediateNamedGrid.cc
-    style/IntermediateNamedGrid.h
-    style/Mapping.cc
-    style/Mapping.h
-    style/MARSStyle.cc
-    style/MARSStyle.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/ProdgenGrid.cc
-    style/ProdgenGrid.h
-    style/ProdgenStyle.cc
-    style/ProdgenStyle.h
-    style/TMapping.cc
-    style/TMapping.h
+    style/SpectralGaussianGrid.cc
+    style/SpectralGaussianGrid.h
+    style/SpectralGrid.cc
+    style/SpectralGrid.h
+    style/SpectralGridNone.cc
+    style/SpectralGridNone.h
+    style/SpectralNamedGrid.cc
+    style/SpectralNamedGrid.h
+    style/SpectralOrder.cc
+    style/SpectralOrder.h
+    style/SpectralOrderT.cc
+    style/SpectralOrderT.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
@@ -506,6 +479,8 @@ list(
     util/FormulaString.h
     util/Function.cc
     util/Function.h
+    util/GlobaliseUnstructured.cc
+    util/GlobaliseUnstructured.h
     util/Grib.h
     util/Increments.cc
     util/Increments.h
@@ -544,8 +519,8 @@ list(
     method/FiniteElement.h
     method/StructuredBilinearLatLon.cc
     method/StructuredBilinearLatLon.h
-    method/StructuredLinear.cc
-    method/StructuredLinear.h
+    method/StructuredLinear3D.cc
+    method/StructuredLinear3D.h
     method/StructuredMethod.cc
     method/StructuredMethod.h
     method/Tessellation.cc
@@ -706,8 +681,52 @@ endif()
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
-    set(libatlas atlas transi)
+    set(libatlas atlas)
+    if(ATLAS_HAVE_TRANS)
+        list( APPEND libatlas transi)
+        list( APPEND mir_srcs
+            action/transform/ShScalarToGridded.cc
+            action/transform/ShScalarToGridded.h
+            action/transform/ShScalarToNamedGrid.cc
+            action/transform/ShScalarToNamedGrid.h
+            action/transform/ShScalarToOctahedralGG.cc
+            action/transform/ShScalarToOctahedralGG.h
+            action/transform/ShScalarToReducedGG.cc
+            action/transform/ShScalarToReducedGG.h
+            action/transform/ShScalarToReducedGGPLGiven.cc
+            action/transform/ShScalarToReducedGGPLGiven.h
+            action/transform/ShScalarToRegularGG.cc
+            action/transform/ShScalarToRegularGG.h
+            action/transform/ShScalarToRegularLL.cc
+            action/transform/ShScalarToRegularLL.h
+            action/transform/ShToGridded.cc
+            action/transform/ShToGridded.h
+            action/transform/ShTruncate.cc
+            action/transform/ShTruncate.h
+            action/transform/ShVodToUV.cc
+            action/transform/ShVodToUV.h
+            action/transform/ShVodTouvGridded.cc
+            action/transform/ShVodTouvGridded.h
+            action/transform/ShVodTouvNamedGrid.cc
+            action/transform/ShVodTouvNamedGrid.h
+            action/transform/ShVodTouvOctahedralGG.cc
+            action/transform/ShVodTouvOctahedralGG.h
+            action/transform/ShVodTouvReducedGG.cc
+            action/transform/ShVodTouvReducedGG.h
+            action/transform/ShVodTouvReducedGGPLGiven.cc
+            action/transform/ShVodTouvReducedGGPLGiven.h
+            action/transform/ShVodTouvRegularGG.cc
+            action/transform/ShVodTouvRegularGG.h
+            action/transform/ShVodTouvRegularLL.cc
+            action/transform/ShVodTouvRegularLL.h
+            action/transform/TransCache.cc
+            action/transform/TransCache.h
+            action/transform/TransInitor.cc
+            action/transform/TransInitor.h
+            )
+       endif()
 endif()
+
 
 ecbuild_add_library(
   TARGET             mir

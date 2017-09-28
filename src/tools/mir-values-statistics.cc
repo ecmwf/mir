@@ -14,31 +14,26 @@
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/output/GribFileOutput.h"
 #include "eckit/option/CmdArgs.h"
-#include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
+#include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/DefaultParametrisation.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/repres/Iterator.h"
-#include "mir/repres/Representation.h"
-#include "mir/stats/Results.h"
-#include "mir/stats/Statistics.h"
-#include "mir/stats/detail/ScalarCentralMomentsFn.h"
-#include "mir/tools/MIRTool.h"
-#include "mir/util/MIRStatistics.h"
-#include "mir/action/context/Context.h"
+#include "mir/output/GribFileOutput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/stats/Results.h"
+#include "mir/stats/detail/ScalarCentralMomentsFn.h"
+#include "mir/stats/detail/ScalarMinMaxFn.h"
+#include "mir/tools/MIRTool.h"
+#include "mir/util/Compare.h"
+#include "mir/util/MIRStatistics.h"
 
 
 class MIRValuesStatistics : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const { return 2; }
+    int minimumPositionalArguments() const { return 1; }
 public:
     MIRValuesStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
@@ -126,16 +121,13 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             const mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(grib).field();
-//            eckit::ScopedPtr< const mir::repres::Representation > r(field.representation());
-//            ASSERT(r);
-//            ASSERT(r->numberOfPoints() == field.values(0).size());
+            const mir::util::compare::IsMissingFn missingValue(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
             ASSERT(N == field.values(0).size());
 
-            const double missingValue = field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
             for (size_t d = 0, i = 0; d < field.dimensions(); ++d, i = 0) {
                 for (double v : field.values(d)) {
                     ASSERT(i < N);
-                    if (v != missingValue) {
+                    if (!missingValue(v)) {
                         statistics[i++](v);
                     }
                 }

@@ -98,20 +98,19 @@ public:
 
     virtual Iterator* iterator() const;
 
-    virtual void validate(const std::vector<double> &values) const;
+    virtual void validate(const std::vector<double>& values) const;
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
 
     // Return a cropped version
-    virtual const Representation* cropped(const util::BoundingBox &bbox) const;
+    virtual const Representation* cropped(const util::BoundingBox&) const;
 
-    virtual size_t frame(std::vector<double> &values, size_t size, double missingValue) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField& field) const;
 
-    // Make a global
     virtual size_t numberOfPoints() const;
-
+    virtual bool getLongestElementDiagonal(double&) const;
 
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
@@ -121,9 +120,7 @@ public:
     virtual util::Domain domain() const;
     virtual bool isGlobal() const;
 
-
     virtual size_t truncation() const;
-    virtual size_t pentagonalResolutionTs() const;
 
     virtual void comparison(std::string&) const;
 
@@ -227,7 +224,7 @@ public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
     static const Representation* build(const param::MIRParametrisation&);
-
+    static void list(std::ostream&);
 };
 
 

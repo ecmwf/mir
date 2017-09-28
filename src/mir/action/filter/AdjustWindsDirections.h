@@ -18,94 +18,90 @@
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/Rotation.h"
-#include <vector>
+
 
 namespace mir {
+namespace repres {
+class Representation;
+}
+}
 
-namespace repres { class Representation; }
 
-
+namespace mir {
 namespace action {
 
 
 class AdjustWindsDirections : public Action {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     AdjustWindsDirections(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~AdjustWindsDirections(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // -- Members
 
-    AdjustWindsDirections(const AdjustWindsDirections&);
-    AdjustWindsDirections& operator=(const AdjustWindsDirections&);
-
-// -- Members
     util::Rotation rotation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-    void windDirections(const repres::Representation* representation, std::vector<double> &result) const ;
-
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void execute(context::Context & ctx) const;
     virtual bool sameAs(const Action& other) const;
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
     //	{ p.print(s); return s; }
@@ -115,5 +111,7 @@ class AdjustWindsDirections : public Action {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

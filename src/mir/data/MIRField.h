@@ -91,6 +91,9 @@ public:
     void hasMissing(bool on);
     bool hasMissing() const;
 
+    /// @note not in Field
+    bool checkMissing();
+
     void validate() const;
 
     MIRFieldStats statistics(size_t i) const;
@@ -150,6 +153,28 @@ private:
         return s;
     }
 
+};
+
+
+class FieldFactory {
+    std::string name_;
+    virtual MIRField* make(const param::MIRParametrisation&, bool hasMissing, double missingValue) = 0;
+protected:
+    FieldFactory(const std::string&);
+    virtual ~FieldFactory();
+public:
+    static void list(std::ostream&);
+    static MIRField* build(const std::string& name, const param::MIRParametrisation&, bool hasMissing, double missingValue);
+};
+
+
+template<class T>
+class FieldBuilder : public FieldFactory {
+    virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) {
+        return new T(param, hasMissing, missingValue);
+    }
+public:
+    FieldBuilder(const std::string& name) : FieldFactory(name) {}
 };
 
 
