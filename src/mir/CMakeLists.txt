@@ -208,8 +208,6 @@ list(
     input/VectorInput.h
     log/MIR.cc
     log/MIR.h
-    lsm/AutoLSM.cc
-    lsm/AutoLSM.h
     lsm/GribFileLSM.cc
     lsm/GribFileLSM.h
     lsm/LSMChooser.cc

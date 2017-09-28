@@ -71,7 +71,7 @@ std::string NamedLSM::cacheKey(const std::string &name,
                               const std::string& which) const {
     eckit::MD5 md5;
     GribFileLSM::hashCacheKey(md5, path(param), param, representation, which); // We need to take the lsm interpolation method into account
-    return "auto." + md5.digest();
+    return "named." + md5.digest();
 }
 
 
