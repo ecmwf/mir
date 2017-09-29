@@ -3,6 +3,7 @@ list(APPEND tools
     mir-compare
     mir-config
     mir-formula
+    mir-info
     mir-inspect
     mir-list
     mir-make-lsm
