@@ -463,6 +463,8 @@ list(
     util/BoundingBox.cc
     util/BoundingBox.h
     util/Compare.h
+    util/DeprecatedFunctionality.cc
+    util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
     util/Formula.cc

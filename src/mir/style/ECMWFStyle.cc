@@ -27,6 +27,7 @@
 #include "mir/style/IntermediateGrid.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/DeprecatedFunctionality.h"
 #include "mir/util/Increments.h"
 
 
@@ -36,6 +37,11 @@ namespace style {
 
 namespace {
 static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+
+struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
+    DeprecatedStyle(const param::MIRParametrisation& p) : ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
+};
+static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 }
 
 
