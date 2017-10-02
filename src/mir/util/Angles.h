@@ -11,24 +11,28 @@
 /// @date Aug 2016
 
 
-#ifndef mir_util_Angles_H
-#define mir_util_Angles_H
+#ifndef mir_util_Angles_h
+#define mir_util_Angles_h
 
 #include <cmath>
 
 
 namespace mir {
 namespace util {
-namespace angles {
 
 
-/// @return degree from radian (no range check)
+/// @return degree to radian (no range check)
 inline double degree_to_radian(const double& a) {
     return a * (M_PI / 180.0);
 }
 
 
-}  // namespace angles
+/// @return radian to degree (no range check)
+inline double radian_to_degree(const double& a) {
+    return a * (M_1_PI * 180.);
+}
+
+
 }  // namespace util
 }  // namespace mir
 

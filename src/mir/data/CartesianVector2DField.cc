@@ -77,7 +77,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
     // determine angle between meridians (c) using the (first) spherical law of cosines:
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
     // NOTE: uses spherical (not geodetic) cordinates: C = θ = π / 2 - latitude
-    double C = util::angles::degree_to_radian(90. - rotation.south_pole_latitude().value());
+    double C = util::degree_to_radian(90. - rotation.south_pole_latitude().value());
     double cos_C = std::cos(C);
     double sin_C = std::sin(C);
 
@@ -105,8 +105,8 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
         const double
                 q = (sin_C * lonRotated.value() < 0.) ? 1. : -1.,
 
-                a = util::angles::degree_to_radian(lonRotated.value()),
-                b = util::angles::degree_to_radian(pUnrotated.lon()),
+                a = util::degree_to_radian(lonRotated.value()),
+                b = util::degree_to_radian(pUnrotated.lon()),
 
                 cos_c = normalize(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
                 sin_c = q * std::sqrt(1. - cos_c * cos_c);

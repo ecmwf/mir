@@ -15,6 +15,7 @@
 #include <complex>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+#include "mir/util/Angles.h"
 
 
 namespace mir {
@@ -79,11 +80,11 @@ template<> complex_t convert_to_complex< RADIAN >(const double& a) {
 }
 
 template<> double convert_to_angle< DEGREE >(const complex_t& c) {
-    return convert_to_angle< RADIAN >(c) * (M_1_PI * 180.);
+    return util::radian_to_degree(convert_to_angle< RADIAN >(c));
 }
 
 template<> complex_t convert_to_complex< DEGREE >(const double& a) {
-    return convert_to_complex< RADIAN >(a * (M_PI / 180.));
+    return convert_to_complex< RADIAN >(util::degree_to_radian(a));
 }
 
 
