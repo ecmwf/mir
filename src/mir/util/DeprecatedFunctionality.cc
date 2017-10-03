@@ -13,18 +13,33 @@
 
 #include "mir/util/DeprecatedFunctionality.h"
 
+#include <array>
+#include <set>
+#include "eckit/utils/MD5.h"
+
 
 namespace mir {
 namespace util {
 
 
+namespace {
+typedef std::array<unsigned char, MD5_DIGEST_LENGTH> message_digest_t;
+static std::set<message_digest_t> known_warnings;
+}  // (anonymous namespace)
+
+
 DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::ostream& out) {
-    static bool warned = false;
-    if (!warned) {
+
+    // only log warnings once
+    message_digest_t digest;
+    eckit::MD5(msg).numericalDigest(digest.data());
+
+    const bool newWarning = known_warnings.insert(digest).second;
+    if (newWarning) {
         message(msg, out);
-        warned = true;
     }
 }
+
 
 void DeprecatedFunctionality::message(const std::string& msg, std::ostream& out) {
     out << "DeprecatedFunctionality: " << msg << std::endl;
