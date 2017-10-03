@@ -13,32 +13,21 @@
 
 #include "mir/util/DeprecatedFunctionality.h"
 
-#include "mir/config/LibMir.h"
-
-#define SLEEP
-#ifdef SLEEP
-#include <unistd.h>  // for ::sleep
-#endif
-
 
 namespace mir {
 namespace util {
 
 
 DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::ostream& out) {
-    message(msg, out);
+    static bool warned = false;
+    if (!warned) {
+        message(msg, out);
+        warned = true;
+    }
 }
 
 void DeprecatedFunctionality::message(const std::string& msg, std::ostream& out) {
-#if defined (SLEEP)
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const size_t sleepTime = config.getUnsigned("deprecated-functionality-sleep", 0);
-
-    out << "DeprecatedFunctionality: " << msg << ", sleeping for " << sleepTime << 's' << std::endl;
-    ::sleep(static_cast<unsigned int>(sleepTime));
-#else
-    out << msg << std::endl;
-#endif
+    out << "DeprecatedFunctionality: " << msg << std::endl;
 }
 
 
