@@ -68,8 +68,8 @@ template<> NormaliseAngle< RADIAN, ASYMMETRIC >::NormaliseAngle() : GLOBE(M_PI *
 template<> NormaliseAngle< RADIAN, SYMMETRIC  >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
 
 template<> double convert_to_angle< RADIAN >(const complex_t& c) {
-    if ( eckit::types::is_approximately_equal(c.real(), 0.) &&
-         eckit::types::is_approximately_equal(c.imag(), 0.) ) {
+    if ( eckit::types::is_approximately_equal(std::real(c), 0.) &&
+         eckit::types::is_approximately_equal(std::imag(c), 0.) ) {
         return 0.;
     }
     return std::arg(c);
@@ -137,6 +137,9 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& 
             xy = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th = convert_to_angle< SCALE >(xy);
             matrixOut[i] = norm.normalise(th);
+	    if (matrixOut[i] > 360.) {
+		th = 2.;
+	    }
         }
     }
 }
