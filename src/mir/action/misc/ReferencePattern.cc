@@ -23,6 +23,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Angles.h"
 
 namespace mir {
 namespace action {
@@ -102,7 +103,6 @@ void ReferencePattern::execute(context::Context & ctx) const {
 
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
-        const double deg2rad = M_PI / 180.0;
 
         eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
         size_t j = 0;
@@ -111,7 +111,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
             const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(f1 * p.lon.value() * deg2rad) * cos(f2 * p.lat.value() * deg2rad) * 0.5 + median;
+                values[j] = range * sin(f1 * util::degree_to_radian(p.lon.value())) * cos(f2 * util::degree_to_radian(p.lat.value())) * 0.5 + median;
             }
 
             j++;

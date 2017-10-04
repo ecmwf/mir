@@ -189,7 +189,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 
 
 atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
-    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")");
+    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", eckit::Log::debug<LibMir>());
     InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings
@@ -220,21 +220,21 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
         atlas::RectangularDomain domain = grid_.domain();
         ASSERT(domain);
         if (meshGenParams.meshParallelEdgesConnectivity_ && !domain.global()) {
-            eckit::ResourceUsage usage("AddParallelEdgesConnectivity");
+            eckit::ResourceUsage usage("AddParallelEdgesConnectivity", eckit::Log::debug<LibMir>());
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: AddParallelEdgesConnectivity");
             method::AddParallelEdgesConnectivity()(mesh, domain.ymax(), domain.ymin());
         }
 
         // If meshgenerator did not create xyz field already, do it now.
         if (meshGenParams.meshXYZField_) {
-            eckit::ResourceUsage usage("BuildXYZField");
+            eckit::ResourceUsage usage("BuildXYZField", eckit::Log::debug<LibMir>());
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
             atlas::mesh::actions::BuildXYZField()(mesh);
         }
 
         // Generate barycenters of mesh elements
         if (meshGenParams.meshCellCentres_) {
-            eckit::ResourceUsage usage("BuildCellCentres");
+            eckit::ResourceUsage usage("BuildCellCentres", eckit::Log::debug<LibMir>());
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildCellCentres");
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }

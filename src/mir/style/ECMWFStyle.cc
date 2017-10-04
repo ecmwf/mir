@@ -24,9 +24,10 @@
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/SpectralGrid.h"
+#include "mir/style/IntermediateGrid.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/DeprecatedFunctionality.h"
 #include "mir/util/Increments.h"
 
 
@@ -36,6 +37,11 @@ namespace style {
 
 namespace {
 static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
+
+struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
+    DeprecatedStyle(const param::MIRParametrisation& p) : ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
+};
+static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 }
 
 
@@ -103,7 +109,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         std::string spectral_grid;
         parametrisation_.get("spectral-grid", spectral_grid);
 
-        eckit::ScopedPtr<SpectralGrid> grid(SpectralGridFactory::build(spectral_grid, runtime));
+        eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(spectral_grid, runtime));
         if (grid->active()) {
 
             // use intermediate Gaussian grid with intended truncation
@@ -288,6 +294,10 @@ void ECMWFStyle::print(std::ostream& out) const {
 bool ECMWFStyle::isWindComponent() const {
     long id = 0;
     parametrisation_.get("paramId", id);
+
+    if (id == 0) {
+        return false;
+    }
 
     const eckit::Configuration& config = LibMir::instance().configuration();
     const long id_u = config.getLong("parameter-id-u", 131);

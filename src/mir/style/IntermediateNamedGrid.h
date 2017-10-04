@@ -11,17 +11,17 @@
 /// @date May 2017
 
 
-#ifndef mir_style_SpectralNamedGrid_h
-#define mir_style_SpectralNamedGrid_h
+#ifndef mir_style_IntermediateNamedGrid_h
+#define mir_style_IntermediateNamedGrid_h
 
-#include "mir/style/SpectralGrid.h"
+#include "mir/style/IntermediateGrid.h"
 
 
 namespace mir {
 namespace style {
 
 
-class SpectralNamedGrid : public SpectralGrid {
+class IntermediateNamedGrid : public IntermediateGrid {
 public:
 
     // -- Exceptions
@@ -29,7 +29,7 @@ public:
 
     // -- Contructors
 
-    SpectralNamedGrid(const param::MIRParametrisation&);
+    IntermediateNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
     // None

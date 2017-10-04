@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2016 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,29 +8,25 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Aug 2016
+/// @date October 2017
 
 
-#ifndef mir_util_Angles_h
-#define mir_util_Angles_h
+#ifndef mir_util_DeprecatedFunctionality_h
+#define mir_util_DeprecatedFunctionality_h
 
-#include <cmath>
+#include <string>
+#include "eckit/log/Log.h"
 
 
 namespace mir {
 namespace util {
 
 
-/// @return degree to radian (no range check)
-inline double degree_to_radian(const double& a) {
-    return a * (M_PI / 180.0);
-}
-
-
-/// @return radian to degree (no range check)
-inline double radian_to_degree(const double& a) {
-    return a * (M_1_PI * 180.);
-}
+struct DeprecatedFunctionality {
+    DeprecatedFunctionality(const std::string& msg, std::ostream& = eckit::Log::warning());
+private:
+    static void message(const std::string& msg, std::ostream& = eckit::Log::warning());
+};
 
 
 }  // namespace util
@@ -38,4 +34,3 @@ inline double radian_to_degree(const double& a) {
 
 
 #endif
-

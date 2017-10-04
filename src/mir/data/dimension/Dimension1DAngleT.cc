@@ -15,6 +15,7 @@
 #include <complex>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+#include "mir/util/Angles.h"
 
 
 namespace mir {
@@ -67,8 +68,8 @@ template<> NormaliseAngle< RADIAN, ASYMMETRIC >::NormaliseAngle() : GLOBE(M_PI *
 template<> NormaliseAngle< RADIAN, SYMMETRIC  >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
 
 template<> double convert_to_angle< RADIAN >(const complex_t& c) {
-    if ( eckit::types::is_approximately_equal(c.real(), 0.) &&
-         eckit::types::is_approximately_equal(c.imag(), 0.) ) {
+    if ( eckit::types::is_approximately_equal(std::real(c), 0.) &&
+         eckit::types::is_approximately_equal(std::imag(c), 0.) ) {
         return 0.;
     }
     return std::arg(c);
@@ -79,11 +80,11 @@ template<> complex_t convert_to_complex< RADIAN >(const double& a) {
 }
 
 template<> double convert_to_angle< DEGREE >(const complex_t& c) {
-    return convert_to_angle< RADIAN >(c) * (M_1_PI * 180.);
+    return util::radian_to_degree(convert_to_angle< RADIAN >(c));
 }
 
 template<> complex_t convert_to_complex< DEGREE >(const double& a) {
-    return convert_to_complex< RADIAN >(a * (M_PI / 180.));
+    return convert_to_complex< RADIAN >(util::degree_to_radian(a));
 }
 
 
@@ -136,6 +137,9 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& 
             xy = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th = convert_to_angle< SCALE >(xy);
             matrixOut[i] = norm.normalise(th);
+	    if (matrixOut[i] > 360.) {
+		th = 2.;
+	    }
         }
     }
 }
