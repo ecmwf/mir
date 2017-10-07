@@ -66,100 +66,119 @@ MIRJob &MIRJob::reset() {
     return *this;
 }
 
+static const std::map<std::string, std::string> aliases {
+    {"resol", "truncation"},
+};
+
+static const std::string& resolveAliases(const std::string& name) {
+    auto j = aliases.find(name);
+    if (j != aliases.end()) {
+        return (*j).second;
+    }
+    return name;
+}
+
+
+template<class T>
+static const T& resolveAliases(const std::string& name, const T& value) {
+    return value;
+}
+
+
 
 MIRJob &MIRJob::clear(const std::string &name) {
-    SimpleParametrisation::clear(name);
+    SimpleParametrisation::clear(resolveAliases(name));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::string &value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const char *value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, float value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, bool value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, long value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, size_t value) {
     ASSERT(size_t(long(value)) == value);
-    SimpleParametrisation::set(name, long(value));
+    SimpleParametrisation::set(resolveAliases(name), long(value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, double value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, int value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<int> &value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<long>& v) {
-    SimpleParametrisation::set(name, v);
+    SimpleParametrisation::set(resolveAliases(name), v);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<size_t> &value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<float> &value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<double>& v) {
-    SimpleParametrisation::set(name, v);
+    SimpleParametrisation::set(resolveAliases(name), v);
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, const std::vector<std::string> &value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
 
 MIRJob &MIRJob::set(const std::string &name, param::DelayedParametrisation *value) {
-    SimpleParametrisation::set(name, value);
+    SimpleParametrisation::set(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 
@@ -168,7 +187,7 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2) {
     std::vector<double> v(2);
     v[0] = v1;
     v[1] = v2;
-    SimpleParametrisation::set(name, v);
+    SimpleParametrisation::set(resolveAliases(name), v);
     return *this;
 }
 
@@ -179,7 +198,7 @@ MIRJob &MIRJob::set(const std::string &name, double v1, double v2, double v3, do
     v[1] = v2;
     v[2] = v3;
     v[3] = v4;
-    SimpleParametrisation::set(name, v);
+    SimpleParametrisation::set(resolveAliases(name), v);
     return *this;
 }
 
