@@ -73,6 +73,12 @@ static const std::map<std::string, std::string> aliases {
 static const std::string& resolveAliases(const std::string& name) {
     auto j = aliases.find(name);
     if (j != aliases.end()) {
+        eckit::Log::info() << "MIR: changing ["
+                           << name
+                           << "] to ["
+                           << (*j).second
+                           << "]"
+                           << std::endl;
         return (*j).second;
     }
     return name;
