@@ -96,7 +96,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
     if (parametrisation_.has("user.grid")) {
@@ -125,7 +125,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-regular-ll");
 
             bool wind = false;
-            parametrisation_.get("wind", wind);
+            parametrisation_.get("user.wind", wind);
 
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds-directions");
@@ -197,7 +197,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     }
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
 
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
@@ -210,10 +210,10 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
 
     bool wind = false;
-    parametrisation_.get("wind", wind);
+    parametrisation_.get("user.wind", wind);
 
     if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
         throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
