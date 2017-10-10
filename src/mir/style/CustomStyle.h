@@ -85,7 +85,7 @@ private:
 
     void prepare(action::ActionPlan&) const;
 
-    bool forcedPrepare(const api::MIRJob&, const param::MIRParametrisation& input) const;
+    bool postProcessingRequested(const api::MIRJob&) const;
 
     // -- Class members
     // None

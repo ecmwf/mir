@@ -473,8 +473,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 }
 
 
-bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
-                               const param::MIRParametrisation& input) const {
+bool ECMWFStyle::postProcessingRequested(const api::MIRJob& job) const {
     static const char *force[] = {
         "accuracy",
         "bitmap",
@@ -496,12 +495,7 @@ bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
         }
     }
 
-    std::set<std::string> ignore;
-    if (input.has("gridded")) {
-        ignore.insert("autoresol");
-    }
-
-    return !job.matches(input, ignore);
+    return false;
 }
 
 
