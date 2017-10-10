@@ -56,8 +56,7 @@ class Gaussian : public Gridded {
     // None
 
     // -- Class methods
-
-    static std::vector<double> latitudes(size_t N);
+    // None
 
   protected:
 
@@ -67,7 +66,10 @@ class Gaussian : public Gridded {
 
     // -- Methods
 
-    const std::vector<double> &latitudes() const;
+    ///@return global Gaussian latitudes
+    static const std::vector<double>& latitudes(size_t N);
+    const std::vector<double>& latitudes() const;
+
     virtual bool sameAs(const Representation& other) const;
     void adjustBoundingBoxNorthSouth(util::BoundingBox&);
 
@@ -85,8 +87,7 @@ class Gaussian : public Gridded {
 private:
 
     // -- Members
-
-    mutable std::vector<double> latitudes_;
+    // None
 
     // -- Methods
     // None
