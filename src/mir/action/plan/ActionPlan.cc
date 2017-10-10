@@ -32,12 +32,12 @@ ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
 
 
 ActionPlan::~ActionPlan() {
-    for (std::vector<Action *>::iterator j = actions_.begin(); j != actions_.end(); ++j) {
-        delete (*j);
+    for (auto& p : actions_) {
+        delete p;
     }
 
-    for (std::vector<param::MIRParametrisation *>::iterator j = runtimes_.begin(); j != runtimes_.end(); ++j) {
-        delete (*j);
+    for (auto& p : runtimes_) {
+        delete p;
     }
 }
 
@@ -124,23 +124,17 @@ void ActionPlan::execute(context::Context & ctx) const {
 
     const char* sep = "###################################################################################";
 
-    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
+    for (const auto& p : actions_) {
         eckit::Log::debug<LibMir>() << "Executing:"
-                                    << std::endl
-                                    << sep
-                                    << std::endl
-                                    << **j
-                                    << std::endl
-                                    << sep
+                                    << "\n" << sep
+                                    << "\n" << *p
+                                    << "\n" << sep
                                     << std::endl;
-        (*j)->execute(ctx);
+        p->execute(ctx);
         eckit::Log::debug<LibMir>() << "Result:"
-                                    << std::endl
-                                    << sep
-                                    << std::endl
-                                    << ctx
-                                     << std::endl
-                                    << sep
+                                    << "\n" << sep
+                                    << "\n" << ctx
+                                    << "\n" << sep
                                     << std::endl;
     }
 }
@@ -165,16 +159,16 @@ const Action &ActionPlan::action(size_t n) const {
 void ActionPlan::print(std::ostream &out) const {
     out << "ActionPlan[";
     const char *arrow = "";
-    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
-        out << arrow << *(*j);
+    for (const auto& p : actions_) {
+        out << arrow << *p;
         arrow = " ==> ";
     }
     out << "]";
 }
 
 void ActionPlan::dump(std::ostream &out) const {
-    for (std::vector<Action *>::const_iterator j = actions_.begin(); j != actions_.end(); ++j) {
-        out << "      ==> " << *(*j) << std::endl;
+    for (const auto& p : actions_) {
+        out << "      ==> " << *p << std::endl;
     }
 }
 
