@@ -171,17 +171,14 @@ void MethodWeighted::setOperandMatricesFromVectors(
     WeightMatrix::Matrix& B,
     const std::vector<double>& Avector,
     const std::vector<double>& Bvector,
-    const double& missingValue ) const {
+    const double& missingValue,
+    const data::Dimension& dimension ) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     WeightMatrix::Matrix Bwrap(const_cast<double *>(Bvector.data()), Bvector.size(), 1);
 
-    std::string dimension;
-    parametrisation_.get("dimension", dimension);
-
-    const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
-    dim.linearise(Bwrap, B, missingValue);
+    dimension.linearise(Bwrap, B, missingValue);
 
     // set output matrix A (from A = W × B)
     // reuses output values vector if handling a column vector, otherwise allocates new matrix
@@ -204,18 +201,15 @@ void MethodWeighted::setOperandMatricesFromVectors(
 void MethodWeighted::setVectorFromOperandMatrix(
     const WeightMatrix::Matrix& A,
     std::vector<double>& Avector,
-    const double& missingValue) const {
+    const double& missingValue,
+    const data::Dimension& dimension ) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     ASSERT(Avector.size() == A.rows());
     WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
 
-    std::string dimension;
-    parametrisation_.get("dimension", dimension);
-
-    const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
-    dim.unlinearise(A, Awrap, missingValue);
+    dimension.unlinearise(A, Awrap, missingValue);
 }
 
 
@@ -267,9 +261,13 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         std::vector<double> result(npts_out);
 
         // Get input/output matrices
+        std::string dimension;
+        parametrisation_.get("dimension", dimension);
+        const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
+
         WeightMatrix::Matrix mi;
         WeightMatrix::Matrix mo;
-        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue);
+        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, dim);
         ASSERT(mi.rows() == npts_inp);
         ASSERT(mo.rows() == npts_out);
 
@@ -288,7 +286,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         }
 
         // update field values with interpolation result
-        setVectorFromOperandMatrix(mo, result, missingValue);
+        setVectorFromOperandMatrix(mo, result, missingValue, dim);
         field.update(result, i);
 
 
