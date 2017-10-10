@@ -57,7 +57,10 @@ lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const r
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("lsm", true); // Force use of LSM
     runtime.set("lsm-selection", "auto");
-    return lsm::LandSeaMasks::lookup(runtime, in, out);
+
+    lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(runtime, in, out);
+    ASSERT(masks.active());
+    return masks;
 }
 
 

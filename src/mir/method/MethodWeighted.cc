@@ -96,86 +96,71 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
-    eckit::Log::debug<LibMir>() << "Compute LandSeaMasks " << timer.elapsed() - here << std::endl;
+    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, " << (masks.active() ? "active" : "not active") << std::endl;
 
-    eckit::Log::debug<LibMir>() << "++++ LSM masks " << masks << std::endl;
+
     here = timer.elapsed();
-
-
     const std::string shortName_in  = in.uniqueName();
     const std::string shortName_out = out.uniqueName();
-    ASSERT(!shortName_in.empty());
-    ASSERT(!shortName_out.empty());
+
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
-    eckit::MD5 md5;
-    md5 << *this
+    std::string key = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
+    eckit::MD5 hash;
+    hash << *this
         << shortName_in
         << shortName_out
         << pruneEpsilon_
         << lsmWeightAdjustment_;
 
-    const eckit::MD5::digest_t md5_no_masks(md5.digest());
-    md5 << masks;
-    const eckit::MD5::digest_t md5_with_masks(md5.digest());
-    eckit::Log::debug<LibMir>() << "Compute md5 " << timer.elapsed() - here << std::endl;
-
-
-
-    const std::string base_name = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
-    const std::string key_no_masks   = base_name + "-"      + md5_no_masks;
-    const std::string key_with_masks = base_name +  "-LSM-" + md5_with_masks;
-
-
-    InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key_with_masks);
-    if (j != matrix_cache.end()) {
-        return *j;
+    if (masks.active() && masks.cacheable()) {
+        hash << masks;
+        key += "-LSM-";
     }
+    key += std::string(hash);
 
-    const std::string cache_key = (masks.active() && masks.cacheable()) ? key_with_masks : key_no_masks;
-
+    {
+        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key);
+        const bool found = j != matrix_cache.end();
+        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        if (found) {
+            return *j;
+        }
+    }
 
 
     // calculate weights matrix, apply mask if necessary
-
-    eckit::Log::debug<LibMir>() << "Elapsed 1 " << timer.elapsed()  << std::endl;
-
     here = timer.elapsed();
     WeightMatrix W(out.numberOfPoints(), in.numberOfPoints());
-    eckit::Log::debug<LibMir>() << "Create matrix " << timer.elapsed() - here << std::endl;
 
     bool caching = true;
     parametrisation_.get("caching", caching);
-
-    eckit::PathName path;
-
     if (caching) {
 
-        /// The WeightCache is parametrised by 'caching',
-        /// as caching may be disabled on a field by field basis (unstructured grids)
+        // The WeightCache is parametrised by 'caching',
+        // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
         MatrixCacheCreator creator(*this, ctx, in, out, masks);
-        path = cache.getOrCreate(cache_key, creator, W);
+        cache.getOrCreate(key, creator, W);
 
-    }
-    else {
+    } else {
         createMatrix(ctx, in, out, W, masks);
     }
 
 
-    // If LSM not cacheabe, e.g. user provided, we apply the mask after
+    // If LSM not cacheable, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
+    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
 
-    // inserts the matrix in the cache
-    WeightMatrix& w = matrix_cache[key_with_masks];
+
+    // insert matrix in the in-memory cache and update memory footprint
+    WeightMatrix& w = matrix_cache[key];
     std::swap(w, W);
-
-    // update memory footprint
-    matrix_cache.footprint(key_with_masks, w.footprint());
+    matrix_cache.footprint(key, w.footprint());
 
     return w;
 }
