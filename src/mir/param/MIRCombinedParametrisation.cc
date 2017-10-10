@@ -43,7 +43,7 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     // eckit::Log::debug<LibMir>() << "MIRCombinedParametrisation::get(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
-        return user_.get(name.substr(5), value);
+        return user_.get(name.substr(5), value) || defaults_.get(name.substr(5), value);
     }
 
     if (name.find("field.") == 0) {
@@ -56,7 +56,6 @@ bool MIRCombinedParametrisation::_get(const std::string& name, T& value) const {
     if (defaults_.get(name, value)) return true;
 
     // eckit::Log::debug<LibMir>() << "**** MIRCombinedParametrisation::get(" << name << ") unanswered" << std::endl;
-
     return false;
 }
 
@@ -76,7 +75,7 @@ bool MIRCombinedParametrisation::has(const std::string& name) const {
     // eckit::Log::debug<LibMir>() << "MIRCombinedParametrisation::has(" << name << ")" << std::endl;
 
     if (name.find("user.") == 0) {
-        return user_.has(name.substr(5));
+        return user_.has(name.substr(5)) || defaults_.has(name.substr(5));
     }
 
     if (name.find("field.") == 0) {

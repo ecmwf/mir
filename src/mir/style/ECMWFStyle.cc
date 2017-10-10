@@ -107,7 +107,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
 
         std::string spectral_grid;
-        parametrisation_.get("spectral-grid", spectral_grid);
+        parametrisation_.get("user.spectral-grid", spectral_grid);
 
         eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(spectral_grid, runtime));
         if (grid->active()) {
@@ -309,11 +309,11 @@ bool ECMWFStyle::isWindComponent() const {
 
 bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
-    if (parametrisation_.get("u-only", u_only) && u_only) {
+    if (parametrisation_.get("user.u-only", u_only) && u_only) {
         plan.add("select.field", "which", long(0));
     }
     bool v_only = false;
-    if (parametrisation_.get("v-only", v_only) && v_only) {
+    if (parametrisation_.get("user.v-only", v_only) && v_only) {
         ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
@@ -367,7 +367,7 @@ long ECMWFStyle::getIntendedTruncation() const {
 
     // Set truncation based on target grid's equivalent Gaussian N and spectral order
     bool autoresol = true;
-    parametrisation_.get("autoresol", autoresol);
+    parametrisation_.get("user.autoresol", autoresol);
 
     if (autoresol) {
 
@@ -375,7 +375,7 @@ long ECMWFStyle::getIntendedTruncation() const {
         ASSERT(parametrisation_.get("field.truncation", Tin));
 
         std::string spectralOrder = "linear";
-        parametrisation_.get("spectral-order", spectralOrder);
+        parametrisation_.get("user.spectral-order", spectralOrder);
 
         eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
         ASSERT(order);
