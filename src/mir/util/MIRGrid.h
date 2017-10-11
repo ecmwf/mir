@@ -73,7 +73,7 @@ public:
 
     // -- Methods
 
-    const atlas::Mesh& mesh(util::MIRStatistics&, const MeshGenParams&) const;
+    const atlas::Mesh& mesh(MIRStatistics&, const MeshGenParams&) const;
     const atlas::Mesh& mesh() const;
     double getMeshLongestElementDiagonal() const;
 
@@ -89,7 +89,7 @@ private:
 
     // -- Methods
 
-    atlas::Mesh generateMeshAndCache(util::MIRStatistics&, const MeshGenParams&) const;
+    atlas::Mesh generateMeshAndCache(MIRStatistics&, const MeshGenParams&) const;
 
 };
 
