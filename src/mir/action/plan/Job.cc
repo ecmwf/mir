@@ -48,10 +48,13 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
-    if (job.empty() || (!style->forcedPrepare(job, metadata))) {
-        plan_.reset(new action::ActionPlan(job));
-        plan_->add(new action::Copy(job, output_));
-        return;
+    if (!style->postProcessingRequested(job)) {
+        static const std::set<std::string> ignore({"autoresol"});
+        if (job.empty() || job.matches(metadata, ignore)) {
+            plan_.reset(new action::ActionPlan(job));
+            plan_->add(new action::Copy(job, output_));
+            return;
+        }
     }
 
 

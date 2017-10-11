@@ -25,7 +25,7 @@ namespace repres {
 
 
 class Gaussian : public Gridded {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -47,7 +47,9 @@ class Gaussian : public Gridded {
     // None
 
     // -- Methods
-    // None
+
+    ///@return global Gaussian latitudes
+    static const std::vector<double>& latitudes(size_t N);
 
     // -- Overridden methods
     // None
@@ -56,10 +58,9 @@ class Gaussian : public Gridded {
     // None
 
     // -- Class methods
+    // None
 
-    static std::vector<double> latitudes(size_t N);
-
-  protected:
+protected:
 
     // -- Members
 
@@ -67,7 +68,9 @@ class Gaussian : public Gridded {
 
     // -- Methods
 
-    const std::vector<double> &latitudes() const;
+    ///@return global Gaussian latitudes
+    const std::vector<double>& latitudes() const;
+
     virtual bool sameAs(const Representation& other) const;
     void adjustBoundingBoxNorthSouth(util::BoundingBox&);
 
@@ -85,8 +88,7 @@ class Gaussian : public Gridded {
 private:
 
     // -- Members
-
-    mutable std::vector<double> latitudes_;
+    // None
 
     // -- Methods
     // None

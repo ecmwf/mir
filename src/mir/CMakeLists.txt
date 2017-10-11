@@ -228,38 +228,44 @@ list(
     lsm/TenMinutesLSM.h
     lsm/UserFileLSM.cc
     lsm/UserFileLSM.h
-    method/KNearest.cc
-    method/KNearest.h
-    method/KNearestNeighbours.cc
-    method/KNearestNeighbours.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/NearestLSM.cc
-    method/NearestLSM.h
-    method/NearestNeighbour.cc
-    method/NearestNeighbour.h
-    method/PseudoLaplace.cc
-    method/PseudoLaplace.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/distance/DistanceWeighting.cc
-    method/distance/DistanceWeighting.h
-    method/distance/InverseDistanceWeighting.cc
-    method/distance/InverseDistanceWeighting.h
-    method/distance/InverseDistanceWeightingSquared.cc
-    method/distance/InverseDistanceWeightingSquared.h
-    method/distance/NearestLSM.cc
-    method/distance/NearestLSM.h
-    method/distance/NearestLSMWithLowestIndex.cc
-    method/distance/NearestLSMWithLowestIndex.h
-    method/distance/NearestNeighbour.cc
-    method/distance/NearestNeighbour.h
-    method/distance/NearestNeighbourWithLowestIndex.cc
-    method/distance/NearestNeighbourWithLowestIndex.h
+    method/knn/KNearest.cc
+    method/knn/KNearest.h
+    method/knn/KNearestNeighbours.cc
+    method/knn/KNearestNeighbours.h
+    method/knn/NearestLSM.cc
+    method/knn/NearestLSM.h
+    method/knn/NearestNeighbour.cc
+    method/knn/NearestNeighbour.h
+    method/knn/distance/DistanceWeighting.cc
+    method/knn/distance/DistanceWeighting.h
+    method/knn/distance/InverseDistanceWeighting.cc
+    method/knn/distance/InverseDistanceWeighting.h
+    method/knn/distance/InverseDistanceWeightingSquared.cc
+    method/knn/distance/InverseDistanceWeightingSquared.h
+    method/knn/distance/NearestLSM.cc
+    method/knn/distance/NearestLSM.h
+    method/knn/distance/NearestLSMWithLowestIndex.cc
+    method/knn/distance/NearestLSMWithLowestIndex.h
+    method/knn/distance/NearestNeighbour.cc
+    method/knn/distance/NearestNeighbour.h
+    method/knn/distance/NearestNeighbourWithLowestIndex.cc
+    method/knn/distance/NearestNeighbourWithLowestIndex.h
+    method/other/PseudoLaplace.cc
+    method/other/PseudoLaplace.h
+    method/structured/StructuredBilinearLatLon.cc
+    method/structured/StructuredBilinearLatLon.h
+    method/structured/StructuredLinear3D.cc
+    method/structured/StructuredLinear3D.h
+    method/structured/StructuredMethod.cc
+    method/structured/StructuredMethod.h
     namedgrids/ClassicPattern.cc
     namedgrids/ClassicPattern.h
     namedgrids/NamedClassic.cc
@@ -511,24 +517,24 @@ list(
     APPEND mir_srcs
     api/ProdgenJob.cc
     api/ProdgenJob.h
-    method/AddParallelEdgesConnectivity.cc
-    method/AddParallelEdgesConnectivity.h
-    method/Conservative.cc
-    method/Conservative.h
-    method/FEBilinear.cc
-    method/FEBilinear.h
-    method/FELinear.cc
-    method/FELinear.h
-    method/FiniteElement.cc
-    method/FiniteElement.h
-    method/StructuredBilinearLatLon.cc
-    method/StructuredBilinearLatLon.h
-    method/StructuredLinear3D.cc
-    method/StructuredLinear3D.h
-    method/StructuredMethod.cc
-    method/StructuredMethod.h
-    method/Tessellation.cc
-    method/Tessellation.h
+    method/fe/Conservative.cc
+    method/fe/Conservative.h
+    method/fe/FEBilinear.cc
+    method/fe/FEBilinear.h
+    method/fe/FELinear.cc
+    method/fe/FELinear.h
+    method/fe/FiniteElement.cc
+    method/fe/FiniteElement.h
+    method/fe/Tessellation.cc
+    method/fe/Tessellation.h
+    method/structured/StructuredBilinearLatLon.cc
+    method/structured/StructuredBilinearLatLon.h
+    method/structured/StructuredLinear3D.cc
+    method/structured/StructuredLinear3D.h
+    method/structured/StructuredMethod.cc
+    method/structured/StructuredMethod.h
+    util/AddParallelEdgesConnectivity.cc
+    util/AddParallelEdgesConnectivity.h
     util/MIRGrid.cc
     util/MIRGrid.h
 )

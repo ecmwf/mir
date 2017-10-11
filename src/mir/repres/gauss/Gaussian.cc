@@ -17,12 +17,26 @@
 
 #include <algorithm>
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/Once.h"
 #include "mir/api/Atlas.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace repres {
+
+
+namespace {
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = 0;
+static std::map< size_t, std::vector<double> >* m = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m = new std::map< size_t, std::vector<double> >();
+}
+}  // (anonymous namespace)
 
 
 Gaussian::Gaussian(size_t N) :
@@ -115,23 +129,29 @@ std::string Gaussian::atlasMeshGenerator() const {
 }
 
 
-std::vector<double> Gaussian::latitudes(size_t N) {
+const std::vector<double>& Gaussian::latitudes(size_t N) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(N);
-    std::vector<double> latitudes(N * 2);
-    atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
-    return latitudes;
+    auto latitudesIt = m->find(N);
+    if (latitudesIt == m->end()) {
+
+        // calculate latitudes and insert in known-N-latitudes map
+        std::vector<double> latitudes(N * 2);
+        atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
+
+        m->operator[](N) = latitudes;
+        latitudesIt = m->find(N);
+    }
+
+    ASSERT(latitudesIt != m->end());
+    return (*latitudesIt).second;
 }
 
 
 const std::vector<double>& Gaussian::latitudes() const {
-
-    // This returns the Gaussian latitudes of a GLOBAL field
-    if (latitudes_.empty()) {
-        latitudes_.resize(N_ * 2);
-        atlas::util::gaussian_latitudes_npole_spole(N_, latitudes_.data());
-    }
-    return latitudes_;
+    return latitudes(N_);
 }
 
 

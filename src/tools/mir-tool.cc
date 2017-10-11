@@ -35,7 +35,7 @@
 #include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMChooser.h"
 #include "mir/method/Method.h"
-#include "mir/method/distance/DistanceWeighting.h"
+#include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/mir_ecbuild_config.h"
 #include "mir/output/GeoPointsFileOutput.h"
 #include "mir/output/GribFileOutput.h"
@@ -88,7 +88,7 @@ public:
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by methods k-nearest"));
-        options_.push_back(new FactoryOption<mir::method::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
+        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Input mesh generator"));

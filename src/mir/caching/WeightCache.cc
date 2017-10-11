@@ -50,7 +50,7 @@ const char *WeightCacheTraits::name() {
 
 
 int WeightCacheTraits::version() {
-    return 6;
+    return 7;
 }
 
 

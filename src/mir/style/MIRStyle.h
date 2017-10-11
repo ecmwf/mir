@@ -64,7 +64,7 @@ public:
 
     virtual void prepare(action::ActionPlan&) const = 0;
 
-    virtual bool forcedPrepare(const api::MIRJob&, const param::MIRParametrisation& input) const = 0;
+    virtual bool postProcessingRequested(const api::MIRJob&) const = 0;
 
     // -- Overridden methods
     // None

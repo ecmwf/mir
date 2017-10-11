@@ -96,7 +96,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
     std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
     if (parametrisation_.has("user.grid")) {
@@ -107,7 +107,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
 
         std::string spectral_grid;
-        parametrisation_.get("spectral-grid", spectral_grid);
+        parametrisation_.get("user.spectral-grid", spectral_grid);
 
         eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(spectral_grid, runtime));
         if (grid->active()) {
@@ -125,7 +125,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             plan.add("interpolate.grid2rotated-regular-ll");
 
             bool wind = false;
-            parametrisation_.get("wind", wind);
+            parametrisation_.get("user.wind", wind);
 
             if (wind || vod2uv) {
                 plan.add("filter.adjust-winds-directions");
@@ -197,7 +197,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     }
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
 
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
@@ -210,10 +210,10 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     bool vod2uv = false;
-    parametrisation_.get("vod2uv", vod2uv);
+    parametrisation_.get("user.vod2uv", vod2uv);
 
     bool wind = false;
-    parametrisation_.get("wind", wind);
+    parametrisation_.get("user.wind", wind);
 
     if (parametrisation_.has("user.pl") && parametrisation_.has("user.rotation")) {
         throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
@@ -309,11 +309,11 @@ bool ECMWFStyle::isWindComponent() const {
 
 bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
-    if (parametrisation_.get("u-only", u_only) && u_only) {
+    if (parametrisation_.get("user.u-only", u_only) && u_only) {
         plan.add("select.field", "which", long(0));
     }
     bool v_only = false;
-    if (parametrisation_.get("v-only", v_only) && v_only) {
+    if (parametrisation_.get("user.v-only", v_only) && v_only) {
         ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
@@ -367,7 +367,7 @@ long ECMWFStyle::getIntendedTruncation() const {
 
     // Set truncation based on target grid's equivalent Gaussian N and spectral order
     bool autoresol = true;
-    parametrisation_.get("autoresol", autoresol);
+    parametrisation_.get("user.autoresol", autoresol);
 
     if (autoresol) {
 
@@ -375,7 +375,7 @@ long ECMWFStyle::getIntendedTruncation() const {
         ASSERT(parametrisation_.get("field.truncation", Tin));
 
         std::string spectralOrder = "linear";
-        parametrisation_.get("spectral-order", spectralOrder);
+        parametrisation_.get("user.spectral-order", spectralOrder);
 
         eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
         ASSERT(order);
@@ -473,8 +473,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 }
 
 
-bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
-                               const param::MIRParametrisation& input) const {
+bool ECMWFStyle::postProcessingRequested(const api::MIRJob& job) const {
     static const char *force[] = {
         "accuracy",
         "bitmap",
@@ -496,12 +495,7 @@ bool ECMWFStyle::forcedPrepare(const api::MIRJob& job,
         }
     }
 
-    std::set<std::string> ignore;
-    if (input.has("gridded")) {
-        ignore.insert("autoresol");
-    }
-
-    return !job.matches(input, ignore);
+    return false;
 }
 
 

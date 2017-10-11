@@ -28,8 +28,8 @@
 #include "atlas/output/Gmsh.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/AddParallelEdgesConnectivity.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/AddParallelEdgesConnectivity.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -65,11 +65,11 @@ MIRGrid::MeshGenParams::MeshGenParams(const std::string& label, const param::MIR
     // use defaults
     *this = MeshGenParams();
 
-//    param.get(label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
-//    param.get(label + "-mesh-add-field-xyz", meshXYZField_);
-//    param.get(label + "-mesh-add-field-cell-centres", meshCellCentres_);
-    param.get(label + "-mesh-generator", meshGenerator_);
-    param.get(label + "-mesh-file", file_);
+//    param.get("user." + label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
+//    param.get("user." + label + "-mesh-add-field-xyz", meshXYZField_);
+//    param.get("user." + label + "-mesh-add-field-cell-centres", meshCellCentres_);
+    param.get("user." + label + "-mesh-generator", meshGenerator_);
+    param.get("user." + label + "-mesh-file", file_);
 }
 
 
@@ -118,7 +118,7 @@ MIRGrid::MIRGrid(const MIRGrid& other) {
 }
 
 
-const atlas::Mesh& MIRGrid::mesh(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
+const atlas::Mesh& MIRGrid::mesh(MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
     ASSERT(!mesh_.generated());
     mesh_ = generateMeshAndCache(statistics, meshGenParams);
     return mesh();
@@ -188,7 +188,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 }
 
 
-atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
+atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshGenParams& meshGenParams) const {
     eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", eckit::Log::debug<LibMir>());
     InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
@@ -222,7 +222,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(util::MIRStatistics& statistics, const
         if (meshGenParams.meshParallelEdgesConnectivity_ && !domain.global()) {
             eckit::ResourceUsage usage("AddParallelEdgesConnectivity", eckit::Log::debug<LibMir>());
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: AddParallelEdgesConnectivity");
-            method::AddParallelEdgesConnectivity()(mesh, domain.ymax(), domain.ymin());
+            AddParallelEdgesConnectivity()(mesh, domain.ymax(), domain.ymin());
         }
 
         // If meshgenerator did not create xyz field already, do it now.

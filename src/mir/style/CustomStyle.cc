@@ -58,8 +58,7 @@ void CustomStyle::prepare(action::ActionPlan& plan) const {
 }
 
 
-bool CustomStyle::forcedPrepare(const api::MIRJob&,
-                                const param::MIRParametrisation&) const {
+bool CustomStyle::postProcessingRequested(const api::MIRJob&) const {
     return true;
 }
 

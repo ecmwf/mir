@@ -14,8 +14,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_MethodWeighted_H
-#define mir_method_MethodWeighted_H
+#ifndef mir_method_MethodWeighted_h
+#define mir_method_MethodWeighted_h
 
 #include "mir/caching/WeightCache.h"
 #include "mir/method/Method.h"
@@ -23,6 +23,9 @@
 
 
 namespace mir {
+namespace data {
+class Dimension;
+}
 namespace lsm {
 class LandSeaMasks;
 }
@@ -68,10 +71,10 @@ private:
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
 
     /// Get interpolation operand matrices, from A = W × B
-    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B, const std::vector<double>& Avector, const std::vector<double>& Bvector, const double& missingValue) const;
+    virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B, const std::vector<double>& Avector, const std::vector<double>& Bvector, const double& missingValue, const data::Dimension&) const;
 
     /// Get interpolation operand matrices, from A = W × B
-    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue) const;
+    virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, std::vector<double>& Avector, const double& missingValue,const data::Dimension&) const;
 
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
