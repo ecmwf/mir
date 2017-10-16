@@ -97,9 +97,7 @@ void KNearestNeighbours::assemble(
         size_t ip = 0;
         while (it->next()) {
             ASSERT(ip < nbOutputPoints);
-            ++progress;
-
-            if (ip && (ip % 50000 == 0)) {
+            if (++progress) {
                 eckit::Log::debug<LibMir>() << "KNearestNeighbours: k-d tree closest_n_points: " << nearest << "s, W push back:" << push_back << "s" << std::endl;
                 sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
                 eckit::Log::debug<LibMir>() << std::endl;
