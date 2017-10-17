@@ -14,7 +14,6 @@
 #include <cmath>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/api/Atlas.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
@@ -27,7 +26,7 @@ namespace data {
 
 namespace {
 
-inline double normalize(double x) {
+inline double normalise(double x) {
     return std::max(std::min(x, 1.0), -1.0);
 }
 
@@ -69,17 +68,14 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
     std::vector<double> resultX(N);
     std::vector<double> resultY(N);
 
-    // setup rotation
-    ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
-    const atlas::PointLonLat pole(rotation.south_pole_longitude().value(), rotation.south_pole_latitude().value());
-    atlas::util::Rotation r(pole);
-
     // determine angle between meridians (c) using the (first) spherical law of cosines:
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
     // NOTE: uses spherical (not geodetic) cordinates: C = θ = π / 2 - latitude
-    double C = util::degree_to_radian(90. - rotation.south_pole_latitude().value());
-    double cos_C = std::cos(C);
-    double sin_C = std::sin(C);
+    ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
+    const double
+            C = util::degree_to_radian(90. - rotation.south_pole_latitude().value()),
+            cos_C = std::cos(C),
+            sin_C = std::sin(C);
 
     eckit::ScopedPtr<repres::Iterator> it(representation_->iterator());
     size_t i = 0;
@@ -93,22 +89,16 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
             continue;
         }
 
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-
-        atlas::PointLonLat pUnrotated(p.lon.value(), p.lat.value());
-        r.unrotate(pUnrotated.data());
-
-        // normalise to correct quadrant (q)
-        Longitude lonRotated = rotation.south_pole_longitude() - p.lon;
-        lonRotated = lonRotated.normalise(Longitude::MINUS_DATE_LINE);
-
+        const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it))[1];
         const double
-                q = (sin_C * lonRotated.value() < 0.) ? 1. : -1.,
+                lon_rotated = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value(),
+                lon_unrotated = it->pointUnrotated().lon.value(),
 
-                a = util::degree_to_radian(lonRotated.value()),
-                b = util::degree_to_radian(pUnrotated.lon()),
+                a = util::degree_to_radian(lon_rotated),
+                b = util::degree_to_radian(lon_unrotated),
+                q = (sin_C * lon_rotated < 0.) ? 1. : -1.,  // correct quadrant
 
-                cos_c = normalize(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
+                cos_c = normalise(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
                 sin_c = q * std::sqrt(1. - cos_c * cos_c);
 
         // TODO: use matrix multiplication
