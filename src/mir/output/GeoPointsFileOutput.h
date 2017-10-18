@@ -76,11 +76,6 @@ protected:
 
 private:
 
-// No copy allowed
-
-    GeoPointsFileOutput(const GeoPointsFileOutput&);
-    GeoPointsFileOutput& operator=(const GeoPointsFileOutput&);
-
 // -- Members
 
     std::string path_;

@@ -79,11 +79,6 @@ class EmptyOutput : public MIROutput {
 
   private:
 
-// No copy allowed
-
-    EmptyOutput(const EmptyOutput&);
-    EmptyOutput& operator=(const EmptyOutput&);
-
 // -- Members
 
 // -- Methods

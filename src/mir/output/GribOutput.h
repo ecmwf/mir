@@ -89,11 +89,6 @@ protected:
 
 private:
 
-// No copy allowed
-
-    GribOutput(const GribOutput&);
-    GribOutput& operator=(const GribOutput&);
-
 // -- Members
 
     unsigned long long total_;

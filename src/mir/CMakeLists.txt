@@ -515,8 +515,6 @@ list(
 if(HAVE_ATLAS)
 list(
     APPEND mir_srcs
-    api/ProdgenJob.cc
-    api/ProdgenJob.h
     method/fe/Conservative.cc
     method/fe/Conservative.h
     method/fe/FEBilinear.cc

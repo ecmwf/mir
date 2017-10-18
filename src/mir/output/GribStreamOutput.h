@@ -79,11 +79,6 @@ class GribStreamOutput : public GribOutput {
 
   private:
 
-// No copy allowed
-
-    GribStreamOutput(const GribStreamOutput&);
-    GribStreamOutput& operator=(const GribStreamOutput&);
-
 // -- Members
 
 // -- Methods

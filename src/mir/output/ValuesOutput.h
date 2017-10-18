@@ -96,11 +96,6 @@ protected:
 
 private:
 
-// No copy allowed
-
-    ValuesOutput(const ValuesOutput&);
-    ValuesOutput& operator=(const ValuesOutput&);
-
 // -- Members
 
     std::vector<std::vector<double> > values_;

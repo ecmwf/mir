@@ -13,95 +13,85 @@
 /// @date Apr 2015
 
 
-#ifndef RawOutput_H
-#define RawOutput_H
+#ifndef mir_output_RawOutput_h
+#define mir_output_RawOutput_h
 
 #include "mir/output/MIROutput.h"
-
-
-namespace eckit {
-class DataHandle;
-}
 
 
 namespace mir {
 namespace repres {
 class Representation;
 }
+}
 
+
+namespace mir {
 namespace output {
 
 
 class RawOutput : public MIROutput {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     RawOutput(double* values, size_t count);
 
-// -- Destructor
+    // -- Destructor
 
     ~RawOutput(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    void shape(size_t& ni, size_t& nj) const;
     size_t size() const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  private:
+    // -- Class methods
+    // None
 
-// No copy allowed
+private:
 
-    RawOutput(const RawOutput&);
-    RawOutput& operator=(const RawOutput&);
-
-// -- Members
+    // -- Members
 
     double* values_;
     size_t count_;
     size_t size_;
-    const repres::Representation* representation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-
-// -- Overridden methods
+    // -- Overridden methods
     // From MIROutput
     virtual void print(std::ostream&) const; // Change to virtual if base class
 
@@ -112,13 +102,13 @@ class RawOutput : public MIROutput {
     virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
     virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const RawOutput& p)
     // { p.print(s); return s; }
@@ -128,5 +118,7 @@ class RawOutput : public MIROutput {
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif
 

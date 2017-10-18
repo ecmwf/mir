@@ -13,16 +13,13 @@
 /// @date Apr 2015
 
 
-#include <istream>
-
 #include "mir/output/RawOutput.h"
-#include "eckit/exception/Exceptions.h"
 
-#include "mir/data/MIRField.h"
-#include "mir/repres/Representation.h"
-#include "mir/input/RawInput.h"
-#include "mir/config/LibMir.h"
+#include <istream>
+#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -32,28 +29,28 @@ namespace output {
 RawOutput::RawOutput(double *values, size_t count):
     values_(values),
     count_(count),
-    size_(0),
-    representation_(0) {
+    size_(0) {
 }
 
 
 RawOutput::~RawOutput() {
-    if (representation_) {
-        representation_->detach();
-    }
 }
+
 
 bool RawOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }
 
+
 bool RawOutput::sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const {
     NOTIMP;
 }
 
+
 bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
     NOTIMP;
 }
+
 
 size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
     NOTIMP;
@@ -79,24 +76,14 @@ size_t RawOutput::save(const param::MIRParametrisation &param, context::Context&
     ASSERT(size_ <= count_);
     ::memcpy(values_, &values[0], size_ * sizeof(double));
 
-    // Use for HIRLAM like routines. Remove when emoslib compatibility not needed anymore
-    ASSERT(!representation_);
-    representation_ = field.representation();
-    representation_->attach();
-
     return size_ * sizeof(double);
-
 }
+
 
 void RawOutput::print(std::ostream &out) const {
-    out << "RawOutput[count=" << count_ << "]";
+    out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
 }
 
-// Use for HIRLAM like routines. Remove when emoslib compatibility not needed anymore
-void RawOutput::shape(size_t &ni, size_t &nj) const {
-    ASSERT(representation_);
-    representation_->shape(ni, nj);
-}
 
 size_t RawOutput::size() const {
     return size_;
