@@ -128,7 +128,12 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    template<class T>
+    MIRJob& _setScalar(const std::string& name, const T& value);
+
+    template<class T>
+    MIRJob& _setVector(const std::string& name, const T& value, size_t outputCount = 4);
 
     // -- Overridden methods
 
