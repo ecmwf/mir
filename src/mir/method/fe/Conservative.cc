@@ -19,6 +19,8 @@
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Log.h"
+#include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/field/Field.h"
 #include "atlas/interpolation/element/Quad3D.h"
@@ -167,12 +169,13 @@ void Conservative::assemble(util::MIRStatistics& statistics,
 
 
 const char* Conservative::name() const {
-    return "conservative";
+    return "linear-conservative";
 }
 
 
 void Conservative::hash(eckit::MD5& md5) const {
     FELinear::hash(md5);
+    md5.add(name());
 }
 
 

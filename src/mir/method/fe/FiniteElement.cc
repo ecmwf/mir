@@ -223,7 +223,10 @@ FiniteElement::~FiniteElement() {
 }
 
 
-void FiniteElement::hash(eckit::MD5&) const {
+void FiniteElement::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
+    InputMeshGenerationParams_.hash(md5);
+    OutputMeshGenerationParams_.hash(md5);
 }
 
 
