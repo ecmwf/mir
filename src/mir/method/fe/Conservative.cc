@@ -21,15 +21,12 @@
 #include "eckit/log/Log.h"
 #include "atlas/array/IndexView.h"
 #include "atlas/field/Field.h"
-
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/mesh.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-
-
 
 
 namespace mir {
@@ -43,6 +40,9 @@ static const double oneFourth = 1. / 4.;
 
 Conservative::Conservative(const param::MIRParametrisation& param) :
     FELinear(param) {
+
+    // output mesh requirements
+    OutputMeshGenerationParams_.meshXYZField_ = true;
 }
 
 
@@ -142,6 +142,27 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     // 4) W = M_d^{-1} . I^{T} . M_s
     W.reserve(IM.rows(), IM.cols(), IM.nonZeros()); // reserve same space as IM
     eckit::linalg::LinearAlgebra::backend().dsptd(M_d, IM, M_s, W);
+
+
+    // 5) Normalise row weights
+    WeightMatrix::iterator it(W);
+    for (WeightMatrix::Size i = 0; i < W.rows(); ++i) {
+        const WeightMatrix::iterator begin = W.begin(i);
+        const WeightMatrix::iterator end   = W.end(i);
+
+        // accumulate and re-distribute (linearly) the row weights
+        double sum = 0.;
+        for (it = begin; it != end; ++it) {
+            sum += *it;
+        }
+
+        if (!eckit::types::is_approximately_equal(sum, 0.)) {
+            const double factor =  1. / sum;
+            for (it = begin; it != end; ++it) {
+                *it *= factor;
+            }
+        }
+    }
 }
 
 
