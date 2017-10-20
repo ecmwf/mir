@@ -139,13 +139,13 @@ class PointSearchTreeMemory: public PointSearchTree {
     }
 
     virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
-        auto nn = tree_.nearestNeighbour(pt).value();
+        const auto& nn = tree_.nearestNeighbour(pt).value();
         return PointValueType(nn.point(), nn.payload());
     }
 
     virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
         std::vector<PointValueType> result;
-        for (auto n : tree_.kNearestNeighbours(pt, k)) {
+        for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
             result.push_back(PointValueType(n.point(), n.payload()));
         }
         return result;
@@ -153,7 +153,7 @@ class PointSearchTreeMemory: public PointSearchTree {
 
     virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
         std::vector<PointValueType> result;
-        for (auto n : tree_.findInSphere(pt, radius)) {
+        for (const auto& n : tree_.findInSphere(pt, radius)) {
             result.push_back(PointValueType(n.point(), n.payload()));
         }
         return result;
@@ -221,13 +221,13 @@ public:
     }
 
     virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
-        auto nn = tree_.nearestNeighbour(pt).value();
+        const auto& nn = tree_.nearestNeighbour(pt).value();
         return PointValueType(nn.point(), nn.payload());
     }
 
     virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
         std::vector<PointValueType> result;
-        for (auto n : tree_.kNearestNeighbours(pt, k)) {
+        for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
             result.push_back(PointValueType(n.point(), n.payload()));
         }
         return result;
@@ -235,7 +235,7 @@ public:
 
     virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
         std::vector<PointValueType> result;
-        for (auto n : tree_.findInSphere(pt, radius)) {
+        for (const auto& n : tree_.findInSphere(pt, radius)) {
             result.push_back(PointValueType(n.point(), n.payload()));
         }
         return result;
@@ -584,7 +584,7 @@ void PointSearchTreeFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
     }

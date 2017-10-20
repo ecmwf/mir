@@ -95,7 +95,7 @@ static triplet_vector_t projectPointTo3DElements(
     atlas::interpolation::method::Ray ray( p.data() );
 
     nbProjectionAttempts = 0;
-    for (auto close : closest) {
+    for (const auto& close : closest) {
         ++nbProjectionAttempts;
 
         const size_t elem_id = close.value().payload();

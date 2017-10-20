@@ -355,7 +355,7 @@ SimpleParametrisation::~SimpleParametrisation() {
 }
 
 void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
-    for (auto j : settings_) {
+    for (const auto& j : settings_) {
         j.second->copyValueTo(j.first, other);
     }
 }

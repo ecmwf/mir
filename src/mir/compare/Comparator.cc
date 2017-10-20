@@ -93,7 +93,7 @@ void ComparatorFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
     }

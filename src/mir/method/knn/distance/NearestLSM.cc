@@ -41,7 +41,7 @@ void NearestLSM::operator()(
     size_t jp = 0;
     bool foundSameType = false;
 
-    for (auto p : neighbours) {
+    for (const auto& p : neighbours) {
         jp = p.payload();
         ASSERT(jp < imask_.size());
 

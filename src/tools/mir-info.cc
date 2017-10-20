@@ -27,7 +27,7 @@ public:
 void MIRInfo::execute(const eckit::option::CmdArgs&) {
     using eckit::system::Library;
 
-    for (auto lib_name : Library::list()) {
+    for (const auto& lib_name : Library::list()) {
         const Library& lib = Library::lookup(lib_name);
         eckit::Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << std::endl;
     }

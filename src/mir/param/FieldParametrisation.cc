@@ -63,7 +63,7 @@ static void init() {
 
 
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-    for (auto i : classes) {
+    for (const auto& i : classes) {
         const std::string& klass = i.first;
         eckit::ValueMap values = i.second;
 
@@ -73,7 +73,7 @@ static void init() {
 
         CountedParametrisation* s = new CountedParametrisation();
 
-        for (auto j : values) {
+        for (const auto& j : values) {
             std::string name = j.first;
             eckit::Value value = j.second;
             s->set(name, std::string(value));
@@ -84,7 +84,7 @@ static void init() {
 
 
     eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
-    for (auto i : parameterClass) {
+    for (const auto& i : parameterClass) {
         const std::string& klass = i.first;
 
         auto j = allClasses.find(klass);
@@ -105,7 +105,7 @@ static void init() {
 
 
     eckit::ValueMap parameterDimension = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-dimension.yaml");
-    for (auto i : parameterDimension) {
+    for (const auto& i : parameterDimension) {
         const std::string& dimension = i.first;
         eckit::ValueList list = i.second;
 
