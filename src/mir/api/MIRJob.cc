@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "eckit/log/Plural.h"
+#include "eckit/parser/Tokenizer.h"
 #include "mir/action/plan/Job.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -68,6 +69,31 @@ MIRJob& MIRJob::reset() {
 }
 
 
+MIRJob& MIRJob::set(const std::string& args) {
+    eckit::Tokenizer parseSpace(" ");
+    eckit::Tokenizer parseEquals("=");
+
+    std::vector<std::string> argv;
+    parseSpace(args, argv);
+    for (const std::string& a : argv) {
+
+        std::vector<std::string> nameValue;
+        parseEquals(a, nameValue);
+
+        if (nameValue.size() == 1) {
+            nameValue.push_back("true");
+        }
+
+        if (nameValue[0].find("--") != 0) {
+            throw eckit::UserError("MIRJob::set: invalid parameter '" + a + "'");
+        }
+
+        set(nameValue[0].substr(2), nameValue[1]);
+    }
+    return *this;
+}
+
+
 static const std::map<std::string, std::string> aliases {
     {"resol", "truncation"},
 };
@@ -104,7 +130,7 @@ MIRJob& MIRJob::clear(const std::string& name) {
 
 template<class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "' = '" << value << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "=" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -114,17 +140,17 @@ template<class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
     eckit::Channel& out = eckit::Log::debug<LibMir>();
 
-    out << "MIRJob: set '" << name << "' = [";
+    out << "MIRJob: set '" << name << "=";
     const char* sep = "";
     size_t n = 0;
     for (; n < outputCount && n < value.size(); ++n) {
         out << sep << value[n];
-        sep = ", ";
+        sep = "/";
     }
     if (n > outputCount) {
         out << sep << "...";
     }
-    out << "]" << std::endl;
+    out << "'" << std::endl;
 
     SimpleParametrisation::set(name, value);
     return *this;

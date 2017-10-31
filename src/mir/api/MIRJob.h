@@ -89,6 +89,7 @@ public:
     MIRJob& clear(const std::string& name);
     MIRJob& reset();
 
+    MIRJob& set(const std::string& args);
     MIRJob& representationFrom(input::MIRInput&);
 
     // For debugging only
