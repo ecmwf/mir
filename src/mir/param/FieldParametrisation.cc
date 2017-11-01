@@ -17,12 +17,10 @@
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/Owned.h"
-#include "eckit/memory/SharedPtr.h"
-#include "eckit/parser/YAMLParser.h"
 #include "eckit/types/Fraction.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/param/rules/RulesFromFile.h"
+#include "mir/param/rules/RulesFromUser.h"
 
 
 namespace mir {
@@ -30,8 +28,6 @@ namespace param {
 
 
 namespace {
-
-
 inline double shift(const double& a, const double& b, double increment) {
     const eckit::Fraction inc(increment);
     eckit::Fraction shift = a - (a / inc).integralPart() * inc;
@@ -45,99 +41,11 @@ inline double shift(const double& a, const double& b, double increment) {
 
     return shift;
 }
-
-
-// handle memory correctly due to copying of SimpleParametrisations
-struct CountedParametrisation : SimpleParametrisation, eckit::OwnedLock {};
-
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static std::map< long, eckit::SharedPtr<CountedParametrisation> > parameters_;
-
-
 }  // (anonymous namespace)
 
 
-static void init() {
-    std::map< std::string, eckit::SharedPtr<CountedParametrisation> > allClasses;
-
-
-    eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-    for (const auto& i : classes) {
-        const std::string& klass = i.first;
-        eckit::ValueMap values = i.second;
-
-        if (values.find("dimension") != values.end()) {
-            throw eckit::UserError("Class cannot use reserved key 'dimension' ('" + klass + "')");
-        }
-
-        CountedParametrisation* s = new CountedParametrisation();
-
-        for (const auto& j : values) {
-            std::string name = j.first;
-            eckit::Value value = j.second;
-            s->set(name, std::string(value));
-        }
-
-        allClasses[klass].reset(s);
-    }
-
-
-    eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
-    for (const auto& i : parameterClass) {
-        const std::string& klass = i.first;
-
-        auto j = allClasses.find(klass);
-        if (j == allClasses.end()) {
-            throw eckit::UserError("Class unknown '" + klass + "'");
-        }
-
-        eckit::ValueList list = i.second;
-        // std::cout << list << std::endl;
-
-        for (long paramId : list) {
-            if (parameters_.find(paramId) != parameters_.end()) {
-                throw eckit::UserError("Parameter class is set more than once, for paramId=" + std::to_string(paramId));
-            }
-            parameters_[paramId].reset(j->second);
-        }
-    }
-
-
-    eckit::ValueMap parameterDimension = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-dimension.yaml");
-    for (const auto& i : parameterDimension) {
-        const std::string& dimension = i.first;
-        eckit::ValueList list = i.second;
-
-        for (long paramId : list) {
-
-            // paramId-specific 'dimension' value
-            CountedParametrisation* s = new CountedParametrisation();
-            s->set("dimension", dimension);
-
-            auto p = parameters_.find(paramId);
-            if (p != parameters_.end()) {
-
-                // known parameter: copy class settings to new entry
-                std::string d;
-                if (p->second->get("dimension", d)) {
-                    throw eckit::UserError("Parameter dimension is set more than once, for paramId=" + std::to_string(paramId));
-                }
-                p->second->copyValuesTo(*s);
-                p->second.reset(s);
-
-            } else {
-
-                // unknown parameter: set dimension only
-                parameters_[paramId].reset(s);
-
-            }
-        }
-    }
+FieldParametrisation::FieldParametrisation() {
 }
-
-
-FieldParametrisation::FieldParametrisation() {}
 
 
 FieldParametrisation::~FieldParametrisation() {}
@@ -271,26 +179,21 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
 
     ASSERT(name != "paramId");
 
+    // return paramId-specific setting
     // This assumes that other input (NetCDF, etc) also return a paramId
-
-    long paramId;
-    if (!get("paramId", paramId)) {
+    long paramId = 0;
+    get("paramId", paramId);
+    if (paramId <= 0) {
         return false;
     }
 
-    // return paramId specific parametrisation
-
-    pthread_once(&once, init);
-
-    const auto j = parameters_.find(paramId);
-
-    if (j == parameters_.end()) {
-        eckit::Log::warning() << "No information for paramId=" << paramId << ", using defaults" << std::endl;
-        parameters_[paramId].reset(new CountedParametrisation());
-        return false;
+    const MIRParametrisation& userRules = rules::RulesFromUser::instance()[paramId];
+    if (userRules.get(name, value)) {
+        return true;
     }
 
-    return (*j).second->get(name, value);
+    const MIRParametrisation& fileRules = rules::RulesFromFile::instance()[paramId];
+    return fileRules.get(name, value);
 }
 
 

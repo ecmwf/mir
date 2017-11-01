@@ -22,6 +22,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/param/rules/RulesFromUser.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -65,6 +66,7 @@ void MIRJob::print(std::ostream& out) const {
 MIRJob& MIRJob::reset() {
     eckit::Log::debug<LibMir>() << "MIRJob: reset" << std::endl;
     SimpleParametrisation::reset();
+    clearUserRules();
     return *this;
 }
 
@@ -89,6 +91,26 @@ MIRJob& MIRJob::set(const std::string& args) {
         }
 
         set(nameValue[0].substr(2), nameValue[1]);
+    }
+    return *this;
+}
+
+
+MIRJob& MIRJob::clearUserRules() {
+    param::rules::RulesFromUser::instance().clear();
+    return *this;
+}
+
+
+MIRJob& MIRJob::addUserRule(const std::string& ruleName, long ruleValue, const std::string& settingName, bool settingValue) {
+    ASSERT(ruleName == "paramId");
+
+    long paramId = ruleValue;
+    if (paramId > 0) {
+        eckit::Log::debug<LibMir>() << "MIRJob: set '" << settingName << "=" << settingValue << "' (paramId=" << paramId << ")" << std::endl;
+
+        param::SimpleParametrisation& rules = param::rules::RulesFromUser::instance().modify(paramId);
+        rules.set(settingName, settingValue);
     }
     return *this;
 }

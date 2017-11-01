@@ -90,6 +90,10 @@ public:
     MIRJob& reset();
 
     MIRJob& set(const std::string& args);
+
+    MIRJob& clearUserRules();
+    MIRJob& addUserRule(const std::string& ruleName, long ruleValue, const std::string& settingName, bool settingValue);
+
     MIRJob& representationFrom(input::MIRInput&);
 
     // For debugging only
