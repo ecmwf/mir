@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/param/rules/RulesFromFile.h"
+#include "mir/param/RulesFromFile.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/YAMLParser.h"
@@ -17,16 +17,9 @@
 
 namespace mir {
 namespace param {
-namespace rules {
 
 
-RulesFromFile& RulesFromFile::instance() {
-    static RulesFromFile ego;
-    return ego;
-}
-
-
-RulesFromFile::RulesFromFile() {
+void RulesFromFile::initialize() {
 
     std::map< std::string, eckit::SharedPtr<CountedParametrisation> > allClasses;
 
@@ -106,7 +99,6 @@ RulesFromFile::RulesFromFile() {
 }
 
 
-}  // namespace rules
 }  // namespace param
 }  // namespace mir
 

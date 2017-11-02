@@ -334,16 +334,14 @@ list(
     param/JoinedParametrisation.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
+    param/Rules.cc
+    param/Rules.h
+    param/RulesFromFile.cc
+    param/RulesFromFile.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
-    param/rules/Rules.cc
-    param/rules/Rules.h
-    param/rules/RulesFromFile.cc
-    param/rules/RulesFromFile.h
-    param/rules/RulesFromUser.cc
-    param/rules/RulesFromUser.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
     repres/gauss/reduced/Classic.cc
