@@ -25,7 +25,7 @@ public:
 
     // -- Methods
 
-    static RulesFromFile& instance();
+    static const RulesFromFile& instance();
 
 private:
 

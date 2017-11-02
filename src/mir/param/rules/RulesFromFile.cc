@@ -20,7 +20,7 @@ namespace param {
 namespace rules {
 
 
-RulesFromFile& RulesFromFile::instance() {
+const RulesFromFile& RulesFromFile::instance() {
     static RulesFromFile ego;
     return ego;
 }
