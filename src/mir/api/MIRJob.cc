@@ -66,7 +66,6 @@ void MIRJob::print(std::ostream& out) const {
 MIRJob& MIRJob::reset() {
     eckit::Log::debug<LibMir>() << "MIRJob: reset" << std::endl;
     SimpleParametrisation::reset();
-    clearUserRules();
     return *this;
 }
 
@@ -92,12 +91,6 @@ MIRJob& MIRJob::set(const std::string& args) {
 
         set(nameValue[0].substr(2), nameValue[1]);
     }
-    return *this;
-}
-
-
-MIRJob& MIRJob::clearUserRules() {
-    param::rules::RulesFromUser::instance().clear();
     return *this;
 }
 

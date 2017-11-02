@@ -27,8 +27,6 @@ public:
 
     static RulesFromUser& instance();
 
-    using container_t::clear;
-
 private:
 
     // Constructors
