@@ -44,7 +44,8 @@ inline double shift(const double& a, const double& b, double increment) {
 }  // (anonymous namespace)
 
 
-FieldParametrisation::FieldParametrisation() {
+FieldParametrisation::FieldParametrisation():
+    userRules_(0) {
 }
 
 
@@ -187,8 +188,7 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
         return false;
     }
 
-    const MIRParametrisation& userRules = rules::RulesFromUser::instance()[paramId];
-    if (userRules.get(name, value)) {
+    if (userRules_ && userRules_->get(name, value)) {
         return true;
     }
 

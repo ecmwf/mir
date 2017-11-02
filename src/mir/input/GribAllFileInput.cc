@@ -63,9 +63,9 @@ GribAllFileInput::~GribAllFileInput() {
 }
 
 
-const param::MIRParametrisation &GribAllFileInput::parametrisation(size_t which) const {
+const param::MIRParametrisation &GribAllFileInput::parametrisation(const param::MIRParametrisation& rule, size_t which) const {
     ASSERT(which < inputs_.size());
-    return inputs_[which]->parametrisation();
+    return inputs_[which]->parametrisation(rule);
 }
 
 

@@ -50,7 +50,7 @@ bool DummyInput::next() {
 }
 
 
-const param::MIRParametrisation &DummyInput::parametrisation(size_t which) const {
+const param::MIRParametrisation &DummyInput::parametrisation(const param::MIRParametrisation& rule, size_t which) const {
     ASSERT(which == 0);
     return parametrisation_;
 }

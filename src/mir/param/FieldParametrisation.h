@@ -22,6 +22,9 @@
 namespace mir {
 namespace param {
 
+namespace rules {
+class Rules;
+}
 
 class FieldParametrisation : public MIRParametrisation {
   public:
@@ -58,7 +61,8 @@ class FieldParametrisation : public MIRParametrisation {
   protected:
 
     // -- Members
-    // None
+    
+    const param::rules::Rules* userRules_;
 
     // -- Methods
     // None

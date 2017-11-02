@@ -25,7 +25,7 @@ namespace mir {
 namespace style {
 
 
-class IntermediateGrid : public eckit::NonCopyable, public param::DelayedParametrisation {
+class IntermediateGrid : public param::DelayedParametrisation {
 public:
 
     // -- Exceptions

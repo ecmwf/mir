@@ -60,7 +60,8 @@ public:
     virtual bool next();
     virtual size_t dimensions() const;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
+    virtual const param::MIRParametrisation& parametrisation(const param::MIRParametrisation& rules = noRules(),
+            size_t which = 0) const = 0;
 
     virtual data::MIRField field() const = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
@@ -108,14 +109,15 @@ private:
     // None
 
     // -- Class members
-    // None
+
+    static const param::MIRParametrisation& noRules();
 
     // -- Class methods
     // None
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRInput& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRInput& p) {
         p.print(s);
         return s;
     }

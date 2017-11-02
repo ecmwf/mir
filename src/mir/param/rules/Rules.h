@@ -46,11 +46,13 @@ public:
 
     // -- Operators
 
-    const MIRParametrisation& operator[](const long& paramId) const;
+    const MIRParametrisation& operator()(const std::string& ruleName, const long& paramId) const;
 
     // -- Methods
 
-    SimpleParametrisation& modify(const long& paramId);
+    SimpleParametrisation& lookup(const std::string& ruleName, long ruleValue);
+
+
 
 private:
 

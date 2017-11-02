@@ -92,7 +92,9 @@ private:
 
     eckit::PathName path_;
 
+    mutable param::JoinedParametrisation joined_;
     param::CachedParametrisation cache_;
+    
     mir::netcdf::InputDataset dataset_;
     std::vector<mir::netcdf::Field*> fields_;
     int current_;
@@ -108,7 +110,7 @@ private:
     // From MIRInput
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation &parametrisation(const param::MIRParametrisation& rule, size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
     virtual size_t dimensions() const;

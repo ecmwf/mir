@@ -72,6 +72,11 @@ size_t MIRInput::dimensions() const {
 }
 
 
+const param::MIRParametrisation& MIRInput::noRules() {
+    static param::SimpleParametrisation instance;
+    return instance;
+}
+
 //=========================================================================
 
 

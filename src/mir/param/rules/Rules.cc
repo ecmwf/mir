@@ -37,7 +37,11 @@ const MIRParametrisation& Rules::operator[](const long& paramId) const {
 }
 
 
-SimpleParametrisation& Rules::modify(const long& paramId) {
+SimpleParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
+
+    ASSERT(ruleName == "paramId");
+    long paramId = ruleValue;
+
     auto& p = container_t::operator[](paramId);
 
     if (!p) {

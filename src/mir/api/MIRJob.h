@@ -21,6 +21,7 @@
 
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
+#include "mir/param/rules/Rules.h"
 
 namespace mir {
 namespace input {
@@ -87,11 +88,9 @@ public:
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 
     MIRJob& clear(const std::string& name);
-    MIRJob& reset();
 
     MIRJob& set(const std::string& args);
 
-    MIRJob& clearUserRules();
     MIRJob& addUserRule(const std::string& ruleName, long ruleValue, const std::string& settingName, bool settingValue);
 
     MIRJob& representationFrom(input::MIRInput&);
@@ -100,6 +99,8 @@ public:
     void mirToolCall(std::ostream&) const;
 
     void json(eckit::JSON&) const;
+
+    const param::MIRParametrisation& rules() const;
 
     // -- Overridden methods
     // None
@@ -130,7 +131,8 @@ protected:
 private:
 
     // -- Members
-    // None
+    
+    param::rules::Rules rules_;
 
     // -- Methods
 
