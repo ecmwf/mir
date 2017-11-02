@@ -92,7 +92,7 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(const param::MIRParametrisation& rule, size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
     virtual bool sameAs(const MIRInput &other) const ;

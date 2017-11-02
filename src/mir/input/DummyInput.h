@@ -87,9 +87,8 @@ private:
     virtual void print(std::ostream&) const; // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
-    virtual const param::MIRParametrisation &parametrisation(const param::MIRParametrisation& rules,
-            size_t which) const;
-    
+    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+
     virtual data::MIRField field() const;
 
     virtual bool next();

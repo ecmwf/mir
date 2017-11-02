@@ -63,16 +63,6 @@ void MIRJob::print(std::ostream& out) const {
 }
 
 
-<<<<<<< HEAD
-=======
-MIRJob& MIRJob::reset() {
-    eckit::Log::debug<LibMir>() << "MIRJob: reset" << std::endl;
-    SimpleParametrisation::reset();
-    return *this;
-}
-
-
->>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1
 MIRJob& MIRJob::set(const std::string& args) {
     eckit::Tokenizer parseSpace(" ");
     eckit::Tokenizer parseEquals("=");
@@ -98,26 +88,19 @@ MIRJob& MIRJob::set(const std::string& args) {
 }
 
 
-<<<<<<< HEAD
 MIRJob& MIRJob::addUserRule(const std::string& ruleName,
                             long ruleValue,
                             const std::string& settingName,
                             bool settingValue) {
 
+    if (!userRules_) {
+        userRules_.reset(new param::Rules());
+    }
 
-    auto& rule = rules_.lookup(ruleName, ruleValue);
+
+    auto& rule = userRules_->lookup(ruleName, ruleValue);
     rule.set(settingName, settingValue);
 
-=======
-MIRJob& MIRJob::addUserRule(const std::string& ruleName, long ruleValue, const std::string& settingName, bool settingValue) {
-    ASSERT(ruleName == "paramId");
-
-    long paramId = ruleValue;
-    if (paramId > 0) {
-        eckit::Log::debug<LibMir>() << "MIRJob: set '" << settingName << "=" << settingValue << "' (paramId=" << paramId << ")" << std::endl;
-        userRules_.lookup(paramId).set(settingName, settingValue);
-    }
->>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1
     return *this;
 }
 
@@ -319,8 +302,8 @@ void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
 }
 
-const param::MIRParametrisation& MIRJob::rules() const {
-    return rules_;
+const param::Rules* MIRJob::userRules() const {
+    return userRules_.get();
 }
 
 }  // namespace api

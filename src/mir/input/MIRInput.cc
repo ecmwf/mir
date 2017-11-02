@@ -31,8 +31,7 @@ namespace mir {
 namespace input {
 
 
-MIRInput::MIRInput():
-    userRules_(0) {
+MIRInput::MIRInput() {
 }
 
 
@@ -72,15 +71,11 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
-void MIRInput::userRules(const param::rules::Rules* rules) {
-    userRules_ = rules;
+void MIRInput::userRules(const param::Rules* rules) {
+    std::ostringstream os;
+    os << "MIRInput::dimensions() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
-
-const param::MIRParametrisation& MIRInput::noRules() {
-    static param::SimpleParametrisation instance;
-    return instance;
-}
-
 //=========================================================================
 
 

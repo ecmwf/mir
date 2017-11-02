@@ -32,9 +32,6 @@ class MIRField;
 
 namespace param {
 class MIRParametrisation;
-}
-
-class rules {
 class Rules;
 }
 
@@ -63,14 +60,12 @@ public:
 
     // -- Methods
 
-    void userRules(const param::rules::Rules* rules);
 
 
     virtual bool next();
     virtual size_t dimensions() const;
 
-    virtual const param::MIRParametrisation& parametrisation(const param::MIRParametrisation& rules = noRules(),
-            size_t which = 0) const = 0;
+    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
 
     virtual data::MIRField field() const = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
@@ -78,6 +73,7 @@ public:
     virtual size_t copy(double* values, size_t size) const;
 
     virtual bool sameAs(const MIRInput& other) const = 0;
+    virtual void userRules(const param::Rules* rules);
 
     // -- Overridden methods
     // None
@@ -92,7 +88,6 @@ protected:
 
     // -- Members
 
-    const param::rules::Rules* userRules_;
 
     // -- Methods
 
@@ -119,8 +114,6 @@ private:
     // None
 
     // -- Class members
-
-    static const param::MIRParametrisation& noRules();
 
     // -- Class methods
     // None

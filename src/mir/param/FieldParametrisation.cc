@@ -61,7 +61,7 @@ static void init() {
 
 
 FieldParametrisation::FieldParametrisation():
-    userRules_(0) {
+    paramId_(-1)  {
 }
 
 
@@ -197,24 +197,28 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    ASSERT(name != "paramId");
+    static std::string PARAM_ID("paramId");
+
+    ASSERT(name != PARAM_ID);
 
     // return paramId-specific setting
     // This assumes that other input (NetCDF, etc) also return a paramId
-    long paramId = 0;
-    get("paramId", paramId);
-<<<<<<< HEAD
-    if (paramId <= 0) {
+
+    if (paramId_ <= 0) {
+        get(PARAM_ID, paramId_);
+    }
+
+    if (paramId_ <= 0) {
         return false;
     }
 
-    if (userRules_ && userRules_->get(name, value)) {
-        return true;
+    if (userRules_) {
+        if (userRules_->lookup(PARAM_ID, paramId_).get(name, value)) {
+            return true;
+        }
     }
-=======
->>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1
 
-    return paramId > 0 && fileRules[paramId].get(name, value);
+    return fileRules.lookup(PARAM_ID, paramId_).get(name, value);
 }
 
 

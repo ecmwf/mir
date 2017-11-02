@@ -21,13 +21,11 @@
 
 namespace mir {
 namespace param {
-
-namespace rules {
 class Rules;
-}
+
 
 class FieldParametrisation : public MIRParametrisation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -58,11 +56,11 @@ class FieldParametrisation : public MIRParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
-    
-    const param::rules::Rules* userRules_;
+
+    const param::Rules* userRules_;
 
     // -- Methods
     // None
@@ -91,10 +89,11 @@ class FieldParametrisation : public MIRParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // -- Members
-    // None
+
+    mutable long paramId_;
 
     // -- Methods
 

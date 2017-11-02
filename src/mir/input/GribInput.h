@@ -20,7 +20,6 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
-#include "mir/param/JoinedParametrisation.h"
 
 
 namespace mir {
@@ -85,7 +84,6 @@ private:
 
     // -- Members
 
-    mutable param::JoinedParametrisation joined_;
     param::CachedParametrisation cache_;
 
     mutable eckit::Mutex mutex_;
@@ -102,9 +100,10 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(const param::MIRParametrisation& rule, size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
+    virtual void userRules(const param::Rules* rules);
 
     /// From MIRParametrisation
     virtual bool has(const std::string& name) const;

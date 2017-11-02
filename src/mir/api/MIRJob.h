@@ -22,7 +22,8 @@
 #include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
-#include "mir/param/rules/Rules.h"
+#include "mir/param/Rules.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
 namespace input {
@@ -101,7 +102,7 @@ public:
 
     void json(eckit::JSON&) const;
 
-    const param::MIRParametrisation& rules() const;
+    const param::Rules* userRules() const;
 
     // -- Overridden methods
     // None
@@ -132,13 +133,8 @@ protected:
 private:
 
     // -- Members
-<<<<<<< HEAD
-    
-    param::rules::Rules rules_;
-=======
 
-    param::Rules userRules_;
->>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1
+    eckit::ScopedPtr<param::Rules> userRules_;
 
     // -- Methods
 

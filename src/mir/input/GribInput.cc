@@ -283,7 +283,7 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
 
 GribInput::GribInput():
     cache_(*this),
-    grib_(0){
+    grib_(0) {
 }
 
 
@@ -292,16 +292,9 @@ GribInput::~GribInput() {
 }
 
 
-const param::MIRParametrisation &GribInput::parametrisation(const param::MIRParametrisation& rules, size_t which) const {
+const param::MIRParametrisation &GribInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
-    // WARNING: assumes that joined_ is used while 'rules' are still valid 
-
-
-    long paramId = 0;
-    ASSERT(get("paramId", paramId));
-
-    joined_.join(&rules("paramId"), , &cache_);
-    return joined_;
+    return cache_;
 }
 
 
@@ -808,6 +801,11 @@ void GribInput::marsRequest(std::ostream& out) const {
         throw;
     }
 }
+
+void GribInput::userRules(const param::Rules* rules) {
+    userRules_ = rules;
+}
+
 
 
 }  // namespace input

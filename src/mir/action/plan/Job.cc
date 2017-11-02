@@ -37,13 +37,13 @@ class SetRules {
 	input::MIRInput& input_;
 public:
 
-	SetRules(input::MIRInput& input, param::rules::rules& r):
+	SetRules(input::MIRInput& input, const param::Rules* r):
 		input_(input) {
-		input_.rules(&r);
+		input_.userRules(r);
 	}
 
-	~SetRules() { 
-		input_.rules(0);
+	~SetRules() {
+		input_.userRules(0);
 	}
 };
 
@@ -51,11 +51,11 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     input_(input),
     output_(output)  {
 
-    SetRules setRules(input_, job.rules());
+    SetRules setRules(input_, job.userRules());
 
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
-    const param::MIRParametrisation& metadata = input.parametrisation(job.rules());
+    const param::MIRParametrisation& metadata = input.parametrisation();
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));

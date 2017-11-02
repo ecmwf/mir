@@ -202,8 +202,7 @@ size_t GeoPointsFileInput::dimensions() const {
 }
 
 
-const param::MIRParametrisation &GeoPointsFileInput::parametrisation(const param::MIRParametrisation& rule,
-    size_t which) const {
+const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return fieldParametrisation_;
 }

@@ -17,6 +17,8 @@
 namespace mir {
 namespace param {
 
+static std::string PARAM_ID("paramId");
+
 
 Rules::Rules() {
 }
@@ -26,7 +28,10 @@ Rules::~Rules() {
 }
 
 
-const MIRParametrisation& Rules::operator[](const long& paramId) const {
+const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) const {
+    ASSERT(ruleName == PARAM_ID);
+    long paramId = ruleValue;
+
     const auto i = container_t::find(paramId);
 
     if (i == container_t::end()) {
@@ -38,15 +43,11 @@ const MIRParametrisation& Rules::operator[](const long& paramId) const {
 }
 
 
-<<<<<<< HEAD:src/mir/param/rules/Rules.cc
 SimpleParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
 
-    ASSERT(ruleName == "paramId");
+    ASSERT(ruleName == PARAM_ID);
     long paramId = ruleValue;
 
-=======
-SimpleParametrisation& Rules::lookup(const long& paramId) {
->>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1:src/mir/param/Rules.cc
     auto& p = container_t::operator[](paramId);
 
     if (!p) {
@@ -57,7 +58,7 @@ SimpleParametrisation& Rules::lookup(const long& paramId) {
 }
 
 
-void Rules::print(std::ostream& s) const {
+void Rules::print(std::ostream & s) const {
     s << "Rules=";
     eckit::JSON json(s);
 
