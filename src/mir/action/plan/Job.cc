@@ -33,13 +33,29 @@ namespace mir {
 namespace action {
 
 
+class SetRules {
+	input::MIRInput& input_;
+public:
+
+	SetRules(input::MIRInput& input, param::rules::rules& r):
+		input_(input) {
+		input_.rules(&r);
+	}
+
+	~SetRules() { 
+		input_.rules(0);
+	}
+};
+
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output) :
     input_(input),
     output_(output)  {
 
+    SetRules setRules(input_, job.rules());
+
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
-    const param::MIRParametrisation& metadata = input.parametrisation();
+    const param::MIRParametrisation& metadata = input.parametrisation(job.rules());
     combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));

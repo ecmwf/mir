@@ -66,11 +66,12 @@ void NetcdfFileInput::print(std::ostream &out) const {
 }
 
 
-const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) const {
+const param::MIRParametrisation &NetcdfFileInput::parametrisation(const param::MIRParametrisation& rule, size_t which) const {
     ASSERT(which == 0);
-    return cache_;
+    // WARNING: assumes that joined_ is used while 'rules' are still valid 
+    joined_.join(&rules, &cache_);
+    return joined_;
 }
-
 
 bool NetcdfFileInput::next() {
     cache_.reset();

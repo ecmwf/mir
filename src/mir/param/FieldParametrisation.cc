@@ -60,7 +60,8 @@ static void init() {
 }  // (anonymous namespace)
 
 
-FieldParametrisation::FieldParametrisation() {
+FieldParametrisation::FieldParametrisation():
+    userRules_(0) {
 }
 
 
@@ -202,6 +203,16 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     // This assumes that other input (NetCDF, etc) also return a paramId
     long paramId = 0;
     get("paramId", paramId);
+<<<<<<< HEAD
+    if (paramId <= 0) {
+        return false;
+    }
+
+    if (userRules_ && userRules_->get(name, value)) {
+        return true;
+    }
+=======
+>>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1
 
     return paramId > 0 && fileRules[paramId].get(name, value);
 }

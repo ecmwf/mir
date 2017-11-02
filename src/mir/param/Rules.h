@@ -45,11 +45,17 @@ public:
 
     // -- Operators
 
-    const MIRParametrisation& operator[](const long& paramId) const;
+    const MIRParametrisation& operator()(const std::string& ruleName, const long& paramId) const;
 
     // -- Methods
 
+<<<<<<< HEAD:src/mir/param/rules/Rules.h
+    SimpleParametrisation& lookup(const std::string& ruleName, long ruleValue);
+
+
+=======
     SimpleParametrisation& lookup(const long& paramId);
+>>>>>>> f68a049735ab55d6e0d0c7e69cd58eb437c0f2c1:src/mir/param/Rules.h
 
 private:
 

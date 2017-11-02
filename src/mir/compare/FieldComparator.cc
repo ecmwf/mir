@@ -814,8 +814,8 @@ void FieldComparator::compareFieldValues(
     input::MIRInput& input2 = grib2;
 
 
-    const MIRParametrisation &metadata1 = input1.parametrisation(0);
-    const MIRParametrisation &metadata2 = input2.parametrisation(0);
+    const MIRParametrisation &metadata1 = input1.parametrisation();
+    const MIRParametrisation &metadata2 = input2.parametrisation();
 
 
     std::string comparison1;

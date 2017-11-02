@@ -76,6 +76,11 @@ void MIRInput::userRules(const param::rules::Rules* rules) {
     userRules_ = rules;
 }
 
+const param::MIRParametrisation& MIRInput::noRules() {
+    static param::SimpleParametrisation instance;
+    return instance;
+}
+
 //=========================================================================
 
 

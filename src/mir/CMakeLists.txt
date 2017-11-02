@@ -330,6 +330,8 @@ list(
     param/FieldParametrisation.h
     param/MIRCombinedParametrisation.cc
     param/MIRCombinedParametrisation.h
+    param/JoinedParametrisation.cc
+    param/JoinedParametrisation.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
     param/Rules.cc
