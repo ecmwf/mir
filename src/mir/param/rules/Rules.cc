@@ -11,6 +11,8 @@
 
 #include "mir/param/rules/Rules.h"
 
+#include "eckit/parser/JSON.h"
+
 
 namespace mir {
 namespace param {
@@ -49,13 +51,14 @@ SimpleParametrisation& Rules::modify(const long& paramId) {
 
 
 void Rules::print(std::ostream& s) const {
-    const char* sep = "";
-    s << "Rules=[";
-    for (const auto& pid : *this) {
-        s << sep << "\n\t" << pid.first << "={" << *pid.second << '}';
-        sep = ",";
+    s << "Rules=";
+    eckit::JSON json(s);
+
+    json.startObject();
+    for (const auto& rule : *this) {
+        json << rule.first << *rule.second;
     }
-    s << "]";
+    json.endObject();
 }
 
 
