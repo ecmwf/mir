@@ -9,25 +9,28 @@
  */
 
 
-#include "mir/param/rules/RulesFromUser.h"
+#ifndef mir_param_RulesFromFile_h
+#define mir_param_RulesFromFile_h
+
+#include "mir/param/Rules.h"
 
 
 namespace mir {
 namespace param {
-namespace rules {
 
 
-RulesFromUser& RulesFromUser::instance() {
-    static RulesFromUser ego;
-    return ego;
-}
+struct RulesFromFile : public Rules {
+
+    // -- Methods
+
+    void initialize();
+
+};
 
 
-RulesFromUser::RulesFromUser() {
-}
-
-
-}  // namespace rules
 }  // namespace param
 }  // namespace mir
+
+
+#endif
 

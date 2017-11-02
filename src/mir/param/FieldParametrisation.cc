@@ -17,10 +17,11 @@
 #include "mir/param/FieldParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 #include "eckit/types/Fraction.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/rules/RulesFromFile.h"
-#include "mir/param/rules/RulesFromUser.h"
+#include "mir/param/RulesFromFile.h"
 
 
 namespace mir {
@@ -28,6 +29,8 @@ namespace param {
 
 
 namespace {
+
+
 inline double shift(const double& a, const double& b, double increment) {
     const eckit::Fraction inc(increment);
     eckit::Fraction shift = a - (a / inc).integralPart() * inc;
@@ -41,6 +44,19 @@ inline double shift(const double& a, const double& b, double increment) {
 
     return shift;
 }
+
+
+static RulesFromFile fileRules;
+
+
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex *local_mutex = 0;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    fileRules.initialize();
+}
+
+
 }  // (anonymous namespace)
 
 
@@ -177,23 +193,17 @@ bool FieldParametrisation::get(const std::string& name, std::vector<std::string>
 template <class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
 
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(name != "paramId");
 
     // return paramId-specific setting
     // This assumes that other input (NetCDF, etc) also return a paramId
     long paramId = 0;
     get("paramId", paramId);
-    if (paramId <= 0) {
-        return false;
-    }
 
-    const MIRParametrisation& userRules = rules::RulesFromUser::instance()[paramId];
-    if (userRules.get(name, value)) {
-        return true;
-    }
-
-    const MIRParametrisation& fileRules = rules::RulesFromFile::instance()[paramId];
-    return fileRules.get(name, value);
+    return paramId > 0 && fileRules[paramId].get(name, value);
 }
 
 

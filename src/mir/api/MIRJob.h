@@ -19,6 +19,7 @@
 #include <string>
 
 
+#include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
 
@@ -129,7 +130,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    param::Rules userRules_;
 
     // -- Methods
 

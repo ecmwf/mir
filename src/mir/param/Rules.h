@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_param_rules_Rules_h
-#define mir_param_rules_Rules_h
+#ifndef mir_param_Rules_h
+#define mir_param_Rules_h
 
 #include <map>
 #include "eckit/memory/Owned.h"
@@ -20,7 +20,6 @@
 
 namespace mir {
 namespace param {
-namespace rules {
 
 
 // provide attach/detach to SimpleParametrisation under SharedPtr
@@ -50,7 +49,7 @@ public:
 
     // -- Methods
 
-    SimpleParametrisation& modify(const long& paramId);
+    SimpleParametrisation& lookup(const long& paramId);
 
 private:
 
@@ -68,7 +67,6 @@ private:
 };
 
 
-}  // namespace rules
 }  // namespace param
 }  // namespace mir
 

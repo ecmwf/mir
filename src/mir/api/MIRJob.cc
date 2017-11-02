@@ -22,7 +22,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/param/rules/RulesFromUser.h"
+#include "mir/param/Rules.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -101,9 +101,7 @@ MIRJob& MIRJob::addUserRule(const std::string& ruleName, long ruleValue, const s
     long paramId = ruleValue;
     if (paramId > 0) {
         eckit::Log::debug<LibMir>() << "MIRJob: set '" << settingName << "=" << settingValue << "' (paramId=" << paramId << ")" << std::endl;
-
-        param::SimpleParametrisation& rules = param::rules::RulesFromUser::instance().modify(paramId);
-        rules.set(settingName, settingValue);
+        userRules_.lookup(paramId).set(settingName, settingValue);
     }
     return *this;
 }

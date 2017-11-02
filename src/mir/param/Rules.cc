@@ -9,14 +9,13 @@
  */
 
 
-#include "mir/param/rules/Rules.h"
+#include "mir/param/Rules.h"
 
 #include "eckit/parser/JSON.h"
 
 
 namespace mir {
 namespace param {
-namespace rules {
 
 
 Rules::Rules() {
@@ -39,7 +38,7 @@ const MIRParametrisation& Rules::operator[](const long& paramId) const {
 }
 
 
-SimpleParametrisation& Rules::modify(const long& paramId) {
+SimpleParametrisation& Rules::lookup(const long& paramId) {
     auto& p = container_t::operator[](paramId);
 
     if (!p) {
@@ -62,7 +61,6 @@ void Rules::print(std::ostream& s) const {
 }
 
 
-}  // namespace rules
 }  // namespace param
 }  // namespace mir
 
