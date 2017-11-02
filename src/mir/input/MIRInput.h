@@ -29,9 +29,15 @@ namespace mir {
 namespace data {
 class MIRField;
 }
+
 namespace param {
 class MIRParametrisation;
 }
+
+class rules {
+class Rules;
+}
+
 }
 
 
@@ -57,6 +63,9 @@ public:
 
     // -- Methods
 
+    void userRules(const param::rules::Rules* rules);
+
+
     virtual bool next();
     virtual size_t dimensions() const;
 
@@ -81,7 +90,8 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::rules::Rules* userRules_;
 
     // -- Methods
 

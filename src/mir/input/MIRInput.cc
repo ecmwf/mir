@@ -31,7 +31,8 @@ namespace mir {
 namespace input {
 
 
-MIRInput::MIRInput() {
+MIRInput::MIRInput():
+    userRules_(0) {
 }
 
 
@@ -71,6 +72,9 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
+void MIRInput::userRules(const param::rules::Rules* rules) {
+    userRules_ = rules;
+}
 
 //=========================================================================
 
@@ -178,6 +182,8 @@ void MIRInputFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
+
+
 
 
 }  // namespace input
