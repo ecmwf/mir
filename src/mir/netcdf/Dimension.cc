@@ -68,7 +68,7 @@ void Dimension::clone(Dataset &) const {
 
 void Dimension::create(int) const {
     std::ostringstream os;
-    os << "Dimension::creat() not implemented for " << *this;
+    os << "Dimension::create() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
