@@ -74,6 +74,10 @@ bool VectorInput::sameAs(const MIRInput& other) const {
     return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 
+void VectorInput::userRules(const param::Rules* rules) {
+    component1_.userRules(rules);
+    component2_.userRules(rules);
+}
 
 void VectorInput::print(std::ostream &out) const {
     out << "VectorInput[" << component1_ << "," << component2_ << "]";

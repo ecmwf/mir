@@ -99,6 +99,7 @@ private:
     virtual void print(std::ostream &out) const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
+    virtual void userRules(const param::Rules* rules);
 
     // -- Class members
     // None
