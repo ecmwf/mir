@@ -113,7 +113,7 @@ MIRInputFactory::~MIRInputFactory() {
 
 
 static void put(std::ostream& out, unsigned long magic) {
-    out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec;
+    out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec <<  std::setfill(' ');
 
     char p[5] = {0,};
 
