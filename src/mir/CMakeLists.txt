@@ -334,8 +334,6 @@ list(
     param/MIRParametrisation.h
     param/Rules.cc
     param/Rules.h
-    param/RulesFromFile.cc
-    param/RulesFromFile.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc

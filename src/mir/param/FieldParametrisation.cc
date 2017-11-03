@@ -46,14 +46,14 @@ inline double shift(const double& a, const double& b, double increment) {
 }
 
 
-static RulesFromFile fileRules;
+static Rules fileRules;
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex *local_mutex = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    fileRules.initialize();
+    fileRules.readConfigurationFiles();
 }
 
 

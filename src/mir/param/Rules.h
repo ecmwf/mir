@@ -50,7 +50,7 @@ public:
 
     // -- Methods
 
-
+    void readConfigurationFiles();
 
 private:
 
