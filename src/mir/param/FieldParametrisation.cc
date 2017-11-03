@@ -21,7 +21,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/Fraction.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/RulesFromFile.h"
+#include "mir/param/Rules.h"
 
 
 namespace mir {
