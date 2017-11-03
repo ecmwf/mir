@@ -107,7 +107,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
 
         std::string intermediate_grid;
-        parametrisation_.get("user.intermediate-grid", intermediate_grid);
+        parametrisation_.get("user.spectral-intermediate-grid", intermediate_grid);
 
         eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(intermediate_grid, runtime));
         if (grid->active()) {

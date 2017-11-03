@@ -29,7 +29,7 @@ static IntermediateGridBuilder<IntermediateNamedGrid> __intermediate_grid_gridna
 IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& parametrisation) :
     IntermediateGrid(parametrisation) {
 
-    parametrisation_.get("intermediate-grid", gridname_);
+    parametrisation_.get("spectral-intermediate-grid", gridname_);
     ASSERT(gridname_.length());
 }
 
