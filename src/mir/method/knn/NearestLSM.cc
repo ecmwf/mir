@@ -56,8 +56,21 @@ void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
 
 lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     param::RuntimeParametrisation runtime(parametrisation_);
-    runtime.set("lsm", true); // Force use of LSM
-    runtime.set("lsm-selection", "auto");
+
+    // Force use of LSM (unless it is already set)
+    runtime.set("lsm", true);
+
+    std::string select;
+    if (!parametrisation_.get("lsm-selection", select) || select == "none") {
+        runtime.set("lsm-selection", "named");
+        runtime.set("lsm-named", "1km");
+    }
+    if (parametrisation_.get("lsm-selection-input", select) && select == "none") {
+        runtime.hide("lsm-selection-input");
+    }
+    if (parametrisation_.get("lsm-selection-output", select) && select == "none") {
+        runtime.hide("lsm-selection-output");
+    }
 
     lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(runtime, in, out);
     ASSERT(masks.active());
