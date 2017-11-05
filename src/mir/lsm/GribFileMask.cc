@@ -80,7 +80,9 @@ GribFileMask::GribFileMask(
     method->execute(ctx, *field.representation(), representation);
 
     double threshold;
-    ASSERT(parametrisation.get("lsm-value-threshold", threshold));
+    if (!parametrisation.get("lsm-value-threshold-" + which, threshold)) {
+        ASSERT(parametrisation.get("lsm-value-threshold", threshold));
+    }
 
 
     ASSERT(!ctx.field().hasMissing());
