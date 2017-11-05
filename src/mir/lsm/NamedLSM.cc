@@ -16,9 +16,8 @@
 #include <iostream>
 #include "eckit/utils/MD5.h"
 #include "mir/config/LibMir.h"
-#include "mir/lsm/GribFileLSM.h"
+#include "mir/lsm/GribFileMask.h"
 #include "mir/lsm/MappedMask.h"
-#include "mir/lsm/TenMinutesLSM.h"
 
 
 namespace mir {
@@ -26,13 +25,12 @@ namespace lsm {
 
 
 namespace {
-static NamedLSM input("named-input");
-static NamedLSM output("named-output");
+static NamedLSM __lsm_selection("named");
 }
 
 
 NamedLSM::NamedLSM(const std::string &name):
-    LSMChooser(name) {
+    LSMSelection(name) {
 }
 
 
@@ -56,9 +54,8 @@ Mask *NamedLSM::create(const std::string &name,
                       const repres::Representation& representation,
                       const std::string& which) const {
 
-    // Mask* mask = new TenMinutesLSM(name, param, grid, which);
     Mask* mask = new MappedMask(name, param, representation, which);
-    // Mask* mask = new GribFileLSM(name, path(param), param, grid, which);
+    // Mask* mask = new GribFileMask(name, path(param), param, grid, which);
 
     eckit::Log::debug<LibMir>() << "NamedLSM::create => " << *mask << std::endl;
     return mask;
@@ -70,7 +67,7 @@ std::string NamedLSM::cacheKey(const std::string &name,
                               const repres::Representation& representation,
                               const std::string& which) const {
     eckit::MD5 md5;
-    GribFileLSM::hashCacheKey(md5, path(param), param, representation, which); // We need to take the lsm interpolation method into account
+    GribFileMask::hashCacheKey(md5, path(param), param, representation, which); // We need to take the lsm interpolation method into account
     return "named." + md5.digest();
 }
 

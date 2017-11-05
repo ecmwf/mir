@@ -13,13 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef mir_lsm_GribFileLSM_h
-#define mir_lsm_GribFileLSM_h
+#ifndef mir_lsm_LSMSelection_h
+#define mir_lsm_LSMSelection_h
 
+#include <string>
 #include <iosfwd>
 
-#include "eckit/filesystem/PathName.h"
-#include "mir/lsm/Mask.h"
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -29,6 +29,9 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
+namespace lsm {
+class Mask;
+}
 }
 
 
@@ -36,24 +39,11 @@ namespace mir {
 namespace lsm {
 
 
-class GribFileLSM : public Mask {
+class LSMSelection : private eckit::NonCopyable {
 public:
 
     // -- Exceptions
     // None
-
-    // -- Contructors
-
-    GribFileLSM(
-            const std::string& name,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
-
-    // -- Destructor
-
-    ~GribFileLSM(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -62,7 +52,16 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    virtual Mask *create(const std::string& name,
+                         const param::MIRParametrisation&,
+                         const repres::Representation&,
+                         const std::string& which) const = 0;
+
+    virtual std::string cacheKey(const std::string& name,
+                                 const param::MIRParametrisation&,
+                                 const repres::Representation&,
+                                 const std::string& which) const = 0;
 
     // -- Overridden methods
     // None
@@ -72,22 +71,27 @@ public:
 
     // -- Class methods
 
-    static void hashCacheKey(
-            eckit::MD5&,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
+    static const LSMSelection& lookup(const std::string& name);
+    static void list(std::ostream&);
 
 protected:
 
+    // -- Constructors
+
+    LSMSelection(const std::string& name);
+
+    // -- Destructor
+
+    virtual ~LSMSelection();
+
     // -- Members
-    // None
+
+    std::string name_;
 
     // -- Methods
 
-    void hash(eckit::MD5&) const;
-    void print(std::ostream&) const;
+
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -100,21 +104,14 @@ protected:
 
 private:
 
-    // No copy allowed
-    GribFileLSM(const GribFileLSM&);
-    GribFileLSM& operator=(const GribFileLSM&);
-
     // -- Members
-
-    eckit::PathName path_;
-    std::vector<bool> mask_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    const std::vector<bool> &mask() const;
+    // None
 
     // -- Class members
     // None
@@ -123,7 +120,11 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream& operator<<(std::ostream& s, const LSMSelection& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

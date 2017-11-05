@@ -13,11 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef LSMChooser_H
-#define LSMChooser_H
+#ifndef mir_lsm_GribFileMask_h
+#define mir_lsm_GribFileMask_h
 
-#include <string>
 #include <iosfwd>
+
+#include "eckit/filesystem/PathName.h"
+#include "mir/lsm/Mask.h"
+
 
 namespace mir {
 namespace param {
@@ -28,12 +31,12 @@ class Representation;
 }
 }
 
+
 namespace mir {
 namespace lsm {
 
-class Mask;
 
-class LSMChooser {
+class GribFileMask : public Mask {
 public:
 
     // -- Exceptions
@@ -41,9 +44,16 @@ public:
 
     // -- Contructors
 
+    GribFileMask(
+            const std::string& name,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const repres::Representation &,
+            const std::string& which );
 
     // -- Destructor
 
+    ~GribFileMask();
 
     // -- Convertors
     // None
@@ -52,16 +62,7 @@ public:
     // None
 
     // -- Methods
-
-    virtual Mask *create(const std::string &name,
-                         const param::MIRParametrisation &parametrisation,
-                         const repres::Representation& representation,
-                         const std::string& which) const = 0 ;
-
-    virtual std::string cacheKey(const std::string &name,
-                                 const param::MIRParametrisation &parametrisation,
-                                 const repres::Representation& representation,
-                                 const std::string& which) const = 0 ;
+    // None
 
     // -- Overridden methods
     // None
@@ -71,26 +72,27 @@ public:
 
     // -- Class methods
 
-    static const LSMChooser &lookup(const std::string& name);
-    static void list(std::ostream &);
+    static void hashCacheKey(
+            eckit::MD5&,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const repres::Representation &,
+            const std::string& which );
 
 protected:
 
-    LSMChooser(const std::string &name);
-    virtual ~LSMChooser(); // Change to virtual if base class
-
-
     // -- Members
-
-    std::string name_;
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual bool active() const;
+    virtual bool cacheable() const;
+    virtual void hash(eckit::MD5&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -100,38 +102,33 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    LSMChooser(const LSMChooser &);
-    LSMChooser &operator=(const LSMChooser &);
-
     // -- Members
-    // None
+
+    eckit::PathName path_;
+    std::vector<bool> mask_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
-    // None
+
+    const std::vector<bool> &mask() const;
 
     // -- Class members
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
-
-    friend std::ostream &operator<<(std::ostream &s, const LSMChooser &p) {
-        p.print(s);
-        return s;
-    }
+    // None
 
 };
 
 
-
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

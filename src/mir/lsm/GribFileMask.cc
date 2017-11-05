@@ -14,7 +14,7 @@
 /// @date Apr 2015
 
 
-#include "mir/lsm/GribFileLSM.h"
+#include "mir/lsm/GribFileMask.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
@@ -35,7 +35,7 @@ namespace mir {
 namespace lsm {
 
 
-GribFileLSM::GribFileLSM(
+GribFileMask::GribFileMask(
         const std::string& name,
         const eckit::PathName& path,
         const param::MIRParametrisation& parametrisation,
@@ -48,7 +48,7 @@ GribFileLSM::GribFileLSM(
     // object is cached
 
 
-    eckit::Log::debug<LibMir>() << "GribFileLSM loading " << path_ << std::endl;
+    eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
 
     mir::input::GribFileInput file( path_ );
     mir::input::MIRInput &input = file;
@@ -62,7 +62,7 @@ GribFileLSM::GribFileLSM(
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
         if (!parametrisation.get("lsm-interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
+            throw eckit::SeriousBug("No interpolation method defined for land-sea mask");
         }
     }
 
@@ -94,22 +94,22 @@ GribFileLSM::GribFileLSM(
 }
 
 
-GribFileLSM::~GribFileLSM() {
+GribFileMask::~GribFileMask() {
 }
 
 
-void GribFileLSM::hash(eckit::MD5 &md5) const {
+void GribFileMask::hash(eckit::MD5 &md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
 
 
-void GribFileLSM::print(std::ostream &out) const {
-    out << "GribFileLSM[name=" << name_ << ",path=" << path_ << "]";
+void GribFileMask::print(std::ostream &out) const {
+    out << "GribFileMask[name=" << name_ << ",path=" << path_ << "]";
 }
 
 
-void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
+void GribFileMask::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
                                const param::MIRParametrisation &parametrisation,
                                const repres::Representation& representation,
                                const std::string &which) {
@@ -127,7 +127,17 @@ void GribFileLSM::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
 }
 
 
-const std::vector<bool> &GribFileLSM::mask() const {
+bool GribFileMask::active() const {
+    return true;
+}
+
+
+bool GribFileMask::cacheable() const {
+    return true;
+}
+
+
+const std::vector<bool> &GribFileMask::mask() const {
     return mask_;
 }
 

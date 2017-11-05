@@ -13,29 +13,29 @@
 /// @date Apr 2015
 
 
-#ifndef UserFileLSM_H
-#define UserFileLSM_H
+#ifndef mir_lsm_FileLSM_h
+#define mir_lsm_FileLSM_h
 
+#include "mir/lsm/LSMSelection.h"
 
-#include "mir/lsm/LSMChooser.h"
 
 namespace mir {
 namespace lsm {
 
 
-class UserFileLSM : public LSMChooser {
-  public:
+class FileLSM : public LSMSelection {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    UserFileLSM(const std::string &name, const std::string &which);
+    FileLSM(const std::string& name);
 
     // -- Destructor
 
-    virtual ~UserFileLSM(); // Change to virtual if base class
+    virtual ~FileLSM();
 
     // -- Convertors
     // None
@@ -44,24 +44,7 @@ class UserFileLSM : public LSMChooser {
     // None
 
     // -- Methods
-
-    // -- Overridden methods
     // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-
-
-  protected:
-
-    // -- Members
-
-    // -- Methods
-
-
-    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,21 +55,32 @@ class UserFileLSM : public LSMChooser {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    UserFileLSM(const UserFileLSM &);
-    UserFileLSM &operator=(const UserFileLSM &);
+protected:
 
     // -- Members
-
-    std::string which_;
+    // None
 
     // -- Methods
 
-    std::string path(const param::MIRParametrisation &param) const;
+    virtual void print(std::ostream&) const;
 
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+
+    // -- Members
+    // None
+
+    // -- Methods
+
+    std::string path(const param::MIRParametrisation& param, const std::string& which) const;
 
     // -- Overridden methods
     // None
@@ -106,15 +100,15 @@ class UserFileLSM : public LSMChooser {
                                  const repres::Representation& representation,
                                  const std::string& which) const ;
 
-
     // -- Friends
-
-
+    // None
 
 };
 
 
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

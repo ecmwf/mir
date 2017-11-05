@@ -12,41 +12,26 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/lsm/NoneLSM.h"
+
 #include <iostream>
-#include "mir/lsm/Mask.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/lsm/NoMask.h"
+
 
 namespace mir {
 namespace lsm {
 
-class NoLSM : public Mask {
-    virtual bool active() const {
-        return false;
-    }
 
-    virtual bool cacheable() const {
-        return false;
-    }
+namespace {
+static NoneLSM __lsm_selection("none");
+}
 
-    virtual void hash(eckit::MD5 &) const {
 
-    }
-
-    virtual void print(std::ostream &out) const {
-        out << "none";
-    }
-
-    const std::vector<bool> &mask() const {
-        NOTIMP;
-    }
-
-  public:
-    NoLSM(): Mask("none") {}
-};
 
 NoneLSM::NoneLSM(const std::string &name):
-    LSMChooser(name) {
+    LSMSelection(name) {
 }
 
 
@@ -54,7 +39,7 @@ NoneLSM::~NoneLSM() {
 }
 
 Mask &NoneLSM::instance() {
-    static NoLSM none;
+    static NoMask none;
     return none;
 }
 
@@ -62,24 +47,18 @@ void NoneLSM::print(std::ostream &out) const {
     out << "NoneLSM[" << name_ << "]";
 }
 
-Mask *NoneLSM::create(const std::string &name,
-                      const param::MIRParametrisation &param,
-                      const repres::Representation& representation,
-                      const std::string &which) const {
-    return new NoLSM();
+Mask *NoneLSM::create(const std::string&,
+                      const param::MIRParametrisation&,
+                      const repres::Representation&,
+                      const std::string&) const {
+    return new NoMask();
 }
 
-std::string NoneLSM::cacheKey(const std::string &name,
-                              const param::MIRParametrisation &param,
-                              const repres::Representation& representation,
-                              const std::string &which) const {
+std::string NoneLSM::cacheKey(const std::string&,
+                              const param::MIRParametrisation&,
+                              const repres::Representation&,
+                              const std::string&) const {
     return "none";
-}
-
-namespace {
-static NoneLSM input("none-input");
-static NoneLSM output("none-output");
-
 }
 
 

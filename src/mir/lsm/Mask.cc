@@ -78,7 +78,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     }
 
     name = name + "-" + which;
-    const LSMChooser &chooser = LSMChooser::lookup(name);
+    const LSMSelection &chooser = LSMSelection::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, representation, which);
 
     pthread_once(&once, init);
@@ -107,16 +107,6 @@ Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const 
 
 Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
     return lookup(parametrisation, representation, "output");
-}
-
-
-bool Mask::cacheable() const {
-    return true;
-}
-
-
-bool Mask::active() const {
-    return true;
 }
 
 

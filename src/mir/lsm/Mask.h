@@ -43,14 +43,17 @@ class Representation;
 namespace mir {
 namespace lsm {
 
+
 class Mask : private eckit::NonCopyable {
 public:
+
+    // -- Contructors
 
     Mask(const std::string &name);
 
     // -- Destructor
 
-    virtual ~Mask(); // Change to virtual if base class
+    virtual ~Mask();
 
     // -- Convertors
     // None
@@ -60,12 +63,10 @@ public:
 
     // -- Methods
 
-    virtual bool active() const;
-
-    virtual bool cacheable() const;
-
-    virtual void hash(eckit::MD5 &) const;
-    virtual const std::vector<bool> &mask() const = 0;
+    virtual bool active() const = 0;
+    virtual bool cacheable() const = 0;
+    virtual void hash(eckit::MD5&) const;
+    virtual const std::vector<bool>& mask() const = 0;
 
     // -- Overridden methods
     // None
@@ -75,8 +76,8 @@ public:
 
     // -- Class methods
 
-    static  Mask &lookupInput(const param::MIRParametrisation &param, const repres::Representation& representation);
-    static  Mask &lookupOutput(const param::MIRParametrisation &param, const repres::Representation& representation);
+    static Mask& lookupInput(const param::MIRParametrisation&, const repres::Representation&);
+    static Mask& lookupOutput(const param::MIRParametrisation&, const repres::Representation&);
 
 protected:
 
@@ -87,7 +88,6 @@ protected:
     // -- Methods
 
     virtual void print(std::ostream &) const = 0;
-
 
     // -- Overridden methods
     // None
@@ -104,6 +104,7 @@ private:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -112,22 +113,24 @@ private:
     // None
 
     // -- Class methods
-    static  Mask &lookup(const param::MIRParametrisation &param,
-                         const repres::Representation& representation,
-                         const std::string &which);
 
+    static Mask& lookup(const param::MIRParametrisation&,
+                        const repres::Representation&,
+                        const std::string& which);
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Mask &p) {
+    friend std::ostream &operator<<(std::ostream& s, const Mask& p) {
         p.print(s);
         return s;
     }
 
 };
 
+
 }  // namespace lsm
 }  // namespace mir
+
 
 #endif
 

@@ -12,90 +12,73 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/lsm/LSMChooser.h"
+
+#include "mir/lsm/LSMSelection.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 
-#include <set>
-
 namespace mir {
 namespace lsm {
+
+
 namespace {
-
-
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, LSMChooser *> *m = 0;
-
-
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static eckit::Mutex* local_mutex = 0;
+static std::map< std::string, LSMSelection* >* m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, LSMChooser *>();
+    m = new std::map< std::string, LSMSelection* >();
 }
-
-
 }  // (anonymous namespace)
 
 
-LSMChooser::LSMChooser(const std::string &name):
+LSMSelection::LSMSelection(const std::string& name) :
     name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
 
 
-LSMChooser::~LSMChooser() {
+LSMSelection::~LSMSelection() {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
 
 
-void LSMChooser::list(std::ostream &out) {
+void LSMSelection::list(std::ostream &out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-
-    std::set<std::string> seen;
-    const char *sep = "";
-    for (std::map<std::string, LSMChooser *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        std::string name = (*j).first.substr(0, (*j).first.find("."));
-        if (seen.find(name) == seen.end()) {
-            out << sep << name;
-            sep = ", ";
-            seen.insert(name);
-        }
+    const char* sep = "";
+    for (const auto& j : *m) {
+        out << sep << j.first;
+        sep = ", ";
     }
 }
 
-const LSMChooser &LSMChooser::lookup(const std::string &name) {
 
+const LSMSelection& LSMSelection::lookup(const std::string& name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, LSMChooser *>::const_iterator j = m->find(name);
 
-    eckit::Log::debug<LibMir>() << "Looking for LSMChooser [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "LSMSelection: looking for '" << name << "'" << std::endl;
+
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No LSMChooser for [" << name << "]" << std::endl;
-        eckit::Log::error() << "LSMChoosers are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No LSMChooser called ") + name);
+        list(eckit::Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("LSMSelection: unknown '" + name + "'");
     }
 
-
-    return *(*j).second;
+    return *(j->second);
 }
 
 

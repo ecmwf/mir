@@ -149,13 +149,26 @@ MappedMask::MappedMask(const std::string &name,
     }
 }
 
+
 MappedMask::~MappedMask() {
 }
 
-void MappedMask::hash(eckit::MD5 &md5) const {
+
+bool MappedMask::active() const {
+    return true;
+}
+
+
+bool MappedMask::cacheable() const {
+    return true;
+}
+
+
+void MappedMask::hash(eckit::MD5&md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
+
 
 void MappedMask::print(std::ostream &out) const {
     out << "MappedMask[path=" << path_ << "]";
