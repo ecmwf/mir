@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_lsm_GribFileLSM_h
-#define mir_lsm_GribFileLSM_h
+#ifndef mir_lsm_TenMinutesMask_h
+#define mir_lsm_TenMinutesMask_h
 
 #include <iosfwd>
-
 #include "eckit/filesystem/PathName.h"
 #include "mir/lsm/Mask.h"
 
@@ -26,17 +25,13 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-namespace repres {
-class Representation;
-}
 }
 
 
 namespace mir {
 namespace lsm {
 
-
-class GribFileLSM : public Mask {
+class TenMinutesMask : public Mask {
 public:
 
     // -- Exceptions
@@ -44,16 +39,16 @@ public:
 
     // -- Contructors
 
-    GribFileLSM(
+    TenMinutesMask(
             const std::string& name,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
+            const repres::Representation&,
+            const std::string& which);
 
     // -- Destructor
 
-    ~GribFileLSM(); // Change to virtual if base class
+    virtual ~TenMinutesMask();
 
     // -- Convertors
     // None
@@ -71,38 +66,9 @@ public:
     // None
 
     // -- Class methods
-
-    static void hashCacheKey(
-            eckit::MD5&,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void hash(eckit::MD5&) const;
-    void print(std::ostream&) const;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
     // None
 
 private:
-
-    // No copy allowed
-    GribFileLSM(const GribFileLSM&);
-    GribFileLSM& operator=(const GribFileLSM&);
 
     // -- Members
 
@@ -114,7 +80,11 @@ private:
 
     // -- Overridden methods
 
-    const std::vector<bool> &mask() const;
+    virtual bool active() const;
+    virtual bool cacheable() const;
+    virtual void hash(eckit::MD5&) const;
+    virtual const std::vector<bool>& mask() const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None

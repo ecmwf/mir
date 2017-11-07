@@ -13,28 +13,29 @@
 /// @date Apr 2015
 
 
-#ifndef NoneLSM_H
-#define NoneLSM_H
+#ifndef mir_lsm_NoneLSM_h
+#define mir_lsm_NoneLSM_h
 
-#include "mir/lsm/LSMChooser.h"
+#include "mir/lsm/LSMSelection.h"
+
 
 namespace mir {
 namespace lsm {
 
 
-class NoneLSM : public LSMChooser {
-  public:
+class NoneLSM : public LSMSelection {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    NoneLSM(const std::string &name);
+    NoneLSM(const std::string& name);
 
     // -- Destructor
 
-    virtual ~NoneLSM(); // Change to virtual if base class
+    virtual ~NoneLSM();
 
     // -- Convertors
     // None
@@ -44,6 +45,8 @@ class NoneLSM : public LSMChooser {
 
     // -- Methods
 
+    static Mask& noMask();
+
     // -- Overridden methods
     // None
 
@@ -51,13 +54,12 @@ class NoneLSM : public LSMChooser {
     // None
 
     // -- Class methods
+    // None
 
-    static Mask& instance();
-
-
-  protected:
+protected:
 
     // -- Members
+    // None
 
     // -- Methods
 
@@ -72,18 +74,13 @@ class NoneLSM : public LSMChooser {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    NoneLSM(const NoneLSM &);
-    NoneLSM &operator=(const NoneLSM &);
+private:
 
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -93,24 +90,25 @@ class NoneLSM : public LSMChooser {
 
     // -- Class methods
 
-    virtual Mask *create(const std::string &,
-                         const param::MIRParametrisation &param,
-                         const repres::Representation& representation,
+    virtual Mask* create(const std::string&,
+                         const param::MIRParametrisation&,
+                         const repres::Representation&,
                          const std::string& which) const ;
 
-    virtual std::string cacheKey(const std::string &,
-                                 const param::MIRParametrisation &param,
-                                 const repres::Representation& representation,
-                                 const std::string& which) const ;
+    virtual std::string cacheKey(const std::string&,
+                                 const param::MIRParametrisation&,
+                                 const repres::Representation&,
+                                 const std::string& which) const;
 
     // -- Friends
-
-
+    // None
 
 };
 
 
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

@@ -13,11 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef LSMChooser_H
-#define LSMChooser_H
+#ifndef mir_lsm_LSMSelection_h
+#define mir_lsm_LSMSelection_h
 
 #include <string>
 #include <iosfwd>
+
+#include "eckit/memory/NonCopyable.h"
+
 
 namespace mir {
 namespace param {
@@ -26,24 +29,21 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
+namespace lsm {
+class Mask;
 }
+}
+
 
 namespace mir {
 namespace lsm {
 
-class Mask;
 
-class LSMChooser {
+class LSMSelection : private eckit::NonCopyable {
 public:
 
     // -- Exceptions
     // None
-
-    // -- Contructors
-
-
-    // -- Destructor
-
 
     // -- Convertors
     // None
@@ -53,15 +53,15 @@ public:
 
     // -- Methods
 
-    virtual Mask *create(const std::string &name,
-                         const param::MIRParametrisation &parametrisation,
-                         const repres::Representation& representation,
-                         const std::string& which) const = 0 ;
+    virtual Mask *create(const std::string& name,
+                         const param::MIRParametrisation&,
+                         const repres::Representation&,
+                         const std::string& which) const = 0;
 
-    virtual std::string cacheKey(const std::string &name,
-                                 const param::MIRParametrisation &parametrisation,
-                                 const repres::Representation& representation,
-                                 const std::string& which) const = 0 ;
+    virtual std::string cacheKey(const std::string& name,
+                                 const param::MIRParametrisation&,
+                                 const repres::Representation&,
+                                 const std::string& which) const = 0;
 
     // -- Overridden methods
     // None
@@ -71,14 +71,18 @@ public:
 
     // -- Class methods
 
-    static const LSMChooser &lookup(const std::string& name);
-    static void list(std::ostream &);
+    static const LSMSelection& lookup(const std::string& name);
+    static void list(std::ostream&);
 
 protected:
 
-    LSMChooser(const std::string &name);
-    virtual ~LSMChooser(); // Change to virtual if base class
+    // -- Constructors
 
+    LSMSelection(const std::string& name);
+
+    // -- Destructor
+
+    virtual ~LSMSelection();
 
     // -- Members
 
@@ -87,7 +91,7 @@ protected:
     // -- Methods
 
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -100,16 +104,11 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    LSMChooser(const LSMChooser &);
-    LSMChooser &operator=(const LSMChooser &);
-
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -118,11 +117,11 @@ private:
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const LSMChooser &p) {
+    friend std::ostream& operator<<(std::ostream& s, const LSMSelection& p) {
         p.print(s);
         return s;
     }
@@ -130,8 +129,9 @@ private:
 };
 
 
-
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

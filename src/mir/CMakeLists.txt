@@ -208,12 +208,16 @@ list(
     input/VectorInput.h
     log/MIR.cc
     log/MIR.h
-    lsm/AutoLSM.cc
-    lsm/AutoLSM.h
-    lsm/GribFileLSM.cc
-    lsm/GribFileLSM.h
-    lsm/LSMChooser.cc
-    lsm/LSMChooser.h
+    lsm/FileLSM.cc
+    lsm/FileLSM.h
+    lsm/GribFileMask.cc
+    lsm/GribFileMask.h
+    lsm/GribFileMaskFromMIR.cc
+    lsm/GribFileMaskFromMIR.h
+    lsm/GribFileMaskFromUser.cc
+    lsm/GribFileMaskFromUser.h
+    lsm/LSMSelection.cc
+    lsm/LSMSelection.h
     lsm/LandSeaMasks.cc
     lsm/LandSeaMasks.h
     lsm/MappedMask.cc
@@ -222,12 +226,12 @@ list(
     lsm/Mask.h
     lsm/NamedLSM.cc
     lsm/NamedLSM.h
+    lsm/NoMask.cc
+    lsm/NoMask.h
     lsm/NoneLSM.cc
     lsm/NoneLSM.h
-    lsm/TenMinutesLSM.cc
-    lsm/TenMinutesLSM.h
-    lsm/UserFileLSM.cc
-    lsm/UserFileLSM.h
+    lsm/TenMinutesMask.cc
+    lsm/TenMinutesMask.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc

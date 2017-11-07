@@ -61,7 +61,7 @@ SimpleParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue
 }
 
 
-void Rules::print(std::ostream & s) const {
+void Rules::print(std::ostream& s) const {
     s << "Rules=";
     eckit::JSON json(s);
 

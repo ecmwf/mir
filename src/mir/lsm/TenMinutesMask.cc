@@ -14,31 +14,27 @@
 /// @date Apr 2015
 
 
-#include "TenMinutesLSM.h"
+#include "TenMinutesMask.h"
 
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-
 #include "mir/config/LibMir.h"
-
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
+
 namespace {
-
-static eckit::Mutex local_mutex ;
+static eckit::Mutex local_mutex;
 static std::vector<std::vector<bool> > ten_minutes_;
-
 }
+
 
 namespace mir {
 namespace lsm {
 
-const size_t ROWS = 1080;
-const size_t COLS = 2160;
 
 /*
 From EMOSLIB:
@@ -51,20 +47,23 @@ From EMOSLIB:
 
     ~mir/share/mir/masks/lsm.10min.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
-
-TenMinutesLSM::TenMinutesLSM(const std::string &name,
-                             const param::MIRParametrisation &parametrisation,
-                             const repres::Representation& representation,
-                             const std::string &which):
+TenMinutesMask::TenMinutesMask(
+        const std::string& name,
+        const eckit::PathName& path,
+        const param::MIRParametrisation& parametrisation,
+        const repres::Representation& representation,
+        const std::string& which):
     Mask(name),
-    path_("~mir/share/mir/masks/lsm.10min.mask") {
+    path_(path) {
 
+    const size_t ROWS = 1080;
+    const size_t COLS = 2160;
 
     if (ten_minutes_.size() == 0) {
 
         eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::debug<LibMir>() << "TenMinutesLSM loading " << path_ << std::endl;
+        eckit::Log::debug<LibMir>() << "TenMinutesMask loading " << path_ << std::endl;
 
         eckit::StdFile file(path_);
         ten_minutes_.resize(ROWS);
@@ -108,23 +107,35 @@ TenMinutesLSM::TenMinutesLSM(const std::string &name,
 
         mask_.push_back(ten_minutes_[row][col]);
     }
-
 }
 
-TenMinutesLSM::~TenMinutesLSM() {
+
+TenMinutesMask::~TenMinutesMask() {
 }
 
-void TenMinutesLSM::hash(eckit::MD5 &md5) const {
+
+bool TenMinutesMask::active() const {
+    return true;
+}
+
+
+bool TenMinutesMask::cacheable() const {
+    return true;
+}
+
+
+void TenMinutesMask::hash(eckit::MD5& md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
 
-void TenMinutesLSM::print(std::ostream &out) const {
-    out << "TenMinutesLSM[path=" << path_ << "]";
+
+void TenMinutesMask::print(std::ostream& out) const {
+    out << "TenMinutesMask[path=" << path_ << "]";
 }
 
 
-const std::vector<bool> &TenMinutesLSM::mask() const {
+const std::vector<bool>& TenMinutesMask::mask() const {
     return mask_;
 }
 

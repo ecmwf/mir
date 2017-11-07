@@ -158,7 +158,7 @@ MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outpu
         out << sep << value[n];
         sep = "/";
     }
-    if (n > outputCount) {
+    if (n < value.size()) {
         out << sep << "...";
     }
     out << "'" << std::endl;

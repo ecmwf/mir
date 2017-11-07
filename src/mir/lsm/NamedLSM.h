@@ -14,14 +14,14 @@
 #ifndef mir_lsm_NamedLSM_h
 #define mir_lsm_NamedLSM_h
 
-#include "mir/lsm/LSMChooser.h"
+#include "mir/lsm/LSMSelection.h"
 
 
 namespace mir {
 namespace lsm {
 
 
-class NamedLSM : public LSMChooser {
+class NamedLSM : public LSMSelection {
 public:
 
     // -- Exceptions
@@ -56,11 +56,12 @@ public:
 private:
 
     // -- Members
-    // None
+
+    const enum { FormatIsGrib, FormatIs1km, FormatIs10min } format_;
+    const std::string path_;
 
     // -- Methods
-
-    std::string path(const param::MIRParametrisation&) const;
+    // None
 
     // -- Overridden methods
 
@@ -71,12 +72,12 @@ private:
 
     // -- Class methods
 
-    Mask* create(const std::string&,
+    Mask* create(const std::string& name,
                  const param::MIRParametrisation&,
                  const repres::Representation&,
                  const std::string& which) const;
 
-    std::string cacheKey(const std::string&,
+    std::string cacheKey(const std::string& name,
                          const param::MIRParametrisation&,
                          const repres::Representation&,
                          const std::string& which) const;

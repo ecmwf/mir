@@ -13,29 +13,47 @@
 /// @date Apr 2015
 
 
-#ifndef AutoLSM_H
-#define AutoLSM_H
+#ifndef mir_lsm_GribFileMask_h
+#define mir_lsm_GribFileMask_h
+
+#include <iosfwd>
+
+#include "eckit/filesystem/PathName.h"
+#include "mir/lsm/Mask.h"
 
 
-#include "mir/lsm/LSMChooser.h"
+namespace mir {
+namespace param {
+class MIRParametrisation;
+}
+namespace repres {
+class Representation;
+}
+}
+
 
 namespace mir {
 namespace lsm {
 
 
-class AutoLSM : public LSMChooser {
-  public:
+class GribFileMask : public Mask {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    AutoLSM(const std::string &name);
+    GribFileMask(
+            const std::string& name,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const repres::Representation&,
+            const std::string& which);
 
     // -- Destructor
 
-    virtual ~AutoLSM(); // Change to virtual if base class
+    ~GribFileMask();
 
     // -- Convertors
     // None
@@ -44,24 +62,7 @@ class AutoLSM : public LSMChooser {
     // None
 
     // -- Methods
-
-    // -- Overridden methods
     // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-
-
-  protected:
-
-    // -- Members
-
-    // -- Methods
-
-
-    virtual void print(std::ostream &) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,47 +73,56 @@ class AutoLSM : public LSMChooser {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    AutoLSM(const AutoLSM &);
-    AutoLSM &operator=(const AutoLSM &);
+protected:
 
     // -- Members
     // None
 
     // -- Methods
-
-    std::string path(const param::MIRParametrisation &param) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual bool active() const;
+    virtual bool cacheable() const = 0;
+    virtual void hash(eckit::MD5&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
 
     // -- Class methods
+    // None
 
-    virtual Mask *create(const std::string &,
-                         const param::MIRParametrisation &param,
-                         const repres::Representation& representation,
-                         const std::string& which) const ;
+private:
 
-    virtual std::string cacheKey(const std::string &,
-                                 const param::MIRParametrisation &param,
-                                 const repres::Representation& representation,
-                                 const std::string& which) const ;
+    // -- Members
 
+    const eckit::PathName path_;
+    std::vector<bool> mask_;
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    const std::vector<bool>& mask() const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
     // -- Friends
-
-
+    // None
 
 };
 
 
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

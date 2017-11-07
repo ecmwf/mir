@@ -57,7 +57,7 @@ public:
 
     // -- Destructor
 
-    ~LandSeaMasks(); // Change to virtual if base class
+    ~LandSeaMasks();
 
     // -- Convertors
     // None
@@ -98,7 +98,7 @@ protected:
     // -- Methods
 
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream &) const;
 
     // -- Overridden methods
     // None
