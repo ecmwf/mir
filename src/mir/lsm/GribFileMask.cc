@@ -27,7 +27,6 @@
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-
 #include "mir/util/MIRStatistics.h"
 
 
@@ -40,7 +39,7 @@ GribFileMask::GribFileMask(
         const eckit::PathName& path,
         const param::MIRParametrisation& parametrisation,
         const repres::Representation& representation,
-        const std::string& which ):
+        const std::string& which):
     Mask(name),
     path_(path) {
 
@@ -51,7 +50,7 @@ GribFileMask::GribFileMask(
     eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
 
     mir::input::GribFileInput file( path_ );
-    mir::input::MIRInput &input = file;
+    mir::input::MIRInput& input = file;
 
     ASSERT(file.next());
     data::MIRField field = input.field();
@@ -71,7 +70,7 @@ GribFileMask::GribFileMask(
 
     if (!(field.representation()->isGlobal())) {
         std::ostringstream oss;
-        oss << "Input LSM file '" << path_ << "' should be global";
+        oss << "LSM file '" << path_ << "' should be global";
         throw eckit::UserError(oss.str());
     }
 
@@ -88,7 +87,7 @@ GribFileMask::GribFileMask(
     ASSERT(!ctx.field().hasMissing());
     ASSERT(ctx.field().dimensions() == 1);
 
-    const std::vector< double > &values = ctx.field().values(0);
+    const std::vector< double >& values = ctx.field().values(0);
     mask_.resize(values.size());
 
     /// Compare values inequality, "is greater or equal to"
@@ -100,32 +99,14 @@ GribFileMask::~GribFileMask() {
 }
 
 
-void GribFileMask::hash(eckit::MD5 &md5) const {
+void GribFileMask::hash(eckit::MD5& md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
 
 
-void GribFileMask::print(std::ostream &out) const {
+void GribFileMask::print(std::ostream& out) const {
     out << "GribFileMask[name=" << name_ << ",path=" << path_ << "]";
-}
-
-
-void GribFileMask::hashCacheKey(eckit::MD5 &md5, const eckit::PathName &path,
-                               const param::MIRParametrisation &parametrisation,
-                               const repres::Representation& representation,
-                               const std::string &which) {
-
-    std::string interpolation;
-    if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
-        if (!parametrisation.get("lsm-interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
-        }
-    }
-
-    md5 << path.asString();
-    md5 << interpolation;
-    md5 << representation.uniqueName();
 }
 
 
@@ -134,12 +115,7 @@ bool GribFileMask::active() const {
 }
 
 
-bool GribFileMask::cacheable() const {
-    return true;
-}
-
-
-const std::vector<bool> &GribFileMask::mask() const {
+const std::vector<bool>& GribFileMask::mask() const {
     return mask_;
 }
 

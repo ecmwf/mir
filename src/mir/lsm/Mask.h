@@ -25,6 +25,7 @@
 
 namespace eckit {
 class MD5;
+class PathName;
 }
 
 
@@ -67,6 +68,14 @@ public:
     virtual bool cacheable() const = 0;
     virtual void hash(eckit::MD5&) const;
     virtual const std::vector<bool>& mask() const = 0;
+
+    // Cache key takes the interpolation method into account
+    static void hashCacheKey(
+            eckit::MD5&,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const repres::Representation&,
+            const std::string& which);
 
     // -- Overridden methods
     // None

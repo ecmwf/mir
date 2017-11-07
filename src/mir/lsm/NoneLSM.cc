@@ -29,7 +29,6 @@ static NoneLSM __lsm_selection("none");
 }
 
 
-
 NoneLSM::NoneLSM(const std::string &name):
     LSMSelection(name) {
 }
@@ -38,14 +37,17 @@ NoneLSM::NoneLSM(const std::string &name):
 NoneLSM::~NoneLSM() {
 }
 
-Mask &NoneLSM::instance() {
+
+Mask& NoneLSM::noMask() {
     static NoMask none;
     return none;
 }
 
+
 void NoneLSM::print(std::ostream &out) const {
     out << "NoneLSM[" << name_ << "]";
 }
+
 
 Mask *NoneLSM::create(const std::string&,
                       const param::MIRParametrisation&,
@@ -53,6 +55,7 @@ Mask *NoneLSM::create(const std::string&,
                       const std::string&) const {
     return new NoMask();
 }
+
 
 std::string NoneLSM::cacheKey(const std::string&,
                               const param::MIRParametrisation&,

@@ -44,7 +44,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static Mask& noMask();
 
     // -- Overridden methods
     // None
@@ -53,8 +54,7 @@ public:
     // None
 
     // -- Class methods
-
-    static Mask& instance();
+    // None
 
 protected:
 

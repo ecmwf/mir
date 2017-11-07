@@ -23,6 +23,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -59,30 +60,47 @@ void Mask::hash(eckit::MD5 &md5) const {
 }
 
 
+void Mask::hashCacheKey(eckit::MD5& md5,
+                        const eckit::PathName& path,
+                        const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation,
+                        const std::string& which) {
+
+    std::string interpolation;
+    if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
+        if (!parametrisation.get("lsm-interpolation", interpolation)) {
+            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
+        }
+    }
+
+    md5 << path.asString();
+    md5 << interpolation;
+    md5 << representation.uniqueName();
+}
+
+
 Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
 
     bool lsm = false;
     parametrisation.get("lsm", lsm);
 
     if (!lsm) {
-        return NoneLSM::instance();
+        return NoneLSM::noMask();
     }
 
 
     std::string name;
-
     if (!parametrisation.get("lsm-selection-" + which, name)) {
         if (!parametrisation.get("lsm-selection", name)) {
             throw eckit::SeriousBug("No lsm selection method provided");
         }
     }
 
-    name = name + "-" + which;
+//    name = name + "-" + which;
     const LSMSelection &chooser = LSMSelection::lookup(name);
     std::string key = chooser.cacheKey(name, parametrisation, representation, which);
 
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;

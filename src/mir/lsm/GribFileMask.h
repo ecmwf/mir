@@ -48,8 +48,8 @@ public:
             const std::string& name,
             const eckit::PathName&,
             const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
+            const repres::Representation&,
+            const std::string& which);
 
     // -- Destructor
 
@@ -71,13 +71,7 @@ public:
     // None
 
     // -- Class methods
-
-    static void hashCacheKey(
-            eckit::MD5&,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation &,
-            const std::string& which );
+    // None
 
 protected:
 
@@ -90,7 +84,7 @@ protected:
     // -- Overridden methods
 
     virtual bool active() const;
-    virtual bool cacheable() const;
+    virtual bool cacheable() const = 0;
     virtual void hash(eckit::MD5&) const;
     virtual void print(std::ostream&) const;
 
@@ -104,7 +98,7 @@ private:
 
     // -- Members
 
-    eckit::PathName path_;
+    const eckit::PathName path_;
     std::vector<bool> mask_;
 
     // -- Methods
@@ -112,7 +106,7 @@ private:
 
     // -- Overridden methods
 
-    const std::vector<bool> &mask() const;
+    const std::vector<bool>& mask() const;
 
     // -- Class members
     // None

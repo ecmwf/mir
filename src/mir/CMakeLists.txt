@@ -212,6 +212,10 @@ list(
     lsm/FileLSM.h
     lsm/GribFileMask.cc
     lsm/GribFileMask.h
+    lsm/GribFileMaskFromMIR.cc
+    lsm/GribFileMaskFromMIR.h
+    lsm/GribFileMaskFromUser.cc
+    lsm/GribFileMaskFromUser.h
     lsm/LSMSelection.cc
     lsm/LSMSelection.h
     lsm/LandSeaMasks.cc
