@@ -93,16 +93,12 @@ public:
 
     MIRJob& set(const std::string& args);
 
-    MIRJob& addUserRule(const std::string& ruleName, long ruleValue, const std::string& settingName, bool settingValue);
-
     MIRJob& representationFrom(input::MIRInput&);
 
     // For debugging only
     void mirToolCall(std::ostream&) const;
 
     void json(eckit::JSON&) const;
-
-    const param::Rules* userRules() const;
 
     // -- Overridden methods
     // None
@@ -133,8 +129,6 @@ protected:
 private:
 
     // -- Members
-
-    eckit::ScopedPtr<param::Rules> userRules_;
 
     // -- Methods
 

@@ -71,11 +71,6 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
-void MIRInput::userRules(const param::Rules* rules) {
-    std::ostringstream os;
-    os << "MIRInput::userRules() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
-}
 //=========================================================================
 
 

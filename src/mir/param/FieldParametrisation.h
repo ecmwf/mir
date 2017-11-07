@@ -60,8 +60,6 @@ protected:
 
     // -- Members
 
-    const param::Rules* userRules_;
-
     // -- Methods
     // None
 

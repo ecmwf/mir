@@ -33,25 +33,9 @@ namespace mir {
 namespace action {
 
 
-class SetRules {
-	input::MIRInput& input_;
-public:
-
-	SetRules(input::MIRInput& input, const param::Rules* r):
-		input_(input) {
-		input_.userRules(r);
-	}
-
-	~SetRules() {
-		input_.userRules(0);
-	}
-};
-
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output) :
     input_(input),
     output_(output)  {
-
-    SetRules setRules(input_, job.userRules());
 
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;

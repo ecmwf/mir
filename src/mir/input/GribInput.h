@@ -103,7 +103,6 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
-    virtual void userRules(const param::Rules* rules);
 
     /// From MIRParametrisation
     virtual bool has(const std::string& name) const;

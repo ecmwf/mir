@@ -88,23 +88,6 @@ MIRJob& MIRJob::set(const std::string& args) {
 }
 
 
-MIRJob& MIRJob::addUserRule(const std::string& ruleName,
-                            long ruleValue,
-                            const std::string& settingName,
-                            bool settingValue) {
-
-    if (!userRules_) {
-        userRules_.reset(new param::Rules());
-    }
-
-
-    auto& rule = userRules_->lookup(ruleName, ruleValue);
-    rule.set(settingName, settingValue);
-
-    return *this;
-}
-
-
 static const std::map<std::string, std::string> aliases {
     {"resol", "truncation"},
 };
@@ -300,10 +283,6 @@ void MIRJob::mirToolCall(std::ostream& out) const {
 
 void MIRJob::json(eckit::JSON& json) const {
     SimpleParametrisation::json(json);
-}
-
-const param::Rules* MIRJob::userRules() const {
-    return userRules_.get();
 }
 
 }  // namespace api

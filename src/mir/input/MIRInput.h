@@ -73,7 +73,6 @@ public:
     virtual size_t copy(double* values, size_t size) const;
 
     virtual bool sameAs(const MIRInput& other) const = 0;
-    virtual void userRules(const param::Rules* rules);
 
     // -- Overridden methods
     // None

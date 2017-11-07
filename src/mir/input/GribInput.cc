@@ -802,11 +802,6 @@ void GribInput::marsRequest(std::ostream& out) const {
     }
 }
 
-void GribInput::userRules(const param::Rules* rules) {
-    userRules_ = rules;
-}
-
-
 
 }  // namespace input
 }  // namespace mir
