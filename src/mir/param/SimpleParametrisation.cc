@@ -562,26 +562,23 @@ SimpleParametrisation &SimpleParametrisation::set(const std::string &name, const
 }
 
 void SimpleParametrisation::print(std::ostream &out) const {
-    const char *sep = "";
-    const char *comma = ",";
-    const char *extra = "";
-
     if (eckit::format(out) == eckit::Log::applicationFormat) {
-        extra = "--";
-        comma = " ";
+        const char* sep = "";
+        for (const auto& j : settings_) {
+            out << sep << "--" << j.first << "=" << *(j.second);
+            sep = " ";
+        }
+        return;
     }
 
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        out << sep;
-        out << extra << (*j).first << "=" << *((*j).second);
-        sep = comma;
-    }
+    eckit::JSON j(out);
+    json(j);
 }
 
 void SimpleParametrisation::json(eckit::JSON& s) const {
     s.startObject();
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j)
-        s << (*j).first << *((*j).second);
+    for (const auto& j : settings_)
+        s << j.first << *(j.second);
     s.endObject();
 }
 
