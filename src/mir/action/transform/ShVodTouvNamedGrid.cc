@@ -26,7 +26,7 @@ namespace transform {
 ShVodTouvNamedGrid::ShVodTouvNamedGrid(const param::MIRParametrisation& parametrisation):
     ShVodTouvGridded(parametrisation) {
 
-    ASSERT(parametrisation_.get("user.gridname", gridname_));
+    ASSERT(parametrisation_.user().get("gridname", gridname_));
 
 }
 

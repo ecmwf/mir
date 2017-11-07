@@ -13,9 +13,11 @@
 /// @date Apr 2015
 
 
+#include <sstream>
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Fraction.h"
+
 
 namespace mir {
 namespace param {
@@ -26,6 +28,20 @@ MIRParametrisation::MIRParametrisation() {
 
 
 MIRParametrisation::~MIRParametrisation() {
+}
+
+
+const MIRParametrisation& MIRParametrisation::user() const {
+    std::ostringstream os;
+    os << "MIRParametrisation::user() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+const MIRParametrisation& MIRParametrisation::field() const {
+    std::ostringstream os;
+    os << "MIRParametrisation::field() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 
@@ -53,6 +69,7 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     }
     return false;
 }
+
 
 bool MIRParametrisation::get(const std::string& name, Latitude& value) const {
     double v;

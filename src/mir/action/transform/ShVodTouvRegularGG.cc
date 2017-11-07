@@ -26,7 +26,7 @@ namespace transform {
 
 ShVodTouvRegularGG::ShVodTouvRegularGG(const param::MIRParametrisation& parametrisation):
     ShVodTouvGridded(parametrisation) {
-    ASSERT(parametrisation_.get("user.regular", N_));
+    ASSERT(parametrisation_.user().get("regular", N_));
 }
 
 

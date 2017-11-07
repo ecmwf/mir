@@ -34,7 +34,7 @@ AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation &pa
     Action(parametrisation) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(parametrisation_.user().get("rotation", value));
     ASSERT(value.size() == 2);
 
     rotation_ = util::Rotation(value[0], value[1]);

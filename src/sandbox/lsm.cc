@@ -77,7 +77,7 @@ void LSM::run() {
     while (file.next()) {
 
         input.parametrisation(); //
-        mir::data::MIRField field(input.field());
+        mir::data::MIRField field(input.accessField());
 
         const std::vector<double> &v = field.values(0);
         std::vector<int32_t> p(v.size());

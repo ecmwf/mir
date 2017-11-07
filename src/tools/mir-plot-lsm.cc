@@ -21,8 +21,8 @@
 
 #include "mir/config/MIRConfiguration.h"
 #include "mir/lsm/Mask.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -89,7 +89,7 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     mir::param::ConfigurationWrapper wrap(args);
     eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
 
-    mir::param::MIRCombinedParametrisation parametrisation(wrap, *defaults, *defaults);
+    mir::param::CombinedParametrisation parametrisation(wrap, *defaults, *defaults);
 
     std::string gridname("L" + std::to_string(Ni) + "x" + std::to_string(Nj));
     atlas::grid::RegularLonLatGrid grid(gridname);

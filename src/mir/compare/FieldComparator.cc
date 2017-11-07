@@ -34,9 +34,9 @@
 #include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
-#include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -823,8 +823,8 @@ void FieldComparator::compareFieldValues(
     ASSERT(metadata1.get("comparison", comparison1));
     ASSERT(metadata2.get("comparison", comparison2));
 
-    repres::RepresentationHandle repres1 = input1.field().representation();
-    repres::RepresentationHandle repres2 = input2.field().representation();
+    repres::RepresentationHandle repres1 = input1.accessField().representation();
+    repres::RepresentationHandle repres2 = input2.accessField().representation();
     repres1->comparison(comparison1);
     repres2->comparison(comparison2);
 
@@ -834,13 +834,13 @@ void FieldComparator::compareFieldValues(
     // get input and parameter-specific parametrisations
     const ConfigurationWrapper args_wrap(args_);
     static DefaultParametrisation defaults;
-    MIRCombinedParametrisation combined1(args_wrap, metadata1, defaults);
-    MIRCombinedParametrisation combined2(args_wrap, metadata2, defaults);
+    CombinedParametrisation combined1(args_wrap, metadata1, defaults);
+    CombinedParametrisation combined2(args_wrap, metadata2, defaults);
 
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
         eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, combined1, combined2));
-        comp->execute(input1.field(), input2.field());
+        comp->execute(input1.accessField(), input2.accessField());
     }
 
 }

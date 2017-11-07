@@ -46,7 +46,9 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    virtual const MIRParametrisation& user() const;
+    virtual const MIRParametrisation& field() const;
 
     // -- Overridden methods
 

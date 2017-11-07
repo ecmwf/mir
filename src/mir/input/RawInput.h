@@ -89,7 +89,7 @@ private:
     // From MIRInput
     void print(std::ostream&) const; // Change to virtual if base class
     const param::MIRParametrisation &parametrisation(size_t which) const;
-    data::MIRField field() const;
+    data::MIRField accessField() const;
     bool next();
     size_t copy(double* values, size_t size) const;
     bool sameAs(const MIRInput& other) const;

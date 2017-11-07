@@ -27,7 +27,7 @@ namespace action {
 
 Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.griddef", griddef_));
+    ASSERT(parametrisation_.user().get("griddef", griddef_));
 }
 
 

@@ -27,7 +27,7 @@ namespace action {
 
 Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.regular", N_));
+    ASSERT(parametrisation_.user().get("regular", N_));
 }
 
 

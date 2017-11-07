@@ -53,7 +53,7 @@ const param::MIRParametrisation& RawInput::parametrisation(size_t which) const {
 }
 
 
-data::MIRField RawInput::field() const {
+data::MIRField RawInput::accessField() const {
 
     data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
 

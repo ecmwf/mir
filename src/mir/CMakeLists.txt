@@ -324,6 +324,8 @@ list(
     packing/Simple.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
+    param/CombinedParametrisation.cc
+    param/CombinedParametrisation.h
     param/ConfigurationWrapper.cc
     param/ConfigurationWrapper.h
     param/DefaultParametrisation.cc
@@ -332,8 +334,6 @@ list(
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
-    param/MIRCombinedParametrisation.cc
-    param/MIRCombinedParametrisation.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
     param/Rules.cc

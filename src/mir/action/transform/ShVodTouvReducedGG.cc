@@ -27,7 +27,7 @@ namespace transform {
 ShVodTouvReducedGG::ShVodTouvReducedGG(const param::MIRParametrisation& parametrisation):
     ShVodTouvGridded(parametrisation) {
 
-    ASSERT(parametrisation_.get("user.reduced", N_));
+    ASSERT(parametrisation_.user().get("reduced", N_));
 
 }
 

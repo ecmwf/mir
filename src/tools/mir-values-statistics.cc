@@ -99,7 +99,7 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
 
     size_t N = 0;
     {
-        mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(firstGribFile).field();
+        mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(firstGribFile).accessField();
         N = field.values(0).size();
         ASSERT(N > 0);
     }
@@ -120,7 +120,7 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
         while (grib.next()) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
-            const mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(grib).field();
+            const mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(grib).accessField();
             const mir::util::compare::IsMissingFn missingValue(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
             ASSERT(N == field.values(0).size());
 

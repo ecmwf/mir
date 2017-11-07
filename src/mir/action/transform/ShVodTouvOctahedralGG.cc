@@ -27,7 +27,7 @@ namespace transform {
 ShVodTouvOctahedralGG::ShVodTouvOctahedralGG(const param::MIRParametrisation& parametrisation):
     ShVodTouvGridded(parametrisation) {
 
-    ASSERT(parametrisation_.get("user.octahedral", N_));
+    ASSERT(parametrisation_.user().get("octahedral", N_));
 
 }
 

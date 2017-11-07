@@ -264,7 +264,7 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 
 MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
 
-    const repres::Representation* repres = input.field().representation();
+    const repres::Representation* repres = input.accessField().representation();
 
     // eckit::Log::debug<LibMir>() << "Copy from " << *repres << std::endl;
     repres->fill(*this);

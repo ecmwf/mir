@@ -40,7 +40,7 @@ static InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, "$MIR_B
 
 BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-    ASSERT(parametrisation.get("user.bitmap", path_));
+    ASSERT(parametrisation.user().get("bitmap", path_));
 }
 
 

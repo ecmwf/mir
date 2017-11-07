@@ -48,10 +48,10 @@ grib_handle* VectorInput::gribHandle(size_t which) const {
     return (which == 0) ? component1_.gribHandle() : component2_.gribHandle();
 }
 
-data::MIRField VectorInput::field() const {
+data::MIRField VectorInput::accessField() const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
-    data::MIRField u = component1_.field();
-    data::MIRField v = component2_.field();
+    data::MIRField u = component1_.accessField();
+    data::MIRField v = component2_.accessField();
 
     ASSERT(u.dimensions() == 1);
     ASSERT(v.dimensions() == 1);

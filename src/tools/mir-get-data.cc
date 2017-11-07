@@ -75,7 +75,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
         while (grib.next()) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
-            mir::data::MIRField field = input.field();
+            mir::data::MIRField field = input.accessField();
             ASSERT(field.dimensions() == 1);
 
             mir::repres::RepresentationHandle rep(field.representation());

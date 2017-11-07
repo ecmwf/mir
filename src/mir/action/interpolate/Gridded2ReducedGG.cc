@@ -26,7 +26,7 @@ namespace action {
 
 Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.reduced", N_));
+    ASSERT(parametrisation_.user().get("reduced", N_));
 }
 
 

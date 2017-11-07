@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef mir_param_MIRCombinedParametrisation_h
-#define mir_param_MIRCombinedParametrisation_h
+#ifndef mir_param_CombinedParametrisation_h
+#define mir_param_CombinedParametrisation_h
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -23,7 +23,7 @@ namespace mir {
 namespace param {
 
 
-class MIRCombinedParametrisation : public MIRParametrisation {
+class CombinedParametrisation : public MIRParametrisation {
 public:
 
     // -- Exceptions
@@ -31,13 +31,13 @@ public:
 
     // -- Contructors
 
-    MIRCombinedParametrisation(const MIRParametrisation& user,
-                               const MIRParametrisation& metadata,
-                               const MIRParametrisation& defaults);
+    CombinedParametrisation(const MIRParametrisation& user,
+                            const MIRParametrisation& metadata,
+                            const MIRParametrisation& defaults);
 
     // -- Destructor
 
-    ~MIRCombinedParametrisation(); // Change to virtual if base class
+    virtual ~CombinedParametrisation(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -79,7 +79,7 @@ private:
     // -- Members
 
     const MIRParametrisation& user_;
-    const MIRParametrisation& metadata_;
+    const MIRParametrisation& field_;
     const MIRParametrisation& defaults_;
 
     // -- Methods
@@ -90,23 +90,26 @@ private:
 
     // -- Overridden methods
 
+    virtual const MIRParametrisation& user() const;
+    virtual const MIRParametrisation& field() const;
+
     // From MIRParametrisation
-    void print(std::ostream&) const;
+    virtual void print(std::ostream&) const;
 
-    bool has(const std::string& name) const;
+    virtual bool has(const std::string& name) const;
 
-    bool get(const std::string&, std::string&) const;
-    bool get(const std::string& name, bool& value) const;
-    bool get(const std::string& name, int& value) const;
-    bool get(const std::string& name, long& value) const;
-    bool get(const std::string& name, float& value) const;
-    bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, int& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, float& value) const;
+    virtual bool get(const std::string& name, double& value) const;
 
-    bool get(const std::string& name, std::vector<int>& value) const;
-    bool get(const std::string& name, std::vector<long>& value) const;
-    bool get(const std::string& name, std::vector<float>& value) const;
-    bool get(const std::string& name, std::vector<double>& value) const;
-    bool get(const std::string& name, std::vector<std::string>& value) const;
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None

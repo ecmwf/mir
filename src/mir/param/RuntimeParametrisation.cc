@@ -107,10 +107,6 @@ bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {
         return false;
     }
 
-    if (name.find("user.") == 0) {
-        return _get(name.substr(5), value);
-    }
-
     if(SimpleParametrisation::get(name, value)) {
         return true;
     }

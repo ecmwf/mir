@@ -26,7 +26,7 @@ namespace action {
 
 Gridded2Octahedral::Gridded2Octahedral(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.octahedral", N_));
+    ASSERT(parametrisation_.user().get("octahedral", N_));
 }
 
 

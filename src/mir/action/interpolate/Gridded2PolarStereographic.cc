@@ -31,7 +31,7 @@ Gridded2PolarStereographic::Gridded2PolarStereographic(const param::MIRParametri
     Gridded2GriddedInterpolation(parametrisation) {
     // std::vector<double> value;
 
-    // ASSERT(parametrisation_.get("user.grid", value));
+    // ASSERT(parametrisation_.user().get("grid", value));
     // ASSERT(value.size() == 2);
 
     // increments_ = util::Increments(value[0], value[1]);

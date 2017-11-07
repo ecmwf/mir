@@ -208,7 +208,7 @@ const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t whic
 }
 
 
-data::MIRField GeoPointsFileInput::field() const {
+data::MIRField GeoPointsFileInput::accessField() const {
 
     NOTIMP;
     // data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);

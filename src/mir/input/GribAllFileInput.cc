@@ -77,10 +77,10 @@ grib_handle *GribAllFileInput::gribHandle(size_t which) const {
 
 data::MIRField GribAllFileInput::field() const {
     ASSERT(inputs_.size());
-    data::MIRField f(inputs_[0]->field());
+    data::MIRField f(inputs_[0]->accessField());
     ASSERT(f.dimensions() == 1);
     for (size_t i = 1; i < inputs_.size(); i++) {
-        data::MIRField g(inputs_[i]->field());
+        data::MIRField g(inputs_[i]->accessField());
         ASSERT(g.dimensions() == 1);
         f.update(g.direct(0), i);
     }

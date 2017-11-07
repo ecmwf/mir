@@ -29,7 +29,7 @@ namespace action {
 
 GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
-    // ASSERT(parametrisation.get("user.global", size_));
+    // ASSERT(parametrisation.user().get("global", size_));
 }
 
 

@@ -32,7 +32,7 @@ namespace transform {
 ShTruncate::ShTruncate(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     truncation_(0) {
-    ASSERT(parametrisation.get("user.truncation", truncation_));
+    ASSERT(parametrisation.user().get("truncation", truncation_));
 
     ASSERT(truncation_ > 0);
 }

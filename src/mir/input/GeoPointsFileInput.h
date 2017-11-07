@@ -101,7 +101,7 @@ private:
     virtual bool sameAs(const MIRInput& other) const;
 
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    virtual data::MIRField accessField() const;
 
     virtual bool next();
     virtual size_t dimensions() const;
