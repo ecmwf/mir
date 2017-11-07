@@ -212,11 +212,11 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
         return false;
     }
 
-    if (userRules_) {
-        if (userRules_->lookup(PARAM_ID, paramId_).get(name, value)) {
-            return true;
-        }
-    }
+    // if (userRules_) {
+    //     if (userRules_->lookup(PARAM_ID, paramId_).get(name, value)) {
+    //         return true;
+    //     }
+    // }
 
     return fileRules.lookup(PARAM_ID, paramId_).get(name, value);
 }
