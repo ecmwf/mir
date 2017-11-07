@@ -81,8 +81,22 @@ void Mask::hashCacheKey(eckit::MD5& md5,
 
 Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
 
+    // lsm = true is a requirement for lsm processing
     bool lsm = false;
     parametrisation.get("lsm", lsm);
+
+    // lsm-parameter-list is optional, and filters lsm processing for specific paramIds
+    if (lsm) {
+        std::vector<long> list;
+        parametrisation.get("lsm-parameter-list", list);
+
+        long paramId = 0;
+        parametrisation.get("paramId", paramId);
+
+        if (paramId > 0 && list.size()) {
+            lsm = std::find(list.begin(), list.end(), paramId) != list.end();
+        }
+    }
 
     if (!lsm) {
         return NoneLSM::noMask();
