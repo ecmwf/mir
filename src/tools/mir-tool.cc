@@ -45,6 +45,7 @@
 #include "mir/style/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
+#include "mir/util/option/VectorOfUnknownLengthOption.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -64,6 +65,7 @@ public:
 
     MIRToolConcrete(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
+        using mir::util::option::VectorOfUnknownLengthOption;
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -114,6 +116,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
+        options_.push_back(new VectorOfUnknownLengthOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters"));
 
         for (const std::string& io : {"", "input", "output"}) {
             const std::string which = io.length()? io : "both input and output";
