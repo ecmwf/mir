@@ -56,11 +56,12 @@ public:
 private:
 
     // -- Members
-    // None
+
+    const enum { FormatIsGrib, FormatIs1km, FormatIs10min } format_;
+    const std::string path_;
 
     // -- Methods
-
-    std::string path(const param::MIRParametrisation&) const;
+    // None
 
     // -- Overridden methods
 

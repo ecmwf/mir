@@ -18,7 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
-#include "mir/lsm/GribFileMask.h"
+#include "mir/lsm/GribFileMaskFromUser.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -41,17 +41,16 @@ FileLSM::~FileLSM() {
 
 
 void FileLSM::print(std::ostream& out) const {
-    out << "FileLSM["
-        << name_
-//        << ",which=" << which_
-        << "]";
+    out << "FileLSM[" << name_ << "]";
 }
 
 
-std::string FileLSM::path(const param::MIRParametrisation& param, const std::string& which_) const {
+std::string FileLSM::path(const param::MIRParametrisation& param, const std::string& which) const {
     std::string path;
-    if (param.get("lsm-file-" + which_, path) || param.get("lsm-file", path)) {
-        return path;
+    if (param.get("lsm-file-" + which, path) || param.get("lsm-file", path)) {
+        if (!path.empty()) {
+            return path;
+        }
     }
 
     std::ostringstream os;
@@ -65,17 +64,17 @@ Mask* FileLSM::create(
         const param::MIRParametrisation& param,
         const repres::Representation& representation,
         const std::string& which) const {
-    return new GribFileMask(name, path(param, which), param, representation, which);
+    return new GribFileMaskFromUser(name, path(param, which), param, representation, which);
 }
 
 
 std::string FileLSM::cacheKey(
-        const std::string& name,
+        const std::string&,
         const param::MIRParametrisation& param,
         const repres::Representation& representation,
         const std::string& which) const {
     eckit::MD5 md5;
-    GribFileMask::hashCacheKey(md5, path(param, which), param, representation, which);
+    GribFileMaskFromUser::hashCacheKey(md5, path(param, which), param, representation, which);
 
     return "file." + md5.digest();
 }

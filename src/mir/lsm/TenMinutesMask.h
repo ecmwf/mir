@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MappedMask_H
-#define MappedMask_H
+#ifndef mir_lsm_TenMinutesMask_h
+#define mir_lsm_TenMinutesMask_h
 
 #include <iosfwd>
 #include "eckit/filesystem/PathName.h"
@@ -25,17 +25,13 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-namespace repres {
-class Representation;
-}
 }
 
 
 namespace mir {
 namespace lsm {
 
-
-class MappedMask : public Mask {
+class TenMinutesMask : public Mask {
 public:
 
     // -- Exceptions
@@ -43,16 +39,16 @@ public:
 
     // -- Contructors
 
-    MappedMask(
+    TenMinutesMask(
             const std::string& name,
             const eckit::PathName&,
-            const param::MIRParametrisation& parametrisation,
-            const repres::Representation &representation,
+            const param::MIRParametrisation&,
+            const repres::Representation&,
             const std::string& which);
 
     // -- Destructor
 
-    virtual ~MappedMask();
+    virtual ~TenMinutesMask();
 
     // -- Convertors
     // None
@@ -72,27 +68,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    virtual bool active() const;
-    virtual bool cacheable() const;
-    virtual void hash(eckit::MD5&) const;
-    virtual void print(std::ostream&) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
 
     // -- Members
@@ -105,7 +80,11 @@ private:
 
     // -- Overridden methods
 
+    virtual bool active() const;
+    virtual bool cacheable() const;
+    virtual void hash(eckit::MD5&) const;
     virtual const std::vector<bool>& mask() const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None

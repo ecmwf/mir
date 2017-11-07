@@ -230,6 +230,8 @@ list(
     lsm/NoMask.h
     lsm/NoneLSM.cc
     lsm/NoneLSM.h
+    lsm/TenMinutesMask.cc
+    lsm/TenMinutesMask.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
