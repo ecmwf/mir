@@ -98,6 +98,9 @@ bool RuntimeParametrisation::has(const std::string& name) const {
     return owner_.has(name);
 }
 
+const MIRParametrisation& RuntimeParametrisation::userParametrisation() const {
+    return owner_.userParametrisation();
+}
 
 
 template<class T>

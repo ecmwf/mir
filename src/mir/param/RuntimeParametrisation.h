@@ -111,6 +111,7 @@ private:
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;
+    virtual const MIRParametrisation& userParametrisation() const;
 
     // -- Class members
     // None
