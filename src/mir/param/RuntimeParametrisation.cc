@@ -102,6 +102,9 @@ const MIRParametrisation& RuntimeParametrisation::userParametrisation() const {
     return *this;
 }
 
+const MIRParametrisation& RuntimeParametrisation::fieldParametrisation() const {
+    return *this;
+}
 
 template<class T>
 bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {

@@ -46,6 +46,14 @@ void Save::print(std::ostream &out) const {
     out << "output=" << output_ << "]";
 }
 
+void Save::custom(std::ostream &out) const {
+    out << "Save[";
+    if (output_.printParametrisation(out, parametrisation_)) {
+        out << ",";
+    }
+    out << "output=...]";
+}
+
 void Save::execute(context::Context & ctx) const {
     output_.save(parametrisation_, ctx);
 }

@@ -39,6 +39,10 @@ void Copy::print(std::ostream &out) const {
     out << "Copy[output=" << output_ << "]";
 }
 
+void Copy::custom(std::ostream &out) const {
+    out << "Copy[...]";
+}
+
 void Copy::execute(context::Context & ctx) const {
     output_.copy(parametrisation_, ctx);
 }

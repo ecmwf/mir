@@ -99,7 +99,6 @@ class FormulaAction : public Action {
     virtual void execute(context::Context & ctx) const;
     virtual bool sameAs(const Action& other) const;
 
-
 // -- Class members
     // None
 

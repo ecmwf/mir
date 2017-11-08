@@ -106,6 +106,7 @@ private:
 
     input::MIRInput& input_;
     output::MIROutput& output_;
+    std::string dumpFile_;
 
     eckit::ScopedPtr< const param::MIRParametrisation > combined_;
     eckit::ScopedPtr< action::ActionPlan > plan_;

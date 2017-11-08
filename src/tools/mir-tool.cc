@@ -161,6 +161,8 @@ public:
         options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
         options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
         options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
+        options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
+
     }
 
 };

@@ -44,6 +44,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
+    job.get("dump-plan-file", dumpFile_);
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
@@ -84,8 +85,17 @@ Job::~Job() {
 void Job::execute(util::MIRStatistics &statistics) const {
 
     ASSERT(plan_);
+
+    if(dumpFile_.size()) {
+        std::ofstream out(dumpFile_);
+        plan_->custom(out);
+        out << std::endl;
+    }
+
     context::Context ctx(input_, statistics);
     plan_->execute(ctx);
+
+   
 }
 
 
