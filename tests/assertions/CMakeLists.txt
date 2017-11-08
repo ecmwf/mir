@@ -12,7 +12,7 @@ get_target_property( MIR_COMPARE   "mir-compare"   LOCATION )
 get_target_property( GRIB_GET      "grib_get"      LOCATION )
 get_target_property( GRIB_COMPARE  "grib_compare"  LOCATION )
 
-find_program( MARS_SCRIPT mars )
+find_program( MARS_SCRIPT NAMES mars false )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
@@ -25,16 +25,11 @@ ecbuild_info(${test_files})
 foreach( _t ${test_files} )
 
   ecbuild_add_test(
-
       TARGET ${_t}
-
       CONDITION  MARS_SCRIPT AND HAVE_TEST_ASSERTIONS
-
       COMMAND    mir-test.sh
-
       ARGS       ${_t}
-
-    ENVIRONMENT
+      ENVIRONMENT
         "MIR_DEBUG=1"
         "MIR_HOME=${CMAKE_BINARY_DIR}"
         "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
