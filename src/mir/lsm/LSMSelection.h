@@ -53,13 +53,11 @@ public:
 
     // -- Methods
 
-    virtual Mask *create(const std::string& name,
-                         const param::MIRParametrisation&,
+    virtual Mask *create(const param::MIRParametrisation&,
                          const repres::Representation&,
                          const std::string& which) const = 0;
 
-    virtual std::string cacheKey(const std::string& name,
-                                 const param::MIRParametrisation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&,
                                  const repres::Representation&,
                                  const std::string& which) const = 0;
 

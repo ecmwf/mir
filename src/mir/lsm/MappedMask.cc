@@ -64,13 +64,11 @@ namespace mir {
 namespace lsm {
 
 
-MappedMask::MappedMask(
-        const std::string &name,
-        const eckit::PathName& path,
-        const param::MIRParametrisation &parametrisation,
-        const repres::Representation& representation,
-        const std::string &which):
-    Mask(name),
+MappedMask::MappedMask(const std::string&,
+                       const eckit::PathName& path,
+                       const param::MIRParametrisation&,
+                       const repres::Representation& representation,
+                       const std::string&):
     path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);

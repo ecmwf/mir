@@ -32,10 +32,6 @@ class NoMask : public Mask {
 
     void print(std::ostream& out) const;
 
-public:
-
-    NoMask();
-
 };
 
 

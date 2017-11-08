@@ -16,6 +16,13 @@
 
 #include "mir/lsm/LSMSelection.h"
 
+#include "eckit/utils/MD5.h"
+
+
+namespace eckit {
+class PathName;
+}
+
 
 namespace mir {
 namespace lsm {
@@ -56,9 +63,7 @@ public:
 private:
 
     // -- Members
-
-    const enum { FormatIsGrib, FormatIs1km, FormatIs10min } format_;
-    const std::string path_;
+    // None
 
     // -- Methods
     // None
@@ -72,19 +77,63 @@ private:
 
     // -- Class methods
 
-    Mask* create(const std::string& name,
-                 const param::MIRParametrisation&,
+    Mask* create(const param::MIRParametrisation&,
                  const repres::Representation&,
                  const std::string& which) const;
 
-    std::string cacheKey(const std::string& name,
-                         const param::MIRParametrisation&,
+    std::string cacheKey(const param::MIRParametrisation&,
                          const repres::Representation&,
                          const std::string& which) const;
 
     // -- Friends
     // None
 
+};
+
+
+class NamedMaskFactory {
+    virtual Mask* make(
+            const param::MIRParametrisation& param,
+            const repres::Representation& representation,
+            const std::string& which) = 0;
+    virtual void hashCacheKey(eckit::MD5&,
+                              const param::MIRParametrisation&,
+                              const repres::Representation&,
+                              const std::string& which) = 0;
+protected:
+    const std::string name_;
+    const std::string path_;
+    NamedMaskFactory(const std::string& name, const std::string& path);
+    virtual ~NamedMaskFactory();
+public:
+    static Mask* build(
+            const param::MIRParametrisation&,
+            const repres::Representation&,
+            const std::string& which );
+    static std::string cacheKey(
+            const param::MIRParametrisation&,
+            const repres::Representation&,
+            const std::string& which );
+    static void list(std::ostream&);
+};
+
+
+template<class T>
+class NamedMaskBuilder : public NamedMaskFactory {
+    virtual Mask* make(
+            const param::MIRParametrisation& param,
+            const repres::Representation& representation,
+            const std::string& which) {
+        return new T(name_, path_, param, representation, which);
+    }
+    virtual void hashCacheKey(eckit::MD5& md5,
+                              const param::MIRParametrisation& parametrisation,
+                              const repres::Representation& representation,
+                              const std::string& which) {
+        T::hashCacheKey(md5, path_, parametrisation, representation, which);
+    }
+public:
+    NamedMaskBuilder(const std::string& name, const std::string& path) : NamedMaskFactory(name, path) {}
 };
 
 

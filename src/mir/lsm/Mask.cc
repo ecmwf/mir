@@ -46,8 +46,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Mask::Mask(const std::string &name):
-    name_(name) {
+Mask::Mask() {
 }
 
 
@@ -55,8 +54,7 @@ Mask::~Mask() {
 }
 
 
-void Mask::hash(eckit::MD5 &md5) const {
-    md5 << name_;
+void Mask::hash(eckit::MD5&) const {
 }
 
 
@@ -69,7 +67,7 @@ void Mask::hashCacheKey(eckit::MD5& md5,
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
         if (!parametrisation.get("lsm-interpolation", interpolation)) {
-            throw eckit::SeriousBug("Not interpolation method defined for land-sea mask");
+            throw eckit::SeriousBug("No interpolation method defined for land-sea mask");
         }
     }
 
@@ -112,7 +110,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
 
 //    name = name + "-" + which;
     const LSMSelection &chooser = LSMSelection::lookup(name);
-    std::string key = chooser.cacheKey(name, parametrisation, representation, which);
+    std::string key = chooser.cacheKey(parametrisation, representation, which);
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -124,7 +122,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         return *(*j).second;
     }
 
-    Mask *mask = chooser.create(name, parametrisation, representation, which);
+    Mask *mask = chooser.create(parametrisation, representation, which);
 
     (*cache)[key] = mask;
 

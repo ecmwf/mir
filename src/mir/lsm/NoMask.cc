@@ -43,10 +43,6 @@ void NoMask::print(std::ostream& out) const {
 }
 
 
-NoMask::NoMask() : Mask("none") {
-}
-
-
 }  // namespace lsm
 }  // namespace mir
 

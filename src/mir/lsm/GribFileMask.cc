@@ -34,13 +34,11 @@ namespace mir {
 namespace lsm {
 
 
-GribFileMask::GribFileMask(
-        const std::string& name,
-        const eckit::PathName& path,
-        const param::MIRParametrisation& parametrisation,
-        const repres::Representation& representation,
-        const std::string& which):
-    Mask(name),
+GribFileMask::GribFileMask(const std::string&,
+                           const eckit::PathName& path,
+                           const param::MIRParametrisation& parametrisation,
+                           const repres::Representation& representation,
+                           const std::string& which) :
     path_(path) {
 
     // WARNING: don't store the grid, it won't be there later if this
@@ -106,7 +104,7 @@ void GribFileMask::hash(eckit::MD5& md5) const {
 
 
 void GribFileMask::print(std::ostream& out) const {
-    out << "GribFileMask[name=" << name_ << ",path=" << path_ << "]";
+    out << "GribFileMask[path=" << path_ << "]";
 }
 
 

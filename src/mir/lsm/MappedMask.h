@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef MappedMask_H
-#define MappedMask_H
+#ifndef mir_lsm_MappedMask_h
+#define mir_lsm_MappedMask_h
 
 #include <iosfwd>
 #include "eckit/filesystem/PathName.h"
@@ -43,12 +43,11 @@ public:
 
     // -- Contructors
 
-    MappedMask(
-            const std::string& name,
-            const eckit::PathName&,
-            const param::MIRParametrisation& parametrisation,
-            const repres::Representation &representation,
-            const std::string& which);
+    MappedMask(const std::string& name,
+               const eckit::PathName&,
+               const param::MIRParametrisation& parametrisation,
+               const repres::Representation &representation,
+               const std::string& which);
 
     // -- Destructor
 

@@ -14,32 +14,28 @@
 /// @date Apr 2015
 
 
-#ifndef Mask_H
-#define Mask_H
+#ifndef mir_lsm_Mask_h
+#define mir_lsm_Mask_h
 
 #include <iosfwd>
 #include <string>
 #include <vector>
-
 #include "eckit/memory/NonCopyable.h"
+
 
 namespace eckit {
 class MD5;
 class PathName;
 }
-
-
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 }
-
 namespace repres {
 class Representation;
 }
-
 }
+
 
 namespace mir {
 namespace lsm {
@@ -50,7 +46,7 @@ public:
 
     // -- Contructors
 
-    Mask(const std::string &name);
+    Mask();
 
     // -- Destructor
 
@@ -91,12 +87,11 @@ public:
 protected:
 
     // -- Members
-
-    std::string name_;
+    // None
 
     // -- Methods
 
-    virtual void print(std::ostream &) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None

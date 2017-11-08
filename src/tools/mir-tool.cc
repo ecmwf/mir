@@ -34,6 +34,7 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMSelection.h"
+#include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/mir_ecbuild_config.h"
@@ -123,7 +124,7 @@ public:
             const std::string key = (io.length()? "-" : "") + io;
             options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
             options_.push_back(new FactoryOption<mir::lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
-            options_.push_back(new SimpleOption<std::string>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
+            options_.push_back(new FactoryOption<mir::lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
             options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM grib file path to use for " + which));
             options_.push_back(new SimpleOption<double>("lsm-value-threshold" + key, "If --lsm-selection" + key + "=file, LSM field greater-or-equal to value threshold, when converting to mask for " + which + " (default 0.5)"));
         }

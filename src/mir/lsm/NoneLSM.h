@@ -90,13 +90,11 @@ private:
 
     // -- Class methods
 
-    virtual Mask* create(const std::string&,
-                         const param::MIRParametrisation&,
+    virtual Mask* create(const param::MIRParametrisation&,
                          const repres::Representation&,
                          const std::string& which) const ;
 
-    virtual std::string cacheKey(const std::string&,
-                                 const param::MIRParametrisation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&,
                                  const repres::Representation&,
                                  const std::string& which) const;
 

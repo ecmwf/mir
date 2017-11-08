@@ -41,7 +41,7 @@ FileLSM::~FileLSM() {
 
 
 void FileLSM::print(std::ostream& out) const {
-    out << "FileLSM[" << name_ << "]";
+    out << "FileLSM[name=" << name_ << "]";
 }
 
 
@@ -54,22 +54,21 @@ std::string FileLSM::path(const param::MIRParametrisation& param, const std::str
     }
 
     std::ostringstream os;
-    os << *this << " no path specified";
+    os << *this << ": no path specified";
     throw eckit::UserError(os.str());
 }
 
 
 Mask* FileLSM::create(
-        const std::string& name,
         const param::MIRParametrisation& param,
         const repres::Representation& representation,
         const std::string& which) const {
-    return new GribFileMaskFromUser(name, path(param, which), param, representation, which);
+    std::string dummy_name;
+    return new GribFileMaskFromUser(dummy_name, path(param, which), param, representation, which);
 }
 
 
 std::string FileLSM::cacheKey(
-        const std::string&,
         const param::MIRParametrisation& param,
         const repres::Representation& representation,
         const std::string& which) const {
