@@ -86,14 +86,14 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     parametrisation.get("lsm", lsm);
 
     // lsm-parameter-list is optional, and filters lsm processing for specific paramIds
-    if (lsm) {
-        std::vector<long> list;
-        parametrisation.get("lsm-parameter-list", list);
+    std::vector<long> list;
+    parametrisation.get("lsm-parameter-list", list);
 
+    if (lsm && list.size()) {
         long paramId = 0;
         parametrisation.get("paramId", paramId);
 
-        if (paramId > 0 && list.size()) {
+        if (paramId > 0) {
             lsm = std::find(list.begin(), list.end(), paramId) != list.end();
         }
     }
