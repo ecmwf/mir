@@ -1,5 +1,5 @@
 # Mars request
-levtype=sfc,param=2t
+param=2t,levtype=sfc
 # Mir tool options
 --area=90/90/18/-90 --grid=0.2/0.2 --interpolation=nearest-lsm --rotation=-30.0/-10.0
 # grib_get assertions

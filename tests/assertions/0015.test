@@ -1,5 +1,5 @@
 # Mars request
-levtype=sfc,param=2t
+param=2t,levtype=sfc
 # Mir tool options
 --grid=1.5/1.5 --area=50/109.5/20/150 
 # --shift=0/-1
