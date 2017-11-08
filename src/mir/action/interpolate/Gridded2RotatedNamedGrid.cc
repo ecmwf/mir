@@ -29,10 +29,10 @@ Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisati
     Gridded2GriddedInterpolation(parametrisation) {
 
 
-    ASSERT(parametrisation_.user().get("gridname", gridname_));
+    ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
     std::vector<double> value;
 
-    ASSERT(parametrisation_.user().get("rotation", value));
+    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
 
     rotation_ = util::Rotation(value[0], value[1]);

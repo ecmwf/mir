@@ -56,7 +56,7 @@ const param::MIRParametrisation &DummyInput::parametrisation(size_t which) const
 }
 
 
-data::MIRField DummyInput::accessField() const {
+data::MIRField DummyInput::field() const {
     data::MIRField field(parametrisation_, false, 999.);
 
     std::vector< double > values(360 * 181, 42);

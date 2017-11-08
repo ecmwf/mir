@@ -83,7 +83,7 @@ bool NetcdfFileInput::next() {
 }
 
 
-data::MIRField NetcdfFileInput::accessField() const {
+data::MIRField NetcdfFileInput::field() const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
 
     auto& ncField = *fields_[current_];

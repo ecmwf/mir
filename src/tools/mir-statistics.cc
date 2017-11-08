@@ -92,7 +92,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
             // Calculate and show statistics
             eckit::ScopedPtr<const mir::stats::Statistics> s(mir::stats::StatisticsFactory::build(stats, combined));
-            eckit::Log::info() << s->calculate(input.accessField()) << std::endl;
+            eckit::Log::info() << s->calculate(input.field()) << std::endl;
 
         }
     }

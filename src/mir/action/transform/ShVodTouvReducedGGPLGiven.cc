@@ -26,7 +26,7 @@ namespace transform {
 
 ShVodTouvReducedGGPLGiven::ShVodTouvReducedGGPLGiven(const param::MIRParametrisation& parametrisation):
     ShVodTouvGridded(parametrisation) {
-    ASSERT(parametrisation_.user().get("pl", pl_));
+    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
 }
 
 

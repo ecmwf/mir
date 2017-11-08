@@ -823,8 +823,8 @@ void FieldComparator::compareFieldValues(
     ASSERT(metadata1.get("comparison", comparison1));
     ASSERT(metadata2.get("comparison", comparison2));
 
-    repres::RepresentationHandle repres1 = input1.accessField().representation();
-    repres::RepresentationHandle repres2 = input2.accessField().representation();
+    repres::RepresentationHandle repres1 = input1.field().representation();
+    repres::RepresentationHandle repres2 = input2.field().representation();
     repres1->comparison(comparison1);
     repres2->comparison(comparison2);
 
@@ -840,7 +840,7 @@ void FieldComparator::compareFieldValues(
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
         eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, combined1, combined2));
-        comp->execute(input1.accessField(), input2.accessField());
+        comp->execute(input1.field(), input2.field());
     }
 
 }

@@ -30,7 +30,7 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
 
     std::vector<double> value;
 
-    ASSERT(parametrisation_.user().get("rotation", value));
+    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
 
     rotation_ = util::Rotation(value[0], value[1]);

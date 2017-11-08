@@ -38,12 +38,12 @@ CombinedParametrisation::~CombinedParametrisation() {
 }
 
 
-const MIRParametrisation& CombinedParametrisation::user() const {
+const MIRParametrisation& CombinedParametrisation::userParametrisation() const {
     return user_;
 }
 
 
-const MIRParametrisation& CombinedParametrisation::field() const {
+const MIRParametrisation& CombinedParametrisation::fieldParametrisation() const {
     return field_;
 }
 

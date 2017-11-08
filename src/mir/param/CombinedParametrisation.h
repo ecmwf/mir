@@ -31,7 +31,7 @@ public:
 
     // -- Contructors
 
-    CombinedParametrisation(const MIRParametrisation& user,
+    CombinedParametrisation(const MIRParametrisation& userParametrisation,
                             const MIRParametrisation& metadata,
                             const MIRParametrisation& defaults);
 
@@ -90,8 +90,8 @@ private:
 
     // -- Overridden methods
 
-    virtual const MIRParametrisation& user() const;
-    virtual const MIRParametrisation& field() const;
+    virtual const MIRParametrisation& userParametrisation() const;
+    virtual const MIRParametrisation& fieldParametrisation() const;
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const;

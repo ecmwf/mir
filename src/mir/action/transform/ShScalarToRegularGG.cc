@@ -28,7 +28,7 @@ namespace transform {
 
 ShScalarToRegularGG::ShScalarToRegularGG(const param::MIRParametrisation& parametrisation):
     ShScalarToGridded(parametrisation) {
-    ASSERT(parametrisation_.user().get("regular", N_));
+    ASSERT(parametrisation_.userParametrisation().get("regular", N_));
 }
 
 

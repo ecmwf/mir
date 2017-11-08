@@ -31,14 +31,14 @@ MIRParametrisation::~MIRParametrisation() {
 }
 
 
-const MIRParametrisation& MIRParametrisation::user() const {
+const MIRParametrisation& MIRParametrisation::userParametrisation() const {
     std::ostringstream os;
     os << "MIRParametrisation::user() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 
-const MIRParametrisation& MIRParametrisation::field() const {
+const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
     std::ostringstream os;
     os << "MIRParametrisation::field() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

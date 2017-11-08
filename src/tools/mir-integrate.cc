@@ -84,7 +84,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
 
         ++n;
 
-        mir::data::MIRField field(input.accessField());
+        mir::data::MIRField field(input.field());
 
         const std::vector<double>& values = field.values(0);
 

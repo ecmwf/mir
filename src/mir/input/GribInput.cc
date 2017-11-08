@@ -298,7 +298,7 @@ const param::MIRParametrisation &GribInput::parametrisation(size_t which) const 
 }
 
 
-data::MIRField GribInput::accessField() const {
+data::MIRField GribInput::field() const {
 
     // Protect the grib_handle, as eccodes may update its internals
     eckit::AutoLock<eckit::Mutex> lock(mutex_);

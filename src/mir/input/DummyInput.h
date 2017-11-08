@@ -89,7 +89,7 @@ private:
 
     virtual const param::MIRParametrisation &parametrisation(size_t which) const;
 
-    virtual data::MIRField accessField() const;
+    virtual data::MIRField field() const;
 
     virtual bool next();
 

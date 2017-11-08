@@ -29,7 +29,7 @@ namespace transform {
 ShScalarToOctahedralGG::ShScalarToOctahedralGG(const param::MIRParametrisation& parametrisation):
     ShScalarToGridded(parametrisation) {
 
-    ASSERT(parametrisation_.user().get("octahedral", N_));
+    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
 
 }
 

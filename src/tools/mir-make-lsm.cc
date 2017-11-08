@@ -67,7 +67,7 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
         ASSERT(Ni == Nj * 2);
 
 
-        mir::data::MIRField field(input.accessField());
+        mir::data::MIRField field(input.field());
 
         ASSERT(!field.hasMissing());
 

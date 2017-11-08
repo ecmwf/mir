@@ -29,7 +29,7 @@ namespace transform {
 ShScalarToReducedGG::ShScalarToReducedGG(const param::MIRParametrisation& parametrisation):
     ShScalarToGridded(parametrisation) {
 
-    ASSERT(parametrisation_.user().get("reduced", N_));
+    ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
 
 }
 

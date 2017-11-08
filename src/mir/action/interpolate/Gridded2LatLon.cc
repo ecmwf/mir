@@ -28,13 +28,13 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
     Gridded2GriddedInterpolation(parametrisation) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.user().get("grid", value));
+    ASSERT(parametrisation_.userParametrisation().get("grid", value));
 
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
     // TODO: maybe use 'user.autoshift'
-    if (parametrisation_.user().get("area", value)) {
+    if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }

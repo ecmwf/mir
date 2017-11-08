@@ -67,7 +67,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     caching_(true) {
 
     std::vector<double> value;
-    ASSERT(parametrisation.user().get("area", value));
+    ASSERT(parametrisation.userParametrisation().get("area", value));
     ASSERT(value.size() == 4);
 
     parametrisation_.get("caching", caching_);

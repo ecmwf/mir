@@ -28,7 +28,7 @@ ShVodTouvRegularLL::ShVodTouvRegularLL(const param::MIRParametrisation &parametr
     ShVodTouvGridded(parametrisation) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.user().get("grid", value));
+    ASSERT(parametrisation_.userParametrisation().get("grid", value));
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 

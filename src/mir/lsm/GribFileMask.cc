@@ -53,7 +53,7 @@ GribFileMask::GribFileMask(
     mir::input::MIRInput& input = file;
 
     ASSERT(file.next());
-    data::MIRField field = input.accessField();
+    data::MIRField field = input.field();
 
     param::RuntimeParametrisation runtime(parametrisation);
     runtime.set("lsm", false);

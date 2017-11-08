@@ -41,7 +41,7 @@ class MissingInput : public input::MIRInput
         out << "MissingInput[]";
     }
 
-    virtual data::MIRField accessField() const {
+    virtual data::MIRField field() const {
         NOTIMP;
     }
 
@@ -227,7 +227,7 @@ data::MIRField& Context::field() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     if (!content_) {
-        content_.reset(new FieldContent(input_.accessField()));
+        content_.reset(new FieldContent(input_.field()));
     }
     return content_->field();
 }
