@@ -99,7 +99,7 @@ bool RuntimeParametrisation::has(const std::string& name) const {
 }
 
 const MIRParametrisation& RuntimeParametrisation::userParametrisation() const {
-    return owner_.userParametrisation();
+    return *this;
 }
 
 
