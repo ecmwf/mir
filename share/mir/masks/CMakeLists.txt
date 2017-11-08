@@ -1,6 +1,7 @@
 
 set(_dir "share/mir/masks")
 foreach( _f
+    "lsm.10min.mask"
     "lsm.1km.mask"
     "lsm.N128.grib"
     "lsm.N256.grib"
@@ -10,7 +11,7 @@ foreach( _f
     "lsm.O640.grib" )
 
   # guarantee destination directory exists
-  ecbuild_info("Downloading LSM: ${_dir}/${_f}")
+  ecbuild_info("Downloading mask: ${_dir}/${_f}")
   file( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${_dir}" )
 
   # get mask into the build dir
