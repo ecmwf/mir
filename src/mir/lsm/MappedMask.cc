@@ -59,17 +59,17 @@ static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 <
 
 }  // namespace
 
+
 namespace mir {
 namespace lsm {
 
 
-
-MappedMask::MappedMask(const std::string &name,
-                       const param::MIRParametrisation &parametrisation,
+MappedMask::MappedMask(const std::string&,
+                       const eckit::PathName& path,
+                       const param::MIRParametrisation&,
                        const repres::Representation& representation,
-                       const std::string &which):
-    Mask(name),
-    path_("~mir/share/mir/masks/lsm.1km.mask") {
+                       const std::string&):
+    path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
@@ -149,13 +149,26 @@ MappedMask::MappedMask(const std::string &name,
     }
 }
 
+
 MappedMask::~MappedMask() {
 }
 
-void MappedMask::hash(eckit::MD5 &md5) const {
+
+bool MappedMask::active() const {
+    return true;
+}
+
+
+bool MappedMask::cacheable() const {
+    return true;
+}
+
+
+void MappedMask::hash(eckit::MD5&md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
+
 
 void MappedMask::print(std::ostream &out) const {
     out << "MappedMask[path=" << path_ << "]";

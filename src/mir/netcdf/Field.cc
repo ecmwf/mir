@@ -107,7 +107,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
 
     if (s.isMap()) {
         eckit::ValueMap m = s;
-        for (auto k : m) {
+        for (const auto& k : m) {
             mirField.metadata(i, k.first, k.second);
         }
 

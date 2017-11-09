@@ -95,7 +95,7 @@ static triplet_vector_t projectPointTo3DElements(
     atlas::interpolation::method::Ray ray( p.data() );
 
     nbProjectionAttempts = 0;
-    for (auto close : closest) {
+    for (const auto& close : closest) {
         ++nbProjectionAttempts;
 
         const size_t elem_id = close.value().payload();
@@ -223,7 +223,10 @@ FiniteElement::~FiniteElement() {
 }
 
 
-void FiniteElement::hash(eckit::MD5&) const {
+void FiniteElement::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
+    InputMeshGenerationParams_.hash(md5);
+    OutputMeshGenerationParams_.hash(md5);
 }
 
 

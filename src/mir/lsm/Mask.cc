@@ -23,6 +23,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -45,8 +46,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Mask::Mask(const std::string &name):
-    name_(name) {
+Mask::Mask() {
 }
 
 
@@ -54,35 +54,65 @@ Mask::~Mask() {
 }
 
 
-void Mask::hash(eckit::MD5 &md5) const {
-    md5 << name_;
+void Mask::hash(eckit::MD5&) const {
+}
+
+
+void Mask::hashCacheKey(eckit::MD5& md5,
+                        const eckit::PathName& path,
+                        const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation,
+                        const std::string& which) {
+
+    std::string interpolation;
+    if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
+        if (!parametrisation.get("lsm-interpolation", interpolation)) {
+            throw eckit::SeriousBug("No interpolation method defined for land-sea mask");
+        }
+    }
+
+    md5 << path.asString();
+    md5 << interpolation;
+    md5 << representation.uniqueName();
 }
 
 
 Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
 
+    // lsm = true is a requirement for lsm processing
     bool lsm = false;
     parametrisation.get("lsm", lsm);
 
+    // lsm-parameter-list is optional, and filters lsm processing for specific paramIds
+    std::vector<long> list;
+    parametrisation.get("lsm-parameter-list", list);
+
+    if (lsm && list.size()) {
+        long paramId = 0;
+        parametrisation.get("paramId", paramId);
+
+        if (paramId > 0) {
+            lsm = std::find(list.begin(), list.end(), paramId) != list.end();
+        }
+    }
+
     if (!lsm) {
-        return NoneLSM::instance();
+        return NoneLSM::noMask();
     }
 
 
     std::string name;
-
     if (!parametrisation.get("lsm-selection-" + which, name)) {
         if (!parametrisation.get("lsm-selection", name)) {
             throw eckit::SeriousBug("No lsm selection method provided");
         }
     }
 
-    name = name + "-" + which;
-    const LSMChooser &chooser = LSMChooser::lookup(name);
-    std::string key = chooser.cacheKey(name, parametrisation, representation, which);
+//    name = name + "-" + which;
+    const LSMSelection &chooser = LSMSelection::lookup(name);
+    std::string key = chooser.cacheKey(parametrisation, representation, which);
 
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
@@ -92,7 +122,7 @@ Mask &Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         return *(*j).second;
     }
 
-    Mask *mask = chooser.create(name, parametrisation, representation, which);
+    Mask *mask = chooser.create(parametrisation, representation, which);
 
     (*cache)[key] = mask;
 
@@ -107,16 +137,6 @@ Mask &Mask::lookupInput(const param::MIRParametrisation& parametrisation, const 
 
 Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
     return lookup(parametrisation, representation, "output");
-}
-
-
-bool Mask::cacheable() const {
-    return true;
-}
-
-
-bool Mask::active() const {
-    return true;
 }
 
 

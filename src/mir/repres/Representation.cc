@@ -243,7 +243,7 @@ void Representation::reorder(long, std::vector<double>&) const {
 
 void Representation::crop(const param::MIRParametrisation&, context::Context&) const {
     std::ostringstream os;
-    os << "Representation::cropToDomain() not implemented for " << *this;
+    os << "Representation::crop() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
@@ -375,7 +375,7 @@ void RepresentationFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
     }

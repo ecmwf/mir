@@ -18,12 +18,12 @@
 #include "eckit/option/SimpleOption.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/MIRCombinedParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/param/DefaultParametrisation.h"
 
 
 class MIRStatistics : public mir::tools::MIRTool {
@@ -63,7 +63,7 @@ void MIRStatistics::usage(const std::string &tool) const {
 void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     using namespace mir::param;
 
-    // Build MIRCombinedParametrisation from a few parts:
+    // Build CombinedParametrisation from a few parts:
     // - wrap the arguments, so that they behave as a MIRParametrisation
     // - input grib metadata
     // - lookup configuration for input metadata-specific parametrisation
@@ -81,7 +81,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
             // Metadata-specific defaults
             // const MIRParametrisation& parameter = mir::config::MIRConfiguration::instance().pick(input.parametrisation());
-            MIRCombinedParametrisation combined(args_wrap, grib, defaults);
+            CombinedParametrisation combined(args_wrap, grib, defaults);
 
 
             // Get paramId/metadata-specific "stats" method

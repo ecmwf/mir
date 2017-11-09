@@ -76,6 +76,7 @@ public:
     const Action& action(size_t) const;
 
     void dump(std::ostream&) const;
+    void custom(std::ostream&) const;
 
     // -- Overridden methods
     // None

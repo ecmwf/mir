@@ -65,11 +65,11 @@ MIRGrid::MeshGenParams::MeshGenParams(const std::string& label, const param::MIR
     // use defaults
     *this = MeshGenParams();
 
-//    param.get("user." + label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
-//    param.get("user." + label + "-mesh-add-field-xyz", meshXYZField_);
-//    param.get("user." + label + "-mesh-add-field-cell-centres", meshCellCentres_);
-    param.get("user." + label + "-mesh-generator", meshGenerator_);
-    param.get("user." + label + "-mesh-file", file_);
+//    param.user().get("" + label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
+//    param.user().get("" + label + "-mesh-add-field-xyz", meshXYZField_);
+//    param.user().get("" + label + "-mesh-add-field-cell-centres", meshCellCentres_);
+    param.userParametrisation().get("" + label + "-mesh-generator", meshGenerator_);
+    param.userParametrisation().get("" + label + "-mesh-file", file_);
 }
 
 

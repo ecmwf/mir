@@ -34,9 +34,9 @@
 #include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
-#include "mir/param/MIRCombinedParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -814,8 +814,8 @@ void FieldComparator::compareFieldValues(
     input::MIRInput& input2 = grib2;
 
 
-    const MIRParametrisation &metadata1 = input1.parametrisation(0);
-    const MIRParametrisation &metadata2 = input2.parametrisation(0);
+    const MIRParametrisation &metadata1 = input1.parametrisation();
+    const MIRParametrisation &metadata2 = input2.parametrisation();
 
 
     std::string comparison1;
@@ -834,8 +834,8 @@ void FieldComparator::compareFieldValues(
     // get input and parameter-specific parametrisations
     const ConfigurationWrapper args_wrap(args_);
     static DefaultParametrisation defaults;
-    MIRCombinedParametrisation combined1(args_wrap, metadata1, defaults);
-    MIRCombinedParametrisation combined2(args_wrap, metadata2, defaults);
+    CombinedParametrisation combined1(args_wrap, metadata1, defaults);
+    CombinedParametrisation combined2(args_wrap, metadata2, defaults);
 
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {

@@ -1,0 +1,6 @@
+# mars
+param=2t,levtype=sfc
+# mir
+--area=80/-10/10/100 --grid=1/1
+# plan
+Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359]]|AreaCropper[bbox=BoundingBox[north=80,west=-10,south=10,east=100]]|Save[output=...]

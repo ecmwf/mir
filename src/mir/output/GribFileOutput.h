@@ -76,11 +76,6 @@ class GribFileOutput : public GribStreamOutput {
 
   private:
 
-// No copy allowed
-
-    GribFileOutput(const GribFileOutput&);
-    GribFileOutput& operator=(const GribFileOutput&);
-
 // -- Members
 
     eckit::PathName path_;

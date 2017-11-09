@@ -71,7 +71,6 @@ const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) 
     return cache_;
 }
 
-
 bool NetcdfFileInput::next() {
     cache_.reset();
     current_++;

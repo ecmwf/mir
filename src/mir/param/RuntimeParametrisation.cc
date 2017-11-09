@@ -98,17 +98,19 @@ bool RuntimeParametrisation::has(const std::string& name) const {
     return owner_.has(name);
 }
 
+const MIRParametrisation& RuntimeParametrisation::userParametrisation() const {
+    return *this;
+}
 
+const MIRParametrisation& RuntimeParametrisation::fieldParametrisation() const {
+    return *this;
+}
 
 template<class T>
 bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {
 
     if(hidden_.find(name) != hidden_.end()) {
         return false;
-    }
-
-    if (name.find("user.") == 0) {
-        return _get(name.substr(5), value);
     }
 
     if(SimpleParametrisation::get(name, value)) {

@@ -60,7 +60,7 @@ void NearestLSMWithLowestIndex::operator()(
 
     // choose closest neighbour point with the same output mask value, shortest distance and lowest index
     Choice choice(false, std::numeric_limits<double>::infinity(), std::numeric_limits<size_t>::max());
-    for (auto n : neighbours) {
+    for (const auto& n : neighbours) {
         ASSERT(n.payload() < imask_.size());
         Choice candidate(omask_[ip] == imask_[n.payload()], eckit::geometry::Point3::distance2(point, n.point()), n.payload());
         if (candidate < choice) {

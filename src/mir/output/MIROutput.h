@@ -13,102 +13,100 @@
 /// @date Apr 2015
 
 
-#ifndef MIROutput_H
-#define MIROutput_H
+#ifndef mir_output_MIROutput_H
+#define mir_output_MIROutput_H
 
 #include <iosfwd>
+#include "eckit/memory/NonCopyable.h"
+
 
 namespace mir {
 namespace context {
 class Context;
 }
-namespace input {
-class MIRInput;
-}
 namespace param {
 class MIRParametrisation;
 }
+}
+
+
+namespace mir {
 namespace output {
 
 
-class MIROutput {
+class MIROutput : private eckit::NonCopyable {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MIROutput();
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~MIROutput(); // Change to virtual if base class
+    virtual ~MIROutput();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // Not iterpolation performed
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // No iterpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
     virtual bool sameAs(const MIROutput& other) const = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const = 0;
     virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
-
-    MIROutput(const MIROutput&);
-    MIROutput& operator=(const MIROutput&);
-
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const MIROutput& p) {
         p.print(s);
@@ -120,5 +118,7 @@ private:
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif
 

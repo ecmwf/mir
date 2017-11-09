@@ -119,4 +119,5 @@ endforeach()
 #endforeach()
 
 add_subdirectory(assertions)
+add_subdirectory(plans)
 

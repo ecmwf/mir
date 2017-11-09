@@ -70,6 +70,10 @@ protected:
 
     // -- Overridden methods
 
+    // From MIRParametrisation
+    virtual const MIRParametrisation& userParametrisation() const;
+    virtual const MIRParametrisation& fieldParametrisation() const;
+
     virtual bool has(const std::string& name) const;
 
     virtual bool get(const std::string& name, std::string& value) const;

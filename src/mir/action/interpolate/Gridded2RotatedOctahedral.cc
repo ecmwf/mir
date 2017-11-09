@@ -28,10 +28,10 @@ namespace action {
 Gridded2RotatedOctahedral::Gridded2RotatedOctahedral(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
 
-    ASSERT(parametrisation_.get("user.octahedral", N_));
+    ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
 
     rotation_ = util::Rotation(value[0], value[1]);

@@ -91,8 +91,8 @@ private:
     // -- Members
 
     eckit::PathName path_;
-
     param::CachedParametrisation cache_;
+
     mir::netcdf::InputDataset dataset_;
     std::vector<mir::netcdf::Field*> fields_;
     int current_;

@@ -30,7 +30,7 @@ namespace action {
 FrameFilter::FrameFilter(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     size_(0) {
-    ASSERT(parametrisation.get("user.frame", size_));
+    ASSERT(parametrisation.userParametrisation().get("frame", size_));
 }
 
 

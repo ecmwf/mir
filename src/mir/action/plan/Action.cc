@@ -34,6 +34,9 @@ Action::Action(const param::MIRParametrisation &parametrisation):
 Action::~Action() {
 }
 
+void Action::custom(std::ostream & out) const {
+    out << *this;
+}
 
 //=========================================================================
 
@@ -103,7 +106,7 @@ Action *ActionFactory::build(const std::string& name, const param::MIRParametris
                     }
                 }
 
-                if(j != m->end()) {
+                if (j != m->end()) {
                     aliases[name] = (*j).first;
                 }
             }
@@ -123,7 +126,7 @@ void ActionFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
     }

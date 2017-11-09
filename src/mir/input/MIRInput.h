@@ -29,9 +29,12 @@ namespace mir {
 namespace data {
 class MIRField;
 }
+
 namespace param {
 class MIRParametrisation;
+class Rules;
 }
+
 }
 
 
@@ -57,6 +60,8 @@ public:
 
     // -- Methods
 
+
+
     virtual bool next();
     virtual size_t dimensions() const;
 
@@ -81,7 +86,7 @@ public:
 protected:
 
     // -- Members
-    // None
+
 
     // -- Methods
 
@@ -108,14 +113,13 @@ private:
     // None
 
     // -- Class members
-    // None
 
     // -- Class methods
     // None
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRInput& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRInput& p) {
         p.print(s);
         return s;
     }

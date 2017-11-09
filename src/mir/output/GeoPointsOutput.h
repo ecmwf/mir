@@ -91,11 +91,6 @@ protected:
 
 private:
 
-// No copy allowed
-
-    GeoPointsOutput(const GeoPointsOutput&);
-    GeoPointsOutput& operator=(const GeoPointsOutput&);
-
 // -- Members
 
     bool once_;

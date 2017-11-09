@@ -34,73 +34,73 @@ Codec::~Codec() {
 
 void Codec::decode(std::vector<double> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<double> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<float> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<long> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<short> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<unsigned char> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<unsigned char> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::decode(std::vector<long long> &) const {
     std::ostringstream os;
-    os << "Variable::decode() not implemented for " << *this;
+    os << "Variable::decode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<double> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<double> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<float> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<long> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<short> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<unsigned char> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<unsigned char> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 void Codec::encode(std::vector<long long> &) const {
     std::ostringstream os;
-    os << "Variable::encode() not implemented for " << *this;
+    os << "Variable::encode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
@@ -177,7 +177,7 @@ void CodecFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep << j.first;
         sep = ", ";
     }

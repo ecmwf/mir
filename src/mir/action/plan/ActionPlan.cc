@@ -172,6 +172,17 @@ void ActionPlan::dump(std::ostream &out) const {
     }
 }
 
+
+void ActionPlan::custom(std::ostream &out) const {
+   const char *sep = "";
+    for (const auto& p : actions_) {
+        out << sep;
+        p->custom(out);
+        sep = "|";
+    }
+}
+
+
 }  // namespace action
 }  // namespace mir
 

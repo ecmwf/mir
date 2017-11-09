@@ -79,11 +79,6 @@ class DummyOutput : public MIROutput {
 
   private:
 
-// No copy allowed
-
-    DummyOutput(const DummyOutput&);
-    DummyOutput& operator=(const DummyOutput&);
-
 // -- Members
 
 // -- Methods

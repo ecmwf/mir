@@ -21,10 +21,11 @@
 
 namespace mir {
 namespace param {
+class Rules;
 
 
 class FieldParametrisation : public MIRParametrisation {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -55,10 +56,9 @@ class FieldParametrisation : public MIRParametrisation {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
-    // None
 
     // -- Methods
     // None
@@ -87,10 +87,11 @@ class FieldParametrisation : public MIRParametrisation {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // -- Members
-    // None
+
+    mutable long paramId_;
 
     // -- Methods
 

@@ -27,8 +27,8 @@ namespace action {
 
 Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.latitudes", latitudes_));
-    ASSERT(parametrisation_.get("user.longitudes", longitudes_));
+    ASSERT(parametrisation_.userParametrisation().get("latitudes", latitudes_));
+    ASSERT(parametrisation_.userParametrisation().get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
 }

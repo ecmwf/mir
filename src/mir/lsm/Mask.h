@@ -14,43 +14,43 @@
 /// @date Apr 2015
 
 
-#ifndef Mask_H
-#define Mask_H
+#ifndef mir_lsm_Mask_h
+#define mir_lsm_Mask_h
 
 #include <iosfwd>
 #include <string>
 #include <vector>
-
 #include "eckit/memory/NonCopyable.h"
+
 
 namespace eckit {
 class MD5;
+class PathName;
 }
-
-
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 }
-
 namespace repres {
 class Representation;
 }
-
 }
+
 
 namespace mir {
 namespace lsm {
 
+
 class Mask : private eckit::NonCopyable {
 public:
 
-    Mask(const std::string &name);
+    // -- Contructors
+
+    Mask();
 
     // -- Destructor
 
-    virtual ~Mask(); // Change to virtual if base class
+    virtual ~Mask();
 
     // -- Convertors
     // None
@@ -60,12 +60,18 @@ public:
 
     // -- Methods
 
-    virtual bool active() const;
+    virtual bool active() const = 0;
+    virtual bool cacheable() const = 0;
+    virtual void hash(eckit::MD5&) const;
+    virtual const std::vector<bool>& mask() const = 0;
 
-    virtual bool cacheable() const;
-
-    virtual void hash(eckit::MD5 &) const;
-    virtual const std::vector<bool> &mask() const = 0;
+    // Cache key takes the interpolation method into account
+    static void hashCacheKey(
+            eckit::MD5&,
+            const eckit::PathName&,
+            const param::MIRParametrisation&,
+            const repres::Representation&,
+            const std::string& which);
 
     // -- Overridden methods
     // None
@@ -75,19 +81,17 @@ public:
 
     // -- Class methods
 
-    static  Mask &lookupInput(const param::MIRParametrisation &param, const repres::Representation& representation);
-    static  Mask &lookupOutput(const param::MIRParametrisation &param, const repres::Representation& representation);
+    static Mask& lookupInput(const param::MIRParametrisation&, const repres::Representation&);
+    static Mask& lookupOutput(const param::MIRParametrisation&, const repres::Representation&);
 
 protected:
 
     // -- Members
-
-    std::string name_;
+    // None
 
     // -- Methods
 
-    virtual void print(std::ostream &) const = 0;
-
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -104,6 +108,7 @@ private:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -112,22 +117,24 @@ private:
     // None
 
     // -- Class methods
-    static  Mask &lookup(const param::MIRParametrisation &param,
-                         const repres::Representation& representation,
-                         const std::string &which);
 
+    static Mask& lookup(const param::MIRParametrisation&,
+                        const repres::Representation&,
+                        const std::string& which);
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Mask &p) {
+    friend std::ostream &operator<<(std::ostream& s, const Mask& p) {
         p.print(s);
         return s;
     }
 
 };
 
+
 }  // namespace lsm
 }  // namespace mir
+
 
 #endif
 

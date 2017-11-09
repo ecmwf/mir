@@ -27,10 +27,10 @@ namespace action {
 
 Gridded2RotatedReduced::Gridded2RotatedReduced(const param::MIRParametrisation &parametrisation):
     Gridded2GriddedInterpolation(parametrisation) {
-    ASSERT(parametrisation_.get("user.reduced", N_));
+    ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
 
     std::vector<double> value;
-    ASSERT(parametrisation_.get("user.rotation", value));
+    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
 
     rotation_ = util::Rotation(value[0], value[1]);

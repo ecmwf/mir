@@ -69,6 +69,7 @@ class Save : public Action {
     // -- Methods
 
     void print(std::ostream &) const; // Change to virtual if base class
+    void custom(std::ostream&) const;
 
     // -- Overridden methods
     // None

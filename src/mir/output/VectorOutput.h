@@ -83,11 +83,6 @@ class VectorOutput : public MIROutput {
 
   private:
 
-    // No copy allowed
-
-    VectorOutput(const VectorOutput &);
-    VectorOutput &operator=(const VectorOutput &);
-
     // -- Members
 
 

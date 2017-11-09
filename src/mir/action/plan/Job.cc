@@ -24,9 +24,9 @@
 #include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/style/MIRStyle.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
+#include "mir/style/MIRStyle.h"
 
 
 namespace mir {
@@ -40,10 +40,11 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
-    combined_.reset(new param::MIRCombinedParametrisation(job, metadata, defaults));
+    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
 
+    job.get("dump-plan-file", dumpFile_);
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
@@ -84,8 +85,17 @@ Job::~Job() {
 void Job::execute(util::MIRStatistics &statistics) const {
 
     ASSERT(plan_);
+
+    if(dumpFile_.size()) {
+        std::ofstream out(dumpFile_);
+        plan_->custom(out);
+        out << std::endl;
+    }
+
     context::Context ctx(input_, statistics);
     plan_->execute(ctx);
+
+   
 }
 
 

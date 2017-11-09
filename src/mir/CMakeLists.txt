@@ -208,12 +208,16 @@ list(
     input/VectorInput.h
     log/MIR.cc
     log/MIR.h
-    lsm/AutoLSM.cc
-    lsm/AutoLSM.h
-    lsm/GribFileLSM.cc
-    lsm/GribFileLSM.h
-    lsm/LSMChooser.cc
-    lsm/LSMChooser.h
+    lsm/FileLSM.cc
+    lsm/FileLSM.h
+    lsm/GribFileMask.cc
+    lsm/GribFileMask.h
+    lsm/GribFileMaskFromMIR.cc
+    lsm/GribFileMaskFromMIR.h
+    lsm/GribFileMaskFromUser.cc
+    lsm/GribFileMaskFromUser.h
+    lsm/LSMSelection.cc
+    lsm/LSMSelection.h
     lsm/LandSeaMasks.cc
     lsm/LandSeaMasks.h
     lsm/MappedMask.cc
@@ -222,12 +226,12 @@ list(
     lsm/Mask.h
     lsm/NamedLSM.cc
     lsm/NamedLSM.h
+    lsm/NoMask.cc
+    lsm/NoMask.h
     lsm/NoneLSM.cc
     lsm/NoneLSM.h
-    lsm/TenMinutesLSM.cc
-    lsm/TenMinutesLSM.h
-    lsm/UserFileLSM.cc
-    lsm/UserFileLSM.h
+    lsm/TenMinutesMask.cc
+    lsm/TenMinutesMask.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
@@ -320,6 +324,8 @@ list(
     packing/Simple.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
+    param/CombinedParametrisation.cc
+    param/CombinedParametrisation.h
     param/ConfigurationWrapper.cc
     param/ConfigurationWrapper.h
     param/DefaultParametrisation.cc
@@ -328,10 +334,10 @@ list(
     param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
-    param/MIRCombinedParametrisation.cc
-    param/MIRCombinedParametrisation.h
     param/MIRParametrisation.cc
     param/MIRParametrisation.h
+    param/Rules.cc
+    param/Rules.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
     param/SimpleParametrisation.cc
@@ -509,14 +515,13 @@ list(
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
+    util/option/VectorOfUnknownLengthOption.h
   )
 
 
 if(HAVE_ATLAS)
 list(
     APPEND mir_srcs
-    api/ProdgenJob.cc
-    api/ProdgenJob.h
     method/fe/Conservative.cc
     method/fe/Conservative.h
     method/fe/FEBilinear.cc

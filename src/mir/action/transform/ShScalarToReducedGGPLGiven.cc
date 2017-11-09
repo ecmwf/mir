@@ -28,7 +28,7 @@ namespace transform {
 
 ShScalarToReducedGGPLGiven::ShScalarToReducedGGPLGiven(const param::MIRParametrisation& parametrisation):
     ShScalarToGridded(parametrisation) {
-    ASSERT(parametrisation_.get("user.pl", pl_));
+    ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
 }
 
 

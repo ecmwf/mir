@@ -68,17 +68,17 @@ void getStatisticsValues(mir::context::Context& ctx, mir::output::MIROutput& out
     mir::param::SimpleParametrisation dummy;
 
     if (name == "mean") {
-        for (auto s : stats) {
+        for (const auto& s : stats) {
             ASSERT(i < N);
             values[i++] = s.mean();
         }
     } else if (name == "variance") {
-        for (auto s : stats) {
+        for (const auto& s : stats) {
             ASSERT(i < N);
             values[i++] = s.variance();
         }
     } else if (name == "stddev") {
-        for (auto s : stats) {
+        for (const auto& s : stats) {
             ASSERT(i < N);
             values[i++] = s.standardDeviation();
         }
@@ -163,7 +163,7 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
     } else {
 
         // Show statistics results
-        for (auto stats : statistics) {
+        for (const auto& stats : statistics) {
             mir::stats::Results results;
 
             results.absoluteQuantity ("mean")     = stats.mean();

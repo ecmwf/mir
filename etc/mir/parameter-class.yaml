@@ -998,6 +998,10 @@ intensity:
 - 228051  # Averaged total lightning density
 - 228052  # Instantaneous cloud-to-ground lightning density
 - 228053  # Averaged cloud-to-ground lightning density
+- 228057  # Averaged total lightning flash density over the past 3 hours
+- 228058  # Averaged total lightning flash density over the past 6 hours
+- 228059  # Averaged cloud-to-ground lightning flash density over the past 3 hours
+- 228060  # Averaged cloud-to-ground lightning flash density over the past 6 hours
 - 228078  # GPP coefficient from Biogenic Flux Adjustment System
 - 228079  # Rec coefficient from Biogenic Flux Adjustment System
 - 228080  # Accumulated Carbon Dioxide Net Ecosystem Exchange

@@ -16,12 +16,12 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/CombinedParametrisation.h"
+#include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/param/FieldParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/param/DefaultParametrisation.h"
-#include "mir/param/MIRCombinedParametrisation.h"
-#include "mir/param/ConfigurationWrapper.h"
-#include "mir/param/FieldParametrisation.h"
 
 
 class MIRConfig : public mir::tools::MIRTool {
@@ -40,7 +40,7 @@ class MIRConfig : public mir::tools::MIRTool {
 
     void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
         static mir::param::DefaultParametrisation defaults;
-        mir::param::MIRCombinedParametrisation combined(metadata, defaults, defaults);
+        mir::param::CombinedParametrisation combined(metadata, defaults, defaults);
         const mir::param::MIRParametrisation& c = combined;
 
         long paramId = 0;

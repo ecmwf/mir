@@ -16,17 +16,16 @@
 #include "mir/style/CustomParametrisation.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
 namespace style {
 
 
-//==========================================================
 CustomParametrisation::CustomParametrisation(
     const std::string& name,
     const std::map<std::string, std::vector<std::string> >& params,
@@ -38,13 +37,23 @@ CustomParametrisation::CustomParametrisation(
 
 
 CustomParametrisation::~CustomParametrisation() {
-
 }
+
+
+const param::MIRParametrisation&CustomParametrisation::userParametrisation() const {
+    return *this;
+}
+
+
+const param::MIRParametrisation&CustomParametrisation::fieldParametrisation() const {
+    return *this;
+}
+
 
 template<class T>
 static void fill(T& value, const std::vector<std::string>& params) {
-
     eckit::Translator<std::string, T> t;
+
     ASSERT(params.size() == 1);
     value = t(params[0]);
 }
@@ -52,10 +61,9 @@ static void fill(T& value, const std::vector<std::string>& params) {
 
 template<class T>
 static void fill(std::vector<T>& value, const std::vector<std::string>& params) {
-    value.clear();
-
     eckit::Translator<std::string, T> t;
 
+    value.clear();
     for (auto j = params.begin(); j != params.end(); ++j) {
         value.push_back(t(*j));
     }
@@ -64,27 +72,12 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 
 template<class T>
 bool CustomParametrisation::_get(const std::string& name,  T& value) const {
-
-
-    std::cout << "+++++++++++++ CustomParametrisation[" << name_
-              << " get ["
-              << name
-              << "]"
-              << std::endl;
+    eckit::Log::debug<LibMir>() << *this << " get('" << name << "')" << std::endl;
 
     auto j = params_.find(name);
     if (j != params_.end()) {
         fill(value, (*j).second);
         return true;
-    }
-
-    if (name.find("user.") == 0) {
-
-        auto j = params_.find(name.substr(5));
-        if (j != params_.end()) {
-            fill(value, (*j).second);
-            return true;
-        }
     }
 
     return parametrisation_.get(name, value);
@@ -98,58 +91,81 @@ bool CustomParametrisation::has(const std::string& name) const {
     return parametrisation_.has(name);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
 }
+
 
 bool CustomParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, int& value) const {
     return _get(name, value);
 }
+
 
 bool CustomParametrisation::get(const std::string& name, long& value) const {
     return _get(name, value);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, float& value) const {
     return _get(name, value);
 }
+
 
 bool CustomParametrisation::get(const std::string& name, double& value) const {
     return _get(name, value);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, std::vector<int>& value) const {
     return _get(name, value);
 }
+
 
 bool CustomParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, std::vector<float>& value) const {
     return _get(name, value);
 }
 
+
 bool CustomParametrisation::get(const std::string& name, std::vector<double>& value) const {
     return _get(name, value);
 }
+
 
 bool CustomParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
     return _get(name, value);
 }
 
 
-void CustomParametrisation::print(std::ostream &out) const {
-    out << "CustomParametrisation[name="
-        << name_
-        << ",params="
-        << params_
-        << "]";
+void CustomParametrisation::print(std::ostream& out) const {
+    out << "CustomParametrisation[name=" << name_;
+
+    out << ",params=[";
+    const char* sep = "";
+    for(const auto& p : params_) {
+        out << sep << p.first << "=[";
+        const char* sepv = "";
+        for(const auto& v : p.second) {
+            out << sepv << v;
+            sepv = ",";
+        }
+        out << "]";
+        sep = ",";
+    }
+
+    out << "]";
 }
+
 
 }  // namespace param
 }  // namespace mir

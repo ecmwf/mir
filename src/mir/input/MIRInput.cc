@@ -71,7 +71,6 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
-
 //=========================================================================
 
 
@@ -109,7 +108,7 @@ MIRInputFactory::~MIRInputFactory() {
 
 
 static void put(std::ostream& out, unsigned long magic) {
-    out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec;
+    out << "0x" << std::hex <<  std::setfill('0') << std::setw(8)  << magic << std::dec <<  std::setfill(' ');
 
     char p[5] = {0,};
 
@@ -172,12 +171,14 @@ void MIRInputFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (auto j : *m) {
+    for (const auto& j : *m) {
         out << sep;
         put(out, j.first);
         sep = ", ";
     }
 }
+
+
 
 
 }  // namespace input

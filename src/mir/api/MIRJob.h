@@ -19,8 +19,11 @@
 #include <string>
 
 
+#include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
+#include "mir/param/Rules.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
 namespace input {
@@ -87,7 +90,8 @@ public:
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 
     MIRJob& clear(const std::string& name);
-    MIRJob& reset();
+
+    MIRJob& set(const std::string& args);
 
     MIRJob& representationFrom(input::MIRInput&);
 
@@ -125,10 +129,14 @@ protected:
 private:
 
     // -- Members
-    // None
 
     // -- Methods
-    // None
+
+    template<class T>
+    MIRJob& _setScalar(const std::string& name, const T& value);
+
+    template<class T>
+    MIRJob& _setVector(const std::string& name, const T& value, size_t outputCount = 4);
 
     // -- Overridden methods
 

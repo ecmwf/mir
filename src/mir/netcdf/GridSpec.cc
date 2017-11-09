@@ -92,7 +92,7 @@ static const Variable& find_variable(const Variable& variable,
 
     const Dataset& dataset = variable.dataset();
 
-    for (auto k : dataset.variables()) {
+    for (const auto& k : dataset.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("standard_name") == standardName) {
             std::cout << "XXXXX find_variable" << v << " has standard_name " << standardName << std::endl;
@@ -100,7 +100,7 @@ static const Variable& find_variable(const Variable& variable,
         }
     }
 
-    for (auto k : dataset.variables()) {
+    for (const auto& k : dataset.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("units") == units) {
             std::cout  << "XXXXX find_variable"  << v << " has units " << units << std::endl;

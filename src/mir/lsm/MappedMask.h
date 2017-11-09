@@ -13,14 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef MappedMask_H
-#define MappedMask_H
+#ifndef mir_lsm_MappedMask_h
+#define mir_lsm_MappedMask_h
 
 #include <iosfwd>
-
 #include "eckit/filesystem/PathName.h"
-
 #include "mir/lsm/Mask.h"
+
 
 namespace mir {
 namespace param {
@@ -31,94 +30,97 @@ class Representation;
 }
 }
 
+
 namespace mir {
 namespace lsm {
 
-class MappedMask : public Mask {
-  public:
 
-// -- Exceptions
+class MappedMask : public Mask {
+public:
+
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     MappedMask(const std::string& name,
-                const param::MIRParametrisation& parametrisation,
-                const repres::Representation &representation,
-                const std::string& which);
+               const eckit::PathName&,
+               const param::MIRParametrisation& parametrisation,
+               const repres::Representation &representation,
+               const std::string& which);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~MappedMask(); // Change to virtual if base class
+    virtual ~MappedMask();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
 
+    // -- Class methods
+    // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
+    // None
 
+    // -- Overridden methods
+
+    virtual bool active() const;
+    virtual bool cacheable() const;
     virtual void hash(eckit::MD5&) const;
     virtual void print(std::ostream&) const;
 
-// -- Overridden methods
+    // -- Class members
     // None
 
-// -- Class members
+    // -- Class methods
     // None
 
-// -- Class methods
-    // None
+private:
 
-  private:
-
-// No copy allowed
-
-    MappedMask(const MappedMask&);
-    MappedMask& operator=(const MappedMask&);
-
-// -- Members
+    // -- Members
 
     eckit::PathName path_;
     std::vector<bool> mask_;
 
-// -- Methods
-
-
-// -- Overridden methods
-
-    virtual const std::vector<bool> &mask() const;
-
-// -- Class members
+    // -- Methods
     // None
 
-// -- Class methods
+    // -- Overridden methods
+
+    virtual const std::vector<bool>& mask() const;
+
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
 
+    // -- Friends
+    // None
 
 };
 
 
-
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

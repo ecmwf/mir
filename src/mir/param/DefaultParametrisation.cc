@@ -31,13 +31,15 @@ DefaultParametrisation::DefaultParametrisation() {
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
 
-    set("lsm-selection", "none");
+    set("lsm", false);
+    set("lsm-selection", "named");
+    set("lsm-named", "1km");
     set("lsm-interpolation", "nearest-neighbour");
     set("lsm-weight-adjustment", 0.2);
     set("lsm-value-threshold", 0.5);
 
     set("spectral-order", "linear");
-    set("spectral-grid", "regular-gaussian");
+    set("spectral-intermediate-grid", "regular-gaussian");
 
     set("absolute-error", 1e-10);
 }

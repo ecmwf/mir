@@ -85,11 +85,6 @@ class GribMemoryOutput : public GribOutput {
 
   private:
 
-    // No copy allowed
-
-    GribMemoryOutput(const GribMemoryOutput &);
-    GribMemoryOutput &operator=(const GribMemoryOutput &);
-
     // -- Members
 
     void* message_;

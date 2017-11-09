@@ -33,7 +33,8 @@
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
-#include "mir/lsm/LSMChooser.h"
+#include "mir/lsm/LSMSelection.h"
+#include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/mir_ecbuild_config.h"
@@ -45,6 +46,7 @@
 #include "mir/style/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
+#include "mir/util/option/VectorOfUnknownLengthOption.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -64,12 +66,13 @@ public:
 
     MIRToolConcrete(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
+        using mir::util::option::VectorOfUnknownLengthOption;
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
         options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
-        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-grid", "Spectral/gridded transform associated grid type or name"));
+        options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
 
@@ -114,21 +117,18 @@ public:
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
+        options_.push_back(new VectorOfUnknownLengthOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters"));
 
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation", "Interpolation method for both input and output lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection", "Selection method for both input and output lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file", "Path to lsm to use for both input and output, in grib, only if --lsm-selection=file"));
-
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation-input", "Interpolation method for lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection-input", "Selection method for input lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file-input", "Path to lsm to use for input lsm, in grib, only if --lsm-selection=file"));
-
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation-output", "Interpolation method for lsm, default nearest-neighbour"));
-        options_.push_back(new FactoryOption<mir::lsm::LSMChooser>("lsm-selection-output", "Selection method for output lsm"));
-        options_.push_back(new SimpleOption<eckit::PathName>("lsm-file-output", "Path to lsm to use for output lsm, in grib, only if --lsm-selection=file"));
-
-        options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "Weight adjustment factor when applying LSM (default 0.2)"));
-        options_.push_back(new SimpleOption<double>("lsm-value-threshold", "Value threshold when converting LSM field to mask (default 0.5)"));
+        for (const std::string& io : {"", "input", "output"}) {
+            const std::string which = io.length()? io : "both input and output";
+            const std::string key = (io.length()? "-" : "") + io;
+            options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
+            options_.push_back(new FactoryOption<mir::lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
+            options_.push_back(new FactoryOption<mir::lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
+            options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM grib file path to use for " + which));
+            options_.push_back(new SimpleOption<double>("lsm-value-threshold" + key, "If --lsm-selection" + key + "=file, LSM field greater-or-equal to value threshold, when converting to mask for " + which + " (default 0.5)"));
+        }
+        options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids support"));
@@ -161,6 +161,8 @@ public:
         options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
         options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
         options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
+        options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
+
     }
 
 };
