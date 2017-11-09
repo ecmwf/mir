@@ -74,7 +74,6 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
         plan_->dump(eckit::Log::debug<LibMir>());
     }
-
 }
 
 
@@ -92,10 +91,12 @@ void Job::execute(util::MIRStatistics &statistics) const {
         out << std::endl;
     }
 
+    if (LibMir::dryRun()) {
+        return;
+    }
+
     context::Context ctx(input_, statistics);
     plan_->execute(ctx);
-
-   
 }
 
 
