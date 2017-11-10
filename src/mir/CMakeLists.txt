@@ -286,8 +286,6 @@ list(
     namedgrids/OctahedralPattern.h
     namedgrids/RegularPattern.cc
     namedgrids/RegularPattern.h
-    output/DummyOutput.cc
-    output/DummyOutput.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc

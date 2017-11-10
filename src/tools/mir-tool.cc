@@ -18,6 +18,7 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -38,9 +39,9 @@
 #include "mir/method/Method.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/mir_ecbuild_config.h"
-#include "mir/output/GeoPointsFileOutput.h"
-#include "mir/output/GribFileOutput.h"
+#include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/style/SpectralOrder.h"
@@ -181,13 +182,7 @@ void MIRToolConcrete::usage(const std::string &tool) const {
 
 
 void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
-
     eckit::ResourceUsage usage("mir-tool");
-
-    // {"", 0, "GRIB Output"},
-    // {"accuracy", "n", "number of bits per value",},
-    // {"packing", "p", "e.g. second-order",},
-
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
@@ -219,60 +214,49 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     }
 
 
+    const mir::param::ConfigurationWrapper args_wrap(args);
+    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
+    ASSERT(output);
+
     if (dummy) {
         mir::input::DummyInput input;
-        mir::output::GribFileOutput output(args(1));
-        process(job, input, output, "field");
+        process(job, input, *output, "field");
         return;
     }
 
     if (wind) {
         ASSERT(!vod2uv);
-        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+        ASSERT(!args.has("latitudes") && !args.has("longitudes"));
 
         mir::input::GribFileInput input1(args(0), 0, 2);
         mir::input::GribFileInput input2(args(0), 1, 2);
 
-        mir::output::GribFileOutput output(args(1));
-
-
         mir::input::VectorInput input(input1, input2);
-        process(job, input, output, "wind");
+        process(job, input, *output, "wind");
         return;
 
     }
 
     if (vod2uv) {
         ASSERT(!wind);
-        ASSERT(!args.has("latitudes") &&  !args.has("longitudes"));
+        ASSERT(!args.has("latitudes") && !args.has("longitudes"));
 
         mir::input::GribFileInput vort_input(args(0), 0, 2);
         mir::input::GribFileInput div_input(args(0), 1, 2);
-        mir::output::GribFileOutput output(args(1));
 
         mir::input::VectorInput input(vort_input, div_input);
-        process(job, input, output, "wind");
+        process(job, input, *output, "wind");
         return;
 
     }
 
     if (args.has("geopoints")) {
         mir::input::GeoPointsFileInput input(args(0));
-        mir::output::GribFileOutput output(args(1));
-        process(job, input, output, "field");
-        return;
-    }
-
-    std::string griddef;
-    if (args.has("griddef")) {
-        mir::input::GribFileInput input(args(0));
-        mir::output::GeoPointsFileOutput output(args(1));
-        process(job, input, output, "field");
+        process(job, input, *output, "field");
         return;
     }
 
     eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0)));
-    mir::output::GribFileOutput output(args(1));
 
     // std::string path_lat, path_lon;
     // ASSERT(args.has("latitudes") ==  args.has("longitudes"));
@@ -280,7 +264,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     //     input->setAuxilaryFiles(path_lat, path_lon);
     // }
 
-    process(job, *input, output, "field");
+    process(job, *input, *output, "field");
 }
 
 

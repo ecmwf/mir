@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include <istream>
+#include <ostream>
 
 #include "mir/output/EmptyOutput.h"
 
@@ -30,26 +30,35 @@ EmptyOutput::~EmptyOutput() {
 }
 
 
+size_t EmptyOutput::copy(const param::MIRParametrisation&, context::Context&) {
+    return 0;
+}
+
+
+size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
+    return 0;
+}
+
+
 bool EmptyOutput::sameAs(const MIROutput& other) const {
     const EmptyOutput* o = dynamic_cast<const EmptyOutput*>(&other);
     return o;
 }
 
 
-size_t EmptyOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
-    return 0;
+bool EmptyOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+    return false;
 }
 
 
-size_t EmptyOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
-    return 0;
+bool EmptyOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
+    return false;
 }
 
 
-void EmptyOutput::print(std::ostream &out) const {
-    out << "EmptyOutput[...]";
+void EmptyOutput::print(std::ostream& out) const {
+    out << "EmptyOutput[]";
 }
-
 
 
 }  // namespace output
