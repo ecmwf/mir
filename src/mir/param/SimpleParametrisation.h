@@ -17,7 +17,6 @@
 #define mir_param_SimpleParametrisation_h
 
 #include <map>
-#include <set>
 #include <string>
 #include "mir/param/MIRParametrisation.h"
 
@@ -85,7 +84,7 @@ public:
     // Used by Job
 
     virtual bool empty() const;
-    bool matches(const MIRParametrisation& other, const std::set<std::string>& ignore = std::set<std::string>()) const;
+    bool matches(const MIRParametrisation&) const;
 
     // -- Overridden methods
 

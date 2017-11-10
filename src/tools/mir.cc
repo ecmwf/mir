@@ -69,7 +69,6 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new SimpleOption<bool>("autoresol", "Control automatic truncation"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));

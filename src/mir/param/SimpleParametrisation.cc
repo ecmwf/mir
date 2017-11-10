@@ -586,9 +586,9 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const {
+bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
     for (const auto& j : settings_) {
-        if (!j.second->match(j.first, other) && ignore.find(j.first) == ignore.end()) {
+        if (!j.second->match(j.first, other)) {
             eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches: no (" << j.first << " different to " << *(j.second) << ")" << std::endl;
             return false;
         }
