@@ -1,7 +1,7 @@
 # Mars request
 param=2t,levtype=sfc
 # Mir tool options
---plan=grid2regular-ll(grid=[2,2]);crop(area=[90,-3,0,4]);frame(1)
+--plan=grid2regular-ll(grid=[2,2],area=[90,-3,0,4]);crop(area=[90,-3,0,4]);frame(1)
 # grib_get assertions
 Ni=4
 Nj=46
