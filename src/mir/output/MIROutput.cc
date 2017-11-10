@@ -15,6 +15,12 @@
 
 #include "mir/output/MIROutput.h"
 
+#include "mir/config/LibMir.h"
+#include "mir/output/EmptyOutput.h"
+#include "mir/output/GeoPointsFileOutput.h"
+#include "mir/output/GribFileOutput.h"
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace output {
@@ -25,6 +31,28 @@ MIROutput::MIROutput() {
 
 
 MIROutput::~MIROutput() {
+}
+
+
+MIROutputFactory::MIROutputFactory() {
+}
+
+
+MIROutputFactory::~MIROutputFactory() {
+}
+
+
+MIROutput* MIROutputFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
+
+    if (mir::LibMir::dryRun()) {
+        return new EmptyOutput();
+    }
+
+    if (parametrisation.has("griddef")) {
+        return new GeoPointsFileOutput(name);
+    }
+
+    return new GribFileOutput(name);
 }
 
 

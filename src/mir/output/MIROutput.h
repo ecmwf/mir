@@ -56,11 +56,11 @@ public:
 
     // -- Methods
 
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &) = 0; // No iterpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&) = 0;
     virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
     virtual bool sameAs(const MIROutput& other) const = 0;
-    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const = 0;
-    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const = 0;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
 
     // -- Overridden methods
     // None
@@ -114,6 +114,26 @@ private:
     }
 
 };
+
+
+class MIROutputFactory {
+//    virtual MIROutput *make(const std::string &path) = 0;
+protected:
+    MIROutputFactory();
+    virtual ~MIROutputFactory();
+public:
+    static MIROutput* build(const std::string&, const param::MIRParametrisation&);
+};
+
+
+// template<class T>
+// class MIROutputBuilder : public MIROutputFactory {
+//     virtual MIROutput* make(const std::string& path, const param::MIRParametrisation& parametrisation) {
+//         return new T(path, parametrisation);
+//     }
+// public:
+//     MIROutputBuilder() : MIROutputFactory() {}
+// };
 
 
 }  // namespace output

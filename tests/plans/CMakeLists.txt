@@ -28,6 +28,7 @@ foreach( _t ${test_files} )
       ARGS       ${_t}
       ENVIRONMENT
         "MIR_DEBUG=1"
+        "MIR_DRY_RUN=1"
         "MIR_HOME=${CMAKE_BINARY_DIR}"
         "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
         ${eccodes_environment}
