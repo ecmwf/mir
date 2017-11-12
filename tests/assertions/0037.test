@@ -3,5 +3,12 @@
 date=19930202
 # Mir tool options
 --grid=1/1
-# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
-#?
+# grib_get assertions
+Ni = 360
+Nj = 181
+iDirectionIncrementInDegrees = 1
+jDirectionIncrementInDegrees = 1
+longitudeOfFirstGridPointInDegrees = 0
+longitudeOfLastGridPointInDegrees = 359
+latitudeOfFirstGridPointInDegrees = 90
+latitudeOfLastGridPointInDegrees = -90

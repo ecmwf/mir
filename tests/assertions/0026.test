@@ -2,6 +2,16 @@
 # Input file
 regular_ll.2-2.grib1
 # Mir tool options
---area=22.7/-13.7/-5.9/21.7 --grid=0.2/0.2 --rotation=-40/10 
+--area=22.7/-13.7/-5.9/21.7 --grid=0.2/0.2 --rotation=-40/10
 # grib_get assertions
-#paramId=131
+Ni = 178
+Nj = 144
+iDirectionIncrementInDegrees = 0.2
+jDirectionIncrementInDegrees = 0.2
+longitudeOfFirstGridPointInDegrees = -13.7
+longitudeOfLastGridPointInDegrees = 21.7
+latitudeOfFirstGridPointInDegrees = 22.7
+latitudeOfLastGridPointInDegrees = -5.9
+uvRelativeToGrid = 1
+latitudeOfSouthernPoleInDegrees = -40
+longitudeOfSouthernPoleInDegrees = 10

@@ -3,7 +3,11 @@ param=2t,levtype=sfc
 # Mir tool options
 --bitmap=$tests_assertions_dir/GAUSS400_EU_GL --area=90/-60/25/60 --grid=0.1/0.1
 # grib_get assertions
-# latitudeOfFirstGridPointInDegrees=33.075
-# longitudeOfFirstGridPointInDegrees=241.85
-# latitudeOfLastGridPointInDegrees=5.95
-# longitudeOfLastGridPointInDegrees=284.025
+Ni = 1201
+Nj = 651
+iDirectionIncrementInDegrees = 0.1
+jDirectionIncrementInDegrees = 0.1
+longitudeOfFirstGridPointInDegrees = -60
+longitudeOfLastGridPointInDegrees = 60
+latitudeOfFirstGridPointInDegrees = 90
+latitudeOfLastGridPointInDegrees = 25

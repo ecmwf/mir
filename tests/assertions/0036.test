@@ -3,5 +3,6 @@
 param=2t,levtype=sfc
 # Mir tool options
 --area=90/-60/25/60 --gridname=O1280
-# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
-#?
+# grib_get assertions
+Nj = 924
+N = 1280
