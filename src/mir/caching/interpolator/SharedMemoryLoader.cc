@@ -115,10 +115,10 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     unload_ = name.substr(0, 4) == "tmp-";
 
-    eckit::TraceTimer<LibMir> timer("Loading interpolator coefficients from shared memory");
+    eckit::TraceTimer<LibMir> timer("Loading interpolation matrix from shared memory");
     eckit::PathName real = path.realName();
 
-    // eckit::Log::debug<LibMir>() << "Loading interpolator coefficients from " << real << std::endl;
+    // eckit::Log::debug<LibMir>() << "Loading interpolation matrix from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
