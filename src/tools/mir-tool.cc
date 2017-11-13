@@ -116,6 +116,8 @@ public:
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
+        options_.push_back(new VectorOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters", 0));
+        options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
         for (const std::string& io : {"", "input", "output"}) {
             const std::string which = io.length()? io : "both input and output";
@@ -126,7 +128,6 @@ public:
             options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM grib file path to use for " + which));
             options_.push_back(new SimpleOption<double>("lsm-value-threshold" + key, "If --lsm-selection" + key + "=file, LSM field greater-or-equal to value threshold, when converting to mask for " + which + " (default 0.5)"));
         }
-        options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids support"));
