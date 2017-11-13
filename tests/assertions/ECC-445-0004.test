@@ -2,7 +2,6 @@
 # Mars request
 param=2t,levtype=sfc
 # Mir tool options
---area=90/-60/25/60 --gridname=O1280
+--regular=640 --area=70.9/-40.987/19.73/40
 # grib_get assertions
-Nj = 924
-N = 1280
+numberOfValues=209664

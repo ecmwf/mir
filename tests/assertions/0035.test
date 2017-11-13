@@ -3,5 +3,6 @@
 levtype=ml,levelist=1,param=lnsp,grid=O32
 # Mir tool options
 --gridname=O16
-# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
-#?
+# grib_get assertions
+Nj = 32
+N = 16

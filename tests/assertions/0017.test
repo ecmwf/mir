@@ -2,7 +2,5 @@
 param=2t,levtype=sfc
 # Mir tool options
 --area=-10/-110/-43/-65 --grid=3/3 
-# --shift=-2/-1
 # grib_get assertions
-#Ni=111
-#Nj=71
+numberOfValues=192

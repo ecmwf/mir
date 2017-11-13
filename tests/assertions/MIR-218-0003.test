@@ -2,3 +2,10 @@
 regular_ll.0.1-0.1.europe.grib1
 # Mir tool options
 --area=50/-12/34/7 --grid=0.1/0.1
+# Assertions
+iDirectionIncrementInDegrees = 0.1
+jDirectionIncrementInDegrees = 0.1
+longitudeOfFirstGridPointInDegrees = -12
+longitudeOfLastGridPointInDegrees = 7
+latitudeOfFirstGridPointInDegrees = 50
+latitudeOfLastGridPointInDegrees = 34

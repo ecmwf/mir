@@ -16,6 +16,7 @@ tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
 tmp_assertions_dir="@CMAKE_CURRENT_BINARY_DIR@"
 
 pwd
+ok=0
 
 state=mars
 while read n
@@ -55,6 +56,7 @@ do
             ;;
 
             eccodes)
+            ok=1
             set $(echo $n | tr '=' ' ')
             g=$($grib_get -wcount=1  -p $1 data.out.$t)
             if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
@@ -70,3 +72,9 @@ do
 
     esac
 done < $1
+
+if [[ $ok -ne 1 ]]
+then
+    echo "No assertions defined"
+    exit 1
+fi

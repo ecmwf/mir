@@ -93,6 +93,7 @@ void ShToGridded::transform(
         context::Context& ctx,
         const std::string& key,
         trans_options_t& options ) const {
+
     if (trans_handles.find(key) == trans_handles.end()) {
 
         eckit::PathName path;
@@ -146,7 +147,7 @@ void ShToGridded::transform(
             ASSERT(trans_setup(&trans) == 0);
         }
 
-        // trans_handles.footprint(key, after - before);
+        trans_handles.footprint(key, path.size());
 
 
     }

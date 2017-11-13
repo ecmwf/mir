@@ -3,7 +3,5 @@ param=2t,levtype=sfc
 # Mir tool options
 --area=90/0/-90/360 --gridname=N400 --rotation=-30.0/-10.0
 # grib_get assertions
-# latitudeOfFirstGridPointInDegrees=90
-# longitudeOfFirstGridPointInDegrees=0
-# latitudeOfLastGridPointInDegrees=-90
-# longitudeOfLastGridPointInDegrees=358
+latitudeOfSouthernPoleInDegrees=-30
+longitudeOfSouthernPoleInDegrees=-10

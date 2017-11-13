@@ -3,6 +3,7 @@
 stream=wave,param=mwd
 # Mir tool options
 --gridname=O32
-# grib_get assertions (FIXME should either be approximate comparisons or inequalities!)
-#min => 0.000327941
-#max < 360
+# grib_get assertions
+numberOfValues = 5144
+N = 32
+Nj = 64
