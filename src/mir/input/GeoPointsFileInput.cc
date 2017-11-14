@@ -95,8 +95,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                longitudes_.push_back(s2d(v[0]));
-                latitudes_.push_back(s2d(v[1]));
+                latitudes_.push_back(s2d(v[0]));
+                longitudes_.push_back(s2d(v[1]));
                 values_.push_back(s2d(v.back()));
             }
         }
