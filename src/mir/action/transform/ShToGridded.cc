@@ -43,11 +43,8 @@ namespace action {
 namespace transform {
 
 
-namespace {
-
-
 static eckit::Mutex amutex;
-static mir::InMemoryCache<TransCache> trans_handles("mirCoefficient",
+static mir::InMemoryCache<TransCache> trans_cache("mirCoefficient",
         8L * 1024 * 1024 * 1024,
         "$MIR_COEFFICIENT_CACHE",
         false); // Don't cleanup at exit: the Fortran part will dump core
@@ -71,6 +68,13 @@ static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
+
+    eckit::Log::info() << "Create legendre coefficients "
+                       << representation
+                       << " => "
+                       << path
+                       << std::endl;
+
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
@@ -84,93 +88,101 @@ static void createCoefficients(const eckit::PathName& path,
 }
 
 
-}  // (anonymous namespace)
+static TransCache& getTransCache(const param::MIRParametrisation &parametrisation,
+                                 const repres::Representation& representation,
+                                 context::Context& ctx,
+                                 const std::string& key,
+                                 trans_options_t& options) {
+
+
+    InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+    if (j != trans_cache.end()) {
+        return *j;
+    }
+
+
+    eckit::PathName path;
+
+    {   // Block for timers
+
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
+
+        class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
+
+            trans_options_t options_;
+            const repres::Representation& representation_;
+            context::Context & ctx_;
+
+            virtual void create(const eckit::PathName& path, int& ignore, bool& saved) {
+                createCoefficients(path, options_, representation_, ctx_);
+            }
+        public:
+            LegendreCacheCreator(trans_options_t& options,
+                                 const repres::Representation& representation,
+                                 context::Context& ctx):
+                options_(options), representation_(representation), ctx_(ctx) {}
+        };
+
+        static caching::LegendreCache cache;
+        LegendreCacheCreator creator(options, representation, ctx);
+
+        int dummy = 0;
+        path = cache.getOrCreate(key, creator, dummy);
+    }
+
+
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+
+    eckit::Timer timer("Loading coefficients");
+
+    TransCache &tc = trans_cache[key];
+    trans_cache.footprint(key, path.size());
+
+    struct Trans_t &trans = tc.trans_;
+    fillTrans(trans, options, representation);
+
+    tc.inited_ = true;
+    tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
+    // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
+
+    ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
+
+    ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
+
+    ASSERT(trans_setup(&trans) == 0);
+
+    return tc;
+
+
+}
+
 
 
 void ShToGridded::transform(
-        data::MIRField& field,
-        const repres::Representation& representation,
-        context::Context& ctx,
-        const std::string& key,
-        trans_options_t& options ) const {
-
-    if (trans_handles.find(key) == trans_handles.end()) {
-
-        eckit::PathName path;
-
-        {   // Block for timers
-
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
-
-            class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
-
-                trans_options_t options_;
-                const repres::Representation& representation_;
-                context::Context & ctx_;
-
-                virtual void create(const eckit::PathName& path, int& ignore, bool& saved) {
-                    createCoefficients(path, options_, representation_, ctx_);
-                }
-            public:
-                LegendreCacheCreator(trans_options_t& options,
-                                     const repres::Representation& representation,
-                                     context::Context& ctx):
-                    options_(options), representation_(representation), ctx_(ctx) {}
-            };
-
-            static caching::LegendreCache cache;
-            LegendreCacheCreator creator(options, representation, ctx);
-
-            int dummy = 0;
-            path = cache.getOrCreate(key, creator, dummy);
-        }
-
-        {   // Block for timers
-
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
-
-            eckit::Timer timer("Loading coefficients");
-
-            TransCache &tc = trans_handles[key];
-
-            struct Trans_t &trans = tc.trans_;
-            fillTrans(trans, options, representation);
-
-            tc.inited_ = true;
-            tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation_, path);
-            // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
-
-            ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
-
-            ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
-
-            ASSERT(trans_setup(&trans) == 0);
-        }
-
-        trans_handles.footprint(key, path.size());
-
-
-    }
+    data::MIRField& field,
+    const repres::Representation& representation,
+    context::Context& ctx,
+    const std::string& key,
+    trans_options_t& options ) const {
 
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
     // eckit::Timer timer("SH2GRID");
 
-    TransCache& tc = trans_handles[key];
-    struct Trans_t& trans = tc.trans_;
+    TransCache& tc = getTransCache(parametrisation_,
+                                   representation,
+                                   ctx,
+                                   key,
+                                   options);
 
+    sh2grid(tc.trans_, field);
 
-    // transform sp to gp fields
-    sh2grid(trans, field);
-
-
-    // trans_delete(&trans);
 
 }
 
 
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
-    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_handles
+    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
 
     TransInitor::instance(); // Will init trans if needed
 
@@ -187,7 +199,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         transform(field, representation, ctx, key, options);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
-        trans_handles.erase(key);
+        trans_cache.erase(key);
         throw;
     }
 }
@@ -209,7 +221,7 @@ ShToGridded::~ShToGridded() {
 void ShToGridded::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<TransCache> use(trans_handles, ctx.statistics().transHandleCache_);
+    InMemoryCacheUser<TransCache> use(trans_cache, ctx.statistics().transHandleCache_);
 
     repres::RepresentationHandle out(outputRepresentation());
 

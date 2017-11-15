@@ -513,7 +513,6 @@ list(
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
-    util/option/VectorOfUnknownLengthOption.h
   )
 
 
