@@ -122,7 +122,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     args_.get("normalise-longitudes", normaliseLongitudes_);
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
-    args_.get("white-list-entries", ignoreWrappingAreas_);
+    args_.get("white-list-entries", whiteListEntries_);
 
 
     std::string ignore;
@@ -892,7 +892,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
     }
 
     eckit::Log::info() << "   " << field << std::endl;
-
+    if (whiteListEntries_) {
+        whiteListEntries(field, multi1);
+    }
     // Find the best mismaches
 
     std::vector<Field> matches = field.bestMatches(fields);
@@ -900,9 +902,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
 
-        if (whiteListEntries_) {
-            whiteListEntries(field, multi2);
-        }
+
         for (auto m = fields.begin(); m != fields.end(); ++m) {
 
 
@@ -944,6 +944,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
             eckit::Log::info() << " (" ;
             other.compareAreas(eckit::Log::info(), field);
             eckit::Log::info() << ")" << std::endl;
+            if (whiteListEntries_) {
+                whiteListEntries(other, multi2);
+            }
         }
     }
     eckit::Log::info() << std::endl;
