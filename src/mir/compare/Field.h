@@ -105,6 +105,7 @@ public:
     size_t length() const ;
 
     const std::string& path() const ;
+    void whiteListEntries(std::ostream& out) const;
 
     std::ostream& printDifference(std::ostream& out, const Field & other) const;
 

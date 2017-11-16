@@ -96,6 +96,10 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("compare-statistics", "Compare field statistics"));
 
     options.push_back(new SimpleOption<double>("absolute-error", "Value comparison using absolute error, only values whose difference is more than tolerance are considered different"));
+
+    options.push_back(new SimpleOption<bool>("white-list-entries",
+                      "Output lines that can be used in white-list files"));
+
 }
 
 
@@ -110,13 +114,15 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     ignoreWrappingAreas_(false),
     roundDegrees_(false),
     maximumNumberOfErrors_(5),
-    whiteLister_(whiteLister) {
+    whiteLister_(whiteLister),
+    whiteListEntries_(false) {
 
     Field::setOptions(args);
 
     args_.get("normalise-longitudes", normaliseLongitudes_);
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
+    args_.get("white-list-entries", ignoreWrappingAreas_);
 
 
     std::string ignore;
@@ -432,9 +438,9 @@ void FieldComparator::getField(const MultiFile& multi,
                         GRIB_CALL(grib_get_long_array(h, "pl", pl, &pl_size) );
 
                         bool isOctahedral = true;
-                        for(size_t i = 1 ; i < pl_size; i++) {
-                            long diff = std::abs(pl[i] - pl[i-1]);
-                            if(diff != 4 && diff != 0) {
+                        for (size_t i = 1 ; i < pl_size; i++) {
+                            long diff = std::abs(pl[i] - pl[i - 1]);
+                            if (diff != 4 && diff != 0) {
                                 isOctahedral = false;
                                 break;
                             }
@@ -845,6 +851,13 @@ void FieldComparator::compareFieldValues(
 
 }
 
+void FieldComparator::whiteListEntries(const Field & field, const MultiFile & multi) const {
+    multi.whiteListEntries(eckit::Log::info());
+    eckit::Log::info() << ' ';
+    field.whiteListEntries(eckit::Log::info());
+    eckit::Log::info() << std::endl;
+}
+
 
 void FieldComparator::missingField(const MultiFile & multi1,
                                    const MultiFile & multi2,
@@ -886,7 +899,13 @@ void FieldComparator::missingField(const MultiFile & multi1,
     if (matches.size() == 0) {
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
+
+        if (whiteListEntries_) {
+            whiteListEntries(field, multi2);
+        }
         for (auto m = fields.begin(); m != fields.end(); ++m) {
+
+
             const auto& other = (*m);
             if (other.match(field)) {
                 eckit::Log::info() << " @ ";
@@ -894,6 +913,10 @@ void FieldComparator::missingField(const MultiFile & multi1,
                 eckit::Log::info() << " (" ;
                 other.compareAreas(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
+
+                if (whiteListEntries_) {
+                    whiteListEntries(other, multi2);
+                }
                 cnt++;
             }
         }
@@ -905,6 +928,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
                 eckit::Log::info() << " (" ;
                 other.compareAreas(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
+                if (whiteListEntries_) {
+                    whiteListEntries(other, multi2);
+                }
                 cnt++;
             }
         }

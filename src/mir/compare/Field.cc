@@ -714,6 +714,31 @@ static void pdiff(std::ostream & out, const T& v1, const T& v2) {
     }
 }
 
+
+void Field::whiteListEntries(std::ostream& out) const {
+    const char* sep = "";
+    if (!gridname_.empty()) {
+        out << sep << "gridname=" << gridname_;
+        sep = ",";
+    }
+
+     if (grid_) {
+        out << sep << "grid=" << north_south_ << "/" << west_east_;
+        sep = ",";
+    }
+
+    if (area_) {
+        out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
+        sep = ",";
+    }
+
+     if (rotation_) {
+        out << sep << "rotation=" << rotation_latitude_<< "/"  << rotation_longitude_;
+        sep = ",";
+    }
+}
+
+
 std::ostream& Field::printDifference(std::ostream & out, const Field & other) const {
 
     out << "[param=";

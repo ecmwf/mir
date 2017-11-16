@@ -92,6 +92,22 @@ void MultiFile::print(std::ostream& out)  const {
     }
 }
 
+void MultiFile::whiteListEntries(std::ostream& out) const {
+    out << "# " << from_ << std::endl;
+    std::string s(name_);
+    for(size_t i = 3; i < 3 + 16; i++) {
+        if (i >= s.size()) {
+            break;
+        }
+        if(s[i] == '_') {
+            break;
+        }
+        s[i] = '.';
+    }
+    out << s;
+}
+
+
 eckit::Length MultiFile::length() const {
     if (length_ == eckit::Length(0)) {
         for (size_t i = 0; i < paths_.size(); i++) {
