@@ -73,6 +73,10 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     }
 
 
+    // dummy statistics
+    mir::util::MIRStatistics dummy;
+
+
     // count each file(s) message(s)
     bool printedHeader = false;
     for (size_t i = 0; i < args.count(); ++i) {
@@ -92,17 +96,16 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
-            mir::repres::RepresentationHandle rep(field.representation());
+            mir::context::Context ctx(field, dummy);
 
             if (area_cropper) {
-                mir::util::MIRStatistics dummy;
-                mir::context::Context ctx(field, dummy);
                 area_cropper->execute(ctx);
             }
 
-            size_t count_grib = field.values(0).size();
+            size_t count_grib = ctx.field().values(0).size();
             size_t count_mir = 0;
 
+            mir::repres::RepresentationHandle rep(ctx.field().representation());
             eckit::ScopedPtr< Iterator > it(rep->iterator());
             while (it->next()) {
                 ++count_mir;
