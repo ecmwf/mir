@@ -2,15 +2,16 @@
 list(APPEND tools
     mir-compare
     mir-config
+    mir-count
     mir-formula
     mir-info
     mir-inspect
     mir-list
     mir-make-lsm
+    mir-points
     mir-shared-memory
     mir-statistics
     mir-tool
-    mir-points
     mir-values-statistics
     mir-weight-matrix
 )

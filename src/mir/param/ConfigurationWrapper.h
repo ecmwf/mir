@@ -30,6 +30,10 @@ public: // methods
 
     ConfigurationWrapper(const eckit::Configuration&);
 
+    // From MIRParametrisation
+    const MIRParametrisation& userParametrisation() const;
+    const MIRParametrisation& fieldParametrisation() const;
+
     bool has(const std::string& name) const;
 
     bool get(const std::string& name, std::string& value) const;
