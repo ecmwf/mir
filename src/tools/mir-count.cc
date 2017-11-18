@@ -82,7 +82,9 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     // count each file(s) message(s)
     for (size_t i = 0; i < args.count(); ++i) {
-        eckit::Log::info() << args(i) << std::endl;
+        if (verbose) {
+            eckit::Log::info() << args(i) << std::endl;
+        }
 
         mir::input::GribFileInput grib(args(i));
         const mir::input::MIRInput& input = grib;
