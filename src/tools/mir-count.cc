@@ -10,6 +10,7 @@
 
 
 #include "eckit/log/Log.h"
+#include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
@@ -21,8 +22,6 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/repres/Iterator.h"
-#include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -38,8 +37,8 @@ public:
     MIRCount(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
         using eckit::option::VectorOption;
-        //options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors, default false"));
         options_.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
+        options_.push_back(new SimpleOption<bool>("verbose", "Use verbose output, default false"));
     }
 };
 
@@ -48,7 +47,7 @@ void MIRCount::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
                "\n"
-               "\nUsage: " << tool << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+               "\nUsage: " << tool << " [--area=N/W/S/E] [--verbose] file.grib [file.grib [...]]"
                "\nExamples:"
                "\n  % " << tool << " 1.grib"
                "\n  % " << tool << " --area=6/0/0/6 1.grib 2.grib"
@@ -57,7 +56,6 @@ void MIRCount::usage(const std::string &tool) const {
 
 
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
-    using mir::repres::Iterator;
     using mir::action::AreaCropper;
 
 
@@ -73,48 +71,48 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     }
 
 
+    // verbosity
+    bool verbose = false;
+    args.get("verbose", verbose);
+
+
     // dummy statistics
     mir::util::MIRStatistics dummy;
 
 
     // count each file(s) message(s)
-    bool printedHeader = false;
     for (size_t i = 0; i < args.count(); ++i) {
         eckit::Log::info() << args(i) << std::endl;
 
         mir::input::GribFileInput grib(args(i));
         const mir::input::MIRInput& input = grib;
 
-        if (!printedHeader) {
-            printedHeader = true;
-            eckit::Log::info() << "MIR" "\t" "GRIB" << std::endl;
-        }
-
         size_t count = 0;
         while (grib.next()) {
+            ++count;
 
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
             mir::context::Context ctx(field, dummy);
+            const size_t n = ctx.field().values(0).size();
 
             if (area_cropper) {
+
                 area_cropper->execute(ctx);
+                const size_t o = ctx.field().values(0).size();
+
+                verbose ? eckit::Log::info() << n << " > " << o << std::endl
+                        : eckit::Log::info() << o << std::endl;
+
+            } else {
+                eckit::Log::info() << n << std::endl;
             }
-
-            size_t count_grib = ctx.field().values(0).size();
-            size_t count_mir = 0;
-
-            mir::repres::RepresentationHandle rep(ctx.field().representation());
-            eckit::ScopedPtr< Iterator > it(rep->iterator());
-            while (it->next()) {
-                ++count_mir;
-            }
-
-            eckit::Log::info() << count_mir << "\t" << count_grib << std::endl;
         }
 
-        eckit::Log::info() << ++count << " messages in " << args(i) << std::endl;
+        if (verbose) {
+            eckit::Log::info() << eckit::Plural(count, "message") << " in " << args(i) << std::endl;
+        }
     }
 
 }
