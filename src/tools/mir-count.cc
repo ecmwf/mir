@@ -49,11 +49,38 @@ void MIRCount::usage(const std::string &tool) const {
             << std::endl;
 }
 
+template<class T>
+static
+T abs(const T& x) {
+    if (x > 0) {
+        return x;
+    }
+    return 0 - x;
+}
+
+template<class T>
+static void put(const T& q) {
+    size_t i = 0;
+
+    for(auto e: q) {
+        eckit::Log::info() << ' ' << e.first << " (" << e.second << ")";
+        if (++i >= 2) {
+            break;
+        }
+    }
+
+}
+
 
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
+    typedef std::pair<Latitude, Latitude> DistanceLat;
+    typedef std::pair<Longitude, Longitude> DistanceLon;
 
-
+    std::set<DistanceLat> nn;
+    std::set<DistanceLat> ss;
+    std::set<DistanceLon> ww;
+    std::set<DistanceLon> ee;
 
     util::BoundingBox bbox;
 
@@ -104,6 +131,12 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
                 values++;
 
+                nn.insert(DistanceLat(abs(bbox.north() - point.lat), point.lat));
+                ss.insert(DistanceLat(abs(bbox.south() - point.lat), point.lat));
+
+                ee.insert(DistanceLon(abs(bbox.east() - point.lon), point.lon));
+                ww.insert(DistanceLon(abs(bbox.west() - point.lon), point.lon));
+
                 // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
                 if (bbox.contains(point.lat, point.lon)) {
@@ -136,6 +169,12 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
                                << ", south=" << s << " (s-bbox.s " << s - bbox.south() << ")"
                                << ", east=" << e << " (bbox.e -e " << bbox.east() - e  << ")"
                                << std::endl;
+
+            eckit::Log::info() << "N " << bbox.north() << ":"; put(nn); eckit::Log::info() << std::endl;
+            eckit::Log::info() << "W " << bbox.west() << ":"; put(ww); eckit::Log::info() << std::endl;
+            eckit::Log::info() << "S " << bbox.south() << ":"; put(ss); eckit::Log::info() << std::endl;
+            eckit::Log::info() << "E " << bbox.south() << ":"; put(ee); eckit::Log::info() << std::endl;
+
 
         }
 
