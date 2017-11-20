@@ -11,6 +11,7 @@
 
 
 #include "eckit/log/BigNum.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "mir/data/MIRField.h"
