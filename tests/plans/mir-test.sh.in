@@ -6,7 +6,7 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir_tool="@MIR_TOOL@"
+mir="@MIR_TOOL@"
 mars_script="@MARS_SCRIPT@"
 
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
@@ -47,7 +47,7 @@ do
 
             mir)
             eval n=\"$n\"
-            $mir_tool --dump-plan-file=$(pwd)/plan.$t $n $(pwd)/data.in.$t $(pwd)/data.out.$t
+            $mir --dump-plan-file=$(pwd)/plan.$t $n $(pwd)/data.in.$t $(pwd)/data.out.$t
             state=plan
             ;;
 

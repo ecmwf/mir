@@ -180,7 +180,7 @@ void MIRToolConcrete::usage(const std::string &tool) const {
 
 
 void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("mir-tool");
+    eckit::ResourceUsage usage("mir");
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;

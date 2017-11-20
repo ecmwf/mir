@@ -6,7 +6,7 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir_tool="@MIR_TOOL@"
+mir="@MIR_TOOL@"
 mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
@@ -51,7 +51,7 @@ do
 
             mir)
             eval n=\"$n\"
-            $mir_tool $n $(pwd)/data.in.$t $(pwd)/data.out.$t
+            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t
             state=eccodes
             ;;
 
