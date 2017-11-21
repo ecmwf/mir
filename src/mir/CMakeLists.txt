@@ -461,10 +461,20 @@ list(
     style/IntermediateNamedGrid.h
     style/MIRStyle.cc
     style/MIRStyle.h
+    style/Resol.cc
+    style/Resol.h
     style/SpectralOrder.cc
     style/SpectralOrder.h
     style/SpectralOrderT.cc
     style/SpectralOrderT.h
+    style/resol/ArchivedValue.cc
+    style/resol/ArchivedValue.h
+    style/resol/AutomaticResolution.cc
+    style/resol/AutomaticResolution.h
+    style/resol/NamedGrid.cc
+    style/resol/NamedGrid.h
+    style/resol/Truncation.cc
+    style/resol/Truncation.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

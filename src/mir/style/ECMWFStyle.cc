@@ -16,19 +16,15 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
-#include <set>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
-#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/IntermediateGrid.h"
-#include "mir/style/SpectralOrder.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/style/Resol.h"
+#include "mir/style/resol/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
-#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -92,9 +88,21 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
-    long truncation = getIntendedTruncation();
-    if (truncation) {
-        plan.add("transform.sh-truncate", "truncation", truncation);
+
+    // FIXME make a decision on resol/truncation!
+    std::string resol = "automatic-resolution";
+    parametrisation_.get("resol", resol);
+    eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
+
+    long T = 0;
+    if (parametrisation_.userParametrisation().get("truncation", T)) {
+        // this is overriding for the moment until a decision is taken
+        resolution.reset(new resol::Truncation(T, parametrisation_));
+    }
+    ASSERT(resolution);
+
+    if (resolution->resultIsSpectral()) {
+        resolution->prepare(plan);
     }
 
     bool vod2uv = false;
@@ -103,25 +111,12 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (parametrisation_.userParametrisation().has("grid")) {
 
-        param::RuntimeParametrisation runtime(parametrisation_);
-        if (truncation) {
-            runtime.set("truncation", truncation);
+        if (resolution->resultIsSpectral()) {
+            plan.add("transform." + transform + "regular-ll");
+        } else {
+            resolution->prepare(plan);
+            plan.add("interpolate.grid2regular-ll");
         }
-
-        std::string intermediate_grid;
-        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
-
-        eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(intermediate_grid, runtime));
-        if (grid->active()) {
-
-            // use intermediate Gaussian grid with intended truncation
-            plan.add("transform." + transform + "namedgrid", "gridname", grid.release());
-            grid2grid(plan);
-            return;
-        }
-
-        // don't use intermediate Gaussian grid
-        plan.add("transform." + transform + "regular-ll");
 
         if (parametrisation_.userParametrisation().has("rotation")) {
             plan.add("interpolate.grid2rotated-regular-ll");
@@ -329,78 +324,6 @@ bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
         plan.add("select.field", "which", long(1));
     }
     return (u_only || v_only);
-}
-
-
-long ECMWFStyle::getTargetGaussianNumber() const {
-    long N = 0;
-
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
-    if (parametrisation_.userParametrisation().get("grid", grid)) {
-        ASSERT(grid.size() == 2);
-        util::Increments increments(grid[0], grid[1]);
-
-        // use (non-shifted) global bounding box
-        util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox, false, false);
-
-        N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
-
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
-            parametrisation_.userParametrisation().get("regular", N) ||
-            parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
-
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
-        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
-    }
-
-    std::ostringstream os;
-    os << "ECMWFStyle: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
-}
-
-
-long ECMWFStyle::getIntendedTruncation() const {
-
-    // Set truncation if manually specified
-    long T = 0;
-    if (parametrisation_.userParametrisation().get("truncation", T)) {
-        return T;
-    }
-
-    // TODO: this is temporary, no support yet for unstuctured grids
-    if (parametrisation_.has("griddef")) {
-        return 63L;
-    }
-
-    long Tin = 0L;
-    ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tin));
-
-    std::string spectralOrder = "linear";
-    parametrisation_.userParametrisation().get("spectral-order", spectralOrder);
-
-    eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
-    ASSERT(order);
-
-    // get truncation from points-per-latitude, limited to input
-    long N = getTargetGaussianNumber();
-    ASSERT(N > 0);
-
-    T = order->getTruncationFromGaussianNumber(N);
-    if (T > Tin) {
-        eckit::Log::warning() << "Truncation ('" << spectralOrder << "') " << T << " limited by input truncation " << Tin << std::endl;
-        return Tin;
-    }
-    return T;
 }
 
 

@@ -73,28 +73,48 @@ void NamedGridPattern::list(std::ostream &out) {
 }
 
 
-const NamedGrid *NamedGridPattern::build(const std::string &name) {
-
+bool NamedGridPattern::match(const std::string& name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, NamedGridPattern *>::const_iterator j;
 
-    eckit::Log::debug<LibMir>() << "Looking for NamedGridPattern [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "NamedGridPattern: looking for '" << name << "'" << std::endl;
 
-    std::map<std::string, NamedGridPattern *>::const_iterator k = m->end();
-    for (j = m->begin() ; j != m->end() ; ++j) {
+    bool conflicts = false;
+    auto k = m->cend();
+    for (auto j = m->cbegin() ; j != m->cend() && !conflicts; ++j) {
         if (j->second->pattern_.match(name)) {
-            eckit::Log::debug<LibMir>() << "Regex " << j->second->pattern_ << " and " << name << " (match)" << std::endl;
+            conflicts = k != m->end();
+            k = j;
+        }
+    }
+
+    bool can = !conflicts && k != m->end();
+    eckit::Log::debug<LibMir>() << "NamedGridPattern: '" << name << "' " << (can ? "can" : "cannot") << " be built" << std::endl;
+    return can;
+}
+
+
+const NamedGrid *NamedGridPattern::build(const std::string& name) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "NamedGridPattern: looking for '" << name << "'" << std::endl;
+
+    typedef std::map<std::string, NamedGridPattern *>::const_iterator it;
+
+    it k = m->end();
+    for (it j = m->begin() ; j != m->end() ; ++j) {
+        if (j->second->pattern_.match(name)) {
+            eckit::Log::debug<LibMir>() << "NamedGridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->end()) {
                 std::stringstream os;
-                os << "gridname " << name << " matches " << *(k->second) << " and " << *(j->second);
+                os << "NamedGridPattern: '" << name << "' matches '" << k->second << "' and '" << j->second << "'" << std::endl;
                 throw eckit::SeriousBug(os.str());
             }
             k = j;
         } else {
-            eckit::Log::debug<LibMir>() << "Regex " << j->second->pattern_ << " and " << name << " (no match)" << std::endl;
+            eckit::Log::debug<LibMir>() << "NamedGridPattern: '" << j->second->pattern_ << "' no match" << std::endl;
         }
     }
 
@@ -104,10 +124,8 @@ const NamedGrid *NamedGridPattern::build(const std::string &name) {
 
 
     if (k == m->end()) {
-        eckit::Log::error() << "No NamedGridPattern for [" << name << "]" << std::endl;
-        eckit::Log::error() << "NamedGridPattern are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << *(*j).second << std::endl;
+        list(eckit::Log::error() << "NamedGridPattern: unknown '" << name << "', choices are: ");
+        eckit::Log::error() << std::endl;
     }
 
     return 0;

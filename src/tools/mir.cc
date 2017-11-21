@@ -44,6 +44,7 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/style/IntermediateGrid.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/style/Resol.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
@@ -73,6 +74,7 @@ public:
         options_.push_back(new FactoryOption<mir::style::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<size_t>("truncation", "Spectral truncation"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (u/v or U/V)"));
+        options_.push_back(new FactoryOption<mir::style::ResolFactory>("resol", "Specifies the desired triangular truncation, before carrying out any other selected post-processing"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
