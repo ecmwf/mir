@@ -371,42 +371,35 @@ long ECMWFStyle::getTargetGaussianNumber() const {
 
 long ECMWFStyle::getIntendedTruncation() const {
 
+    // Set truncation if manually specified
+    long T = 0;
+    if (parametrisation_.userParametrisation().get("truncation", T)) {
+        return T;
+    }
+
     // TODO: this is temporary, no support yet for unstuctured grids
     if (parametrisation_.has("griddef")) {
         return 63L;
     }
 
-    // Set truncation based on target grid's equivalent Gaussian N and spectral order
-    bool autoresol = true;
-    parametrisation_.userParametrisation().get("autoresol", autoresol);
+    long Tin = 0L;
+    ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tin));
 
-    if (autoresol) {
+    std::string spectralOrder = "linear";
+    parametrisation_.userParametrisation().get("spectral-order", spectralOrder);
 
-        long Tin = 0L;
-        ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tin));
+    eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
+    ASSERT(order);
 
-        std::string spectralOrder = "linear";
-        parametrisation_.userParametrisation().get("spectral-order", spectralOrder);
+    // get truncation from points-per-latitude, limited to input
+    long N = getTargetGaussianNumber();
+    ASSERT(N > 0);
 
-        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
-        ASSERT(order);
-
-        // get truncation from points-per-latitude, limited to input
-        long N = getTargetGaussianNumber();
-        ASSERT(N > 0);
-
-        long T = order->getTruncationFromGaussianNumber(N);
-        if (T > Tin) {
-            eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
-            return Tin;
-        }
-        return T;
+    T = order->getTruncationFromGaussianNumber(N);
+    if (T > Tin) {
+        eckit::Log::warning() << "Truncation ('" << spectralOrder << "') " << T << " limited by input truncation " << Tin << std::endl;
+        return Tin;
     }
-
-    // Set truncation if manually specified
-    long T = 0;
-    parametrisation_.userParametrisation().get("truncation", T);
-
     return T;
 }
 

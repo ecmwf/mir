@@ -11,7 +11,6 @@ list(APPEND tools
     mir-points
     mir-shared-memory
     mir-statistics
-    mir-tool
     mir-values-statistics
     mir-weight-matrix
 )
@@ -25,13 +24,19 @@ list(APPEND tools
 endif()
 
 
+ecbuild_add_executable(
+    TARGET      mir-tool
+    OUTPUT_NAME mir
+    SOURCES     mir.cc
+    INCLUDES    ${ATLAS_INCLUDE_DIRS}
+    LIBS        mir )
+
 
 foreach(tool ${tools})
-
     ecbuild_add_executable(
         TARGET      ${tool}
         SOURCES     ${tool}.cc
         INCLUDES    ${ATLAS_INCLUDE_DIRS}
         LIBS        mir )
-
 endforeach()
+

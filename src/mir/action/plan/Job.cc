@@ -50,8 +50,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // input is already what was specified
 
     if (!style->postProcessingRequested(job)) {
-        static const std::set<std::string> ignore({"autoresol"});
-        if (job.empty() || job.matches(metadata, ignore)) {
+        if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
             return;
