@@ -82,7 +82,9 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
+    if (parametrisation_.userParametrisation().get("formula.spectral", formula) ||
+            parametrisation_.userParametrisation().get("formula.raw", formula)
+       ) {
         std::string metadata;
         // paramId for the results of formulas
         parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
@@ -97,7 +99,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
+    std::string transform = vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-"; // completed later
 
     if (parametrisation_.userParametrisation().has("grid")) {
 
@@ -231,16 +233,25 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         parametrisation_.userParametrisation().has("points") ?       "points" :
         "";
 
-    if (userGrid.length()) {
-        if (parametrisation_.userParametrisation().has("rotation")) {
-            plan.add("interpolate.grid2rotated-" + userGrid);
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2" + userGrid);
+    std::string formula;
+    if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
+            parametrisation_.userParametrisation().get("formula.raw", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+
+    ASSERT (userGrid.length());
+
+    if (parametrisation_.userParametrisation().has("rotation")) {
+        plan.add("interpolate.grid2rotated-" + userGrid);
+        if (wind || vod2uv) {
+            plan.add("filter.adjust-winds-directions");
+            selectWindComponents(plan);
         }
+    } else {
+        plan.add("interpolate.grid2" + userGrid);
     }
 }
 
@@ -340,8 +351,8 @@ long ECMWFStyle::getTargetGaussianNumber() const {
 
     // get Gaussian N directly
     if (parametrisation_.userParametrisation().get("reduced", N) ||
-        parametrisation_.userParametrisation().get("regular", N) ||
-        parametrisation_.userParametrisation().get("octahedral", N)) {
+            parametrisation_.userParametrisation().get("regular", N) ||
+            parametrisation_.userParametrisation().get("octahedral", N)) {
         return N;
     }
 
