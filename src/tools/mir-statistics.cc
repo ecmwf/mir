@@ -85,7 +85,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
 
             // Get paramId/metadata-specific "stats" method
-            std::string stats;
+            std::string stats = "scalar";
             const MIRParametrisation& c = combined;
             c.get("stats", stats);
 
