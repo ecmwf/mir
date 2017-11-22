@@ -9,11 +9,11 @@
  */
 
 
-#include "mir/style/resol/AutomaticResolution.h"
+#include "mir/style/truncation/Automatic.h"
 
+#include <algorithm>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/action/plan/ActionPlan.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/SpectralOrder.h"
@@ -23,20 +23,16 @@
 
 namespace mir {
 namespace style {
-namespace resol {
+namespace truncation {
 
 
-static ResolBuilder< AutomaticResolution > __resol1("automatic-resolution");
-static ResolBuilder< AutomaticResolution > __resol2("auto");
-static ResolBuilder< AutomaticResolution > __resol3("AUTO");
+static TruncationBuilder< Automatic > __truncation1("automatic");
+static TruncationBuilder< Automatic > __truncation2("auto");
+static TruncationBuilder< Automatic > __truncation3("AUTO");
 
 
-AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) :
-    Resol(parametrisation) {
-}
-
-
-void AutomaticResolution::prepare(action::ActionPlan& plan) const {
+Automatic::Automatic(const param::MIRParametrisation& parametrisation) :
+    style::Truncation(parametrisation) {
 
     // Setup spectral order mapping
     std::string order = "linear";
@@ -49,55 +45,22 @@ void AutomaticResolution::prepare(action::ActionPlan& plan) const {
     const long N = getTargetGaussianNumber();
     ASSERT(N > 0);
 
-    const long T = spectralOrder->getTruncationFromGaussianNumber(N);
-    ASSERT(T > 0);
-
-    long Tinput = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tinput));
-    ASSERT(Tinput > 0);
-
-    if (Tinput > T ) {
-        plan.add("transform.sh-truncate", "truncation", T);
-    }
-
-
-    // Set transform (TODO use a factory or better)
-    std::string grid = "regular-gaussian";
-    parametrisation_.get("spectral-intermediate-grid", grid);
-
-    std::string gridname;
-    if (grid == "regular-gaussian") {
-        gridname = "F" + std::to_string(N);
-    } else if (grid == "octahedral-gaussian") {
-        gridname = "O" + std::to_string(N);
-    } else if (grid == "classic-gaussian") {
-        gridname = "N" + std::to_string(N);
-    } else {
-        throw eckit::SeriousBug("ECMWFStyle: unknown Gaussian grid '" + grid + "'");
-    }
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
-    } else {
-        plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
-    }
+    truncation_ = spectralOrder->getTruncationFromGaussianNumber(N);
+    ASSERT(truncation_ > 0);
 }
 
 
-bool AutomaticResolution::resultIsSpectral() const {
-    return false;
+long Automatic::truncation() const {
+    return truncation_;
 }
 
 
-void AutomaticResolution::print(std::ostream& out) const {
-    out << "AutomaticResolution[]";
+void Automatic::print(std::ostream& out) const {
+    out << "Automatic[truncation=" << truncation_ << "]";
 }
 
 
-long AutomaticResolution::getTargetGaussianNumber() const {
+long Automatic::getTargetGaussianNumber() const {
     long N = 0;
 
     // get N from number of points in half-meridian (uses only grid[1] South-North increment)
@@ -129,12 +92,12 @@ long AutomaticResolution::getTargetGaussianNumber() const {
     }
 
     std::ostringstream os;
-    os << "resol::AutomaticResolution::getTargetGaussianNumber: cannot calculate Gaussian number (N) from target grid";
+    os << "truncation::Automatic::getTargetGaussianNumber: cannot calculate Gaussian number (N) from target grid";
     throw eckit::SeriousBug(os.str());
 }
 
 
-}  // namespace resol
+}  // namespace truncation
 }  // namespace style
 }  // namespace mir
 

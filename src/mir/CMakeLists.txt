@@ -457,6 +457,8 @@ list(
     style/IntermediateGridNone.h
     style/IntermediateNamedGrid.cc
     style/IntermediateNamedGrid.h
+    style/Intgrid.cc
+    style/Intgrid.h
     style/MIRStyle.cc
     style/MIRStyle.h
     style/Resol.cc
@@ -465,6 +467,14 @@ list(
     style/SpectralOrder.h
     style/SpectralOrderT.cc
     style/SpectralOrderT.h
+    style/Truncation.cc
+    style/Truncation.h
+    style/intgrid/Automatic.cc
+    style/intgrid/Automatic.h
+    style/intgrid/NamedGrid.cc
+    style/intgrid/NamedGrid.h
+    style/intgrid/None.cc
+    style/intgrid/None.h
     style/resol/ArchivedValue.cc
     style/resol/ArchivedValue.h
     style/resol/AutomaticResolution.cc
@@ -473,6 +483,12 @@ list(
     style/resol/NamedGrid.h
     style/resol/Truncation.cc
     style/resol/Truncation.h
+    style/truncation/Automatic.cc
+    style/truncation/Automatic.h
+    style/truncation/None.cc
+    style/truncation/None.h
+    style/truncation/Truncation.cc
+    style/truncation/Truncation.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
