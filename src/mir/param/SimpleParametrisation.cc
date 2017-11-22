@@ -15,6 +15,8 @@
 
 #include "mir/param/SimpleParametrisation.h"
 
+#include <ios>
+#include <sstream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
@@ -250,6 +252,13 @@ void TSettings<std::vector<double> >::print(std::ostream &out) const {
 //==========================================================
 
 // We will implement conversion as needed
+
+template<>
+void TSettings<bool>::get(const std::string& name, std::string& value) const {
+    std::ostringstream ss;
+    ss << std::boolalpha << value_;
+    value = ss.str();
+}
 
 template<>
 void TSettings<bool>::get(const std::string &name, bool &value) const {
