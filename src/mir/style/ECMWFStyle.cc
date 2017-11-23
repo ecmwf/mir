@@ -237,16 +237,16 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
-    ASSERT (userGrid.length());
-
-    if (parametrisation_.userParametrisation().has("rotation")) {
-        plan.add("interpolate.grid2rotated-" + userGrid);
-        if (wind || vod2uv) {
-            plan.add("filter.adjust-winds-directions");
-            selectWindComponents(plan);
-        }
-    } else {
-        plan.add("interpolate.grid2" + userGrid);
+    if (userGrid.length()) {
+       if (parametrisation_.userParametrisation().has("rotation")) {
+		plan.add("interpolate.grid2rotated-" + userGrid);
+		if (wind || vod2uv) {
+		    plan.add("filter.adjust-winds-directions");
+		    selectWindComponents(plan);
+		}
+	    } else {
+		plan.add("interpolate.grid2" + userGrid);
+	    }
     }
 }
 
