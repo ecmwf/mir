@@ -84,6 +84,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         std::string metadata;
         // paramId for the results of formulas
         parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
@@ -246,19 +247,21 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         std::string metadata;
         // paramId for the results of formulas
         parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
+
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     if (userGrid.length()) {
-       if (parametrisation_.userParametrisation().has("rotation")) {
-		plan.add("interpolate.grid2rotated-" + userGrid);
-		if (wind || vod2uv) {
-		    plan.add("filter.adjust-winds-directions");
-		    selectWindComponents(plan);
-		}
-	    } else {
-		plan.add("interpolate.grid2" + userGrid);
-	    }
+        if (parametrisation_.userParametrisation().has("rotation")) {
+            plan.add("interpolate.grid2rotated-" + userGrid);
+            if (wind || vod2uv) {
+                plan.add("filter.adjust-winds-directions");
+                selectWindComponents(plan);
+            }
+        } else {
+            plan.add("interpolate.grid2" + userGrid);
+        }
     }
 }
 
@@ -403,6 +406,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
             std::string metadata;
             // paramId for the results of formulas
             parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
+            parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
+
             plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
         }
         grid2grid(plan);
