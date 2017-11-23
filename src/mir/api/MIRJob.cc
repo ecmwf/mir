@@ -124,7 +124,7 @@ MIRJob& MIRJob::clear(const std::string& name) {
 
 template<class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "=" << value << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -134,7 +134,7 @@ template<class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
     eckit::Channel& out = eckit::Log::debug<LibMir>();
 
-    out << "MIRJob: set '" << name << "=";
+    out << "MIRJob: set '" << name << "'='";
     const char* sep = "";
     size_t n = 0;
     for (; n < outputCount && n < value.size(); ++n) {

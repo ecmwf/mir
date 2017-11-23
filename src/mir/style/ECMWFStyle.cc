@@ -180,8 +180,20 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
-    if (parametrisation_.userParametrisation().has("truncation")) {
-        plan.add("transform.sh-truncate");
+    // FIXME make a decision on resol/truncation!
+    std::string resol = "automatic-resolution";
+    parametrisation_.get("resol", resol);
+    eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
+
+    long T = 0;
+    if (parametrisation_.userParametrisation().get("truncation", T)) {
+        // this is overriding for the moment until a decision is taken
+        resolution.reset(new resol::Truncation(T, parametrisation_));
+    }
+    ASSERT(resolution);
+
+    if (resolution->resultIsSpectral()) {
+        resolution->prepare(plan);
     }
 
     std::string formula;
