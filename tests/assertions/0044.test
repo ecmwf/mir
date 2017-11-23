@@ -4,4 +4,4 @@ param=2t,levtype=sfc
 # Mir tool options
 --regular=160 --area=71.8/-10.66/34.56/32.6
 # grib_get assertions
-numberOfValues=0
+numberOfValues=5016
