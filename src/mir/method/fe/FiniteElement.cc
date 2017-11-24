@@ -118,9 +118,9 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* triangle */
             atlas::interpolation::element::Triag3D triag(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data());
+                  atlas::PointXYZ{ icoords(idx[0],0), icoords(idx[0],1), icoords(idx[0],2) },
+                  atlas::PointXYZ{ icoords(idx[1],0), icoords(idx[1],1), icoords(idx[1],2) },
+                  atlas::PointXYZ{ icoords(idx[2],0), icoords(idx[2],1), icoords(idx[2],2) });
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
@@ -151,10 +151,10 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* quadrilateral */
             atlas::interpolation::element::Quad3D quad(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data(),
-                icoords[idx[3]].data() );
+                  atlas::PointXYZ{ icoords(idx[0],0), icoords(idx[0],1), icoords(idx[0],2) },
+                  atlas::PointXYZ{ icoords(idx[1],0), icoords(idx[1],1), icoords(idx[1],2) },
+                  atlas::PointXYZ{ icoords(idx[2],0), icoords(idx[2],1), icoords(idx[2],2) },
+                  atlas::PointXYZ{ icoords(idx[3],0), icoords(idx[3],1), icoords(idx[3],2) });
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
