@@ -39,11 +39,6 @@ void IntermediateNamedGrid::print(std::ostream &out) const {
 }
 
 
-bool IntermediateNamedGrid::active() const {
-    return true;
-}
-
-
 std::string IntermediateNamedGrid::getGridname() const {
     return gridname_;
 }

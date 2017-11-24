@@ -62,7 +62,6 @@ private:
 
     // -- Overridden methods
 
-    bool active() const;
     std::string getGridname() const;
     void print(std::ostream&) const;
 

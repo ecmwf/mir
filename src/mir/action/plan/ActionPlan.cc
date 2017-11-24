@@ -81,32 +81,6 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
 }
 
 
-void ActionPlan::add(const std::string &name, const std::string &param, param::DelayedParametrisation *value) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
-    runtimes_.push_back(runtime);
-    runtime->set(param, value);
-    actions_.push_back(ActionFactory::build(name, *runtime));
-}
-
-
-void ActionPlan::add(const std::string &name, const std::string &param1, param::DelayedParametrisation *value1, const std::string &param2, long value2) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
-    runtimes_.push_back(runtime);
-    runtime->set(param1, value1);
-    runtime->set(param2, value2);
-    actions_.push_back(ActionFactory::build(name, *runtime));
-}
-
-
-void ActionPlan::add(const std::string &name, const std::string &param1, param::DelayedParametrisation *value1, const std::string &param2, const std::string &value2) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
-    runtimes_.push_back(runtime);
-    runtime->set(param1, value1);
-    runtime->set(param2, value2);
-    actions_.push_back(ActionFactory::build(name, *runtime));
-}
-
-
 void ActionPlan::add(Action *action)  {
     actions_.push_back(action);
 }

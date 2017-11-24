@@ -21,7 +21,6 @@
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
 #include "mir/style/Resol.h"
 #include "mir/style/resol/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"

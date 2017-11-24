@@ -42,7 +42,7 @@ void ArchivedValue::prepare(action::ActionPlan& plan) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("spectral-order", "cubic");
 
-    eckit::ScopedPtr<param::DelayedParametrisation> intermediateGrid(
+    eckit::ScopedPtr<param::MIRParametrisation> intermediateGrid(
                 IntermediateGridFactory::build("octahedral-gaussian", runtime) );
     ASSERT(intermediateGrid);
 

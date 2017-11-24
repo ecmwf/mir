@@ -328,8 +328,6 @@ list(
     param/ConfigurationWrapper.h
     param/DefaultParametrisation.cc
     param/DefaultParametrisation.h
-    param/DelayedParametrisation.cc
-    param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
     param/MIRParametrisation.cc

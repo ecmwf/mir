@@ -54,7 +54,6 @@ public:
     MIRParametrisation& set(const std::string& name, bool value);
     MIRParametrisation& set(const std::string& name, long value);
     MIRParametrisation& set(const std::string& name, double value);
-    MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
     // -- Overridden methods
 

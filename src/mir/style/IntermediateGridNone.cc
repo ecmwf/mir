@@ -36,11 +36,6 @@ void IntermediateGridNone::print(std::ostream& out) const {
 }
 
 
-bool IntermediateGridNone::active() const {
-    return false;
-}
-
-
 std::string IntermediateGridNone::getGridname() const {
     std::ostringstream os;
     os << "IntermediateGridNone::getGridname() not implemented for " << *this;

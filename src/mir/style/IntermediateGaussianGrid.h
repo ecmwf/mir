@@ -41,9 +41,11 @@ public:
         eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(order_));
         ASSERT(order);
 
-        truncation_ = 0;
-        ASSERT(parametrisation_.get("truncation", truncation_));
-        long N = order->getGaussianNumberFromTruncation(long(truncation_));
+        long T = 0;
+        ASSERT(parametrisation_.get("truncation", T));
+        ASSERT(T > 0);
+
+        long N = order->getGaussianNumberFromTruncation(T);
         ASSERT(N > 0);
 
         gridname_ = gaussianGridTypeLetter() + std::to_string(N);
@@ -73,7 +75,6 @@ private:
 
     // -- Members
 
-    size_t truncation_;
     std::string order_;
     std::string gridname_;
 
@@ -87,17 +88,12 @@ private:
 
     // -- Overridden methods
 
-    bool active() const {
-        return true;
-    }
-
     std::string getGridname() const {
         return gridname_;
     }
 
     void print(std::ostream& out) const {
         out << "IntermediateGaussianGrid["
-                "truncation=" << truncation_
             << ",order=" << order_
             << ",gridname=" << gridname_
             << "]";

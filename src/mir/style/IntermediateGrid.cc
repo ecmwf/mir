@@ -13,6 +13,7 @@
 
 #include "mir/style/IntermediateGrid.h"
 
+#include <sstream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -35,9 +36,87 @@ IntermediateGrid::~IntermediateGrid() {
 }
 
 
-void IntermediateGrid::get(const std::string& name, std::string& value) const {
-    ASSERT(name == "gridname");
-    value = getGridname();
+bool IntermediateGrid::has(const std::string& name) const {
+    return (name == "gridname");
+}
+
+
+bool IntermediateGrid::get(const std::string& name, std::string& value) const {
+    if (name == "gridname") {
+        value = getGridname();
+        return true;
+    }
+    return false;
+}
+
+
+bool IntermediateGrid::get(const std::string&, bool&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, bool&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, int&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, int&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, long&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, long&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, float&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, float&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, double&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, double&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, std::vector<int>&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, std::vector<int>&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, std::vector<long>&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, std::vector<long>&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, std::vector<float>&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, std::vector<float>&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, std::vector<double>&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, std::vector<double>&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+bool IntermediateGrid::get(const std::string&, std::vector<std::string>&) const {
+    std::ostringstream os;
+    os << "MIRParametrisation::get(const std::string&, std::vector<std::string>&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 

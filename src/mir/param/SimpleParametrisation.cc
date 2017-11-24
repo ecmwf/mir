@@ -24,7 +24,6 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -64,87 +63,6 @@ public:
         p.json(s);
         return s;
     }
-};
-
-//================================================================================
-
-class DelayedSetting : public Setting {
-    DelayedParametrisation *delayed_;
-public:
-    DelayedSetting(DelayedParametrisation *delayed): delayed_(delayed) {}
-
-    virtual ~DelayedSetting() {
-        delete delayed_;
-    }
-
-    virtual void get(const std::string& name, std::string& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, bool& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, int& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, long& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, size_t& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, float& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, double& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<int>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<long>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<size_t>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<float>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<double>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<std::string>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual bool match(const std::string&, const MIRParametrisation&) const {
-        NOTIMP;
-    }
-
-    void copyValueTo(const std::string&, SimpleParametrisation&) const {
-        NOTIMP;
-    }
-
-    virtual void print(std::ostream& out) const {
-        out << "<DELAYED>";
-    }
-
-    virtual void json(eckit::JSON& out) const {
-        out << "<DELAYED>";
-    }
-
 };
 
 //================================================================================
@@ -516,15 +434,6 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, doubl
 
 SimpleParametrisation &SimpleParametrisation::set(const std::string &name, int value) {
     _set(name, value);
-    return *this;
-}
-
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
-    SettingsMap::iterator j = settings_.find(name);
-    if (j != settings_.end()) {
-        delete (*j).second;
-    }
-    settings_[name] = new DelayedSetting(value);
     return *this;
 }
 

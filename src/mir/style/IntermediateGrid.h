@@ -17,7 +17,6 @@
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
-#include "mir/param/DelayedParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -25,7 +24,7 @@ namespace mir {
 namespace style {
 
 
-class IntermediateGrid : public param::DelayedParametrisation {
+class IntermediateGrid : public param::MIRParametrisation {
 public:
 
     // -- Exceptions
@@ -46,8 +45,7 @@ public:
     // None
 
     // -- Methods
-
-    virtual bool active() const = 0;
+    // None
 
     // -- Overridden methods
     // None
@@ -67,10 +65,25 @@ protected:
     // -- Methods
 
     virtual std::string getGridname() const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
 
-    void get(const std::string&, std::string&) const;
+    // From MIRParametrisation
+    bool has(const std::string& name) const;
+
+    bool get(const std::string& name, std::string& value) const;
+    bool get(const std::string& name, bool& value) const;
+    bool get(const std::string& name, int& value) const;
+    bool get(const std::string& name, long& value) const;
+    bool get(const std::string& name, float& value) const;
+    bool get(const std::string& name, double& value) const;
+
+    bool get(const std::string& name, std::vector<int>& value) const;
+    bool get(const std::string& name, std::vector<long>& value) const;
+    bool get(const std::string& name, std::vector<float>& value) const;
+    bool get(const std::string& name, std::vector<double>& value) const;
+    bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None
