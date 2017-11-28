@@ -110,19 +110,19 @@ private:
 
 class TruncationFactory {
     std::string name_;
-    virtual Truncation *make(const param::MIRParametrisation&) = 0;
+    virtual Truncation* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
 protected:
     TruncationFactory(const std::string&);
     virtual ~TruncationFactory();
 public:
-    static Truncation *build(const std::string&, const param::MIRParametrisation&);
+    static Truncation* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
 };
 
 
 template <class T> class TruncationBuilder : public TruncationFactory {
-    virtual Truncation *make(const param::MIRParametrisation& parametrisation) {
-        return new T(parametrisation);
+    virtual Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
+        return new T(parametrisation, targetGaussianN);
     }
 public:
     TruncationBuilder(const std::string& name) : TruncationFactory(name) {}

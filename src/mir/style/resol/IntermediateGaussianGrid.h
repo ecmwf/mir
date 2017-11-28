@@ -11,18 +11,19 @@
 /// @date May 2017
 
 
-#ifndef mir_style_IntermediateGaussianGrid_h
-#define mir_style_IntermediateGaussianGrid_h
+#ifndef mir_style_resol_IntermediateGaussianGrid_h
+#define mir_style_resol_IntermediateGaussianGrid_h
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/IntermediateGrid.h"
+#include "mir/style/resol/SpectralOrder.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 template< typename GRIDTYPE >
@@ -36,16 +37,18 @@ public:
 
     IntermediateGaussianGrid(const param::MIRParametrisation& parametrisation) : IntermediateGrid(parametrisation) {
 
-        order_ = "linear";
-        parametrisation_.get("spectral-order", order_);
-        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(order_));
-        ASSERT(order);
+        // Setup spectral order mapping
+        std::string order;
+        parametrisation_.get("spectral-order", order);
+
+        eckit::ScopedPtr<resol::SpectralOrder> spectralOrder(resol::SpectralOrderFactory::build(order));
+        ASSERT(spectralOrder);
 
         long T = 0;
-        ASSERT(parametrisation_.get("truncation", T));
+        ASSERT(parametrisation_.get("spectral", T));
         ASSERT(T > 0);
 
-        long N = order->getGaussianNumberFromTruncation(T);
+        long N = spectralOrder->getGaussianNumberFromTruncation(T);
         ASSERT(N > 0);
 
         gridname_ = gaussianGridTypeLetter() + std::to_string(N);
@@ -75,7 +78,6 @@ private:
 
     // -- Members
 
-    std::string order_;
     std::string gridname_;
 
     // -- Methods
@@ -93,10 +95,7 @@ private:
     }
 
     void print(std::ostream& out) const {
-        out << "IntermediateGaussianGrid["
-            << ",order=" << order_
-            << ",gridname=" << gridname_
-            << "]";
+        out << "IntermediateGaussianGrid[gridname=" << gridname_ << "]";
     }
 
     // -- Class members
@@ -111,6 +110,7 @@ private:
 };
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

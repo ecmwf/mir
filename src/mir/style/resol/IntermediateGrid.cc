@@ -11,7 +11,7 @@
 /// @date May 2017
 
 
-#include "mir/style/IntermediateGrid.h"
+#include "mir/style/resol/IntermediateGrid.h"
 
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
@@ -20,11 +20,12 @@
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
-#include "mir/style/IntermediateNamedGrid.h"
+#include "mir/style/resol/IntermediateNamedGrid.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 IntermediateGrid::IntermediateGrid(const param::MIRParametrisation& parametrisation) :
@@ -190,6 +191,7 @@ void IntermediateGridFactory::list(std::ostream& out) {
 }
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

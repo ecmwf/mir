@@ -28,7 +28,7 @@ public:
 
     // -- Contructors
 
-    Automatic(const param::MIRParametrisation& parametrisation);
+    Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN);
 
     // -- Destructor
     // None
@@ -57,11 +57,11 @@ private:
 
     // -- Members
 
+    const long N_;
     long truncation_;
 
     // -- Methods
-
-    long getTargetGaussianNumber() const;
+    // None
 
     // -- Overridden methods
     // None

@@ -16,7 +16,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -31,21 +31,20 @@ static TruncationBuilder< Automatic > __truncation2("auto");
 static TruncationBuilder< Automatic > __truncation3("AUTO");
 
 
-Automatic::Automatic(const param::MIRParametrisation& parametrisation) :
-    style::Truncation(parametrisation) {
+Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
+    style::Truncation(parametrisation),
+    N_(targetGaussianN) {
+    ASSERT(N_ > 0);
 
     // Setup spectral order mapping
-    std::string order = "linear";
+    std::string order;
     parametrisation_.get("spectral-order", order);
 
-    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build(order));
+    eckit::ScopedPtr<resol::SpectralOrder> spectralOrder(resol::SpectralOrderFactory::build(order));
     ASSERT(spectralOrder);
 
     // Set truncation
-    const long N = getTargetGaussianNumber();
-    ASSERT(N > 0);
-
-    truncation_ = spectralOrder->getTruncationFromGaussianNumber(N);
+    truncation_ = spectralOrder->getTruncationFromGaussianNumber(N_);
     ASSERT(truncation_ > 0);
 }
 
@@ -57,43 +56,6 @@ long Automatic::truncation() const {
 
 void Automatic::print(std::ostream& out) const {
     out << "Automatic[truncation=" << truncation_ << "]";
-}
-
-
-long Automatic::getTargetGaussianNumber() const {
-    long N = 0;
-
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
-    if (parametrisation_.userParametrisation().get("grid", grid)) {
-        ASSERT(grid.size() == 2);
-        util::Increments increments(grid[0], grid[1]);
-
-        // use (non-shifted) global bounding box
-        util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox, false, false);
-
-        N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
-
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
-        parametrisation_.userParametrisation().get("regular", N) ||
-        parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
-
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
-        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
-    }
-
-    std::ostringstream os;
-    os << "truncation::Automatic::getTargetGaussianNumber: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
 }
 
 

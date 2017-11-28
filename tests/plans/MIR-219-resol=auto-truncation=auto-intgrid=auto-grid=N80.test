@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--resol=auto --truncation=auto --intgrid=auto --gridname=N80
+# plan
+x

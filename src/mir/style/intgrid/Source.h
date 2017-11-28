@@ -8,20 +8,19 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
 
+#ifndef mir_style_intgrid_Source_h
+#define mir_style_intgrid_Source_h
 
-#ifndef mir_style_IntermediateNamedGrid_h
-#define mir_style_IntermediateNamedGrid_h
-
-#include "mir/style/IntermediateGrid.h"
+#include "mir/style/Intgrid.h"
 
 
 namespace mir {
 namespace style {
+namespace intgrid {
 
 
-class IntermediateNamedGrid : public IntermediateGrid {
+class Source : public style::Intgrid {
 public:
 
     // -- Exceptions
@@ -29,7 +28,7 @@ public:
 
     // -- Contructors
 
-    IntermediateNamedGrid(const param::MIRParametrisation&);
+    Source(const param::MIRParametrisation&, long targetGaussianN);
 
     // -- Destructor
     // None
@@ -44,7 +43,9 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+
+    std::string gridname() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -62,9 +63,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    std::string getGridname() const;
-    void print(std::ostream&) const;
+    // None
 
     // -- Class members
     // None
@@ -78,8 +77,10 @@ private:
 };
 
 
+}  // namespace intgrid
 }  // namespace style
 }  // namespace mir
 
 
 #endif
+

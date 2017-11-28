@@ -59,7 +59,10 @@ TruncationFactory::~TruncationFactory() {
 }
 
 
-Truncation* TruncationFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
+Truncation* TruncationFactory::build(
+        const std::string& name,
+        const param::MIRParametrisation& parametrisation,
+        long targetGaussianN ) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
@@ -68,16 +71,14 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return (*j).second->make(parametrisation);
+        return (*j).second->make(parametrisation, targetGaussianN);
     }
 
-    // Look for "T" + number
-    if (name.length() > 1 && name[0] == 'T') {
-        const std::string possibleNumber = name.substr(1);
-        if (std::all_of(possibleNumber.begin(), possibleNumber.end(), ::isdigit)) {
-            long number = std::stol(possibleNumber);
-            return new truncation::Truncation(number, parametrisation);
-        }
+    // Look for "T" + number, or just a plain number
+    const std::string possibleNumber = (name.length() > 1 && name[0] == 'T') ? name.substr(1) : name;
+    if (std::all_of(possibleNumber.begin(), possibleNumber.end(), ::isdigit)) {
+        long number = std::stol(possibleNumber);
+        return new truncation::Truncation(number, parametrisation);
     }
 
     list(eckit::Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
@@ -95,7 +96,8 @@ void TruncationFactory::list(std::ostream& out) {
         sep = ", ";
     }
 
-    out << sep << "T<ordinal>";
+    out << sep << "T<ordinal>"
+        << sep << "<ordinal>";
 }
 
 

@@ -11,10 +11,13 @@
 /// @date May 2017
 
 
-#ifndef mir_style_resol_ArchivedValue_h
-#define mir_style_resol_ArchivedValue_h
+#ifndef mir_style_resol_SpectralOrderT_h
+#define mir_style_resol_SpectralOrderT_h
 
-#include "mir/style/Resol.h"
+#include <cmath>
+#include <string>
+#include "eckit/exception/Exceptions.h"
+#include "mir/style/resol/SpectralOrder.h"
 
 
 namespace mir {
@@ -22,15 +25,16 @@ namespace style {
 namespace resol {
 
 
-class ArchivedValue : public Resol {
+template< int ORDER >
+class SpectralOrderT : public SpectralOrder {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
-
-    ArchivedValue(const param::MIRParametrisation& parametrisation);
+    SpectralOrderT() {
+        ASSERT(ORDER);
+    }
 
     // -- Destructor
     // None
@@ -45,10 +49,43 @@ public:
     // None
 
     // -- Overridden methods
+    long getTruncationFromGaussianNumber(const long& N) const {
+        ASSERT(N);
+    
+        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
+        ASSERT(T);
+    
+        return T;
+    }
 
-    void prepare(action::ActionPlan&) const;
-    bool resultIsSpectral() const;
-    void print(std::ostream& out) const;
+    long getGaussianNumberFromTruncation(const long& T) const {
+        ASSERT(T);
+
+        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
+        ASSERT(N);
+
+        return N;
+    }
+
+    void print(std::ostream& out) const {
+        out << "SpectralOrderT<ORDER=" << ORDER << ">[]";
+    }
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
 
     // -- Class members
     // None
@@ -59,8 +96,7 @@ public:
 private:
 
     // -- Members
-
-    std::string gridname_;
+    // None
 
     // -- Methods
     // None
@@ -76,7 +112,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

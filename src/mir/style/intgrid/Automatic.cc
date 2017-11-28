@@ -16,7 +16,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -31,13 +31,12 @@ static IntgridBuilder< Automatic > __intgrid2("auto");
 static IntgridBuilder< Automatic > __intgrid3("AUTO");
 
 
-Automatic::Automatic(const param::MIRParametrisation& parametrisation) :
-    Intgrid(parametrisation) {
+Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
+    Intgrid(parametrisation),
+    N_(targetGaussianN) {
+    ASSERT(N_ > 0);
 
-    const long N = getTargetGaussianNumber();
-    ASSERT(N > 0);
-
-    gridname_ = "F" + std::to_string(N);
+    gridname_ = "F" + std::to_string(N_);
 }
 
 
@@ -48,43 +47,6 @@ std::string Automatic::gridname() const {
 
 void Automatic::print(std::ostream& out) const {
     out << "Automatic[gridname=" << gridname_ << "]";
-}
-
-
-long Automatic::getTargetGaussianNumber() const {
-    long N = 0;
-
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
-    if (parametrisation_.userParametrisation().get("grid", grid)) {
-        ASSERT(grid.size() == 2);
-        util::Increments increments(grid[0], grid[1]);
-
-        // use (non-shifted) global bounding box
-        util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox, false, false);
-
-        N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
-
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
-        parametrisation_.userParametrisation().get("regular", N) ||
-        parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
-
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
-        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
-    }
-
-    std::ostringstream os;
-    os << "intgrid::Automatic::getTargetGaussianNumber: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
 }
 
 

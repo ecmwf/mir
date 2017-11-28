@@ -110,19 +110,19 @@ private:
 
 class IntgridFactory {
     std::string name_;
-    virtual Intgrid *make(const param::MIRParametrisation&) = 0;
+    virtual Intgrid* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
 protected:
     IntgridFactory(const std::string&);
     virtual ~IntgridFactory();
 public:
-    static Intgrid *build(const std::string&, const param::MIRParametrisation&);
+    static Intgrid* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
 };
 
 
 template <class T> class IntgridBuilder : public IntgridFactory {
-    virtual Intgrid *make(const param::MIRParametrisation& parametrisation) {
-        return new T(parametrisation);
+    virtual Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
+        return new T(parametrisation, targetGaussianN);
     }
 public:
     IntgridBuilder(const std::string& name) : IntgridFactory(name) {}

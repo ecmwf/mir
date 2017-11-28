@@ -31,7 +31,7 @@ Truncation::Truncation(long truncation, const param::MIRParametrisation& paramet
 void Truncation::prepare(action::ActionPlan& plan) const {
 
     long T = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("truncation", T));
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", T));
     ASSERT(T > 0);
 
     if (T > truncation_ ) {

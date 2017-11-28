@@ -11,7 +11,7 @@
 /// @date Mar 2017
 
 
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/SpectralOrder.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
@@ -101,5 +102,6 @@ void SpectralOrderFactory::list(std::ostream& out) {
 }
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir

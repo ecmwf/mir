@@ -449,24 +449,12 @@ list(
     style/CustomStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
-    style/IntermediateGaussianGrid.cc
-    style/IntermediateGaussianGrid.h
-    style/IntermediateGrid.cc
-    style/IntermediateGrid.h
-    style/IntermediateGridNone.cc
-    style/IntermediateGridNone.h
-    style/IntermediateNamedGrid.cc
-    style/IntermediateNamedGrid.h
     style/Intgrid.cc
     style/Intgrid.h
     style/MIRStyle.cc
     style/MIRStyle.h
     style/Resol.cc
     style/Resol.h
-    style/SpectralOrder.cc
-    style/SpectralOrder.h
-    style/SpectralOrderT.cc
-    style/SpectralOrderT.h
     style/Truncation.cc
     style/Truncation.h
     style/intgrid/Automatic.cc
@@ -475,12 +463,26 @@ list(
     style/intgrid/NamedGrid.h
     style/intgrid/None.cc
     style/intgrid/None.h
+    style/intgrid/Source.cc
+    style/intgrid/Source.h
     style/resol/ArchivedValue.cc
     style/resol/ArchivedValue.h
     style/resol/AutomaticResolution.cc
     style/resol/AutomaticResolution.h
+    style/resol/IntermediateGaussianGrid.cc
+    style/resol/IntermediateGaussianGrid.h
+    style/resol/IntermediateGrid.cc
+    style/resol/IntermediateGrid.h
+    style/resol/IntermediateGridNone.cc
+    style/resol/IntermediateGridNone.h
+    style/resol/IntermediateNamedGrid.cc
+    style/resol/IntermediateNamedGrid.h
     style/resol/NamedGrid.cc
     style/resol/NamedGrid.h
+    style/resol/SpectralOrder.cc
+    style/resol/SpectralOrder.h
+    style/resol/SpectralOrderT.cc
+    style/resol/SpectralOrderT.h
     style/resol/Truncation.cc
     style/resol/Truncation.h
     style/truncation/Automatic.cc

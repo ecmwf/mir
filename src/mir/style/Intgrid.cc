@@ -59,7 +59,10 @@ IntgridFactory::~IntgridFactory() {
 }
 
 
-Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
+Intgrid* IntgridFactory::build(
+        const std::string& name,
+        const param::MIRParametrisation& parametrisation,
+        long targetGaussianN ) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
@@ -68,7 +71,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return (*j).second->make(parametrisation);
+        return (*j).second->make(parametrisation, targetGaussianN);
     }
 
     // Look for NamedGrid pattern matching

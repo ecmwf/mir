@@ -88,9 +88,10 @@ Resol* ResolFactory::build(const std::string& name, const param::MIRParametrisat
         return new resol::NamedGrid(name, parametrisation);
     }
 
-    // Look for a number
-    if (std::all_of(name.begin(), name.end(), ::isdigit)) {
-        const long number = std::stol(name);
+    // Look for "T" + number, or just a plain number
+    const std::string possibleNumber = (name.length() > 1 && name[0] == 'T') ? name.substr(1) : name;
+    if (std::all_of(possibleNumber.begin(), possibleNumber.end(), ::isdigit)) {
+        long number = std::stol(possibleNumber);
         return new resol::Truncation(number, parametrisation);
     }
 
@@ -112,7 +113,8 @@ void ResolFactory::list(std::ostream& out) {
     namedgrids::NamedGridPattern::list(out << sep);
     sep = ", ";
 
-    out << sep << "<ordinal>";
+    out << sep << "T<ordinal>"
+        << sep << "<ordinal>";
 }
 
 

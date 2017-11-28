@@ -11,39 +11,40 @@
 /// @date May 2017
 
 
-#include "mir/style/IntermediateNamedGrid.h"
+#include "mir/style/resol/IntermediateGridNone.h"
 
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 namespace {
-static IntermediateGridBuilder<IntermediateNamedGrid> __intermediate_grid_gridname("gridname");
+static IntermediateGridBuilder<IntermediateGridNone> __intermediate_grid_none("none");
 }
 
 
-IntermediateNamedGrid::IntermediateNamedGrid(const param::MIRParametrisation& parametrisation) :
+IntermediateGridNone::IntermediateGridNone(const param::MIRParametrisation& parametrisation) :
     IntermediateGrid(parametrisation) {
-
-    parametrisation_.get("spectral-intermediate-grid", gridname_);
-    ASSERT(gridname_.length());
 }
 
 
-void IntermediateNamedGrid::print(std::ostream &out) const {
-    out << "IntermediateNamedGrid[gridname=" << gridname_ << "]";
+void IntermediateGridNone::print(std::ostream& out) const {
+    out << "IntermediateGridNone[]";
 }
 
 
-std::string IntermediateNamedGrid::getGridname() const {
-    return gridname_;
+std::string IntermediateGridNone::getGridname() const {
+    std::ostringstream os;
+    os << "IntermediateGridNone::getGridname() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
 }
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

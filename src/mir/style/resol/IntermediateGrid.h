@@ -11,8 +11,8 @@
 /// @date May 2017
 
 
-#ifndef mir_style_IntermediateGrid_h
-#define mir_style_IntermediateGrid_h
+#ifndef mir_style_resol_IntermediateGrid_h
+#define mir_style_resol_IntermediateGrid_h
 
 #include <iosfwd>
 #include <string>
@@ -22,6 +22,7 @@
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 class IntermediateGrid : public param::MIRParametrisation {
@@ -135,6 +136,7 @@ public:
 };
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

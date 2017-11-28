@@ -22,7 +22,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/Resol.h"
-#include "mir/style/resol/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
 
 
@@ -89,17 +88,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
 
-    // FIXME make a decision on resol/truncation!
-    std::string resol = "automatic-resolution";
+    std::string resol;
     parametrisation_.get("resol", resol);
     eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
-
-    long T = 0;
-    if (parametrisation_.userParametrisation().get("truncation", T)) {
-        // this is overriding for the moment until a decision is taken
-        resolution.reset(new resol::Truncation(T, parametrisation_));
-    }
-    ASSERT(resolution);
 
     if (resolution->resultIsSpectral()) {
         resolution->prepare(plan);
@@ -180,17 +171,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
-    // FIXME make a decision on resol/truncation!
-    std::string resol = "automatic-resolution";
+    std::string resol;
     parametrisation_.get("resol", resol);
     eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
-
-    long T = 0;
-    if (parametrisation_.userParametrisation().get("truncation", T)) {
-        // this is overriding for the moment until a decision is taken
-        resolution.reset(new resol::Truncation(T, parametrisation_));
-    }
-    ASSERT(resolution);
 
     if (resolution->resultIsSpectral()) {
         resolution->prepare(plan);

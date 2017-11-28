@@ -23,7 +23,7 @@ static IntgridBuilder< None > __intgrid1("none");
 static IntgridBuilder< None > __intgrid2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation) :
+None::None(const param::MIRParametrisation& parametrisation, long) :
     style::Intgrid(parametrisation) {
 }
 

@@ -11,29 +11,26 @@
 /// @date May 2017
 
 
-#ifndef mir_style_SpectralOrderT_h
-#define mir_style_SpectralOrderT_h
+#ifndef mir_style_resol_IntermediateNamedGrid_h
+#define mir_style_resol_IntermediateNamedGrid_h
 
-#include <cmath>
-#include <string>
-#include "eckit/exception/Exceptions.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/IntermediateGrid.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
-template< int ORDER >
-class SpectralOrderT : public SpectralOrder {
+class IntermediateNamedGrid : public IntermediateGrid {
 public:
+
     // -- Exceptions
     // None
 
     // -- Contructors
-    SpectralOrderT() {
-        ASSERT(ORDER);
-    }
+
+    IntermediateNamedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -42,42 +39,6 @@ public:
     // None
 
     // -- Operators
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    long getTruncationFromGaussianNumber(const long& N) const {
-        ASSERT(N);
-    
-        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
-        ASSERT(T);
-    
-        return T;
-    }
-
-    long getGaussianNumberFromTruncation(const long& T) const {
-        ASSERT(T);
-
-        long N = long(double(T + 1) * double(ORDER + 1) / 4.);
-        ASSERT(N);
-
-        return N;
-    }
-
-    void print(std::ostream& out) const {
-        out << "SpectralOrderT<ORDER=" << ORDER << ">[]";
-    }
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
     // None
 
     // -- Methods
@@ -95,13 +56,16 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::string gridname_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    std::string getGridname() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -111,12 +75,13 @@ private:
 
     // -- Friends
     // None
+
 };
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 
 
 #endif
-

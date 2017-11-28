@@ -11,14 +11,15 @@
 /// @date May 2017
 
 
-#ifndef mir_style_IntermediateGridNone_h
-#define mir_style_IntermediateGridNone_h
+#ifndef mir_style_resol_IntermediateGridNone_h
+#define mir_style_resol_IntermediateGridNone_h
 
-#include "mir/style/IntermediateGrid.h"
+#include "mir/style/resol/IntermediateGrid.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 class IntermediateGridNone : public IntermediateGrid {
@@ -77,6 +78,7 @@ private:
 };
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

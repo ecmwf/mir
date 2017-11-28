@@ -11,11 +11,12 @@
 /// @date May 2017
 
 
-#include "mir/style/SpectralOrderT.h"
+#include "mir/style/resol/SpectralOrderT.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 namespace {
@@ -32,6 +33,7 @@ template<> void SpectralOrderT<3>::print(std::ostream& out) const { out << "Cubi
 template<> void SpectralOrderT<4>::print(std::ostream& out) const { out << "Quartic[]"; }
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

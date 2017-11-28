@@ -11,11 +11,12 @@
 /// @date May 2017
 
 
-#include "mir/style/IntermediateGaussianGrid.h"
+#include "mir/style/resol/IntermediateGaussianGrid.h"
 
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 namespace {
@@ -33,6 +34,7 @@ template<> std::string IntermediateGaussianGrid<n_grid_t>::gaussianGridTypeLette
 template<> std::string IntermediateGaussianGrid<o_grid_t>::gaussianGridTypeLetter() const { return "O"; }
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

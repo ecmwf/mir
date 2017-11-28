@@ -8,8 +8,6 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
-
 
 #ifndef mir_style_intgrid_Automatic_h
 #define mir_style_intgrid_Automatic_h
@@ -30,7 +28,7 @@ public:
 
     // -- Contructors
 
-    Automatic(const param::MIRParametrisation& parametrisation);
+    Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN);
 
     // -- Destructor
     // None
@@ -58,11 +56,12 @@ public:
 private:
 
     // -- Members
+
+    const long N_;
     std::string gridname_;
 
     // -- Methods
-
-    long getTargetGaussianNumber() const;
+    // None
 
     // -- Overridden methods
     // None

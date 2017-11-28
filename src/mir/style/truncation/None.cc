@@ -22,7 +22,7 @@ static TruncationBuilder< None > __truncation1("none");
 static TruncationBuilder< None > __truncation2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation) :
+None::None(const param::MIRParametrisation& parametrisation, long) :
     style::Truncation(parametrisation) {
 }
 

@@ -11,8 +11,8 @@
 /// @date Mar 2017
 
 
-#ifndef mir_style_SpectralOrder_h
-#define mir_style_SpectralOrder_h
+#ifndef mir_style_resol_SpectralOrder_h
+#define mir_style_resol_SpectralOrder_h
 
 #include <iosfwd>
 #include <string>
@@ -21,6 +21,7 @@
 
 namespace mir {
 namespace style {
+namespace resol {
 
 
 class SpectralOrder : public eckit::NonCopyable {
@@ -119,6 +120,7 @@ public:
 };
 
 
+}  // namespace resol
 }  // namespace style
 }  // namespace mir
 
