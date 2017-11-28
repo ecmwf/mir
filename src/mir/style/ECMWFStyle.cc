@@ -22,6 +22,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/Resol.h"
+#include "mir/style/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
 
 
@@ -171,12 +172,18 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
-    std::string resol;
-    parametrisation_.get("resol", resol);
-    eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
+    std::string trunc;
+    parametrisation_.get("truncation", trunc);
+    eckit::ScopedPtr<Truncation> truncation(TruncationFactory::build(trunc, parametrisation_, 0));
 
-    if (resolution->resultIsSpectral()) {
-        resolution->prepare(plan);
+    long Tinput = 0;
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", Tinput));
+    ASSERT(Tinput > 0);
+
+    // truncate spectral coefficients, if specified and below input field coefficients
+    long T = truncation->truncation();
+    if (0 < T && T < Tinput) {
+        plan.add("transform.sh-truncate", "truncation", T);
     }
 
     std::string formula;
