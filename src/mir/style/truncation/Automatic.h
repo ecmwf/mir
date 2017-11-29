@@ -57,7 +57,6 @@ private:
 
     // -- Members
 
-    const long N_;
     long truncation_;
 
     // -- Methods
