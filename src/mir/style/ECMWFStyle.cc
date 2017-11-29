@@ -213,11 +213,6 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool wind = false;
     parametrisation_.userParametrisation().get("wind", wind);
 
-    if (parametrisation_.userParametrisation().has("pl") && parametrisation_.userParametrisation().has("rotation")) {
-        throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
-    }
-
-
     const std::string userGrid =
         parametrisation_.userParametrisation().has("grid") ?         "regular-ll" :
         parametrisation_.userParametrisation().has("reduced") ?      "reduced-gg" :

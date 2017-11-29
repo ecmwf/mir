@@ -36,10 +36,10 @@ list(
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
-    action/interpolate/Gridded2GriddedInterpolation.cc
-    action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
+    action/interpolate/Gridded2GriddedInterpolation.cc
+    action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2LatLon.cc
     action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2NamedGrid.cc
@@ -70,6 +70,8 @@ list(
     action/interpolate/Gridded2RotatedOctahedral.h
     action/interpolate/Gridded2RotatedReduced.cc
     action/interpolate/Gridded2RotatedReduced.h
+    action/interpolate/Gridded2RotatedReducedGGPLGiven.cc
+    action/interpolate/Gridded2RotatedReducedGGPLGiven.h
     action/interpolate/Gridded2RotatedRegular.cc
     action/interpolate/Gridded2RotatedRegular.h
     action/io/Copy.cc
