@@ -13,6 +13,9 @@
 /// @date Apr 2015
 
 
+#include <iostream>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
@@ -21,6 +24,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
+#include "eckit/option/Option.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
@@ -52,6 +56,26 @@
 #include "mir/util/PointSearch.h"
 
 
+namespace {
+class MiniSeparator : public eckit::option::Option {
+    void print(std::ostream& out) const {
+        out << "   --" << std::endl;
+    }
+    void set(const std::string&, eckit::Configured&) const {
+        NOTIMP;
+    }
+    bool active() const {
+        return false;
+    }
+    void copy(const eckit::Configuration&, eckit::Configured&) const {
+    }
+public:
+    MiniSeparator() : eckit::option::Option("", "") {
+    }
+};
+}  // (anonymous namespace)
+
+
 class MIRToolConcrete : public mir::tools::MIRTool {
 private:
 
@@ -72,12 +96,14 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new FactoryOption<mir::style::ResolFactory>("resol", "Specifies the desired triangular truncation, before carrying out any other selected post-processing"));
         options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid to which the transform is performed to"));
         options_.push_back(new FactoryOption<mir::style::TruncationFactory>("truncation", "Describes the user intent on how to treat the incoming SH, before spectral transform"));
+        options_.push_back(new MiniSeparator());
+        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new FactoryOption<mir::style::resol::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new FactoryOption<mir::style::resol::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded transform associated grid type or name"));
+        options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
@@ -87,12 +113,11 @@ public:
         options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the octahedral reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (N>=2)"));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
-
-        options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind (not yet)"));
+        options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+        options_.push_back(new MiniSeparator());
+        options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind"));
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
-
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by methods k-nearest"));
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
@@ -101,7 +126,6 @@ public:
         options_.push_back(new SimpleOption<std::string>("input-mesh-file", "Input mesh file (default <empty>)"));
         options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
         options_.push_back(new SimpleOption<std::string>("output-mesh-file", "Output mesh file (default <empty>)"));
-
         options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));
 
         //==============================================
@@ -109,6 +133,7 @@ public:
         options_.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
         options_.push_back(new SimpleOption<std::string>("globalise-gridname", "Unstructured grid globalise using gridname (default O16)"));
         options_.push_back(new SimpleOption<std::string>("globalise-missing-radius", "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
@@ -121,6 +146,7 @@ public:
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
         options_.push_back(new VectorOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters", 0));
+        options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
         for (const std::string& io : {"", "input", "output"}) {
@@ -134,7 +160,7 @@ public:
         }
 
         //==============================================
-        options_.push_back(new Separator("Unstructured grids support"));
+        options_.push_back(new Separator("Unstructured grids"));
         options_.push_back(new SimpleOption<bool>("geopoints", "Input is a geopoints file"));
         options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
@@ -144,15 +170,15 @@ public:
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
+        options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
         options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+        options_.push_back(new MiniSeparator());
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used or not"));
-        options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
-
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
 
@@ -165,7 +191,6 @@ public:
         options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
         options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
         options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
-
     }
 
 };
