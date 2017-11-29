@@ -469,14 +469,6 @@ list(
     style/resol/ArchivedValue.h
     style/resol/AutomaticResolution.cc
     style/resol/AutomaticResolution.h
-    style/resol/IntermediateGaussianGrid.cc
-    style/resol/IntermediateGaussianGrid.h
-    style/resol/IntermediateGrid.cc
-    style/resol/IntermediateGrid.h
-    style/resol/IntermediateGridNone.cc
-    style/resol/IntermediateGridNone.h
-    style/resol/IntermediateNamedGrid.cc
-    style/resol/IntermediateNamedGrid.h
     style/resol/NamedGrid.cc
     style/resol/NamedGrid.h
     style/resol/SpectralOrder.cc

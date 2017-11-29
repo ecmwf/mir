@@ -13,8 +13,8 @@
 
 #include <iostream>
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/resol/IntermediateGrid.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/style/resol/SpectralOrder.h"
 
 
 namespace mir {
@@ -29,16 +29,17 @@ static IntgridBuilder< Source > __intgrid2("SOURCE");
 Source::Source(const param::MIRParametrisation& parametrisation, long) :
     style::Intgrid(parametrisation) {
 
-    // both spectral-order and spectral-intermediate-grid are hardcoded because
-    // they are different from DefaultParametrisation
+    eckit::ScopedPtr<resol::SpectralOrder> spectralOrder(resol::SpectralOrderFactory::build("cubic"));
+    ASSERT(spectralOrder);
 
-    param::RuntimeParametrisation runtime(parametrisation_);
-    runtime.set("spectral-order", "cubic");
+    long T = 0;
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", T));
+    ASSERT(T > 0);
 
-    eckit::ScopedPtr<param::MIRParametrisation> intermediateGrid(resol::IntermediateGridFactory::build("octahedral-gaussian", runtime));
-    ASSERT(intermediateGrid);
+    long N = spectralOrder->getGaussianNumberFromTruncation(T);
+    ASSERT(N > 0);
 
-    ASSERT(intermediateGrid->get("gridname", gridname_));
+    gridname_ = "O" + std::to_string(N);
     ASSERT(!gridname_.empty());
 }
 

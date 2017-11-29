@@ -40,7 +40,6 @@ DefaultParametrisation::DefaultParametrisation() {
 
     set("resol", "automatic-resolution");
     set("spectral-order", "linear");
-    set("spectral-intermediate-grid", "regular-gaussian");
 
     set("absolute-error", 1e-10);
 }

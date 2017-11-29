@@ -50,7 +50,6 @@
 #include "mir/style/MIRStyle.h"
 #include "mir/style/Resol.h"
 #include "mir/style/Truncation.h"
-#include "mir/style/resol/IntermediateGrid.h"
 #include "mir/style/resol/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
@@ -97,12 +96,11 @@ public:
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
         options_.push_back(new FactoryOption<mir::style::ResolFactory>("resol", "Specifies the desired triangular truncation, before carrying out any other selected post-processing"));
-        options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid to which the transform is performed to"));
-        options_.push_back(new FactoryOption<mir::style::TruncationFactory>("truncation", "Describes the user intent on how to treat the incoming SH, before spectral transform"));
+        options_.push_back(new FactoryOption<mir::style::TruncationFactory>("truncation", "Describes the intermediate truncation which the transform is performed from"));
+        options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
         options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new FactoryOption<mir::style::resol::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
-        options_.push_back(new FactoryOption<mir::style::resol::IntermediateGridFactory>("spectral-intermediate-grid", "Spectral/gridded transform associated grid type or name"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
         //==============================================
