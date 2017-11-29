@@ -17,10 +17,12 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
 #include "mir/style/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
@@ -88,10 +90,10 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
-
     std::string resol;
     parametrisation_.get("resol", resol);
     eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, parametrisation_));
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resolution << std::endl;
 
     if (resolution->resultIsSpectral()) {
         resolution->prepare(plan);
@@ -172,19 +174,16 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
-    std::string trunc;
-    parametrisation_.get("truncation", trunc);
-    eckit::ScopedPtr<Truncation> truncation(TruncationFactory::build(trunc, parametrisation_, 0));
+    param::RuntimeParametrisation runtime(parametrisation_);
+    runtime.set("intgrid", "none");
 
-    long Tinput = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("spectral", Tinput));
-    ASSERT(Tinput > 0);
+    std::string resol;
+    parametrisation_.get("resol", resol);
+    eckit::ScopedPtr<Resol> resolution(ResolFactory::build(resol, runtime));
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resolution << std::endl;
 
-    // truncate spectral coefficients, if specified and below input field coefficients
-    long T = truncation->truncation();
-    if (0 < T && T < Tinput) {
-        plan.add("transform.sh-truncate", "truncation", T);
-    }
+    ASSERT(resolution->resultIsSpectral());
+    resolution->prepare(plan);
 
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {

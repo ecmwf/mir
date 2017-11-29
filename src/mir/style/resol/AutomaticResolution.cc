@@ -12,7 +12,6 @@
 #include "mir/style/resol/AutomaticResolution.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
@@ -37,7 +36,6 @@ AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parame
     std::string value;
 
     long N = getTargetGaussianNumber();
-    ASSERT(N > 0);
 
     // Setup intermediate grid before truncation
     // NOTE: truncation can depend on the intermediate grid Gaussian number
@@ -57,8 +55,6 @@ AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parame
     parametrisation_.userParametrisation().get("truncation", value);
     truncation_.reset(TruncationFactory::build(value, parametrisation_, N));
     ASSERT(truncation_);
-
-    eckit::Log::debug<LibMir>() << *this << std::endl;
 }
 
 
@@ -104,11 +100,14 @@ void AutomaticResolution::print(std::ostream& out) const {
 
 
 long AutomaticResolution::getTargetGaussianNumber() const {
+    std::vector<double> grid;
+    std::string gridname;
+
     long N = 0;
 
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
     if (parametrisation_.userParametrisation().get("grid", grid)) {
+
+        // get N from number of points in half-meridian (uses only grid[1] South-North increment)
         ASSERT(grid.size() == 2);
         util::Increments increments(grid[0], grid[1]);
 
@@ -117,26 +116,22 @@ long AutomaticResolution::getTargetGaussianNumber() const {
         increments.globaliseBoundingBox(bbox, false, false);
 
         N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
 
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
+    } else if (parametrisation_.userParametrisation().get("reduced", N) ||
         parametrisation_.userParametrisation().get("regular", N) ||
         parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
 
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+        // get Gaussian N directly
+
+    } else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+
+        // get Gaussian N given a gridname
         N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
+
     }
 
-    std::ostringstream os;
-    os << "AutomaticResolution::getTargetGaussianNumber: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
+    ASSERT(N >= 0);
+    return N;
 }
 
 
