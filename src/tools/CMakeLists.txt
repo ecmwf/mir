@@ -17,9 +17,10 @@ list(APPEND tools
 
 if(HAVE_ATLAS)
 list(APPEND tools
-    mir-integrate
-    mir-get-data
     mir-gaussian-fractions
+    mir-get-data
+    mir-integrate
+    mir-spherical-area
 )
 endif()
 
