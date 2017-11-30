@@ -42,7 +42,7 @@ struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
 
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
-static std::string target_from_parametrisation(const param::MIRParametrisation& parametrisation) {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation) {
     static const std::vector< std::pair< const char*, const char* > > keys_targets = {
         { "grid",       "regular-ll" },
         { "reduced",    "reduced-gg" },
@@ -60,7 +60,7 @@ static std::string target_from_parametrisation(const param::MIRParametrisation& 
         }
     }
 
-    throw eckit::SeriousBug("ECMWFStyle: could not find target for user parametrisation");
+    return "";
 }
 
 }  // (anonymous namespace)
@@ -130,7 +130,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_from_parametrisation(parametrisation_.userParametrisation());
+    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
 
     bool rotation_not_supported = (target == "griddef" || target == "points");
     if (rotation && rotation_not_supported) {
@@ -141,24 +141,26 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         resol->prepare(plan);
     }
 
-    if (rotation_not_supported) {
+    if (!target.empty()) {
+        if (rotation_not_supported) {
 
-        // TODO: this is temporary
-        plan.add(transform + "octahedral-gg", "octahedral", 64L);
-        plan.add(interpolate + target);
+            // TODO: this is temporary
+            plan.add(transform + "octahedral-gg", "octahedral", 64L);
+            plan.add(interpolate + target);
 
-    } else if (resol->resultIsSpectral()) {
+        } else if (resol->resultIsSpectral()) {
 
-        plan.add(transform + target);
-        if (rotation) {
-            plan.add(interpolate + "rotated-" + target);
+            plan.add(transform + target);
+            if (rotation) {
+                plan.add(interpolate + "rotated-" + target);
+            }
+
+        } else {
+
+            resol->prepare(plan);
+            plan.add(interpolate + (rotation ? "rotated-" : "") + target);
+
         }
-
-    } else {
-
-        resol->prepare(plan);
-        plan.add(interpolate + (rotation ? "rotated-" : "") + target);
-
     }
 
     if (rotation && (wind || vod2uv)) {
@@ -248,13 +250,15 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_from_parametrisation(parametrisation_);
+    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
 
-    plan.add(interpolate + (rotation ? "rotated-":"") + target);
+    if (!target.empty()) {
+        plan.add(interpolate + (rotation ? "rotated-":"") + target);
 
-    if (rotation && (wind || vod2uv)) {
-        plan.add("filter.adjust-winds-directions");
-        selectWindComponents(plan);
+        if (rotation && (wind || vod2uv)) {
+            plan.add("filter.adjust-winds-directions");
+            selectWindComponents(plan);
+        }
     }
 }
 
