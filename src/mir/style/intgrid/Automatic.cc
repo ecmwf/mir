@@ -32,11 +32,10 @@ static IntgridBuilder< Automatic > __intgrid3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
-    Intgrid(parametrisation),
-    N_(targetGaussianN) {
-    ASSERT(N_ > 0);
+    Intgrid(parametrisation) {
+    ASSERT(targetGaussianN > 0);
 
-    gridname_ = "F" + std::to_string(N_);
+    gridname_ = "F" + std::to_string(targetGaussianN);
 }
 
 

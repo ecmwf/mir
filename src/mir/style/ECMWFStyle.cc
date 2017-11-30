@@ -134,7 +134,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     bool rotation_not_supported = (target == "griddef" || target == "points");
     if (rotation && rotation_not_supported) {
-        throw eckit::UserError("'rotation' is incompatible with options 'griddef' and 'points'");
+        throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef' and 'points'");
     }
 
     if (resol->resultIsSpectral()) {

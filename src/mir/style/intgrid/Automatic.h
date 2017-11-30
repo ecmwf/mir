@@ -57,7 +57,6 @@ private:
 
     // -- Members
 
-    const long N_;
     std::string gridname_;
 
     // -- Methods

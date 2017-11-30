@@ -12,6 +12,7 @@
 #include "mir/style/resol/AutomaticResolution.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
@@ -127,6 +128,13 @@ long AutomaticResolution::getTargetGaussianNumber() const {
 
         // get Gaussian N given a gridname
         N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+
+    } else if (parametrisation_.userParametrisation().has("griddef") ||
+        parametrisation_.userParametrisation().has("points")) {
+
+        // hardcoded
+        N = 32;
+        eckit::Log::debug<LibMir>() << "AutomaticResolution::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
 
     }
 
