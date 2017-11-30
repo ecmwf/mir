@@ -50,7 +50,9 @@ std::string Source::gridname() const {
 
 
 void Source::print(std::ostream& out) const {
-    out << "Source[gridname=" << gridname_ << "]";
+    out << "Source["
+        << (gridname_.empty() ? "" : "gridname=" + gridname_)
+        << "]";
 }
 
 

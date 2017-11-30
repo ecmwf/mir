@@ -12,9 +12,7 @@
 #include "mir/style/resol/ArchivedValue.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/style/Intgrid.h"
 
 
 namespace mir {
@@ -29,33 +27,43 @@ static ResolBuilder< ArchivedValue > __resol3("AV");
 
 ArchivedValue::ArchivedValue(const param::MIRParametrisation& parametrisation) :
     Resol(parametrisation) {
-    const eckit::ScopedPtr<Intgrid> source(IntgridFactory::build("source", parametrisation_, 0));
 
-    gridname_ = source->gridname();
-    ASSERT(gridname_.length());
+    // Setup intermediate grid before truncation
+    // NOTE: truncation can depend on the intermediate grid Gaussian number
+    std::string value = "source";
+    parametrisation_.userParametrisation().get("intgrid", value);
+    intgrid_.reset(IntgridFactory::build(value, parametrisation_, 0));
+    ASSERT(intgrid_);
 }
 
 
 void ArchivedValue::prepare(action::ActionPlan& plan) const {
 
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+    // transform, if specified
+    const std::string gridname = intgrid_->gridname();
+    if (!gridname.empty()) {
 
-    if (vod2uv) {
-        plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname_);
-    } else {
-        plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname_);
+        bool vod2uv = false;
+        parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+        if (vod2uv) {
+            plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
+        } else {
+            plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        }
     }
 }
 
 
 bool ArchivedValue::resultIsSpectral() const {
-    return false;
+    return intgrid_->gridname().empty();
 }
 
 
 void ArchivedValue::print(std::ostream& out) const {
-    out << "ArchivedValue[gridname=" << gridname_ << "]";
+    out << "ArchivedValue["
+            "intgrid=" << *intgrid_
+        << "]";
 }
 
 

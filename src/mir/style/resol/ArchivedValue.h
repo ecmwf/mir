@@ -14,6 +14,8 @@
 #ifndef mir_style_resol_ArchivedValue_h
 #define mir_style_resol_ArchivedValue_h
 
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/style/Intgrid.h"
 #include "mir/style/Resol.h"
 
 
@@ -60,7 +62,7 @@ private:
 
     // -- Members
 
-    std::string gridname_;
+    eckit::ScopedPtr<Intgrid> intgrid_;
 
     // -- Methods
     // None

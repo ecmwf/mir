@@ -33,9 +33,9 @@ static IntgridBuilder< Automatic > __intgrid3("AUTO");
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
     Intgrid(parametrisation) {
-    ASSERT(targetGaussianN > 0);
 
-    gridname_ = "F" + std::to_string(targetGaussianN);
+    // without the target Gaussian N, don't provide an intermediate grid
+    gridname_ = targetGaussianN > 0 ? ("F" + std::to_string(targetGaussianN)) : "";
 }
 
 
@@ -45,7 +45,9 @@ std::string Automatic::gridname() const {
 
 
 void Automatic::print(std::ostream& out) const {
-    out << "Automatic[gridname=" << gridname_ << "]";
+    out << "Automatic["
+        << (gridname_.empty() ? "" : "gridname=" + gridname_)
+        << "]";
 }
 
 
