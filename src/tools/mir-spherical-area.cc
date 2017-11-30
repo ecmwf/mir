@@ -87,6 +87,8 @@ void MIRSphericalArea::execute(const eckit::option::CmdArgs& args) {
     const mir::Latitude
             N = area[0] > area[2] ? area[0] : area[2],
             S = area[0] > area[2] ? area[2] : area[0];
+    ASSERT(-90. <= N.value() && N.value() <= 90.);
+    ASSERT(-90. <= S.value() && S.value() <= 90.);
     ASSERT(N >= S);
 
     const double height = r * (
