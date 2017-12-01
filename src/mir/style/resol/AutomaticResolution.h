@@ -16,6 +16,10 @@
 
 #include "mir/style/Resol.h"
 
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/style/Intgrid.h"
+#include "mir/style/Truncation.h"
+
 
 namespace mir {
 namespace style {
@@ -59,7 +63,9 @@ public:
 private:
 
     // -- Members
-    // None
+
+    eckit::ScopedPtr<Intgrid> intgrid_;
+    eckit::ScopedPtr<Truncation> truncation_;
 
     // -- Methods
 

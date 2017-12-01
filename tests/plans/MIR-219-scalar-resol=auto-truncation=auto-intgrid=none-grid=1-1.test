@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--resol=auto --truncation=auto --intgrid=none --grid=1/1 
+# plan
+ShTruncate[truncation=179]|ShScalarToRegularLL[increments=Increments[west_east=1,south_north=1]]|Save[output=...]

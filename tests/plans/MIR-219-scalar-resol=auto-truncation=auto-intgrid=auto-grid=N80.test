@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--resol=auto --truncation=auto --intgrid=auto --gridname=N80
+# plan
+ShTruncate[truncation=159]|ShScalarToNamedGrid[gridname=F80]|Gridded2NamedGrid[gridname=N80]|Save[output=...]

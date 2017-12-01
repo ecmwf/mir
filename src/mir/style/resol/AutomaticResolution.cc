@@ -12,11 +12,12 @@
 #include "mir/style/resol/AutomaticResolution.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/log/Log.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/style/resol/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -33,76 +34,81 @@ static ResolBuilder< AutomaticResolution > __resol3("AUTO");
 
 AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parametrisation) :
     Resol(parametrisation) {
+    std::string value;
+
+    long N = getTargetGaussianNumber();
+
+    // Setup intermediate grid before truncation
+    // NOTE: truncation can depend on the intermediate grid Gaussian number
+    value = "automatic";
+    parametrisation_.userParametrisation().get("intgrid", value);
+    intgrid_.reset(IntgridFactory::build(value, parametrisation_, N));
+    ASSERT(intgrid_);
+
+    const std::string Gi = intgrid_->gridname();
+    if (!Gi.empty()) {
+        N = long(namedgrids::NamedGrid::lookup(Gi).gaussianNumber());
+        ASSERT(N > 0);
+    }
+
+    // Setup truncation
+    value = "automatic";
+    parametrisation_.userParametrisation().get("truncation", value);
+    truncation_.reset(TruncationFactory::build(value, parametrisation_, N));
+    ASSERT(truncation_);
 }
 
 
 void AutomaticResolution::prepare(action::ActionPlan& plan) const {
 
-    // Setup spectral order mapping
-    std::string order = "linear";
-    parametrisation_.get("spectral-order", order);
-
-    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build(order));
-    ASSERT(spectralOrder);
-
-    // Set truncation
-    const long N = getTargetGaussianNumber();
-    ASSERT(N > 0);
-
-    const long T = spectralOrder->getTruncationFromGaussianNumber(N);
-    ASSERT(T > 0);
-
     long Tinput = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tinput));
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", Tinput));
     ASSERT(Tinput > 0);
 
-    if (Tinput > T ) {
+    // truncate spectral coefficients, if specified and below input field coefficients
+    long T = truncation_->truncation();
+    if (0 < T && T < Tinput) {
         plan.add("transform.sh-truncate", "truncation", T);
     }
 
+    // transform, if specified
+    const std::string gridname = intgrid_->gridname();
+    if (!gridname.empty()) {
 
-    // Set transform (TODO use a factory or better)
-    std::string grid = "regular-gaussian";
-    parametrisation_.get("spectral-intermediate-grid", grid);
+        bool vod2uv = false;
+        parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    std::string gridname;
-    if (grid == "regular-gaussian") {
-        gridname = "F" + std::to_string(N);
-    } else if (grid == "octahedral-gaussian") {
-        gridname = "O" + std::to_string(N);
-    } else if (grid == "classic-gaussian") {
-        gridname = "N" + std::to_string(N);
-    } else {
-        throw eckit::SeriousBug("ECMWFStyle: unknown Gaussian grid '" + grid + "'");
-    }
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
-    } else {
-        plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        if (vod2uv) {
+            plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
+        } else {
+            plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        }
     }
 }
 
 
 bool AutomaticResolution::resultIsSpectral() const {
-    return false;
+    return intgrid_->gridname().empty();
 }
 
 
 void AutomaticResolution::print(std::ostream& out) const {
-    out << "AutomaticResolution[]";
+    out << "AutomaticResolution["
+            "truncation=" << *truncation_
+        << ",intgrid=" << *intgrid_
+        << "]";
 }
 
 
 long AutomaticResolution::getTargetGaussianNumber() const {
+    std::vector<double> grid;
+    std::string gridname;
+
     long N = 0;
 
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
     if (parametrisation_.userParametrisation().get("grid", grid)) {
+
+        // get N from number of points in half-meridian (uses only grid[1] South-North increment)
         ASSERT(grid.size() == 2);
         util::Increments increments(grid[0], grid[1]);
 
@@ -111,26 +117,29 @@ long AutomaticResolution::getTargetGaussianNumber() const {
         increments.globaliseBoundingBox(bbox, false, false);
 
         N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
 
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
+    } else if (parametrisation_.userParametrisation().get("reduced", N) ||
         parametrisation_.userParametrisation().get("regular", N) ||
         parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
 
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+        // get Gaussian N directly
+
+    } else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+
+        // get Gaussian N given a gridname
         N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
+
+    } else if (parametrisation_.userParametrisation().has("griddef") ||
+        parametrisation_.userParametrisation().has("points")) {
+
+        // hardcoded
+        N = 32;
+        eckit::Log::debug<LibMir>() << "AutomaticResolution::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+
     }
 
-    std::ostringstream os;
-    os << "ECMWFStyle: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
+    ASSERT(N >= 0);
+    return N;
 }
 
 

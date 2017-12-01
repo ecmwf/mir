@@ -14,14 +14,7 @@
 
 #include "mir/param/CachedParametrisation.h"
 
-// #include "eckit/exception/Exceptions.h"
-// #include "eckit/parser/JSON.h"
-// #include "eckit/parser/Tokenizer.h"
 #include "eckit/types/Types.h"
-// #include "eckit/utils/Translator.h"
-// #include "eckit/value/Value.h"
-// #include "mir/config/LibMir.h"
-// #include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {

@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -61,10 +60,6 @@ public:
     void add(const std::string& name, const std::string&, const std::string&);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, long);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, const std::string&);
-
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*);
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*, const std::string&, long);
-    void add(const std::string& name, const std::string&, param::DelayedParametrisation*, const std::string&, const std::string&);
 
     void add(Action* action);
     void add(const std::string &name, param::MIRParametrisation* runtime);

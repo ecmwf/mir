@@ -163,7 +163,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
         // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
         for (size_t ni = 0; ni < nb_cols; ++ni) {
             const size_t i = size_t(connectivity(e, ni));
-            P[ni].assign(coords[i].data());
+            P[ni].assign( coords(i,0), coords(i,1), coords(i,2) );
         }
 
         for (size_t ni = 0; ni < nb_cols - 1; ++ni) {

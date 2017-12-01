@@ -1,0 +1,6 @@
+# Mars request
+param=t,level=1000
+# Mir tool options
+--griddef=$tests_plans_dir/weather-params.pts
+# plan (at the moment, intermediate Gaussian N grid is hardcoded)
+ShScalarToOctahedralGG[N=64]|Gridded2GridDef[griddef=.../weather-params.pts]|Save[output=...]

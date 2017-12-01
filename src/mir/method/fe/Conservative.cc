@@ -87,7 +87,10 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                     idx[n] = size_t(connectivity(e, n));
                 }
 
-                atlas::interpolation::element::Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
+                atlas::interpolation::element::Triag3D triag(
+                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
+                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
+                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) });
 
                 const double nodalDistribution = triag.area() * oneThird;
                 for (size_t n = 0; n < 3; ++n) {
@@ -100,7 +103,11 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                     idx[n] = size_t(connectivity(e, n));
                 }
 
-                atlas::interpolation::element::Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
+                atlas::interpolation::element::Quad3D quad(
+                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
+                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
+                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) },
+                      atlas::PointXYZ{ coords(idx[3],0), coords(idx[3],1), coords(idx[3],2) });
 
                 const double nodalDistribution = quad.area() * oneFourth;
                 for (size_t n = 0; n < 4; ++n) {

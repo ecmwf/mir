@@ -39,6 +39,13 @@ bool Gridded2GridDef::sameAs(const Action& other) const {
     return o && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
+
+void Gridded2GridDef::custom(std::ostream& out) const {
+    out << "Gridded2GridDef["
+            "griddef=.../" << eckit::PathName(griddef_).baseName()
+        << "]";
+}
+
 void Gridded2GridDef::print(std::ostream& out) const {
     out << "Gridded2GridDef[griddef=" << griddef_ << "]";
 }

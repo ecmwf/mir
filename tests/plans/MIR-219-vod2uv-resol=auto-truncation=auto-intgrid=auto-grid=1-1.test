@@ -1,0 +1,6 @@
+# mars
+param=vo_d,level=1000
+# mir
+--vod2uv --resol=auto --truncation=auto --intgrid=auto --grid=1/1
+# plan
+ShTruncate[truncation=179]|ShVodTouvNamedGrid[gridname=F90]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359]]|Save[output=...]

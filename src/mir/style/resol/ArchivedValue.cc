@@ -12,11 +12,7 @@
 #include "mir/style/resol/ArchivedValue.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
 
 
 namespace mir {
@@ -31,43 +27,43 @@ static ResolBuilder< ArchivedValue > __resol3("AV");
 
 ArchivedValue::ArchivedValue(const param::MIRParametrisation& parametrisation) :
     Resol(parametrisation) {
+
+    // Setup intermediate grid before truncation
+    // NOTE: truncation can depend on the intermediate grid Gaussian number
+    std::string value = "source";
+    parametrisation_.userParametrisation().get("intgrid", value);
+    intgrid_.reset(IntgridFactory::build(value, parametrisation_, 0));
+    ASSERT(intgrid_);
 }
 
 
 void ArchivedValue::prepare(action::ActionPlan& plan) const {
 
-    // both spectral-order and spectral-intermediate-grid are hardcoded because
-    // they are different from DefaultParametrisation
+    // transform, if specified
+    const std::string gridname = intgrid_->gridname();
+    if (!gridname.empty()) {
 
-    param::RuntimeParametrisation runtime(parametrisation_);
-    runtime.set("spectral-order", "cubic");
+        bool vod2uv = false;
+        parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    eckit::ScopedPtr<param::DelayedParametrisation> intermediateGrid(
-                IntermediateGridFactory::build("octahedral-gaussian", runtime) );
-    ASSERT(intermediateGrid);
-
-    std::string gridname;
-    intermediateGrid->get("gridname", gridname);
-    ASSERT(gridname.length());
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    if (vod2uv) {
-        plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
-    } else {
-        plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        if (vod2uv) {
+            plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
+        } else {
+            plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        }
     }
 }
 
 
 bool ArchivedValue::resultIsSpectral() const {
-    return false;
+    return intgrid_->gridname().empty();
 }
 
 
 void ArchivedValue::print(std::ostream& out) const {
-    out << "ArchivedValue[]";
+    out << "ArchivedValue["
+            "intgrid=" << *intgrid_
+        << "]";
 }
 
 

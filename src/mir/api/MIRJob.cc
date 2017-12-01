@@ -236,12 +236,6 @@ MIRJob& MIRJob::set(const std::string& name, const std::vector<std::string>& val
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, param::DelayedParametrisation *value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
-    return *this;
-}
-
-
 MIRJob& MIRJob::set(const std::string& name, double v1, double v2) {
     std::vector<double> v(2);
     v[0] = v1;
