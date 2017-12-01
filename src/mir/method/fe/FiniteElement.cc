@@ -204,18 +204,18 @@ static triplet_vector_t projectPointTo3DElements(
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param),
-    InputMeshGenerationParams_("input", param),
-    OutputMeshGenerationParams_("output", param) {
+    inputMeshGenerationParams_("input", param),
+    outputMeshGenerationParams_("output", param) {
 
     // input mesh requirements
-    InputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
-    InputMeshGenerationParams_.meshXYZField_ = true;
-    InputMeshGenerationParams_.meshCellCentres_ = true;
+    inputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
+    inputMeshGenerationParams_.meshXYZField_ = true;
+    inputMeshGenerationParams_.meshCellCentres_ = true;
 
     // output mesh requirements
-    OutputMeshGenerationParams_.meshParallelEdgesConnectivity_ = false;
-    OutputMeshGenerationParams_.meshXYZField_ = false;
-    OutputMeshGenerationParams_.meshCellCentres_ = false;
+    outputMeshGenerationParams_.meshParallelEdgesConnectivity_ = false;
+    outputMeshGenerationParams_.meshXYZField_ = false;
+    outputMeshGenerationParams_.meshCellCentres_ = false;
 }
 
 
@@ -225,15 +225,15 @@ FiniteElement::~FiniteElement() {
 
 bool FiniteElement::sameAs(const Method& other) const {
     const FiniteElement* o = dynamic_cast<const FiniteElement*>(&other);
-    // TODO compare InputMeshGenerationParams_ && OutputMeshGenerationParams_
+    // TODO compare inputMeshGenerationParams_ && outputMeshGenerationParams_
     return o && MethodWeighted::sameAs(other);
 }
 
 
 void FiniteElement::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
-    InputMeshGenerationParams_.hash(md5);
-    OutputMeshGenerationParams_.hash(md5);
+    inputMeshGenerationParams_.hash(md5);
+    outputMeshGenerationParams_.hash(md5);
 }
 
 
@@ -246,22 +246,22 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     // let representations set the mesh generator
     if (parametrisation_.has("input-mesh-generator")) {
-        parametrisation_.get("input-mesh-generator", InputMeshGenerationParams_.meshGenerator_);
+        parametrisation_.get("input-mesh-generator", inputMeshGenerationParams_.meshGenerator_);
     } else {
-        InputMeshGenerationParams_.meshGenerator_ = in.atlasMeshGenerator();
+        inputMeshGenerationParams_.meshGenerator_ = in.atlasMeshGenerator();
     }
 
     if (parametrisation_.has("output-mesh-generator")) {
-        parametrisation_.get("output-mesh-generator", OutputMeshGenerationParams_.meshGenerator_);
+        parametrisation_.get("output-mesh-generator", outputMeshGenerationParams_.meshGenerator_);
     } else {
-        OutputMeshGenerationParams_.meshGenerator_ = out.atlasMeshGenerator();
+        outputMeshGenerationParams_.meshGenerator_ = out.atlasMeshGenerator();
     }
 
 
     // get input mesh (cell centres are required for the k-d tree)
-    ASSERT(InputMeshGenerationParams_.meshCellCentres_);
+    ASSERT(inputMeshGenerationParams_.meshCellCentres_);
     util::MIRGrid gin(in.atlasGrid());
-    const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
+    const atlas::Mesh& inMesh = gin.mesh(statistics, inputMeshGenerationParams_);
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();

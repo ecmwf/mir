@@ -26,7 +26,7 @@ namespace fe {
 
 FELinear::FELinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
-    InputMeshGenerationParams_.set("triangulate", true); // No quads allowed
+    inputMeshGenerationParams_.set("triangulate", true); // No quads allowed
 }
 
 
