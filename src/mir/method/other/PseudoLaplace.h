@@ -43,6 +43,8 @@ private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
+    virtual bool sameAs(const Method& other) const;
+
 
 };
 

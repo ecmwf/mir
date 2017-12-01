@@ -36,7 +36,7 @@ Gridded2ReducedGGPLGiven::~Gridded2ReducedGGPLGiven() {
 
 bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
     const Gridded2ReducedGGPLGiven* o = dynamic_cast<const Gridded2ReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_);
+    return o && (pl_ == o->pl_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {

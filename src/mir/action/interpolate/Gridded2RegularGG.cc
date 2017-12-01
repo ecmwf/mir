@@ -37,7 +37,7 @@ Gridded2RegularGG::~Gridded2RegularGG() {
 
 bool Gridded2RegularGG::sameAs(const Action& other) const {
     const Gridded2RegularGG* o = dynamic_cast<const Gridded2RegularGG*>(&other);
-    return o && (N_ == o->N_);
+    return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2RegularGG::print(std::ostream& out) const {

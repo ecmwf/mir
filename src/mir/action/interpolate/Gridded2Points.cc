@@ -39,7 +39,7 @@ Gridded2Points::~Gridded2Points() {
 
 bool Gridded2Points::sameAs(const Action& other) const {
     const Gridded2Points* o = dynamic_cast<const Gridded2Points*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) ;
+    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2Points::print(std::ostream& out) const {

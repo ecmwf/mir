@@ -34,6 +34,7 @@ public:
 private:
 
     virtual const char* name() const;
+    virtual bool sameAs(const Method& other) const;
 
 };
 

@@ -31,6 +31,12 @@ KNearest::~KNearest() {
 }
 
 
+bool KNearest::sameAs(const Method& other) const {
+    const KNearest* o = dynamic_cast<const KNearest*>(&other);
+    return o && KNearestNeighbours::sameAs(other);
+}
+
+
 const char* KNearest::name() const {
     return "k-nearest";
 }

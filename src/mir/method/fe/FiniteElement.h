@@ -41,7 +41,8 @@ protected:
 protected: // methods
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-
+    virtual bool sameAs(const Method& other) const = 0;
+    
 protected: // members
 
     mutable util::MIRGrid::MeshGenParams InputMeshGenerationParams_;

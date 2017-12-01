@@ -34,6 +34,11 @@ FELinear::~FELinear() {
 }
 
 
+bool FELinear::sameAs(const Method& other) const {
+    const FELinear* o = dynamic_cast<const FELinear*>(&other);
+    return o && FiniteElement::sameAs(other);
+}
+
 const char *FELinear::name() const {
     return  "linear";
 }

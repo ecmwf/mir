@@ -38,6 +38,12 @@ FEBilinear::~FEBilinear() {
 }
 
 
+bool FEBilinear::sameAs(const Method& other) const {
+    const FEBilinear* o = dynamic_cast<const FEBilinear*>(&other);
+    return o && FiniteElement::sameAs(other);
+}
+
+
 const char *FEBilinear::name() const {
     return  "bilinear";
 }

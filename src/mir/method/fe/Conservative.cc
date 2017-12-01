@@ -48,6 +48,12 @@ Conservative::Conservative(const param::MIRParametrisation& param) :
 }
 
 
+bool Conservative::sameAs(const Method& other) const {
+    const Conservative* o = dynamic_cast<const Conservative*>(&other);
+    return o && FELinear::sameAs(other);
+}
+
+
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Mesh& mesh) const {
     using namespace atlas::mesh;
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << "\n" "Mesh " << mesh << std::endl;

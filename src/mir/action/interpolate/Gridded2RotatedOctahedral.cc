@@ -44,7 +44,7 @@ Gridded2RotatedOctahedral::~Gridded2RotatedOctahedral() {
 
 bool Gridded2RotatedOctahedral::sameAs(const Action& other) const {
     const Gridded2RotatedOctahedral* o = dynamic_cast<const Gridded2RotatedOctahedral*>(&other);
-    return o && (N_ == o->N_) && (rotation_ == o->rotation_);
+    return o && (N_ == o->N_) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2RotatedOctahedral::print(std::ostream &out) const {

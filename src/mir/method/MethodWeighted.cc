@@ -65,6 +65,12 @@ MethodWeighted::~MethodWeighted() {
 }
 
 
+bool MethodWeighted::sameAs(const Method& other) const {
+    const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
+    return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_);
+}
+
+
 void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& in,
                                   const repres::Representation& out,

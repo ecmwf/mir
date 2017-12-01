@@ -30,6 +30,11 @@ Tessellation::Tessellation(const param::MIRParametrisation &param) :
 Tessellation::~Tessellation() {
 }
 
+bool Tessellation::sameAs(const Method& other) const {
+    const Tessellation* o = dynamic_cast<const Tessellation*>(&other);
+    return o && FiniteElement::sameAs(other);
+}
+
 
 const char *Tessellation::name() const {
     return  "tesselation";

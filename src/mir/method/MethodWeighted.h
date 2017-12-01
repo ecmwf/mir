@@ -57,6 +57,7 @@ public:
 protected:
 
     virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual bool sameAs(const Method& other) const = 0;
 
 private:
 
@@ -81,6 +82,7 @@ private:
     void computeMatrixWeights(context::Context&, const repres::Representation& in, const repres::Representation& out, WeightMatrix&) const;
 
     void createMatrix(context::Context&, const repres::Representation& in, const repres::Representation& out, WeightMatrix&, const lsm::LandSeaMasks&) const;
+
 
 private:
 

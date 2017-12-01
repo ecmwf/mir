@@ -36,7 +36,7 @@ Gridded2NamedGrid::~Gridded2NamedGrid() {
 
 bool Gridded2NamedGrid::sameAs(const Action& other) const {
     const Gridded2NamedGrid* o = dynamic_cast<const Gridded2NamedGrid*>(&other);
-    return o && (gridname_ == o->gridname_);
+    return o && (gridname_ == o->gridname_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2NamedGrid::print(std::ostream& out) const {

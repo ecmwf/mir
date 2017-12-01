@@ -223,6 +223,13 @@ FiniteElement::~FiniteElement() {
 }
 
 
+bool FiniteElement::sameAs(const Method& other) const {
+    const FiniteElement* o = dynamic_cast<const FiniteElement*>(&other);
+    // TODO compare InputMeshGenerationParams_ && OutputMeshGenerationParams_
+    return o && MethodWeighted::sameAs(other);
+}
+
+
 void FiniteElement::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     InputMeshGenerationParams_.hash(md5);

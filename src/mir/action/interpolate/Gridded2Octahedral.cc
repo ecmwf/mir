@@ -36,7 +36,7 @@ Gridded2Octahedral::~Gridded2Octahedral() {
 
 bool Gridded2Octahedral::sameAs(const Action& other) const {
     const Gridded2Octahedral* o = dynamic_cast<const Gridded2Octahedral*>(&other);
-    return o && (N_ == o->N_);
+    return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 

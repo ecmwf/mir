@@ -35,6 +35,11 @@ NearestLSM::~NearestLSM() {
 }
 
 
+bool NearestLSM::sameAs(const Method& other) const {
+    const NearestLSM* o = dynamic_cast<const NearestLSM*>(&other);
+    return o && KNearestNeighbours::sameAs(other);
+}
+
 void NearestLSM::assemble(
         util::MIRStatistics& stats,
         WeightMatrix& W,

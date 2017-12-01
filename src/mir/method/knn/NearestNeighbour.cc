@@ -32,6 +32,12 @@ NearestNeighbour::~NearestNeighbour() {
 }
 
 
+bool NearestNeighbour::sameAs(const Method& other) const {
+    const NearestNeighbour* o = dynamic_cast<const NearestNeighbour*>(&other);
+    return o && KNearestNeighbours::sameAs(other);
+}
+
+
 const char* NearestNeighbour::name() const {
     return "nearest-neighbour";
 }
