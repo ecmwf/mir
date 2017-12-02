@@ -45,8 +45,10 @@ protected: // methods
 
 protected: // members
 
-    mutable util::MIRGrid::MeshGenParams inputMeshGenerationParams_;
-    mutable util::MIRGrid::MeshGenParams outputMeshGenerationParams_;
+    util::MIRGrid::MeshGenParams inputMeshGenerationParams_;
+
+    // FIXME: this does not belong in that class
+    util::MIRGrid::MeshGenParams outputMeshGenerationParams_;
 
 };
 
