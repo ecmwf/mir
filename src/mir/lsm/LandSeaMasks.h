@@ -88,6 +88,9 @@ public:
                                 const repres::Representation &in,
                                 const repres::Representation &out);
 
+    static bool sameLandSeaMasks(const param::MIRParametrisation &parametrisation1,
+                                 const param::MIRParametrisation &parametrisation2);
+
 protected:
 
     // -- Members

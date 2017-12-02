@@ -54,7 +54,7 @@ static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
-    ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustment_));
+    ASSERT(parametrisation_.get("lsm-weight-adjustment", lsmWeightAdjustment_));
 
     pruneEpsilon_ = 0;
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
@@ -67,7 +67,11 @@ MethodWeighted::~MethodWeighted() {
 
 bool MethodWeighted::sameAs(const Method& other) const {
     const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
-    return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_);
+    return o
+           && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
+           && (pruneEpsilon_ == o->pruneEpsilon_)
+           &&  lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_);
+
 }
 
 
@@ -115,10 +119,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     std::string key = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
     eckit::MD5 hash;
     hash << *this
-        << shortName_in
-        << shortName_out
-        << pruneEpsilon_
-        << lsmWeightAdjustment_;
+         << shortName_in
+         << shortName_out
+         << pruneEpsilon_
+         << lsmWeightAdjustment_;
 
     if (masks.active() && masks.cacheable()) {
         hash << masks;

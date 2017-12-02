@@ -140,6 +140,85 @@ Mask &Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const
 }
 
 
+
+static bool same(const param::MIRParametrisation& parametrisation1,
+                 const param::MIRParametrisation& parametrisation2,
+                 const std::string& which) {
+
+    // TODO: a lot more...
+
+    bool lsm1 = false;
+    parametrisation1.get("lsm", lsm1);
+
+    bool lsm2 = false;
+    parametrisation1.get("lsm", lsm2);
+
+    return lsm1 == lsm2;
+//     // lsm = true is a requirement for lsm processing
+//     bool lsm = false;
+//     parametrisation.get("lsm", lsm);
+
+//     // lsm-parameter-list is optional, and filters lsm processing for specific paramIds
+//     std::vector<long> list;
+//     parametrisation.get("lsm-parameter-list", list);
+
+//     if (lsm && list.size()) {
+//         long paramId = 0;
+//         parametrisation.get("paramId", paramId);
+
+//         if (paramId > 0) {
+//             lsm = std::find(list.begin(), list.end(), paramId) != list.end();
+//         }
+//     }
+
+//     if (!lsm) {
+//         return NoneLSM::noMask();
+//     }
+
+
+//     std::string name;
+//     if (!parametrisation.get("lsm-selection-" + which, name)) {
+//         if (!parametrisation.get("lsm-selection", name)) {
+//             throw eckit::SeriousBug("No lsm selection method provided");
+//         }
+//     }
+
+// //    name = name + "-" + which;
+//     const LSMSelection &chooser = LSMSelection::lookup(name);
+//     std::string key = chooser.cacheKey(parametrisation, representation, which);
+
+//     pthread_once(&once, init);
+//     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+//     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
+//     std::map<std::string, Mask *>::iterator j = cache->find(key);
+
+//     if (j != cache->end()) {
+//         return *(*j).second;
+//     }
+
+//     Mask *mask = chooser.create(parametrisation, representation, which);
+
+//     (*cache)[key] = mask;
+
+//     return *(*cache)[key];
+}
+
+
+bool Mask::sameInput(const param::MIRParametrisation&parametrisation1,
+                     const param::MIRParametrisation&parametrisation2) {
+    return same(parametrisation1, parametrisation2, "input");
+
+}
+
+bool Mask::sameOutput(const param::MIRParametrisation&parametrisation1,
+                      const param::MIRParametrisation&parametrisation2) {
+    return same(parametrisation1, parametrisation2, "output");
+
+}
+
+
+
 }  // namespace lsm
 }  // namespace mir
 

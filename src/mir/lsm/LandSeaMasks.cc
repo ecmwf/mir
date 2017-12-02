@@ -54,6 +54,13 @@ LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation &parametrisati
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 
+
+bool LandSeaMasks::sameLandSeaMasks(const param::MIRParametrisation &parametrisation1,
+                                    const param::MIRParametrisation &parametrisation2) {
+    return Mask::sameInput(parametrisation1, parametrisation2)
+           && Mask::sameOutput(parametrisation1, parametrisation2);
+}
+
 const std::vector<bool>& LandSeaMasks::inputMask() const {
     return input_.mask();
 }
