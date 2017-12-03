@@ -49,7 +49,13 @@ bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
 }
 
 void Gridded2RotatedNamedGrid::print(std::ostream &out) const {
-    out << "Gridded2RotatedNamedGrid[gridname=" << gridname_ << ",rotation=" << rotation_ << "]";
+    out << "Gridded2RotatedNamedGrid[gridname="
+        << gridname_
+        << ",rotation="
+        << rotation_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 const repres::Representation *Gridded2RotatedNamedGrid::outputRepresentation() const {

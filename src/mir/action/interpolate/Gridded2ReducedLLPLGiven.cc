@@ -36,7 +36,9 @@ bool Gridded2ReducedLLPLGiven::sameAs(const Action& other) const {
 }
 
 void Gridded2ReducedLLPLGiven::print(std::ostream& out) const {
-    out << "Gridded2ReducedLLPLGiven[]";
+    out << "Gridded2ReducedLLPLGiven[";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

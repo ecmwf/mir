@@ -58,6 +58,14 @@ bool Gridded2LatLon::sameAs(const Action& other) const {
     return o  && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
+void Gridded2LatLon::print(std::ostream& out) const {
+    out << ",increments="
+        << increments_
+        << ",bbox="
+        << bbox_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+}
 
 
 }  // namespace action

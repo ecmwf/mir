@@ -68,6 +68,12 @@ bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
 }
 
 
+void Gridded2GriddedInterpolation::print(std::ostream& out) const {
+    out << "interpolation=" << interpolation_;
+    out << ",method=" << *method_;
+}
+
+
 }  // namespace action
 }  // namespace mir
 

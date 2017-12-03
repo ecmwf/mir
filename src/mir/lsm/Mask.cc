@@ -153,10 +153,10 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     bool lsm2 = false;
     parametrisation1.get("lsm", lsm2);
 
-    return lsm1 == lsm2;
-//     // lsm = true is a requirement for lsm processing
-//     bool lsm = false;
-//     parametrisation.get("lsm", lsm);
+    if(lsm1 != lsm2) {
+        return false;
+    }
+
 
 //     // lsm-parameter-list is optional, and filters lsm processing for specific paramIds
 //     std::vector<long> list;
@@ -169,10 +169,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
 //         if (paramId > 0) {
 //             lsm = std::find(list.begin(), list.end(), paramId) != list.end();
 //         }
-//     }
-
-//     if (!lsm) {
-//         return NoneLSM::noMask();
 //     }
 
 
@@ -202,6 +198,8 @@ static bool same(const param::MIRParametrisation& parametrisation1,
 //     (*cache)[key] = mask;
 
 //     return *(*cache)[key];
+
+    return true;
 }
 
 

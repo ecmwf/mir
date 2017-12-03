@@ -43,10 +43,9 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
 
 
 void Gridded2RegularLL::print(std::ostream& out) const {
-    out << "Gridded2RegularLL["
-            "increments=" << increments_
-        << ",bbox=" << bbox_
-        << "]";
+    out << "Gridded2RegularLL[";
+    Gridded2LatLon::print(out);
+    out << "]";
 }
 
 

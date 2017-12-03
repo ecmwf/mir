@@ -70,13 +70,13 @@ protected:
 
 // -- Methods
 
-    // void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
 
 // -- Overridden methods
     // None
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action& other) const = 0;
 
 // -- Class members
     // None

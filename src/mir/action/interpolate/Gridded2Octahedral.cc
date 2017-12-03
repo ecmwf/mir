@@ -41,7 +41,9 @@ bool Gridded2Octahedral::sameAs(const Action& other) const {
 
 
 void Gridded2Octahedral::print(std::ostream& out) const {
-    out << "Gridded2Octahedral[N=" << N_ << "]";
+    out << "Gridded2Octahedral[N=" << N_ << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out  << "]";
 }
 
 

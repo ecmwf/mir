@@ -47,7 +47,13 @@ bool Gridded2RotatedReduced::sameAs(const Action& other) const {
 }
 
 void Gridded2RotatedReduced::print(std::ostream &out) const {
-    out << "Gridded2RotatedReduced[N=" << N_ << ",rotation=" << rotation_ << "]";
+    out << "Gridded2RotatedReduced[N="
+        << N_
+        << ",rotation="
+        << rotation_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

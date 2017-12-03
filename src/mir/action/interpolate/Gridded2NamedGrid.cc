@@ -40,7 +40,11 @@ bool Gridded2NamedGrid::sameAs(const Action& other) const {
 }
 
 void Gridded2NamedGrid::print(std::ostream& out) const {
-    out << "Gridded2NamedGrid[gridname=" << gridname_ << "]";
+    out << "Gridded2NamedGrid[gridname="
+        << gridname_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

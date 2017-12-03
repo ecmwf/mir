@@ -47,9 +47,12 @@ bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
 
 void Gridded2RotatedReducedGGPLGiven::print(std::ostream& out) const {
     out << "Gridded2RotatedReducedGGPLGiven["
-            "pl=" << pl_.size()
-        << ",rotation=" << rotation_
-        << "]";
+        "pl=" << pl_.size()
+        << ",rotation="
+        << rotation_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

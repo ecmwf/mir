@@ -40,7 +40,9 @@ bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
 }
 
 void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {
-    out << "Gridded2ReducedGGPLGiven[pl=" << pl_.size() << "]";
+    out << "Gridded2ReducedGGPLGiven[pl=" << pl_.size() << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

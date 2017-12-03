@@ -43,7 +43,9 @@ bool Gridded2Points::sameAs(const Action& other) const {
 }
 
 void Gridded2Points::print(std::ostream& out) const {
-    out << "Gridded2Points[points=" << latitudes_.size() << "]";
+    out << "Gridded2Points[points=" << latitudes_.size() << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out  << "]";
 }
 
 

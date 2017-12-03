@@ -41,7 +41,9 @@ bool Gridded2RegularGG::sameAs(const Action& other) const {
 }
 
 void Gridded2RegularGG::print(std::ostream& out) const {
-    out << "Gridded2RegularGG[N=" << N_ << "]";
+    out << "Gridded2RegularGG[N=" << N_ << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 

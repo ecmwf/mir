@@ -48,7 +48,13 @@ bool Gridded2RotatedOctahedral::sameAs(const Action& other) const {
 }
 
 void Gridded2RotatedOctahedral::print(std::ostream &out) const {
-    out << "Gridded2RotatedOctahedral[N=" << N_ << ",rotation=" << rotation_ << "]";
+    out << "Gridded2RotatedOctahedral[N="
+        << N_
+        << ",rotation="
+        << rotation_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
