@@ -226,8 +226,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
-            // eckit::Timer("Loading file into shared memory");
+            eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
+            eckit::Timer("Loading " + path_ + " into shared memory ");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
 
@@ -237,7 +237,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+            eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
         if (unload_) {
