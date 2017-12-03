@@ -59,7 +59,7 @@ bool Gridded2LatLon::sameAs(const Action& other) const {
 }
 
 void Gridded2LatLon::print(std::ostream& out) const {
-    out << ",increments="
+    out << "increments="
         << increments_
         << ",bbox="
         << bbox_
