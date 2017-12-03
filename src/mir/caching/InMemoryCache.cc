@@ -71,7 +71,7 @@ T* InMemoryCache<T>::find(const std::string & key) const {
 }
 
 template<class T>
-void InMemoryCache<T>::footprint(const std::string & key, size_t size) {
+void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool shared) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << eckit::Bytes(size) << std::endl;

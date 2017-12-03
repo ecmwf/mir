@@ -64,6 +64,10 @@ size_t FileLoader::size() const {
     return buffer_.size();
 }
 
+bool FileLoader::inSharedMemory() const {
+    return false;
+}
+
 namespace {
 static InterpolatorLoaderBuilder<FileLoader> loader("file-io");
 }

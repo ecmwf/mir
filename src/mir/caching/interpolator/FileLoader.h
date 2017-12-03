@@ -41,6 +41,7 @@ private:
 
     virtual const void* address() const;
     virtual size_t size() const;
+    virtual bool inSharedMemory() const;
 };
 
 

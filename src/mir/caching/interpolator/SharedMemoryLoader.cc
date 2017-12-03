@@ -321,6 +321,10 @@ size_t SharedMemoryLoader::size() const {
     return size_ -  sizeof(SHMInfo);
 }
 
+bool SharedMemoryLoader::inSharedMemory() const {
+    return true;
+}
+
 namespace {
 
 static InterpolatorLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");

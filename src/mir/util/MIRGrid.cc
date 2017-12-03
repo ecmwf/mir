@@ -262,7 +262,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         throw;
     }
 
-    mesh_cache.footprint(md5, mesh.footprint());
+    mesh_cache.footprint(md5, mesh.footprint(), false);
 
     return mesh;
 }

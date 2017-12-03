@@ -109,7 +109,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     size_(path.size()),
     unload_(false) {
 
-    eckit::Log::debug<LibMir>() << "Loading shared memory interpolator from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading shared memory legendre coefficients from " << path << std::endl;
 
     std::string name;
 
@@ -320,6 +320,10 @@ const void *SharedMemoryLoader::address() const {
 
 size_t SharedMemoryLoader::size() const {
     return size_;
+}
+
+bool SharedMemoryLoader::shared() const {
+    return true;
 }
 
 namespace {

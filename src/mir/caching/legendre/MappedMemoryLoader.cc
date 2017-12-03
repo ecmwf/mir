@@ -71,6 +71,11 @@ size_t MappedMemoryLoader::size() const {
     return size_;
 }
 
+bool MappedMemoryLoader::shared() const {
+    return true;
+}
+
+
 namespace {
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");

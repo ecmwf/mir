@@ -45,13 +45,15 @@ protected:
 
 private:
 
-    
+
     void* address_;
     size_t size_;
     bool unload_;
 
     virtual const void* address() const;
     virtual size_t size() const;
+    virtual bool inSharedMemory() const;
+
 };
 
 
