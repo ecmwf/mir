@@ -19,7 +19,6 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/config/Resource.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/caching/InMemoryCacheStatistics.h"
 
 namespace mir {
 
@@ -49,8 +48,8 @@ public:  // methods
 
     void erase(const std::string& key);
 
-    void startUsing();
-    void stopUsing(InMemoryCacheStatistics&);
+    void startUsing(InMemoryCacheStatistics&);
+    void stopUsing();
 
 private:
 
@@ -68,7 +67,7 @@ private:
 
     size_t users_;
 
-    mutable InMemoryCacheStatistics statistics_;
+    mutable InMemoryCacheStatistics* statistics_;
     mutable eckit::Mutex mutex_;
     mutable std::map<std::string, unsigned long long> keys_;
 
@@ -88,16 +87,13 @@ private:
 template<class T>
 class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
-    InMemoryCacheStatistics& statistics_;
 public:
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics):
-        cache_(cache),
-        statistics_(statistics) {
-        cache_.startUsing();
+        cache_(cache) {
+        cache_.startUsing(statistics);
     }
-
     ~InMemoryCacheUser() {
-        cache_.stopUsing(statistics_);
+        cache_.stopUsing();
     }
 };
 
