@@ -46,6 +46,9 @@ InMemoryCache<T>::~InMemoryCache() {
             delete (*j).second;
         }
     }
+
+    // std::string title = "InMemoryCache(" + name_ + ")";
+    // statistics_.report(title.c_str(), eckit::Log::info());
 }
 
 
