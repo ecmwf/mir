@@ -72,7 +72,7 @@ MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double 
     return *this;
 }
 
-void  RuntimeParametrisation::hide(const std::string& name)  {
+void  RuntimeParametrisation::unset(const std::string& name)  {
     hidden_.insert(name);
 }
 

@@ -67,10 +67,10 @@ static void setParametrisation(const param::MIRParametrisation& parametrisation,
         runtime.set("lsm-named", "1km");
     }
     if (parametrisation.get("lsm-selection-input", select) && select == "none") {
-        runtime.hide("lsm-selection-input");
+        runtime.unset("lsm-selection-input");
     }
     if (parametrisation.get("lsm-selection-output", select) && select == "none") {
-        runtime.hide("lsm-selection-output");
+        runtime.unset("lsm-selection-output");
     }
 }
 
