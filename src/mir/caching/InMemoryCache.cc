@@ -93,7 +93,7 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSh
     footprint(); //  Update stats
 
 
-    unsigned long long result = 0;
+    InMemoryCacheUsage result(0ULL, 0ULL);
     for (auto j = keys_.begin(); j != keys_.end(); ++j) {
         result += (*j).second;
     }
