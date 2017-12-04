@@ -63,7 +63,7 @@ private:
     virtual const std::string& name() const;
 
     std::string name_;
-    InMemoryCacheUsage capacity_;
+    eckit::Resource<InMemoryCacheUsage> capacity_;
     bool cleanupAtExit_;
 
     size_t users_;

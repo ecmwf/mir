@@ -32,7 +32,7 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     cleanupAtExit_(cleanupAtExit),
-    capacity_((unsigned long long)eckit::Resource<unsigned long long>(name + "InMemoryCacheCapacity;"  + variable, capacity)),
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
     users_(0) {
 }
 

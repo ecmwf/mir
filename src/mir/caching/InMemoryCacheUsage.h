@@ -27,6 +27,7 @@ namespace mir {
 class InMemoryCacheUsage {
 public:
 
+    InMemoryCacheUsage(const std::string&);
 
     InMemoryCacheUsage(unsigned long long memory = 0, unsigned long long shared = 0);
     InMemoryCacheUsage(unsigned long long size, bool inSharedMemory);
@@ -38,6 +39,7 @@ public:
     bool operator>(const InMemoryCacheUsage& other) const;
     bool operator !() const;
     operator bool() const;
+    operator std::string() const;
 
     unsigned long long memory() const;
     unsigned long long shared() const;
