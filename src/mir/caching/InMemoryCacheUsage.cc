@@ -112,7 +112,7 @@ bool InMemoryCacheUsage::operator>(const InMemoryCacheUsage& other) const {
 }
 
 bool InMemoryCacheUsage::operator !() const {
-    return !(*this);
+    return !bool(*this);
 }
 
 InMemoryCacheUsage::operator bool() const {
