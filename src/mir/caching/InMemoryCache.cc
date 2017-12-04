@@ -161,7 +161,7 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
     cache_[key] = new Entry(ptr);
 
     keys_[key] =     InMemoryCacheUsage(1ULL, 0ULL);
-;
+    ;
     statistics_.unique_ = keys_.size();
 
 
@@ -173,13 +173,8 @@ template<class T>
 void InMemoryCache<T>::purge() {
 
     auto f = footprint();
-    while (f > capacity_) {
-
-        if (!purge(f - capacity_)) {
-            break;
-        }
-
-        f = footprint();
+    if (f > capacity_) {
+        purge(f - capacity_);
     }
 }
 
@@ -248,12 +243,15 @@ template<class T>
 InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    InMemoryCacheUsage purged(0ULL ,0ULL);
+    InMemoryCacheUsage purged(0ULL , 0ULL);
 
     if (users_) {
         return purged;
     }
-    while(purged < amount) {
+
+    eckit::Log::info() << name_ << " purging " << amount << std::endl;
+
+    while (purged < amount) {
 
         if (cache_.empty()) {
             break;
@@ -271,8 +269,6 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
             }
         }
 
-
-
         if (m < statistics_.youngest_ || statistics_.youngest_ == 0 ) {
             statistics_.youngest_ = m;
         }
@@ -289,6 +285,9 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
         eckit::Log::info() << name_ << " decache " << (*best).first << std::endl;
         delete (*best).second;
         cache_.erase(best);
+
+        eckit::Log::info() << name_ << " purging " << amount << " purged " << purged << std::endl;
+
 
     }
 
