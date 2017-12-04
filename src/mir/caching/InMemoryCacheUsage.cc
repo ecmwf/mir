@@ -90,11 +90,12 @@ InMemoryCacheUsage InMemoryCacheUsage::operator/(size_t n) const {
 }
 
 InMemoryCacheUsage InMemoryCacheUsage::operator-(const InMemoryCacheUsage& other) const {
+    // Warning, this is not a real substraction
 
-    ASSERT(memory_ >= other.memory_);
-    ASSERT(shared_ >= other.shared_);
+    unsigned long long m = memory_ >= other.memory_ ? memory_ - other.memory_ : 0;
+    unsigned long long s = shared_ >= other.shared_ ? shared_ - other.shared_ : 0;
 
-    return  InMemoryCacheUsage(memory_ - other.memory_, shared_ - other.shared_);
+    return  InMemoryCacheUsage(m, s);
 }
 
 
