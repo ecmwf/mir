@@ -56,7 +56,7 @@ size_t FileLoader::size() const {
     return buffer_.size();
 }
 
-bool FileLoader::shared() const {
+bool FileLoader::inSharedMemory() const {
     return false;
 }
 

@@ -31,9 +31,11 @@ inline static double utime() {
 template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
     cleanupAtExit_(cleanupAtExit),
     users_(0) {
+
+            // capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
+
 }
 
 
@@ -71,10 +73,18 @@ T* InMemoryCache<T>::find(const std::string & key) const {
 }
 
 template<class T>
-void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool shared) {
+void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSharedMemory) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << eckit::Bytes(size) << std::endl;
+    eckit::Log::info() << "CACHE-FOOTPRINT-"
+                       << name_
+                       << " "
+                       << key
+                       << " => "
+                       << eckit::Bytes(size)
+                       << " "
+                       << (inSharedMemory ? "SHARED" : "")
+                       << std::endl;
 
 
     auto j = cache_.find(key);
@@ -93,9 +103,9 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool shar
     statistics_.required_ = result;
 
     eckit::Log::info() << "CACHE-FOOTPRINT-" << name_
-                       << " total " << eckit::Bytes(footprint())
-                       << " required " << eckit::Bytes(result)
-                       << " capacity " << eckit::Bytes(capacity_)
+                       << " total " << footprint()
+                       << " required " << result
+                       << " capacity " << capacity_
                        << std::endl;
 
 
@@ -171,8 +181,8 @@ void InMemoryCache<T>::purge() {
 
 
 template<class T>
-unsigned long long InMemoryCache<T>::footprint() const {
-    unsigned long long result = 0;
+InMemoryCacheUsage InMemoryCache<T>::footprint() const {
+    InMemoryCacheUsage result;
     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
         result += (*j).second->footprint_;
 
@@ -219,7 +229,7 @@ void InMemoryCache<T>::erase(const std::string & key) {
 }
 
 template<class T>
-unsigned long long InMemoryCache<T>::capacity() const {
+InMemoryCacheUsage InMemoryCache<T>::capacity() const {
     return capacity_;
 }
 
@@ -231,14 +241,14 @@ const std::string& InMemoryCache<T>::name() const {
 
 
 template<class T>
-size_t InMemoryCache<T>::purge(size_t count) {
+InMemoryCacheUsage InMemoryCache<T>::purge(size_t count) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     if (users_) {
         return 0;
     }
 
-    size_t purged = 0;
+    InMemoryCacheUsage purged = 0;
 
     for (size_t i = 0; i < count; i++) {
 

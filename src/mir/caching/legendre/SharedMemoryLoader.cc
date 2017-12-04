@@ -322,7 +322,7 @@ size_t SharedMemoryLoader::size() const {
     return size_;
 }
 
-bool SharedMemoryLoader::shared() const {
+bool SharedMemoryLoader::inSharedMemory() const {
     return true;
 }
 

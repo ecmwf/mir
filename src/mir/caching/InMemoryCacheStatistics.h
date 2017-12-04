@@ -19,6 +19,7 @@
 #include <iosfwd>
 
 #include "eckit/log/Statistics.h"
+#include "mir/caching/InMemoryCacheUsage.h"
 
 namespace eckit {
 class Stream;
@@ -43,8 +44,8 @@ public:
     size_t insertions_;
     double oldest_;
     double youngest_;
-    unsigned long long capacity_;
-    unsigned long long footprint_;
+    InMemoryCacheUsage capacity_;
+    InMemoryCacheUsage footprint_;
 
     size_t unique_;
     unsigned long long required_;

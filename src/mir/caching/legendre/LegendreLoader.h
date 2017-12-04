@@ -40,7 +40,7 @@ public:
 
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
-    virtual bool shared() const = 0;
+    virtual bool inSharedMemory() const = 0;
 
 protected:
     const param::MIRParametrisation& parametrisation_;

@@ -120,6 +120,8 @@ list(
     caching/InMemoryCacheBase.h
     caching/InMemoryCacheStatistics.cc
     caching/InMemoryCacheStatistics.h
+    caching/InMemoryCacheUsage.cc
+    caching/InMemoryCacheUsage.h
     caching/interpolator/FileLoader.cc
     caching/interpolator/FileLoader.h
     caching/interpolator/InterpolatorLoader.cc

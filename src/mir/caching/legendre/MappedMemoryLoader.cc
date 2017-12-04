@@ -71,7 +71,7 @@ size_t MappedMemoryLoader::size() const {
     return size_;
 }
 
-bool MappedMemoryLoader::shared() const {
+bool MappedMemoryLoader::inSharedMemory() const {
     return true;
 }
 

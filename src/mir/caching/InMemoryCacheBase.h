@@ -19,11 +19,15 @@
 #include <map>
 
 #include "eckit/memory/NonCopyable.h"
+#include "mir/caching/InMemoryCacheUsage.h"
+
 
 namespace mir {
 class InMemoryCacheStatistics;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
 
 class InMemoryCacheBase : public eckit::NonCopyable {
 
@@ -34,7 +38,7 @@ public:  // methods
 
     virtual ~InMemoryCacheBase();
 
-    static unsigned long long totalFootprint();
+    static InMemoryCacheUsage totalFootprint();
 
 protected:
 
@@ -42,9 +46,9 @@ protected:
 
 private:
 
-    virtual unsigned long long footprint() const = 0;
-    virtual unsigned long long capacity() const = 0;
-    virtual size_t purge(size_t count) = 0;
+    virtual InMemoryCacheUsage footprint() const = 0;
+    virtual InMemoryCacheUsage capacity() const = 0;
+    virtual InMemoryCacheUsage purge(size_t count) = 0;
     virtual const std::string& name() const = 0;
 
 };

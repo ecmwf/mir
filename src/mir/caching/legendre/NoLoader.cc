@@ -46,7 +46,7 @@ size_t NoLoader::size() const {
     return 0;
 }
 
-bool NoLoader::shared() const {
+bool NoLoader::inSharedMemory() const {
     return false;
 }
 

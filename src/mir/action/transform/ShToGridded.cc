@@ -136,7 +136,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
     eckit::Timer timer("Loading coefficients");
 
     TransCache &tc = trans_cache[key];
-    trans_cache.footprint(key, path.size(), tc.loader_->shared());
+    trans_cache.footprint(key, path.size(), tc.loader_->inSharedMemory());
 
     struct Trans_t &trans = tc.trans_;
     fillTrans(trans, options, representation);

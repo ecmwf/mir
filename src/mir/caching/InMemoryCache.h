@@ -45,7 +45,7 @@ public:  // methods
 
     iterator end() const { return 0; }
 
-    void footprint(const std::string& key, size_t size, bool shared);
+    void footprint(const std::string& key, size_t size, bool inSharedMemory);
 
     void erase(const std::string& key);
 
@@ -57,13 +57,13 @@ private:
     void purge();
     T& create(const std::string& key);
 
-    virtual unsigned long long footprint() const;
-    virtual unsigned long long capacity() const;
-    virtual size_t purge(size_t count);
+    virtual InMemoryCacheUsage footprint() const;
+    virtual InMemoryCacheUsage capacity() const;
+    virtual InMemoryCacheUsage purge(size_t count);
     virtual const std::string& name() const;
 
     std::string name_;
-    eckit::Resource<unsigned long long> capacity_;
+    InMemoryCacheUsage capacity_;
     bool cleanupAtExit_;
 
     size_t users_;
@@ -73,12 +73,18 @@ private:
     mutable std::map<std::string, unsigned long long> keys_;
 
     struct Entry {
+
         eckit::ScopedPtr<T> ptr_;
         size_t hits_;
         double last_;
         double insert_;
-        size_t footprint_;
-        Entry(T* ptr): ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(1) {}
+        InMemoryCacheUsage footprint_;
+
+        Entry(T* ptr): ptr_(ptr),
+            hits_(1),
+            last_(::time(0)),
+            insert_(::time(0)),
+            footprint_() {}
     };
 
     std::map<std::string, Entry*> cache_;
