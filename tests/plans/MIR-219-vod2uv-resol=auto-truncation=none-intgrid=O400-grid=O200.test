@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --resol=auto --truncation=none --intgrid=O400 --gridname=O200
 # plan
-ShVodTouvNamedGrid[gridname=O400]|Gridded2NamedGrid[gridname=O200]|Save[output=...]
+ShVodTouvNamedGrid[gridname=O400]|Gridded2NamedGrid[gridname=O200,interpolation=linear,method=FELinear[]]|Save[output=...]
