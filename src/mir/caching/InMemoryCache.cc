@@ -249,7 +249,7 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
         return purged;
     }
 
-    eckit::Log::info() << name_ << " purging " << amount << std::endl;
+    eckit::Log::info() << "CACHE " << name_ << " purging " << amount << std::endl;
 
     while (purged < amount) {
 
@@ -282,11 +282,11 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
 
         purged += (*best).second->footprint_;
 
-        eckit::Log::info() << name_ << " decache " << (*best).first << std::endl;
+        eckit::Log::info() << "CACHE " << name_ << " decache " << (*best).first << std::endl;
         delete (*best).second;
         cache_.erase(best);
 
-        eckit::Log::info() << name_ << " purging " << amount << " purged " << purged << std::endl;
+        eckit::Log::info() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
 
 
     }
