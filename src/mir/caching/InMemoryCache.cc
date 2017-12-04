@@ -32,10 +32,8 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     cleanupAtExit_(cleanupAtExit),
+    capacity_((unsigned long long)eckit::Resource<unsigned long long>(name + "InMemoryCacheCapacity;"  + variable, capacity)),
     users_(0) {
-
-            // capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
-
 }
 
 
@@ -76,21 +74,21 @@ template<class T>
 void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSharedMemory) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
+    InMemoryCacheUsage usage(size, inSharedMemory);
+
     eckit::Log::info() << "CACHE-FOOTPRINT-"
                        << name_
                        << " "
                        << key
                        << " => "
-                       << eckit::Bytes(size)
-                       << " "
-                       << (inSharedMemory ? "SHARED" : "")
+                       << usage
                        << std::endl;
 
 
     auto j = cache_.find(key);
     ASSERT(j != cache_.end());
-    (*j).second->footprint_ = size;
-    keys_[key] = size;
+    (*j).second->footprint_ = usage;
+    keys_[key] = usage;
 
     footprint(); //  Update stats
 

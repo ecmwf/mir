@@ -70,7 +70,7 @@ private:
 
     mutable InMemoryCacheStatistics statistics_;
     mutable eckit::Mutex mutex_;
-    mutable std::map<std::string, unsigned long long> keys_;
+    mutable std::map<std::string, InMemoryCacheUsage> keys_;
 
     struct Entry {
 
@@ -84,7 +84,7 @@ private:
             hits_(1),
             last_(::time(0)),
             insert_(::time(0)),
-            footprint_() {}
+            footprint_(1) {}
     };
 
     std::map<std::string, Entry*> cache_;

@@ -29,6 +29,7 @@ public:
 
 
     InMemoryCacheUsage(unsigned long long memory = 0, unsigned long long shared = 0);
+    InMemoryCacheUsage(unsigned long long size, bool inSharedMemory);
     InMemoryCacheUsage(eckit::Stream &) ;
 
     InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;

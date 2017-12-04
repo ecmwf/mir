@@ -29,6 +29,12 @@ InMemoryCacheUsage::InMemoryCacheUsage(unsigned long long memory, unsigned long 
 
 }
 
+InMemoryCacheUsage::InMemoryCacheUsage(unsigned long long size, bool inSharedMemory):
+    memory_(inSharedMemory ? 0 : size),
+    shared_(inSharedMemory ? size : 0) {
+
+}
+
 InMemoryCacheUsage::InMemoryCacheUsage(eckit::Stream &s)  {
     s >> memory_;
     s >> shared_;
