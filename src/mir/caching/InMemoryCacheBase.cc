@@ -68,19 +68,21 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
         more = false;
 
-         InMemoryCacheUsage totalFootprint = 0;
+        InMemoryCacheUsage totalFootprint = 0;
 
         for (auto j = m->begin(); j != m->end(); ++j) {
             totalFootprint += (*j)->footprint();
         }
 
+        eckit::Log::info() << "CACHE-checkTotalFootprint size "
+                           << totalFootprint
+                           << ", max is "
+                           <<  maximumCapacity
+                           <<  std::endl;
+
         if (totalFootprint > maximumCapacity) {
 
-            eckit::Log::info() << "CACHE-checkTotalFootprint size="
-                               << totalFootprint
-                               << ", max is "
-                               <<  maximumCapacity
-                               <<  std::endl;
+
 
             for (auto j = m->begin(); j != m->end(); ++j) {
                 InMemoryCacheUsage purged = (*j)->purge(1);
