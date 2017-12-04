@@ -27,14 +27,19 @@ namespace mir {
 class InMemoryCacheUsage {
 public:
 
-    InMemoryCacheUsage(const std::string&);
+    explicit InMemoryCacheUsage();
+    explicit InMemoryCacheUsage(const std::string&);
 
-    InMemoryCacheUsage(unsigned long long memory = 0, unsigned long long shared = 0);
-    InMemoryCacheUsage(unsigned long long size, bool inSharedMemory);
-    InMemoryCacheUsage(eckit::Stream &) ;
+    explicit InMemoryCacheUsage(unsigned long long memory, unsigned long long shared);
+    explicit InMemoryCacheUsage(unsigned long long size, bool inSharedMemory);
+    explicit InMemoryCacheUsage(eckit::Stream &) ;
 
     InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;
     InMemoryCacheUsage &operator/=(size_t) ;
+
+    InMemoryCacheUsage operator-(const InMemoryCacheUsage& other) const;
+    InMemoryCacheUsage operator/(size_t other) const;
+
 
     bool operator>(const InMemoryCacheUsage& other) const;
     bool operator !() const;

@@ -32,7 +32,7 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     cleanupAtExit_(cleanupAtExit),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, capacity),
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(capacity, 0ULL)) ,
     users_(0) {
 }
 
@@ -150,7 +150,7 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
         NOTIMP; // Needs to think more about it
         delete (*k).second;
         (*k).second = new Entry(ptr);
-        keys_[key] = 1;
+        keys_[key] = InMemoryCacheUsage(1ULL, 0ULL);
         return *ptr;
     }
 
@@ -160,7 +160,8 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
 
     cache_[key] = new Entry(ptr);
 
-    keys_[key] = 1;
+    keys_[key] =     InMemoryCacheUsage(1ULL, 0ULL);
+;
     statistics_.unique_ = keys_.size();
 
 
@@ -170,10 +171,15 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
 
 template<class T>
 void InMemoryCache<T>::purge() {
-    while (footprint() > capacity_) {
-        if (!purge(1)) {
+
+    auto f = footprint();
+    while (f > capacity_) {
+
+        if (!purge(f - capacity_)) {
             break;
         }
+
+        f = footprint();
     }
 }
 
@@ -239,16 +245,15 @@ const std::string& InMemoryCache<T>::name() const {
 
 
 template<class T>
-InMemoryCacheUsage InMemoryCache<T>::purge(size_t count) {
+InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
+    InMemoryCacheUsage purged(0ULL ,0ULL);
+
     if (users_) {
-        return 0;
+        return purged;
     }
-
-    InMemoryCacheUsage purged = 0;
-
-    for (size_t i = 0; i < count; i++) {
+    while(purged < amount) {
 
         if (cache_.empty()) {
             break;

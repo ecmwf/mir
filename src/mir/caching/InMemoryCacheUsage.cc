@@ -24,6 +24,11 @@ namespace mir {
 //----------------------------------------------------------------------------------------------------------------------
 
 
+InMemoryCacheUsage::InMemoryCacheUsage():
+    memory_(0),
+    shared_(0) {
+
+}
 
 InMemoryCacheUsage::InMemoryCacheUsage(unsigned long long memory, unsigned long long shared):
     memory_(memory),
@@ -80,16 +85,30 @@ InMemoryCacheUsage &InMemoryCacheUsage::operator/=(size_t n) {
     return *this;
 }
 
+InMemoryCacheUsage InMemoryCacheUsage::operator/(size_t n) const {
+    return  InMemoryCacheUsage(memory_ / n, shared_ / n);
+}
+
+InMemoryCacheUsage InMemoryCacheUsage::operator-(const InMemoryCacheUsage& other) const {
+
+    ASSERT(memory_ >= other.memory_);
+    ASSERT(shared_ >= other.shared_);
+
+    return  InMemoryCacheUsage(memory_ - other.memory_, shared_ - other.shared_);
+}
+
+
 bool InMemoryCacheUsage::operator>(const InMemoryCacheUsage& other) const {
+    // Warning, this is not a complete order, don't use to sort
     if (memory_ > other.memory_) {
         return true;
     }
 
-    if (memory_ < other.memory_) {
-        return false;
+    if (shared_ > other.shared_) {
+        return true;
     }
 
-    return shared_ > other.shared_;
+    return false;
 }
 
 bool InMemoryCacheUsage::operator !() const {

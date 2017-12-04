@@ -59,7 +59,7 @@ private:
 
     virtual InMemoryCacheUsage footprint() const;
     virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(size_t count);
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&);
     virtual const std::string& name() const;
 
     std::string name_;
@@ -84,7 +84,7 @@ private:
             hits_(1),
             last_(::time(0)),
             insert_(::time(0)),
-            footprint_(1) {}
+            footprint_(1ULL, 0ULL) {}
     };
 
     std::map<std::string, Entry*> cache_;
