@@ -60,6 +60,11 @@ bool FileLoader::inSharedMemory() const {
     return false;
 }
 
+bool FileLoader::shared() {
+    return false;
+}
+
+
 namespace {
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }

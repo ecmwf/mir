@@ -32,6 +32,8 @@ public:
 
     ~NoLoader(); // Change to virtual if base class
 
+    static bool shared();
+
 protected:
     void print(std::ostream&) const; // Change to virtual if base class
 

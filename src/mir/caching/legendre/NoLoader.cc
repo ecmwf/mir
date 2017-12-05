@@ -50,6 +50,11 @@ bool NoLoader::inSharedMemory() const {
     return false;
 }
 
+bool NoLoader::shared() {
+    return false;
+}
+
+
 namespace {
 static LegendreLoaderBuilder<NoLoader> loader("none");
 }

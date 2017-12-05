@@ -104,7 +104,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
     // Make sure we have enough space in cache to add new coefficients
   // otherwise we may get killed by OOM thread
-  trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory());
+  trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
 
 
   eckit::PathName path;
@@ -205,6 +205,9 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
      << ":" << "flt" << options.flt
      << ":" << representation.uniqueName();
   std::string key(os.str());
+
+  // TODO: take target grid into consideration
+  size_t estimate = options.truncation * options.truncation * options.truncation / 2 * sizeof(double);
 
   try {
     transform(field, representation, ctx, key, options, estimate);

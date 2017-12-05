@@ -32,6 +32,7 @@ public:
 
     static void unloadSharedMemory(const eckit::PathName& path);
     static void loadSharedMemory(const eckit::PathName& path);
+    static bool shared();
 
 protected:
     void print(std::ostream&) const; // Change to virtual if base class

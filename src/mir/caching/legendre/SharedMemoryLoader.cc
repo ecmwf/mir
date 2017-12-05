@@ -63,7 +63,7 @@ struct info {
 
 class AutoFDClose {
     int fd_;
-  public:
+public:
     AutoFDClose(int fd): fd_(fd) {}
     ~AutoFDClose() {
         ::close(fd_);
@@ -327,6 +327,12 @@ size_t SharedMemoryLoader::size() const {
 bool SharedMemoryLoader::inSharedMemory() const {
     return true;
 }
+
+
+bool SharedMemoryLoader::shared() {
+    return true;
+}
+
 
 namespace {
 

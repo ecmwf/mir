@@ -89,6 +89,25 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
 }
 
 
+bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& params) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    std::string name = "mapped-memory";
+    params.get("legendre-loader", name);
+
+    eckit::Log::debug<LibMir>() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
+
+    auto j = m->find(name);
+    if (j == m->end()) {
+        list(eckit::Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
+    }
+
+    return (*j).second->shared();
+}
+
+
 void LegendreLoaderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);

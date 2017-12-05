@@ -78,6 +78,9 @@ bool MappedMemoryLoader::inSharedMemory() const {
     return true;
 }
 
+bool MappedMemoryLoader::shared()  {
+    return true;
+}
 
 namespace {
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
