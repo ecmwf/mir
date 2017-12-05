@@ -121,6 +121,12 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
                        << " "
                        << " => "
                        << usage
+                       << " footprint: "
+                       << footprint()
+                       << " capacity: "
+                       << capacity()
+                       << " footprint() + usage: " <<  footprint() + usage
+                       << " (footprint() + usage) - capacity(): " << (footprint() + usage) - capacity()
                        << std::endl;
 
 
