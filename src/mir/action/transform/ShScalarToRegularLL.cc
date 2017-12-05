@@ -65,6 +65,9 @@ const repres::Representation *ShScalarToRegularLL::outputRepresentation() const 
     return new repres::latlon::RegularLL(bbox, increments_);
 }
 
+const char* ShScalarToRegularLL::name() const {
+    return "ShScalarToRegularLL";
+}
 
 namespace {
 static ActionBuilder< ShScalarToRegularLL > __action("transform.sh-scalar-to-regular-ll");

@@ -61,6 +61,10 @@ const repres::Representation *Gridded2RotatedReduced::outputRepresentation() con
     return new repres::gauss::reduced::RotatedClassic(N_, util::BoundingBox(), rotation_);
 }
 
+const char* Gridded2RotatedReduced::name() const {
+    return "Gridded2RotatedReduced";
+}
+
 
 namespace {
 static ActionBuilder< Gridded2RotatedReduced > grid2grid("interpolate.grid2rotated-reduced-gg");

@@ -60,6 +60,10 @@ const repres::Representation* Gridded2RotatedReducedGGPLGiven::outputRepresentat
     return new repres::gauss::reduced::RotatedFromPL(pl_, rotation_);
 }
 
+const char* Gridded2RotatedReducedGGPLGiven::name() const {
+    return "Gridded2RotatedReducedGGPLGiven";
+}
+
 
 namespace {
 static ActionBuilder< Gridded2RotatedReducedGGPLGiven > grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");

@@ -51,6 +51,10 @@ const repres::Representation* ShScalarToRegularGG::outputRepresentation() const 
     return new repres::gauss::regular::RegularGG(N_);
 }
 
+const char* ShScalarToRegularGG::name() const {
+    return "ShScalarToRegularGG";
+}
+
 
 namespace {
 static ActionBuilder< ShScalarToRegularGG > __action("transform.sh-scalar-to-regular-gg");

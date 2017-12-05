@@ -54,10 +54,14 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
     Gridded2LatLon::print(out);
     out << "]";
 }
+
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
     return new repres::latlon::RotatedLL(bbox_, increments_, rotation_);
 }
 
+const char* Gridded2RotatedLL::name() const {
+    return "Gridded2RotatedLL";
+}
 
 namespace {
 static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2rotated-regular-ll");

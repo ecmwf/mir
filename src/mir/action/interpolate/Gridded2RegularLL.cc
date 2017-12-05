@@ -53,6 +53,10 @@ const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(bbox_, increments_);
 }
 
+const char* Gridded2RegularLL::name() const {
+    return "Gridded2RegularLL";
+}
+
 
 namespace {
 static ActionBuilder< Gridded2RegularLL > grid2grid("interpolate.grid2regular-ll");

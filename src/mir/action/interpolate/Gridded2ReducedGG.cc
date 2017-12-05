@@ -49,6 +49,10 @@ const repres::Representation* Gridded2ReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
+const char* Gridded2ReducedGG::name() const {
+    return "Gridded2ReducedGG";
+}
+
 
 namespace {
 static ActionBuilder< Gridded2ReducedGG > grid2grid("interpolate.grid2reduced-gg");

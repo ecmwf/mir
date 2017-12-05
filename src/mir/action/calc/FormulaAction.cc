@@ -90,11 +90,12 @@ void FormulaAction::execute(context::Context & ctx) const {
 
 }
 
-namespace {
+const char* FormulaAction::name() const {
+    return "FormulaAction";
+}
 
 static ActionBuilder< FormulaAction > formula("calc.formula");
 
-}
 
 
 

@@ -55,6 +55,10 @@ void SelectField::execute(context::Context & ctx) const {
     field.select(which_);
 }
 
+const char* SelectField::name() const {
+    return "SelectField";
+}
+
 
 namespace {
 static ActionBuilder< SelectField > action("select.field");

@@ -58,6 +58,9 @@ const repres::Representation* Gridded2GridDef::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(griddef_);
 }
 
+const char* Gridded2GridDef::name() const {
+    return "Gridded2GridDef";
+}
 
 namespace {
 static ActionBuilder< Gridded2GridDef > grid2grid("interpolate.grid2griddef");

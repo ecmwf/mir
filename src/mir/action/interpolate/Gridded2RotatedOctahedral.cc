@@ -63,6 +63,11 @@ const repres::Representation *Gridded2RotatedOctahedral::outputRepresentation() 
 }
 
 
+const char* Gridded2RotatedOctahedral::name() const {
+    return "Gridded2RotatedOctahedral";
+}
+
+
 namespace {
 static ActionBuilder< Gridded2RotatedOctahedral > grid2grid("interpolate.grid2rotated-octahedral-gg");
 }

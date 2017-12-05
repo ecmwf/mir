@@ -110,6 +110,26 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSh
 }
 
 
+template<class T>
+void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    InMemoryCacheUsage usage(size, inSharedMemory);
+
+    eckit::Log::info() << "CACHE-FRESERVE-"
+                       << name_
+                       << " "
+                       << " => "
+                       << usage
+                       << std::endl;
+
+
+    if (footprint() + usage > capacity()) {
+        purge((footprint() + usage) - capacity());
+    }
+
+}
+
 
 template<class T>
 T& InMemoryCache<T>::operator[](const std::string & key) {

@@ -98,6 +98,15 @@ InMemoryCacheUsage InMemoryCacheUsage::operator-(const InMemoryCacheUsage& other
     return  InMemoryCacheUsage(m, s);
 }
 
+InMemoryCacheUsage InMemoryCacheUsage::operator+(const InMemoryCacheUsage& other) const {
+
+    unsigned long long m = memory_ + other.memory_;
+    unsigned long long s = shared_ + other.shared_;
+
+    return  InMemoryCacheUsage(m, s);
+}
+
+
 
 bool InMemoryCacheUsage::operator>(const InMemoryCacheUsage& other) const {
     // Warning, this is not a complete order, don't use to sort

@@ -47,6 +47,9 @@ void Copy::execute(context::Context & ctx) const {
     output_.copy(parametrisation_, ctx);
 }
 
+const char* Copy::name() const {
+    return "Copy";
+}
 
 }  // namespace action
 }  // namespace mir

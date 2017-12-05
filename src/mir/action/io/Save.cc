@@ -58,6 +58,10 @@ void Save::execute(context::Context & ctx) const {
     output_.save(parametrisation_, ctx);
 }
 
+const char* Save::name() const {
+    return "Save";
+}
+
 }  // namespace action
 }  // namespace mir
 

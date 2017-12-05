@@ -91,6 +91,7 @@ class Gridded2RotatedNamedGrid : public Gridded2GriddedInterpolation {
 // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
+    virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;

@@ -122,6 +122,10 @@ void ReferencePattern::execute(context::Context & ctx) const {
     }
 }
 
+const char* ReferencePattern::name() const {
+    return "ReferencePattern";
+}
+
 
 namespace {
 static ActionBuilder< ReferencePattern > action("misc.pattern");

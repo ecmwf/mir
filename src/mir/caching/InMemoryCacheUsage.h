@@ -37,6 +37,7 @@ public:
     InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;
     InMemoryCacheUsage &operator/=(size_t) ;
 
+    InMemoryCacheUsage operator+(const InMemoryCacheUsage& other) const;
     InMemoryCacheUsage operator-(const InMemoryCacheUsage& other) const;
     InMemoryCacheUsage operator/(size_t other) const;
 

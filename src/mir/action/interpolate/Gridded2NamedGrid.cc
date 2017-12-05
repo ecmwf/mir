@@ -53,6 +53,11 @@ const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
     return ng.representation();
 }
 
+const char* Gridded2NamedGrid::name() const {
+    return "Gridded2NamedGrid";
+}
+
+
 
 namespace {
 static ActionBuilder< Gridded2NamedGrid > grid2grid("interpolate.grid2namedgrid");

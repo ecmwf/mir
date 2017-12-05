@@ -47,6 +47,11 @@ const repres::Representation* Gridded2ReducedLL::outputRepresentation() const {
     NOTIMP;
 }
 
+const char* Gridded2ReducedLL::name() const {
+    return "Gridded2ReducedLL";
+}
+
+
 
 namespace {
 static ActionBuilder< Gridded2ReducedLL > grid2grid("interpolate.grid2reduced-ll");

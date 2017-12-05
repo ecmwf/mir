@@ -63,6 +63,10 @@ const repres::Representation *Gridded2RotatedNamedGrid::outputRepresentation() c
     return ng.representation(rotation_);
 }
 
+const char* Gridded2RotatedNamedGrid::name() const {
+    return "Gridded2RotatedNamedGrid";
+}
+
 
 namespace {
 static ActionBuilder< Gridded2RotatedNamedGrid > grid2grid("interpolate.grid2rotated-namedgrid");

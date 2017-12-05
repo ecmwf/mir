@@ -53,6 +53,10 @@ const repres::Representation* ShScalarToOctahedralGG::outputRepresentation() con
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
+const char* ShScalarToOctahedralGG::name() const {
+    return "ShScalarToOctahedralGG";
+}
+
 
 namespace {
 static ActionBuilder< ShScalarToOctahedralGG > __action("transform.sh-scalar-to-octahedral-gg");

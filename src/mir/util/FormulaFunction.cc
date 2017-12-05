@@ -84,5 +84,10 @@ bool FormulaFunction::sameAs(const mir::action::Action& other) const {
     return false;
 }
 
+
+const char* FormulaFunction::name() const {
+    return "FormulaFunction";
+}
+
 } // namespace util
 } // namespace mir

@@ -76,6 +76,9 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     }
 }
 
+const char* AdjustWindsDirections::name() const {
+    return "AdjustWindsDirections";
+}
 
 namespace {
 static ActionBuilder< AdjustWindsDirections > filter("filter.adjust-winds-directions");

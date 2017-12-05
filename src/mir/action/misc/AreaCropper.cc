@@ -288,6 +288,11 @@ void AreaCropper::execute(context::Context & ctx) const {
 }
 
 
+const char* AreaCropper::name() const {
+    return "AreaCropper";
+}
+
+
 namespace {
 static ActionBuilder< AreaCropper > subAreaCropper("crop.area");
 }

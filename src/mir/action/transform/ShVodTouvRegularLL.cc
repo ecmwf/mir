@@ -49,6 +49,9 @@ void ShVodTouvRegularLL::print(std::ostream &out) const {
     out << "ShVodTouvRegularLL[increments=" << increments_ << "]";
 }
 
+const char* ShVodTouvRegularLL::name() const {
+    return "ShVodTouvRegularLL";
+}
 
 const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
 

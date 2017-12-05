@@ -124,6 +124,9 @@ void BitmapFilter::execute(context::Context & ctx) const {
     }
 }
 
+const char* BitmapFilter::name() const {
+    return "BitmapFilter";
+}
 
 namespace {
 static ActionBuilder< BitmapFilter > bitmapFilter("filter.bitmap");

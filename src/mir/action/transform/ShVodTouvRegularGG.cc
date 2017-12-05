@@ -49,6 +49,9 @@ const repres::Representation* ShVodTouvRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
+const char* ShVodTouvRegularGG::name() const {
+    return "ShVodTouvRegularGG";
+}
 
 namespace {
 static ActionBuilder< ShVodTouvRegularGG > __action("transform.sh-vod-to-uv-regular-gg");

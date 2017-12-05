@@ -76,6 +76,9 @@ void ShTruncate::execute(context::Context& ctx) const {
     }
 }
 
+const char* ShTruncate::name() const {
+    return "ShTruncate";
+}
 
 namespace {
 static ActionBuilder< ShTruncate > __action("transform.sh-truncate");

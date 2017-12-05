@@ -52,6 +52,11 @@ const repres::Representation* ShScalarToReducedGGPLGiven::outputRepresentation()
 }
 
 
+const char* ShScalarToReducedGGPLGiven::name() const {
+    return "ShScalarToReducedGGPLGiven";
+}
+
+
 namespace {
 static ActionBuilder< ShScalarToReducedGGPLGiven > __action("transform.sh-scalar-to-reduced-gg-pl-given");
 }

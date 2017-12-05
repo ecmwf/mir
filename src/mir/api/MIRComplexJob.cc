@@ -17,6 +17,7 @@
 
 #include "eckit/log/Timer.h"
 #include "eckit/config/Resource.h"
+#include "eckit/log/ResourceUsage.h"
 
 #include "mir/api/MIRComplexJob.h"
 #include "mir/action/plan/Job.h"
@@ -68,6 +69,9 @@ void MIRComplexJob::clear() {
 // }
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
+
+    eckit::TraceResourceUsage<LibMir> usage("MIRComplexJob::execute");
+
 
     if (jobs_.empty()) {
         return;

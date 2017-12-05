@@ -51,6 +51,9 @@ const repres::Representation* ShVodTouvNamedGrid::outputRepresentation() const {
     return ng.representation();
 }
 
+const char* ShVodTouvNamedGrid::name() const {
+    return "ShVodTouvNamedGrid";
+}
 
 namespace {
 static ActionBuilder< ShVodTouvNamedGrid > __action("transform.sh-vod-to-uv-namedgrid");

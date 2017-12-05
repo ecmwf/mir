@@ -57,6 +57,9 @@ const repres::Representation *Gridded2PolarStereographic::outputRepresentation()
     NOTIMP;
 }
 
+const char* Gridded2PolarStereographic::name() const {
+    return "Gridded2PolarStereographic";
+}
 
 namespace {
 static ActionBuilder< Gridded2PolarStereographic > grid2grid("interpolate.grid2polar-stereographic");

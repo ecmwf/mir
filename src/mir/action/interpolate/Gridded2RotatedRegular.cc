@@ -62,6 +62,9 @@ const repres::Representation *Gridded2RotatedRegular::outputRepresentation() con
     return new repres::gauss::regular::RotatedGG(N_, util::BoundingBox(), rotation_);
 }
 
+const char* Gridded2RotatedRegular::name() const {
+    return "Gridded2RotatedRegular";
+}
 
 namespace {
 static ActionBuilder< Gridded2RotatedRegular > grid2grid("interpolate.grid2rotated-regular-gg");

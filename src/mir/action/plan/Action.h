@@ -63,6 +63,7 @@ class Action : public eckit::NonCopyable {
     virtual void execute(context::Context & ctx) const = 0;
     virtual bool sameAs(const Action& other) const = 0;
     virtual void custom(std::ostream &) const; // Change to virtual if base class
+    virtual const char* name() const = 0;
 
     // -- Overridden methods
     // None

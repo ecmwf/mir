@@ -69,6 +69,10 @@ bool FormulaIdent::sameAs(const mir::action::Action& other) const {
     return o && (name_ == o->name_);
 }
 
+const char* FormulaIdent::name() const {
+    return "FormulaIdent";
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util

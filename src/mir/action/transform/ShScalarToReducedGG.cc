@@ -53,6 +53,9 @@ const repres::Representation* ShScalarToReducedGG::outputRepresentation() const 
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
+const char* ShScalarToReducedGG::name() const {
+    return "ShScalarToReducedGG";
+}
 
 namespace {
 static ActionBuilder< ShScalarToReducedGG > __action("transform.sh-scalar-to-reduced-gg");

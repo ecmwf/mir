@@ -80,6 +80,10 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     }
 }
 
+const char* AdjustWindsScaleCosLatitude::name() const {
+    return "AdjustWindsScaleCosLatitude";
+}
+
 
 namespace {
 static ActionBuilder< AdjustWindsScaleCosLatitude > filter("filter.adjust-winds-scale-cos-latitude");

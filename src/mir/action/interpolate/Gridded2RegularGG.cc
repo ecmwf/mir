@@ -51,6 +51,9 @@ const repres::Representation* Gridded2RegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
+const char* Gridded2RegularGG::name() const {
+    return "Gridded2RegularGG";
+}
 
 namespace {
 static ActionBuilder< Gridded2RegularGG > grid2grid("interpolate.grid2regular-gg");

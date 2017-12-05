@@ -94,6 +94,8 @@ private:
 
     virtual void execute(context::Context&) const;
 
+    virtual const char* name() const;
+
     // -- Class members
     // None
 

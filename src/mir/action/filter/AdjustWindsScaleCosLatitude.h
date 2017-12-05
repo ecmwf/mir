@@ -87,6 +87,7 @@ private:
 
     virtual void execute(context::Context&) const;
     virtual bool sameAs(const Action&) const;
+    virtual const char* name() const;
 
     // -- Class members
     // None
