@@ -93,11 +93,18 @@ foreach(_t ${_test_reqs})
   list(GET _t -1 _out)
   string(REGEX REPLACE "[.]grib$" "" _label ${_out})
 
+  set(_condition "")
+  list(GET _t -2 _in)
+  if( _in MATCHES ".nc$" )
+      set(_condition "HAVE_TESSELATION")
+  endif()
+
   ecbuild_add_test(
       TARGET       ${_label}
       COMMAND      $<TARGET_FILE:mir-tool>
       ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
+      CONDITION    ${_condition}
       ENVIRONMENT
         "MIR_DEBUG=1"
         "MIR_HOME=${CMAKE_BINARY_DIR}"
