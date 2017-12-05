@@ -24,6 +24,9 @@
 #include "eckit/os/Stat.h"
 
 #include "eckit/log/Bytes.h"
+#include "eckit/memory/MMap.h"
+
+using eckit::MMap;
 
 namespace mir {
 namespace caching {
@@ -47,7 +50,7 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 
     size_ = s.st_size;
 
-    address_ = ::mmap(0, size_, PROT_READ, MAP_SHARED, fd_, 0);
+    address_ = MMap::mmap(0, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
         eckit::Log::error() << "open(" << path << ',' << size_ << ')' << eckit::Log::syserr << std::endl;
         throw eckit::FailedSystemCall("mmap");
@@ -55,7 +58,7 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 }
 
 MappedMemoryLoader::~MappedMemoryLoader() {
-    if (address_) SYSCALL(::munmap(address_, size_));
+    if (address_) SYSCALL(MMap::munmap(address_, size_));
     if (fd_ >= 0) SYSCALL(::close(fd_));
 }
 
