@@ -92,13 +92,19 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
                                  const repres::Representation& representation,
                                  context::Context& ctx,
                                  const std::string& key,
-                                 trans_options_t& options) {
+                                 trans_options_t& options,
+                                 size_t estimate) {
 
 
   InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
   if (j != trans_cache.end()) {
     return *j;
   }
+
+
+    // Make sure we have enough space in cache to add new coefficients
+  // otherwise we may get killed by OOM thread
+  trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory());
 
 
   eckit::PathName path;
@@ -129,6 +135,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
     int dummy = 0;
     path = cache.getOrCreate(key, creator, dummy);
   }
+
 
 
   eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
@@ -165,7 +172,8 @@ void ShToGridded::transform(
   const repres::Representation& representation,
   context::Context& ctx,
   const std::string& key,
-  trans_options_t& options ) const {
+  trans_options_t& options ,
+  size_t estimate) const {
 
 
   eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
@@ -175,7 +183,8 @@ void ShToGridded::transform(
                                  representation,
                                  ctx,
                                  key,
-                                 options);
+                                 options,
+                                 estimate);
 
   sh2grid(tc.trans_, field);
 
@@ -198,7 +207,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
   std::string key(os.str());
 
   try {
-    transform(field, representation, ctx, key, options);
+    transform(field, representation, ctx, key, options, estimate);
   } catch (std::exception& e) {
     eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
     trans_cache.erase(key);

@@ -33,6 +33,8 @@ public:
 
     ~FileLoader();
 
+    static bool shared();
+
 protected:
     void print(std::ostream&) const;
 
