@@ -55,7 +55,7 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
     eckit::Log::info() << (*f) << std::endl;
 
     mir::context::Context ctx;
-    f->execute(ctx);
+    f->perform(ctx);
 
     eckit::Log::info() << ctx << std::endl;
 }

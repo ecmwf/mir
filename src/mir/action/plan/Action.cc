@@ -14,13 +14,14 @@
 
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/action/plan/Action.h"
-
+#include "mir/config/LibMir.h"
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace action {
@@ -37,6 +38,14 @@ Action::~Action() {
 void Action::custom(std::ostream & out) const {
     out << *this;
 }
+
+
+void Action::perform(context::Context & ctx) const {
+    eckit::TraceResourceUsage<LibMir> usage(name());
+    execute(ctx);
+}
+
+
 
 //=========================================================================
 

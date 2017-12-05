@@ -64,7 +64,7 @@ void FormulaFunction::execute(mir::context::Context& ctx) const {
 
     size_t i = 0;
     for (auto j = args_.begin(); j != args_.end(); ++j, ++i) {
-        (*j)->execute(ctx.push());
+        (*j)->perform(ctx.push());
     }
 
     function_.execute(ctx);

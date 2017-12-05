@@ -104,7 +104,7 @@ void ActionPlan::execute(context::Context & ctx) const {
                                     << "\n" << *p
                                     << "\n" << sep
                                     << std::endl;
-        p->execute(ctx);
+        p->perform(ctx);
         eckit::Log::debug<LibMir>() << "Result:"
                                     << "\n" << sep
                                     << "\n" << ctx

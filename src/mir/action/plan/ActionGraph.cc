@@ -21,8 +21,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/action/plan/Executor.h"
-#include "eckit/log/ResourceUsage.h"
-#include "mir/config/LibMir.h"
+
 
 
 namespace mir {
@@ -42,9 +41,6 @@ ActionGraph::~ActionGraph() {
 void ActionGraph::execute(context::Context& ctx, const Executor& executor) const {
     for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
         context::Context local(ctx);
-
-        eckit::TraceResourceUsage<LibMir> usage((*j)->action().name());
-
         executor.execute(local, *(*j));
     }
 }
