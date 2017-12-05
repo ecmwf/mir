@@ -28,6 +28,8 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
+#include "eckit/memory/Shmget.h"
+
 #include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
 #include "eckit/io/StdFile.h"
@@ -157,7 +159,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
 
     int shmid;
-    if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
+    if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
         std::ostringstream oss;
         oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
         throw eckit::FailedSystemCall(oss.str());
@@ -189,7 +191,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     /* attach shared memory */
 
-    address_ = shmat( shmid, NULL, 0 );
+    address_ = eckit::Shmget::shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
          std::ostringstream oss;
          oss << "sfmat(" << real << "), id=" << shmid << ", size=" << shmsize;
@@ -240,7 +242,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
         }
 
     } catch (...) {
-        shmdt(address_);
+        eckit::Shmget::shmdt(address_);
         throw;
     }
 }
@@ -248,7 +250,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
 SharedMemoryLoader::~SharedMemoryLoader() {
     if (address_) {
-        SYSCALL(shmdt(address_));
+        SYSCALL(eckit::Shmget::shmdt(address_));
     }
     if (unload_) {
         unloadSharedMemory(path_);
@@ -275,7 +277,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
-    shmid = shmget(key, 0, 0600);
+    shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
         // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
         eckit::Log::info() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
