@@ -116,22 +116,26 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
 
     InMemoryCacheUsage usage(size, inSharedMemory);
 
-    eckit::Log::info() << "CACHE-FRESERVE-"
+    auto f = footprint();
+    auto c = capacity();
+    auto u = usage;
+
+    eckit::Log::info() << "CACHE-RESERVE-"
                        << name_
                        << " "
                        << " => "
-                       << usage
+                       << u
                        << " footprint: "
-                       << footprint()
+                       << f
                        << " capacity: "
-                       << capacity()
-                       << " footprint() + usage: " <<  footprint() + usage
-                       << " (footprint() + usage) - capacity(): " << (footprint() + usage) - capacity()
+                       << c
+                       << " f+u: " <<  f + u
+                       << " f+u-c: " << (f + u) - c
                        << std::endl;
 
 
-    if (footprint() + usage > capacity()) {
-        purge((footprint() + usage) - capacity());
+    if (f + u > c) {
+        purge((f + u ) - c);
     }
 
 }
