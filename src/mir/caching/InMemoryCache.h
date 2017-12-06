@@ -60,7 +60,7 @@ private:
 
     virtual InMemoryCacheUsage footprint() const;
     virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&);
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force=false);
     virtual const std::string& name() const;
 
     std::string name_;

@@ -119,6 +119,7 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
     auto f = footprint();
     auto c = capacity();
     auto u = usage;
+    auto p = (f + u) - c;
 
     eckit::Log::info() << "CACHE-RESERVE-"
                        << name_
@@ -130,12 +131,12 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
                        << " capacity: "
                        << c
                        << " f+u: " <<  f + u
-                       << " f+u-c: " << (f + u) - c
+                       << " f+u-c: " << p
                        << std::endl;
 
 
-    if (f + u > c) {
-        purge((f + u ) - c);
+    if (p) {
+        purge(p, true);
     }
 
 }
@@ -270,12 +271,12 @@ const std::string& InMemoryCache<T>::name() const {
 
 
 template<class T>
-InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount) {
+InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, bool force) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     InMemoryCacheUsage purged(0ULL , 0ULL);
 
-    if (users_) {
+    if (users_ && !force) {
         return purged;
     }
 

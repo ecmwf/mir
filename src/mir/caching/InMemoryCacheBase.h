@@ -48,7 +48,7 @@ private:
 
     virtual InMemoryCacheUsage footprint() const = 0;
     virtual InMemoryCacheUsage capacity() const = 0;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&) = 0;
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) = 0;
     virtual const std::string& name() const = 0;
 
 };
