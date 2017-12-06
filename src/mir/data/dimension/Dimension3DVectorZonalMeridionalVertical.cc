@@ -9,10 +9,7 @@
  */
 
 
-#ifndef mir_data_dimension_Dimension2DCartesian_h
-#define mir_data_dimension_Dimension2DCartesian_h
-
-#include "mir/data/dimension/DimensionLinear.h"
+#include "mir/data/dimension/Dimension3DVectorZonalMeridionalVertical.h"
 
 
 namespace mir {
@@ -20,13 +17,17 @@ namespace data {
 namespace dimension {
 
 
-class Dimension2DCartesian : public DimensionLinear {};
+static DimensionChoice<Dimension3DVectorZonalMeridionalVertical> __dimension1("3d.vector.u", 0, 3);
+static DimensionChoice<Dimension3DVectorZonalMeridionalVertical> __dimension2("3d.vector.v", 1, 3);
+static DimensionChoice<Dimension3DVectorZonalMeridionalVertical> __dimension3("3d.vector.w", 2, 3);
+
+
+size_t Dimension3DVectorZonalMeridionalVertical::dimensions() const {
+    return 3;
+}
 
 
 }  // namespace dimension
 }  // namespace data
 }  // namespace mir
-
-
-#endif
 

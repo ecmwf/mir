@@ -44,14 +44,20 @@ static void init() {
 }  // (anonymous namespace)
 
 
-DimensionChooser::DimensionChooser(const std::string& name, Dimension* choice) :
+DimensionChooser::DimensionChooser(const std::string& name, Dimension* choice, size_t component, size_t dimensions) :
     name_(name),
-    choice_(choice) {
+    choice_(choice),
+    component_(component),
+    dimensions_(dimensions) {
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("DimensionChooser: duplicate '" + name + "'");
+    }
+
+    if (component_ >= dimensions_) {
+        throw eckit::SeriousBug("DimensionChooser: '" + name + "' component (" + std::to_string(component_) + ") is not below dimensions (" + std::to_string(dimensions_) + ")");
     }
 
     (*m)[name] = this;

@@ -176,10 +176,12 @@ list(
     data/dimension/Dimension1DAngleT.h
     data/dimension/Dimension1DLinear.cc
     data/dimension/Dimension1DLinear.h
-    data/dimension/Dimension2DCartesian.cc
-    data/dimension/Dimension2DCartesian.h
+    data/dimension/Dimension2DVectorZonalMeridional.cc
+    data/dimension/Dimension2DVectorZonalMeridional.h
     data/dimension/Dimension3DCartesian.cc
     data/dimension/Dimension3DCartesian.h
+    data/dimension/Dimension3DVectorZonalMeridionalVertical.cc
+    data/dimension/Dimension3DVectorZonalMeridionalVertical.h
     data/dimension/DimensionLinear.cc
     data/dimension/DimensionLinear.h
     data/dimension/DimensionLogarithmic.cc

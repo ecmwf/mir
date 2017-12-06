@@ -20,6 +20,11 @@ namespace dimension {
 static DimensionChoice<Dimension1DLinear> __dimension("1d.linear");
 
 
+size_t Dimension1DLinear::dimensions() const {
+    return 1;
+}
+
+
 }  // namespace dimension
 }  // namespace data
 }  // namespace mir

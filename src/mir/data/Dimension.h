@@ -51,6 +51,8 @@ public:
 
     virtual void unlinearise(const Matrix&, Matrix&, double missingValue) const = 0;
 
+    virtual size_t dimensions() const = 0;
+
     // -- Overridden methods
     // None
 
@@ -104,8 +106,10 @@ class DimensionChooser {
 private:
     std::string name_;
     Dimension* choice_;
+    const size_t component_;
+    const size_t dimensions_;
 protected:
-    DimensionChooser(const std::string&, Dimension* choice);
+    DimensionChooser(const std::string&, Dimension* choice, size_t component, size_t dimensions);
     virtual ~DimensionChooser();
 public:
     static const Dimension& lookup(const std::string& name);
@@ -116,7 +120,8 @@ public:
 template<class T>
 class DimensionChoice : public DimensionChooser {
 public:
-    DimensionChoice(const std::string& name) : DimensionChooser(name, new T) {}
+    DimensionChoice(const std::string& name, size_t component = 0, size_t dimensions = 1 ) :
+        DimensionChooser(name, new T, component, dimensions) {}
 };
 
 

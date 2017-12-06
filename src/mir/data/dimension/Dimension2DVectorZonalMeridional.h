@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_data_dimension_Dimension3DCartesian_h
-#define mir_data_dimension_Dimension3DCartesian_h
+#ifndef mir_data_dimension_Dimension2DVectorZonalMeridional_h
+#define mir_data_dimension_Dimension2DVectorZonalMeridional_h
 
 #include "mir/data/dimension/DimensionLinear.h"
 
@@ -20,7 +20,7 @@ namespace data {
 namespace dimension {
 
 
-class Dimension3DCartesian : public DimensionLinear {
+class Dimension2DVectorZonalMeridional : public DimensionLinear {
 
     // -- Overridden methods
 

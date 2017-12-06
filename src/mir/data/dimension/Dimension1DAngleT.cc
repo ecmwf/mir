@@ -145,6 +145,12 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& 
 }
 
 
+template<int SCALE, int SYMMETRY>
+size_t Dimension1DAngleT< SCALE, SYMMETRY >::dimensions() const {
+    return 1;
+}
+
+
 }  // namespace dimension
 }  // namespace data
 }  // namespace mir
