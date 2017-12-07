@@ -18,9 +18,9 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+#include "eckit/system/SystemInfo.h"
 
 #include "mir/action/plan/Action.h"
-#include "mir/config/LibMir.h"
 #include "mir/config/LibMir.h"
 
 namespace mir {
@@ -43,6 +43,11 @@ void Action::custom(std::ostream & out) const {
 void Action::perform(context::Context & ctx) const {
     eckit::TraceResourceUsage<LibMir> usage(name());
     execute(ctx);
+
+    /// TODO REMOVE THIS IS ONLY FOR DEBUG NOW
+    if(::strcmp(name(), "Save") == 0) {
+        eckit::system::SystemInfo::instance().dumpSysMemInfo(eckit::Log::debug<LibMir>(), "Save SYSMEMINFO");
+    }
 }
 
 
