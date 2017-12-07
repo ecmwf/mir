@@ -16,26 +16,188 @@
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/mpi/Comm.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Option.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
+#include "eckit/testing/Test.h"
 
-#include "atlas/grid/Grid.h"
+#include "atlas/array.h"
+#include "atlas/grid.h"
+#include "atlas/trans/Trans.h"
+#include "atlas/trans/local/FourierTransforms.h"
+#include "atlas/trans/local/LegendrePolynomials.h"
+#include "atlas/trans/local/LegendreTransforms.h"
 
-#include "mir/api/MIRJob.h"
+#include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/output/MIROutput.h"
-#include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/MIRStatistics.h"
+
+
+//-----------------------------------------------------------------------------
+
+
+struct Environment {
+    Environment() {
+        trans_use_mpi(false);
+        trans_init();
+    }
+    ~Environment() {
+        trans_finalize();
+    }
+};
+
+
+void compute_legendre(
+        const size_t trc,                            // truncation (in)
+        double& lat,                                 // latitude in radians (in)
+        atlas::array::ArrayView<double,1>& zlfpol )  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+{
+    atlas::trans::compute_legendre_polynomials(trc,lat,zlfpol.data());
+}
+
+
+void legendre_transform(
+        const size_t trc,                             // truncation (in)
+        const size_t trcFT,                           // truncation for Fourier transformation (in)
+        atlas::array::ArrayView<double,1>& rlegReal,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+        atlas::array::ArrayView<double,1>& rlegImag,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+        atlas::array::ArrayView<double,1>& zlfpol,    // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+        double rspecg[] )                             // spectral data, size (trc+1)*trc (in)
+{
+    atlas::trans::invtrans_legendre( trc, trcFT, zlfpol.data(), rspecg, rlegReal.data(), rlegImag.data() );
+}
+
+
+double fourier_transform(
+        const size_t trcFT,
+        atlas::array::ArrayView<double,1>& rlegReal,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+        atlas::array::ArrayView<double,1>& rlegImag,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
+        double lon )                                  // radians
+{
+    return atlas::trans::invtrans_fourier( trcFT, rlegReal.data(), rlegImag.data(), lon );
+}
+
+
+//-----------------------------------------------------------------------------
+// Routine to compute the spectral transform by using a local Fourier transformation
+// for a single point
+//
+// Author:
+// Andreas Mueller *ECMWF*
+//
+double spectral_transform_point(
+        const size_t trc,                  // truncation (in)
+        const size_t trcFT,                // truncation for Fourier transformation (in)
+        double lon,                        // longitude in radians (in)
+        double lat,                        // latitude in radians (in)
+        double rspecg[] )                  // spectral data, size (trc+1)*trc (in)
+{
+    using eckit::testing::make_view;
+
+    size_t N = (trc+2)*(trc+1)/2;
+
+    atlas::array::ArrayT<double> zlfpol_(N);
+    atlas::array::ArrayView<double,1> zlfpol = make_view<double,1>(zlfpol_);
+
+    atlas::array::ArrayT<double> rlegReal_(trcFT+1);
+    atlas::array::ArrayView<double,1> rlegReal = make_view<double,1>(rlegReal_);
+
+    atlas::array::ArrayT<double> rlegImag_(trcFT+1);
+    atlas::array::ArrayView<double,1> rlegImag = make_view<double,1>(rlegImag_);
+
+    // Legendre transform:
+    compute_legendre(trc, lat, zlfpol);
+    legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
+
+    // Fourier transform:
+    return fourier_transform(trcFT, rlegReal, rlegImag, lon);
+}
+
+
+//-----------------------------------------------------------------------------
+// Routine to compute the spectral transform by using a local Fourier transformation
+// for a grid (same latitude for all longitudes, allows to compute Legendre functions
+// once for all longitudes)
+//
+// Author:
+// Andreas Mueller *ECMWF*
+//
+void spectral_transform_grid(
+        const size_t trc,     // truncation (in)
+        const size_t trcFT,   // truncation for Fourier transformation (in)
+        atlas::Grid grid,     // call with something like Grid("O32")
+        double rspecg[],      // spectral data, size (trc+1)*trc (in)
+        double rgp[],         // resulting grid point data (out)
+        bool pointwise)       // use point function for unstructured mesh for testing purposes
+{
+    using eckit::testing::make_view;
+
+    size_t N = (trc+2)*(trc+1)/2;
+
+    atlas::array::ArrayT<double> zlfpol_(N);
+    atlas::array::ArrayView<double,1> zlfpol = make_view<double,1>(zlfpol_);
+
+    atlas::array::ArrayT<double> rlegReal_(trcFT+1);
+    atlas::array::ArrayView<double,1> rlegReal = make_view<double,1>(rlegReal_);
+
+    atlas::array::ArrayT<double> rlegImag_(trcFT+1);
+    atlas::array::ArrayView<double,1> rlegImag = make_view<double,1>(rlegImag_);
+
+    for( size_t jm=0; jm<grid.size(); jm++) rgp[jm] = 0.;
+
+    if( atlas::grid::StructuredGrid(grid) ) {
+        atlas::grid::StructuredGrid g(grid);
+        int idx = 0;
+        for( size_t j=0; j<g.ny(); ++j ) {
+            double lat = g.y(j) * atlas::util::Constants::degreesToRadians() ;
+
+            // Legendre transform:
+            compute_legendre(trc, lat, zlfpol);
+            legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
+
+            for( size_t i=0; i<g.nx(j); ++i ) {
+                double lon = g.x(i,j) * atlas::util::Constants::degreesToRadians();
+                // Fourier transform:
+                rgp[idx++] = fourier_transform(trcFT, rlegReal, rlegImag, lon);
+            }
+        }
+    } else {
+        int idx = 0;
+        for( atlas::PointXY p: grid.xy()) {
+            double lon = p.x() * atlas::util::Constants::degreesToRadians();
+            double lat = p.y() * atlas::util::Constants::degreesToRadians();
+            if( pointwise ) {
+                // alternative for testing: use spectral_transform_point function:
+                rgp[idx++] = spectral_transform_point(trc, trcFT, lon, lat, rspecg);
+            } else {
+                // Legendre transform:
+                compute_legendre(trc, lat, zlfpol);
+                legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
+
+                // Fourier transform:
+                rgp[idx++] = fourier_transform(trcFT, rlegReal, rlegImag, lon);
+            }
+        }
+    }
+}
+
+
+//-----------------------------------------------------------------------------
 
 
 class MIRSpectralTransform : public mir::tools::MIRTool {
@@ -48,13 +210,6 @@ private:
     int minimumPositionalArguments() const {
         return 2;
     }
-
-    void process(
-            mir::api::MIRJob&,
-            mir::input::MIRInput&,
-            mir::output::MIROutput&,
-            const atlas::Grid&,
-            const std::string& );
 
 public:
 
@@ -71,9 +226,6 @@ public:
         options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<bool>   ("unstructured", "Force unstructured transform"));
         options_.push_back(new SimpleOption<bool>   ("caching", "Caching (default 1)"));
-//        options_.push_back(new SimpleOption<size_t>                ("accuracy", "GRIB number of bits per value"));
-//        options_.push_back(new FactoryOption<mir::packing::Packer> ("packing",  "GRIB packing method"));
-//        options_.push_back(new SimpleOption<size_t>                ("edition",  "GRIB edition number"));
     }
 
 };
@@ -98,12 +250,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
 
     // Setup options
-    mir::api::MIRJob job;
-    args.configure(job);
 
-    const mir::param::ConfigurationWrapper args_wrap(args);
-    bool vod2uv = false;
-    args_wrap.userParametrisation().get("vod2uv", vod2uv);
+    const mir::param::ConfigurationWrapper parametrisation(args);
 
     std::string griddef;
     std::string gridname;
@@ -120,8 +268,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     if (args.get("gridname", gridname)) { ASSERT(!gridname.empty()); }
 
 
-    // Setup representation
-    mir::repres::Representation* repres = 0;
+    // Setup output: representation
+    mir::repres::Representation* outputRepresentation = 0;
 
     eckit::ScopedPtr< mir::util::Increments > increments;
     eckit::ScopedPtr< mir::util::BoundingBox > boundingBox;
@@ -139,22 +287,22 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         }
         ASSERT(boundingBox);
 
-        repres = new mir::repres::latlon::RegularLL(*boundingBox, *increments);
+        outputRepresentation = new mir::repres::latlon::RegularLL(*boundingBox, *increments);
 
     } else if (args.has("griddef")) {
 
-        repres = new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
+        outputRepresentation = new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
 
     } else if (args.has("gridname")) {
 
         const mir::namedgrids::NamedGrid& ng = mir::namedgrids::NamedGrid::lookup(gridname);
-        repres = const_cast< mir::repres::Representation* >(ng.representation());
+        outputRepresentation = const_cast< mir::repres::Representation* >(ng.representation());
 
     }
-    ASSERT(repres != 0);
+    ASSERT(outputRepresentation != 0);
 
 
-    // Setup Atlas grid
+    // Setup output: Atlas grid
     atlas::Grid outputGrid;
 
     if (args.has("unstructured") || args.has("area") || args.has("griddef")) {
@@ -162,8 +310,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
         std::vector< atlas::PointXY >* coordinates = new std::vector< atlas::PointXY >;
 
-        eckit::ScopedPtr< mir::repres::Iterator > it(repres->iterator());
-        coordinates->reserve(repres->count());
+        eckit::ScopedPtr< mir::repres::Iterator > it(outputRepresentation->iterator());
+        coordinates->reserve(outputRepresentation->count());
 
         while (it->next()) {
             const mir::repres::Iterator::point_2d_t& p(*(*it));
@@ -175,49 +323,77 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     } else {
 
         eckit::Log::info() << "Atlas grid: structured" << std::endl;
-        outputGrid = repres->atlasGrid();
+        outputGrid = outputRepresentation->atlasGrid();
 
     }
     ASSERT(outputGrid);
 
 
-    // Setup output
-    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
+    // Setup output: file
+    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), parametrisation));
     ASSERT(output);
 
 
-    // Setup input, and process
-    if (vod2uv) {
+    {
+        eckit::Timer timer("Total time");
 
-        mir::input::GribFileInput vo(args(0), 0, 2);
-        mir::input::GribFileInput d(args(0), 1, 2);
-        mir::input::VectorInput input(vo, d);
+        bool vod2uv = false;
+        args.get("vod2uv", vod2uv);
 
-        process(job, input, *output, outputGrid, "vo/d field pair");
-        return;
+        const std::string what(vod2uv ? "vo/d field pair" : "field");
+
+        eckit::ScopedPtr< mir::input::GribFileInput > msg1;
+        eckit::ScopedPtr< mir::input::GribFileInput > msg2;
+        eckit::ScopedPtr< mir::input::MIRInput > input;
+
+        if (vod2uv) {
+            msg1.reset(new mir::input::GribFileInput(args(0), 0, 2)); // vo
+            msg2.reset(new mir::input::GribFileInput(args(0), 1, 2)); // d
+            input.reset(new mir::input::VectorInput(*msg1, *msg2));
+        } else {
+            input.reset(new mir::input::GribFileInput(args(0)));
+        }
+        ASSERT(input);
+
+                int i = 0;
+        while (input->next()) {
+            eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
+
+            mir::util::MIRStatistics statistics;
+            mir::context::Context ctx(*input, statistics);
+
+            // Keep a pointer on the original representation, as the one in the field will
+            // be changed in the loop
+            mir::data::MIRField& field = ctx.field();
+            mir::repres::RepresentationHandle inputRepresentation(field.representation());
+
+            for (size_t i = 0; i < field.dimensions(); i++) {
+
+                size_t T = inputRepresentation->truncation();
+                ASSERT(T > 0);
+
+                size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+                ASSERT(N > 0);
+
+                std::vector<double>& rspecg = const_cast<std::vector<double>&>( field.values(i) );
+                std::vector<double> rgp(outputGrid.size(), 0);
+
+                bool pointwise = false;
+                spectral_transform_grid(T, T, outputGrid, rspecg.data(), rgp.data(), pointwise);
+
+                field.representation(outputRepresentation);
+                field.update(rgp, i);
+
+                // consider not validating
+                field.validate();
+            }
+
+            output->save(parametrisation, ctx);
+        }
+
+        eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
+                              ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
     }
-
-    mir::input::GribFileInput input(args(0));
-    process(job, input, *output, outputGrid, "field");
-}
-
-
-void MIRSpectralTransform::process(
-        mir::api::MIRJob& job,
-        mir::input::MIRInput& input,
-        mir::output::MIROutput& output,
-        const atlas::Grid& grid,
-        const std::string& what ) {
-    eckit::Timer timer("Total time");
-
-    size_t i = 0;
-    while (input.next()) {
-        eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
-        job.execute(input, output);
-    }
-
-    eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
-                       ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 
 
