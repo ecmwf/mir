@@ -223,7 +223,9 @@ public:
 
         options_.push_back(new Separator("Other"));
         options_.push_back(new VectorOption<double> ("area", "Regular latitude/longitude grid (regular_ll) bounding box (North/West/South/East)", 4));
-        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
+        options_.push_back(new SimpleOption<size_t> ("truncation", "Use up to spectral truncation, up to input (default no truncation)"));
+        options_.push_back(new SimpleOption<bool>   ("pointwise", "Apply point-wise inverse transform"));
+//        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<bool>   ("unstructured", "Force unstructured transform"));
         options_.push_back(new SimpleOption<bool>   ("caching", "Caching (default 1)"));
     }
@@ -266,6 +268,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     if (args.get("area", area))         { ASSERT(area.size() == 4); }
     if (args.get("griddef", griddef))   { ASSERT(!griddef.empty()); }
     if (args.get("gridname", gridname)) { ASSERT(!gridname.empty()); }
+
+    const bool pointwise = args.has("pointwise");
 
 
     // Setup output: representation
@@ -372,14 +376,17 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 size_t T = inputRepresentation->truncation();
                 ASSERT(T > 0);
 
+                size_t Tin = 0;
+                args.get("truncation", Tin);
+                Tin = Tin ? std::min(Tin, T) : T;
+
                 size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
                 ASSERT(N > 0);
 
                 std::vector<double>& rspecg = const_cast<std::vector<double>&>( field.values(i) );
                 std::vector<double> rgp(outputGrid.size(), 0);
 
-                bool pointwise = false;
-                spectral_transform_grid(T, T, outputGrid, rspecg.data(), rgp.data(), pointwise);
+                spectral_transform_grid(T, Tin, outputGrid, rspecg.data(), rgp.data(), pointwise);
 
                 field.representation(outputRepresentation);
                 field.update(rgp, i);
