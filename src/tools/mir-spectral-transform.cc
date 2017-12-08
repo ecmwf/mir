@@ -8,6 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Andreas Mueller
+/// @author Pedro Maciel
+
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
@@ -25,7 +28,6 @@
 #include "eckit/option/VectorOption.h"
 #include "eckit/testing/Test.h"
 
-#include "atlas/array.h"
 #include "atlas/grid.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/trans/local/FourierTransforms.h"
@@ -45,175 +47,20 @@
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Angles.h"
 #include "mir/util/MIRStatistics.h"
-
-
-//-----------------------------------------------------------------------------
-
-
-struct Environment {
-    Environment() {
-        trans_use_mpi(false);
-        trans_init();
-    }
-    ~Environment() {
-        trans_finalize();
-    }
-};
-
-
-void compute_legendre(
-        const size_t trc,                            // truncation (in)
-        double& lat,                                 // latitude in radians (in)
-        atlas::array::ArrayView<double,1>& zlfpol )  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-{
-    atlas::trans::compute_legendre_polynomials(trc,lat,zlfpol.data());
-}
-
-
-void legendre_transform(
-        const size_t trc,                             // truncation (in)
-        const size_t trcFT,                           // truncation for Fourier transformation (in)
-        atlas::array::ArrayView<double,1>& rlegReal,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-        atlas::array::ArrayView<double,1>& rlegImag,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-        atlas::array::ArrayView<double,1>& zlfpol,    // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-        double rspecg[] )                             // spectral data, size (trc+1)*trc (in)
-{
-    atlas::trans::invtrans_legendre( trc, trcFT, zlfpol.data(), rspecg, rlegReal.data(), rlegImag.data() );
-}
-
-
-double fourier_transform(
-        const size_t trcFT,
-        atlas::array::ArrayView<double,1>& rlegReal,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-        atlas::array::ArrayView<double,1>& rlegImag,  // values of associated Legendre functions, size (trc+1)*trc/2 (out)
-        double lon )                                  // radians
-{
-    return atlas::trans::invtrans_fourier( trcFT, rlegReal.data(), rlegImag.data(), lon );
-}
-
-
-//-----------------------------------------------------------------------------
-// Routine to compute the spectral transform by using a local Fourier transformation
-// for a single point
-//
-// Author:
-// Andreas Mueller *ECMWF*
-//
-double spectral_transform_point(
-        const size_t trc,                  // truncation (in)
-        const size_t trcFT,                // truncation for Fourier transformation (in)
-        double lon,                        // longitude in radians (in)
-        double lat,                        // latitude in radians (in)
-        double rspecg[] )                  // spectral data, size (trc+1)*trc (in)
-{
-    using eckit::testing::make_view;
-
-    size_t N = (trc+2)*(trc+1)/2;
-
-    atlas::array::ArrayT<double> zlfpol_(N);
-    atlas::array::ArrayView<double,1> zlfpol = make_view<double,1>(zlfpol_);
-
-    atlas::array::ArrayT<double> rlegReal_(trcFT+1);
-    atlas::array::ArrayView<double,1> rlegReal = make_view<double,1>(rlegReal_);
-
-    atlas::array::ArrayT<double> rlegImag_(trcFT+1);
-    atlas::array::ArrayView<double,1> rlegImag = make_view<double,1>(rlegImag_);
-
-    // Legendre transform:
-    compute_legendre(trc, lat, zlfpol);
-    legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
-
-    // Fourier transform:
-    return fourier_transform(trcFT, rlegReal, rlegImag, lon);
-}
-
-
-//-----------------------------------------------------------------------------
-// Routine to compute the spectral transform by using a local Fourier transformation
-// for a grid (same latitude for all longitudes, allows to compute Legendre functions
-// once for all longitudes)
-//
-// Author:
-// Andreas Mueller *ECMWF*
-//
-void spectral_transform_grid(
-        const size_t trc,     // truncation (in)
-        const size_t trcFT,   // truncation for Fourier transformation (in)
-        atlas::Grid grid,     // call with something like Grid("O32")
-        double rspecg[],      // spectral data, size (trc+1)*trc (in)
-        double rgp[],         // resulting grid point data (out)
-        bool pointwise)       // use point function for unstructured mesh for testing purposes
-{
-    using eckit::testing::make_view;
-
-    size_t N = (trc+2)*(trc+1)/2;
-
-    atlas::array::ArrayT<double> zlfpol_(N);
-    atlas::array::ArrayView<double,1> zlfpol = make_view<double,1>(zlfpol_);
-
-    atlas::array::ArrayT<double> rlegReal_(trcFT+1);
-    atlas::array::ArrayView<double,1> rlegReal = make_view<double,1>(rlegReal_);
-
-    atlas::array::ArrayT<double> rlegImag_(trcFT+1);
-    atlas::array::ArrayView<double,1> rlegImag = make_view<double,1>(rlegImag_);
-
-    for( size_t jm=0; jm<grid.size(); jm++) rgp[jm] = 0.;
-
-    if( atlas::grid::StructuredGrid(grid) ) {
-        atlas::grid::StructuredGrid g(grid);
-        int idx = 0;
-        for( size_t j=0; j<g.ny(); ++j ) {
-            double lat = g.y(j) * atlas::util::Constants::degreesToRadians() ;
-
-            // Legendre transform:
-            compute_legendre(trc, lat, zlfpol);
-            legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
-
-            for( size_t i=0; i<g.nx(j); ++i ) {
-                double lon = g.x(i,j) * atlas::util::Constants::degreesToRadians();
-                // Fourier transform:
-                rgp[idx++] = fourier_transform(trcFT, rlegReal, rlegImag, lon);
-            }
-        }
-    } else {
-        int idx = 0;
-        for( atlas::PointXY p: grid.xy()) {
-            double lon = p.x() * atlas::util::Constants::degreesToRadians();
-            double lat = p.y() * atlas::util::Constants::degreesToRadians();
-            if( pointwise ) {
-                // alternative for testing: use spectral_transform_point function:
-                rgp[idx++] = spectral_transform_point(trc, trcFT, lon, lat, rspecg);
-            } else {
-                // Legendre transform:
-                compute_legendre(trc, lat, zlfpol);
-                legendre_transform(trc, trcFT, rlegReal, rlegImag, zlfpol, rspecg);
-
-                // Fourier transform:
-                rgp[idx++] = fourier_transform(trcFT, rlegReal, rlegImag, lon);
-            }
-        }
-    }
-}
-
-
-//-----------------------------------------------------------------------------
 
 
 class MIRSpectralTransform : public mir::tools::MIRTool {
 private:
-
     void execute(const eckit::option::CmdArgs&);
 
     void usage(const std::string& tool) const;
 
-    int minimumPositionalArguments() const {
-        return 2;
-    }
+    int minimumPositionalArguments() const { return 2; }
 
 public:
-
-    MIRSpectralTransform(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRSpectralTransform(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
 
         options_.push_back(new Separator("Output description (mandatory one option)"));
@@ -223,13 +70,12 @@ public:
 
         options_.push_back(new Separator("Other"));
         options_.push_back(new VectorOption<double> ("area", "Regular latitude/longitude grid (regular_ll) bounding box (North/West/South/East)", 4));
-        options_.push_back(new SimpleOption<size_t> ("truncation", "Use up to spectral truncation, up to input (default no truncation)"));
-        options_.push_back(new SimpleOption<bool>   ("pointwise", "Apply point-wise inverse transform"));
+        options_.push_back(new SimpleOption<size_t> ("truncation", "Truncation for Fourier transformation (default no truncation)"));
 //        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<bool>   ("unstructured", "Force unstructured transform"));
         options_.push_back(new SimpleOption<bool>   ("caching", "Caching (default 1)"));
+        options_.push_back(new SimpleOption<bool>   ("validate", "Validate results"));
     }
-
 };
 
 
@@ -242,14 +88,8 @@ void MIRSpectralTransform::usage(const std::string &tool) const {
 }
 
 
-
-enum trans_call_t { invtrans_scalar, invtrans_vod2uv };
-enum grid_mode_t { grid_structured, grid_unstructured };
-
-
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
-
 
     // Setup options
 
@@ -269,7 +109,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     if (args.get("griddef", griddef))   { ASSERT(!griddef.empty()); }
     if (args.get("gridname", gridname)) { ASSERT(!gridname.empty()); }
 
-    const bool pointwise = args.has("pointwise");
+    bool validate = true;
+    args.get("validate", validate);
+
+    size_t truncation = 0;
+    args.get("truncation", truncation);
 
 
     // Setup output: representation
@@ -283,7 +127,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         ASSERT(increments);
 
         if (args.has("area")) {
-            boundingBox.reset(new mir::util::BoundingBox(area[0],  area[1], area[2], area[3]));
+            boundingBox.reset(new mir::util::BoundingBox(area[0], area[1], area[2], area[3]));
         } else {
             // temporary: do not shift lat/lon so transform comparisons are 'fairer'
             boundingBox.reset(new mir::util::BoundingBox());
@@ -359,9 +203,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         }
         ASSERT(input);
 
-                int i = 0;
+        int i = 0;
         while (input->next()) {
             eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
+
+            using mir::util::degree_to_radian;
 
             mir::util::MIRStatistics statistics;
             mir::context::Context ctx(*input, statistics);
@@ -376,36 +222,85 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 size_t T = inputRepresentation->truncation();
                 ASSERT(T > 0);
 
-                size_t Tin = 0;
-                args.get("truncation", Tin);
-                Tin = Tin ? std::min(Tin, T) : T;
+                size_t Tin = truncation ? std::min(truncation, T) : T;
 
                 size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
                 ASSERT(N > 0);
 
-                std::vector<double>& rspecg = const_cast<std::vector<double>&>( field.values(i) );
-                std::vector<double> rgp(outputGrid.size(), 0);
+                // spectral data
+                const std::vector<double>& rspecg = field.values(i);
+                ASSERT(rspecg.size() == N * 2);
 
-                spectral_transform_grid(T, Tin, outputGrid, rspecg.data(), rgp.data(), pointwise);
+                // grid point data
+                std::vector<double> result(outputGrid.size(), 0);
+
+                /// Compute the inverse spectral transform by using a local Fourier transformation
+                /// for a grid (same latitude for all longitudes, allows to compute Legendre functions
+                /// once for all longitudes)
+
+                // Legendre transform associated values
+                std::vector<double> zlfpol(N, 0);
+                std::vector<double> rlegReal(Tin + 1, 0);
+                std::vector<double> rlegImag(Tin + 1, 0);
+
+                size_t idx = 0;
+                if (atlas::grid::StructuredGrid(outputGrid)) {
+                    atlas::grid::StructuredGrid g(outputGrid);
+                    for (size_t j = 0; j < g.ny(); ++j) {
+                        double lat = degree_to_radian(g.y(j));
+
+                        // Legendre transform
+                        atlas::trans::compute_legendre_polynomials(T, lat, zlfpol.data());
+                        atlas::trans::invtrans_legendre(T, Tin, zlfpol.data(), rspecg.data(), rlegReal.data(),
+                                                        rlegImag.data());
+
+                        for (size_t i = 0; i < g.nx(j); ++i) {
+                            // Fourier transform
+                            double lon = degree_to_radian(g.x(i, j));
+                            result[idx++] = atlas::trans::invtrans_fourier(Tin, rlegReal.data(), rlegImag.data(), lon);
+                        }
+                    }
+                } else {
+                    for (atlas::PointXY p : outputGrid.xy()) {
+                        double lon = degree_to_radian(p.x());
+                        double lat = degree_to_radian(p.y());
+
+                        // Legendre transform
+                        atlas::trans::compute_legendre_polynomials(T, lat, zlfpol.data());
+                        atlas::trans::invtrans_legendre(T, Tin, zlfpol.data(), rspecg.data(), rlegReal.data(),
+                                                        rlegImag.data());
+
+                        // Fourier transform
+                        result[idx++] = atlas::trans::invtrans_fourier(Tin, rlegReal.data(), rlegImag.data(), lon);
+                    }
+                }
 
                 field.representation(outputRepresentation);
-                field.update(rgp, i);
+                field.update(result, i);
 
-                // consider not validating
-                field.validate();
+                if (validate) {
+                    field.validate();
+                }
             }
 
             output->save(parametrisation, ctx);
         }
 
-        eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
-                              ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+        eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed())
+                           << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
+    trans_use_mpi(false);
+    trans_init();
+
     MIRSpectralTransform tool(argc, argv);
-    return tool.start();
+
+    int r = tool.start();
+
+    trans_finalize();
+    return r;
 }
 
