@@ -32,7 +32,6 @@
 #include "atlas/trans/Trans.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -82,8 +81,8 @@ public:
         options_.push_back(new VectorOption<double> ("rotation", "Regular latitude/longitude grid rotation by moving the South pole to latitude/longitude", 2));
 
         options_.push_back(new Separator("Miscellaneous"));
-//        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new SimpleOption<bool> ("local", "Trans: force local transform (default false)"));
+        options_.push_back(new SimpleOption<bool> ("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
+        options_.push_back(new SimpleOption<bool> ("local", "Atlas/Trans: force local transform (default false)"));
         options_.push_back(new SimpleOption<bool> ("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool> ("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool> ("validate", "MIR: validate results (default true)"));
@@ -107,12 +106,20 @@ const mir::repres::Representation* getOutputRepresentation(const mir::param::MIR
             ASSERT(area.size() == 4);
             boundingBox = mir::util::BoundingBox(area[0], area[1], area[2], area[3]);
         } else if (local) {
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: global bounding box allowing lat/lon shift" << std::endl;
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box global, lat/lon shift allowed" << std::endl;
             increments->globaliseBoundingBox(boundingBox, true, true);
+
         } else {
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: global bounding box not allowing lat/lon shift" << std::endl;
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box global, lat/lon shift not allowed" << std::endl;
             increments->globaliseBoundingBox(boundingBox, false, false);
         }
+
+        bool isLatitudeShifted = !(boundingBox.south().fraction() / increments->south_north()).integer();
+        bool isLongitudeShifted = !(boundingBox.west().fraction() / increments->west_east()).integer();
+        eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box shifted: "
+                                         << "in latitude? " << (isLatitudeShifted ? "yes" : "no") << ", "
+                                         << "in longitude? " << (isLongitudeShifted ? "yes" : "no")
+                                         << std::endl;
 
         std::vector<double> rot;
         if (parametrisation.get("rotation", rot)) {
@@ -123,7 +130,6 @@ const mir::repres::Representation* getOutputRepresentation(const mir::param::MIR
         }
 
         return new mir::repres::latlon::RegularLL(boundingBox, *increments);
-
     }
 
     std::string griddef;
@@ -182,8 +188,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     bool local = false;
     args.get("local", local);
 
-    local = local || args.has("area") || args.has("griddef");
-    eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Trans configuration type=" << (local ? "'local'" : "(default)") << std::endl;
+    local = local
+            || args.has("griddef")
+            || args.has("unstructured")
+            || (args.has("grid") && (args.has("area") || args.has("rotation")));
 
 
     // Setup output file
@@ -215,6 +223,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         while (input->next()) {
             eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
 
+
             // Set representation and grid
             const mir::repres::Representation* outputRepresentation = getOutputRepresentation(parametrisation, local);
             ASSERT(outputRepresentation);
@@ -226,32 +235,63 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             mir::context::Context ctx(*input, statistics);
             mir::data::MIRField& field = ctx.field();
 
-            for (size_t d = 0; d < field.dimensions(); ++d) {
+            size_t T = field.representation()->truncation();
+            ASSERT(T > 0);
 
-                size_t T = field.representation()->truncation();
-                ASSERT(T > 0);
+            size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+            ASSERT(N > 0);
 
-                size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
-                ASSERT(N > 0);
 
-                // spectral data
-                const std::vector<double>& spectra = field.values(d);
-                ASSERT(spectra.size() == N * 2);
+            // Set Trans
+            atlas::util::Config transConfig;
+            if (local) {
+                transConfig.set("type", "local");
+            }
 
-                // grid point data
-                std::vector<double> result(outputGrid.size(), 0);
+            atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 
-                // set trans and perform inverse transform
-                atlas::util::Config transConfig;
-                if (local) {
-                    transConfig.set("type", "local");
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Atlas/Trans configuration type: " << transConfig.getString("type", "(default)") << std::endl;
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Atlas unstructured grid: " << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no") << std::endl;
+
+
+            // Trans inverse transform
+            if (vod2uv) {
+                ASSERT(field.dimensions() == 2);
+
+                const std::vector<double>& spectra_vo = field.values(0);
+                const std::vector<double>& spectra_d  = field.values(1);
+                ASSERT(spectra_vo.size() == N * 2);
+                ASSERT(spectra_vo.size() == spectra_d.size());
+
+                const size_t Ngp = outputGrid.size();
+                std::vector<double> output(Ngp * 2);
+
+                trans.invtrans(/* nb_vordiv_fields = */ 1, spectra_vo.data(), spectra_d.data(), output.data());
+
+                // copy u/v result, forcing paramId
+                const eckit::Configuration& config = mir::LibMir::instance().configuration();
+
+                std::vector<double> result;
+                result.assign(output.begin(), output.begin() + int(Ngp));
+                field.update(result, 0);
+                field.metadata(0, "paramId", config.getLong("parameter-id-u", 131));
+
+                result.assign(output.begin() + int(Ngp), output.end());
+                field.update(result, 1);
+                field.metadata(1, "paramId", config.getLong("parameter-id-v", 132));
+
+            } else {
+                for (size_t d = 0; d < field.dimensions(); ++d) {
+
+                    const std::vector<double>& spectra = field.values(d);
+                    ASSERT(spectra.size() == N * 2);
+
+                    std::vector<double> result(outputGrid.size(), 0);
+
+                    trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data());
+
+                    field.update(result, d);
                 }
-
-                atlas::trans::Trans trans(outputGrid, int(T), transConfig);
-                trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data());
-
-                // set field grid point data
-                field.update(result, d);
             }
 
             // set field representation
