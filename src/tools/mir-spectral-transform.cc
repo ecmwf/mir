@@ -32,6 +32,7 @@
 #include "atlas/trans/Trans.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GeoPointsFileInput.h"
@@ -43,97 +44,108 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/repres/latlon/RotatedLL.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Rotation.h"
 
 
 class MIRSpectralTransform : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string& tool) const;
-
     int minimumPositionalArguments() const { return 2; }
+
+    void usage(const std::string& tool) const {
+        eckit::Log::info() <<
+                "\n" "Usage: " << tool << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value [...]]] input.grib output.grib"
+                "\n" "Examples: "
+                "\n" "  % " << tool << " --grid=1/1 --area=90/-180/-90/179 in out"
+                "\n" "  % " << tool << " --gridname=O32 --validate=false in out"
+                "\n" "  % " << tool << " --griddef=weather-params.pts in out"
+                << std::endl;
+    }
 
 public:
     MIRSpectralTransform(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
 
-        options_.push_back(new Separator("Output description (mandatory one option)"));
-        options_.push_back(new VectorOption<double>          ("grid", "Regular latitude/longitude grid (regular_ll) increments (West-East/South-North)", 2));
-        options_.push_back(new SimpleOption<std::string>     ("gridname", "Interpolate to given grid name"));
+        options_.push_back(new Separator("Output grid (mandatory one option)"));
+        options_.push_back(new VectorOption<double> ("grid", "Regular latitude/longitude grid increments (West-East/South-North)", 2));
+        options_.push_back(new SimpleOption<std::string> ("gridname", "Interpolate to given grid name"));
         options_.push_back(new SimpleOption<eckit::PathName> ("griddef", "Path to file containing latitude/longitude pairs"));
 
-        options_.push_back(new Separator("Other"));
-        options_.push_back(new VectorOption<double> ("area", "Regular latitude/longitude grid (regular_ll) bounding box (North/West/South/East)", 4));
+        options_.push_back(new Separator("Output regular latitude/longitude grids"));
+        options_.push_back(new VectorOption<double> ("area", "Regular latitude/longitude grid bounding box (North/West/South/East)", 4));
+        options_.push_back(new VectorOption<double> ("rotation", "Regular latitude/longitude grid rotation by moving the South pole to latitude/longitude", 2));
+
+        options_.push_back(new Separator("Miscellaneous"));
 //        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new SimpleOption<bool>   ("local", "Force local transform"));
-        options_.push_back(new SimpleOption<bool>   ("caching", "Caching (default 1)"));
-        options_.push_back(new SimpleOption<bool>   ("validate", "Validate results"));
+        options_.push_back(new SimpleOption<bool> ("local", "Trans: force local transform (default false)"));
+        options_.push_back(new SimpleOption<bool> ("unstructured", "Atlas: force unstructured grid (default false)"));
+        options_.push_back(new SimpleOption<bool> ("caching", "MIR: caching (default true)"));
+        options_.push_back(new SimpleOption<bool> ("validate", "MIR: validate results (default true)"));
     }
 };
 
 
-void MIRSpectralTransform::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value [...]]] input.grib output.grib"
-            "\n" "Examples: "
-            "\n" "  % " << tool << " go-for-it"
-            << std::endl;
-}
+const mir::repres::Representation* getOutputRepresentation(const mir::param::MIRParametrisation& parametrisation, bool local) {
 
-
-const mir::repres::Representation* getOutputRepresentation(const mir::param::MIRParametrisation& parametrisation) {
-    const mir::repres::Representation* representation = 0;
-
-    std::string griddef;
-    std::string gridname;
     std::vector<double> grid;
-    std::vector<double> area;
-
-    eckit::ScopedPtr< mir::util::Increments > increments;
-    eckit::ScopedPtr< mir::util::BoundingBox > boundingBox;
     if (parametrisation.get("grid", grid)) {
         ASSERT(grid.size() == 2);
 
+        eckit::ScopedPtr< mir::util::Increments > increments;
         increments.reset(new mir::util::Increments(grid[0], grid[1]));
         ASSERT(increments);
 
+        mir::util::BoundingBox boundingBox;
+        std::vector<double> area;
         if (parametrisation.get("area", area)) {
             ASSERT(area.size() == 4);
-            boundingBox.reset(new mir::util::BoundingBox(area[0], area[1], area[2], area[3]));
+            boundingBox = mir::util::BoundingBox(area[0], area[1], area[2], area[3]);
+        } else if (local) {
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: global bounding box allowing lat/lon shift" << std::endl;
+            increments->globaliseBoundingBox(boundingBox, true, true);
         } else {
-            // temporary: do not shift lat/lon
-            boundingBox.reset(new mir::util::BoundingBox());
-            increments->globaliseBoundingBox(*boundingBox, false, false);
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: global bounding box not allowing lat/lon shift" << std::endl;
+            increments->globaliseBoundingBox(boundingBox, false, false);
         }
-        ASSERT(boundingBox);
 
-        representation = new mir::repres::latlon::RegularLL(*boundingBox, *increments);
+        std::vector<double> rot;
+        if (parametrisation.get("rotation", rot)) {
+            ASSERT(rot.size() == 2);
+            mir::util::Rotation rotation(rot[0], rot[1]);
 
-    } else if (parametrisation.get("griddef", griddef)) {
+            return new mir::repres::latlon::RotatedLL(boundingBox, *increments, rotation);
+        }
 
-        ASSERT(!griddef.empty());
-        representation = new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
-
-    } else if (parametrisation.get("gridname", gridname)) {
-
-        ASSERT(!gridname.empty());
-        representation = mir::namedgrids::NamedGrid::lookup(gridname).representation();
+        return new mir::repres::latlon::RegularLL(boundingBox, *increments);
 
     }
 
-    ASSERT(representation);
-    return representation;
+    std::string griddef;
+    if (parametrisation.get("griddef", griddef) && !griddef.empty()) {
+        ASSERT(!parametrisation.has("rotation"));
+        return new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
+    }
+
+    std::string gridname;
+    if (parametrisation.get("gridname", gridname) && !gridname.empty()) {
+        ASSERT(!parametrisation.has("rotation"));
+        return mir::namedgrids::NamedGrid::lookup(gridname).representation();
+    }
+
+    throw eckit::UserError("MIRSpectralTransform: could not create output representation");
 }
 
 
 atlas::Grid getOutputGrid(const mir::param::MIRParametrisation& parametrisation, const mir::repres::Representation& representation) {
     atlas::Grid outputGrid;
 
-    if (parametrisation.has("griddef")) {
+    if (parametrisation.has("griddef") || parametrisation.has("unstructured")) {
         eckit::ScopedPtr< mir::repres::Iterator > it(representation.iterator());
 
         std::vector< atlas::PointXY >* coordinates = new std::vector< atlas::PointXY >;
@@ -145,7 +157,6 @@ atlas::Grid getOutputGrid(const mir::param::MIRParametrisation& parametrisation,
         }
 
         return atlas::grid::UnstructuredGrid(coordinates);
-
     }
 
     return representation.atlasGrid();
@@ -205,7 +216,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
 
             // Set representation and grid
-            const mir::repres::Representation* outputRepresentation = getOutputRepresentation(parametrisation);
+            const mir::repres::Representation* outputRepresentation = getOutputRepresentation(parametrisation, local);
             ASSERT(outputRepresentation);
 
             atlas::Grid outputGrid = getOutputGrid(parametrisation, *outputRepresentation);
