@@ -10,7 +10,8 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+/// @date   Apr 2015
 
 
 #include "eckit/exception/Exceptions.h"
@@ -41,18 +42,11 @@ void Action::custom(std::ostream & out) const {
 
 
 void Action::perform(context::Context & ctx) const {
-    eckit::TraceResourceUsage<LibMir> usage(name());
     execute(ctx);
-
-    /// TODO REMOVE THIS IS ONLY FOR DEBUG NOW
-    if(::strcmp(name(), "Save") == 0) {
-        eckit::system::SystemInfo::instance().dumpSysMemInfo(eckit::Log::debug<LibMir>(), "Save SYSMEMINFO");
-    }
 }
 
 
-
-//=========================================================================
+//----------------------------------------------------------------------------------------------------------------------
 
 
 namespace {

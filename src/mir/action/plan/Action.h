@@ -10,14 +10,16 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
-
+/// @author Tiago Quintino
+/// @date   Apr 2015
 
 #ifndef Action_H
 #define Action_H
 
 #include <iosfwd>
 #include <string>
+
+
 #include "eckit/memory/NonCopyable.h"
 
 
