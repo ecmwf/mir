@@ -30,11 +30,9 @@
 
 #include "atlas/grid.h"
 #include "atlas/trans/Trans.h"
-#include "atlas/trans/local/FourierTransforms.h"
-#include "atlas/trans/local/LegendrePolynomials.h"
-#include "atlas/trans/local/LegendreTransforms.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
@@ -42,12 +40,12 @@
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Angles.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -70,9 +68,8 @@ public:
 
         options_.push_back(new Separator("Other"));
         options_.push_back(new VectorOption<double> ("area", "Regular latitude/longitude grid (regular_ll) bounding box (North/West/South/East)", 4));
-        options_.push_back(new SimpleOption<size_t> ("truncation", "Truncation for Fourier transformation (default no truncation)"));
 //        options_.push_back(new SimpleOption<bool>   ("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new SimpleOption<bool>   ("unstructured", "Force unstructured transform"));
+        options_.push_back(new SimpleOption<bool>   ("local", "Force local transform"));
         options_.push_back(new SimpleOption<bool>   ("caching", "Caching (default 1)"));
         options_.push_back(new SimpleOption<bool>   ("validate", "Validate results"));
     }
@@ -88,201 +85,171 @@ void MIRSpectralTransform::usage(const std::string &tool) const {
 }
 
 
-void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("MIRSpectralTransform");
-
-    // Setup options
-
-    const mir::param::ConfigurationWrapper parametrisation(args);
+const mir::repres::Representation* getOutputRepresentation(const mir::param::MIRParametrisation& parametrisation) {
+    const mir::repres::Representation* representation = 0;
 
     std::string griddef;
     std::string gridname;
     std::vector<double> grid;
     std::vector<double> area;
 
-    if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
-        throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
-    }
-
-    if (args.get("grid", grid))         { ASSERT(grid.size() == 2); }
-    if (args.get("area", area))         { ASSERT(area.size() == 4); }
-    if (args.get("griddef", griddef))   { ASSERT(!griddef.empty()); }
-    if (args.get("gridname", gridname)) { ASSERT(!gridname.empty()); }
-
-    bool validate = true;
-    args.get("validate", validate);
-
-    size_t truncation = 0;
-    args.get("truncation", truncation);
-
-
-    // Setup output: representation
-    mir::repres::Representation* outputRepresentation = 0;
-
     eckit::ScopedPtr< mir::util::Increments > increments;
     eckit::ScopedPtr< mir::util::BoundingBox > boundingBox;
-    if (args.has("grid")) {
+    if (parametrisation.get("grid", grid)) {
+        ASSERT(grid.size() == 2);
 
         increments.reset(new mir::util::Increments(grid[0], grid[1]));
         ASSERT(increments);
 
-        if (args.has("area")) {
+        if (parametrisation.get("area", area)) {
+            ASSERT(area.size() == 4);
             boundingBox.reset(new mir::util::BoundingBox(area[0], area[1], area[2], area[3]));
         } else {
-            // temporary: do not shift lat/lon so transform comparisons are 'fairer'
+            // temporary: do not shift lat/lon
             boundingBox.reset(new mir::util::BoundingBox());
             increments->globaliseBoundingBox(*boundingBox, false, false);
         }
         ASSERT(boundingBox);
 
-        outputRepresentation = new mir::repres::latlon::RegularLL(*boundingBox, *increments);
+        representation = new mir::repres::latlon::RegularLL(*boundingBox, *increments);
 
-    } else if (args.has("griddef")) {
+    } else if (parametrisation.get("griddef", griddef)) {
 
-        outputRepresentation = new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
+        ASSERT(!griddef.empty());
+        representation = new mir::repres::other::UnstructuredGrid(eckit::PathName(griddef));
 
-    } else if (args.has("gridname")) {
+    } else if (parametrisation.get("gridname", gridname)) {
 
-        const mir::namedgrids::NamedGrid& ng = mir::namedgrids::NamedGrid::lookup(gridname);
-        outputRepresentation = const_cast< mir::repres::Representation* >(ng.representation());
+        ASSERT(!gridname.empty());
+        representation = mir::namedgrids::NamedGrid::lookup(gridname).representation();
 
     }
-    ASSERT(outputRepresentation != 0);
+
+    ASSERT(representation);
+    return representation;
+}
 
 
-    // Setup output: Atlas grid
+atlas::Grid getOutputGrid(const mir::param::MIRParametrisation& parametrisation, const mir::repres::Representation& representation) {
     atlas::Grid outputGrid;
 
-    if (args.has("unstructured") || args.has("area") || args.has("griddef")) {
-        eckit::Log::info() << "Atlas grid: unstructured" << std::endl;
+    if (parametrisation.has("griddef")) {
+        eckit::ScopedPtr< mir::repres::Iterator > it(representation.iterator());
 
         std::vector< atlas::PointXY >* coordinates = new std::vector< atlas::PointXY >;
-
-        eckit::ScopedPtr< mir::repres::Iterator > it(outputRepresentation->iterator());
-        coordinates->reserve(outputRepresentation->count());
+        coordinates->reserve(representation.count());
 
         while (it->next()) {
             const mir::repres::Iterator::point_2d_t& p(*(*it));
             coordinates->push_back(atlas::PointXY(p[1], p[0]));
         }
 
-        outputGrid = atlas::grid::UnstructuredGrid(coordinates);
-
-    } else {
-
-        eckit::Log::info() << "Atlas grid: structured" << std::endl;
-        outputGrid = outputRepresentation->atlasGrid();
+        return atlas::grid::UnstructuredGrid(coordinates);
 
     }
-    ASSERT(outputGrid);
+
+    return representation.atlasGrid();
+}
 
 
-    // Setup output: file
+
+void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
+    eckit::ResourceUsage usage("MIRSpectralTransform");
+
+    // Setup options
+    const mir::param::ConfigurationWrapper parametrisation(args);
+    if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
+        throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
+    }
+
+    bool vod2uv = false;
+    args.get("vod2uv", vod2uv);
+
+    bool validate = true;
+    args.get("validate", validate);
+
+    bool local = false;
+    args.get("local", local);
+
+    local = local || args.has("area") || args.has("griddef");
+    eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Trans configuration type=" << (local ? "'local'" : "(default)") << std::endl;
+
+
+    // Setup output file
     eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), parametrisation));
     ASSERT(output);
+
+
+    // Setup input file
+    eckit::ScopedPtr< mir::input::GribFileInput > msg1;
+    eckit::ScopedPtr< mir::input::GribFileInput > msg2;
+    eckit::ScopedPtr< mir::input::MIRInput > input;
+
+    if (vod2uv) {
+        msg1.reset(new mir::input::GribFileInput(args(0), 0, 2)); // vo
+        msg2.reset(new mir::input::GribFileInput(args(0), 1, 2)); // d
+        input.reset(new mir::input::VectorInput(*msg1, *msg2));
+    } else {
+        input.reset(new mir::input::GribFileInput(args(0)));
+    }
+    ASSERT(input);
 
 
     {
         eckit::Timer timer("Total time");
 
-        bool vod2uv = false;
-        args.get("vod2uv", vod2uv);
-
         const std::string what(vod2uv ? "vo/d field pair" : "field");
-
-        eckit::ScopedPtr< mir::input::GribFileInput > msg1;
-        eckit::ScopedPtr< mir::input::GribFileInput > msg2;
-        eckit::ScopedPtr< mir::input::MIRInput > input;
-
-        if (vod2uv) {
-            msg1.reset(new mir::input::GribFileInput(args(0), 0, 2)); // vo
-            msg2.reset(new mir::input::GribFileInput(args(0), 1, 2)); // d
-            input.reset(new mir::input::VectorInput(*msg1, *msg2));
-        } else {
-            input.reset(new mir::input::GribFileInput(args(0)));
-        }
-        ASSERT(input);
 
         int i = 0;
         while (input->next()) {
             eckit::Log::info() << "============> " << what << ": " << (++i) << std::endl;
 
-            using mir::util::degree_to_radian;
+            // Set representation and grid
+            const mir::repres::Representation* outputRepresentation = getOutputRepresentation(parametrisation);
+            ASSERT(outputRepresentation);
+
+            atlas::Grid outputGrid = getOutputGrid(parametrisation, *outputRepresentation);
+            ASSERT(outputGrid);
 
             mir::util::MIRStatistics statistics;
             mir::context::Context ctx(*input, statistics);
-
-            // Keep a pointer on the original representation, as the one in the field will
-            // be changed in the loop
             mir::data::MIRField& field = ctx.field();
-            mir::repres::RepresentationHandle inputRepresentation(field.representation());
 
-            for (size_t i = 0; i < field.dimensions(); i++) {
+            for (size_t d = 0; d < field.dimensions(); ++d) {
 
-                size_t T = inputRepresentation->truncation();
+                size_t T = field.representation()->truncation();
                 ASSERT(T > 0);
-
-                size_t Tin = truncation ? std::min(truncation, T) : T;
 
                 size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
                 ASSERT(N > 0);
 
                 // spectral data
-                const std::vector<double>& rspecg = field.values(i);
-                ASSERT(rspecg.size() == N * 2);
+                const std::vector<double>& spectra = field.values(d);
+                ASSERT(spectra.size() == N * 2);
 
                 // grid point data
                 std::vector<double> result(outputGrid.size(), 0);
 
-                /// Compute the inverse spectral transform by using a local Fourier transformation
-                /// for a grid (same latitude for all longitudes, allows to compute Legendre functions
-                /// once for all longitudes)
-
-                // Legendre transform associated values
-                std::vector<double> zlfpol(N, 0);
-                std::vector<double> rlegReal(Tin + 1, 0);
-                std::vector<double> rlegImag(Tin + 1, 0);
-
-                size_t idx = 0;
-                if (atlas::grid::StructuredGrid(outputGrid)) {
-                    atlas::grid::StructuredGrid g(outputGrid);
-                    for (size_t j = 0; j < g.ny(); ++j) {
-                        double lat = degree_to_radian(g.y(j));
-
-                        // Legendre transform
-                        atlas::trans::compute_legendre_polynomials(T, lat, zlfpol.data());
-                        atlas::trans::invtrans_legendre(T, Tin, zlfpol.data(), rspecg.data(), rlegReal.data(),
-                                                        rlegImag.data());
-
-                        for (size_t i = 0; i < g.nx(j); ++i) {
-                            // Fourier transform
-                            double lon = degree_to_radian(g.x(i, j));
-                            result[idx++] = atlas::trans::invtrans_fourier(Tin, rlegReal.data(), rlegImag.data(), lon);
-                        }
-                    }
-                } else {
-                    for (atlas::PointXY p : outputGrid.xy()) {
-                        double lon = degree_to_radian(p.x());
-                        double lat = degree_to_radian(p.y());
-
-                        // Legendre transform
-                        atlas::trans::compute_legendre_polynomials(T, lat, zlfpol.data());
-                        atlas::trans::invtrans_legendre(T, Tin, zlfpol.data(), rspecg.data(), rlegReal.data(),
-                                                        rlegImag.data());
-
-                        // Fourier transform
-                        result[idx++] = atlas::trans::invtrans_fourier(Tin, rlegReal.data(), rlegImag.data(), lon);
-                    }
+                // set trans and perform inverse transform
+                atlas::util::Config transConfig;
+                if (local) {
+                    transConfig.set("type", "local");
                 }
 
-                field.representation(outputRepresentation);
-                field.update(result, i);
+                atlas::trans::Trans trans(outputGrid, int(T), transConfig);
+                trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data());
 
-                if (validate) {
-                    field.validate();
-                }
+                // set field grid point data
+                field.update(result, d);
             }
 
+            // set field representation
+            field.representation(outputRepresentation);
+            if (validate) {
+                field.validate();
+            }
+
+            // save
             output->save(parametrisation, ctx);
         }
 
