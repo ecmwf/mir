@@ -35,6 +35,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "eckit/log/ResourceUsage.h"
 
 
 
@@ -147,15 +148,25 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
   struct Trans_t &trans = tc.trans_;
   fillTrans(trans, options, representation);
 
+{
+  eckit::TraceResourceUsage<LibMir> usage("SH2GG LegendreLoaderFactory");
+
   tc.inited_ = true;
   tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
+}
   // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
+{
+  eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_set_cache");
   ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
+}
 
   ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
 
+{
+  eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_setup");
   ASSERT(trans_setup(&trans) == 0);
+}
 
   trans_cache.footprint(key, path.size(), tc.loader_->inSharedMemory());
 
