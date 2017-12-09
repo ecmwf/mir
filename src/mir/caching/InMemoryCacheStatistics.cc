@@ -89,8 +89,12 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
 void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const char *indent) const {
 
     std::string t(title);
-    reportCount(out, (t + ", capacity").c_str(), capacity_, indent);
-    reportCount(out, (t + ", footprint").c_str(), footprint_, indent);
+    reportBytes(out, (t + ", capacity").c_str(), capacity_.memory(), indent);
+    reportBytes(out, (t + ", capacity - shared").c_str(), capacity_.shared(), indent);
+
+    reportBytes(out, (t + ", footprint").c_str(), footprint_.memory(), indent);
+    reportBytes(out, (t + ", footprint - shared").c_str(), footprint_.shared(), indent);
+
 
     reportCount(out, (t + ", insertions").c_str(), insertions_, indent);
     reportCount(out, (t + ", evictions").c_str(), evictions_, indent);
@@ -101,7 +105,9 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
     reportTime(out, (t + ", youngest eviction").c_str(), youngest_, indent);
 
     reportCount(out, (t + ", unique keys").c_str(), unique_, indent);
-    reportCount(out, (t + ", required capacity").c_str(), required_, indent);
+
+    reportBytes(out, (t + ", required").c_str(), required_.memory(), indent);
+    reportBytes(out, (t + ", required - shared").c_str(), required_.shared(), indent);
 
 
 }
