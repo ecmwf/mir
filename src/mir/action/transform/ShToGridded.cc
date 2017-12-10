@@ -171,14 +171,14 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
     {
         eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_setup");
-        size_t before = eckit::system::SystemInfo::instance().memoryAllocated();
+        // size_t before = eckit::system::SystemInfo::instance().memoryAllocated();
         ASSERT(trans_setup(&trans) == 0);
-        size_t after = eckit::system::SystemInfo::instance().memoryAllocated();
-        if (after > before) {
-            eckit::Log::info() << "SH2GG trans_setup memory usage " << (after - before) << " " <<
-                               double(after - before) / double(path.size()) * 100.0 << "% of coefficients size" << std::endl;
-            memory += after - before;
-        }
+        // size_t after = eckit::system::SystemInfo::instance().memoryAllocated();
+        // if (after > before) {
+        //     eckit::Log::info() << "SH2GG trans_setup memory usage " << (after - before) << " " <<
+        //                        double(after - before) / double(path.size()) * 100.0 << "% of coefficients size" << std::endl;
+        //     memory += after - before;
+        // }
     }
 
     memory += tc.loader_->inSharedMemory() ? 0 : size_t(path.size());
