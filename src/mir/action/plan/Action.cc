@@ -42,6 +42,7 @@ void Action::custom(std::ostream & out) const {
 
 
 void Action::perform(context::Context & ctx) const {
+    eckit::TraceResourceUsage<LibMir> usage(name());
     execute(ctx);
 }
 
