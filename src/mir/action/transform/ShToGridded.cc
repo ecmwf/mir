@@ -151,8 +151,8 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
     struct Trans_t &trans = tc.trans_;
     fillTrans(trans, options, representation);
 
-    size_t memory = tc.loader_->inSharedMemory() ? 0 : size_t(path.size());
-    size_t shared = tc.loader_->inSharedMemory() ? size_t(path.size()) : 0;
+    size_t memory = 0;
+    size_t shared = 0;
 
     {
         eckit::TraceResourceUsage<LibMir> usage("SH2GG LegendreLoaderFactory");
@@ -174,13 +174,15 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
         size_t before = eckit::system::SystemInfo::instance().memoryAllocated();
         ASSERT(trans_setup(&trans) == 0);
         size_t after = eckit::system::SystemInfo::instance().memoryAllocated();
-        if(after > before) {
+        if (after > before) {
             eckit::Log::info() << "SH2GG trans_setup memory usage " << (after - before) << " " <<
-                double(after - before)/double(path.size())*100.0 << "% of coefficients size" << std::endl;
+                               double(after - before) / double(path.size()) * 100.0 << "% of coefficients size" << std::endl;
             memory += after - before;
         }
     }
 
+    memory += tc.loader_->inSharedMemory() ? 0 : size_t(path.size());
+    shared += tc.loader_->inSharedMemory() ? size_t(path.size()) : 0;
     trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
 
 
