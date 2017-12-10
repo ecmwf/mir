@@ -30,8 +30,8 @@ public:
     explicit InMemoryCacheUsage();
     explicit InMemoryCacheUsage(const std::string&);
 
-    explicit InMemoryCacheUsage(unsigned long long memory, unsigned long long shared);
-    explicit InMemoryCacheUsage(unsigned long long size, bool inSharedMemory);
+    explicit InMemoryCacheUsage(size_t memory , size_t shared );
+    explicit InMemoryCacheUsage(size_t size, bool inSharedMemory);
     explicit InMemoryCacheUsage(eckit::Stream &) ;
 
     InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;
@@ -47,13 +47,13 @@ public:
     operator bool() const;
     operator std::string() const;
 
-    unsigned long long memory() const;
-    unsigned long long shared() const;
+    size_t memory() const;
+    size_t shared() const;
 
 private:
 
-    unsigned long long memory_;
-    unsigned long long shared_;
+    size_t memory_;
+    size_t shared_;
 
     void encode(eckit::Stream &) const;
     void decode(eckit::Stream &);

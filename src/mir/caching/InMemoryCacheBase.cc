@@ -48,7 +48,7 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    InMemoryCacheUsage result(0ULL, 0ULL);
+    InMemoryCacheUsage result;
 
     for (auto j = m->begin(); j != m->end(); ++j) {
         result += (*j)->footprint();
@@ -62,7 +62,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
 
-    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT", InMemoryCacheUsage(0ULL, 0ULL));
+    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT", InMemoryCacheUsage());
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 
@@ -76,7 +76,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
         more = false;
 
-        InMemoryCacheUsage totalFootprint(0ULL, 0ULL);
+        InMemoryCacheUsage totalFootprint;
 
         for (auto j = m->begin(); j != m->end(); ++j) {
             totalFootprint += (*j)->footprint();

@@ -18,6 +18,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/log/ResourceUsage.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -51,40 +53,42 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     std::vector<double> rspec_vo (size_t(trans.nspec2));
     std::vector<double> rspec_d  (size_t(trans.nspec2));
 
+    {
+        eckit::TraceResourceUsage<LibMir> usage("SH2GG ShVodTouvGridded");
 
-    // distribute
-    struct DistSpec_t distspec = new_distspec(&trans);
-    distspec.nfrom  = nfrom.data();
-    distspec.nfld   = 1;
-    distspec.rspecg = field.values(0).data();
-    distspec.rspec  = rspec_vo.data();
-    ASSERT(trans_distspec(&distspec) == 0);
+        // distribute
+        struct DistSpec_t distspec = new_distspec(&trans);
+        distspec.nfrom  = nfrom.data();
+        distspec.nfld   = 1;
+        distspec.rspecg = field.values(0).data();
+        distspec.rspec  = rspec_vo.data();
+        ASSERT(trans_distspec(&distspec) == 0);
 
-    distspec = new_distspec(&trans);
-    distspec.nfrom  = nfrom.data();
-    distspec.nfld   = 1;
-    distspec.rspecg = field.values(1).data();
-    distspec.rspec  = rspec_d.data();
-    ASSERT(trans_distspec(&distspec) == 0);
-
-
-    // transform
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.nvordiv = 1;
-    invtrans.rspvor  = rspec_vo.data();
-    invtrans.rspdiv  = rspec_d.data();
-    invtrans.rgp     = rgp.data();
-    ASSERT(trans_invtrans(&invtrans) == 0);
+        distspec = new_distspec(&trans);
+        distspec.nfrom  = nfrom.data();
+        distspec.nfld   = 1;
+        distspec.rspecg = field.values(1).data();
+        distspec.rspec  = rspec_d.data();
+        ASSERT(trans_distspec(&distspec) == 0);
 
 
-    // gather
-    struct GathGrid_t gathgrid = new_gathgrid(&trans);
-    gathgrid.rgp  = rgp.data();
-    gathgrid.rgpg = output.data();
-    gathgrid.nfld = 2;
-    gathgrid.nto  = nto.data();
-    ASSERT(trans_gathgrid(&gathgrid) == 0);
+        // transform
+        struct InvTrans_t invtrans = new_invtrans(&trans);
+        invtrans.nvordiv = 1;
+        invtrans.rspvor  = rspec_vo.data();
+        invtrans.rspdiv  = rspec_d.data();
+        invtrans.rgp     = rgp.data();
+        ASSERT(trans_invtrans(&invtrans) == 0);
 
+
+        // gather
+        struct GathGrid_t gathgrid = new_gathgrid(&trans);
+        gathgrid.rgp  = rgp.data();
+        gathgrid.rgpg = output.data();
+        gathgrid.nfld = 2;
+        gathgrid.nto  = nto.data();
+        ASSERT(trans_gathgrid(&gathgrid) == 0);
+    }
 
     // configure paramIds for u/v
     const eckit::Configuration& config = LibMir::instance().configuration();

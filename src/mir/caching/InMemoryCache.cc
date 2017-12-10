@@ -32,7 +32,7 @@ template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
     name_(name),
     cleanupAtExit_(cleanupAtExit),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(capacity, 0ULL)) ,
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(capacity, size_t())) ,
     users_(0) {
 }
 
@@ -72,9 +72,13 @@ T* InMemoryCache<T>::find(const std::string & key) const {
 
 template<class T>
 void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSharedMemory) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
     InMemoryCacheUsage usage(size, inSharedMemory);
+    footprint(key, usage);
+}
+
+template<class T>
+void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsage& usage) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     eckit::Log::info() << "CACHE-FOOTPRINT-"
                        << name_
@@ -93,7 +97,7 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSh
     footprint(); //  Update stats
 
 
-    InMemoryCacheUsage result(0ULL, 0ULL);
+    InMemoryCacheUsage result;
     for (auto j = keys_.begin(); j != keys_.end(); ++j) {
         result += (*j).second;
     }
@@ -112,9 +116,13 @@ void InMemoryCache<T>::footprint(const std::string & key, size_t size, bool inSh
 
 template<class T>
 void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
     InMemoryCacheUsage usage(size, inSharedMemory);
+    reserve(usage);
+}
+
+template<class T>
+void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     auto f = footprint();
     auto c = capacity();
@@ -181,7 +189,7 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
         NOTIMP; // Needs to think more about it
         delete (*k).second;
         (*k).second = new Entry(ptr);
-        keys_[key] = InMemoryCacheUsage(1ULL, 0ULL);
+        keys_[key] = InMemoryCacheUsage(size_t(1), size_t(0));
         return *ptr;
     }
 
@@ -191,7 +199,7 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
 
     cache_[key] = new Entry(ptr);
 
-    keys_[key] =     InMemoryCacheUsage(1ULL, 0ULL);
+    keys_[key] =     InMemoryCacheUsage(size_t(1), size_t(0));
     ;
     statistics_.unique_ = keys_.size();
 
@@ -274,7 +282,7 @@ template<class T>
 InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, bool force) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    InMemoryCacheUsage purged(0ULL , 0ULL);
+    InMemoryCacheUsage purged;
 
     if (users_ && !force) {
         return purged;

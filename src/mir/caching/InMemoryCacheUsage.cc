@@ -30,13 +30,13 @@ InMemoryCacheUsage::InMemoryCacheUsage():
 
 }
 
-InMemoryCacheUsage::InMemoryCacheUsage(unsigned long long memory, unsigned long long shared):
+InMemoryCacheUsage::InMemoryCacheUsage(size_t memory, size_t shared):
     memory_(memory),
     shared_(shared) {
 
 }
 
-InMemoryCacheUsage::InMemoryCacheUsage(unsigned long long size, bool inSharedMemory):
+InMemoryCacheUsage::InMemoryCacheUsage(size_t size, bool inSharedMemory):
     memory_(inSharedMemory ? 0 : size),
     shared_(inSharedMemory ? size : 0) {
 }
@@ -46,7 +46,7 @@ InMemoryCacheUsage::InMemoryCacheUsage(const std::string& s):
     shared_(0) {
 
     eckit::Tokenizer parse(",");
-    eckit::Translator<std::string, unsigned long long> s2l;
+    eckit::Translator<std::string, size_t> s2l;
 
     std::vector<std::string> v;
     parse(s, v);
@@ -92,16 +92,16 @@ InMemoryCacheUsage InMemoryCacheUsage::operator/(size_t n) const {
 InMemoryCacheUsage InMemoryCacheUsage::operator-(const InMemoryCacheUsage& other) const {
     // Warning, this is not a real substraction
 
-    unsigned long long m = memory_ >= other.memory_ ? memory_ - other.memory_ : 0;
-    unsigned long long s = shared_ >= other.shared_ ? shared_ - other.shared_ : 0;
+    size_t m = memory_ >= other.memory_ ? memory_ - other.memory_ : 0;
+    size_t s = shared_ >= other.shared_ ? shared_ - other.shared_ : 0;
 
     return  InMemoryCacheUsage(m, s);
 }
 
 InMemoryCacheUsage InMemoryCacheUsage::operator+(const InMemoryCacheUsage& other) const {
 
-    unsigned long long m = memory_ + other.memory_;
-    unsigned long long s = shared_ + other.shared_;
+    size_t m = memory_ + other.memory_;
+    size_t s = shared_ + other.shared_;
 
     return  InMemoryCacheUsage(m, s);
 }
@@ -144,11 +144,11 @@ void InMemoryCacheUsage::print(std::ostream& out) const {
     out << "[memory=" << eckit::Bytes(memory_) << ",shared=" << eckit::Bytes(shared_) << "]";
 }
 
-unsigned long long InMemoryCacheUsage::memory() const {
+size_t InMemoryCacheUsage::memory() const {
     return memory_;
 }
 
-unsigned long long InMemoryCacheUsage::shared() const {
+size_t InMemoryCacheUsage::shared() const {
     return shared_;
 }
 

@@ -46,7 +46,10 @@ public:  // methods
     iterator end() const { return 0; }
 
     void footprint(const std::string& key, size_t size, bool inSharedMemory);
+    void footprint(const std::string& key, const InMemoryCacheUsage&);
+
     void reserve(size_t size, bool inSharedMemory);
+    void reserve(const InMemoryCacheUsage&);
 
     void erase(const std::string& key);
 
@@ -85,7 +88,7 @@ private:
             hits_(1),
             last_(::time(0)),
             insert_(::time(0)),
-            footprint_(1ULL, 0ULL) {}
+            footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;
