@@ -25,7 +25,7 @@ namespace caching {
 
 struct LegendreCacheTraits {
 
-    typedef eckit::CacheManagerNoLock Locker;
+    typedef eckit::CacheManagerFileLock Locker;
 
     static const char* name();
     static int version();

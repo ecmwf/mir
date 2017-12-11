@@ -31,18 +31,9 @@ namespace mir {
 namespace caching {
 
 
-class WeightCacheLock {
-    eckit::PathName path_;
-    eckit::Semaphore lock_;
-public:
-    WeightCacheLock(const std::string&);
-    void lock();
-    void unlock();
-};
-
 struct WeightCacheTraits {
 
-    typedef WeightCacheLock Locker;
+    typedef eckit::CacheManagerFileLock  Locker;
     typedef method::WeightMatrix value_type;
 
     static const char* name();
