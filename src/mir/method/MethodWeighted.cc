@@ -166,13 +166,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     }
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
 
+    size_t footprint = W.footprint();
+    InMemoryCacheUsage usage(W.inSharedMemory() ? 0 : footprint, W.inSharedMemory() ? footprint : 0);
 
     // insert matrix in the in-memory cache and update memory footprint
     WeightMatrix& w = matrix_cache[key];
     std::swap(w, W);
 
-    size_t footprint = w.footprint();
-    InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
 
     matrix_cache.footprint(key, usage);
     return w;
