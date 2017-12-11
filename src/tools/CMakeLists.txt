@@ -20,8 +20,6 @@ list(APPEND tools
     mir-gaussian-fractions
     mir-get-data
     mir-integrate
-    mir-spectral-transform
-    mir-spherical-area
 )
 endif()
 
