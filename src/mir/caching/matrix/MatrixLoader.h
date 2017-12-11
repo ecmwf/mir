@@ -50,13 +50,6 @@ public:
 protected:
     eckit::PathName path_;
 
-    virtual void print(std::ostream&) const = 0;
-
-private:
-    friend std::ostream& operator<<(std::ostream& s, const MatrixLoader& p) {
-        p.print(s);
-        return s;
-    }
 };
 
 
