@@ -88,7 +88,7 @@ public:
         options_.push_back(new SimpleOption<bool> ("local", "Atlas/Trans: force local transform (default false)"));
         options_.push_back(new SimpleOption<bool> ("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool> ("caching", "MIR: caching (default true)"));
-        options_.push_back(new SimpleOption<bool> ("validate", "MIR: validate results (default true)"));
+        options_.push_back(new SimpleOption<bool> ("validate", "MIR: validate results (default false)"));
     }
 };
 
@@ -172,7 +172,6 @@ atlas::Grid getOutputGrid(const mir::param::MIRParametrisation& parametrisation,
 }
 
 
-
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
 
@@ -185,7 +184,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     size_t multiScalar = 1;
     args.get("multi-scalar", multiScalar);
 
-    bool validate = true;
+    bool validate = false;
     args.get("validate", validate);
 
     bool local = false;
@@ -206,7 +205,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
 
     // Setup output file
-    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), parametrisation));
+    eckit::ScopedPtr< mir::output::MIROutput > output(mir::output::MIROutputFactory::build(args(1), parametrisation));
     ASSERT(output);
 
 
@@ -218,7 +217,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         multi->appendScalarInput(new mir::input::GribFileInput(args(0), 0, 2)); // vo
         multi->appendScalarInput(new mir::input::GribFileInput(args(0), 1, 2)); // d
         input.reset(multi);
-    } else if (multiScalar > 1) {
+    } else {
+        ASSERT(multiScalar > 0);
 
         auto multi = new mir::input::MultiScalarInput();
         for (size_t i = 0; i < multiScalar; ++i) {
@@ -226,8 +226,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         }
         input.reset(multi);
 
-    } else {
-        input.reset(new mir::input::GribFileInput(args(0)));
     }
     ASSERT(input);
 
@@ -298,54 +296,57 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 field.update(result, 1);
                 field.metadata(1, "paramId", config.getLong("parameter-id-v", 132));
 
-            } else if (multiScalar > 1) {
+            } else {
                 ASSERT(multiScalar == field.dimensions());
 
                 // set input & output working area
-                // spectral coefficients are "interlaced"
-                // FIXME: this horrible copy!
-                std::vector<double> spectra(multiScalar * N * 2);
-                for (size_t i = 0; i < multiScalar; ++i) {
-                    const std::vector<double>& values = field.values(i);
-                    ASSERT(values.size() == N * 2);
-
-                    for (size_t j = 0; j < N * 2; ++j) {
-                        spectra[ j * multiScalar + i ] = values[j];
+                // spectral coefficients are "interlaced", avoid copies if transforming one field only)
+                std::vector<double> input;
+                if (multiScalar > 1) {
+                    input.resize(multiScalar * N * 2);
+                    for (size_t i = 0; i < multiScalar; ++i) {
+                        const std::vector<double>& spectra = field.values(i);
+                        if (spectra.size() != N * 2) {
+                            const std::string msg = "MIRSpectralTransform: expected field values size " + std::to_string(N * 2) + " (T=" + std::to_string(T) + "), got " + std::to_string(spectra.size());
+                            eckit::Log::error() << msg << std::endl;
+                            throw eckit::UserError(msg);
+                        }
+                        for (size_t j = 0; j < N * 2; ++j) {
+                            input[ j * multiScalar + i ] = spectra[j];
+                        }
                     }
                 }
 
                 const size_t Ngp = outputGrid.size();
                 std::vector<double> output(multiScalar * Ngp);
 
-                trans.invtrans(int(multiScalar), spectra.data(), output.data(), atlas::option::global());
+                trans.invtrans(
+                            int(multiScalar),
+                            multiScalar > 1 ? input.data() : field.values(0).data(),
+                            output.data(),
+                            atlas::option::global() );
 
                 // set field values (again, avoid copies for one field only)
-                std::vector<double>::const_iterator here = output.begin();
-                for (size_t i = 0; i < multiScalar; i++) {
-                    std::vector<double> output_field(here, here + int(Ngp));
+                if (multiScalar == 1) {
+                    field.update(output, 0);
+                } else {
+                    std::vector<double>::const_iterator here = output.begin();
+                    for (size_t i = 0; i < multiScalar; ++i) {
+                        std::vector<double> output_field(here, here + int(Ngp));
 
-                    field.update(output_field, i);
-                    here += int(Ngp);
+                        field.update(output_field, i);
+                        here += int(Ngp);
+                    }
                 }
 
-            } else {
-                for (size_t d = 0; d < field.dimensions(); ++d) {
-
-                    const std::vector<double>& spectra = field.values(d);
-                    ASSERT(spectra.size() == N * 2);
-
-                    std::vector<double> result(outputGrid.size(), 0);
-
-                    trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data(), atlas::option::global());
-
-                    field.update(result, d);
-                }
             }
 
             // set field representation
             field.representation(outputRepresentation);
             if (validate) {
+                eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: MIR validate..." << std::endl;
                 field.validate();
+                eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: MIR validate." << std::endl;
             }
 
             // save
