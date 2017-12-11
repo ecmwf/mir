@@ -37,6 +37,8 @@
 #include "eckit/log/TraceTimer.h"
 #include "eckit/os/SemLocker.h"
 #include "eckit/os/Stat.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -70,6 +72,10 @@ public:
         ::close(fd_);
     }
 };
+
+static eckit::Mutex local_mutex;
+static std::map<std::string, int> cache;
+
 
 }
 
@@ -112,6 +118,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     size_(path.size()),
     unload_(false) {
 
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     eckit::Log::debug<LibMir>() << "Loading shared memory legendre coefficients from " << path << std::endl;
 
     std::string name;
@@ -131,55 +139,70 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::SeriousBug(os.str());
     }
 
-    key_t key = ftok(real.asString().c_str(), 1);
-    if (key == key_t(-1)) {
-        throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
-    }
-
-    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-    // Try to get an exclusing lock, we may be waiting for another process
-    // to create the memory segment and load it with the file content
-    int sem;
-    SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
-    eckit::SemLocker locker(sem, real, max_wait_lock);
-
-    // O_LARGEFILE ?
-    int fd;
-    SYSCALL(fd = ::open(real.asString().c_str(), O_RDONLY));
-    AutoFDClose c(fd);
 
     int page_size = ::getpagesize();
     ASSERT(page_size > 0);
-    size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
 
-#ifdef IPC_INFO
-    // Only on Linux?
-    struct shminfo shm_info;
-    SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::debug<LibMir>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
-#endif
-    // This may return EINVAL is the segment is too large 256MB
-    // To find the maximum:
-    // Linux:ipcs -l, Mac/bsd: ipcs -M
-
-    // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-    //                          std::hex << key << std::dec << ", page size: "
-    //                          << eckit::Bytes(page_size) << ", pages: "
-    //                          << eckit::BigNum(shmsize / page_size)
-    //                          << std::endl;
+    // There seems to be a bug on Cray HPC, where shmget()
+    // returns different shmid for the same key
 
     int shmid;
-    if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
-        std::ostringstream oss;
-        oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
-        throw eckit::FailedSystemCall(oss.str());
-    }
-
-
     char hostname[256];
     SYSCALL(::gethostname(hostname, sizeof(hostname)));
-    eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+
+    auto j = cache.find(real);
+    if (j != cache.end()) {
+        shmid = (*j).second;
+        eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " cached shmid " << shmid << std::endl;
+
+    }
+    else {
+        key_t key = ftok(real.asString().c_str(), 1);
+        if (key == key_t(-1)) {
+            throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
+        }
+
+        static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+
+        // Try to get an exclusing lock, we may be waiting for another process
+        // to create the memory segment and load it with the file content
+        int sem;
+        SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
+        eckit::SemLocker locker(sem, real, max_wait_lock);
+
+        // O_LARGEFILE ?
+        int fd;
+        SYSCALL(fd = ::open(real.asString().c_str(), O_RDONLY));
+        AutoFDClose c(fd);
+
+        size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
+
+#ifdef IPC_INFO
+        // Only on Linux?
+        struct shminfo shm_info;
+        SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
+        eckit::Log::debug<LibMir>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
+#endif
+        // This may return EINVAL is the segment is too large 256MB
+        // To find the maximum:
+        // Linux:ipcs -l, Mac/bsd: ipcs -M
+
+        // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+        //                          std::hex << key << std::dec << ", page size: "
+        //                          << eckit::Bytes(page_size) << ", pages: "
+        //                          << eckit::BigNum(shmsize / page_size)
+        //                          << std::endl;
+
+        if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
+            std::ostringstream oss;
+            oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
+            throw eckit::FailedSystemCall(oss.str());
+        }
+
+        cache[real] = shmid;
+
+        eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+    }
 
 #ifdef SHM_PAGESIZE
     {
@@ -261,7 +284,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     eckit::StdPipe f("ipcs", "r");
     char line[1024];
 
-    while(fgets(line, sizeof(line), f)) {
+    while (fgets(line, sizeof(line), f)) {
         eckit::Log::info() << "LOAD IPCS " << line << std::endl;
     }
 }
@@ -329,7 +352,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     eckit::StdPipe f("ipcs", "r");
     char line[1024];
 
-    while(fgets(line, sizeof(line), f)) {
+    while (fgets(line, sizeof(line), f)) {
         eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
     }
 }
