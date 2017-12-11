@@ -303,12 +303,12 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 // set input & output working area
                 // spectral coefficients are "interlaced"
                 // FIXME: this horrible copy!
-                std::vector<double> spectra(multiScalar * N);
+                std::vector<double> spectra(multiScalar * N * 2);
                 for (size_t i = 0; i < multiScalar; ++i) {
                     const std::vector<double>& values = field.values(i);
                     ASSERT(values.size() == N * 2);
 
-                    for (size_t j = 0; j < N; ++j) {
+                    for (size_t j = 0; j < N * 2; ++j) {
                         spectra[ j * multiScalar + i ] = values[j];
                     }
                 }
