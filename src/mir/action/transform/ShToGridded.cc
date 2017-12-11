@@ -24,12 +24,12 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Timer.h"
-#include "eckit/system/SystemInfo.h"
 
+#include "eckit/system/SystemInfo.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/action/plan/Action.h"
 #include "mir/action/transform/TransCache.h"
 #include "mir/action/transform/TransInitor.h"
 #include "mir/caching/InMemoryCache.h"
@@ -73,6 +73,9 @@ static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
+
+    eckit::TraceResourceUsage<LibMir> usage("Create legendre coefficients");
+
 
     eckit::Log::info() << "Create legendre coefficients "
                        << representation
