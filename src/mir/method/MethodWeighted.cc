@@ -173,6 +173,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     WeightMatrix& w = matrix_cache[key];
     std::swap(w, W);
 
+    size_t footprint = w.footprint();
+    InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
+
+    eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << std::endl;
 
     matrix_cache.footprint(key, usage);
     return w;
