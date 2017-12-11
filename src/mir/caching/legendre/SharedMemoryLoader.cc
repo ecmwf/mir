@@ -258,12 +258,12 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     }
 
 
-    eckit::StdPipe f("ipcs", "r");
-    char line[1024];
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];
 
-    while(fgets(line, sizeof(line), f)) {
-        eckit::Log::info() << "LOAD IPCS " << line << std::endl;
-    }
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "LOAD IPCS " << line << std::endl;
+    // }
 }
 
 
@@ -326,12 +326,12 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 #endif
 
 
-    eckit::StdPipe f("ipcs", "r");
-    char line[1024];
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];
 
-    while(fgets(line, sizeof(line), f)) {
-        eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
-    }
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
+    // }
 }
 
 void SharedMemoryLoader::print(std::ostream &out) const {
