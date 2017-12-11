@@ -69,7 +69,7 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    value_type tmp( InterpolatorLoaderFactory::build(manager.loader(), path) );
+    value_type tmp( MatrixLoaderFactory::build(manager.loader(), path) );
     w.swap(tmp);
 
     w.validate("fromCache");

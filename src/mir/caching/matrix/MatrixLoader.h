@@ -63,13 +63,13 @@ private:
 //----------------------------------------------------------------------------------------------------------------------
 
 
-class InterpolatorLoaderFactory {
+class MatrixLoaderFactory {
     std::string name_;
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) = 0;
 
 protected:
-    InterpolatorLoaderFactory(const std::string&);
-    virtual ~InterpolatorLoaderFactory();
+    MatrixLoaderFactory(const std::string&);
+    virtual ~MatrixLoaderFactory();
 
 public:
     static MatrixLoader* build(const std::string&, const eckit::PathName& path);
@@ -77,13 +77,13 @@ public:
 };
 
 template <class T>
-class InterpolatorLoaderBuilder : public InterpolatorLoaderFactory {
+class InterpolatorLoaderFactory : public MatrixLoaderFactory {
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) {
         return new T(name, path);
     }
 
 public:
-    InterpolatorLoaderBuilder(const std::string& name) : InterpolatorLoaderFactory(name) {}
+    InterpolatorLoaderFactory(const std::string& name) : MatrixLoaderFactory(name) {}
 };
 
 

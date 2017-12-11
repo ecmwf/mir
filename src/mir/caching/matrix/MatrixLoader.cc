@@ -60,20 +60,20 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, InterpolatorLoaderFactory* >* m = 0;
+static std::map< std::string, MatrixLoaderFactory* >* m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, InterpolatorLoaderFactory* >();
+    m = new std::map< std::string, MatrixLoaderFactory* >();
 }
 }  // (anonymous namespace)
 
 
-InterpolatorLoaderFactory::InterpolatorLoaderFactory(const std::string& name) : name_(name) {
+MatrixLoaderFactory::MatrixLoaderFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("InterpolatorLoaderFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("MatrixLoaderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -81,29 +81,29 @@ InterpolatorLoaderFactory::InterpolatorLoaderFactory(const std::string& name) : 
 }
 
 
-InterpolatorLoaderFactory::~InterpolatorLoaderFactory() {
+MatrixLoaderFactory::~MatrixLoaderFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     m->erase(name_);
 }
 
 
-MatrixLoader* InterpolatorLoaderFactory::build(const std::string& name, const eckit::PathName& path) {
+MatrixLoader* MatrixLoaderFactory::build(const std::string& name, const eckit::PathName& path) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "InterpolatorLoaderFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MatrixLoaderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "InterpolatorLoaderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("InterpolatorLoaderFactory: unknown '" + name + "'");
+        list(eckit::Log::error() << "MatrixLoaderFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("MatrixLoaderFactory: unknown '" + name + "'");
     }
 
     return (*j).second->make(name, path);
 }
 
-void InterpolatorLoaderFactory::list(std::ostream& out) {
+void MatrixLoaderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

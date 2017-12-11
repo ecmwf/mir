@@ -329,10 +329,10 @@ bool SharedMemoryLoader::inSharedMemory() const {
 
 namespace {
 
-static InterpolatorLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
-static InterpolatorLoaderBuilder<SharedMemoryLoader> loader2("shmem");
-static InterpolatorLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
-static InterpolatorLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
+static InterpolatorLoaderFactory<SharedMemoryLoader> loader1("shared-memory");
+static InterpolatorLoaderFactory<SharedMemoryLoader> loader2("shmem");
+static InterpolatorLoaderFactory<SharedMemoryLoader> loader3("tmp-shmem");
+static InterpolatorLoaderFactory<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
 
