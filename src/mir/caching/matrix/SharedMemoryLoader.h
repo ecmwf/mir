@@ -18,18 +18,18 @@
 #ifndef mir_caching_SharedMemoryLoader_H
 #define mir_caching_SharedMemoryLoader_H
 
-#include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/method/WeightMatrix.h"
 
 namespace mir {
 namespace caching {
-namespace interpolator {
+namespace matrix {
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
 
-class SharedMemoryLoader : public InterpolatorLoader {
+class SharedMemoryLoader : public MatrixLoader {
 public:
 
     SharedMemoryLoader(const std::string& name, const eckit::PathName& path);
@@ -60,7 +60,7 @@ private:
 //----------------------------------------------------------------------------------------------------------------------
 
 
-} // namespace interpolator
+} // namespace matrix
 } // namespace caching
 } // namespace mir
 

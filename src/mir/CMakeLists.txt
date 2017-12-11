@@ -122,12 +122,12 @@ list(
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
-    caching/interpolator/FileLoader.cc
-    caching/interpolator/FileLoader.h
-    caching/interpolator/InterpolatorLoader.cc
-    caching/interpolator/InterpolatorLoader.h
-    caching/interpolator/SharedMemoryLoader.cc
-    caching/interpolator/SharedMemoryLoader.h
+    caching/matrix/FileLoader.cc
+    caching/matrix/FileLoader.h
+    caching/matrix/MatrixLoader.cc
+    caching/matrix/MatrixLoader.h
+    caching/matrix/SharedMemoryLoader.cc
+    caching/matrix/SharedMemoryLoader.h
     caching/legendre/FileLoader.cc
     caching/legendre/FileLoader.h
     caching/legendre/LegendreLoader.cc

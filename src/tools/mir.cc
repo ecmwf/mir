@@ -31,7 +31,7 @@
 
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
-#include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/DummyInput.h"

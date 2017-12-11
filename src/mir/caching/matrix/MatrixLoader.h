@@ -29,16 +29,16 @@ class MIRParametrisation;
 }
 
 namespace caching {
-namespace interpolator {
+namespace matrix {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class InterpolatorLoader : public eckit::linalg::SparseMatrix::Allocator {
+class MatrixLoader : public eckit::linalg::SparseMatrix::Allocator {
 
 public:
-    InterpolatorLoader(const std::string&, const eckit::PathName&);
+    MatrixLoader(const std::string&, const eckit::PathName&);
 
-    virtual ~InterpolatorLoader();
+    virtual ~MatrixLoader();
 
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
@@ -53,7 +53,7 @@ protected:
     virtual void print(std::ostream&) const = 0;
 
 private:
-    friend std::ostream& operator<<(std::ostream& s, const InterpolatorLoader& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MatrixLoader& p) {
         p.print(s);
         return s;
     }
@@ -65,20 +65,20 @@ private:
 
 class InterpolatorLoaderFactory {
     std::string name_;
-    virtual InterpolatorLoader* make(const std::string& name, const eckit::PathName& path) = 0;
+    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) = 0;
 
 protected:
     InterpolatorLoaderFactory(const std::string&);
     virtual ~InterpolatorLoaderFactory();
 
 public:
-    static InterpolatorLoader* build(const std::string&, const eckit::PathName& path);
+    static MatrixLoader* build(const std::string&, const eckit::PathName& path);
     static void list(std::ostream&);
 };
 
 template <class T>
 class InterpolatorLoaderBuilder : public InterpolatorLoaderFactory {
-    virtual InterpolatorLoader* make(const std::string& name, const eckit::PathName& path) {
+    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) {
         return new T(name, path);
     }
 
@@ -89,7 +89,7 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace interpolator
+}  // namespace matrix
 }  // namespace caching
 }  // namespace mir
 

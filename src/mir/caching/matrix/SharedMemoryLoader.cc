@@ -15,7 +15,7 @@
 /// @date Oct 2016
 
 
-#include "mir/caching/interpolator/SharedMemoryLoader.h"
+#include "mir/caching/matrix/SharedMemoryLoader.h"
 
 #include <errno.h>
 #include <unistd.h>
@@ -46,7 +46,7 @@
 
 namespace mir {
 namespace caching {
-namespace interpolator {
+namespace matrix {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -98,12 +98,12 @@ public:
 
 
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
-    InterpolatorLoader(name, path),
+    MatrixLoader(name, path),
     address_(0),
     size_(0),
     unload_(false) {
 
-    eckit::Log::debug<LibMir>() << "Loading shared memory interpolator from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading shared memory matrix from " << path << std::endl;
 
     /// FIXME size is based on file.size() -- which is assumed to be bigger than the memory footprint
     /** size_t sz = sizeof(SHMInfo) + w.footprint(); **/
@@ -339,7 +339,7 @@ static InterpolatorLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory"
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace interpolator
+}  // namespace matrix
 }  // namespace caching
 }  // namespace mir
 

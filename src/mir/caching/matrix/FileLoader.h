@@ -18,16 +18,16 @@
 #define mir_caching_FileLoader_H
 
 #include "eckit/memory/MemoryBuffer.h"
-#include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/matrix/MatrixLoader.h"
 
 namespace mir {
 namespace caching {
-namespace interpolator {
+namespace matrix {
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class FileLoader : public InterpolatorLoader {
+class FileLoader : public MatrixLoader {
 public:
     FileLoader(const std::string& name, const eckit::PathName& path);
 
@@ -50,7 +50,7 @@ private:
 //----------------------------------------------------------------------------------------------------------------------
 
 
-} // namespace interpolator
+} // namespace matrix
 } // namespace caching
 } // namespace mir
 

@@ -19,7 +19,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/memory/ScopedPtr.h"
 
-#include "mir/caching/interpolator/SharedMemoryLoader.h"
+#include "mir/caching/matrix/SharedMemoryLoader.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/method/WeightMatrix.h"
 
@@ -65,7 +65,7 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
 
         WeightMatrix W;
 
-        mir::caching::interpolator::SharedMemoryLoader::loadSharedMemory(path, W);
+        mir::caching::matrix::SharedMemoryLoader::loadSharedMemory(path, W);
 
         eckit::linalg::SparseMatrix& spm = W;
         eckit::Log::info()
@@ -96,7 +96,7 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
     }
 
     if (args.has("unload")) {
-        mir::caching::interpolator::SharedMemoryLoader::unloadSharedMemory(path);
+        mir::caching::matrix::SharedMemoryLoader::unloadSharedMemory(path);
     }
 }
 

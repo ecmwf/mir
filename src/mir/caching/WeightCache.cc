@@ -11,7 +11,7 @@
 #include "mir/caching/WeightCache.h"
 
 #include "eckit/io/Buffer.h"
-#include "mir/caching/interpolator/InterpolatorLoader.h"
+#include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 #include "eckit/os/AutoUmask.h"
@@ -21,7 +21,7 @@
 namespace mir {
 namespace caching {
 
-using namespace mir::caching::interpolator;
+using namespace mir::caching::matrix;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ using namespace mir::caching::interpolator;
 static std::string extract_loader(const param::MIRParametrisation& param) {
 
     std::string name;
-    if (param.get("interpolator-loader", name)) {
+    if (param.get("matrix-loader", name)) {
         return name;
     }
 

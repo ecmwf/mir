@@ -14,7 +14,7 @@
 ///
 /// @date Oct 2016
 
-#include "mir/caching/interpolator/FileLoader.h"
+#include "mir/caching/matrix/FileLoader.h"
 
 #include <fcntl.h>
 #include <iostream>
@@ -31,14 +31,14 @@ using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
-namespace interpolator {
+namespace matrix {
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
 
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
-    InterpolatorLoader(name, path),
+    MatrixLoader(name, path),
     buffer_(path.size()) {
 
     // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
@@ -77,6 +77,6 @@ static InterpolatorLoaderBuilder<FileLoader> loader("file-io");
 
 
 
-} // namespace interpolator
+} // namespace matrix
 } // namespace caching
 } // namespace mir
