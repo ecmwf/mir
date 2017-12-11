@@ -29,6 +29,7 @@
 #include "eckit/testing/Test.h"
 
 #include "atlas/grid.h"
+#include "atlas/option.h"
 #include "atlas/trans/Trans.h"
 
 #include "mir/action/context/Context.h"
@@ -283,7 +284,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 const size_t Ngp = outputGrid.size();
                 std::vector<double> output(Ngp * 2);
 
-                trans.invtrans(/* nb_vordiv_fields = */ 1, spectra_vo.data(), spectra_d.data(), output.data());
+                trans.invtrans(/* nb_vordiv_fields = */ 1, spectra_vo.data(), spectra_d.data(), output.data(), atlas::option::global());
 
                 // copy u/v result, forcing paramId
                 const eckit::Configuration& config = mir::LibMir::instance().configuration();
@@ -316,7 +317,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 const size_t Ngp = outputGrid.size();
                 std::vector<double> output(multiScalar * Ngp);
 
-                trans.invtrans(int(multiScalar), spectra.data(), output.data());
+                trans.invtrans(int(multiScalar), spectra.data(), output.data(), atlas::option::global());
 
                 // set field values (again, avoid copies for one field only)
                 std::vector<double>::const_iterator here = output.begin();
@@ -335,7 +336,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     std::vector<double> result(outputGrid.size(), 0);
 
-                    trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data());
+                    trans.invtrans(/* nb_scalar_fields = */ 1, spectra.data(), result.data(), atlas::option::global());
 
                     field.update(result, d);
                 }
