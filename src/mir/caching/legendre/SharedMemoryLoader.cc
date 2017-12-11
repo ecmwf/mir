@@ -176,6 +176,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::FailedSystemCall(oss.str());
     }
 
+
+    char hostname[256];
+    SYSCALL(::gethostname(hostname, sizeof(hostname)));
+    eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+
 #ifdef SHM_PAGESIZE
     {
 
