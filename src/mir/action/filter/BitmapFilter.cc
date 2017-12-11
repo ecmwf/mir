@@ -67,7 +67,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
         eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
-        cache.footprint(path_, footprint, false);
+        cache.footprint(path_, InMemoryCacheUsage(footprint, 0));
         return result;
     }
     return *j;

@@ -45,7 +45,6 @@ public:  // methods
 
     iterator end() const { return 0; }
 
-    void footprint(const std::string& key, size_t size, bool inSharedMemory);
     void footprint(const std::string& key, const InMemoryCacheUsage&);
 
     void reserve(size_t size, bool inSharedMemory);

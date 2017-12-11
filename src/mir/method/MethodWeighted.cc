@@ -170,8 +170,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // insert matrix in the in-memory cache and update memory footprint
     WeightMatrix& w = matrix_cache[key];
     std::swap(w, W);
-    matrix_cache.footprint(key, w.footprint(), w.inSharedMemory());
 
+    size_t footprint = w.footprint();
+    InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
+
+    matrix_cache.footprint(key, usage);
     return w;
 }
 

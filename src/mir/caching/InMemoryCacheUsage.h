@@ -31,7 +31,6 @@ public:
     explicit InMemoryCacheUsage(const std::string&);
 
     explicit InMemoryCacheUsage(size_t memory , size_t shared );
-    explicit InMemoryCacheUsage(size_t size, bool inSharedMemory);
     explicit InMemoryCacheUsage(eckit::Stream &) ;
 
     InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;

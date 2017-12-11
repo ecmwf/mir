@@ -211,7 +211,7 @@ static const caching::CroppingCacheEntry &getMapping(const std::string& key,
 
     }
 
-    cache.footprint(key, c.footprint(), false);
+    cache.footprint(key, InMemoryCacheUsage(c.footprint(), 0));
     return c;
 
 }

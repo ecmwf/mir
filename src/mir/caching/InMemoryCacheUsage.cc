@@ -36,11 +36,6 @@ InMemoryCacheUsage::InMemoryCacheUsage(size_t memory, size_t shared):
 
 }
 
-InMemoryCacheUsage::InMemoryCacheUsage(size_t size, bool inSharedMemory):
-    memory_(inSharedMemory ? 0 : size),
-    shared_(inSharedMemory ? size : 0) {
-}
-
 InMemoryCacheUsage::InMemoryCacheUsage(const std::string& s):
     memory_(0),
     shared_(0) {
