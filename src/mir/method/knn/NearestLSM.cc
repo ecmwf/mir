@@ -53,10 +53,7 @@ void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
     // FIXME this function should not be overriding to do nothing
 }
 
-static void setParametrisation(const param::MIRParametrisation& parametrisation,
-                               param::RuntimeParametrisation& runtime) {
-
-// FIXME: we cannot hardcode things like 1km
+static void setParametrisation(const param::MIRParametrisation&, param::RuntimeParametrisation& runtime) {
 
     // Force use of LSM (unless it is already set)
     runtime.set("lsm", true);
