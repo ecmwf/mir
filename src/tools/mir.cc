@@ -143,7 +143,6 @@ public:
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
-        options_.push_back(new VectorOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters", 0));
         options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
