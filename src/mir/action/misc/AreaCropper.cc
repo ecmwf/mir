@@ -58,7 +58,7 @@ struct LL {
 
 static eckit::Mutex local_mutex;
 
-static InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
+static InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):

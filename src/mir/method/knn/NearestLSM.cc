@@ -60,18 +60,6 @@ static void setParametrisation(const param::MIRParametrisation& parametrisation,
 
     // Force use of LSM (unless it is already set)
     runtime.set("lsm", true);
-
-    std::string select;
-    if (!parametrisation.get("lsm-selection", select) || select == "none") {
-        runtime.set("lsm-selection", "named");
-        runtime.set("lsm-named", "1km");
-    }
-    if (parametrisation.get("lsm-selection-input", select) && select == "none") {
-        runtime.unset("lsm-selection-input");
-    }
-    if (parametrisation.get("lsm-selection-output", select) && select == "none") {
-        runtime.unset("lsm-selection-output");
-    }
 }
 
 lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {

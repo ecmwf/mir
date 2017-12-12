@@ -47,7 +47,7 @@ namespace method {
 namespace {
 static eckit::Mutex local_mutex;
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
-        512 * 1024 * 1024,
+        512 * 1024 * 1024, 0,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 }  // (anonymous namespace)
 
