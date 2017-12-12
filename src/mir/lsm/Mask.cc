@@ -23,7 +23,9 @@
 #include "mir/config/LibMir.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/latlon/RegularLL.h"
 
 
 namespace mir {
@@ -42,6 +44,10 @@ static void init() {
     cache = new std::map<std::string, Mask *>();
 }
 
+static void setParametrisation(param::RuntimeParametrisation& runtime) {
+    runtime.set("Ni", 360L);
+    runtime.set("Nj", 181L);
+}
 
 }  // (anonymous namespace)
 
@@ -131,8 +137,7 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    // TODO: a lot more...
-
+    // Check 'master' lsm key
     bool lsm1 = false;
     parametrisation1.get("lsm", lsm1);
 
@@ -143,29 +148,35 @@ static bool same(const param::MIRParametrisation& parametrisation1,
         return false;
     }
 
+    // Check LSM selection method
+    std::string name1;
+    parametrisation1.get("lsm-selection-" + which, name1) || parametrisation1.get("lsm-selection", name1);
 
-//     std::string name;
-//     if (!parametrisation.get("lsm-selection-" + which, name)) {
-//         if (!parametrisation.get("lsm-selection", name)) {
-//             throw eckit::SeriousBug("No lsm selection method provided");
-//         }
-//     }
+    std::string name2;
+    parametrisation2.get("lsm-selection-" + which, name2) || parametrisation2.get("lsm-selection", name2);
 
-//     const LSMSelection &chooser = LSMSelection::lookup(name);
-//     std::string key = chooser.cacheKey(parametrisation, representation, which);
+    if (name1 != name2) {
+        return false;
+    }
 
+    // Check LSM cache key
+    // TODO: this creates a dummy representation, could be better...
+    param::RuntimeParametrisation runtime1(parametrisation1);
+    setParametrisation(runtime1);
+    repres::latlon::RegularLL representation1(runtime1);
 
-//     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
-//     auto j = cache->find(key);
-//     if (j != cache->end()) {
-//         return *(*j).second;
-//     }
+    param::RuntimeParametrisation runtime2(parametrisation2);
+    setParametrisation(runtime2);
+    repres::latlon::RegularLL representation2(runtime2);
 
-//     Mask *mask = chooser.create(parametrisation, representation, which);
+    ASSERT(name1 == name2);
+    const LSMSelection& chooser = LSMSelection::lookup(name1);
+    const std::string key1 = chooser.cacheKey(parametrisation1, representation1, which);
+    const std::string key2 = chooser.cacheKey(parametrisation2, representation2, which);
 
-//     (*cache)[key] = mask;
-
-//     return *(*cache)[key];
+    if (key1 != key2) {
+        return false;
+    }
 
     return true;
 }
