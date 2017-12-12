@@ -128,6 +128,8 @@ Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const
 static bool same(const param::MIRParametrisation& parametrisation1,
                  const param::MIRParametrisation& parametrisation2,
                  const std::string& which) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     // TODO: a lot more...
 
@@ -135,9 +137,9 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     parametrisation1.get("lsm", lsm1);
 
     bool lsm2 = false;
-    parametrisation1.get("lsm", lsm2);
+    parametrisation2.get("lsm", lsm2);
 
-    if(lsm1 != lsm2) {
+    if (lsm1 != lsm2) {
         return false;
     }
 
@@ -152,8 +154,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
 //     const LSMSelection &chooser = LSMSelection::lookup(name);
 //     std::string key = chooser.cacheKey(parametrisation, representation, which);
 
-//     pthread_once(&once, init);
-//     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
 //     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
 //     auto j = cache->find(key);
