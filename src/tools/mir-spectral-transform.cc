@@ -172,6 +172,18 @@ atlas::Grid getOutputGrid(const mir::param::MIRParametrisation& parametrisation,
 }
 
 
+void interlace_spectra(std::vector<double>& interlacedSpectra, const std::vector<double>& spectra, size_t numberOfComplexCoefficients, size_t index, size_t indexTotal) {
+    ASSERT(index < indexTotal);
+
+    ASSERT(numberOfComplexCoefficients * 2 * indexTotal == interlacedSpectra.size());
+    ASSERT(numberOfComplexCoefficients * 2 == spectra.size());
+
+    for (size_t j = 0; j < numberOfComplexCoefficients * 2; ++j) {
+        interlacedSpectra[ j * indexTotal + index ] = spectra[j];
+    }
+}
+
+
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
 
@@ -311,9 +323,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                             eckit::Log::error() << msg << std::endl;
                             throw eckit::UserError(msg);
                         }
-                        for (size_t j = 0; j < N * 2; ++j) {
-                            input[ j * multiScalar + i ] = spectra[j];
-                        }
+                        interlace_spectra(input, spectra, N, i, multiScalar);
                     }
                 }
 
