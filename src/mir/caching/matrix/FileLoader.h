@@ -36,7 +36,7 @@ public:
     static bool shared();
 
 protected:
-    void print(std::ostream&) const;
+    virtual void print(std::ostream&) const;
 
 private:
     eckit::MemoryBuffer buffer_;

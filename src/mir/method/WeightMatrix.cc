@@ -56,11 +56,10 @@ void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& tri
     swap(M);
 }
 
-void WeightMatrix::print(std::ostream& out) const {
-    out << "WeightMatrix["
-        <<  "rows=" << rows()
-        << ",cols=" << cols()
-        << "]";
+void WeightMatrix::print(std::ostream& os) const {
+    os << "WeightMatrix[";
+    SparseMatrix::print(os);
+    os << "]";
 }
 
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {

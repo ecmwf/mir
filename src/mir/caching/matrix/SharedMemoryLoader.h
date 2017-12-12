@@ -41,7 +41,7 @@ public:
 
 protected:
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
 private:
 

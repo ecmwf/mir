@@ -23,11 +23,6 @@
 #include "eckit/linalg/SparseMatrix.h"
 
 namespace mir {
-
-namespace param {
-class MIRParametrisation;
-}
-
 namespace caching {
 namespace matrix {
 
@@ -48,6 +43,7 @@ public:
     virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape);
 
 protected:
+
     eckit::PathName path_;
 
 };
