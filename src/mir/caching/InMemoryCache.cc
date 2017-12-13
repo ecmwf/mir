@@ -38,7 +38,6 @@ InMemoryCache<T>::InMemoryCache(const std::string& name,
     capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
     users_(0) {
 
-    statistics_.capacity_ = capacity_;
 }
 
 
@@ -250,6 +249,8 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics & statistics) {
         purge();
     }
     checkTotalFootprint();
+
+    statistics_.capacity_ = capacity_;
     statistics = statistics_;
 }
 
