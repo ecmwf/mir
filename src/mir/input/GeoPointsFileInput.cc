@@ -52,7 +52,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     bool data = false;
     int count = 0;
 
-    enum { STANDARD = 0, XYV, XY_VECTOR } format = STANDARD;
+    enum { STANDARD = 0, XYV, XY_VECTOR, POLAR_VECTOR } format = STANDARD;
 
     while (in.getline(line, sizeof(line))) {
 
@@ -74,12 +74,15 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             continue;
         }
 
-        if (!data && strncmp(line, "#FORMAT XYV", 11) == 0) {
-            format = XYV;
-        }
+        if (!data && strncmp(line, "#FORMAT ", 8) == 0) {
+            std::vector<std::string> v;
+            parse(line + 8, v);
+            ASSERT(v.size() == 1);
 
-        if (!data && strncmp(line, "#FORMAT XY_VECTOR", 17) == 0) {
-            format = XY_VECTOR;
+            format = v[0] == "XYV" ?          XYV :
+                     v[0] == "XY_VECTOR" ?    XY_VECTOR :
+                     v[0] == "POLAR_VECTOR" ? POLAR_VECTOR :
+                                              throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
         if (!data && strncmp(line, "# ", 2) == 0) {
@@ -106,8 +109,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                latitudes_  .push_back(s2d(v[format == STANDARD ? 0 : 1]));
-                longitudes_ .push_back(s2d(v[format == STANDARD ? 1 : 0]));
+                latitudes_  .push_back(s2d(v[format == XYV ? 1 : 0]));
+                longitudes_ .push_back(s2d(v[format == XYV ? 0 : 1]));
                 values_.push_back(s2d(v.back()));
             }
         }
