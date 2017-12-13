@@ -36,13 +36,14 @@
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/memory/Shmget.h"
 #include "eckit/os/SemLocker.h"
 #include "eckit/os/Stat.h"
+#include "eckit/runtime/Main.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 
-#include "eckit/io/StdPipe.h"
 
 namespace mir {
 namespace caching {
@@ -62,17 +63,10 @@ struct info {
     char path[INFO_PATH];
 };
 
-
-class AutoFDClose {
-    int fd_;
-public:
-    AutoFDClose(int fd): fd_(fd) {}
-    ~AutoFDClose() {
-        ::close(fd_);
-    }
-};
-
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 class Unloader {
@@ -145,11 +139,6 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
     eckit::SemLocker locker(sem, real, max_wait_lock);
 
-    // O_LARGEFILE ?
-    int fd;
-    SYSCALL(fd = ::open(real.asString().c_str(), O_RDONLY));
-    AutoFDClose c(fd);
-
     int page_size = ::getpagesize();
     ASSERT(page_size > 0);
     size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(struct info) ;
@@ -177,8 +166,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::FailedSystemCall(oss.str());
     }
 
-
-    eckit::Log::info() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+    eckit::Log::debug<LibMir>() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
 
 #ifdef SHM_PAGESIZE
     {

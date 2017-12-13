@@ -24,6 +24,8 @@ namespace mir {
 namespace caching {
 namespace legendre {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class SharedMemoryLoader : public LegendreLoader {
 public:
     SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName& path);
@@ -35,7 +37,8 @@ public:
     static bool shared();
 
 protected:
-    void print(std::ostream&) const; // Change to virtual if base class
+
+    virtual void print(std::ostream&) const;
 
 private:
 
@@ -48,6 +51,8 @@ private:
     virtual bool inSharedMemory() const;
 
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace legendre
 } // namespace caching

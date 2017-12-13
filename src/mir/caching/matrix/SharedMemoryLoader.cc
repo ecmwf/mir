@@ -61,10 +61,11 @@ struct SHM_Info_ {
     char path[INFO_PATH];
 };
 
+}
 
 typedef eckit::Padded<SHM_Info_,1280> SHMInfo; /* aligned to 64 bytes */
 
-}
+//----------------------------------------------------------------------------------------------------------------------
 
 
 class Unloader {
@@ -88,7 +89,7 @@ public:
             try {
                 SharedMemoryLoader::unloadSharedMemory(*j);
             } catch (std::exception& e) {
-                eckit::Log::info() << e.what() << std::endl;
+                eckit::Log::error() << e.what() << std::endl;
             }
         }
     }
@@ -241,6 +242,11 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             eckit::Log::debug<LibMir>() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
+        if (unload_) {
+            Unloader::instance().add(path);
+        }
+
+
     } catch (...) {
         eckit::Shmget::shmdt(address_);
         throw;
@@ -257,11 +263,8 @@ SharedMemoryLoader::~SharedMemoryLoader() {
     }
 }
 
-void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path, method::WeightMatrix& W) {
-
-    method::WeightMatrix w(new SharedMemoryLoader("shmem", path));
-
-    std::swap(w, W);
+void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
+    SharedMemoryLoader loader("shmem", path);
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
@@ -329,10 +332,10 @@ bool SharedMemoryLoader::inSharedMemory() const {
 
 namespace {
 
-static InterpolatorLoaderFactory<SharedMemoryLoader> loader1("shared-memory");
-static InterpolatorLoaderFactory<SharedMemoryLoader> loader2("shmem");
-static InterpolatorLoaderFactory<SharedMemoryLoader> loader3("tmp-shmem");
-static InterpolatorLoaderFactory<SharedMemoryLoader> loader5("tmp-shared-memory");
+static MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
+static MatrixLoaderBuilder<SharedMemoryLoader> loader2("shmem");
+static MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
+static MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
 

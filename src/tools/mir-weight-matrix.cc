@@ -63,9 +63,9 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
 
     if (args.has("load") || args.has("dump")) {
 
-        WeightMatrix W;
+        mir::caching::matrix::SharedMemoryLoader::loadSharedMemory(path);
 
-        mir::caching::matrix::SharedMemoryLoader::loadSharedMemory(path, W);
+        WeightMatrix W(new mir::caching::matrix::SharedMemoryLoader("shmem", path));
 
         eckit::linalg::SparseMatrix& spm = W;
         eckit::Log::info()
