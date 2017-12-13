@@ -83,7 +83,8 @@ public:
 
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
-        options_.push_back(new SimpleOption<size_t>("multi-scalar", "Process multiple scalar fields or vo/d field pairs per transform (default 1)"));
+        options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
+        options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
         options_.push_back(new SimpleOption<bool>("local", "Atlas/Trans: force local transform (default false)"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
@@ -219,6 +220,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         throw eckit::UserError("Option 'multi-scalar' has to be greater than one");
     }
 
+    size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
+    if (multiTransform < 1 || multiTransform > multiScalar) {
+        throw eckit::UserError("Option 'multi-transform' has to be greater than one, and less than 'multi-scalar' (" + std::to_string(multiScalar) + ")");
+    }
+
     if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
         throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
     }
@@ -346,46 +352,55 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             } else {
                 ASSERT(field.dimensions() == multiScalar);
 
-                // set input working area
-                // spectral coefficients are "interlaced", avoid copies if transforming only one field)
-                std::vector<double> input;
-                if (multiScalar > 1) {
-                    eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
-                    input.resize(multiScalar * N * 2);
+                size_t F = multiTransform;
+                for (size_t numberOfFieldsProcessed = 0; numberOfFieldsProcessed < multiScalar; numberOfFieldsProcessed += F) {
+                    F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
+                    ASSERT(F > 0);
 
-                    for (size_t i = 0; i < multiScalar; ++i) {
-                        interlace_spectra(input, field.values(i), T, N, i, multiScalar);
+                    eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+
+                    // set input working area
+                    // spectral coefficients are "interlaced", avoid copies if transforming only one field)
+                    std::vector<double> input;
+                    if (F > 1) {
+                        eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
+                        input.resize(F * N * 2);
+
+                        for (size_t i = 0; i < F; ++i) {
+                            interlace_spectra(input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
+                        }
+                    }
+
+                    // set output working area
+                    const size_t Ngp = outputGrid.size();
+                    std::vector<double> output(F * Ngp);
+
+                    // inverse transform
+                    {
+                        eckit::Timer timer("time on invtrans", eckit::Log::debug<mir::LibMir>());
+                        trans.invtrans(
+                                    int(F),
+                                    F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
+                                    output.data(),
+                                    atlas::option::global() );
+                    }
+
+                    // set field values (again, avoid copies for one field only)
+                    if (F == 1) {
+                        field.update(output, numberOfFieldsProcessed);
+                    } else {
+                        eckit::Timer timer("time on de-interlacing grid-point values", eckit::Log::debug<mir::LibMir>());
+
+                        auto here = output.cbegin();
+                        for (size_t i = 0; i < F; ++i) {
+                            std::vector<double> output_field(here, here + int(Ngp));
+
+                            field.update(output_field, numberOfFieldsProcessed + i);
+                            here += int(Ngp);
+                        }
                     }
                 }
 
-                // set output working area
-                const size_t Ngp = outputGrid.size();
-                std::vector<double> output(multiScalar * Ngp);
-
-                // inverse transform
-                {
-                    eckit::Timer timer("time on invtrans", eckit::Log::debug<mir::LibMir>());
-                    trans.invtrans(
-                                int(multiScalar),
-                                multiScalar > 1 ? input.data() : field.values(0).data(),
-                                output.data(),
-                                atlas::option::global() );
-                }
-
-                // set field values (again, avoid copies for one field only)
-                if (multiScalar == 1) {
-                    field.update(output, 0);
-                } else {
-                    eckit::Timer timer("time on de-interlacing grid-point values", eckit::Log::debug<mir::LibMir>());
-
-                    auto here = output.cbegin();
-                    for (size_t i = 0; i < multiScalar; ++i) {
-                        std::vector<double> output_field(here, here + int(Ngp));
-
-                        field.update(output_field, i);
-                        here += int(Ngp);
-                    }
-                }
             }
 
             // set field representation
