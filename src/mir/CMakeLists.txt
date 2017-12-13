@@ -206,6 +206,8 @@ list(
     input/GribStreamInput.h
     input/MIRInput.cc
     input/MIRInput.h
+    input/MultiScalarInput.cc
+    input/MultiScalarInput.h
     input/RawInput.cc
     input/RawInput.h
     input/RawMetadata.cc
@@ -308,6 +310,8 @@ list(
     output/GribStreamOutput.h
     output/MIROutput.cc
     output/MIROutput.h
+    output/MultiScalarOutput.cc
+    output/MultiScalarOutput.h
     output/RawOutput.cc
     output/RawOutput.h
     output/ValuesOutput.cc

@@ -159,7 +159,6 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids"));
-        options_.push_back(new SimpleOption<bool>("geopoints", "Input is a geopoints file"));
         options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
@@ -278,12 +277,6 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         process(job, input, *output, "wind");
         return;
 
-    }
-
-    if (args.has("geopoints")) {
-        mir::input::GeoPointsFileInput input(args(0));
-        process(job, input, *output, "field");
-        return;
     }
 
     eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0)));

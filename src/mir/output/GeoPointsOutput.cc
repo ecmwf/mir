@@ -95,18 +95,19 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
         // eckit::Log::info() << "GeoPointsOutput::save => " << handle << std::endl;
 
 
-        out << "#GEO" << std::endl;
+        out << "#GEO"
+            << "\n#FORMAT XYV";
 
         size_t i = 0;
         while (keys[i]) {
             std::string v;
             if (runtime.get(keys[i], v)) {
-                out << "# " << keys[i] << "=" << v << std::endl;
+                out << "\n# " << keys[i] << "=" << v;
             }
             i++;
         }
 
-        out << "#DATA" << std::endl;
+        out << "\n#DATA";
 
 
         std::vector<double>::const_iterator v = values.begin();
@@ -115,10 +116,11 @@ size_t GeoPointsOutput::save(const param::MIRParametrisation &param, context::Co
         while (it->next()) {
             const repres::Iterator::point_ll_t& p = it->pointUnrotated();
             ASSERT(v != values.end());
-            out << p.lat.value() << ' ' << p.lon.value() << ' ' << *v << std::endl;
+            out << "\n" << p.lon.value() << ' ' << p.lat.value() << ' ' << *v;
             ++v;
         }
 
+        out << std::endl;
     }
 
     once_ = false;
