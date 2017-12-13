@@ -83,6 +83,7 @@ private:
     param::SimpleParametrisation fieldParametrisation_;
     int which_;
     size_t dimensions_;
+    size_t next_;
     bool hasMissing_;
     double missingValue_;
 
