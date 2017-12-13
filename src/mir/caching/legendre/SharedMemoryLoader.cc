@@ -27,10 +27,11 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
-#include "eckit/memory/Shmget.h"
-
-#include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
+
+#include "eckit/runtime/Main.h"
+#include "eckit/memory/Shmget.h"
+#include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
@@ -177,9 +178,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     }
 
 
-    char hostname[256];
-    SYSCALL(::gethostname(hostname, sizeof(hostname)));
-    eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+    eckit::Log::info() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
 
 #ifdef SHM_PAGESIZE
     {

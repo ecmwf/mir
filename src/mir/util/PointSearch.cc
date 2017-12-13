@@ -27,7 +27,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/os/AutoUmask.h"
 #include "eckit/os/Semaphore.h"
-#include "eckit/thread/AutoLock.h"
+#include "eckit/runtime/Main.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
@@ -282,8 +282,7 @@ protected:
         eckit::Log::info() << "Got lock " << path << std::endl;
 
 
-        char hostname[1024];
-        SYSCALL(gethostname(hostname, sizeof(hostname) - 1));
+        std::string hostname = eckit::Main::hostname();
 
         std::ofstream os(path.asString().c_str());
         os << hostname << " " << ::getpid() << std::endl;
