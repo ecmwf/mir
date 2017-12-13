@@ -49,12 +49,12 @@ protected:
 
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(
-            const Longitude& in,
-            const std::vector<repres::Iterator::point_ll_t>& coords,
-            const size_t start,
-            const size_t end,
-            size_t& left,
-            size_t& right) const;
+        const Longitude& in,
+        const std::vector<repres::Iterator::point_ll_t>& coords,
+        const size_t start,
+        const size_t end,
+        size_t& left,
+        size_t& right) const;
 
 
     // Normalize weights triplets such that sum(weights) = 1
@@ -71,6 +71,9 @@ protected:
 
     // Find nearest West-East bounding i indices
     void boundWestEast(const Longitude&, const size_t& Ni, const size_t& iStart, size_t& iWest, size_t& iEast) const;
+
+    virtual bool sameAs(const Method& other) const = 0;
+
 
 private:
 

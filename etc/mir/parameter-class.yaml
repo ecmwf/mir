@@ -112,6 +112,17 @@ index.associated:
 - 200029  # Type of low vegetation difference
 - 200030  # Type of high vegetation difference
 - 200043  # Soil type difference
+- 228217  # Instantaneous large-scale surface precipitation fraction
+- 228218  # Convective rain rate
+- 228219  # Large scale rain rate
+- 228220  # Convective snowfall rate water equivalent
+- 228221  # Large scale snowfall rate water equivalent
+- 228222  # Maximum total precipitation rate in the last 3 hours
+- 228223  # Minimum total precipitation rate in the last 3 hours
+- 228224  # Maximum total precipitation rate in the last 6 hours
+- 228225  # Minimum total precipitation rate in the last 6 hours
+- 228226  # Maximum total precipitation rate since previous post-processing
+- 228227  # Minimum total precipitation rate since previous post-processing
 
 intensity:
 - 1  # Stream function
@@ -2050,16 +2061,6 @@ rate.mass-flux:
 - 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
 - 228084  # Flux of Carbon Dioxide Gross Primary Production
 - 228085  # Flux of Carbon Dioxide Ecosystem Respiration
-- 228218  # Convective rain rate
-- 228219  # Large scale rain rate
-- 228220  # Convective snowfall rate water equivalent
-- 228221  # Large scale snowfall rate water equivalent
-- 228222  # Maximum total precipitation rate in the last 3 hours
-- 228223  # Minimum total precipitation rate in the last 3 hours
-- 228224  # Maximum total precipitation rate in the last 6 hours
-- 228225  # Minimum total precipitation rate in the last 6 hours
-- 228226  # Maximum total precipitation rate since previous post-processing
-- 228227  # Minimum total precipitation rate since previous post-processing
 - 235009  # Mean updraught mass flux
 - 235010  # Mean downdraught mass flux
 - 235013  # Mean total precipitation flux
@@ -2604,7 +2605,6 @@ ratio.fraction:
 - 228034  # Fraction of convective precipitation cover
 - 228091  # Canopy cover fraction
 - 228092  # Soil texture fraction
-- 228217  # Instantaneous large-scale surface precipitation fraction
 - 228244  # Surface albedo of direct radiation
 - 228245  # Surface albedo of diffuse radiation
 - 228248  # Surface short wave-effective total cloudiness

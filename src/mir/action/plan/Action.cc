@@ -10,17 +10,19 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+/// @date   Apr 2015
 
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+#include "eckit/system/SystemInfo.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/action/plan/Action.h"
-
+#include "mir/config/LibMir.h"
 
 namespace mir {
 namespace action {
@@ -38,7 +40,14 @@ void Action::custom(std::ostream & out) const {
     out << *this;
 }
 
-//=========================================================================
+
+void Action::perform(context::Context & ctx) const {
+    eckit::TraceResourceUsage<LibMir> usage(name());
+    execute(ctx);
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 namespace {

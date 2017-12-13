@@ -36,7 +36,9 @@ bool Gridded2ReducedLLPLGiven::sameAs(const Action& other) const {
 }
 
 void Gridded2ReducedLLPLGiven::print(std::ostream& out) const {
-    out << "Gridded2ReducedLLPLGiven[]";
+    out << "Gridded2ReducedLLPLGiven[";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
@@ -44,6 +46,9 @@ const repres::Representation* Gridded2ReducedLLPLGiven::outputRepresentation() c
     NOTIMP;
 }
 
+const char* Gridded2ReducedLLPLGiven::name() const {
+    return "Gridded2ReducedLLPLGiven";
+}
 
 namespace {
 static ActionBuilder< Gridded2ReducedLLPLGiven > grid2grid("interpolate.grid2reduced-ll-pl-given");

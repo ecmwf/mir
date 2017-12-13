@@ -25,17 +25,18 @@ namespace fe {
 
 
 class FELinear: public FiniteElement {
-  public:
+public:
 
     FELinear(const param::MIRParametrisation&);
 
     virtual ~FELinear();
 
-  protected:
+protected:
 
     virtual void hash(eckit::MD5&) const;
+    virtual bool sameAs(const Method& other) const;
 
-  private:
+private:
 
     virtual void print(std::ostream&) const;
     virtual const char* name() const;

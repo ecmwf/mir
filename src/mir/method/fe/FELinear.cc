@@ -26,13 +26,18 @@ namespace fe {
 
 FELinear::FELinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
-    InputMeshGenerationParams_.set("triangulate", true); // No quads allowed
+    inputMeshGenerationParams_.set("triangulate", true); // No quads allowed
 }
 
 
 FELinear::~FELinear() {
 }
 
+
+bool FELinear::sameAs(const Method& other) const {
+    const FELinear* o = dynamic_cast<const FELinear*>(&other);
+    return o && FiniteElement::sameAs(other);
+}
 
 const char *FELinear::name() const {
     return  "linear";

@@ -91,6 +91,7 @@ class FrameFilter : public Action {
 
     virtual void execute(context::Context & ctx) const;
     virtual bool sameAs(const Action& other) const;
+    virtual const char* name() const;
 
 
 // -- Class members

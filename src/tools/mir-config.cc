@@ -13,13 +13,16 @@
 /// @date Apr 2015
 
 
+#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "mir/config/LibMir.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
+#include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 
@@ -49,7 +52,7 @@ class MIRConfig : public mir::tools::MIRTool {
         std::string value = "???";
         c.get(key, value);
 
-        std::cout << "paramId=" << paramId << "," << key << "=" << value << std::endl;
+        eckit::Log::info() << "paramId=" << paramId << "," << key << "=" << value << std::endl;
     }
 
 public:
@@ -58,8 +61,9 @@ public:
 
     MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
-        options_.push_back(new SimpleOption<long>("param-id", "Test configuration with paramId"));
-        options_.push_back(new SimpleOption<std::string>("key", "Test configuration with specific key"));
+        options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
+        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key (default 'interpolation')"));
+        options_.push_back(new SimpleOption<bool>("file-rules", "Display rules as per configuration files"));
     }
 
 };
@@ -67,11 +71,12 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [--file-rules] [input1.grib [input2.grib [...]]]"
             "\n" "Examples: "
             "\n" "  % " << tool << ""
             "\n" "  % " << tool << " --param-id=157"
             "\n" "  % " << tool << " --param-id=167 --key=lsm input1.grib input2.grib"
+            "\n" "  % " << tool << " --file-rules"
             << std::endl;
 }
 
@@ -118,6 +123,15 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
 
             display(DummyField(id), key);
+
+        } else if (args.has("file-rules")) {
+
+            Rules fileRules;
+            eckit::Log::debug<mir::LibMir>() << "Reading configuration files..." << std::endl;
+            fileRules.readConfigurationFiles();
+            eckit::Log::debug<mir::LibMir>() << "Reading configuration files." << std::endl;
+
+            eckit::Log::info() << fileRules << std::endl;
 
         }
 

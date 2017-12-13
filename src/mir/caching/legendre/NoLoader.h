@@ -32,12 +32,17 @@ public:
 
     ~NoLoader(); // Change to virtual if base class
 
+    static bool shared();
+
 protected:
     void print(std::ostream&) const; // Change to virtual if base class
 
 private:
+
     virtual const void* address() const;
     virtual size_t size() const;
+    virtual bool inSharedMemory() const;
+
 };
 
 } // namespace legendre

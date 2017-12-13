@@ -13,21 +13,19 @@
 /// @date Apr 2015
 
 
-#ifndef LandSeaMasks_H
-#define LandSeaMasks_H
+#ifndef mir_lsm_LandSeaMasks_h
+#define mir_lsm_LandSeaMasks_h
 
 #include <iosfwd>
-#include <string>
 #include <vector>
 
 
 namespace eckit {
 class MD5;
 }
-
 namespace mir {
-namespace data {
-class MIRField;
+namespace lsm {
+class Mask;
 }
 }
 namespace mir {
@@ -39,11 +37,10 @@ class Representation;
 }
 }
 
-namespace mir {
 
+namespace mir {
 namespace lsm {
 
-class Mask;
 
 class LandSeaMasks {
 public:
@@ -53,11 +50,11 @@ public:
 
     // -- Contructors
 
-    LandSeaMasks(const Mask &input, const Mask &output);
+    LandSeaMasks(const Mask& input, const Mask& output);
+    LandSeaMasks(const LandSeaMasks&);
 
     // -- Destructor
-
-    ~LandSeaMasks();
+    // None
 
     // -- Convertors
     // None
@@ -75,7 +72,6 @@ public:
     const std::vector<bool>& inputMask() const;
     const std::vector<bool>& outputMask() const;
 
-
     // -- Overridden methods
     // None
 
@@ -84,21 +80,23 @@ public:
 
     // -- Class methods
 
-    static  LandSeaMasks lookup(const param::MIRParametrisation &parametrisation,
-                                const repres::Representation &in,
-                                const repres::Representation &out);
+    static  LandSeaMasks lookup(const param::MIRParametrisation&,
+                                const repres::Representation& in,
+                                const repres::Representation& out);
+
+    static bool sameLandSeaMasks(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
 protected:
 
     // -- Members
 
-    const Mask &input_;
-    const Mask &output_;
+    const Mask& input_;
+    const Mask& output_;
 
     // -- Methods
 
 
-    void print(std::ostream &) const;
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -111,16 +109,11 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    // LandSeaMasks(const LandSeaMasks &);
-    // LandSeaMasks &operator=(const LandSeaMasks &);
-
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -129,11 +122,11 @@ private:
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const LandSeaMasks &p) {
+    friend std::ostream &operator<<(std::ostream& s, const LandSeaMasks& p) {
         p.print(s);
         return s;
     }
@@ -143,5 +136,7 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
+
+
 #endif
 

@@ -42,6 +42,7 @@ static eckit::Mutex local_mutex;
 static InMemoryCache<atlas::Mesh> mesh_cache(
         "mirMesh",
         512 * 1024 * 1024,
+        0,
         "$MIR_MESH_CACHE_MEMORY_FOOTPRINT" );
 }  // (anonymous namespace)
 
@@ -163,7 +164,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
         // (combinations of ni in [0, nb_cols[ and nj in [ni+1, nb_cols[)
         for (size_t ni = 0; ni < nb_cols; ++ni) {
             const size_t i = size_t(connectivity(e, ni));
-            P[ni].assign(coords[i].data());
+            P[ni].assign( coords(i,0), coords(i,1), coords(i,2) );
         }
 
         for (size_t ni = 0; ni < nb_cols - 1; ++ni) {
@@ -262,7 +263,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         throw;
     }
 
-    mesh_cache.footprint(md5, mesh.footprint());
+    mesh_cache.footprint(md5, InMemoryCacheUsage(mesh.footprint(), 0) ) ;
 
     return mesh;
 }

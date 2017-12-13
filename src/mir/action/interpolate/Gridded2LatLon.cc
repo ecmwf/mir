@@ -44,7 +44,7 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
             << "Gridded2LatLon: globalise:"
             << " " << bbox_
             << " " << increments_
-            << " Shifted? " << (increments_.isShifted(bbox_)? "yes":"no")
+            << " Shifted? " << (increments_.isShifted(bbox_) ? "yes" : "no")
             << std::endl;
 }
 
@@ -55,9 +55,17 @@ Gridded2LatLon::~Gridded2LatLon() {
 
 bool Gridded2LatLon::sameAs(const Action& other) const {
     const Gridded2LatLon* o = dynamic_cast<const Gridded2LatLon*>(&other);
-    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_);
+    return o  && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
+void Gridded2LatLon::print(std::ostream& out) const {
+    out << "increments="
+        << increments_
+        << ",bbox="
+        << bbox_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+}
 
 
 }  // namespace action

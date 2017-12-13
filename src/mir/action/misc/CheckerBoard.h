@@ -90,6 +90,7 @@ class CheckerBoard : public Action {
 // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
+    virtual const char* name() const;
 
 // -- Class members
     // None

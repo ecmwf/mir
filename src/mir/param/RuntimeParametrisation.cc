@@ -13,12 +13,10 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/log/Log.h"
-
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/param/DelayedParametrisation.h"
+
+#include <iostream>
+#include "eckit/log/Log.h"
 #include "mir/config/LibMir.h"
 
 
@@ -74,14 +72,7 @@ MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double 
     return *this;
 }
 
-MIRParametrisation& RuntimeParametrisation::set(const std::string& name, DelayedParametrisation* value) {
-    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << *value << "]" << std::endl;
-    SimpleParametrisation::set(name, value);
-    return *this;
-}
-
-
-void  RuntimeParametrisation::hide(const std::string& name)  {
+void  RuntimeParametrisation::unset(const std::string& name)  {
     hidden_.insert(name);
 }
 

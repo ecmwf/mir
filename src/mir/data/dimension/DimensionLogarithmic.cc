@@ -54,6 +54,11 @@ void DimensionLogarithmic::unlinearise(const Dimension::Matrix& matrixIn, Dimens
 }
 
 
+size_t DimensionLogarithmic::dimensions() const {
+    return 1;
+}
+
+
 }  // namespace decompose
 }  // namespace method
 }  // namespace mir

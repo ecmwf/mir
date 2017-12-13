@@ -1,0 +1,6 @@
+# Mars request
+param=t,level=1000
+# Mir tool options
+--griddef=$tests_assertions_dir/weather-params.pts
+# grib_get assertions
+# none: output file is GEOPOINTS

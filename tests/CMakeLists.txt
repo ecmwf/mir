@@ -20,7 +20,7 @@ if(ATLAS_HAVE_TRANS)
         "z_sh.grib" )
 endif(ATLAS_HAVE_TRANS)
 
-if(HAVE_NETCDF)
+if(HAVE_NETCDF AND ATLAS_HAVE_TESSELATION)
    list(APPEND TEST_INPUT_FILES "nemo.nc")
 endif()
 

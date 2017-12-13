@@ -31,7 +31,12 @@ namespace action {
 
 Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
+
+    ASSERT(parametrisation_.get("interpolation", interpolation_));
+    method_.reset(method::MethodFactory::build(interpolation_, parametrisation_));
+
 }
+
 
 
 Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
@@ -43,22 +48,29 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
     data::MIRField& field = ctx.field();
 
-    std::string interpolation;
-    ASSERT(parametrisation_.get("interpolation", interpolation));
-
-    eckit::ScopedPtr< method::Method > method(method::MethodFactory::build(interpolation, parametrisation_));
-    eckit::Log::debug<LibMir>() << "Method is " << *method << std::endl;
+    eckit::Log::debug<LibMir>() << "Method is " << *method_ << std::endl;
 
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(outputRepresentation());
 
-    method->execute(ctx, *in, *out);
+    method_->execute(ctx, *in, *out);
 
     field.representation(out);
 
     // Make sure results are cropped to the input
     in->crop(parametrisation_, ctx);
 
+}
+
+bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
+    const Gridded2GriddedInterpolation* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
+    return o && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_);
+}
+
+
+void Gridded2GriddedInterpolation::print(std::ostream& out) const {
+    out << "interpolation=" << interpolation_;
+    out << ",method=" << *method_;
 }
 
 

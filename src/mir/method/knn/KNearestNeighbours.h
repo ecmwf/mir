@@ -60,6 +60,8 @@ protected:
             const repres::Representation& in,
             const repres::Representation& out ) const;
 
+    virtual bool sameAs(const Method& other) const = 0;
+
 private:
 
     virtual void print(std::ostream&) const;
@@ -67,6 +69,7 @@ private:
     virtual const char *name() const = 0;
 
     virtual std::string distanceWeighting() const;
+
 
     size_t nClosest_;
 

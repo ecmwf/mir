@@ -115,6 +115,10 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 }
 
+const char* ShVodToUV::name() const {
+    return "ShVodToUV";
+}
+
 
 namespace {
 static ActionBuilder< ShVodToUV > __action("transform.sh-vod-to-UV");

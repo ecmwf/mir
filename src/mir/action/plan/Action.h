@@ -10,14 +10,16 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
-
+/// @author Tiago Quintino
+/// @date   Apr 2015
 
 #ifndef Action_H
 #define Action_H
 
 #include <iosfwd>
 #include <string>
+
+
 #include "eckit/memory/NonCopyable.h"
 
 
@@ -60,9 +62,12 @@ class Action : public eckit::NonCopyable {
 
     // -- Methods
 
-    virtual void execute(context::Context & ctx) const = 0;
+    void perform(context::Context & ctx) const;
+
+
     virtual bool sameAs(const Action& other) const = 0;
     virtual void custom(std::ostream &) const; // Change to virtual if base class
+    virtual const char* name() const = 0;
 
     // -- Overridden methods
     // None
@@ -103,7 +108,9 @@ class Action : public eckit::NonCopyable {
     // None
 
     // -- Methods
-    // None
+
+    // call perform() for the public interface
+    virtual void execute(context::Context & ctx) const = 0;
 
     // -- Overridden methods
     // None

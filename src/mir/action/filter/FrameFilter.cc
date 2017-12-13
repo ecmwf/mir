@@ -70,6 +70,10 @@ void FrameFilter::execute(context::Context & ctx) const {
     }
 }
 
+const char* FrameFilter::name() const {
+    return "FrameFilter";
+}
+
 
 namespace {
 static ActionBuilder< FrameFilter > frameFilter("filter.frame");

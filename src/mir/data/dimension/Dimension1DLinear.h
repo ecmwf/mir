@@ -20,7 +20,13 @@ namespace data {
 namespace dimension {
 
 
-class Dimension1DLinear : public DimensionLinear {};
+class Dimension1DLinear : public DimensionLinear {
+
+    // -- Overridden methods
+
+    size_t dimensions() const;
+
+};
 
 
 }  // namespace dimension

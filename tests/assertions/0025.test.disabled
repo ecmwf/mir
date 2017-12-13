@@ -1,6 +1,0 @@
-# Mars request
-param=2t,levtype=sfc
-# Mir tool options
---griddef=$tests_assertions_dir/weather-params.pts
-# grib_get assertions
-numberOfValues=0

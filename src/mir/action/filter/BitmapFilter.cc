@@ -34,7 +34,11 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT", true);
+static InMemoryCache<util::Bitmap> cache("mirBitmap",
+        256 * 1024 * 1024,
+        0,
+        "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT",
+        true);
 }
 
 
@@ -67,7 +71,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
         eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
-        cache.footprint(path_, footprint);
+        cache.footprint(path_, InMemoryCacheUsage(footprint, 0));
         return result;
     }
     return *j;
@@ -124,6 +128,9 @@ void BitmapFilter::execute(context::Context & ctx) const {
     }
 }
 
+const char* BitmapFilter::name() const {
+    return "BitmapFilter";
+}
 
 namespace {
 static ActionBuilder< BitmapFilter > bitmapFilter("filter.bitmap");

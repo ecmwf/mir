@@ -45,6 +45,8 @@ private:
 
     virtual std::string distanceWeighting() const;
 
+    virtual bool sameAs(const Method& other) const;
+
 };
 
 

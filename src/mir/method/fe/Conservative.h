@@ -48,6 +48,7 @@ protected:
                   const repres::Representation& out) const;
 
     void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
+    virtual bool sameAs(const Method& other) const;
 
 private:
 

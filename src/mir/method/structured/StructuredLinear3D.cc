@@ -43,6 +43,11 @@ StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) :
 StructuredLinear3D::~StructuredLinear3D() {
 }
 
+bool StructuredLinear3D::sameAs(const Method& other) const {
+    const StructuredLinear3D* o = dynamic_cast<const StructuredLinear3D*>(&other);
+    return o && StructuredMethod::sameAs(other);
+}
+
 
 void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
     typedef repres::Iterator::point_ll_t point_ll_t;

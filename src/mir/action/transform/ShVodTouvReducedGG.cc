@@ -52,6 +52,10 @@ const repres::Representation* ShVodTouvReducedGG::outputRepresentation() const {
 }
 
 
+const char* ShVodTouvReducedGG::name() const {
+    return "ShVodTouvReducedGG";
+}
+
 namespace {
 static ActionBuilder< ShVodTouvReducedGG > __action("transform.sh-vod-to-uv-reduced-gg");
 }

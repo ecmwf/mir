@@ -38,8 +38,8 @@ DefaultParametrisation::DefaultParametrisation() {
     set("lsm-weight-adjustment", 0.2);
     set("lsm-value-threshold", 0.5);
 
+    set("resol", "automatic-resolution");
     set("spectral-order", "linear");
-    set("spectral-intermediate-grid", "regular-gaussian");
 
     set("absolute-error", 1e-10);
 }

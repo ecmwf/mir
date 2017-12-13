@@ -92,6 +92,7 @@ class Gridded2Octahedral : public Gridded2GriddedInterpolation {
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
+    virtual const char* name() const;
 
 // -- Class members
     // None

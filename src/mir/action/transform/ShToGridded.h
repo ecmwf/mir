@@ -101,8 +101,15 @@ private:
     virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-    void transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx, const std::string& key, trans_options_t& options) const;
-    void transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const;
+    void transform(data::MIRField& field,
+                   const repres::Representation& representation,
+                   context::Context& ctx,
+                   const std::string& key, trans_options_t& options,
+                   size_t estimate) const;
+
+    void transform(data::MIRField& field,
+                   const repres::Representation& representation,
+                   context::Context& ctx) const;
 
     // -- Overridden methods
     virtual void execute(context::Context&) const;

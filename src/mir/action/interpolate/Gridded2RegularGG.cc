@@ -37,11 +37,13 @@ Gridded2RegularGG::~Gridded2RegularGG() {
 
 bool Gridded2RegularGG::sameAs(const Action& other) const {
     const Gridded2RegularGG* o = dynamic_cast<const Gridded2RegularGG*>(&other);
-    return o && (N_ == o->N_);
+    return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2RegularGG::print(std::ostream& out) const {
-    out << "Gridded2RegularGG[N=" << N_ << "]";
+    out << "Gridded2RegularGG[N=" << N_ << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
@@ -49,6 +51,9 @@ const repres::Representation* Gridded2RegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
+const char* Gridded2RegularGG::name() const {
+    return "Gridded2RegularGG";
+}
 
 namespace {
 static ActionBuilder< Gridded2RegularGG > grid2grid("interpolate.grid2regular-gg");

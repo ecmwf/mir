@@ -47,14 +47,14 @@ namespace method {
 namespace {
 static eckit::Mutex local_mutex;
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
-        512 * 1024 * 1024,
+        512 * 1024 * 1024, 0,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 }  // (anonymous namespace)
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
     Method(parametrisation) {
-    ASSERT(parametrisation.get("lsm-weight-adjustment", lsmWeightAdjustment_));
+    ASSERT(parametrisation_.get("lsm-weight-adjustment", lsmWeightAdjustment_));
 
     pruneEpsilon_ = 0;
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
@@ -62,6 +62,16 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 
 
 MethodWeighted::~MethodWeighted() {
+}
+
+
+bool MethodWeighted::sameAs(const Method& other) const {
+    const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
+    return o
+           && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
+           && (pruneEpsilon_ == o->pruneEpsilon_)
+           &&  lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_);
+
 }
 
 
@@ -109,10 +119,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     std::string key = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
     eckit::MD5 hash;
     hash << *this
-        << shortName_in
-        << shortName_out
-        << pruneEpsilon_
-        << lsmWeightAdjustment_;
+         << shortName_in
+         << shortName_out
+         << pruneEpsilon_
+         << lsmWeightAdjustment_;
 
     if (masks.active() && masks.cacheable()) {
         hash << masks;
@@ -123,9 +133,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     {
         InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key);
         const bool found = j != matrix_cache.end();
-        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
-            return *j;
+            const WeightMatrix& mat = *j;
+            eckit::Log::debug<LibMir>() << "Using matrix from InMemoryCache " <<  mat << std::endl;
+            return mat;
         }
     }
 
@@ -148,20 +160,25 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         createMatrix(ctx, in, out, W, masks);
     }
 
-
     // If LSM not cacheable, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
-
+    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
     // insert matrix in the in-memory cache and update memory footprint
-    WeightMatrix& w = matrix_cache[key];
-    std::swap(w, W);
-    matrix_cache.footprint(key, w.footprint());
 
+    WeightMatrix& w = matrix_cache[key];
+    W.swap(w);
+
+    size_t footprint = w.footprint();
+    InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
+
+    eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
+
+    matrix_cache.footprint(key, usage);
     return w;
 }
 

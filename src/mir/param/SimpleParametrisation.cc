@@ -15,6 +15,8 @@
 
 #include "mir/param/SimpleParametrisation.h"
 
+#include <ios>
+#include <sstream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
@@ -22,7 +24,6 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
 #include "mir/config/LibMir.h"
-#include "mir/param/DelayedParametrisation.h"
 
 
 namespace mir {
@@ -62,87 +63,6 @@ public:
         p.json(s);
         return s;
     }
-};
-
-//================================================================================
-
-class DelayedSetting : public Setting {
-    DelayedParametrisation *delayed_;
-public:
-    DelayedSetting(DelayedParametrisation *delayed): delayed_(delayed) {}
-
-    virtual ~DelayedSetting() {
-        delete delayed_;
-    }
-
-    virtual void get(const std::string& name, std::string& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, bool& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, int& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, long& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, size_t& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, float& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, double& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<int>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<long>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<size_t>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<float>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<double>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual void get(const std::string& name, std::vector<std::string>& value) const {
-        delayed_->get(name, value);
-    }
-
-    virtual bool match(const std::string&, const MIRParametrisation&) const {
-        NOTIMP;
-    }
-
-    void copyValueTo(const std::string&, SimpleParametrisation&) const {
-        NOTIMP;
-    }
-
-    virtual void print(std::ostream& out) const {
-        out << "<DELAYED>";
-    }
-
-    virtual void json(eckit::JSON& out) const {
-        out << "<DELAYED>";
-    }
-
 };
 
 //================================================================================
@@ -250,6 +170,13 @@ void TSettings<std::vector<double> >::print(std::ostream &out) const {
 //==========================================================
 
 // We will implement conversion as needed
+
+template<>
+void TSettings<bool>::get(const std::string& name, std::string& value) const {
+    std::ostringstream ss;
+    ss << std::boolalpha << value_;
+    value = ss.str();
+}
 
 template<>
 void TSettings<bool>::get(const std::string &name, bool &value) const {
@@ -510,15 +437,6 @@ SimpleParametrisation &SimpleParametrisation::set(const std::string &name, int v
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, DelayedParametrisation *value) {
-    SettingsMap::iterator j = settings_.find(name);
-    if (j != settings_.end()) {
-        delete (*j).second;
-    }
-    settings_[name] = new DelayedSetting(value);
-    return *this;
-}
-
 SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
     SettingsMap::iterator j = settings_.find(name);
     if (j != settings_.end()) {
@@ -586,9 +504,9 @@ bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
 
-bool SimpleParametrisation::matches(const MIRParametrisation& other, const std::set<std::string>& ignore) const {
+bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
     for (const auto& j : settings_) {
-        if (!j.second->match(j.first, other) && ignore.find(j.first) == ignore.end()) {
+        if (!j.second->match(j.first, other)) {
             eckit::Log::debug<LibMir>() << "SimpleParametrisation::matches: no (" << j.first << " different to " << *(j.second) << ")" << std::endl;
             return false;
         }

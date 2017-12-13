@@ -44,7 +44,13 @@ Conservative::Conservative(const param::MIRParametrisation& param) :
     FELinear(param) {
 
     // output mesh requirements
-    OutputMeshGenerationParams_.meshXYZField_ = true;
+    outputMeshGenerationParams_.meshXYZField_ = true;
+}
+
+
+bool Conservative::sameAs(const Method& other) const {
+    const Conservative* o = dynamic_cast<const Conservative*>(&other);
+    return o && FELinear::sameAs(other);
 }
 
 
@@ -81,7 +87,10 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                     idx[n] = size_t(connectivity(e, n));
                 }
 
-                atlas::interpolation::element::Triag3D triag(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data());
+                atlas::interpolation::element::Triag3D triag(
+                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
+                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
+                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) });
 
                 const double nodalDistribution = triag.area() * oneThird;
                 for (size_t n = 0; n < 3; ++n) {
@@ -94,7 +103,11 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                     idx[n] = size_t(connectivity(e, n));
                 }
 
-                atlas::interpolation::element::Quad3D quad(coords[idx[0]].data(), coords[idx[1]].data(), coords[idx[2]].data(), coords[idx[3]].data());
+                atlas::interpolation::element::Quad3D quad(
+                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
+                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
+                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) },
+                      atlas::PointXYZ{ coords(idx[3],0), coords(idx[3],1), coords(idx[3],2) });
 
                 const double nodalDistribution = quad.area() * oneFourth;
                 for (size_t n = 0; n < 4; ++n) {
@@ -127,14 +140,14 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     // 2) M_s compute the lumped mass matrix (source mesh)
     util::MIRGrid gin(in.atlasGrid());
     eckit::linalg::Vector M_s(in.numberOfPoints());
-    const atlas::Mesh& inputMesh = gin.mesh(statistics, InputMeshGenerationParams_);
+    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams_);
     computeLumpedMassMatrix(M_s, inputMesh);
 
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
     util::MIRGrid gout(out.atlasGrid());
     eckit::linalg::Vector M_d(out.numberOfPoints());
-    const atlas::Mesh& outputMesh = gout.mesh(statistics, OutputMeshGenerationParams_);
+    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams_);
     computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
         v = 1. / v;

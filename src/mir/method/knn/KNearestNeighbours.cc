@@ -44,9 +44,17 @@ KNearestNeighbours::~KNearestNeighbours() {
 }
 
 
+bool KNearestNeighbours::sameAs(const Method& other) const {
+    const KNearestNeighbours* o = dynamic_cast<const KNearestNeighbours*>(&other);
+    return o && (nClosest_ == o->nClosest_);
+}
+
+
+
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
     md5 << nClosest_ << distanceWeighting();
 }
+
 
 
 void KNearestNeighbours::assemble(

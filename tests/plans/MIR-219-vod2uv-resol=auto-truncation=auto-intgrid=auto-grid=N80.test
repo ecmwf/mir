@@ -1,0 +1,6 @@
+# mars
+param=vo_d,level=1000
+# mir
+--vod2uv --resol=auto --truncation=auto --intgrid=auto --gridname=N80
+# plan
+ShTruncate[truncation=159]|ShVodTouvNamedGrid[gridname=F80]|Gridded2NamedGrid[gridname=N80,interpolation=linear,method=FELinear[]]|Save[output=...]

@@ -37,13 +37,20 @@ bool Gridded2ReducedLL::sameAs(const Action& other) const {
 }
 
 void Gridded2ReducedLL::print(std::ostream& out) const {
-    out << "Gridded2ReducedLL[]";
+    out << "Gridded2ReducedLL[";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
 const repres::Representation* Gridded2ReducedLL::outputRepresentation() const {
     NOTIMP;
 }
+
+const char* Gridded2ReducedLL::name() const {
+    return "Gridded2ReducedLL";
+}
+
 
 
 namespace {

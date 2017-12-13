@@ -78,6 +78,9 @@ void SetMetadata::execute(context::Context & ctx) const {
     }
 }
 
+const char* SetMetadata::name() const {
+    return "SetMetadata";
+}
 
 namespace {
 static ActionBuilder< SetMetadata > action("set.metadata");

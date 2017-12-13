@@ -36,17 +36,23 @@ Gridded2Octahedral::~Gridded2Octahedral() {
 
 bool Gridded2Octahedral::sameAs(const Action& other) const {
     const Gridded2Octahedral* o = dynamic_cast<const Gridded2Octahedral*>(&other);
-    return o && (N_ == o->N_);
+    return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
 void Gridded2Octahedral::print(std::ostream& out) const {
-    out << "Gridded2Octahedral[N=" << N_ << "]";
+    out << "Gridded2Octahedral[N=" << N_ << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out  << "]";
 }
 
 
 const repres::Representation* Gridded2Octahedral::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
+}
+
+const char* Gridded2Octahedral::name() const {
+    return "Gridded2Octahedral";
 }
 
 

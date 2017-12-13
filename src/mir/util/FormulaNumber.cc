@@ -48,6 +48,11 @@ bool FormulaNumber::sameAs(const mir::action::Action& other) const {
     return o && (value_ == o->value_);
 }
 
+
+const char* FormulaNumber::name() const {
+    return "FormulaNumber";
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util

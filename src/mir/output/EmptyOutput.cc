@@ -16,6 +16,7 @@
 #include <ostream>
 
 #include "mir/output/EmptyOutput.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -51,8 +52,30 @@ bool EmptyOutput::sameParametrisation(const param::MIRParametrisation&, const pa
 }
 
 
-bool EmptyOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
-    return false;
+bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
+    bool ok = false;
+
+    long bits;
+    if (param.userParametrisation().get("accuracy", bits)) {
+        out << "accuracy=" << bits;
+        ok = true;
+    }
+
+    std::string packing;
+    if (param.userParametrisation().get("packing", packing)) {
+        if (ok) { out << ","; }
+        out << "packing=" << packing;
+        ok = true;
+    }
+
+    long edition;
+    if (param.userParametrisation().get("edition", edition)) {
+        if (ok) { out << ","; }
+        out << "edition=" << edition;
+        ok = true;
+    }
+
+    return ok;
 }
 
 

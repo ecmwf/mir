@@ -72,6 +72,7 @@ protected:
     // -- Overridden methods
 
     virtual bool sameAs(const Action&) const;
+    virtual void print(std::ostream&) const; // Change to virtual if base class
 
 
     // -- Class members

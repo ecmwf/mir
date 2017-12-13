@@ -1,0 +1,7 @@
+# mars
+# this test a very high resolution so that truncation (in spectral linear order to grid increments) does not happen because it exceeds the input field truncation
+param=vo_d,level=1000
+# mir
+--vod2uv --grid=0.1/0.1 --resol=auto
+# plan
+ShVodTouvNamedGrid[gridname=F900]|Gridded2RegularLL[increments=Increments[west_east=0.1,south_north=0.1],bbox=BoundingBox[north=90,west=0,south=-90,east=359.9],interpolation=linear,method=FELinear[]]|Save[output=...]

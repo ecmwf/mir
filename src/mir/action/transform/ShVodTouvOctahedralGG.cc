@@ -51,6 +51,9 @@ const repres::Representation* ShVodTouvOctahedralGG::outputRepresentation() cons
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
+const char* ShVodTouvOctahedralGG::name() const {
+    return "ShVodTouvOctahedralGG";
+}
 
 namespace {
 static ActionBuilder< ShVodTouvOctahedralGG > __action("transform.sh-vod-to-uv-octahedral-gg");

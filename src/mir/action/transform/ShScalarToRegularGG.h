@@ -86,6 +86,7 @@ private:
     // -- Overridden methods
     virtual bool sameAs(const Action& other) const;
     virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
+    virtual const char* name() const;
 
     // -- Class members
     // None

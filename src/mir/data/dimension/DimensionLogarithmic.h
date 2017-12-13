@@ -48,6 +48,8 @@ public:
 
     void unlinearise(const Dimension::Matrix&, Dimension::Matrix&, double missingValue) const;
 
+    size_t dimensions() const;
+
     // -- Class members
     // None
 

@@ -49,15 +49,19 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
 
 void Gridded2RotatedLL::print(std::ostream &out) const {
     out << "Gridded2RotatedLL["
-            "increments=" << increments_
-        << ",bbox=" << bbox_
         << ",rotation=" << rotation_
-        << "]";
+        << ",";
+    Gridded2LatLon::print(out);
+    out << "]";
 }
+
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
     return new repres::latlon::RotatedLL(bbox_, increments_, rotation_);
 }
 
+const char* Gridded2RotatedLL::name() const {
+    return "Gridded2RotatedLL";
+}
 
 namespace {
 static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2rotated-regular-ll");

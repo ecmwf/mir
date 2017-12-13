@@ -56,6 +56,15 @@ size_t FileLoader::size() const {
     return buffer_.size();
 }
 
+bool FileLoader::inSharedMemory() const {
+    return false;
+}
+
+bool FileLoader::shared() {
+    return false;
+}
+
+
 namespace {
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }

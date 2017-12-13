@@ -34,6 +34,12 @@ StructuredMethod::~StructuredMethod() {
 }
 
 
+bool StructuredMethod::sameAs(const Method& other) const {
+    const StructuredMethod* o = dynamic_cast<const StructuredMethod*>(&other);
+    return o && MethodWeighted::sameAs(other);
+}
+
+
 void StructuredMethod::left_right_lon_indexes(
     const Longitude& in,
     const std::vector<repres::Iterator::point_ll_t>& coords,

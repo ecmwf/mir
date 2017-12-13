@@ -6,7 +6,7 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir_tool="@MIR_TOOL@"
+mir="@MIR_TOOL@"
 mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
 grib_compare="@GRIB_COMPARE@"
@@ -34,29 +34,31 @@ do
         case $state in
 
             mars)
+            ok=0
             m=$(echo $n | tr '/' '_')
             if [[ -f "${tests_assertions_dir}/$m" ]]
             then
-                ln -sf "${tests_assertions_dir}/$m" data.in.$t
+                ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
             elif [[ -f "${tmp_assertions_dir}/$m" ]]
             then
                 ln -sf "${tmp_assertions_dir}/$m" data.in.$t
             else
-                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+                echo "retrieve,$n,target=data.in.$t" > mars.r.$t && ok=1
                 $mars_script mars.r.$t || rm data.in.$t
-                cp data.in.$t "${tmp_assertions_dir}/$m"
+                cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
             fi
             state=mir
             ;;
 
             mir)
+            ok=0
             eval n=\"$n\"
-            $mir_tool $n $(pwd)/data.in.$t $(pwd)/data.out.$t
+            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
             state=eccodes
             ;;
 
             eccodes)
-            ok=1
+            ok=0
             set $(echo $n | tr '=' ' ')
             g=$($grib_get -wcount=1  -p $1 data.out.$t)
             if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
@@ -64,6 +66,7 @@ do
                 echo "$1: expected [$2], got [$g]" 1>&2
                 exit 1
             fi
+            ok=1
             ;;
 
         esac

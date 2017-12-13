@@ -47,14 +47,13 @@ public:
 
     // -- Methods
 
-    void hide(const std::string& name);
+    void unset(const std::string& name);
 
     MIRParametrisation& set(const std::string& name, const char* value);
     MIRParametrisation& set(const std::string& name, const std::string& value);
     MIRParametrisation& set(const std::string& name, bool value);
     MIRParametrisation& set(const std::string& name, long value);
     MIRParametrisation& set(const std::string& name, double value);
-    MIRParametrisation& set(const std::string& name, DelayedParametrisation* value);
 
     // -- Overridden methods
 

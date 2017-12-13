@@ -16,19 +16,16 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
-#include <set>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
-#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
-#include "mir/style/IntermediateGrid.h"
-#include "mir/style/SpectralOrder.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/style/Resol.h"
+#include "mir/style/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
-#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -36,13 +33,37 @@ namespace style {
 
 
 namespace {
+
 static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
     DeprecatedStyle(const param::MIRParametrisation& p) : ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
+
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
+
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation) {
+    static const std::vector< std::pair< const char*, const char* > > keys_targets = {
+        { "grid",       "regular-ll" },
+        { "reduced",    "reduced-gg" },
+        { "regular",    "regular-gg" },
+        { "octahedral", "octahedral-gg" },
+        { "pl",         "reduced-gg-pl-given" },
+        { "gridname",   "namedgrid" },
+        { "griddef",    "griddef" },
+        { "points",     "points" }
+    };
+
+    for (auto& kt : keys_targets) {
+        if (parametrisation.has(kt.first)) {
+            return kt.second;
+        }
+    }
+
+    return "";
 }
+
+}  // (anonymous namespace)
 
 
 ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
@@ -82,93 +103,76 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
+    if (parametrisation_.userParametrisation().get("formula.spectral", formula) ||
+            parametrisation_.userParametrisation().get("formula.raw", formula)
+       ) {
         std::string metadata;
         // paramId for the results of formulas
         parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
-    long truncation = getIntendedTruncation();
-    if (truncation) {
-        plan.add("transform.sh-truncate", "truncation", truncation);
-    }
+    std::string resolution;
+    parametrisation_.get("resol", resolution);
+    eckit::ScopedPtr<Resol> resol(ResolFactory::build(resolution, parametrisation_));
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resol << std::endl;
+
+    bool rotation = parametrisation_.userParametrisation().has("rotation");
 
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-    std::string transform = vod2uv? "sh-vod-to-uv-" : "sh-scalar-to-";  // completed later
 
-    if (parametrisation_.userParametrisation().has("grid")) {
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
 
-        param::RuntimeParametrisation runtime(parametrisation_);
-        if (truncation) {
-            runtime.set("truncation", truncation);
-        }
+    // completed later
+    const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
+    const std::string interpolate = "interpolate.grid2";
+    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
 
-        std::string intermediate_grid;
-        parametrisation_.get("spectral-intermediate-grid", intermediate_grid);
+    bool rotation_not_supported = (target == "griddef" || target == "points");
+    if (rotation && rotation_not_supported) {
+        throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef' and 'points'");
+    }
 
-        eckit::ScopedPtr<IntermediateGrid> grid(IntermediateGridFactory::build(intermediate_grid, runtime));
-        if (grid->active()) {
+    if (resol->resultIsSpectral()) {
+        resol->prepare(plan);
+    }
 
-            // use intermediate Gaussian grid with intended truncation
-            plan.add("transform." + transform + "namedgrid", "gridname", grid.release());
-            grid2grid(plan);
-            return;
-        }
+    if (!target.empty()) {
+        if (rotation_not_supported) {
 
-        // don't use intermediate Gaussian grid
-        plan.add("transform." + transform + "regular-ll");
+            // TODO: this is temporary
+            plan.add(transform + "octahedral-gg", "octahedral", 64L);
+            plan.add(interpolate + target);
 
-        if (parametrisation_.userParametrisation().has("rotation")) {
-            plan.add("interpolate.grid2rotated-regular-ll");
+        } else if (resol->resultIsSpectral()) {
 
-            bool wind = false;
-            parametrisation_.userParametrisation().get("wind", wind);
-
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
+            plan.add(transform + target);
+            if (rotation) {
+                plan.add(interpolate + "rotated-" + target);
             }
+
+        } else {
+
+            resol->prepare(plan);
+            plan.add(interpolate + (rotation ? "rotated-" : "") + target);
+
         }
     }
 
-    if (parametrisation_.userParametrisation().has("reduced")) {
-        plan.add("transform." + transform + "reduced-gg");
-    }
-
-    if (parametrisation_.userParametrisation().has("regular")) {
-        plan.add("transform." + transform + "regular-gg");
-    }
-
-    if (parametrisation_.userParametrisation().has("octahedral")) {
-        plan.add("transform." + transform + "octahedral-gg");
-    }
-
-    if (parametrisation_.userParametrisation().has("pl")) {
-        plan.add("transform." + transform + "reduced-gg-pl-given");
-    }
-
-    if (parametrisation_.userParametrisation().has("gridname")) {
-        std::string gridname;
-        ASSERT(parametrisation_.get("gridname", gridname));
-        plan.add("transform." + transform + "namedgrid");
-    }
-
-    if (parametrisation_.userParametrisation().has("griddef")) {
-        std::string griddef;
-        ASSERT(parametrisation_.get("griddef", griddef));
-        // TODO: this is temporary
-        plan.add("transform." + transform + "octahedral-gg", "octahedral", 64L);
-        plan.add("interpolate.grid2griddef");
+    if (rotation && (wind || vod2uv)) {
+        plan.add("filter.adjust-winds-directions");
+        selectWindComponents(plan);
     }
 
     if (isWindComponent()) {
         plan.add("filter.adjust-winds-scale-cos-latitude");
     }
 
-    if (!parametrisation_.userParametrisation().has("rotation")) {
+    if (!rotation) {
         selectWindComponents(plan);
     }
 
@@ -183,9 +187,17 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
-    if (parametrisation_.userParametrisation().has("truncation")) {
-        plan.add("transform.sh-truncate");
-    }
+    param::RuntimeParametrisation runtime(parametrisation_);
+    runtime.set("intgrid", "none");
+
+    std::string resolution;
+    parametrisation_.get("resol", resolution);
+    eckit::ScopedPtr<Resol> resol(ResolFactory::build(resolution, runtime));
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resol << std::endl;
+
+    // the runtime parametrisation above is needed to satisfy this assertion
+    ASSERT(resol->resultIsSpectral());
+    resol->prepare(plan);
 
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
@@ -209,37 +221,43 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
+    bool rotation = parametrisation_.userParametrisation().has("rotation");
+
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
     bool wind = false;
     parametrisation_.userParametrisation().get("wind", wind);
 
-    if (parametrisation_.userParametrisation().has("pl") && parametrisation_.userParametrisation().has("rotation")) {
-        throw eckit::UserError("'user.pl' is incompatible with option 'rotation'.");
+    std::string formula;
+    if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
+            parametrisation_.userParametrisation().get("formula.raw", formula)) {
+        std::string metadata;
+        // paramId for the results of formulas
+        parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
+
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
+    bool rotation_not_supported =
+            parametrisation_.userParametrisation().has("griddef") ||
+            parametrisation_.userParametrisation().has("points");
 
-    const std::string userGrid =
-        parametrisation_.userParametrisation().has("grid") ?         "regular-ll" :
-        parametrisation_.userParametrisation().has("reduced") ?      "reduced-gg" :
-        parametrisation_.userParametrisation().has("regular") ?      "regular-gg" :
-        parametrisation_.userParametrisation().has("octahedral") ?   "octahedral-gg" :
-        parametrisation_.userParametrisation().has("pl") ?           "reduced-gg-pl-given" :
-        parametrisation_.userParametrisation().has("gridname") ?     "namedgrid" :
-        parametrisation_.userParametrisation().has("griddef") ?      "griddef" :
-        parametrisation_.userParametrisation().has("points") ?       "points" :
-        "";
+    if (rotation && rotation_not_supported) {
+        throw eckit::UserError("'rotation' is incompatible with options 'griddef' and 'points'");
+    }
 
-    if (userGrid.length()) {
-        if (parametrisation_.userParametrisation().has("rotation")) {
-            plan.add("interpolate.grid2rotated-" + userGrid);
-            if (wind || vod2uv) {
-                plan.add("filter.adjust-winds-directions");
-                selectWindComponents(plan);
-            }
-        } else {
-            plan.add("interpolate.grid2" + userGrid);
+    // completed later
+    const std::string interpolate = "interpolate.grid2";
+    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
+
+    if (!target.empty()) {
+        plan.add(interpolate + (rotation ? "rotated-":"") + target);
+
+        if (rotation && (wind || vod2uv)) {
+            plan.add("filter.adjust-winds-directions");
+            selectWindComponents(plan);
         }
     }
 }
@@ -321,85 +339,6 @@ bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
 }
 
 
-long ECMWFStyle::getTargetGaussianNumber() const {
-    long N = 0;
-
-    // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-    std::vector<double> grid;
-    if (parametrisation_.userParametrisation().get("grid", grid)) {
-        ASSERT(grid.size() == 2);
-        util::Increments increments(grid[0], grid[1]);
-
-        // use (non-shifted) global bounding box
-        util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox, false, false);
-
-        N = long(increments.computeNj(bbox) - 1) / 2;
-        return N;
-    }
-
-    // get Gaussian N directly
-    if (parametrisation_.userParametrisation().get("reduced", N) ||
-        parametrisation_.userParametrisation().get("regular", N) ||
-        parametrisation_.userParametrisation().get("octahedral", N)) {
-        return N;
-    }
-
-    // get Gaussian N given a gridname
-    std::string gridname;
-    if (parametrisation_.userParametrisation().get("gridname", gridname)) {
-        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-        return N;
-    }
-
-    std::ostringstream os;
-    os << "ECMWFStyle: cannot calculate Gaussian number (N) from target grid";
-    throw eckit::SeriousBug(os.str());
-}
-
-
-long ECMWFStyle::getIntendedTruncation() const {
-
-    // TODO: this is temporary, no support yet for unstuctured grids
-    if (parametrisation_.has("griddef")) {
-        return 63L;
-    }
-
-    // Set truncation based on target grid's equivalent Gaussian N and spectral order
-    bool autoresol = true;
-    parametrisation_.userParametrisation().get("autoresol", autoresol);
-
-    if (autoresol) {
-
-        long Tin = 0L;
-        ASSERT(parametrisation_.fieldParametrisation().get("truncation", Tin));
-
-        std::string spectralOrder = "linear";
-        parametrisation_.userParametrisation().get("spectral-order", spectralOrder);
-
-        eckit::ScopedPtr<SpectralOrder> order(SpectralOrderFactory::build(spectralOrder));
-        ASSERT(order);
-
-        // get truncation from points-per-latitude, limited to input
-        long N = getTargetGaussianNumber();
-        ASSERT(N > 0);
-
-        long T = order->getTruncationFromGaussianNumber(N);
-        if (T > Tin) {
-            eckit::Log::warning() << "Automatic truncation " << T << " ('autoresol') limited by input truncation " << Tin << std::endl;
-            return Tin;
-        }
-        return T;
-    }
-
-    // Set truncation if manually specified
-    long T = 0;
-    parametrisation_.userParametrisation().get("truncation", T);
-
-    return T;
-}
-
-
 void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
     // All the nasty logic goes there
@@ -464,6 +403,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
             std::string metadata;
             // paramId for the results of formulas
             parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
+            parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
+
             plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
         }
         grid2grid(plan);

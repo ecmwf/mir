@@ -19,6 +19,7 @@
 #include <cmath>
 #include <fcntl.h>
 #include <sys/mman.h>
+
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
@@ -29,10 +30,15 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
+#include "eckit/memory/MMap.h"
+
+using eckit::MMap;
 
 // On CRAY/Brodwell, the rounding of areas is incorrect
 // 90 is actually 90 +- 1e-14
 // #pragma GCC target ("no-fma")
+
+//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 
@@ -51,13 +57,16 @@ class Unmapper {
 public:
     Unmapper(void *address, size_t size): address_(address), size_(size) {}
     ~Unmapper() {
-        SYSCALL(::munmap(address_, size_));
+        SYSCALL(MMap::munmap(address_, size_));
     }
 };
 
 static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
 }  // namespace
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 namespace mir {
@@ -85,7 +94,7 @@ MappedMask::MappedMask(const std::string&,
     size_t size = s.st_size;
 
 
-    void *address = ::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
+    void *address = MMap::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
     if (address == MAP_FAILED) {
         eckit::Log::error() << "open(" << path_ << ',' << size << ')'
                             << eckit::Log::syserr << std::endl;
@@ -178,6 +187,8 @@ void MappedMask::print(std::ostream &out) const {
 const std::vector<bool> &MappedMask::mask() const {
     return mask_;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace lsm

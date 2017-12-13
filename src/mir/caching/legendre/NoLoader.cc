@@ -46,6 +46,15 @@ size_t NoLoader::size() const {
     return 0;
 }
 
+bool NoLoader::inSharedMemory() const {
+    return false;
+}
+
+bool NoLoader::shared() {
+    return false;
+}
+
+
 namespace {
 static LegendreLoaderBuilder<NoLoader> loader("none");
 }

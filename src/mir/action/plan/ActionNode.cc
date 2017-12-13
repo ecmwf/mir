@@ -45,7 +45,7 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     // eckit::Log::info() << " BEFORE -----> " << action_  << "  " << field << std::endl;
     bool ok = false;
     try {
-        action_.execute(ctx);
+        action_.perform(ctx);
         ok = true;
     } catch (std::exception& e) {
 

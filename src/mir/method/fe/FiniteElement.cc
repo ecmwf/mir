@@ -76,14 +76,14 @@ static void normalise(triplet_vector_t& triplets) {
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
-        size_t nbInputPoints,
-        const atlas::array::ArrayView<double, 2>& icoords,
-        const atlas::mesh::HybridElements::Connectivity& connectivity,
-        const repres::Iterator::point_3d_t& p,
-        size_t ip,
-        size_t firstVirtualPoint,
-        size_t& nbProjectionAttempts,
-        const element_tree_t::NodeList& closest ) {
+    size_t nbInputPoints,
+    const atlas::array::ArrayView<double, 2>& icoords,
+    const atlas::mesh::HybridElements::Connectivity& connectivity,
+    const repres::Iterator::point_3d_t& p,
+    size_t ip,
+    size_t firstVirtualPoint,
+    size_t& nbProjectionAttempts,
+    const element_tree_t::NodeList& closest ) {
 
     ASSERT(!closest.empty());
 
@@ -118,9 +118,9 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* triangle */
             atlas::interpolation::element::Triag3D triag(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data());
+                atlas::PointXYZ{ icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2) },
+                atlas::PointXYZ{ icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2) },
+                atlas::PointXYZ{ icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2) });
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
@@ -151,10 +151,10 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* quadrilateral */
             atlas::interpolation::element::Quad3D quad(
-                icoords[idx[0]].data(),
-                icoords[idx[1]].data(),
-                icoords[idx[2]].data(),
-                icoords[idx[3]].data() );
+                atlas::PointXYZ{ icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2) },
+                atlas::PointXYZ{ icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2) },
+                atlas::PointXYZ{ icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2) },
+                atlas::PointXYZ{ icoords(idx[3], 0), icoords(idx[3], 1), icoords(idx[3], 2) });
 
             if ( !quad.validate() ) { // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
@@ -204,18 +204,31 @@ static triplet_vector_t projectPointTo3DElements(
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     MethodWeighted(param),
-    InputMeshGenerationParams_("input", param),
-    OutputMeshGenerationParams_("output", param) {
+    inputMeshGenerationParams_("input", param),
+    outputMeshGenerationParams_("output", param) {
 
     // input mesh requirements
-    InputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
-    InputMeshGenerationParams_.meshXYZField_ = true;
-    InputMeshGenerationParams_.meshCellCentres_ = true;
+    inputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
+    inputMeshGenerationParams_.meshXYZField_ = true;
+    inputMeshGenerationParams_.meshCellCentres_ = true;
 
     // output mesh requirements
-    OutputMeshGenerationParams_.meshParallelEdgesConnectivity_ = false;
-    OutputMeshGenerationParams_.meshXYZField_ = false;
-    OutputMeshGenerationParams_.meshCellCentres_ = false;
+    outputMeshGenerationParams_.meshParallelEdgesConnectivity_ = false;
+    outputMeshGenerationParams_.meshXYZField_ = false;
+    outputMeshGenerationParams_.meshCellCentres_ = false;
+
+    if (parametrisation_.has("input-mesh-generator")) {
+        parametrisation_.get("input-mesh-generator", inputMeshGenerationParams_.meshGenerator_);
+    } else {
+        inputMeshGenerationParams_.meshGenerator_ = "";
+    }
+
+    if (parametrisation_.has("output-mesh-generator")) {
+        parametrisation_.get("output-mesh-generator", outputMeshGenerationParams_.meshGenerator_);
+    } else {
+        outputMeshGenerationParams_.meshGenerator_ = "";
+    }
+
 }
 
 
@@ -223,10 +236,17 @@ FiniteElement::~FiniteElement() {
 }
 
 
+bool FiniteElement::sameAs(const Method& other) const {
+    const FiniteElement* o = dynamic_cast<const FiniteElement*>(&other);
+    // TODO compare inputMeshGenerationParams_ && outputMeshGenerationParams_
+    return o && MethodWeighted::sameAs(other);
+}
+
+
 void FiniteElement::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
-    InputMeshGenerationParams_.hash(md5);
-    OutputMeshGenerationParams_.hash(md5);
+    inputMeshGenerationParams_.hash(md5);
+    outputMeshGenerationParams_.hash(md5);
 }
 
 
@@ -236,25 +256,23 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                              const repres::Representation& out) const {
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
+    auto inputMeshGenerationParams = inputMeshGenerationParams_;
+    auto outputMeshGenerationParams = outputMeshGenerationParams_;
 
     // let representations set the mesh generator
-    if (parametrisation_.has("input-mesh-generator")) {
-        parametrisation_.get("input-mesh-generator", InputMeshGenerationParams_.meshGenerator_);
-    } else {
-        InputMeshGenerationParams_.meshGenerator_ = in.atlasMeshGenerator();
+    if (inputMeshGenerationParams.meshGenerator_ == "") {
+        inputMeshGenerationParams.meshGenerator_ = in.atlasMeshGenerator();
     }
 
-    if (parametrisation_.has("output-mesh-generator")) {
-        parametrisation_.get("output-mesh-generator", OutputMeshGenerationParams_.meshGenerator_);
-    } else {
-        OutputMeshGenerationParams_.meshGenerator_ = out.atlasMeshGenerator();
+    if (outputMeshGenerationParams.meshGenerator_ == "") {
+        outputMeshGenerationParams.meshGenerator_ = out.atlasMeshGenerator();
     }
 
 
     // get input mesh (cell centres are required for the k-d tree)
-    ASSERT(InputMeshGenerationParams_.meshCellCentres_);
+    ASSERT(inputMeshGenerationParams.meshCellCentres_);
     util::MIRGrid gin(in.atlasGrid());
-    const atlas::Mesh& inMesh = gin.mesh(statistics, InputMeshGenerationParams_);
+    const atlas::Mesh& inMesh = gin.mesh(statistics, inputMeshGenerationParams);
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();
@@ -321,14 +339,14 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
                 size_t nbProjectionAttempts;
                 triplet_vector_t triplets = projectPointTo3DElements(
-                            nbInputPoints,
-                            icoords,
-                            connectivity,
-                            p,
-                            ip,
-                            firstVirtualPoint,
-                            nbProjectionAttempts,
-                            closest );
+                                                nbInputPoints,
+                                                icoords,
+                                                connectivity,
+                                                p,
+                                                ip,
+                                                firstVirtualPoint,
+                                                nbProjectionAttempts,
+                                                closest );
 
                 nbMaxElementsSearched = std::max(nbMaxElementsSearched, closest.size());
                 nbMinElementsSearched = std::min(nbMinElementsSearched, closest.size());

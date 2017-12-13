@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef NamedGridPattern_H
-#define NamedGridPattern_H
+#ifndef mir_namedgrids_NamedGridPattern_h
+#define mir_namedgrids_NamedGridPattern_h
 
-#include <string>
 #include <iosfwd>
+#include <string>
 
 #include "eckit/utils/Regex.h"
+#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -27,17 +28,17 @@ namespace namedgrids {
 
 class NamedGrid;
 
-class NamedGridPattern {
-  public:
+class NamedGridPattern : private eckit::NonCopyable {
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-
+    // None
 
     // -- Destructor
-
+    // None
 
     // -- Convertors
     // None
@@ -46,7 +47,7 @@ class NamedGridPattern {
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -56,15 +57,14 @@ class NamedGridPattern {
 
     // -- Class methods
 
+    static bool match(const std::string &name);
     static const NamedGrid* build(const std::string &name);
     static void list(std::ostream &);
 
-
-  protected:
+protected:
 
     NamedGridPattern(const std::string &pattern);
-    virtual ~NamedGridPattern(); // Change to virtual if base class
-
+    virtual ~NamedGridPattern();
 
     // -- Members
 
@@ -73,7 +73,7 @@ class NamedGridPattern {
     // -- Methods
 
     virtual const NamedGrid* make(const std::string &name) const = 0;
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream &) const = 0;
 
     // -- Overridden methods
     // None
@@ -84,18 +84,13 @@ class NamedGridPattern {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    NamedGridPattern(const NamedGridPattern &);
-    NamedGridPattern &operator=(const NamedGridPattern &);
+private:
 
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -104,7 +99,7 @@ class NamedGridPattern {
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
@@ -116,8 +111,9 @@ class NamedGridPattern {
 };
 
 
-
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif
 

@@ -85,7 +85,6 @@ public:
     MIRJob& set(const std::string& name, const std::vector<double>& value);
     MIRJob& set(const std::string& name, const std::vector<std::string>& value);
 
-    MIRJob& set(const std::string& name, param::DelayedParametrisation* value);
     MIRJob& set(const std::string& name, double v1, double v2);
     MIRJob& set(const std::string& name, double v1, double v2, double v3, double v4);
 

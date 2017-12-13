@@ -26,15 +26,21 @@ namespace fe {
 FEBilinear::FEBilinear(const param::MIRParametrisation &param) :
     FiniteElement(param) {
 
-  InputMeshGenerationParams_.set("triangulate", false); // quads allowed
+  inputMeshGenerationParams_.set("triangulate", false); // quads allowed
 
   // Only perfect quads are allowed, otherwise triangles (good for octahedral)
   // TODO: Find good default here, and allow override from MIRParametrisation
-  InputMeshGenerationParams_.set("angle", 0.);
+  inputMeshGenerationParams_.set("angle", 0.);
 }
 
 
 FEBilinear::~FEBilinear() {
+}
+
+
+bool FEBilinear::sameAs(const Method& other) const {
+    const FEBilinear* o = dynamic_cast<const FEBilinear*>(&other);
+    return o && FiniteElement::sameAs(other);
 }
 
 

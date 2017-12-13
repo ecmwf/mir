@@ -84,6 +84,9 @@ public:
     static Mask& lookupInput(const param::MIRParametrisation&, const repres::Representation&);
     static Mask& lookupOutput(const param::MIRParametrisation&, const repres::Representation&);
 
+    static bool sameInput(const param::MIRParametrisation&, const param::MIRParametrisation&);
+    static bool sameOutput(const param::MIRParametrisation&, const param::MIRParametrisation&);
+
 protected:
 
     // -- Members

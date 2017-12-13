@@ -43,8 +43,12 @@ static void init() {
 Packer::Packer(const std::string &name):
     name_(name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("Packer: duplicate '" + name + "'");
+    }
+
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
@@ -52,8 +56,8 @@ Packer::Packer(const std::string &name):
 
 Packer::~Packer() {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
@@ -61,35 +65,30 @@ Packer::~Packer() {
 
 void Packer::list(std::ostream& out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map<std::string, Packer *>::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
+    for (const auto& j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }
 
 
-const Packer& Packer::lookup(const std::string &name) {
-
+const Packer& Packer::lookup(const std::string& name) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<std::string, Packer *>::const_iterator j = m->find(name);
 
-    eckit::Log::debug<LibMir>() << "Looking for Packer [" << name << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "Packer: looking for '" << name << "'" << std::endl;
 
+    auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No Packer for [" << name << "]" << std::endl;
-        eckit::Log::error() << "Packers are:" << std::endl;
-        for (j = m->begin() ; j != m->end() ; ++j)
-            eckit::Log::error() << "   " << (*j).first << std::endl;
-        throw eckit::SeriousBug(std::string("No Packer called ") + name);
+        list(eckit::Log::error() << "Packer: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("Packer: unknown '" + name + "'");
+
     }
 
-    return *(*j).second;
+    return *(j->second);
 }
 
 

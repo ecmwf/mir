@@ -36,10 +36,10 @@ list(
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
-    action/interpolate/Gridded2GriddedInterpolation.cc
-    action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
+    action/interpolate/Gridded2GriddedInterpolation.cc
+    action/interpolate/Gridded2GriddedInterpolation.h
     action/interpolate/Gridded2LatLon.cc
     action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2NamedGrid.cc
@@ -70,6 +70,8 @@ list(
     action/interpolate/Gridded2RotatedOctahedral.h
     action/interpolate/Gridded2RotatedReduced.cc
     action/interpolate/Gridded2RotatedReduced.h
+    action/interpolate/Gridded2RotatedReducedGGPLGiven.cc
+    action/interpolate/Gridded2RotatedReducedGGPLGiven.h
     action/interpolate/Gridded2RotatedRegular.cc
     action/interpolate/Gridded2RotatedRegular.h
     action/io/Copy.cc
@@ -118,12 +120,14 @@ list(
     caching/InMemoryCacheBase.h
     caching/InMemoryCacheStatistics.cc
     caching/InMemoryCacheStatistics.h
-    caching/interpolator/FileLoader.cc
-    caching/interpolator/FileLoader.h
-    caching/interpolator/InterpolatorLoader.cc
-    caching/interpolator/InterpolatorLoader.h
-    caching/interpolator/SharedMemoryLoader.cc
-    caching/interpolator/SharedMemoryLoader.h
+    caching/InMemoryCacheUsage.cc
+    caching/InMemoryCacheUsage.h
+    caching/matrix/FileLoader.cc
+    caching/matrix/FileLoader.h
+    caching/matrix/MatrixLoader.cc
+    caching/matrix/MatrixLoader.h
+    caching/matrix/SharedMemoryLoader.cc
+    caching/matrix/SharedMemoryLoader.h
     caching/legendre/FileLoader.cc
     caching/legendre/FileLoader.h
     caching/legendre/LegendreLoader.cc
@@ -172,10 +176,12 @@ list(
     data/dimension/Dimension1DAngleT.h
     data/dimension/Dimension1DLinear.cc
     data/dimension/Dimension1DLinear.h
-    data/dimension/Dimension2DCartesian.cc
-    data/dimension/Dimension2DCartesian.h
+    data/dimension/Dimension2DVectorZonalMeridional.cc
+    data/dimension/Dimension2DVectorZonalMeridional.h
     data/dimension/Dimension3DCartesian.cc
     data/dimension/Dimension3DCartesian.h
+    data/dimension/Dimension3DVectorZonalMeridionalVertical.cc
+    data/dimension/Dimension3DVectorZonalMeridionalVertical.h
     data/dimension/DimensionLinear.cc
     data/dimension/DimensionLinear.h
     data/dimension/DimensionLogarithmic.cc
@@ -328,8 +334,6 @@ list(
     param/ConfigurationWrapper.h
     param/DefaultParametrisation.cc
     param/DefaultParametrisation.h
-    param/DelayedParametrisation.cc
-    param/DelayedParametrisation.h
     param/FieldParametrisation.cc
     param/FieldParametrisation.h
     param/MIRParametrisation.cc
@@ -451,20 +455,40 @@ list(
     style/CustomStyle.h
     style/ECMWFStyle.cc
     style/ECMWFStyle.h
-    style/IntermediateGaussianGrid.cc
-    style/IntermediateGaussianGrid.h
-    style/IntermediateGrid.cc
-    style/IntermediateGrid.h
-    style/IntermediateGridNone.cc
-    style/IntermediateGridNone.h
-    style/IntermediateNamedGrid.cc
-    style/IntermediateNamedGrid.h
+    style/Intgrid.cc
+    style/Intgrid.h
     style/MIRStyle.cc
     style/MIRStyle.h
-    style/SpectralOrder.cc
-    style/SpectralOrder.h
-    style/SpectralOrderT.cc
-    style/SpectralOrderT.h
+    style/Resol.cc
+    style/Resol.h
+    style/Truncation.cc
+    style/Truncation.h
+    style/intgrid/Automatic.cc
+    style/intgrid/Automatic.h
+    style/intgrid/NamedGrid.cc
+    style/intgrid/NamedGrid.h
+    style/intgrid/None.cc
+    style/intgrid/None.h
+    style/intgrid/Source.cc
+    style/intgrid/Source.h
+    style/resol/ArchivedValue.cc
+    style/resol/ArchivedValue.h
+    style/resol/AutomaticResolution.cc
+    style/resol/AutomaticResolution.h
+    style/resol/NamedGrid.cc
+    style/resol/NamedGrid.h
+    style/resol/SpectralOrder.cc
+    style/resol/SpectralOrder.h
+    style/resol/SpectralOrderT.cc
+    style/resol/SpectralOrderT.h
+    style/resol/Truncation.cc
+    style/resol/Truncation.h
+    style/truncation/Automatic.cc
+    style/truncation/Automatic.h
+    style/truncation/None.cc
+    style/truncation/None.h
+    style/truncation/Truncation.cc
+    style/truncation/Truncation.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

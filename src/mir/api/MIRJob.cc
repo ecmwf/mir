@@ -52,7 +52,7 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
 
 void MIRJob::print(std::ostream& out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
-        out << "mir-tool ";
+        out << "mir";
         SimpleParametrisation::print(out);
         out << " in.grib out.grib";
     } else {
@@ -89,7 +89,7 @@ MIRJob& MIRJob::set(const std::string& args) {
 
 
 static const std::map<std::string, std::string> aliases {
-    {"resol", "truncation"},
+//    {"resol", "truncation"},
 };
 
 
@@ -124,7 +124,7 @@ MIRJob& MIRJob::clear(const std::string& name) {
 
 template<class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "=" << value << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
     return *this;
 }
@@ -134,7 +134,7 @@ template<class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
     eckit::Channel& out = eckit::Log::debug<LibMir>();
 
-    out << "MIRJob: set '" << name << "=";
+    out << "MIRJob: set '" << name << "'='";
     const char* sep = "";
     size_t n = 0;
     for (; n < outputCount && n < value.size(); ++n) {
@@ -232,12 +232,6 @@ MIRJob& MIRJob::set(const std::string& name, const std::vector<double>& v) {
 
 MIRJob& MIRJob::set(const std::string& name, const std::vector<std::string>& value) {
     _setVector(resolveAliases(name), resolveAliases(name, value));
-    return *this;
-}
-
-
-MIRJob& MIRJob::set(const std::string& name, param::DelayedParametrisation *value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
 

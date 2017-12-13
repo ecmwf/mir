@@ -53,6 +53,8 @@ public:
     const std::string& name() const;
 
     eckit::Length length() const;
+    void whiteListEntries(std::ostream& out) const;
+
 
 private:
 

@@ -23,6 +23,13 @@ namespace param {
 ConfigurationWrapper::ConfigurationWrapper(const eckit::Configuration &config) : configuration_(config) {
 }
 
+const MIRParametrisation& ConfigurationWrapper::userParametrisation() const {
+    return *this;
+}
+
+const MIRParametrisation& ConfigurationWrapper::fieldParametrisation() const {
+    return *this;
+}
 
 bool ConfigurationWrapper::has(const std::string& name) const {
     return configuration_.has(name);

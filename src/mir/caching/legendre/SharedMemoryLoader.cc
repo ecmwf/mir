@@ -27,6 +27,8 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
+#include "eckit/memory/Shmget.h"
+
 #include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
 #include "eckit/io/StdFile.h"
@@ -39,6 +41,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 
+#include "eckit/io/StdPipe.h"
 
 namespace mir {
 namespace caching {
@@ -61,7 +64,7 @@ struct info {
 
 class AutoFDClose {
     int fd_;
-  public:
+public:
     AutoFDClose(int fd): fd_(fd) {}
     ~AutoFDClose() {
         ::close(fd_);
@@ -109,7 +112,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     size_(path.size()),
     unload_(false) {
 
-    eckit::Log::debug<LibMir>() << "Loading shared memory interpolator from " << path << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading shared memory legendre coefficients from " << path << std::endl;
 
     std::string name;
 
@@ -167,11 +170,16 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     //                          << std::endl;
 
     int shmid;
-    if ((shmid = shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
+    if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
         std::ostringstream oss;
         oss << "Failed to aquire shared memory for " << eckit::Bytes(shmsize) << ", check the maximum authorised on this system (Linux ipcs -l, Mac/BSD ipcs -M)";
         throw eckit::FailedSystemCall(oss.str());
     }
+
+
+    char hostname[256];
+    SYSCALL(::gethostname(hostname, sizeof(hostname)));
+    eckit::Log::info() << "SHM LOAD " << hostname << " path " << real << " key " << key << " shmid " << shmid << std::endl;
 
 #ifdef SHM_PAGESIZE
     {
@@ -194,7 +202,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     /* attach shared memory */
 
-    address_ = shmat( shmid, NULL, 0 );
+    address_ = eckit::Shmget::shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
         throw eckit::FailedSystemCall("sfmat(" + real.asString() + ")");
     }
@@ -226,8 +234,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
-            // eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
-            // eckit::Timer("Loading file into shared memory");
+            eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
+            eckit::Timer("Loading " + path_ + " into shared memory ");
             eckit::StdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
 
@@ -237,7 +245,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         } else {
-            // eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+            eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
         if (unload_) {
@@ -245,15 +253,23 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         }
 
     } catch (...) {
-        shmdt(address_);
+        eckit::Shmget::shmdt(address_);
         throw;
     }
+
+
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];
+
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "LOAD IPCS " << line << std::endl;
+    // }
 }
 
 
 SharedMemoryLoader::~SharedMemoryLoader() {
     if (address_) {
-        SYSCALL(shmdt(address_));
+        SYSCALL(eckit::Shmget::shmdt(address_));
     }
     if (unload_) {
         unloadSharedMemory(path_);
@@ -277,7 +293,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
-    shmid = shmget(key, 0, 0600);
+    shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
         // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
         eckit::Log::info() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
@@ -308,6 +324,14 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
         // eckit::Log::info() << "SharedMemory removed semaphore for " << path  <<std::endl;
     }
 #endif
+
+
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];
+
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
+    // }
 }
 
 void SharedMemoryLoader::print(std::ostream &out) const {
@@ -321,6 +345,16 @@ const void *SharedMemoryLoader::address() const {
 size_t SharedMemoryLoader::size() const {
     return size_;
 }
+
+bool SharedMemoryLoader::inSharedMemory() const {
+    return true;
+}
+
+
+bool SharedMemoryLoader::shared() {
+    return true;
+}
+
 
 namespace {
 

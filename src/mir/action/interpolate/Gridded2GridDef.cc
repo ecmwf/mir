@@ -36,11 +36,21 @@ Gridded2GridDef::~Gridded2GridDef() {
 
 bool Gridded2GridDef::sameAs(const Action& other) const {
     const Gridded2GridDef* o = dynamic_cast<const Gridded2GridDef*>(&other);
-    return o && (griddef_ == o->griddef_);
+    return o && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
+}
+
+
+void Gridded2GridDef::custom(std::ostream& out) const {
+    out << "Gridded2GridDef["
+        "griddef=.../" << eckit::PathName(griddef_).baseName()
+        << "]";
 }
 
 void Gridded2GridDef::print(std::ostream& out) const {
-    out << "Gridded2GridDef[griddef=" << griddef_ << "]";
+    out << "Gridded2GridDef["
+        << "griddef=" << griddef_ << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
@@ -48,6 +58,9 @@ const repres::Representation* Gridded2GridDef::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(griddef_);
 }
 
+const char* Gridded2GridDef::name() const {
+    return "Gridded2GridDef";
+}
 
 namespace {
 static ActionBuilder< Gridded2GridDef > grid2grid("interpolate.grid2griddef");

@@ -36,10 +36,10 @@ NearestLSM::~NearestLSM() {
 
 
 void NearestLSM::assemble(
-        util::MIRStatistics& stats,
-        WeightMatrix& W,
-        const repres::Representation& in,
-        const repres::Representation& out) const {
+    util::MIRStatistics& stats,
+    WeightMatrix& W,
+    const repres::Representation& in,
+    const repres::Representation& out) const {
 
     // get distance weighting method
     const distance::NearestLSMWithLowestIndex calculateWeights(parametrisation_, getMasks(in, out));
@@ -53,29 +53,41 @@ void NearestLSM::applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const {
     // FIXME this function should not be overriding to do nothing
 }
 
-
-lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
-    param::RuntimeParametrisation runtime(parametrisation_);
+static void setParametrisation(const param::MIRParametrisation&, param::RuntimeParametrisation& runtime) {
 
     // Force use of LSM (unless it is already set)
     runtime.set("lsm", true);
+}
 
-    std::string select;
-    if (!parametrisation_.get("lsm-selection", select) || select == "none") {
-        runtime.set("lsm-selection", "named");
-        runtime.set("lsm-named", "1km");
-    }
-    if (parametrisation_.get("lsm-selection-input", select) && select == "none") {
-        runtime.hide("lsm-selection-input");
-    }
-    if (parametrisation_.get("lsm-selection-output", select) && select == "none") {
-        runtime.hide("lsm-selection-output");
-    }
+lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const repres::Representation& out) const {
+
+    param::RuntimeParametrisation runtime(parametrisation_);
+    setParametrisation(parametrisation_, runtime);
 
     lsm::LandSeaMasks masks = lsm::LandSeaMasks::lookup(runtime, in, out);
     ASSERT(masks.active());
     return masks;
 }
+
+
+static bool sameLsm(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2) {
+    param::RuntimeParametrisation runtime1(parametrisation1);
+    setParametrisation(parametrisation1, runtime1);
+
+    param::RuntimeParametrisation runtime2(parametrisation2);
+    setParametrisation(parametrisation2, runtime2);
+
+    return lsm::LandSeaMasks::sameLandSeaMasks(runtime1, runtime2);
+}
+
+
+bool NearestLSM::sameAs(const Method& other) const {
+    const NearestLSM* o = dynamic_cast<const NearestLSM*>(&other);
+    return o
+           && KNearestNeighbours::sameAs(other)
+           && sameLsm(parametrisation_, o->parametrisation_);
+}
+
 
 
 const char* NearestLSM::name() const {

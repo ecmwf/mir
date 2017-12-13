@@ -182,13 +182,16 @@ static PointSearchTreeBuilder<PointSearchTreeMemory> builder1("memory");
 
 static eckit::PathName treePath(const eckit::PathName& path) {
     path.dirName().mkdir(0777);
+
     if (path.exists()) {
+        eckit::Log::info() << "PointSearchTree path is " << path << std::endl;
         return path;
     }
 
-    return eckit::PathName::unique(path);
+    auto p = eckit::PathName::unique(path);
+    eckit::Log::info() << "PointSearchTree path is " << p << std::endl;
+    return p;
 }
-
 
 
 class PointSearchTreeMapped: public PointSearchTree {
@@ -382,15 +385,12 @@ public:
     static eckit::PathName path(const repres::Representation& r,
                                 const param::MIRParametrisation &param) {
 
-        std::cout << "here" << std::endl;
         std::ostringstream oss;
         oss  << "/tmp/"
              << r.uniqueName()
              << "-"
              << VERSION
              << ".kdtree";
-
-        std::cout << oss.str() << std::endl;
 
         return oss.str();
 
@@ -558,9 +558,9 @@ PointSearchTreeFactory::~PointSearchTreeFactory() {
 
 
 PointSearchTree *PointSearchTreeFactory::build(
-        const repres::Representation& r,
-        const param::MIRParametrisation& params,
-        size_t itemCount) {
+    const repres::Representation& r,
+    const param::MIRParametrisation& params,
+    size_t itemCount) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

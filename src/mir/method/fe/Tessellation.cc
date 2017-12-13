@@ -23,11 +23,16 @@ namespace fe {
 
 Tessellation::Tessellation(const param::MIRParametrisation &param) :
     FiniteElement(param) {
-    InputMeshGenerationParams_.meshGenerator_ = "delaunay";
+    inputMeshGenerationParams_.meshGenerator_ = "delaunay";
 }
 
 
 Tessellation::~Tessellation() {
+}
+
+bool Tessellation::sameAs(const Method& other) const {
+    const Tessellation* o = dynamic_cast<const Tessellation*>(&other);
+    return o && FiniteElement::sameAs(other);
 }
 
 

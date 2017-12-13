@@ -44,6 +44,7 @@ class FEBilinear: public FiniteElement {
 
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
+    virtual bool sameAs(const Method& other) const;
 
 // -- Class members
     // None

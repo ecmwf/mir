@@ -15,23 +15,22 @@
 
 #include <iostream>
 
-#include "eckit/log/Timer.h"
 #include "eckit/config/Resource.h"
+#include "eckit/log/Timer.h"
 
-#include "mir/api/MIRComplexJob.h"
-#include "mir/action/plan/Job.h"
-#include "mir/api/MIRJob.h"
-#include "mir/api/MIRWatcher.h"
-#include "mir/action/plan/SimpleExecutor.h"
-#include "mir/action/plan/ThreadExecutor.h"
-
-#include "mir/action/plan/ActionPlan.h"
+#include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
-#include "mir/input/MIRInput.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/action/plan/Job.h"
+#include "mir/action/plan/SimpleExecutor.h"
+#include "mir/action/plan/ThreadExecutor.h"
+#include "mir/api/MIRComplexJob.h"
+#include "mir/api/MIRJob.h"
+#include "mir/api/MIRWatcher.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
-#include "mir/action/context/Context.h"
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {

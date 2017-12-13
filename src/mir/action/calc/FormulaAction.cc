@@ -81,7 +81,7 @@ void FormulaAction::execute(context::Context & ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
-    formula_->execute(ctx);
+    formula_->perform(ctx);
 
     data::MIRField& field = ctx.field();
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -90,11 +90,12 @@ void FormulaAction::execute(context::Context & ctx) const {
 
 }
 
-namespace {
+const char* FormulaAction::name() const {
+    return "FormulaAction";
+}
 
 static ActionBuilder< FormulaAction > formula("calc.formula");
 
-}
 
 
 

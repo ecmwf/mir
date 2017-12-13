@@ -40,6 +40,7 @@ public:
 
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
+    virtual bool inSharedMemory() const = 0;
 
 protected:
     const param::MIRParametrisation& parametrisation_;
@@ -57,6 +58,7 @@ private:
 class LegendreLoaderFactory {
     std::string name_;
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
+    virtual bool shared() const = 0;
 
 protected:
     LegendreLoaderFactory(const std::string&);
@@ -65,12 +67,18 @@ protected:
 public:
     static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName& path);
     static void list(std::ostream&);
+    static bool inSharedMemory(const param::MIRParametrisation&);
 };
 
 template <class T>
 class LegendreLoaderBuilder : public LegendreLoaderFactory {
+
     virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) {
         return new T(param, path);
+    }
+
+    virtual bool shared() const {
+        return T::shared();
     }
 
 public:

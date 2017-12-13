@@ -89,6 +89,8 @@ class Gridded2GridDef : public Gridded2GriddedInterpolation {
 // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
+    virtual void custom(std::ostream &) const;
+    virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;

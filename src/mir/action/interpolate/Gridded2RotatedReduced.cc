@@ -43,16 +43,26 @@ Gridded2RotatedReduced::~Gridded2RotatedReduced() {
 
 bool Gridded2RotatedReduced::sameAs(const Action& other) const {
     const Gridded2RotatedReduced* o = dynamic_cast<const Gridded2RotatedReduced*>(&other);
-    return o && (N_ == o->N_) && (rotation_ == o->rotation_);
+    return o && (N_ == o->N_) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2RotatedReduced::print(std::ostream &out) const {
-    out << "Gridded2RotatedReduced[N=" << N_ << ",rotation=" << rotation_ << "]";
+    out << "Gridded2RotatedReduced[N="
+        << N_
+        << ",rotation="
+        << rotation_
+        << ",";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
 const repres::Representation *Gridded2RotatedReduced::outputRepresentation() const {
     return new repres::gauss::reduced::RotatedClassic(N_, util::BoundingBox(), rotation_);
+}
+
+const char* Gridded2RotatedReduced::name() const {
+    return "Gridded2RotatedReduced";
 }
 
 

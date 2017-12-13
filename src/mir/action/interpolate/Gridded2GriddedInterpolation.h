@@ -17,6 +17,8 @@
 #define Gridded2GriddedInterpolation_H
 
 #include "mir/action/plan/Action.h"
+#include "mir/method/Method.h"
+#include "eckit/memory/ScopedPtr.h"
 
 namespace mir {
 namespace repres {
@@ -30,7 +32,7 @@ namespace action {
 
 
 class Gridded2GriddedInterpolation : public Action {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -61,17 +63,20 @@ class Gridded2GriddedInterpolation : public Action {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
 
 // -- Methods
 
-    // void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+
 
 // -- Overridden methods
     // None
+
+    virtual bool sameAs(const Action& other) const = 0;
 
 // -- Class members
     // None
@@ -79,7 +84,7 @@ class Gridded2GriddedInterpolation : public Action {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -87,7 +92,10 @@ class Gridded2GriddedInterpolation : public Action {
     Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
 
 // -- Members
-    // None
+
+    std::string interpolation_;
+    eckit::ScopedPtr<method::Method> method_;
+
 
 // -- Methods
 
@@ -106,7 +114,7 @@ class Gridded2GriddedInterpolation : public Action {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

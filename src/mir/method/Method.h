@@ -55,6 +55,9 @@ public:
                          const repres::Representation& in,
                          const repres::Representation& out) const = 0;
 
+    virtual bool sameAs(const Method& other) const = 0;
+
+
 protected:
 
     const param::MIRParametrisation& parametrisation_;

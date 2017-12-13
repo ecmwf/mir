@@ -34,6 +34,7 @@ public:
 protected:
 
     virtual void hash( eckit::MD5& ) const;
+    virtual bool sameAs(const Method& other) const;
 
 private:
 

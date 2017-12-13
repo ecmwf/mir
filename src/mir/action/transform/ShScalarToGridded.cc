@@ -16,6 +16,8 @@
 #include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "mir/data/MIRField.h"
+#include "eckit/log/ResourceUsage.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -33,6 +35,7 @@ ShScalarToGridded::~ShScalarToGridded() {
 
 
 void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
     ASSERT(trans.myproc == 1);
@@ -63,32 +66,35 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
     std::vector<double> rgp   (number_of_fields * trans.ngptot);
     int nfld = int(number_of_fields);
 
-
-    // distribute
-    struct DistSpec_t distspec = new_distspec(&trans);
-    distspec.nfrom  = nfrom.data();
-    distspec.rspecg = number_of_fields > 1 ? input.data() : field.values(0).data();
-    distspec.rspec  = rspec.data();
-    distspec.nfld   = nfld;
-    ASSERT(trans_distspec(&distspec) == 0);
+    {
+        eckit::TraceResourceUsage<LibMir> usage("SH2GG ShScalarToGridded");
 
 
-    // transform
-    struct InvTrans_t invtrans = new_invtrans(&trans);
-    invtrans.nscalar   = nfld;
-    invtrans.rspscalar = rspec.data();
-    invtrans.rgp       = rgp.data();
-    ASSERT(trans_invtrans(&invtrans) == 0);
+        // distribute
+        struct DistSpec_t distspec = new_distspec(&trans);
+        distspec.nfrom  = nfrom.data();
+        distspec.rspecg = number_of_fields > 1 ? input.data() : field.values(0).data();
+        distspec.rspec  = rspec.data();
+        distspec.nfld   = nfld;
+        ASSERT(trans_distspec(&distspec) == 0);
 
 
-    // gather
-    struct GathGrid_t gathgrid = new_gathgrid(&trans);
-    gathgrid.rgp  = rgp.data();
-    gathgrid.rgpg = output.data();
-    gathgrid.nfld = nfld;
-    gathgrid.nto  = nto.data();
-    ASSERT(trans_gathgrid(&gathgrid) == 0);
+        // transform
+        struct InvTrans_t invtrans = new_invtrans(&trans);
+        invtrans.nscalar   = nfld;
+        invtrans.rspscalar = rspec.data();
+        invtrans.rgp       = rgp.data();
+        ASSERT(trans_invtrans(&invtrans) == 0);
 
+
+        // gather
+        struct GathGrid_t gathgrid = new_gathgrid(&trans);
+        gathgrid.rgp  = rgp.data();
+        gathgrid.rgpg = output.data();
+        gathgrid.nfld = nfld;
+        gathgrid.nto  = nto.data();
+        ASSERT(trans_gathgrid(&gathgrid) == 0);
+    }
 
     // set field values (again, avoid copies for one field only)
     if (number_of_fields == 1) {

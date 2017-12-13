@@ -55,7 +55,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
     parametrisation_.get("0-1", normalize);
 
     std::vector<long> frequencies;
-    if(!parametrisation_.get("frequencies", frequencies)) {
+    if (!parametrisation_.get("frequencies", frequencies)) {
         frequencies.push_back(16);
         frequencies.push_back(8);
     }
@@ -143,10 +143,12 @@ void CheckerBoard::execute(context::Context & ctx) const {
     }
 }
 
-
-namespace {
-static ActionBuilder< CheckerBoard > action("misc.checkerboard");
+const char* CheckerBoard::name() const {
+    return "CheckerBoard";
 }
+
+
+static ActionBuilder< CheckerBoard > action("misc.checkerboard");
 
 
 }  // namespace action

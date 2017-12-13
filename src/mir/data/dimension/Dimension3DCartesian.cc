@@ -17,9 +17,14 @@ namespace data {
 namespace dimension {
 
 
-static DimensionChoice<Dimension3DCartesian> __dimension1("3d.cartesian.x");
-static DimensionChoice<Dimension3DCartesian> __dimension2("3d.cartesian.y");
-static DimensionChoice<Dimension3DCartesian> __dimension3("3d.cartesian.z");
+static DimensionChoice<Dimension3DCartesian> __dimension1("3d.cartesian.x", 0, 3);
+static DimensionChoice<Dimension3DCartesian> __dimension2("3d.cartesian.y", 1, 3);
+static DimensionChoice<Dimension3DCartesian> __dimension3("3d.cartesian.z", 2, 3);
+
+
+size_t Dimension3DCartesian::dimensions() const {
+    return 3;
+}
 
 
 }  // namespace dimension

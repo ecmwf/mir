@@ -54,6 +54,11 @@ const repres::Representation* ShScalarToNamedGrid::outputRepresentation() const 
 }
 
 
+const char* ShScalarToNamedGrid::name() const {
+    return "ShScalarToNamedGrid";
+}
+
+
 namespace {
 static ActionBuilder< ShScalarToNamedGrid > __action("transform.sh-scalar-to-namedgrid");
 }

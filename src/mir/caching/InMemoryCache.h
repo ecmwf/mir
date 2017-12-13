@@ -19,6 +19,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/config/Resource.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "mir/caching/InMemoryCacheStatistics.h"
 
 namespace mir {
 
@@ -32,7 +33,8 @@ public:  // methods
     typedef T* iterator;
 
     explicit InMemoryCache(const std::string& name,
-                           unsigned long long capacity,
+                           size_t memory_capacity,
+                           size_t shared_capacity,
                            const char* variable,
                            bool cleanupAtExit = true);
 
@@ -44,40 +46,49 @@ public:  // methods
 
     iterator end() const { return 0; }
 
-    void footprint(const std::string& key, size_t size);
+    void footprint(const std::string& key, const InMemoryCacheUsage&);
+
+    void reserve(size_t size, bool inSharedMemory);
+    void reserve(const InMemoryCacheUsage&);
 
     void erase(const std::string& key);
 
-    void startUsing(InMemoryCacheStatistics&);
-    void stopUsing();
+    void startUsing();
+    void stopUsing(InMemoryCacheStatistics&);
 
 private:
 
     void purge();
     T& create(const std::string& key);
 
-    virtual unsigned long long footprint() const;
-    virtual unsigned long long capacity() const;
-    virtual size_t purge(size_t count);
+    virtual InMemoryCacheUsage footprint() const;
+    virtual InMemoryCacheUsage capacity() const;
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force=false);
     virtual const std::string& name() const;
 
     std::string name_;
-    eckit::Resource<unsigned long long> capacity_;
+    eckit::Resource<InMemoryCacheUsage> capacity_;
     bool cleanupAtExit_;
 
     size_t users_;
 
-    mutable InMemoryCacheStatistics* statistics_;
+    mutable InMemoryCacheStatistics statistics_;
     mutable eckit::Mutex mutex_;
-    mutable std::map<std::string, unsigned long long> keys_;
+    mutable std::map<std::string, InMemoryCacheUsage> keys_;
 
     struct Entry {
+
         eckit::ScopedPtr<T> ptr_;
         size_t hits_;
         double last_;
         double insert_;
-        size_t footprint_;
-        Entry(T* ptr): ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(1) {}
+        InMemoryCacheUsage footprint_;
+
+        Entry(T* ptr): ptr_(ptr),
+            hits_(1),
+            last_(::time(0)),
+            insert_(::time(0)),
+            footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;
@@ -87,13 +98,16 @@ private:
 template<class T>
 class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
+    InMemoryCacheStatistics& statistics_;
 public:
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics):
-        cache_(cache) {
-        cache_.startUsing(statistics);
+        cache_(cache),
+        statistics_(statistics) {
+        cache_.startUsing();
     }
+
     ~InMemoryCacheUser() {
-        cache_.stopUsing();
+        cache_.stopUsing(statistics_);
     }
 };
 

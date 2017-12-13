@@ -49,6 +49,10 @@ const repres::Representation* ShVodTouvReducedGGPLGiven::outputRepresentation() 
     return new repres::gauss::reduced::ReducedFromPL(pl_);
 }
 
+const char* ShVodTouvReducedGGPLGiven::name() const {
+    return "ShVodTouvReducedGGPLGiven";
+}
+
 
 namespace {
 static ActionBuilder< ShVodTouvReducedGGPLGiven > __action("transform.sh-vod-to-uv-reduced-gg-pl-given");

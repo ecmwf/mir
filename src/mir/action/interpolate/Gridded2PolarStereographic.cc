@@ -47,7 +47,9 @@ bool Gridded2PolarStereographic::sameAs(const Action& other) const {
 }
 
 void Gridded2PolarStereographic::print(std::ostream &out) const {
-    out << "Gridded2PolarStereographic[" << "]";
+    out << "Gridded2PolarStereographic[";
+    Gridded2GriddedInterpolation::print(out);
+    out << "]";
 }
 
 
@@ -55,6 +57,9 @@ const repres::Representation *Gridded2PolarStereographic::outputRepresentation()
     NOTIMP;
 }
 
+const char* Gridded2PolarStereographic::name() const {
+    return "Gridded2PolarStereographic";
+}
 
 namespace {
 static ActionBuilder< Gridded2PolarStereographic > grid2grid("interpolate.grid2polar-stereographic");

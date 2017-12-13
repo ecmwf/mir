@@ -43,6 +43,12 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() {
 }
 
 
+bool StructuredBilinearLatLon::sameAs(const Method& other) const {
+    const StructuredBilinearLatLon* o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
+    return o && StructuredMethod::sameAs(other);
+}
+
+
 void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
         const repres::Representation& in,
         const repres::Representation& out) const {
