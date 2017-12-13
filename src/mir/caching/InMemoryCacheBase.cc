@@ -64,7 +64,8 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
 
     static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
-            InMemoryCacheUsage(1024 * 1024 * 1024, 100LL * 1024 * 1024 * 1024));
+            InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024,
+                               1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 

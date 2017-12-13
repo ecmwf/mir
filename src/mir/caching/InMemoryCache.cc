@@ -37,6 +37,8 @@ InMemoryCache<T>::InMemoryCache(const std::string& name,
     cleanupAtExit_(cleanupAtExit),
     capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
     users_(0) {
+
+    statistics_.capacity_ = capacity_;
 }
 
 
