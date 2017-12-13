@@ -69,7 +69,7 @@ bool FileLoader::inSharedMemory() const {
 }
 
 namespace {
-static InterpolatorLoaderFactory<FileLoader> loader("file-io");
+static MatrixLoaderBuilder<FileLoader> loader("file-io");
 }
 
 

@@ -14,8 +14,8 @@
 ///
 /// @date Oct 2016
 
-#ifndef mir_caching_InterpolatorLoader_H
-#define mir_caching_InterpolatorLoader_H
+#ifndef mir_caching_MatrixLoader_H
+#define mir_caching_MatrixLoader_H
 
 #include <iosfwd>
 
@@ -66,13 +66,13 @@ public:
 };
 
 template <class T>
-class InterpolatorLoaderFactory : public MatrixLoaderFactory {
+class MatrixLoaderBuilder : public MatrixLoaderFactory {
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) {
         return new T(name, path);
     }
 
 public:
-    InterpolatorLoaderFactory(const std::string& name) : MatrixLoaderFactory(name) {}
+    MatrixLoaderBuilder(const std::string& name) : MatrixLoaderFactory(name) {}
 };
 
 
