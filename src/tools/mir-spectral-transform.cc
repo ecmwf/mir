@@ -254,6 +254,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     }
     ASSERT(input);
 
+    // Preserve statistics
+    mir::util::MIRStatistics statistics;
+
     {
         eckit::Timer timer("Total time");
 
@@ -270,7 +273,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             atlas::Grid outputGrid = output_grid(parametrisation, *outputRepresentation);
             ASSERT(outputGrid);
 
-            mir::util::MIRStatistics statistics;
             mir::context::Context ctx(*input, statistics);
             mir::data::MIRField& field = ctx.field();
 
@@ -426,19 +428,15 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             output->save(parametrisation, ctx);
         }
 
+        statistics.report(eckit::Log::info());
+
         eckit::Log::info() << eckit::Plural(int(i * multiScalar), what) << " in " << eckit::Seconds(timer.elapsed())
                            << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }
 
+
 int main(int argc, char** argv) {
-    trans_use_mpi(false);
-    trans_init();
-
     MIRSpectralTransform tool(argc, argv);
-
-    int r = tool.start();
-
-    trans_finalize();
-    return r;
+    return tool.start();
 }
