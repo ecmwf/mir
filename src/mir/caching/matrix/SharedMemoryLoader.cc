@@ -151,11 +151,10 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-    //                          std::hex << key << std::dec << ", page size: "
-    //                          << eckit::Bytes(page_size) << ", pages: "
-    //                          << eckit::BigNum(shmsize / page_size)
-    //                          << std::endl;
+    eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
+                             std::hex << key << std::dec << ", page size: "
+                             << eckit::Bytes(page_size)
+                             << std::endl;
 
 
     int shmid;
