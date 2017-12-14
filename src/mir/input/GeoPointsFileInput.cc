@@ -35,7 +35,8 @@ namespace input {
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     which_(which),
-    hasMissing_(false) {
+    hasMissing_(false),
+    next_(0) {
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
@@ -50,6 +51,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     char line[10240];
     bool data = false;
     int count = 0;
+
+    enum { STANDARD = 0, XYV, XY_VECTOR, POLAR_VECTOR } format = STANDARD;
 
     while (in.getline(line, sizeof(line))) {
 
@@ -69,6 +72,17 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             longitudes_.clear();
             values_.clear();
             continue;
+        }
+
+        if (!data && strncmp(line, "#FORMAT ", 8) == 0) {
+            std::vector<std::string> v;
+            parse(line + 8, v);
+            ASSERT(v.size() == 1);
+
+            format = v[0] == "XYV" ?          XYV :
+                     v[0] == "XY_VECTOR" ?    XY_VECTOR :
+                     v[0] == "POLAR_VECTOR" ? POLAR_VECTOR :
+                                              throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
         if (!data && strncmp(line, "# ", 2) == 0) {
@@ -95,8 +109,8 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             std::vector<std::string> v;
             parse(line, v);
             if (v.size() >= 3) {
-                latitudes_.push_back(s2d(v[0]));
-                longitudes_.push_back(s2d(v[1]));
+                latitudes_  .push_back(s2d(v[format == XYV ? 1 : 0]));
+                longitudes_ .push_back(s2d(v[format == XYV ? 0 : 1]));
                 values_.push_back(s2d(v.back()));
             }
         }
@@ -193,7 +207,7 @@ bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
 
 
 bool GeoPointsFileInput::next() {
-    return values_.size() != 0;
+    return (next_++ < dimensions_);
 }
 
 
@@ -210,11 +224,13 @@ const param::MIRParametrisation &GeoPointsFileInput::parametrisation(size_t whic
 
 data::MIRField GeoPointsFileInput::field() const {
 
-    NOTIMP;
-    // data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
-    // field.update(values_, 0);
+    data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
 
-    // return field;
+    // copy, to preserve consistent internal state
+    std::vector<double> values(values_);
+    field.update(values, 0);
+
+    return field;
 }
 
 
@@ -238,6 +254,8 @@ const std::vector<double>& GeoPointsFileInput::values() const {
     return values_;
 }
 
+
+static MIRInputBuilder< GeoPointsFileInput > __mirinput(0x2347454f); // "#GEO"
 
 
 }  // namespace input

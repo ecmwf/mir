@@ -11,6 +11,7 @@
 #include "eckit/config/Resource.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
+#include "mir/config/LibMir.h"
 
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/AutoLock.h"
@@ -62,7 +63,9 @@ void InMemoryCacheBase::checkTotalFootprint() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
 
-    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT", InMemoryCacheUsage());
+    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
+            InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024,
+                               1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 
@@ -82,11 +85,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
             totalFootprint += (*j)->footprint();
         }
 
-        eckit::Log::info() << "CACHE-checkTotalFootprint size "
-                           << totalFootprint
-                           << ", max is "
-                           <<  maximumCapacity
-                           <<  std::endl;
+        eckit::Log::debug<LibMir>() << "CACHE-checkTotalFootprint size "
+                                    << totalFootprint
+                                    << ", max is "
+                                    <<  maximumCapacity
+                                    <<  std::endl;
 
         if (totalFootprint > maximumCapacity) {
 

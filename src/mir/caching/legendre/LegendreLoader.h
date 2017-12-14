@@ -31,6 +31,10 @@ class MIRParametrisation;
 namespace caching {
 namespace legendre {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 class LegendreLoader : public eckit::NonCopyable {
 
 public:
@@ -54,6 +58,10 @@ private:
         return s;
     }
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 class LegendreLoaderFactory {
     std::string name_;
@@ -84,6 +92,9 @@ class LegendreLoaderBuilder : public LegendreLoaderFactory {
 public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace legendre
 }  // namespace caching

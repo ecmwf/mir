@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,34 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_output_MultiScalarOutput_h
+#define mir_output_MultiScalarOutput_h
 
-#ifndef mir_lsm_MappedMask_h
-#define mir_lsm_MappedMask_h
-
-#include <iosfwd>
-#include "eckit/filesystem/PathName.h"
-#include "mir/lsm/Mask.h"
+#include <vector>
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}
+namespace output {
 
 
-namespace mir {
-namespace lsm {
-
-
-class MappedMask : public Mask {
+class MultiScalarOutput : public MIROutput {
 public:
 
     // -- Exceptions
@@ -43,14 +28,11 @@ public:
 
     // -- Contructors
 
-    MappedMask(const eckit::PathName&,
-               const param::MIRParametrisation& parametrisation,
-               const repres::Representation &representation,
-               const std::string& which);
+    MultiScalarOutput();
 
     // -- Destructor
 
-    virtual ~MappedMask();
+    virtual ~MultiScalarOutput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,7 +41,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void appendScalarOutput(MIROutput*);
 
     // -- Overridden methods
     // None
@@ -73,17 +56,20 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    std::vector< MIROutput* > components_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool active() const;
-    virtual bool cacheable() const;
-    virtual void hash(eckit::MD5&) const;
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No iterpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
+    virtual bool sameAs(const MIROutput&) const;
     virtual void print(std::ostream&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
 
     // -- Class members
     // None
@@ -94,16 +80,13 @@ protected:
 private:
 
     // -- Members
-
-    eckit::PathName path_;
-    std::vector<bool> mask_;
+    //None
 
     // -- Methods
-    // None
+    //None
 
     // -- Overridden methods
-
-    virtual const std::vector<bool>& mask() const;
+    //None
 
     // -- Class members
     // None
@@ -112,14 +95,12 @@ private:
     // None
 
     // -- Friends
-    // None
 
 };
 
 
-}  // namespace lsm
+}  // namespace output
 }  // namespace mir
 
 
 #endif
-

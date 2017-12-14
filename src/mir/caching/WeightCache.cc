@@ -10,13 +10,14 @@
 
 #include "mir/caching/WeightCache.h"
 
+#include <unistd.h>
+
 #include "eckit/io/Buffer.h"
+
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
-#include "eckit/os/AutoUmask.h"
 
-#include <unistd.h>
 
 namespace mir {
 namespace caching {
@@ -76,10 +77,6 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 }  // namespace caching
 }  // namespace mir

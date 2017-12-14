@@ -33,7 +33,8 @@ public:  // methods
     typedef T* iterator;
 
     explicit InMemoryCache(const std::string& name,
-                           unsigned long long capacity,
+                           size_t memory_capacity,
+                           size_t shared_capacity,
                            const char* variable,
                            bool cleanupAtExit = true);
 

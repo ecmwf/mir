@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2015 ECMWF.
+ * (C) Copyright 1996-2017 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,34 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_input_MultiScalarInput_h
+#define mir_input_MultiScalarInput_h
 
-#ifndef mir_lsm_MappedMask_h
-#define mir_lsm_MappedMask_h
-
-#include <iosfwd>
-#include "eckit/filesystem/PathName.h"
-#include "mir/lsm/Mask.h"
+#include <vector>
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
+namespace output {
+class MultiScalarOutput;
 }
 }
 
 
 namespace mir {
-namespace lsm {
+namespace input {
 
 
-class MappedMask : public Mask {
+class MultiScalarInput : public MIRInput {
 public:
 
     // -- Exceptions
@@ -43,14 +35,11 @@ public:
 
     // -- Contructors
 
-    MappedMask(const eckit::PathName&,
-               const param::MIRParametrisation& parametrisation,
-               const repres::Representation &representation,
-               const std::string& which);
+    MultiScalarInput();
 
     // -- Destructor
 
-    virtual ~MappedMask();
+    virtual ~MultiScalarInput(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,10 +48,12 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void appendScalarInput(MIRInput*);
 
     // -- Overridden methods
-    // None
+
+    virtual size_t dimensions() const;
 
     // -- Class members
     // None
@@ -73,17 +64,14 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    std::vector< MIRInput* > components_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    virtual bool active() const;
-    virtual bool cacheable() const;
-    virtual void hash(eckit::MD5&) const;
-    virtual void print(std::ostream&) const;
+    // None
 
     // -- Class members
     // None
@@ -94,16 +82,20 @@ protected:
 private:
 
     // -- Members
-
-    eckit::PathName path_;
-    std::vector<bool> mask_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual const std::vector<bool>& mask() const;
+    // From MIRInput
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
+    virtual data::MIRField field() const;
+    virtual bool next();
+    virtual bool sameAs(const MIRInput &other) const ;
+    virtual void print(std::ostream &out) const;
+    virtual grib_handle* gribHandle(size_t which = 0) const;
 
     // -- Class members
     // None
@@ -112,12 +104,13 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend class output::MultiScalarOutput;
 
 };
 
 
-}  // namespace lsm
+}  // namespace input
 }  // namespace mir
 
 

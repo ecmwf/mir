@@ -44,7 +44,7 @@
 namespace mir {
 namespace compare {
 
-static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, "PGEN_COMPARE_FILE_CACHE");
+static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
 const WhiteLister& DefaultWhiteLister::instance() {

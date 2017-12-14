@@ -47,7 +47,7 @@ namespace method {
 namespace {
 static eckit::Mutex local_mutex;
 static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
-        512 * 1024 * 1024,
+        512 * 1024 * 1024, 0,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 }  // (anonymous namespace)
 
@@ -133,9 +133,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     {
         InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key);
         const bool found = j != matrix_cache.end();
-        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
-            return *j;
+            const WeightMatrix& mat = *j;
+            eckit::Log::debug<LibMir>() << "Using matrix from InMemoryCache " <<  mat << std::endl;
+            return mat;
         }
     }
 
@@ -158,17 +160,18 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         createMatrix(ctx, in, out, W, masks);
     }
 
-
     // If LSM not cacheable, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
+    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
     // insert matrix in the in-memory cache and update memory footprint
+
     WeightMatrix& w = matrix_cache[key];
-    std::swap(w, W);
+    W.swap(w);
 
     size_t footprint = w.footprint();
     InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);

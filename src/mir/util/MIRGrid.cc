@@ -42,6 +42,7 @@ static eckit::Mutex local_mutex;
 static InMemoryCache<atlas::Mesh> mesh_cache(
         "mirMesh",
         512 * 1024 * 1024,
+        0,
         "$MIR_MESH_CACHE_MEMORY_FOOTPRINT" );
 }  // (anonymous namespace)
 

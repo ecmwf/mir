@@ -29,11 +29,15 @@ inline static double utime() {
 }
 
 template<class T>
-InMemoryCache<T>::InMemoryCache(const std::string& name, unsigned long long capacity, const char* variable, bool cleanupAtExit):
+InMemoryCache<T>::InMemoryCache(const std::string& name,
+                                size_t memory,
+                                size_t shared,
+                                const char* variable, bool cleanupAtExit):
     name_(name),
     cleanupAtExit_(cleanupAtExit),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(capacity, size_t())) ,
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
     users_(0) {
+
 }
 
 
@@ -245,6 +249,8 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics & statistics) {
         purge();
     }
     checkTotalFootprint();
+
+    statistics_.capacity_ = capacity_;
     statistics = statistics_;
 }
 

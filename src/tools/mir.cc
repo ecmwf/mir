@@ -53,12 +53,13 @@
 #include "mir/style/resol/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace {
 class MiniSeparator : public eckit::option::Option {
     void print(std::ostream& out) const {
-        out << "   --" << std::endl;
+        // out << std::endl;
     }
     void set(const std::string&, eckit::Configured&) const {
         NOTIMP;
@@ -143,13 +144,12 @@ public:
         //==============================================
         options_.push_back(new Separator("Land-sea mask handling"));
         options_.push_back(new SimpleOption<bool>("lsm", "Use land-sea mask (lsm) when interpolating grid to grid"));
-        options_.push_back(new VectorOption<long>("lsm-parameter-list", "Use land-sea mask (lsm) only for specific parameters", 0));
         options_.push_back(new MiniSeparator());
         options_.push_back(new SimpleOption<double>("lsm-weight-adjustment", "LSM interpolation weight adjustment factor (default 0.2)"));
 
         for (const std::string& io : {"", "input", "output"}) {
-            const std::string which = io.length()? io : "both input and output";
-            const std::string key = (io.length()? "-" : "") + io;
+            const std::string which = io.length() ? io : "both input and output";
+            const std::string key = (io.length() ? "-" : "") + io;
             options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
             options_.push_back(new FactoryOption<mir::lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
             options_.push_back(new FactoryOption<mir::lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
@@ -159,7 +159,6 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids"));
-        options_.push_back(new SimpleOption<bool>("geopoints", "Input is a geopoints file"));
         options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
         options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
 
@@ -179,6 +178,11 @@ public:
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
+
+        //==============================================
+        options_.push_back(new Separator("Caching"));
+        options_.push_back(new FactoryOption<mir::caching::matrix::MatrixLoaderFactory>("matrix-loader", "Select how to load matrices in memory"));
+        options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
 
         //==============================================
         options_.push_back(new Separator("Debugging"));
@@ -234,7 +238,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     args.get("dummy", dummy);
 
 
-    if(args.has("plan") || args.has("plan-script")) {
+    if (args.has("plan") || args.has("plan-script")) {
         job.set("style", "custom");
     }
 
@@ -275,12 +279,6 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 
     }
 
-    if (args.has("geopoints")) {
-        mir::input::GeoPointsFileInput input(args(0));
-        process(job, input, *output, "field");
-        return;
-    }
-
     eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0)));
 
     // std::string path_lat, path_lon;
@@ -296,13 +294,16 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
+    mir::util::MIRStatistics statistics;
     eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
         eckit::Log::debug<mir::LibMir>() << "============> " << what << ": " << (++i) << std::endl;
-        job.execute(input, output);
+        job.execute(input, output, statistics);
     }
+
+    statistics.report(eckit::Log::info());
 
     eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
                        ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;

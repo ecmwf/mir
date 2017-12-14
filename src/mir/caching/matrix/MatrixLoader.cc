@@ -30,6 +30,8 @@ namespace mir {
 namespace caching {
 namespace matrix {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 
 MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
     path_(path.realName())
@@ -54,10 +56,9 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
 }
 
 
-//=========================================================================
+//----------------------------------------------------------------------------------------------------------------------
 
 
-namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
 static std::map< std::string, MatrixLoaderFactory* >* m = 0;
@@ -65,7 +66,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, MatrixLoaderFactory* >();
 }
-}  // (anonymous namespace)
 
 
 MatrixLoaderFactory::MatrixLoaderFactory(const std::string& name) : name_(name) {
@@ -83,7 +83,6 @@ MatrixLoaderFactory::MatrixLoaderFactory(const std::string& name) : name_(name) 
 
 MatrixLoaderFactory::~MatrixLoaderFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
     m->erase(name_);
 }
 
@@ -114,6 +113,7 @@ void MatrixLoaderFactory::list(std::ostream& out) {
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace matrix
 }  // namespace caching
