@@ -124,7 +124,7 @@ class NamedMaskBuilder : public NamedMaskFactory {
             const param::MIRParametrisation& param,
             const repres::Representation& representation,
             const std::string& which) {
-        return new T(name_, path_, param, representation, which);
+        return new T(path_, param, representation, which);
     }
     virtual void hashCacheKey(eckit::MD5& md5,
                               const param::MIRParametrisation& parametrisation,

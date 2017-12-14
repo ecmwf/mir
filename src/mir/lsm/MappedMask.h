@@ -43,8 +43,7 @@ public:
 
     // -- Contructors
 
-    MappedMask(const std::string& name,
-               const eckit::PathName&,
+    MappedMask(const eckit::PathName&,
                const param::MIRParametrisation& parametrisation,
                const repres::Representation &representation,
                const std::string& which);

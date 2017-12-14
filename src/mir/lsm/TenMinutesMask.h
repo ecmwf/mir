@@ -40,7 +40,6 @@ public:
     // -- Contructors
 
     TenMinutesMask(
-            const std::string& name,
             const eckit::PathName&,
             const param::MIRParametrisation&,
             const repres::Representation&,

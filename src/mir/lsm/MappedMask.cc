@@ -73,8 +73,7 @@ namespace mir {
 namespace lsm {
 
 
-MappedMask::MappedMask(const std::string&,
-                       const eckit::PathName& path,
+MappedMask::MappedMask(const eckit::PathName& path,
                        const param::MIRParametrisation&,
                        const repres::Representation& representation,
                        const std::string&):

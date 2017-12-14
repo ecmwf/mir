@@ -48,7 +48,6 @@ From EMOSLIB:
     ~mir/share/mir/masks/lsm.10min.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
 TenMinutesMask::TenMinutesMask(
-        const std::string&,
         const eckit::PathName& path,
         const param::MIRParametrisation&,
         const repres::Representation& representation,

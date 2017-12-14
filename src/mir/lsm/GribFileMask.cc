@@ -34,8 +34,7 @@ namespace mir {
 namespace lsm {
 
 
-GribFileMask::GribFileMask(const std::string&,
-                           const eckit::PathName& path,
+GribFileMask::GribFileMask(const eckit::PathName& path,
                            const param::MIRParametrisation& parametrisation,
                            const repres::Representation& representation,
                            const std::string& which) :
