@@ -171,7 +171,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
         return false;
     }
 
-#if 0
     // Check LSM selection method
     std::string name1;
     parametrisation1.get("lsm-selection-" + which, name1) || parametrisation1.get("lsm-selection", name1);
@@ -182,7 +181,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     if (name1 != name2) {
         return false;
     }
-
 
     // Check LSM cache key
     // TODO: this creates a dummy representation, could be better...
@@ -202,7 +200,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     if (key1 != key2) {
         return false;
     }
-#endif
 
     return true;
 }
