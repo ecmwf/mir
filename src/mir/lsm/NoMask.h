@@ -12,7 +12,6 @@
 #ifndef mir_lsm_NoMask_h
 #define mir_lsm_NoMask_h
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/lsm/Mask.h"
 
 

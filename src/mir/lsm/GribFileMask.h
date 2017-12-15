@@ -16,20 +16,7 @@
 #ifndef mir_lsm_GribFileMask_h
 #define mir_lsm_GribFileMask_h
 
-#include <iosfwd>
-
-#include "eckit/filesystem/PathName.h"
 #include "mir/lsm/Mask.h"
-
-
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}
 
 
 namespace mir {
@@ -96,11 +83,12 @@ private:
 
     // -- Members
 
-    const eckit::PathName path_;
-    std::vector<bool> mask_;
+    mutable std::vector<bool> mask_;
 
     // -- Methods
-    // None
+
+    std::string lsmInterpolation() const;
+    double lsmValueThreshold() const;
 
     // -- Overridden methods
 

@@ -74,10 +74,49 @@ namespace lsm {
 
 
 MappedMask::MappedMask(const eckit::PathName& path,
-                       const param::MIRParametrisation&,
+                       const param::MIRParametrisation& parametrisation,
                        const repres::Representation& representation,
-                       const std::string&):
-    path_(path) {
+                       const std::string& which) :
+    Mask(path, parametrisation, representation, which) {
+}
+
+
+MappedMask::~MappedMask() {
+}
+
+
+bool MappedMask::active() const {
+    return true;
+}
+
+
+bool MappedMask::cacheable() const {
+    return true;
+}
+
+
+void MappedMask::hash(eckit::MD5&md5) const {
+    Mask::hash(md5);
+    md5.add("MappedMask");
+}
+
+
+void MappedMask::print(std::ostream &out) const {
+    out << "MappedMask[";
+    Mask::print(out);
+    out << "]";
+}
+
+
+const std::vector<bool>& MappedMask::mask() const {
+
+    // Lazy loading
+    if (!mask_.empty()) {
+        eckit::Log::debug<LibMir>() << "MappedMask: passive loading" << std::endl;
+        return mask_;
+    }
+
+    eckit::Log::debug<LibMir>() << "MappedMask: loading '" << path_  << "'" << std::endl;
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
@@ -90,7 +129,8 @@ MappedMask::MappedMask(const eckit::PathName& path,
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(path_.localPath(), &s));
 
-    size_t size = s.st_size;
+    ASSERT(s.st_size > 0);
+    size_t size = size_t(s.st_size);
 
 
     void *address = MMap::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
@@ -114,76 +154,40 @@ MappedMask::MappedMask(const eckit::PathName& path,
 
     eckit::Log::debug<LibMir>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
+    {
+        eckit::TraceTimer<LibMir> timer("MappedMask: extract points");
 
 
-    // NOTE: this is not using 3D coordinate systems
-    // mask_.reserve(grid.size());
+        // NOTE: this is not using 3D coordinate systems
+        // mask_.reserve(grid.size());
 
-    const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
+        const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
-    while (iter->next()) {
-        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        Latitude lat = p.lat;
-        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
+        eckit::ScopedPtr<repres::Iterator> iter(representation_.iterator());
+        while (iter->next()) {
+            const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+            Latitude lat = p.lat;
+            Longitude lon = p.lon.normalise(Longitude::GREENWICH);
 
-        if (lat < Latitude::SOUTH_POLE) {
-            std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
-            throw eckit::SeriousBug(oss.str());
+            ASSERT(lat >= Latitude::SOUTH_POLE);
+            ASSERT(lat <= Latitude::NORTH_POLE);
+
+            int row = int((90.0 - lat.value()) * (ROWS - 1) / Latitude::GLOBE.value());
+            ASSERT(row >= 0 && row < int(ROWS));
+
+            int col = int(lon.value() * COLS / Longitude::GLOBE.value());
+            ASSERT(col >= 0 && col < int(COLS));
+
+            size_t pos = COLS * size_t(row) + size_t(col);
+            size_t byte = pos / 8;
+            size_t bit = pos % 8;
+
+            // TODO: Check me
+            mask_.push_back((mask[byte] & MASKS[bit]) != 0);
         }
-        ASSERT(lat >= Latitude::SOUTH_POLE);
-
-        if (lat > Latitude::NORTH_POLE) {
-            std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
-            throw eckit::SeriousBug(oss.str());
-        }
-        ASSERT(lat <= Latitude::NORTH_POLE);
-
-        int row = int((90.0 - lat.value()) * (ROWS - 1) / Latitude::GLOBE.value());
-        ASSERT(row >= 0 && row < int(ROWS));
-
-        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
-        ASSERT(col >= 0 && col < int(COLS));
-
-        size_t pos = COLS * row + col;
-        size_t byte = pos / 8;
-        size_t bit = pos % 8;
-
-        // TODO: Check me
-        mask_.push_back((mask[byte] & MASKS[bit]) != 0);
     }
-}
 
-
-MappedMask::~MappedMask() {
-}
-
-
-bool MappedMask::active() const {
-    return true;
-}
-
-
-bool MappedMask::cacheable() const {
-    return true;
-}
-
-
-void MappedMask::hash(eckit::MD5&md5) const {
-    Mask::hash(md5);
-    md5.add(path_.asString());
-}
-
-
-void MappedMask::print(std::ostream &out) const {
-    out << "MappedMask[path=" << path_ << "]";
-}
-
-
-const std::vector<bool> &MappedMask::mask() const {
+    ASSERT(mask_.size());
     return mask_;
 }
 

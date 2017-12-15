@@ -16,16 +16,7 @@
 #ifndef mir_lsm_TenMinutesMask_h
 #define mir_lsm_TenMinutesMask_h
 
-#include <iosfwd>
-#include "eckit/filesystem/PathName.h"
 #include "mir/lsm/Mask.h"
-
-
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-}
 
 
 namespace mir {
@@ -71,8 +62,7 @@ private:
 
     // -- Members
 
-    eckit::PathName path_;
-    std::vector<bool> mask_;
+    mutable std::vector<bool> mask_;
 
     // -- Methods
     // None

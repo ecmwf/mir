@@ -20,12 +20,12 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
 
 
 namespace eckit {
 class MD5;
-class PathName;
 }
 namespace mir {
 namespace param {
@@ -41,12 +41,19 @@ namespace mir {
 namespace lsm {
 
 
+/// Mask
+/// Note: should be "lazy-loading" on Mask::mask(), for performance
 class Mask : private eckit::NonCopyable {
 public:
 
     // -- Contructors
 
     Mask();
+
+    Mask(const eckit::PathName&,
+         const param::MIRParametrisation&,
+         const repres::Representation&,
+         const std::string& which);
 
     // -- Destructor
 
@@ -90,11 +97,15 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    eckit::PathName path_;
+    const param::MIRParametrisation& parametrisation_;
+    const repres::Representation& representation_;
+    std::string which_;
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

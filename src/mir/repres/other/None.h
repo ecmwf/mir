@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef None_H
-#define None_H
+#ifndef mir_repres_other_None_h
+#define mir_repres_other_None_h
 
 #include "mir/repres/Representation.h"
 
@@ -32,7 +32,7 @@ class None : public Representation {
     // -- Contructors
 
     None();
-    None(const param::MIRParametrisation &);
+    None(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -63,7 +63,7 @@ class None : public Representation {
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -76,12 +76,8 @@ class None : public Representation {
 
   private:
 
-    // No copy allowed
-
-    None(const None &);
-    None &operator=(const None &);
-
     // -- Members
+    // None
 
     // -- Methods
     // None

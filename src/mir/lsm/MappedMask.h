@@ -16,19 +16,7 @@
 #ifndef mir_lsm_MappedMask_h
 #define mir_lsm_MappedMask_h
 
-#include <iosfwd>
-#include "eckit/filesystem/PathName.h"
 #include "mir/lsm/Mask.h"
-
-
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}
 
 
 namespace mir {
@@ -95,8 +83,7 @@ private:
 
     // -- Members
 
-    eckit::PathName path_;
-    std::vector<bool> mask_;
+    mutable std::vector<bool> mask_;
 
     // -- Methods
     // None
