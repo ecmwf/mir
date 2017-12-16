@@ -16,7 +16,6 @@
 
 #include "mir/lsm/Mask.h"
 
-#include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -27,13 +26,10 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/repres/other/None.h"
 
 
 namespace mir {
 namespace lsm {
-
-
 namespace {
 
 
@@ -53,27 +49,10 @@ static void setParametrisation(param::RuntimeParametrisation& runtime) {
     runtime.set("Nj", 181L);
 }
 
-static const param::SimpleParametrisation noParametrisation;
-static const repres::other::None noRepresentation;
-
-
 }  // (anonymous namespace)
 
 
-Mask::Mask() :
-    parametrisation_(noParametrisation),
-    representation_(noRepresentation) {
-}
-
-
-Mask::Mask(const eckit::PathName& path,
-           const param::MIRParametrisation& parametrisation,
-           const repres::Representation& representation,
-           const std::string& which) :
-    path_(path),
-    parametrisation_(parametrisation),
-    representation_(representation),
-    which_(which) {
+Mask::Mask() {
 }
 
 
@@ -81,9 +60,7 @@ Mask::~Mask() {
 }
 
 
-void Mask::hash(eckit::MD5& md5) const {
-    md5.add(path_.asString());
-    md5.add(representation_.uniqueName());
+void Mask::hash(eckit::MD5&) const {
 }
 
 
@@ -216,15 +193,6 @@ bool Mask::sameInput(const param::MIRParametrisation& parametrisation1,
 bool Mask::sameOutput(const param::MIRParametrisation& parametrisation1,
                       const param::MIRParametrisation& parametrisation2) {
     return same(parametrisation1, parametrisation2, "output");
-}
-
-
-void Mask::print(std::ostream& out) const {
-    out << "Mask=["
-        <<  "path=" << path_
-        << ",representation=" << representation_
-        << ",which=" << which_
-        << "]";
 }
 
 

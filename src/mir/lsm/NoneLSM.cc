@@ -16,6 +16,7 @@
 #include "mir/lsm/NoneLSM.h"
 
 #include <iostream>
+#include "eckit/exception/Exceptions.h"
 #include "mir/lsm/NoMask.h"
 
 

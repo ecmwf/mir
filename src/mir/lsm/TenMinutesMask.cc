@@ -49,10 +49,62 @@ From EMOSLIB:
 */
 TenMinutesMask::TenMinutesMask(
         const eckit::PathName& path,
-        const param::MIRParametrisation& parametrisation,
+        const param::MIRParametrisation&,
         const repres::Representation& representation,
-        const std::string& which) :
-    Mask(path, parametrisation, representation, which) {
+        const std::string&):
+    path_(path) {
+
+    const size_t ROWS = 1080;
+    const size_t COLS = 2160;
+
+    if (ten_minutes_.size() == 0) {
+
+        eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        eckit::Log::debug<LibMir>() << "TenMinutesMask loading " << path_ << std::endl;
+
+        eckit::StdFile file(path_);
+        ten_minutes_.resize(ROWS);
+
+        size_t bytes = (((COLS + 31) / 32) * 32) / 8;
+        unsigned char c;
+
+        for (size_t i = 0; i < ROWS; i++) {
+            size_t k = 0;
+            std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
+            for (size_t j = 0; j < bytes ; j++) {
+                ASSERT(fread(&c, 1, 1, file) == 1);
+                for (size_t b = 0; b < 8 && k < COLS; b++) {
+                    v[k++] = (c >> (7 - b)) & 0x1;
+                }
+            }
+        }
+
+    }
+
+    eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
+
+
+    // NOTE: this is not using 3D coordinate systems
+    // mask_.reserve(grid.size());
+
+    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
+    while (iter->next()) {
+        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+        Latitude lat = p.lat;
+        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
+
+        ASSERT(lat >= Latitude::SOUTH_POLE);
+        ASSERT(lat <= Latitude::NORTH_POLE);
+
+        int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
+        ASSERT(row >= 0 && row < int(ROWS));
+
+        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
+        ASSERT(col >= 0 && col < int(COLS));
+
+        mask_.push_back(ten_minutes_[row][col]);
+    }
 }
 
 
@@ -72,78 +124,16 @@ bool TenMinutesMask::cacheable() const {
 
 void TenMinutesMask::hash(eckit::MD5& md5) const {
     Mask::hash(md5);
-    md5.add("TenMinutesMask");
+    md5.add(path_.asString());
 }
 
 
 void TenMinutesMask::print(std::ostream& out) const {
-    out << "TenMinutesMask[";
-    Mask::print(out);
-    out << "]";
+    out << "TenMinutesMask[path=" << path_ << "]";
 }
 
 
 const std::vector<bool>& TenMinutesMask::mask() const {
-
-    // Lazy loading
-    if (!mask_.empty()) {
-        eckit::Log::debug<LibMir>() << "TenMinutesMask: passive loading" << std::endl;
-        return mask_;
-    }
-
-    const size_t ROWS = 1080;
-    const size_t COLS = 2160;
-
-    if (ten_minutes_.size() == 0) {
-        eckit::TraceTimer<LibMir> timer("TenMinutesMask: loading '" + path_  + "'");
-
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::debug<LibMir>() << "TenMinutesMask: loading" << std::endl;
-
-        eckit::StdFile file(path_);
-        ten_minutes_.resize(ROWS);
-
-        size_t bytes = (((COLS + 31) / 32) * 32) / 8;
-        unsigned char c;
-
-        for (size_t i = 0; i < ROWS; i++) {
-            size_t k = 0;
-            std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
-            for (size_t j = 0; j < bytes ; j++) {
-                ASSERT(fread(&c, 1, 1, file) == 1);
-                for (size_t b = 0; b < 8 && k < COLS; b++) {
-                    v[k++] = (c >> (7 - b)) & 0x1;
-                }
-            }
-        }
-    }
-
-    {
-        eckit::TraceTimer<LibMir> timer("TenMinutesMask: extract points");
-
-        // NOTE: this is not using 3D coordinate systems
-        mask_.reserve(representation_.numberOfPoints());
-
-        eckit::ScopedPtr<repres::Iterator> iter(representation_.iterator());
-        while (iter->next()) {
-            const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-            Latitude lat = p.lat;
-            Longitude lon = p.lon.normalise(Longitude::GREENWICH);
-
-            ASSERT(lat >= Latitude::SOUTH_POLE);
-            ASSERT(lat <= Latitude::NORTH_POLE);
-
-            int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
-            ASSERT(row >= 0 && row < int(ROWS));
-
-            int col = int(lon.value() * COLS / Longitude::GLOBE.value());
-            ASSERT(col >= 0 && col < int(COLS));
-
-            mask_.push_back(ten_minutes_[size_t(row)][size_t(col)]);
-        }
-    }
-
-    ASSERT(mask_.size());
     return mask_;
 }
 
