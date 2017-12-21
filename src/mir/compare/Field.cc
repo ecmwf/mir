@@ -164,6 +164,8 @@ void Field::compareAreas(std::ostream& out, const Field& other) const {
 
     out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
 
+    out << " [" << (::fabs(n1 - n2) - areaPrecisionN_ ) << '/' << (::fabs(w1 - w2) - areaPrecisionW_) << '/' << (::fabs(s1 - s2) - areaPrecisionS_) << '/' << (::fabs(e1 - e2) - areaPrecisionE_) << "]";
+
 }
 
 
