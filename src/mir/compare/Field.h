@@ -104,6 +104,8 @@ public:
 
     size_t length() const ;
 
+    size_t numberOfPoints() const;
+
     const std::string& path() const ;
     void whiteListEntries(std::ostream& out) const;
 

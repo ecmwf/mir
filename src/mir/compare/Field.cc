@@ -834,6 +834,11 @@ bool Field::wrapped() const {
     return w == e;
 }
 
+
+size_t Field::numberOfPoints() const {
+    return numberOfPoints_;
+}
+
 bool Field::match(const std::string& name, const std::string& value) const {
     auto j = values_.find(name);
     if (j != values_.end()) {
