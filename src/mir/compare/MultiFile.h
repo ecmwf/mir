@@ -50,6 +50,7 @@ public:
 
     void save() const;
 
+    const std::string& from() const;
     const std::string& name() const;
 
     eckit::Length length() const;
