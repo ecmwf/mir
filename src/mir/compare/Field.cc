@@ -141,6 +141,10 @@ const std::string& Field::path() const {
     return info_.path();
 }
 
+const std::string& Field::format() const {
+    return format_;
+}
+
 // double Field::compare(const Field& other) const {
 //     return compareAreas(other);
 // }
