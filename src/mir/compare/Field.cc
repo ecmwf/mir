@@ -141,6 +141,10 @@ const std::string& Field::path() const {
     return info_.path();
 }
 
+const std::string& Field::format() const {
+    return format_;
+}
+
 // double Field::compare(const Field& other) const {
 //     return compareAreas(other);
 // }
@@ -163,6 +167,8 @@ void Field::compareAreas(std::ostream& out, const Field& other) const {
     double s2 = other.south_;
 
     out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
+
+    out << " [" << (::fabs(n1 - n2) - areaPrecisionN_ ) << '/' << (::fabs(w1 - w2) - areaPrecisionW_) << '/' << (::fabs(s1 - s2) - areaPrecisionS_) << '/' << (::fabs(e1 - e2) - areaPrecisionE_) << "]";
 
 }
 
@@ -830,6 +836,11 @@ bool Field::wrapped() const {
     double e = normalize(east_);
 
     return w == e;
+}
+
+
+size_t Field::numberOfPoints() const {
+    return numberOfPoints_;
 }
 
 bool Field::match(const std::string& name, const std::string& value) const {

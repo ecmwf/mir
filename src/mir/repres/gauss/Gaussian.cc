@@ -137,6 +137,11 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     auto latitudesIt = m->find(N);
     if (latitudesIt == m->end()) {
 
+        std::ostringstream oss;
+        oss << "Gaussian latitudes " << N;
+
+        eckit::Timer timer(oss.str());
+
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
         atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
