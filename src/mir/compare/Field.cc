@@ -28,6 +28,7 @@ namespace compare {
 static bool normaliseLongitudes_ = false;
 static bool ignoreAccuracy_ = false;
 static bool ignorePacking_ = false;
+static bool whiteListAccuracyPacking_ = false;
 
 
 static double areaPrecisionN_ = 0.;
@@ -63,6 +64,9 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("area-precision-east",
                       "Epsilon when comparing latitude and logitude of bounding box"));
 
+    options.push_back(new SimpleOption<bool>("white-list-accuracy-packing",
+                      "Report difference with accuracy & packing"));
+
 }
 
 
@@ -90,9 +94,8 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("area-precision-west", areaPrecisionW_);
     args.get("area-precision-south", areaPrecisionS_);
     args.get("area-precision-east", areaPrecisionE_);
-
+    args.get("white-list-accuracy-packing", whiteListAccuracyPacking_);
 }
-
 
 
 Field::Field(const std::string& path, off_t offset, size_t length):
@@ -723,24 +726,44 @@ static void pdiff(std::ostream & out, const T& v1, const T& v2) {
 
 void Field::whiteListEntries(std::ostream& out) const {
     const char* sep = "";
-    if (!gridname_.empty()) {
-        out << sep << "gridname=" << gridname_;
-        sep = ",";
-    }
 
-     if (grid_) {
-        out << sep << "grid=" << north_south_ << "/" << west_east_;
-        sep = ",";
+    if(whiteListAccuracyPacking_) {
+if(param_) {
+	out << sep << "param=" << param_; sep = ",";
+}
+if(format_.length()) {
+	out << sep << "format=" << format_; sep = ",";
+}
+if(packing_.length()) {
+	out << sep << "packing=" << packing_; sep = ",";
+}
+if(gridtype_.length()) {
+	out << sep << "gridtype=" << gridtype_; sep = ",";
+}
+if(accuracy_) {
+	out << sep << "accuracy=" << accuracy_; sep = ",";
+}
     }
+    else {
+	    if (!gridname_.empty()) {
+		out << sep << "gridname=" << gridname_;
+		sep = ",";
+	    }
 
-    if (area_) {
-        out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
-        sep = ",";
-    }
+	    if (grid_) {
+		out << sep << "grid=" << north_south_ << "/" << west_east_;
+		sep = ",";
+	    }
 
-     if (rotation_) {
-        out << sep << "rotation=" << rotation_latitude_<< "/"  << rotation_longitude_;
-        sep = ",";
+	    if (area_) {
+		out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
+		sep = ",";
+	    }
+
+	     if (rotation_) {
+		out << sep << "rotation=" << rotation_latitude_<< "/"  << rotation_longitude_;
+		sep = ",";
+	    }
     }
 }
 
