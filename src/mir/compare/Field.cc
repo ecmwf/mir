@@ -312,10 +312,14 @@ bool Field::sameAccuracy(const Field& other) const {
         return true;
     }
 
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
+
+    if (decimalScaleFactor_ ||  other.decimalScaleFactor_) {
+        return decimalScaleFactor_  == other.decimalScaleFactor_;
+    }
+
     return accuracy_  == other.accuracy_;
 }
 
@@ -736,46 +740,46 @@ static void pdiff(std::ostream & out, const T& v1, const T& v2) {
 void Field::whiteListEntries(std::ostream& out) const {
     const char* sep = "";
 
-    if(whiteListAccuracyPacking_) {
-if(param_) {
-	out << sep << "param=" << param_; sep = ",";
-}
-if(format_.length()) {
-	out << sep << "format=" << format_; sep = ",";
-}
-if(packing_.length()) {
-	out << sep << "packing=" << packing_; sep = ",";
-}
-if(gridtype_.length()) {
-	out << sep << "gridtype=" << gridtype_; sep = ",";
-}
-if(accuracy_ >= 0) {
-	out << sep << "accuracy=" << accuracy_; sep = ",";
-}
-if(decimalScaleFactor_) {
-	out << sep << "decimal_scale_factor=" << decimalScaleFactor_; sep = ",";
-}
+    if (whiteListAccuracyPacking_) {
+        if (param_) {
+            out << sep << "param=" << param_; sep = ",";
+        }
+        if (format_.length()) {
+            out << sep << "format=" << format_; sep = ",";
+        }
+        if (packing_.length()) {
+            out << sep << "packing=" << packing_; sep = ",";
+        }
+        if (gridtype_.length()) {
+            out << sep << "gridtype=" << gridtype_; sep = ",";
+        }
+        if (accuracy_ >= 0) {
+            out << sep << "accuracy=" << accuracy_; sep = ",";
+        }
+        if (decimalScaleFactor_) {
+            out << sep << "decimal_scale_factor=" << decimalScaleFactor_; sep = ",";
+        }
     }
     else {
-	    if (!gridname_.empty()) {
-		out << sep << "gridname=" << gridname_;
-		sep = ",";
-	    }
+        if (!gridname_.empty()) {
+            out << sep << "gridname=" << gridname_;
+            sep = ",";
+        }
 
-	    if (grid_) {
-		out << sep << "grid=" << north_south_ << "/" << west_east_;
-		sep = ",";
-	    }
+        if (grid_) {
+            out << sep << "grid=" << north_south_ << "/" << west_east_;
+            sep = ",";
+        }
 
-	    if (area_) {
-		out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
-		sep = ",";
-	    }
+        if (area_) {
+            out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
+            sep = ",";
+        }
 
-	     if (rotation_) {
-		out << sep << "rotation=" << rotation_latitude_<< "/"  << rotation_longitude_;
-		sep = ",";
-	    }
+        if (rotation_) {
+            out << sep << "rotation=" << rotation_latitude_ << "/"  << rotation_longitude_;
+            sep = ",";
+        }
     }
 }
 
@@ -808,9 +812,15 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         out << ",resol="; pdiff(out, resol_, other.resol_);
     }
 
-    if (accuracy_ >= 0) {
-        out << ",accuracy=";
-        pdiff(out, accuracy_, other.accuracy_);
+    if (decimalScaleFactor_ >= 0) {
+        out << ",decimal_scale_factor=";
+        pdiff(out, decimalScaleFactor_, other.decimalScaleFactor_);
+    }
+    else {
+        if (accuracy_ >= 0) {
+            out << ",accuracy=";
+            pdiff(out, accuracy_, other.accuracy_);
+        }
     }
 
     if (hasMissing_) {
@@ -947,6 +957,12 @@ bool Field::match(const std::string& name, const std::string& value) const {
     if (name == "accuracy") {
         std::ostringstream oss;
         oss << accuracy_;
+        return value == oss.str();
+    }
+
+    if (name == "decimal_scale_factor") {
+        std::ostringstream oss;
+        oss << decimalScaleFactor_;
         return value == oss.str();
     }
 
