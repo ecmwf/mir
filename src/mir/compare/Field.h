@@ -62,6 +62,7 @@ public:
 
     void param(long n);
     void accuracy(long n);
+    void decimalScaleFactor(long n);
     void packing(const std::string& packing);
 
     bool operator<(const Field& other) const;
@@ -133,6 +134,7 @@ private:
     double east_;
 
     long accuracy_;
+    long decimalScaleFactor_;
 
     bool grid_;
     double west_east_;

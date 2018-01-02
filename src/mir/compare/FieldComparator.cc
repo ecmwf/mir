@@ -522,6 +522,12 @@ void FieldComparator::getField(const MultiFile& multi,
         field.accuracy(bitsPerValue);
     }
 
+    long decimalScaleFactor;
+    if (grib_get_long(h, "decimalScaleFactor", &bitsPerValue) == 0) {
+        field.decimalScaleFactor(decimalScaleFactor);
+    }
+
+
     {
         char value[1024];
         size_t len = sizeof(value);

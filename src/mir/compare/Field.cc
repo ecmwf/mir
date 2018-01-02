@@ -107,6 +107,7 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     south_(0),
     east_(0),
     accuracy_(-1),
+    decimalScaleFactor_(-1),
     grid_(false),
     west_east_(0),
     north_south_(0),
@@ -592,6 +593,10 @@ void Field::accuracy(long n) {
     accuracy_ = n;
 }
 
+void Field::decimalScaleFactor(long n) {
+    decimalScaleFactor_ = n;
+}
+
 void Field::packing(const std::string & packing) {
     packing_ = packing;
 }
@@ -637,6 +642,10 @@ void Field::print(std::ostream & out) const {
 
     if (accuracy_ >= 0) {
         out << ",accuracy=" << accuracy_;
+    }
+
+    if (decimalScaleFactor_ > 0) {
+        out << ",decimal_scale_factor=" << decimalScaleFactor_;
     }
 
     if (hasMissing_) {
@@ -740,8 +749,11 @@ if(packing_.length()) {
 if(gridtype_.length()) {
 	out << sep << "gridtype=" << gridtype_; sep = ",";
 }
-if(accuracy_) {
+if(accuracy_ >= 0) {
 	out << sep << "accuracy=" << accuracy_; sep = ",";
+}
+if(decimalScaleFactor_) {
+	out << sep << "decimal_scale_factor=" << decimalScaleFactor_; sep = ",";
 }
     }
     else {
