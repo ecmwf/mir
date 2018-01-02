@@ -40,6 +40,10 @@
 namespace mir {
 namespace util {
 
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 const long VERSION = 1;
 
 PointSearchTree::~PointSearchTree() {
@@ -112,7 +116,7 @@ void PointSearchTree::unlock() {
     // Empty
 }
 
-//=====================================================================
+//----------------------------------------------------------------------------------------------------------------------
 
 
 class PointSearchTreeMemory: public PointSearchTree {
@@ -178,18 +182,20 @@ public:
 
 static PointSearchTreeBuilder<PointSearchTreeMemory> builder1("memory");
 
-//===============================================================================================================
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 static eckit::PathName treePath(const eckit::PathName& path) {
     path.dirName().mkdir(0777);
 
     if (path.exists()) {
-        eckit::Log::info() << "PointSearchTree path is " << path << std::endl;
+        eckit::Log::debug<LibMir>() << "PointSearchTree path is " << path << std::endl;
         return path;
     }
 
     auto p = eckit::PathName::unique(path);
-    eckit::Log::info() << "PointSearchTree path is " << p << std::endl;
+    eckit::Log::debug<LibMir>() << "PointSearchTree path is " << p << std::endl;
     return p;
 }
 
@@ -254,7 +260,8 @@ public:
 
 };
 
-//===============================================================================================================
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 template<class T>
@@ -277,9 +284,9 @@ protected:
 
         eckit::PathName path = lockFile(real_);
 
-        eckit::Log::info() << "Wait for lock " << path << std::endl;
+        eckit::Log::debug<LibMir>() << "Wait for lock " << path << std::endl;
         lock_.lock();
-        eckit::Log::info() << "Got lock " << path << std::endl;
+        eckit::Log::debug<LibMir>() << "Got lock " << path << std::endl;
 
 
         std::string hostname = eckit::Main::hostname();
@@ -291,7 +298,7 @@ protected:
     virtual void unlock() {
         eckit::PathName path = lockFile(real_);
 
-        eckit::Log::info() << "Unlock " << path << std::endl;
+        eckit::Log::debug<LibMir>() << "Unlock " << path << std::endl;
         std::ofstream os(path.asString().c_str());
         os << std::endl;
         lock_.unlock();

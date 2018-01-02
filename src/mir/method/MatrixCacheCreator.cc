@@ -52,8 +52,8 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
         return;
     }
 
-    eckit::CacheManagerFileLock lockfile("/tmp/mir.fork.lock");
-    eckit::AutoLock<eckit::CacheManagerFileLock> lock(lockfile);
+    eckit::CacheManagerFileFlock lockfile("/tmp/mir.fork.lock");
+    eckit::AutoLock<eckit::CacheManagerFileFlock> lock(lockfile);
 
 
     pid_t pid = ::fork();
