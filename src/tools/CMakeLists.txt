@@ -13,6 +13,7 @@ list(APPEND tools
     mir-statistics
     mir-values-statistics
     mir-weight-matrix
+    mir-grid-info
 )
 
 if(HAVE_ATLAS)
