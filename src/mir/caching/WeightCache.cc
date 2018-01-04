@@ -66,17 +66,17 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     eckit::Log::debug<LibMir>() << "Inserting weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
 
-    static size_t maxMatrixFootprint = eckit::Resource<size_t>("$MIR_MAX_MATRIX_FOOTPRINT", 0);
-    if (maxMatrixFootprint) {
+    static size_t matrixMaxFootprint = eckit::Resource<size_t>("$MIR_MATRIX_MAX_FOOTPRINT", 0);
+    if (matrixMaxFootprint) {
         size_t size = W.footprint();
-        if (size > maxMatrixFootprint) {
+        if (size > matrixMaxFootprint) {
             std::ostringstream oss;
             oss << "WeightCacheTraits::save: matrix too large "
                 << size
                 << " ("
                 << eckit::Bytes(size)
                 << "), maximum is "
-                << eckit::Bytes(maxMatrixFootprint);
+                << eckit::Bytes(matrixMaxFootprint);
             throw eckit::UserError(oss.str());
         }
     }
