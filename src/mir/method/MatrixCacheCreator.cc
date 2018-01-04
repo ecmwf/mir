@@ -46,6 +46,8 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
 void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
 
     static bool subProcess = eckit::Resource<bool>("$MATRIX_CACHE_CREATOR_FORK", false);
+    static size_t maxMatrixFootprint = eckit::Resource<size_t>("$MIR_MAX_MATRIX_FOOTPRINT", 0);
+
 
     if (!subProcess) {
         owner_.createMatrix(ctx_, in_, out_, W, masks_);

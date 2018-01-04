@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "eckit/io/Buffer.h"
+#include "eckit/log/Bytes.h"
 
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
@@ -63,6 +64,22 @@ const char *WeightCacheTraits::extension() {
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
     eckit::Log::debug<LibMir>() << "Inserting weights in cache : " << path << "" << std::endl;
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
+
+    static size_t maxMatrixFootprint = eckit::Resource<size_t>("$MIR_MAX_MATRIX_FOOTPRINT", 0);
+    if (maxMatrixFootprint) {
+        size_t size = W.footprint();
+        if (size > maxMatrixFootprint) {
+            std::ostringstream oss;
+            oss << "WeightCacheTraits::save: matrix too large "
+                << size
+                << " ("
+                << eckit::Bytes(size)
+                << "), maximum is "
+                << eckit::Bytes(maxMatrixFootprint);
+            throw eckit::UserError(oss.str());
+        }
+    }
+
     W.save(path);
 }
 
