@@ -23,8 +23,8 @@ namespace caching {
 CroppingCache::CroppingCache():
     CacheManager("Cropper",  // dummy -- would be used in load() / save() static functions
                  LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-                                       false), 0) {
+                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+                 eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {
 }
 
 

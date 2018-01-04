@@ -22,8 +22,8 @@ namespace caching {
 LegendreCache::LegendreCache() :
     CacheManager<LegendreCacheTraits>("LegendreCache", // dummy -- would be used in load() / save() static functions
                                       LibMir::cacheDir(),
-                                      eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss",
-                                                            false), 0) {
+                                      eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+                                      eckit::Resource<size_t>("$MIR_COEFFS_CACHE_SIZE", 0)) {
 }
 
 const char *LegendreCacheTraits::name() {
