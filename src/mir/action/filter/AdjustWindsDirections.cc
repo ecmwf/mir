@@ -73,6 +73,9 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
 
         field.update(valuesX, i);
         field.update(valuesY, i + 1);
+
+        field.metadata(i, "uvRelativeToGrid", 1);
+        field.metadata(i + 1, "uvRelativeToGrid", 1);
     }
 }
 
