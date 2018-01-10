@@ -80,7 +80,7 @@ PointSearchTree::PointValueType PointSearchTree::nearestNeighbour(const Point&) 
     throw eckit::SeriousBug(os.str());
 }
 
-std::vector<PointSearchTree::PointValueType> PointSearchTree::kNearestNeighbours(const Point&, size_t k) {
+std::vector<PointSearchTree::PointValueType> PointSearchTree::kNearestNeighbours(const Point&, size_t) {
     std::ostringstream os;
     os << "PointSearchTree::kNearestNeighbours() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -104,7 +104,7 @@ void PointSearchTree::commit() {
     throw eckit::SeriousBug(os.str());
 }
 
-void PointSearchTree::print(std::ostream &out) const {
+void PointSearchTree::print(std::ostream& out) const {
     out << "PointSearchTree[]" << std::endl;
 }
 
@@ -170,13 +170,13 @@ class PointSearchTreeMemory: public PointSearchTree {
     virtual void commit() {
     }
 
-    virtual void print(std::ostream & out)  const {
+    virtual void print(std::ostream& out)  const {
         out << "KDTreeMemory[]";
     }
 
 public:
-    PointSearchTreeMemory( const repres::Representation& r,
-                           const param::MIRParametrisation &param,
+    PointSearchTreeMemory( const repres::Representation&,
+                           const param::MIRParametrisation&,
                            size_t itemCount) {}
 };
 
@@ -184,20 +184,6 @@ static PointSearchTreeBuilder<PointSearchTreeMemory> builder1("memory");
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
-
-static eckit::PathName treePath(const eckit::PathName& path) {
-    path.dirName().mkdir(0777);
-
-    if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "PointSearchTree path is " << path << std::endl;
-        return path;
-    }
-
-    auto p = eckit::PathName::unique(path);
-    eckit::Log::debug<LibMir>() << "PointSearchTree path is " << p << std::endl;
-    return p;
-}
 
 
 class PointSearchTreeMapped: public PointSearchTree {
@@ -306,7 +292,7 @@ protected:
 
 
     static eckit::PathName treePath(const repres::Representation& r,
-                                    const param::MIRParametrisation &param,
+                                    const param::MIRParametrisation& param,
                                     bool makeUnique) {
 
         // LocalPathName::unique calls mkdir, make sure it uses umask = 0
@@ -333,7 +319,7 @@ protected:
 public:
 
     PointSearchTreeMappedFile( const repres::Representation& r,
-                               const param::MIRParametrisation &param,
+                               const param::MIRParametrisation& param,
                                size_t itemCount) :
         PointSearchTreeMapped(treePath(r, param, true), itemCount),
         real_(treePath(r, param, false)),
@@ -351,14 +337,14 @@ public:
 //===============================================================================================================
 
 class PointSearchTreeMappedCacheFile : public PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile> {
-    virtual void print(std::ostream & out) const  {
+    virtual void print(std::ostream& out) const  {
         out << "PointSearchTreeMappedCacheFile[" << real_ << "]";
     }
 
 public:
 
     static eckit::PathName path(const repres::Representation& r,
-                                const param::MIRParametrisation &param) {
+                                const param::MIRParametrisation&) {
 
         std::ostringstream oss;
         oss  << LibMir::cacheDir()
@@ -374,7 +360,7 @@ public:
 
 public:
     PointSearchTreeMappedCacheFile( const repres::Representation& r,
-                                    const param::MIRParametrisation &param,
+                                    const param::MIRParametrisation& param,
                                     size_t itemCount):
         PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(r, param, itemCount) {
     }
@@ -385,14 +371,14 @@ static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-c
 //===============================================================================================================
 
 class PointSearchTreeMappedTempFile : public PointSearchTreeMappedFile<PointSearchTreeMappedTempFile> {
-    virtual void print(std::ostream & out) const  {
+    virtual void print(std::ostream& out) const  {
         out << "PointSearchTreeMappedTempFile[" << real_ << "]";
     }
 
 
 public:
     static eckit::PathName path(const repres::Representation& r,
-                                const param::MIRParametrisation &param) {
+                                const param::MIRParametrisation&) {
 
         std::ostringstream oss;
         oss  << "/tmp/"
@@ -408,7 +394,7 @@ public:
 
 public:
     PointSearchTreeMappedTempFile( const repres::Representation& r,
-                                   const param::MIRParametrisation &param,
+                                   const param::MIRParametrisation& param,
                                    size_t itemCount):
         PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>(r, param, itemCount) {}
 };
@@ -427,14 +413,14 @@ class PointSearchTreeMappedDevZero: public PointSearchTreeMapped {
     virtual void commit() {
     }
 
-    virtual void print(std::ostream & out) const  {
+    virtual void print(std::ostream& out) const  {
         out << "PointSearchTreeMappedDevZero[]";
     }
 
 public:
 
-    PointSearchTreeMappedDevZero( const repres::Representation& r,
-                                  const param::MIRParametrisation &param,
+    PointSearchTreeMappedDevZero( const repres::Representation&,
+                                  const param::MIRParametrisation&,
                                   size_t itemCount):
         PointSearchTreeMapped("/dev/zero", itemCount) {}
 };
@@ -464,7 +450,7 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
 
 }
 
-void PointSearch::build(const repres::Representation & r) {
+void PointSearch::build(const repres::Representation& r) {
     const size_t npts = r.numberOfPoints();
 
     eckit::Timer timer("Building KDTree");
@@ -498,7 +484,7 @@ void PointSearch::build(const repres::Representation & r) {
 }
 
 
-void PointSearch::statsPrint(std::ostream & s, bool fancy) const {
+void PointSearch::statsPrint(std::ostream& s, bool fancy) const {
     tree_->statsPrint(s, fancy);
 }
 
@@ -508,12 +494,12 @@ void PointSearch::statsReset() const {
 }
 
 
-PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType & pt) const {
+PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
     return tree_->nearestNeighbour(pt);
 }
 
 
-void PointSearch::closestNPoints(const PointType & pt, size_t n, std::vector<PointValueType>& closest) const {
+void PointSearch::closestNPoints(const PointType& pt, size_t n, std::vector<PointValueType>& closest) const {
 
     // Small optimisation
     if (n == 1) {
@@ -526,7 +512,7 @@ void PointSearch::closestNPoints(const PointType & pt, size_t n, std::vector<Poi
 }
 
 
-void PointSearch::closestWithinRadius(const PointType & pt, double radius, std::vector<PointValueType>& closest) const {
+void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::vector<PointValueType>& closest) const {
     closest = tree_->findInSphere(pt, radius);
 }
 
@@ -545,7 +531,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-PointSearchTreeFactory::PointSearchTreeFactory(const std::string &name):
+PointSearchTreeFactory::PointSearchTreeFactory(const std::string& name):
     name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -598,31 +584,6 @@ void PointSearchTreeFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
-
-
-// bool caching = true;
-// parametrisation.get("kd-trees.caching", caching);
-
-// if (caching) { // TODO: use a resource
-
-//     const long VERSION = 1;
-//     std::ostringstream oss;
-//     oss  << LibMir::cacheDir()
-//          << "/mir/trees/"
-//          << VERSION
-//          << "/"
-//          << r.uniqueName()
-//          << ".kdtree";
-
-
-//     // tree_.reset(new PointSearchTreeMappedFile(oss.str(), npts));
-
-//     tree_.reset(new PointSearchTreeMappedDevZero(npts));
-
-// }
-// else {
-//     tree_.reset(new PointSearchTreeMemory());
-// }
 
 
 }  // namespace util
