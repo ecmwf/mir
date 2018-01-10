@@ -309,6 +309,9 @@ protected:
                                     const param::MIRParametrisation &param,
                                     bool makeUnique) {
 
+        // LocalPathName::unique calls mkdir, make sure it uses umask = 0
+        eckit::AutoUmask umask(0);
+
         eckit::PathName p = T::path(r, param);
         if (makeUnique && !p.exists()) {
             p = eckit::PathName::unique(p);
