@@ -29,8 +29,6 @@ public:
 
     static eckit::PathName cacheDir();
 
-    static bool dryRun();
-
     static const LibMir& instance();
 
 protected:

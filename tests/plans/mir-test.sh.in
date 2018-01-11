@@ -47,7 +47,7 @@ do
 
             mir)
             eval n=\"$n\"
-            $mir --dump-plan-file=$(pwd)/plan.$t $n $(pwd)/data.in.$t $(pwd)/data.out.$t
+            $mir --dryrun --dump-plan-file=$(pwd)/plan.$t $n $(pwd)/data.in.$t $(pwd)/data.out.$t
             state=plan
             ;;
 
