@@ -12,6 +12,6 @@ longitudeOfFirstGridPointInDegrees = -13.7
 longitudeOfLastGridPointInDegrees = 21.7
 latitudeOfFirstGridPointInDegrees = 22.7
 latitudeOfLastGridPointInDegrees = -5.9
-uvRelativeToGrid = 1
+uvRelativeToGrid = 0
 latitudeOfSouthernPoleInDegrees = -40
 longitudeOfSouthernPoleInDegrees = 10
