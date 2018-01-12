@@ -64,12 +64,14 @@ private:
 
     // -- Members
 
+    long inputTruncation_;
     eckit::ScopedPtr<Intgrid> intgrid_;
     eckit::ScopedPtr<Truncation> truncation_;
 
     // -- Methods
 
     long getTargetGaussianNumber() const;
+    long getSourceGaussianNumber() const;
 
     // -- Overridden methods
     // None

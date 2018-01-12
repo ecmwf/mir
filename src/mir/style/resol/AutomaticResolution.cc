@@ -36,9 +36,15 @@ AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parame
     Resol(parametrisation) {
     std::string value;
 
-    long N = getTargetGaussianNumber();
+    // Get input truncation and a Gaussian grid number based on input (truncation) and output (grid)
+    inputTruncation_ = 0;
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", inputTruncation_));
+    ASSERT(inputTruncation_ > 0);
 
-    // Setup intermediate grid before truncation
+    long N = std::min(getTargetGaussianNumber(), getSourceGaussianNumber());
+    ASSERT(N >= 0);
+
+    // Setup intermediate grid (before truncation)
     // NOTE: truncation can depend on the intermediate grid Gaussian number
     value = "automatic";
     parametrisation_.userParametrisation().get("intgrid", value);
@@ -61,13 +67,9 @@ AutomaticResolution::AutomaticResolution(const param::MIRParametrisation& parame
 
 void AutomaticResolution::prepare(action::ActionPlan& plan) const {
 
-    long Tinput = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("spectral", Tinput));
-    ASSERT(Tinput > 0);
-
     // truncate spectral coefficients, if specified and below input field coefficients
     long T = truncation_->truncation();
-    if (0 < T && T < Tinput) {
+    if (0 < T && T < inputTruncation_) {
         plan.add("transform.sh-truncate", "truncation", T);
     }
 
@@ -138,6 +140,24 @@ long AutomaticResolution::getTargetGaussianNumber() const {
 
     }
 
+    ASSERT(N >= 0);
+    return N;
+}
+
+
+long AutomaticResolution::getSourceGaussianNumber() const {
+
+    long N = 0;
+
+    // Setup spectral order mapping
+    std::string order;
+    parametrisation_.get("spectral-order", order);
+
+    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build(order));
+    ASSERT(spectralOrder);
+
+    // Set Gaussian N
+    N = spectralOrder->getGaussianNumberFromTruncation(inputTruncation_);
     ASSERT(N >= 0);
     return N;
 }
