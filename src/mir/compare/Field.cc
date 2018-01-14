@@ -707,7 +707,22 @@ bool Field::same(const Field & other) const {
            sameArea(other);
 }
 
-
+size_t Field::differences(const Field & other) const {
+    size_t result = 0;
+    if(!sameParam(other)) result+=100;
+           if(!sameField(other)) result++;
+           if(!sameNumberOfPoints(other)) result++;
+           if(!sameGrid(other)) result++;
+           if(!sameAccuracy(other)) result++;
+           if(!samePacking(other)) result++;
+           if(!sameRotation(other)) result++;
+           if(!sameResol(other)) result++;
+           if(!sameGridname(other)) result++;
+           if(!sameGridtype(other)) result++;
+           if(!sameFormat(other)) result++;
+           if(!sameArea(other)) result++;
+return result;
+}
 
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     std::vector<Field> matches;

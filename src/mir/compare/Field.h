@@ -76,6 +76,7 @@ public:
     std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
 
     std::vector<Field> bestMatches(const FieldSet& fields) const;
+    size_t differences(const Field& other) const;
 
     void compareAreas(std::ostream& out, const Field& other) const;
 
