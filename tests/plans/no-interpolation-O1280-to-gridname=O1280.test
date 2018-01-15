@@ -1,5 +1,5 @@
-# mars
-O1280
+# mars (this is an O1280 grid)
+param=2t,levtype=sfc
 # mir
 --gridname=O1280
 # plan
