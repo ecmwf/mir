@@ -883,6 +883,10 @@ intensity:
 - 210146  # Total column GRG tracer 8
 - 210148  # Total column GRG tracer 9
 - 210150  # Total column GRG tracer 10
+- 210167  # Wildfire day-time radiative power
+- 210169  # Wildfire night-time radiative power
+- 210177  # Wildfire day-time inverse variance of radiative power
+- 210179  # Wildfire night-time inverse variance of radiative power
 - 210183  # Total column Radon
 - 210184  # Total column Sulphur Hexafluoride
 - 210206  # GEMS Total column ozone
