@@ -51,6 +51,12 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
+
+            if (eckit::Log::debug<LibMir>()){
+                eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
+                plan_->dump(eckit::Log::debug<LibMir>());
+            }
+
             return;
         }
     }
@@ -66,8 +72,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    if(eckit::Log::debug<LibMir>()){
-        // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+    if (eckit::Log::debug<LibMir>()){
         eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
         plan_->dump(eckit::Log::debug<LibMir>());
     }
