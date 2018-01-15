@@ -18,6 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/types/FloatCompare.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
@@ -42,24 +43,99 @@ struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
 
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation) {
-    static const std::vector< std::pair< const char*, const char* > > keys_targets = {
-        { "grid",       "regular-ll" },
-        { "reduced",    "reduced-gg" },
-        { "regular",    "regular-gg" },
-        { "octahedral", "octahedral-gg" },
-        { "pl",         "reduced-gg-pl-given" },
-        { "gridname",   "namedgrid" },
-        { "griddef",    "griddef" },
-        { "points",     "points" }
+struct KnownKey {
+    KnownKey(const char* key_, const char* target_) : key(key_), target(target_) {}
+    virtual ~KnownKey() {}
+    virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation& p2) const = 0;
+    const std::string key;
+    const std::string target;
+};
+
+template< typename T >
+struct KnownKeyT : KnownKey {
+    KnownKeyT(const char* key, const char* target="") : KnownKey(key, target) {}
+    bool sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+
+        T value1;
+        T value2;
+        ASSERT(p1.get(key, value1));
+        ASSERT(p2.get(key, value2));
+
+        return value1 == value2;
+    }
+};
+
+template<>
+bool KnownKeyT< double >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+
+    double value1;
+    double value2;
+    ASSERT(p1.get(key, value1));
+    ASSERT(p2.get(key, value2));
+
+    return eckit::types::is_approximately_equal(value1, value2);
+};
+
+template<>
+bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+
+    std::vector<double> value1;
+    std::vector<double> value2;
+    ASSERT(p1.get(key, value1));
+    ASSERT(p2.get(key, value2));
+
+    if (value1.size() != value2.size()) {
+        return false;
+    }
+
+    for (auto v1 = value1.cbegin(), v2 = value2.cbegin(); v1 != value1.cend(); ++v1, ++v2) {
+        if (!eckit::types::is_approximately_equal(*v1, *v2)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation = false) {
+    static const std::vector< KnownKey* > keys_targets = {
+        new KnownKeyT< std::vector<double> >("grid",       "regular-ll"),
+        new KnownKeyT< size_t >             ("reduced",    "reduced-gg"),
+        new KnownKeyT< size_t >             ("regular",    "regular-gg"),
+        new KnownKeyT< size_t >             ("octahedral", "octahedral-gg"),
+        new KnownKeyT< std::vector<long> >  ("pl",         "reduced-gg-pl-given"),
+        new KnownKeyT< std::string >        ("gridname",   "namedgrid" ),
+        new KnownKeyT< std::string >        ("griddef",    "griddef" ),
+        new KnownKeyT< bool >               ("points",     "points" )
     };
 
+    static const KnownKeyT< double > south_pole_lat("south_pole_latitude");
+    static const KnownKeyT< double > south_pole_lon("south_pole_longitude");
+//    {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
+//    {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
+
+    const param::MIRParametrisation& user = parametrisation.userParametrisation();
+    const param::MIRParametrisation& field = parametrisation.fieldParametrisation();
+
     for (auto& kt : keys_targets) {
-        if (parametrisation.has(kt.first)) {
-            return kt.second;
+        if (user.has(kt->key)) {
+
+            // If user and field parametrisation have the same target key, and
+            // its value is the same (and rotation, optionally) there's nothing to do
+            if (!field.has(kt->key) || !kt->sameValue(user, field)) {
+                return kt->target;
+            }
+
+            if (checkRotation && (
+                    !south_pole_lat.sameValue(user, field) ||
+                    !south_pole_lon.sameValue(user, field) )) {
+                return kt->target;
+            }
+
+            return "";
         }
     }
 
+    eckit::Log::warning() << "ECMWFStyle: could not determine target from parametrisation" << std::endl;
     return "";
 }
 
@@ -130,7 +206,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
+    const std::string target = target_gridded_from_parametrisation(parametrisation_);
 
     bool rotation_not_supported = (target == "griddef" || target == "points");
     if (rotation && rotation_not_supported) {
@@ -250,7 +326,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(parametrisation_.userParametrisation());
+    const std::string target = target_gridded_from_parametrisation(parametrisation_, rotation);
 
     if (!target.empty()) {
         plan.add(interpolate + (rotation ? "rotated-":"") + target);

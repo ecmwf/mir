@@ -89,6 +89,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("regular", "Interpolate to the regular Gaussian grid N (regular_gg), with N the number of parallels between pole and equator (N>=2)"));
         options_.push_back(new SimpleOption<size_t>("reduced", "Interpolate to the reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (pre-defined list of N values.) N must be 16, 24, 32, 48, 64, 80, 96, 128, 160, 200, 256, 320, 400, 512, 576, 640 or 800"));
         options_.push_back(new SimpleOption<size_t>("octahedral", "Interpolate to the octahedral reduced Gaussian grid N (reduced_gg), with N the number of parallels between pole and equator (N>=2)"));
+        options_.push_back(new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
