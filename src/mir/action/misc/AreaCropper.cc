@@ -18,21 +18,14 @@
 #include <iostream>
 #include <vector>
 
-// #include "eckit/exception/Exceptions.h"
-// #include "eckit/log/Timer.h"
-// #include "eckit/memory/ScopedPtr.h"
-// #include "eckit/thread/AutoLock.h"
-// #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
-// #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-// #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-// #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 
 

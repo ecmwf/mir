@@ -34,12 +34,6 @@ eckit::PathName LibMir::cacheDir()
     return mirCachePath;
 }
 
-bool LibMir::dryRun()
-{
-    static bool mirDryRun = LibResource<bool, LibMir>("$MIR_DRY_RUN", false);
-    return mirDryRun;
-}
-
 const LibMir& LibMir::instance()
 {
     static LibMir libmir;

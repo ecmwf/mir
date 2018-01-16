@@ -15,7 +15,6 @@
 
 #include "mir/output/MIROutput.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/output/GeoPointsFileOutput.h"
 #include "mir/output/GribFileOutput.h"
@@ -44,7 +43,8 @@ MIROutputFactory::~MIROutputFactory() {
 
 MIROutput* MIROutputFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
 
-    if (mir::LibMir::dryRun()) {
+    bool dryrun = false;
+    if (parametrisation.get("dryrun", dryrun) && dryrun) {
         return new EmptyOutput();
     }
 

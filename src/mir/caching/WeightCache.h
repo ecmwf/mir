@@ -33,7 +33,7 @@ namespace caching {
 
 struct WeightCacheTraits {
 
-    typedef eckit::CacheManagerFileLock  Locker;
+    typedef eckit::CacheManagerFileFlock  Locker;
     typedef method::WeightMatrix value_type;
 
     static const char* name();

@@ -138,9 +138,9 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     // Try to get an exclusing lock, we may be waiting for another process
     // to create the memory segment and load it with the file content
-    GlobalSemaphore gsem(real.dirName());
-    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+//    GlobalSemaphore gsem(real.dirName());
+//    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+//    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
 
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {

@@ -96,6 +96,20 @@ void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime
 
 void ActionPlan::execute(context::Context & ctx) const {
 
+    std::string dumpPlanFile;
+    parametrisation_.get("dump-plan-file", dumpPlanFile);
+
+    if (dumpPlanFile.size()) {
+        std::ofstream out(dumpPlanFile);
+        custom(out);
+        out << std::endl;
+    }
+
+    bool dryrun = false;
+    if (parametrisation_.get("dryrun", dryrun) && dryrun) {
+        return;
+    }
+
     const char* sep = "###################################################################################";
 
     for (const auto& p : actions_) {
