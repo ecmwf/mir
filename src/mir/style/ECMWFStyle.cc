@@ -16,6 +16,8 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
@@ -42,46 +44,68 @@ struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
 
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
+
 struct KnownKey {
-    KnownKey(const char* key_, const char* target_) : key(key_), target(target_) {}
+
+    KnownKey(const char* _key, const char* _target="") : key_(_key), target_(_target) {}
     virtual ~KnownKey() {}
-    virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation& p2) const = 0;
-    const std::string key;
-    const std::string target;
+
+    virtual bool sameKey(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
+    virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
+
+    const std::string& key() {
+        ASSERT(!key_.empty());
+        return key_;
+    }
+
+    const std::string& target() {
+        ASSERT(!target_.empty());
+        return target_;
+    }
+
+protected:
+    const std::string key_;
+    const std::string target_;
 };
+
 
 template< typename T >
 struct KnownKeyT : KnownKey {
     KnownKeyT(const char* key, const char* target="") : KnownKey(key, target) {}
-    bool sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
+        return p1.has(key_) == p2.has(key_);
+    }
+    bool sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
 
         T value1;
         T value2;
-        ASSERT(p1.get(key, value1));
-        ASSERT(p2.get(key, value2));
+        ASSERT(p1.get(key_, value1));
+        ASSERT(p2.get(key_, value2));
 
         return value1 == value2;
     }
 };
 
+
 template<>
-bool KnownKeyT< double >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+bool KnownKeyT< double >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
 
     double value1;
     double value2;
-    ASSERT(p1.get(key, value1));
-    ASSERT(p2.get(key, value2));
+    ASSERT(p1.get(key_, value1));
+    ASSERT(p2.get(key_, value2));
 
     return eckit::types::is_approximately_equal(value1, value2);
 };
 
+
 template<>
-bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2 ) const {
+bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
 
     std::vector<double> value1;
     std::vector<double> value2;
-    ASSERT(p1.get(key, value1));
-    ASSERT(p2.get(key, value2));
+    ASSERT(p1.get(key_, value1));
+    ASSERT(p2.get(key_, value2));
 
     if (value1.size() != value2.size()) {
         return false;
@@ -95,39 +119,81 @@ bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation
     return true;
 }
 
+
+template< typename T >
+struct KnownMultiKeyT : KnownKey {
+
+    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target="") :
+        KnownKey(key, target),
+        fieldKey1_(fieldKey1),
+        fieldKey2_(fieldKey2) {
+    }
+
+    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
+        return p1.has(key_) == p2.has(fieldKey1_) && p2.has(fieldKey2_);
+    }
+
+    bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+        std::ostringstream os;
+        os << "KnownMultiKeyT<T>::sameValue() not implemented";
+        throw eckit::SeriousBug(os.str());
+    }
+
+private:
+    const std::string fieldKey1_;
+    const std::string fieldKey2_;
+};
+
+
+template<>
+bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
+    std::vector<double> value1;
+    std::vector<double> value2(2);
+    ASSERT(p1.get(key_, value1));
+    ASSERT(p2.get(fieldKey1_, value2[0]));
+    ASSERT(p2.get(fieldKey2_, value2[1]));
+
+    if (value1.size() != value2.size()) {
+        return false;
+    }
+
+    for (auto v1 = value1.cbegin(), v2 = value2.cbegin(); v1 != value1.cend(); ++v1, ++v2) {
+        if (!eckit::types::is_approximately_equal(*v1, *v2)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation = false) {
     static const std::vector< KnownKey* > keys_targets = {
-        new KnownKeyT< std::vector<double> >("grid",       "regular-ll"),
-        new KnownKeyT< size_t >             ("reduced",    "reduced-gg"),
-        new KnownKeyT< size_t >             ("regular",    "regular-gg"),
-        new KnownKeyT< size_t >             ("octahedral", "octahedral-gg"),
-        new KnownKeyT< std::vector<long> >  ("pl",         "reduced-gg-pl-given"),
-        new KnownKeyT< std::string >        ("gridname",   "namedgrid" ),
-        new KnownKeyT< std::string >        ("griddef",    "griddef" ),
-        new KnownKeyT< bool >               ("points",     "points" )
+        new KnownMultiKeyT< std::vector<double> > ("grid", "west_east_increment", "south_north_increment", "regular-ll"),
+        new KnownKeyT< size_t >            ("reduced",    "reduced-gg"),
+        new KnownKeyT< size_t >            ("regular",    "regular-gg"),
+        new KnownKeyT< size_t >            ("octahedral", "octahedral-gg"),
+        new KnownKeyT< std::vector<long> > ("pl",         "reduced-gg-pl-given"),
+        new KnownKeyT< std::string >       ("gridname",   "namedgrid"),
+        new KnownKeyT< std::string >       ("griddef",    "griddef"),
+        new KnownKeyT< bool >              ("points",     "points")
     };
 
-    static const KnownKeyT< double > south_pole_lat("south_pole_latitude");
-    static const KnownKeyT< double > south_pole_lon("south_pole_longitude");
-//    {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
-//    {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
+    static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
 
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
     const param::MIRParametrisation& field = parametrisation.fieldParametrisation();
 
-    for (auto& kt : keys_targets) {
-        if (user.has(kt->key)) {
+    for (const auto& kt : keys_targets) {
+        if (user.has(kt->key())) {
 
-            // If user and field parametrisation have the same target key, and
+            // If user and field parametrisation have the same target_ key, and
             // its value is the same (and rotation, optionally) there's nothing to do
-            if (!field.has(kt->key) || !kt->sameValue(user, field)) {
-                return kt->target;
+            if (!kt->sameKey(user, field) || !kt->sameValue(user, field)) {
+                return kt->target();
             }
 
-            if (checkRotation && (
-                    !south_pole_lat.sameValue(user, field) ||
-                    !south_pole_lon.sameValue(user, field) )) {
-                return kt->target;
+            if (checkRotation && !south_pole.sameValue(user, field)) {
+                return kt->target();
             }
 
             return "";
