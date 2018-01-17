@@ -25,7 +25,6 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
-#include "mir/style/Truncation.h"
 #include "mir/util/DeprecatedFunctionality.h"
 
 

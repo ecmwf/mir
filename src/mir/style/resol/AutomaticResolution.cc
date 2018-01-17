@@ -147,17 +147,11 @@ long AutomaticResolution::getTargetGaussianNumber() const {
 
 long AutomaticResolution::getSourceGaussianNumber() const {
 
-    long N = 0;
-
-    // Setup spectral order mapping
-    std::string order;
-    parametrisation_.get("spectral-order", order);
-
-    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build(order));
+    // Set Gaussian N
+    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
-    // Set Gaussian N
-    N = spectralOrder->getGaussianNumberFromTruncation(inputTruncation_);
+    const long N = spectralOrder->getGaussianNumberFromTruncation(inputTruncation_);
     ASSERT(N >= 0);
     return N;
 }
