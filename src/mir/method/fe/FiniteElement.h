@@ -42,6 +42,8 @@ protected: // methods
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
     virtual bool sameAs(const Method& other) const = 0;
+    virtual void print(std::ostream &out) const = 0;
+
 
 protected: // members
 

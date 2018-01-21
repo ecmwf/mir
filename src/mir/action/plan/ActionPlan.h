@@ -73,6 +73,8 @@ public:
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
 
+    void compress();
+
     // -- Overridden methods
     // None
 

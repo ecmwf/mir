@@ -23,6 +23,8 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/BoundingBox.h"
+
 
 
 namespace mir {
@@ -38,10 +40,30 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
 }
 
 
-
 Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 }
 
+// return method_->canCrop();
+
+bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
+
+    eckit::Log::debug<LibMir>() << "Gridded2GriddedInterpolation::mergeWithNext "
+    << *this
+     << std::endl
+    << "With "
+    << next
+    << std::endl
+    << "next.isCropAction " << next.isCropAction() << std::endl
+    << "method_->canCrop() " << method_->canCrop()
+    << std::endl;
+
+
+    if (next.isCropAction() && method_->canCrop()) {
+        method_->setCropping(next.croppingBoundingBox());
+        return true;
+    }
+    return false;
+}
 
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
@@ -51,7 +73,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     eckit::Log::debug<LibMir>() << "Method is " << *method_ << std::endl;
 
     repres::RepresentationHandle in(field.representation());
-    repres::RepresentationHandle out(outputRepresentation());
+    repres::RepresentationHandle out(method_->adjustOutputRepresentation(outputRepresentation()));
 
     method_->execute(ctx, *in, *out);
 

@@ -40,30 +40,35 @@ class LandSeaMasks;
 
 namespace method {
 
+class Cropping;
 class MethodWeighted;
 
 class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
 
 public:
 
-    MatrixCacheCreator(const MethodWeighted & owner,
-                       context::Context & ctx,
-                       const repres::Representation & in,
-                       const repres::Representation & out,
-                       const lsm::LandSeaMasks & masks);
+  MatrixCacheCreator(const MethodWeighted & owner,
+                     context::Context & ctx,
+                     const repres::Representation & in,
+                     const repres::Representation & out,
+                     const lsm::LandSeaMasks & masks,
+                     const Cropping& cropping);
 
 
 private:
 
-    virtual void create(const eckit::PathName & path, WeightMatrix & W, bool& saved) ;
+  virtual void create(const eckit::PathName & path,
+                      WeightMatrix & W,
+                      bool& saved) ;
 
 private:
 
-    const MethodWeighted& owner_;
-    context::Context& ctx_;
-    const repres::Representation& in_;
-    const repres::Representation& out_;
-    const lsm::LandSeaMasks& masks_;
+  const MethodWeighted& owner_;
+  context::Context& ctx_;
+  const repres::Representation& in_;
+  const repres::Representation& out_;
+  const lsm::LandSeaMasks& masks_;
+  const Cropping& cropping_;
 
 };
 

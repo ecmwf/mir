@@ -91,6 +91,15 @@ void AreaCropper::print(std::ostream &out) const {
 }
 
 
+bool AreaCropper::isCropAction() const {
+    return true;
+}
+
+const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
+    return bbox_;
+}
+
+
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                                      const repres::Representation *representation,
                                      const util::BoundingBox &bbox) {

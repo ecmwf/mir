@@ -39,6 +39,7 @@
 #include "mir/util/MIRStatistics.h"
 
 #include "mir/method/MatrixCacheCreator.h"
+#include "mir/method/Cropping.h"
 
 namespace mir {
 namespace method {
@@ -64,13 +65,24 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
+void MethodWeighted::print(std::ostream &out) const {
+    out << "cropping="
+        << cropping_
+        << ",lsmWeightAdjustment="
+        << lsmWeightAdjustment_
+        << ",pruneEpsilon="
+        << pruneEpsilon_;
+}
+
+
 
 bool MethodWeighted::sameAs(const Method& other) const {
     const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
     return o
            && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
            && (pruneEpsilon_ == o->pruneEpsilon_)
-           &&  lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_);
+           && lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_)
+           && cropping_ == o->cropping_;
 
 }
 
@@ -79,7 +91,8 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& in,
                                   const repres::Representation& out,
                                   WeightMatrix& W,
-                                  const lsm::LandSeaMasks& masks) const {
+                                  const lsm::LandSeaMasks& masks,
+                                  const Cropping& cropping) const {
 
     eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
@@ -128,6 +141,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         hash << masks;
         key += "-LSM-";
     }
+
+
     key += std::string(hash);
 
     {
@@ -153,18 +168,20 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         // The WeightCache is parametrised by 'caching',
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
-        MatrixCacheCreator creator(*this, ctx, in, out, masks);
+        MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
         cache.getOrCreate(key, creator, W);
 
     } else {
-        createMatrix(ctx, in, out, W, masks);
+        createMatrix(ctx, in, out, W, masks, cropping_);
     }
 
     // If LSM not cacheable, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
+        NOTIMP; // BR: not sure the logic is correct here
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
+
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
@@ -485,6 +502,27 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
+}
+
+void MethodWeighted::setCropping(const util::BoundingBox& bbox) {
+    cropping_.boundingBox(bbox);
+
+}
+
+bool MethodWeighted::canCrop() const {
+    return true;
+}
+
+
+const repres::Representation* MethodWeighted::adjustOutputRepresentation(const repres::Representation* representation) {
+
+    if(cropping_.active()) {
+        repres::RepresentationHandle out(representation); // Will destroy represenation
+        return representation->cropped(cropping_.boundingBox());
+    }
+
+
+    return representation;
 }
 
 

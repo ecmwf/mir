@@ -55,7 +55,9 @@ void FEBilinear::hash( eckit::MD5 &md5) const {
 
 
 void FEBilinear::print(std::ostream &out) const {
-    out << "FEBilinear[]";
+    out << "FEBilinear[";
+    FiniteElement::print(out);
+    out << "]";
 }
 
 

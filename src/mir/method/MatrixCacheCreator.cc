@@ -34,12 +34,14 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
                                        context::Context& ctx,
                                        const repres::Representation& in,
                                        const repres::Representation& out,
-                                       const lsm::LandSeaMasks& masks):
+                                       const lsm::LandSeaMasks& masks,
+                                       const Cropping& cropping):
     owner_(owner),
     ctx_(ctx),
     in_(in),
     out_(out),
-    masks_(masks) {
+    masks_(masks),
+    cropping_(cropping) {
 
 }
 
@@ -48,7 +50,7 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
     static bool subProcess = eckit::Resource<bool>("$MATRIX_CACHE_CREATOR_FORK", false);
 
     if (!subProcess) {
-        owner_.createMatrix(ctx_, in_, out_, W, masks_);
+        owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
         return;
     }
 
@@ -64,7 +66,7 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
         eckit::Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
 
         try {
-            owner_.createMatrix(ctx_, in_, out_, W, masks_);
+            owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
             W.save(path);
             ::_exit(0);
         }
@@ -79,7 +81,7 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
         eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): "
                             << eckit::Log::syserr
                             << std::endl;
-        owner_.createMatrix(ctx_, in_, out_, W, masks_);
+        owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
         return;
         break;
 

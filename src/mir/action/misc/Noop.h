@@ -13,25 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2GriddedInterpolation_H
-#define Gridded2GriddedInterpolation_H
+#ifndef Noop_H
+#define Noop_H
 
 #include "mir/action/plan/Action.h"
-#include "mir/method/Method.h"
-#include "eckit/memory/ScopedPtr.h"
-
-namespace mir {
-namespace repres {
-class Representation;
-}
-}
 
 
 namespace mir {
 namespace action {
 
 
-class Gridded2GriddedInterpolation : public Action {
+class Noop : public Action {
 public:
 
 // -- Exceptions
@@ -39,11 +31,11 @@ public:
 
 // -- Contructors
 
-    Gridded2GriddedInterpolation(const param::MIRParametrisation&);
+    Noop(const param::MIRParametrisation&);
 
 // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
+    virtual ~Noop(); // Change to virtual if base class
 
 // -- Convertors
     // None
@@ -56,6 +48,8 @@ public:
 
 // -- Overridden methods
     // None
+
+    virtual void execute(context::Context & ctx) const;
 
 // -- Class members
     // None
@@ -70,13 +64,10 @@ protected:
 
 // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
-
+    void print(std::ostream&) const; // Change to virtual if base class
 
 // -- Overridden methods
     // None
-
-    virtual bool sameAs(const Action& other) const = 0;
 
 // -- Class members
     // None
@@ -88,24 +79,18 @@ private:
 
 // No copy allowed
 
-    Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
-    Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
+    Noop(const Noop&);
+    Noop& operator=(const Noop&);
 
 // -- Members
 
-    std::string interpolation_;
-    eckit::ScopedPtr<method::Method> method_;
-
-
 // -- Methods
-
-    virtual const repres::Representation* outputRepresentation() const = 0;
+    // None
 
 // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
-    virtual bool mergeWithNext(const Action& other);
-
+    virtual bool sameAs(const Action& other) const;
+    virtual const char* name() const;
 
 // -- Class members
     // None
@@ -115,7 +100,7 @@ private:
 
 // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
+    //friend ostream& operator<<(ostream& s,const Noop& p)
     //  { p.print(s); return s; }
 
 };

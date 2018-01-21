@@ -88,6 +88,8 @@ list(
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
     action/misc/SetMetadata.h
+    action/misc/Noop.cc
+    action/misc/Noop.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
@@ -246,6 +248,8 @@ list(
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
+    method/Cropping.cc
+    method/Cropping.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
     method/knn/KNearest.cc

@@ -35,8 +35,8 @@ namespace input {
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     which_(which),
-    hasMissing_(false),
-    next_(0) {
+    next_(0),
+    hasMissing_(false) {
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;

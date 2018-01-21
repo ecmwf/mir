@@ -235,6 +235,11 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
 FiniteElement::~FiniteElement() {
 }
 
+void FiniteElement::print(std::ostream &out) const {
+    // TODO print inputMeshGenerationParams_ && outputMeshGenerationParams_
+    MethodWeighted::print(out);
+}
+
 
 bool FiniteElement::sameAs(const Method& other) const {
     const FiniteElement* o = dynamic_cast<const FiniteElement*>(&other);

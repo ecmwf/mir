@@ -26,7 +26,7 @@ namespace action {
 
 
 class AreaCropper : public Action {
-  public:
+public:
 
 // -- Exceptions
     // None
@@ -60,7 +60,7 @@ class AreaCropper : public Action {
 // -- Class methods
     // None
 
-  protected:
+protected:
 
 // -- Members
     // None
@@ -78,7 +78,7 @@ class AreaCropper : public Action {
 // -- Class methods
     // None
 
-  private:
+private:
 
 // No copy allowed
 
@@ -97,6 +97,8 @@ class AreaCropper : public Action {
 
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
+    virtual bool isCropAction() const;
+    virtual const util::BoundingBox& croppingBoundingBox() const;
 
 // -- Class members
     // None
@@ -107,7 +109,7 @@ class AreaCropper : public Action {
 // -- Friends
 
     //friend ostream& operator<<(ostream& s,const AreaCropper& p)
-    //	{ p.print(s); return s; }
+    //  { p.print(s); return s; }
 
 };
 

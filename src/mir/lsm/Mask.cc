@@ -44,11 +44,6 @@ static void init() {
     cache = new std::map<std::string, Mask *>();
 }
 
-static void setParametrisation(param::RuntimeParametrisation& runtime) {
-    runtime.set("Ni", 360L);
-    runtime.set("Nj", 181L);
-}
-
 }  // (anonymous namespace)
 
 

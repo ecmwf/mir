@@ -33,6 +33,17 @@ Method::Method(const param::MIRParametrisation &params) :
 Method::~Method() {
 }
 
+bool Method::canCrop() const {
+    return false;
+}
+
+void Method::setCropping(const mir::util::BoundingBox&) {
+    NOTIMP;
+}
+
+const repres::Representation* Method::adjustOutputRepresentation(const repres::Representation* representation) {
+    return representation;
+}
 
 //=========================================================================
 
@@ -95,6 +106,7 @@ Method *MethodFactory::build(const std::string& name, const param::MIRParametris
 
     return (*j).second->make(param);
 }
+
 
 
 }  // namespace method

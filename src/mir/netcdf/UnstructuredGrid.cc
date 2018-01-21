@@ -185,7 +185,6 @@ GridSpec* UnstructuredGrid::guess(const Variable &variable,
         return 0;
     }
 
-    double west, east;
     std::vector<double> lons;
     if (!check_axis(variable, longitudes, lons)) {
         return 0;

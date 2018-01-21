@@ -34,8 +34,8 @@ InMemoryCache<T>::InMemoryCache(const std::string& name,
                                 size_t shared,
                                 const char* variable, bool cleanupAtExit):
     name_(name),
-    cleanupAtExit_(cleanupAtExit),
     capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
+    cleanupAtExit_(cleanupAtExit),
     users_(0) {
 
 }

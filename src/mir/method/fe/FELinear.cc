@@ -50,7 +50,9 @@ void FELinear::hash( eckit::MD5& md5) const {
 
 
 void FELinear::print(std::ostream &out) const {
-    out << "FELinear[]";
+    out << "FELinear[";
+    FiniteElement::print(out);
+    out << "]";
 }
 
 

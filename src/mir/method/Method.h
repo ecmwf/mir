@@ -35,6 +35,9 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
+namespace util {
+class BoundingBox;
+}
 }
 
 
@@ -56,6 +59,11 @@ public:
                          const repres::Representation& out) const = 0;
 
     virtual bool sameAs(const Method& other) const = 0;
+
+    // For optimising plan
+    virtual bool canCrop() const;
+    virtual void setCropping(const util::BoundingBox&);
+    virtual const repres::Representation* adjustOutputRepresentation(const repres::Representation*);
 
 
 protected:

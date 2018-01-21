@@ -28,7 +28,6 @@ public:
 private:
 
     Matrix *other_;
-    bool merged_;
 
     // Methods
 

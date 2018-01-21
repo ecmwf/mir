@@ -52,7 +52,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
 
-            if (eckit::Log::debug<LibMir>()){
+            if (eckit::Log::debug<LibMir>()) {
                 eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
                 plan_->dump(eckit::Log::debug<LibMir>());
             }
@@ -72,7 +72,14 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    if (eckit::Log::debug<LibMir>()){
+    bool compress = false;
+    combined_->get("compress-plan", compress);
+
+    if (compress) {
+        plan_->compress();
+    }
+
+    if (eckit::Log::debug<LibMir>()) {
         eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
         plan_->dump(eckit::Log::debug<LibMir>());
     }
