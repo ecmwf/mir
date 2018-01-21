@@ -72,10 +72,10 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    bool compress = false;
-    combined_->get("compress-plan", compress);
+    bool dont_compress = false;
+    combined_->get("dont-compress-plan", dont_compress);
 
-    if (compress) {
+    if (!dont_compress) {
         plan_->compress();
     }
 

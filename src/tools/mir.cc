@@ -174,7 +174,7 @@ public:
         options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
         options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
         options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
-        options_.push_back(new SimpleOption<bool>("compress-plan", "Compress plan (experimental)"));
+        options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
 
     }
 

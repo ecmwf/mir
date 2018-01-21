@@ -87,6 +87,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 }
 
 
+// Called from MatrixCacheCreator when a matrix in not found in disk cache
 void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& in,
                                   const repres::Representation& out,
@@ -177,7 +178,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     // If LSM not cacheable, e.g. user provided, we apply the mask after
     if (masks.active() && !masks.cacheable())  {
-        NOTIMP; // BR: not sure the logic is correct here
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
