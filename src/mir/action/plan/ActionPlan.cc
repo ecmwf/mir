@@ -155,11 +155,6 @@ void ActionPlan::compress() {
 
                 delete actions_[i + 1];
                 actions_.erase(actions_.begin() + i + 1);
-                if (runtimes_.size()) {
-                    ASSERT(i + 1 < runtimes_.size());
-                    delete runtimes_[i + 1];
-                    runtimes_.erase(runtimes_.begin() + i + 1);
-                }
 
                 more = true;
                 break;
