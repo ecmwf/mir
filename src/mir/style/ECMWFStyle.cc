@@ -147,11 +147,28 @@ private:
 
 template<>
 bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
+
     std::vector<double> value1;
     std::vector<double> value2(2);
-    ASSERT(p1.get(key_, value1));
-    ASSERT(p2.get(fieldKey1_, value2[0]));
-    ASSERT(p2.get(fieldKey2_, value2[1]));
+
+    if(!p1.get(key_, value1)) {
+        std::ostringstream oss;
+        oss << "KnownKeyT<std::vector<double>> cannot get key=" << key_;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if(!p2.get(fieldKey1_, value2[0])) {
+        std::ostringstream oss;
+        oss << "KnownKeyT<std::vector<double>> cannot get key=" << fieldKey1_;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if(!p2.get(fieldKey2_, value2[1])) {
+        std::ostringstream oss;
+        oss << "KnownKeyT<std::vector<double>> cannot get key=" << fieldKey2_;
+        throw eckit::SeriousBug(oss.str());
+    }
+
 
     if (value1.size() != value2.size()) {
         return false;
