@@ -47,7 +47,6 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
-#include "mir/style/Resol.h"
 #include "mir/style/Truncation.h"
 #include "mir/style/resol/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
@@ -75,7 +74,6 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new FactoryOption<mir::style::ResolFactory>("resol", "Specifies the desired triangular truncation, before carrying out any other selected post-processing"));
         options_.push_back(new FactoryOption<mir::style::TruncationFactory>("truncation", "Describes the intermediate truncation which the transform is performed from"));
         options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
 
