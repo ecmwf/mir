@@ -20,6 +20,9 @@ bool GribFileMaskFromUser::cacheable() const {
     return false;
 }
 
+std::string GribFileMaskFromUser::cacheName() const {
+    return path_;
+}
 
 }  // namespace lsm
 }  // namespace mir

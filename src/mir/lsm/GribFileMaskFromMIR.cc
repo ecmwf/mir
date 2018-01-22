@@ -15,9 +15,22 @@
 namespace mir {
 namespace lsm {
 
+GribFileMaskFromMIR::GribFileMaskFromMIR(const std::string& name,
+        const eckit::PathName& path,
+        const param::MIRParametrisation& parametrisation,
+        const repres::Representation& representation,
+        const std::string& which):
+    GribFileMask(path, parametrisation, representation, which),
+    name_(name) {
+
+}
 
 bool GribFileMaskFromMIR::cacheable() const {
     return true;
+}
+
+std::string GribFileMaskFromMIR::cacheName() const {
+    return name_;
 }
 
 

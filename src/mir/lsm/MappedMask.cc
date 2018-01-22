@@ -73,10 +73,12 @@ namespace mir {
 namespace lsm {
 
 
-MappedMask::MappedMask(const eckit::PathName& path,
+MappedMask::MappedMask(const std::string& name,
+                       const eckit::PathName& path,
                        const param::MIRParametrisation&,
                        const repres::Representation& representation,
                        const std::string&):
+    name_(name),
     path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
@@ -182,6 +184,9 @@ void MappedMask::print(std::ostream &out) const {
     out << "MappedMask[path=" << path_ << "]";
 }
 
+std::string MappedMask::cacheName() const {
+    return name_;
+}
 
 const std::vector<bool> &MappedMask::mask() const {
     return mask_;

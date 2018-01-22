@@ -65,6 +65,7 @@ public:
     // -- Methods
 
     void hash(eckit::MD5&) const;
+    std::string cacheName() const;
 
     bool active() const;
     bool cacheable() const;

@@ -130,7 +130,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
-    std::string key = std::string(name()) + "/" + shortName_in + "/" + shortName_out;
+    std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out;
     eckit::MD5 hash;
     hash << *this
          << shortName_in
@@ -138,18 +138,32 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
          << pruneEpsilon_
          << lsmWeightAdjustment_;
 
-    if (masks.active() && masks.cacheable()) {
+
+    std::string memory_key = disk_key;
+
+    // Add masks if any
+    if (masks.active()) {
+
         hash << masks;
-        key += "-lsm/";
+
+        std::string masks_key = "-lsm-";
+        masks_key += masks.cacheName();
+
+        memory_key += masks_key;
+
+        if (masks.cacheable()) {
+            disk_key += masks_key;
+        }
     }
 
+    disk_key += hash;
+    memory_key += hash;
 
-    key += std::string(hash);
 
     {
-        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key);
+        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(memory_key);
         const bool found = j != matrix_cache.end();
-        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
             const WeightMatrix& mat = *j;
             eckit::Log::debug<LibMir>() << "Using matrix from InMemoryCache " <<  mat << std::endl;
@@ -170,13 +184,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
         MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
-        cache.getOrCreate(key, creator, W);
+        cache.getOrCreate(disk_key, creator, W);
 
     } else {
         createMatrix(ctx, in, out, W, masks, cropping_);
     }
 
-    // If LSM not cacheable, e.g. user provided, we apply the mask after
+    // If LSM not cacheable to disk, because it is user provided
+    // it will be cached in memory nevertheless
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
         W.validate("applyMasks");
@@ -187,7 +202,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     // insert matrix in the in-memory cache and update memory footprint
 
-    WeightMatrix& w = matrix_cache[key];
+    WeightMatrix& w = matrix_cache[memory_key];
     W.swap(w);
 
     size_t footprint = w.footprint();
@@ -195,7 +210,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
-    matrix_cache.footprint(key, usage);
+    matrix_cache.footprint(memory_key, usage);
     return w;
 }
 
@@ -516,7 +531,7 @@ bool MethodWeighted::canCrop() const {
 
 const repres::Representation* MethodWeighted::adjustOutputRepresentation(const repres::Representation* representation) {
 
-    if(cropping_.active()) {
+    if (cropping_.active()) {
         repres::RepresentationHandle out(representation); // Will destroy represenation
         return representation->cropped(cropping_.boundingBox());
     }

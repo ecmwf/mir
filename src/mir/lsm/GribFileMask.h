@@ -92,11 +92,15 @@ protected:
     // -- Class methods
     // None
 
+protected:
+
+    const eckit::PathName path_;
+
+
 private:
 
     // -- Members
 
-    const eckit::PathName path_;
     std::vector<bool> mask_;
 
     // -- Methods

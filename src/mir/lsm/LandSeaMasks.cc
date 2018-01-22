@@ -52,6 +52,10 @@ void LandSeaMasks::hash(eckit::MD5& md5) const {
     md5 << input_ << output_;
 }
 
+std::string LandSeaMasks::cacheName() const {
+    return input_.cacheName() + "+" + output_.cacheName();
+}
+
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation,
                                   const repres::Representation& in,
@@ -64,7 +68,7 @@ LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisati
 bool LandSeaMasks::sameLandSeaMasks(const param::MIRParametrisation& parametrisation1,
                                     const param::MIRParametrisation& parametrisation2) {
     return Mask::sameInput(parametrisation1, parametrisation2)
-            && Mask::sameOutput(parametrisation1, parametrisation2);
+           && Mask::sameOutput(parametrisation1, parametrisation2);
 }
 
 

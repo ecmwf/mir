@@ -98,6 +98,8 @@ private:
                                  const repres::Representation&,
                                  const std::string& which) const;
 
+    virtual std::string cacheName() const;
+
     // -- Friends
     // None
 
