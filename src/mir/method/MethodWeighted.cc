@@ -138,13 +138,11 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
          << pruneEpsilon_
          << lsmWeightAdjustment_;
 
-
+    disk_key += hash;
     std::string memory_key = disk_key;
 
     // Add masks if any
     if (masks.active()) {
-
-        hash << masks;
 
         std::string masks_key = "-lsm-";
         masks_key += masks.cacheName();
@@ -155,9 +153,6 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
             disk_key += masks_key;
         }
     }
-
-    disk_key += hash;
-    memory_key += hash;
 
 
     {
