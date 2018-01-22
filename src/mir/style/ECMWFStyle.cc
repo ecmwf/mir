@@ -309,7 +309,19 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         } else {
 
             resol.prepare(plan);
-            plan.add(interpolate + (rotation ? "rotated-" : "") + target);
+
+            if (rotation) {
+                plan.add(interpolate + "rotated-" + target);
+            } else {
+
+                // if the intermediate grid is the same as the target grid, the interpolation to the
+                // intermediate grid  is not followed by an additional interpolation
+                std::string gridname;
+                if (!parametrisation_.userParametrisation().get("gridname", gridname) || gridname != resol.gridname()) {
+                    plan.add(interpolate + target);
+                }
+
+            }
 
         }
     }
