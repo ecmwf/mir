@@ -1,6 +1,6 @@
 # mars
 param=u_v,level=1000,resol=20
 # mir
---grid=1/1 --truncation=19
+--grid=1/1 --truncation=19 --intgrid=none
 # plan
 ShTruncate[truncation=19]|ShScalarToRegularLL[increments=Increments[west_east=1,south_north=1]]|AdjustWindsScaleCosLatitude[]|Save[output=...]

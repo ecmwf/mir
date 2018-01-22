@@ -1,6 +1,6 @@
 # mars
 param=vo_d,level=1000,resol=20
 # mir
---grid=1/1 --truncation=19 --vod2uv
+--grid=1/1 --truncation=19 --intgrid=none --vod2uv
 # plan
 ShTruncate[truncation=19]|ShVodTouvRegularLL[increments=Increments[west_east=1,south_north=1]]|Save[output=...]
