@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/style/truncation/Truncation.h"
+#include "mir/style/truncation/Ordinal.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
@@ -20,20 +20,20 @@ namespace style {
 namespace truncation {
 
 
-Truncation::Truncation(long truncation, const param::MIRParametrisation& parametrisation) :
+Ordinal::Ordinal(long truncation, const param::MIRParametrisation& parametrisation) :
     style::Truncation(parametrisation),
     truncation_(truncation) {
     ASSERT(truncation_ > 0);
 }
 
 
-long Truncation::truncation() const {
+long Ordinal::truncation() const {
     return truncation_;
 }
 
 
-void Truncation::print(std::ostream& out) const {
-    out << "Truncation[truncation=" << truncation_ << "]";
+void Ordinal::print(std::ostream& out) const {
+    out << "Ordinal[truncation=" << truncation_ << "]";
 }
 
 

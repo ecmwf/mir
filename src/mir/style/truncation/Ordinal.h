@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,23 +8,19 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
 
+#ifndef mir_style_truncation_Ordinal_h
+#define mir_style_truncation_Ordinal_h
 
-#ifndef mir_style_resol_ArchivedValue_h
-#define mir_style_resol_ArchivedValue_h
-
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/style/Intgrid.h"
-#include "mir/style/Resol.h"
+#include "mir/style/Truncation.h"
 
 
 namespace mir {
 namespace style {
-namespace resol {
+namespace truncation {
 
 
-class ArchivedValue : public Resol {
+class Ordinal : public style::Truncation {
 public:
 
     // -- Exceptions
@@ -32,7 +28,7 @@ public:
 
     // -- Contructors
 
-    ArchivedValue(const param::MIRParametrisation& parametrisation);
+    Ordinal(long truncation, const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -48,9 +44,8 @@ public:
 
     // -- Overridden methods
 
-    void prepare(action::ActionPlan&) const;
-    bool resultIsSpectral() const;
-    void print(std::ostream& out) const;
+    long truncation() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -62,7 +57,7 @@ private:
 
     // -- Members
 
-    eckit::ScopedPtr<Intgrid> intgrid_;
+    const long truncation_;
 
     // -- Methods
     // None
@@ -82,7 +77,7 @@ private:
 };
 
 
-}  // namespace resol
+}  // namespace truncation
 }  // namespace style
 }  // namespace mir
 

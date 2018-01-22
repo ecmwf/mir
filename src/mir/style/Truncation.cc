@@ -20,7 +20,7 @@
 #include "eckit/thread/Once.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/truncation/Truncation.h"
+#include "mir/style/truncation/Ordinal.h"
 
 
 namespace mir {
@@ -74,11 +74,10 @@ Truncation* TruncationFactory::build(
         return (*j).second->make(parametrisation, targetGaussianN);
     }
 
-    // Look for "T" + number, or just a plain number
-    const std::string possibleNumber = (name.length() > 1 && name[0] == 'T') ? name.substr(1) : name;
-    if (std::all_of(possibleNumber.begin(), possibleNumber.end(), ::isdigit)) {
-        long number = std::stol(possibleNumber);
-        return new truncation::Truncation(number, parametrisation);
+    // Look for a plain number
+    if (std::all_of(name.begin(), name.end(), ::isdigit)) {
+        long number = std::stol(name);
+        return new truncation::Ordinal(number, parametrisation);
     }
 
     list(eckit::Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
@@ -96,8 +95,7 @@ void TruncationFactory::list(std::ostream& out) {
         sep = ", ";
     }
 
-    out << sep << "T<ordinal>"
-        << sep << "<ordinal>";
+    out << sep << "<ordinal>";
 }
 
 
