@@ -47,8 +47,8 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/style/SpectralOrder.h"
 #include "mir/style/Truncation.h"
-#include "mir/style/resol/SpectralOrder.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/PointSearch.h"
 #include "mir/util/MIRStatistics.h"
@@ -78,7 +78,7 @@ public:
         options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new FactoryOption<mir::style::resol::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
+        options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<long>("trans-fast-legendre-transform", "Trans Fast Legendre Transform method"));
 
         //==============================================

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,12 +11,11 @@
 /// @date May 2017
 
 
-#include "mir/style/resol/SpectralOrderT.h"
+#include "mir/style/SpectralOrderT.h"
 
 
 namespace mir {
 namespace style {
-namespace resol {
 
 
 namespace {
@@ -33,7 +32,6 @@ template<> void SpectralOrderT<3>::print(std::ostream& out) const { out << "Cubi
 template<> void SpectralOrderT<4>::print(std::ostream& out) const { out << "Quartic[]"; }
 
 
-}  // namespace resol
 }  // namespace style
 }  // namespace mir
 

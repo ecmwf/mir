@@ -469,6 +469,10 @@ list(
     style/MIRStyle.h
     style/Resol.cc
     style/Resol.h
+    style/SpectralOrder.cc
+    style/SpectralOrder.h
+    style/SpectralOrderT.cc
+    style/SpectralOrderT.h
     style/Truncation.cc
     style/Truncation.h
     style/intgrid/Automatic.cc
@@ -485,10 +489,6 @@ list(
     style/resol/AutomaticResolution.h
     style/resol/NamedGrid.cc
     style/resol/NamedGrid.h
-    style/resol/SpectralOrder.cc
-    style/resol/SpectralOrder.h
-    style/resol/SpectralOrderT.cc
-    style/resol/SpectralOrderT.h
     style/resol/Truncation.cc
     style/resol/Truncation.h
     style/truncation/Automatic.cc

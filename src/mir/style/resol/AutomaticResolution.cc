@@ -17,7 +17,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/resol/SpectralOrder.h"
+#include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 

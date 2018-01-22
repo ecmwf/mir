@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,7 +11,7 @@
 /// @date Mar 2017
 
 
-#include "mir/style/resol/SpectralOrder.h"
+#include "mir/style/SpectralOrder.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
@@ -22,7 +22,6 @@
 
 namespace mir {
 namespace style {
-namespace resol {
 
 
 long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
@@ -102,6 +101,5 @@ void SpectralOrderFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace resol
 }  // namespace style
 }  // namespace mir

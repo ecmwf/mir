@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,18 +11,17 @@
 /// @date May 2017
 
 
-#ifndef mir_style_resol_SpectralOrderT_h
-#define mir_style_resol_SpectralOrderT_h
+#ifndef mir_style_SpectralOrderT_h
+#define mir_style_SpectralOrderT_h
 
 #include <cmath>
 #include <string>
 #include "eckit/exception/Exceptions.h"
-#include "mir/style/resol/SpectralOrder.h"
+#include "mir/style/SpectralOrder.h"
 
 
 namespace mir {
 namespace style {
-namespace resol {
 
 
 template< int ORDER >
@@ -115,7 +114,6 @@ private:
 };
 
 
-}  // namespace resol
 }  // namespace style
 }  // namespace mir
 
