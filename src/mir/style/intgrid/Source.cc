@@ -14,7 +14,7 @@
 #include <iostream>
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/resol/SpectralOrder.h"
+#include "mir/style/SpectralOrder.h"
 
 
 namespace mir {
@@ -29,7 +29,7 @@ static IntgridBuilder< Source > __intgrid2("SOURCE");
 Source::Source(const param::MIRParametrisation& parametrisation, long) :
     style::Intgrid(parametrisation) {
 
-    eckit::ScopedPtr<resol::SpectralOrder> spectralOrder(resol::SpectralOrderFactory::build("cubic"));
+    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
     long T = 0;
@@ -46,13 +46,6 @@ Source::Source(const param::MIRParametrisation& parametrisation, long) :
 
 std::string Source::gridname() const {
     return gridname_;
-}
-
-
-void Source::print(std::ostream& out) const {
-    out << "Source["
-        << (gridname_.empty() ? "" : "gridname=" + gridname_)
-        << "]";
 }
 
 

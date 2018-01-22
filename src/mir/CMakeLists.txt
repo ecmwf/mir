@@ -469,6 +469,10 @@ list(
     style/MIRStyle.h
     style/Resol.cc
     style/Resol.h
+    style/SpectralOrder.cc
+    style/SpectralOrder.h
+    style/SpectralOrderT.cc
+    style/SpectralOrderT.h
     style/Truncation.cc
     style/Truncation.h
     style/intgrid/Automatic.cc
@@ -479,24 +483,12 @@ list(
     style/intgrid/None.h
     style/intgrid/Source.cc
     style/intgrid/Source.h
-    style/resol/ArchivedValue.cc
-    style/resol/ArchivedValue.h
-    style/resol/AutomaticResolution.cc
-    style/resol/AutomaticResolution.h
-    style/resol/NamedGrid.cc
-    style/resol/NamedGrid.h
-    style/resol/SpectralOrder.cc
-    style/resol/SpectralOrder.h
-    style/resol/SpectralOrderT.cc
-    style/resol/SpectralOrderT.h
-    style/resol/Truncation.cc
-    style/resol/Truncation.h
     style/truncation/Automatic.cc
     style/truncation/Automatic.h
     style/truncation/None.cc
     style/truncation/None.h
-    style/truncation/Truncation.cc
-    style/truncation/Truncation.h
+    style/truncation/Ordinal.cc
+    style/truncation/Ordinal.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

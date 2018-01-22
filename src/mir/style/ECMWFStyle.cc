@@ -272,10 +272,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
-    std::string resolution;
-    parametrisation_.get("resol", resolution);
-    eckit::ScopedPtr<Resol> resol(ResolFactory::build(resolution, parametrisation_));
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resol << std::endl;
+    Resol resol(parametrisation_);
 
     bool rotation = parametrisation_.userParametrisation().has("rotation");
 
@@ -295,8 +292,8 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef' and 'points'");
     }
 
-    if (resol->resultIsSpectral()) {
-        resol->prepare(plan);
+    if (resol.resultIsSpectral()) {
+        resol.prepare(plan);
     }
 
     if (!target.empty()) {
@@ -306,7 +303,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             plan.add(transform + "octahedral-gg", "octahedral", 64L);
             plan.add(interpolate + target);
 
-        } else if (resol->resultIsSpectral()) {
+        } else if (resol.resultIsSpectral()) {
 
             plan.add(transform + target);
             if (rotation) {
@@ -315,7 +312,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         } else {
 
-            resol->prepare(plan);
+            resol.prepare(plan);
             plan.add(interpolate + (rotation ? "rotated-" : "") + target);
 
         }
@@ -348,14 +345,12 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("intgrid", "none");
 
-    std::string resolution;
-    parametrisation_.get("resol", resolution);
-    eckit::ScopedPtr<Resol> resol(ResolFactory::build(resolution, runtime));
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << *resol << std::endl;
+    Resol resol(parametrisation_);
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion
-    ASSERT(resol->resultIsSpectral());
-    resol->prepare(plan);
+    ASSERT(resol.resultIsSpectral());
+    resol.prepare(plan);
 
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {

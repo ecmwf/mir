@@ -47,7 +47,6 @@ public:
     // -- Overridden methods
 
     std::string gridname() const;
-    void print(std::ostream& out) const;
 
     // -- Class members
     // None

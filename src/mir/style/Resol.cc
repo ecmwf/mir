@@ -15,108 +15,145 @@
 #include <cctype>  // for ::isdigit
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+#include "eckit/log/Log.h"
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
-#include "mir/namedgrids/NamedGridPattern.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/resol/NamedGrid.h"
-#include "mir/style/resol/Truncation.h"
+#include "mir/style/SpectralOrder.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace style {
 
 
-void Resol::prepare(action::ActionPlan&) const {
-    std::ostringstream os;
-    os << "Resol::prepare() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+Resol::Resol(const param::MIRParametrisation& parametrisation) :
+    parametrisation_(parametrisation) {
+    std::string value;
+
+    // Get input truncation and a Gaussian grid number based on input (truncation) and output (grid)
+    inputTruncation_ = 0;
+    ASSERT(parametrisation_.fieldParametrisation().get("spectral", inputTruncation_));
+    ASSERT(inputTruncation_ > 0);
+
+    long N = std::min(getTargetGaussianNumber(), getSourceGaussianNumber());
+    ASSERT(N >= 0);
+
+    // Setup intermediate grid (before truncation)
+    // NOTE: truncation can depend on the intermediate grid Gaussian number
+    value = "automatic";
+    parametrisation_.userParametrisation().get("intgrid", value);
+    intgrid_.reset(IntgridFactory::build(value, parametrisation_, N));
+    ASSERT(intgrid_);
+
+    const std::string Gi = intgrid_->gridname();
+    if (!Gi.empty()) {
+        N = long(namedgrids::NamedGrid::lookup(Gi).gaussianNumber());
+        ASSERT(N > 0);
+    }
+
+    // Setup truncation
+    value = "automatic";
+    parametrisation_.userParametrisation().get("truncation", value);
+    truncation_.reset(TruncationFactory::build(value, parametrisation_, N));
+    ASSERT(truncation_);
 }
 
 
-//=========================================================================
+void Resol::prepare(action::ActionPlan& plan) const {
 
-
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, ResolFactory* >* m = 0;
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, ResolFactory* >();
-}
-}  // (anonymous namespace)
-
-
-ResolFactory::ResolFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
-
-    if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("ResolFactory: duplicate '" + name + "'");
+    // truncate spectral coefficients, if specified and below input field coefficients
+    long T = truncation_->truncation();
+    if (0 < T && T < inputTruncation_) {
+        plan.add("transform.sh-truncate", "truncation", T);
     }
 
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    // transform, if specified
+    const std::string gridname = intgrid_->gridname();
+    if (!gridname.empty()) {
+
+        bool vod2uv = false;
+        parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+        if (vod2uv) {
+            plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
+        } else {
+            plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
+        }
+    }
 }
 
 
-ResolFactory::~ResolFactory() {
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
-
-    m->erase(name_);
+bool Resol::resultIsSpectral() const {
+    return intgrid_->gridname().empty();
 }
 
 
-Resol* ResolFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
-    pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
-
-    eckit::Log::debug<LibMir>() << "ResolFactory: looking for '" << name << "'" << std::endl;
-    ASSERT(!name.empty());
-
-    auto j = m->find(name);
-    if (j != m->end()) {
-        return (*j).second->make(parametrisation);
-    }
-
-    // Look for NamedGrid pattern matching
-    if (namedgrids::NamedGridPattern::match(name)) {
-        return new resol::NamedGrid(name, parametrisation);
-    }
-
-    // Look for "T" + number, or just a plain number
-    const std::string possibleNumber = (name.length() > 1 && name[0] == 'T') ? name.substr(1) : name;
-    if (std::all_of(possibleNumber.begin(), possibleNumber.end(), ::isdigit)) {
-        long number = std::stol(possibleNumber);
-        return new resol::Truncation(number, parametrisation);
-    }
-
-    list(eckit::Log::error() << "ResolFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("ResolFactory: unknown '" + name + "'");
+void Resol::print(std::ostream& out) const {
+    out << "Resol["
+            "truncation=" << truncation_->truncation()
+        << ",gridname=" << intgrid_->gridname()
+        << "]";
 }
 
 
-void ResolFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+long Resol::getTargetGaussianNumber() const {
+    std::vector<double> grid;
+    std::string gridname;
 
-    const char* sep = "";
-    for (const auto& j : *m) {
-        out << sep << j.first;
-        sep = ", ";
+    long N = 0;
+
+    if (parametrisation_.userParametrisation().get("grid", grid)) {
+
+        // get N from number of points in half-meridian (uses only grid[1] South-North increment)
+        ASSERT(grid.size() == 2);
+        util::Increments increments(grid[0], grid[1]);
+
+        // use (non-shifted) global bounding box
+        util::BoundingBox bbox;
+        increments.globaliseBoundingBox(bbox, false, false);
+
+        N = long(increments.computeNj(bbox) - 1) / 2;
+
+    } else if (parametrisation_.userParametrisation().get("reduced", N) ||
+        parametrisation_.userParametrisation().get("regular", N) ||
+        parametrisation_.userParametrisation().get("octahedral", N)) {
+
+        // get Gaussian N directly
+
+    } else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+
+        // get Gaussian N given a gridname
+        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+
+    } else if (parametrisation_.userParametrisation().has("griddef") ||
+        parametrisation_.userParametrisation().has("points")) {
+
+        // hardcoded
+        N = 32;
+        eckit::Log::debug<LibMir>() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+
     }
 
-    namedgrids::NamedGridPattern::list(out << sep);
-    sep = ", ";
+    ASSERT(N >= 0);
+    return N;
+}
 
-    out << sep << "T<ordinal>"
-        << sep << "<ordinal>";
+
+long Resol::getSourceGaussianNumber() const {
+
+    // Set Gaussian N
+    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
+    ASSERT(spectralOrder);
+
+    const long N = spectralOrder->getGaussianNumberFromTruncation(inputTruncation_);
+    ASSERT(N >= 0);
+    return N;
 }
 
 
 }  // namespace style
 }  // namespace mir
+

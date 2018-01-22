@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--truncation=1023 --intgrid=none --gridname=O400
+# plan
+ShTruncate[truncation=1023]|ShScalarToNamedGrid[gridname=O400]|Save[output=...]
