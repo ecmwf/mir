@@ -43,13 +43,6 @@ std::string Automatic::gridname() const {
 }
 
 
-void Automatic::print(std::ostream& out) const {
-    out << "Automatic["
-        << (gridname_.empty() ? "" : "gridname=" + gridname_)
-        << "]";
-}
-
-
 }  // namespace intgrid
 }  // namespace style
 }  // namespace mir

@@ -70,8 +70,7 @@ protected:
     const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
-
-    virtual void print(std::ostream&) const = 0;
+    // None
 
     // -- Overridden methods
     // None
@@ -100,11 +99,8 @@ private:
     // None
 
     // -- Friends
+    // None
 
-    friend std::ostream& operator<<(std::ostream& s, const Intgrid& p) {
-        p.print(s);
-        return s;
-    }
 };
 
 

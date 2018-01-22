@@ -32,11 +32,6 @@ long Ordinal::truncation() const {
 }
 
 
-void Ordinal::print(std::ostream& out) const {
-    out << "Ordinal[truncation=" << truncation_ << "]";
-}
-
-
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir

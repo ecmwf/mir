@@ -19,7 +19,6 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
-//#include "mir/namedgrids/NamedGridPattern.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
@@ -94,8 +93,8 @@ bool Resol::resultIsSpectral() const {
 
 void Resol::print(std::ostream& out) const {
     out << "Resol["
-            "truncation=" << *truncation_
-        << ",intgrid=" << *intgrid_
+            "truncation=" << truncation_->truncation()
+        << ",gridname=" << intgrid_->gridname()
         << "]";
 }
 

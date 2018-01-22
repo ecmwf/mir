@@ -45,7 +45,6 @@ public:
     // -- Overridden methods
 
     long truncation() const;
-    void print(std::ostream&) const;
 
     // -- Class members
     // None
