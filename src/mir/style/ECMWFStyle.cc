@@ -158,15 +158,11 @@ bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametris
     }
 
     if(!p2.get(fieldKey1_, value2[0])) {
-        std::ostringstream oss;
-        oss << "KnownKeyT<std::vector<double>> cannot get key=" << fieldKey1_;
-        throw eckit::SeriousBug(oss.str());
+        return false;
     }
 
     if(!p2.get(fieldKey2_, value2[1])) {
-        std::ostringstream oss;
-        oss << "KnownKeyT<std::vector<double>> cannot get key=" << fieldKey2_;
-        throw eckit::SeriousBug(oss.str());
+        return false;
     }
 
 
