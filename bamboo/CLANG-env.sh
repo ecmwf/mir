@@ -14,4 +14,4 @@ module unload emos
 module unload fftw
 module unload libemos
 
-module switch gnu clang/3.6.2
+module switch gnu clang
