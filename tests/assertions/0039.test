@@ -1,6 +1,6 @@
 #
 param=2t,levtype=sfc
 #
---gridname=O1280 --area=90/0/-90/359.929
+--dont-compress-plan --gridname=O1280 --area=90/0/-90/359.929
 # grib_get assertions
 numberOfValues = 6599680
