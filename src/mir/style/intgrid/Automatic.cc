@@ -38,7 +38,7 @@ Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targ
 }
 
 
-std::string Automatic::gridname() const {
+const std::string& Automatic::gridname() const {
     return gridname_;
 }
 

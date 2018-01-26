@@ -52,7 +52,7 @@ public:
 
     // -- Methods
 
-    virtual std::string gridname() const = 0;
+    virtual const std::string& gridname() const = 0;
 
     // -- Overridden methods
     // None

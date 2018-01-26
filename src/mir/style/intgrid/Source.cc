@@ -44,7 +44,7 @@ Source::Source(const param::MIRParametrisation& parametrisation, long) :
 }
 
 
-std::string Source::gridname() const {
+const std::string& Source::gridname() const {
     return gridname_;
 }
 

@@ -26,7 +26,7 @@ NamedGrid::NamedGrid(const std::string& gridname, const param::MIRParametrisatio
 }
 
 
-std::string NamedGrid::gridname() const {
+const std::string& NamedGrid::gridname() const {
     return gridname_;
 }
 

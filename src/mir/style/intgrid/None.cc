@@ -26,8 +26,9 @@ None::None(const param::MIRParametrisation& parametrisation, long) :
 }
 
 
-std::string None::gridname() const {
-    return std::string();
+const std::string& None::gridname() const {
+    static std::string empty;
+    return empty;
 }
 
 

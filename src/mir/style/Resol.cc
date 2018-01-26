@@ -93,9 +93,21 @@ bool Resol::resultIsSpectral() const {
 
 void Resol::print(std::ostream& out) const {
     out << "Resol["
-            "truncation=" << truncation_->truncation()
-        << ",gridname=" << intgrid_->gridname()
+            "truncation=" << truncation()
+        << ",gridname=" << gridname()
         << "]";
+}
+
+
+const std::string& Resol::gridname() const {
+    ASSERT(intgrid_);
+    return intgrid_->gridname();
+}
+
+
+long Resol::truncation() const {
+    ASSERT(truncation_);
+    return truncation_->truncation();
 }
 
 
