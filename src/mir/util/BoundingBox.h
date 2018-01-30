@@ -51,8 +51,7 @@ public:
     BoundingBox(const Latitude& north,
                 const Longitude& west,
                 const Latitude& south,
-                const Longitude& east,
-                double anglePrecision=0.);
+                const Longitude& east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox&);
 
@@ -65,11 +64,21 @@ public:
 
     // -- Operators
 
-    BoundingBox& operator=(const BoundingBox& other);
+    BoundingBox& operator=(const BoundingBox& other) {
+        north_ = other.north_;
+        west_  = other.west_;
+        south_ = other.south_;
+        east_  = other.east_;
+        return *this;
+    }
 
-    bool operator==(const BoundingBox& other) const;
+    bool operator==(const BoundingBox& other) const {
+        return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
+    }
 
-    bool operator!=(const BoundingBox& other) const;
+    bool operator!=(const BoundingBox& other) const {
+        return (north_ != other.north_) || (south_ != other.south_) || (west_ != other.west_) || (east_ != other.east_);
+    }
 
     // -- Methods
 
@@ -141,12 +150,10 @@ private:
     Longitude west_;
     Latitude south_;
     Longitude east_;
-    double anglePrecision_;
 
     // -- Methods
 
     void normalise();
-    void check();
 
     // -- Overridden methods
     // None

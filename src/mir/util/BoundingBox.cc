@@ -27,42 +27,49 @@ namespace mir {
 namespace util {
 
 
+namespace {
+
+
+static void check(const BoundingBox& bbox) {
+    ASSERT(bbox.north() >= bbox.south());
+    ASSERT(bbox.north() <= Latitude::NORTH_POLE);
+    ASSERT(bbox.south() >= Latitude::SOUTH_POLE);
+
+    ASSERT(bbox.east() - bbox.west() >= 0);
+    ASSERT(bbox.east() - bbox.west() <= Longitude::GLOBE);
+}
+
+
+}  // (anonymous namespace)
+
+
 BoundingBox::BoundingBox() :
     north_(Latitude::NORTH_POLE),
     west_(Longitude::GREENWICH),
     south_(Latitude::SOUTH_POLE),
     east_(Longitude::GLOBE) {
-    check();
+    check(*this);
 }
 
 
 BoundingBox::BoundingBox(const Latitude& north,
                          const Longitude& west,
                          const Latitude& south,
-                         const Longitude& east,
-                         double anglePrecision) :
-    north_(north), west_(west), south_(south), east_(east), anglePrecision_(anglePrecision) {
-
+                         const Longitude& east) :
+    north_(north), west_(west), south_(south), east_(east) {
     normalise();
-    check();
+    check(*this);
 }
 
 
-BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
+BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
     ASSERT(parametrisation.get("north", north_));
     ASSERT(parametrisation.get("west",  west_ ));
     ASSERT(parametrisation.get("south", south_));
     ASSERT(parametrisation.get("east",  east_ ));
 
-    long increments = 0;
-    parametrisation.get("angle_precision_increments_per_degree", increments);
-
-    if (increments > 0) {
-        anglePrecision_ = 1. / double(increments);
-    }
-
     normalise();
-    check();
+    check(*this);
 }
 
 
@@ -74,31 +81,6 @@ BoundingBox::BoundingBox(const BoundingBox& other) {
 BoundingBox::~BoundingBox() {
 }
 
-BoundingBox& BoundingBox::operator=(const BoundingBox& other) {
-    north_ = other.north_;
-    west_  = other.west_;
-    south_ = other.south_;
-    east_  = other.east_;
-    anglePrecision_ = other.anglePrecision_;
-    return *this;
-}
-
-
-bool BoundingBox::operator==(const BoundingBox& other) const {
-    return (north_ == other.north_) &&
-           (south_ == other.south_) &&
-           (west_  == other.west_)  &&
-           (east_  == other.east_);
-}
-
-
-bool BoundingBox::operator!=(const BoundingBox& other) const {
-    return (north_ != other.north_) ||
-           (south_ != other.south_) ||
-           (west_  != other.west_)  ||
-           (east_  != other.east_);
-}
-
 
 void BoundingBox::print(std::ostream &out) const {
     out << "BoundingBox["
@@ -106,7 +88,6 @@ void BoundingBox::print(std::ostream &out) const {
         << ",west=" << west_
         << ",south=" << south_
         << ",east=" << east_
-        << ",anglePrecision=" << anglePrecision_
         << "]";
 }
 
@@ -115,13 +96,6 @@ const double ROUNDING = 1e14;
 
 static double rounded(double x) {
     return round(x * ROUNDING) / ROUNDING;
-}
-
-
-bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
-    return (lat.value() <= north_.value() + anglePrecision_) &&
-           (lat.value() >= south_.value() - anglePrecision_) &&
-            (lon.normalise(west_).value() - anglePrecision_ <= east_.value());
 }
 
 
@@ -139,7 +113,6 @@ void BoundingBox::hash(eckit::MD5 &md5) const {
     md5.add(west_);
     md5.add(south_);
     md5.add(east_);
-    md5.add(anglePrecision_);
 }
 
 
@@ -163,15 +136,10 @@ void BoundingBox::normalise() {
 }
 
 
-void BoundingBox::check() {
-    ASSERT(north_ >= south_);
-    ASSERT(north_ <= Latitude::NORTH_POLE);
-    ASSERT(south_ >= Latitude::SOUTH_POLE);
-
-    ASSERT(east_ - west_ >= 0);
-    ASSERT(east_ - west_ <= Longitude::GLOBE);
-
-    ASSERT(anglePrecision_ >= 0.);
+bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
+    return (lat <= north_) &&
+           (lat >= south_) &&
+            (lon.normalise(west_) <= east_);
 }
 
 
@@ -189,10 +157,6 @@ void BoundingBox::makeName(std::ostream& out) const {
         << south_
         << ":"
         << east_;
-
-    if (anglePrecision_ > 0.) {
-        out << "-" << anglePrecision_;
-    }
 }
 
 

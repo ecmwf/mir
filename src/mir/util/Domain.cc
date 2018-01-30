@@ -20,23 +20,13 @@ namespace util {
 
 
 Domain::Domain(Latitude north, Longitude west, Latitude south, Longitude east) :
-    north_(north), west_(west), south_(south), east_(east) {
-    normalise();
-    check();
+    BoundingBox(north, west, south, east) {
 }
 
 
 Domain Domain::makeGlobal() {
     return Domain(Latitude::NORTH_POLE, Longitude::GREENWICH,
                   Latitude::SOUTH_POLE, Longitude::GLOBE);
-}
-
-
-bool Domain::contains(const Latitude& lat, const Longitude& lon) const {
-        return (lat <= north_) &&
-               (lat >= south_) &&
-                (lon.normalise(west_) <= east_);
-
 }
 
 
@@ -47,41 +37,18 @@ Domain::operator atlas::RectangularDomain() const {
 }
 
 
+
 void Domain::print(std::ostream& os) const {
     os << "Domain["
        <<  "north=" << north()
-       << ",west="  << west()
-       << ",south=" << south()
-       << ",east="  << east()
-       << ",isGlobal=" << isGlobal()
+        << ",west="  << west()
+        << ",south=" << south()
+        << ",east="  << east()
+        << ",isGlobal=" << isGlobal()
        // << ",includesPoleNorth=" << includesPoleNorth()
        // << ",includesPoleSouth=" << includesPoleSouth()
        // << ",isPeriodicEastWest=" << isPeriodicEastWest()
        << "]";
-}
-
-void Domain::normalise() {
-    Longitude eastNormalised = east_.normalise(west_);
-
-    if (west_ != east_) {
-        if (eastNormalised == west_) {
-            eastNormalised += Longitude::GLOBE;
-        }
-        east_ = eastNormalised;
-    }
-
-    ASSERT(west_ <= east_);
-    ASSERT(east_ <= west_ + Longitude::GLOBE);
-}
-
-
-void Domain::check() {
-    ASSERT(north_ >= south_);
-    ASSERT(north_ <= Latitude::NORTH_POLE);
-    ASSERT(south_ >= Latitude::SOUTH_POLE);
-
-    ASSERT(east_ - west_ >= 0);
-    ASSERT(east_ - west_ <= Longitude::GLOBE);
 }
 
 

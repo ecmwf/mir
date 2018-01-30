@@ -16,7 +16,6 @@
 #include "mir/repres/Gridded.h"
 
 #include "mir/action/misc/AreaCropper.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
@@ -29,22 +28,12 @@ Gridded::Gridded() {}
 
 
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
-    bbox_(parametrisation),
-    anglePrecision_(0.) {
-
-    long increments = 0;
-    parametrisation.get("angle_precision_increments_per_degree", increments);
-
-    ASSERT(increments >= 0);
-    if (increments > 0) {
-        anglePrecision_ = 1. / double(increments);
-    }
+    bbox_(parametrisation) {
 }
 
 
 Gridded::Gridded(const util::BoundingBox& bbox) :
-    bbox_(bbox),
-    anglePrecision_(0.)  {
+    bbox_(bbox) {
 }
 
 
@@ -73,12 +62,6 @@ void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Co
         action::AreaCropper cropper(parametrisation, bbox_);
         cropper.execute(ctx);
     }
-}
-
-
-double Gridded::anglePrecision() const {
-    ASSERT(anglePrecision_ >= 0.);
-    return anglePrecision_;
 }
 
 

@@ -25,9 +25,9 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+
 
 
 namespace mir {
@@ -37,7 +37,7 @@ namespace action {
 struct LL {
     double lat_;
     double lon_;
-    LL(const Latitude& lat, const Longitude& lon): lat_(lat.value()), lon_(lon.value()) {}
+    LL(Latitude lat, Longitude lon): lat_(lat.value()), lon_(lon.value()) {}
     bool operator<(const LL &other) const {
         // Order must be like natural scanning mode
         if (lat_ == other.lat_) {
@@ -51,11 +51,10 @@ struct LL {
 
 static eckit::Mutex local_mutex;
 
-
 static InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
+AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation):
     Action(parametrisation),
     bbox_(),
     caching_(true) {
@@ -70,7 +69,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
 }
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox):
+AreaCropper::AreaCropper(const param::MIRParametrisation &parametrisation, const util::BoundingBox &bbox):
     Action(parametrisation),
     bbox_(bbox),
     caching_(true) {
@@ -87,7 +86,7 @@ bool AreaCropper::sameAs(const Action& other) const {
 }
 
 
-void AreaCropper::print(std::ostream& out) const {
+void AreaCropper::print(std::ostream &out) const {
     out << "AreaCropper[bbox=" << bbox_ << "]";
 }
 
@@ -96,15 +95,14 @@ bool AreaCropper::isCropAction() const {
     return true;
 }
 
-
 const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
     return bbox_;
 }
 
 
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
-                                     const repres::Representation* representation,
-                                     const util::BoundingBox& bbox) {
+                                     const repres::Representation *representation,
+                                     const util::BoundingBox &bbox) {
     std::map<LL, size_t> m;
 
     Latitude n = 0;
@@ -144,7 +142,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
             // if(m.find(LL(lat, lon)) != m.end()) {
             //     eckit::Log::debug<LibMir>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
             // }
-            m.insert(std::make_pair(LL(lat, lon), p));
+            m.insert(std::make_pair(LL(point.lat, lon), p));
             count++;
 
         }
@@ -173,10 +171,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 }
 
 
-static const caching::CroppingCacheEntry& getMapping(const std::string& key,
-                                                     const repres::Representation* representation,
-                                                     const util::BoundingBox& bbox,
-                                                     bool caching) {
+static const caching::CroppingCacheEntry &getMapping(const std::string& key,
+        const repres::Representation *representation,
+        const util::BoundingBox &bbox,
+        bool caching) {
 
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -192,19 +190,18 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
         class CroppingCacheCreator: public caching::CroppingCache::CacheContentCreator {
 
-            const repres::Representation* representation_;
-            const util::BoundingBox& bbox_;
+            const repres::Representation *representation_;
+            const util::BoundingBox &bbox_;
 
             virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c, bool& saved) {
                 createCroppingCacheEntry(c, representation_, bbox_);
             }
 
         public:
-            CroppingCacheCreator(const repres::Representation* representation,
-                                 const util::BoundingBox& bbox):
+            CroppingCacheCreator(const repres::Representation *representation,
+                                 const util::BoundingBox &bbox):
                 representation_(representation),
                 bbox_(bbox) {}
-            virtual ~CroppingCacheCreator() {}
         };
 
         CroppingCacheCreator creator(representation, bbox);
@@ -221,13 +218,12 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
 }
 
-
-static const caching::CroppingCacheEntry& getMapping(const repres::Representation* representation,
-                                                     const util::BoundingBox& bbox,
-                                                     bool caching) {
+static const caching::CroppingCacheEntry &getMapping(const repres::Representation *representation,
+        const util::BoundingBox &bbox,
+        bool caching) {
 
     eckit::MD5 md5;
-    md5 << representation->uniqueName() << bbox << representation->anglePrecision();
+    md5 << representation->uniqueName() << bbox;
 
     std::string key(md5);
 
@@ -244,7 +240,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 }
 
 
-void AreaCropper::execute(context::Context& ctx) const {
+void AreaCropper::execute(context::Context & ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
