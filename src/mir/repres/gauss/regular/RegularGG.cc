@@ -16,8 +16,7 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/action/misc/AreaCropper.h"
+#include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 
 

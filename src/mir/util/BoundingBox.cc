@@ -143,11 +143,6 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
-bool BoundingBox::contains(const repres::Iterator::point_ll_t& p) const {
-    return contains(p.lat, p.lon);
-}
-
-
 void BoundingBox::makeName(std::ostream& out) const {
     out << "-"
         << north_

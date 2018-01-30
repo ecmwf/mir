@@ -113,7 +113,8 @@ void KNearestNeighbours::assemble(
                 nearest = push_back = 0;
             }
 
-            if (inDomain.contains(it->pointUnrotated())) {
+            const repres::Iterator::point_ll_t& point = it->pointUnrotated();
+            if (inDomain.contains(point.lat, point.lon)) {
 
                 // get the reference output point
                 eckit::geometry::Point3 p(it->point3D());

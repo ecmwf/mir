@@ -42,6 +42,7 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/repres/latlon/RotatedLL.h"

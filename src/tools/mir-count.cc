@@ -9,19 +9,20 @@
  */
 
 
-
 #include "eckit/log/BigNum.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/BoundingBox.h"
 
 
 using namespace mir;
+
 
 class MIRCount : public tools::MIRTool {
 private:
@@ -50,6 +51,7 @@ void MIRCount::usage(const std::string &tool) const {
             << std::endl;
 }
 
+
 template<class T>
 static
 T abs(const T& x) {
@@ -58,6 +60,7 @@ T abs(const T& x) {
     }
     return 0 - x;
 }
+
 
 template<class T>
 static void put(const T& q) {
