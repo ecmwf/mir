@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-
 #include <queue>
 
 #include "eckit/memory/ScopedPtr.h"
@@ -16,13 +15,11 @@
 #include "eckit/option/VectorOption.h"
 
 #include "mir/namedgrids/NamedGrid.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 
 
 using namespace mir;
-
 
 class MIRGridInfo : public tools::MIRTool {
 private:

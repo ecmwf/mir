@@ -334,8 +334,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
             ASSERT(ip < nbOutputPoints);
             ++progress;
 
-            const repres::Iterator::point_ll_t& point = it->pointUnrotated();
-            if (inDomain.contains(point.lat, point.lon)) {
+            if (inDomain.contains(it->pointUnrotated())) {
 
                 // 3D point to lookup
                 repres::Iterator::point_3d_t p(it->point3D());
