@@ -15,17 +15,20 @@
 
 #include <iostream>
 
-#include "mir/util/BoundingBox.h"
+#include <iosfwd>
+#include "mir/util/Types.h"
+
 
 namespace atlas {
 class RectangularDomain;
 }
 
+
 namespace mir {
 namespace util {
 
 
-class Domain : public BoundingBox {
+class Domain {
 public:
 
     // -- Exceptions
@@ -46,14 +49,38 @@ public:
 
     operator atlas::RectangularDomain() const;
 
+    const Latitude& north() const {
+        return north_;
+    }
+
+    const Longitude& west() const {
+        return west_;
+    }
+
+    const Latitude& south() const {
+        return south_;
+    }
+
+    const Longitude& east() const {
+        return east_;
+    }
+
+    bool contains(const Latitude& lat, const Longitude& lon) const;
+
     /// Check if grid includes the North pole
-    bool includesPoleNorth() const { return north() == Latitude::NORTH_POLE; }
+    bool includesPoleNorth() const {
+        return north() == Latitude::NORTH_POLE;
+    }
 
     /// Check if grid includes the South pole
-    bool includesPoleSouth() const { return south() == Latitude::SOUTH_POLE; }
+    bool includesPoleSouth() const {
+        return south() == Latitude::SOUTH_POLE;
+    }
 
     /// Check if grid spans the complete range East-West (periodic)
-    bool isPeriodicEastWest() const { return east() - west() == Longitude::GLOBE; }
+    bool isPeriodicEastWest() const {
+        return east() - west() == Longitude::GLOBE;
+    }
 
     /// Check if domain represents the complete globe surface
     bool isGlobal() const {
@@ -73,7 +100,9 @@ public:
     // None
 
 protected:
+
     // -- Members
+    // None
 
     // -- Methods
     // None
@@ -91,11 +120,18 @@ protected:
     // None
 
 private:
+
     // -- Members
-    // None
+
+    Latitude north_;
+    Longitude west_;
+    Latitude south_;
+    Longitude east_;
 
     // -- Methods
-    // None
+
+    void normalise();
+    void check();
 
     // -- Overridden methods
     // None
@@ -113,6 +149,7 @@ private:
         p.print(s);
         return s;
     }
+
 };
 
 

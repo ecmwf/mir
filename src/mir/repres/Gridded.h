@@ -66,7 +66,7 @@ protected:
     // -- Members
 
     util::BoundingBox bbox_;
-//    util::BoundingBox domain_;
+    double anglePrecision_;
 
     // -- Methods
     // None
@@ -99,6 +99,8 @@ private:
     virtual void setGivenPacking(grib_info&) const;
 
     virtual void crop(const param::MIRParametrisation&, context::Context&) const;
+
+    virtual double anglePrecision() const;
 
     // -- Class members
     // None

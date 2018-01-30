@@ -121,6 +121,7 @@ public:
     virtual bool isGlobal() const;
 
     virtual size_t truncation() const;
+    virtual double anglePrecision() const;
 
     virtual void comparison(std::string&) const;
 

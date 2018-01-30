@@ -44,7 +44,7 @@ void MIRCount::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
             "\n"
-            "\nUsage: " << tool << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+            "\nUsage: " << tool << " [--area=N/W/S/E] [--angle-precision=<real>] file.grib [file.grib [...]]"
             "\nExamples:"
             "\n  % " << tool << " 1.grib"
             "\n  % " << tool << " --area=6/0/0/6 1.grib 2.grib"
@@ -86,13 +86,16 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     std::set<DistanceLon> ww;
     std::set<DistanceLon> ee;
 
+    double anglePrecision = 0.;
+    args.get("angle-precision", anglePrecision);
+
     util::BoundingBox bbox;
 
     if (args.has("area")) {
         std::vector<double> value;
         ASSERT(args.get("area", value));
         ASSERT(value.size() == 4);
-        bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
+        bbox = util::BoundingBox(value[0], value[1], value[2], value[3], anglePrecision);
     }
 
     eckit::Log::info() << bbox << std::endl;

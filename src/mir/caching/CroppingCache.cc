@@ -29,10 +29,11 @@ CroppingCache::CroppingCache():
 
 
 void CroppingCacheEntry::print(std::ostream& out) const {
-    out << "CroppingCacheEntry[size="
-        <<  mapping_.size()
+    out << "CroppingCacheEntry["
+        <<  "size=" << mapping_.size()
         << ",bbox=" << bbox_
-        << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
+        << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size())
+        << "]";
 }
 
 
@@ -103,7 +104,7 @@ const char *CroppingCacheTraits::name() {
 
 
 int CroppingCacheTraits::version() {
-    return 3;
+    return 4;
 }
 
 
