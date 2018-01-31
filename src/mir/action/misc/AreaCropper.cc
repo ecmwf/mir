@@ -37,7 +37,7 @@ struct LL {
     double lat_;
     double lon_;
     LL(Latitude lat, Longitude lon): lat_(lat.value()), lon_(lon.value()) {}
-    bool operator<(const LL &other) const {
+    bool operator<(const LL& other) const {
         // Order must be like natural scanning mode
         if (lat_ == other.lat_) {
             return lon_ < other.lon_;
@@ -57,23 +57,18 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
     Action(parametrisation),
     bbox_(),
     caching_(true),
-    anglePrecision_(0.) {
+    areaPrecision_(0.) {
 
     std::vector<double> value;
     ASSERT(parametrisation.userParametrisation().get("area", value));
     ASSERT(value.size() == 4);
 
+    bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+
     parametrisation_.get("caching", caching_);
 
-    long increments = 0;
-    parametrisation.fieldParametrisation().get("angle_precision_increments_per_degree", increments);
-
-    ASSERT(increments >= 0);
-    if (increments > 0) {
-        anglePrecision_ = 1. / double(increments);
-    }
-
-    bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    parametrisation.userParametrisation().get("area-precision", areaPrecision_);
+    ASSERT(areaPrecision_ >= 0);
 }
 
 
@@ -81,15 +76,10 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const
     Action(parametrisation),
     bbox_(bbox),
     caching_(true),
-    anglePrecision_(0.) {
+    areaPrecision_(0.) {
 
-    long increments = 0;
-    parametrisation.fieldParametrisation().get("angle_precision_increments_per_degree", increments);
-
-    ASSERT(increments >= 0);
-    if (increments > 0) {
-        anglePrecision_ = 1. / double(increments);
-    }
+    parametrisation.userParametrisation().get("area-precision", areaPrecision_);
+    ASSERT(areaPrecision_ >= 0);
 }
 
 
@@ -99,15 +89,16 @@ AreaCropper::~AreaCropper() {
 
 bool AreaCropper::sameAs(const Action& other) const {
     const AreaCropper* o = dynamic_cast<const AreaCropper*>(&other);
-    return o && (bbox_ == o->bbox_) && (anglePrecision_ == o->anglePrecision_);
+    return o && (bbox_ == o->bbox_) && (areaPrecision_ == o->areaPrecision_);
 }
 
 
-void AreaCropper::print(std::ostream &out) const {
-    out << "AreaCropper["
-            "bbox=" << bbox_
-        << ",anglePrecision=" << anglePrecision_
-        << "]";
+void AreaCropper::print(std::ostream& out) const {
+    out << "AreaCropper[bbox=" << bbox_;
+    if (areaPrecision_ > 0) {
+        out << ",areaPrecision=" << areaPrecision_;
+    }
+    out << "]";
 }
 
 
@@ -123,7 +114,7 @@ const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                                      const repres::Representation* representation,
                                      const util::BoundingBox& bbox,
-                                     double anglePrecision ) {
+                                     double areaPrecision ) {
     std::map<LL, size_t> m;
 
     Latitude n = 0;
@@ -131,7 +122,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     Longitude e = 0;
     Longitude w = 0;
 
-    ASSERT(anglePrecision >= 0.);
+    ASSERT(areaPrecision >= 0.);
     size_t p = 0;
     size_t count = 0;
     bool first = true;
@@ -145,7 +136,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
         // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
-        if (bbox.contains(point.lat, point.lon, anglePrecision)) {
+        if (bbox.contains(point.lat, point.lon, areaPrecision)) {
 
             const Latitude& lat = point.lat;
             const Longitude lon = point.lon.normalise(bbox.west());
@@ -194,10 +185,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
 
 static const caching::CroppingCacheEntry& getMapping(const std::string& key,
-        const repres::Representation *representation,
-        const util::BoundingBox &bbox,
-        double anglePrecision,
-        bool caching) {
+                                                     const repres::Representation* representation,
+                                                     const util::BoundingBox& bbox,
+                                                     double areaPrecision,
+                                                     bool caching) {
 
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -215,28 +206,28 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
             const repres::Representation* representation_;
             const util::BoundingBox& bbox_;
-            const double anglePrecision_;
+            const double areaPrecision_;
 
             virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c, bool& saved) {
-                createCroppingCacheEntry(c, representation_, bbox_, anglePrecision_);
+                createCroppingCacheEntry(c, representation_, bbox_, areaPrecision_);
             }
 
         public:
             CroppingCacheCreator(const repres::Representation* representation,
                                  const util::BoundingBox& bbox,
-                                 double anglePrecision):
+                                 double areaPrecision):
                 representation_(representation),
                 bbox_(bbox),
-                anglePrecision_(anglePrecision) {
+                areaPrecision_(areaPrecision) {
             }
         };
 
-        CroppingCacheCreator creator(representation, bbox, anglePrecision);
+        CroppingCacheCreator creator(representation, bbox, areaPrecision);
         disk.getOrCreate(key, creator, c);
 
     } else {
 
-        createCroppingCacheEntry(c, representation, bbox, anglePrecision);
+        createCroppingCacheEntry(c, representation, bbox, areaPrecision);
 
     }
 
@@ -245,18 +236,18 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
 }
 
-static const caching::CroppingCacheEntry& getMapping(const repres::Representation *representation,
-                                                     const util::BoundingBox &bbox,
-                                                     double anglePrecision,
+static const caching::CroppingCacheEntry& getMapping(const repres::Representation* representation,
+                                                     const util::BoundingBox& bbox,
+                                                     double areaPrecision,
                                                      bool caching) {
 
     eckit::MD5 md5;
-    md5 << representation->uniqueName() << bbox << anglePrecision;
+    md5 << representation->uniqueName() << bbox << areaPrecision;
 
     std::string key(md5);
 
     try {
-        return getMapping(key, representation, bbox, anglePrecision, caching);
+        return getMapping(key, representation, bbox, areaPrecision, caching);
     }
     catch (...) {
 
@@ -268,7 +259,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 }
 
 
-void AreaCropper::execute(context::Context & ctx) const {
+void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
@@ -279,7 +270,7 @@ void AreaCropper::execute(context::Context & ctx) const {
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
     repres::RepresentationHandle representation(field.representation());
-    const caching::CroppingCacheEntry &c = getMapping(representation, bbox_, anglePrecision_, caching_);
+    const caching::CroppingCacheEntry& c = getMapping(representation, bbox_, areaPrecision_, caching_);
 
     ASSERT(c.mapping_.size());
 

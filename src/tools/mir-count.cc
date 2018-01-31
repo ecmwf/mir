@@ -43,7 +43,7 @@ void MIRCount::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
             "\n"
-            "\nUsage: " << tool << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+            "\nUsage: " << tool << " [--area=N/W/S/E] [--area-precision=<real>] file.grib [file.grib [...]]"
             "\nExamples:"
             "\n  % " << tool << " 1.grib"
             "\n  % " << tool << " --area=6/0/0/6 1.grib 2.grib"
@@ -94,6 +94,9 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     eckit::Log::info() << bbox << std::endl;
 
+    double areaPrecision = 0;
+    args.get("area-precision", areaPrecision);
+    ASSERT(areaPrecision >= 0);
 
 
     // count each file(s) message(s)
@@ -140,7 +143,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
                 // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
-                if (bbox.contains(point.lat, point.lon)) {
+                if (bbox.contains(point.lat, point.lon, areaPrecision)) {
 
                     const Latitude& lat = point.lat;
                     const Longitude lon = point.lon.normalise(bbox.west());
@@ -170,6 +173,10 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
                                << ", south=" << s << " (s-bbox.s " << s - bbox.south() << ")"
                                << ", east=" << e << " (bbox.e -e " << bbox.east() - e  << ")"
                                << std::endl;
+
+            if (areaPrecision > 0) {
+                eckit::Log::info() << "area-precision: " << areaPrecision << std::endl;
+            }
 
             eckit::Log::info() << "N " << bbox.north() << ":"; put(nn); eckit::Log::info() << std::endl;
             eckit::Log::info() << "W " << bbox.west() << ":"; put(ww); eckit::Log::info() << std::endl;

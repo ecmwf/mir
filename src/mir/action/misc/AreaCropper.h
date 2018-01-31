@@ -82,7 +82,7 @@ private:
 
     util::BoundingBox bbox_;
     bool caching_;
-    double anglePrecision_;
+    double areaPrecision_;
 
     // -- Methods
     // None

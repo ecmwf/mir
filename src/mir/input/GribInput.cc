@@ -177,8 +177,6 @@ static struct {
     {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
     {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
-    {"angle_precision_increments_per_degree", "angularPrecision"},
-
     {"truncation", "pentagonalResolutionParameterJ",},  // Assumes triangular truncation
 
     {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
