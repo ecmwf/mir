@@ -103,7 +103,7 @@ const char *CroppingCacheTraits::name() {
 
 
 int CroppingCacheTraits::version() {
-    return 3;
+    return 4;
 }
 
 

@@ -143,8 +143,10 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
-bool BoundingBox::contains(const repres::Iterator::point_ll_t& p) const {
-    return contains(p.lat, p.lon);
+bool BoundingBox::contains(const Latitude& lat, const Longitude& lon, double anglePrecision) const {
+    return (lat.value() <= north_.value() + anglePrecision) &&
+           (lat.value() >= south_.value() - anglePrecision) &&
+            (lon.normalise(west_).value() - anglePrecision <= east_.value() + anglePrecision);
 }
 
 
