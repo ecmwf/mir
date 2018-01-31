@@ -1,14 +1,13 @@
-# Mars request
+# Mars request (found in Portugese requirements)
 param=2t,levtype=sfc
 # Mir tool options
-# Found in Portugese requirements
---grid=0.1/0.1 --area=60/180/-56/-180
+--dont-compress-plan --grid=0.1/0.1 --area=60/180/-56/-180
 # grib_get assertions
-###FIXME Ni = 3600
+Ni = 3600
 Nj = 1161
 iDirectionIncrementInDegrees = 0.1
 jDirectionIncrementInDegrees = 0.1
-longitudeOfFirstGridPointInDegrees = 180
-longitudeOfLastGridPointInDegrees = 539.9
 latitudeOfFirstGridPointInDegrees = 60
+longitudeOfFirstGridPointInDegrees = 180
 latitudeOfLastGridPointInDegrees = -56
+longitudeOfLastGridPointInDegrees = 539.9
