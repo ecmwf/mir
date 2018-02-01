@@ -72,10 +72,12 @@ protected:
     const std::vector<double>& latitudes() const;
 
     virtual bool sameAs(const Representation& other) const;
-    void adjustBoundingBoxNorthSouth(util::BoundingBox&);
+    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const = 0;
+    virtual void adjustBoundingBoxNorthSouth(util::BoundingBox&) const;
 
     // -- Overridden methods
 
+    void adjustBoundingBox(util::BoundingBox&) const;
     bool includesNorthPole() const;
     bool includesSouthPole() const;
 

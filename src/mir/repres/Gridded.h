@@ -74,6 +74,7 @@ protected:
     // -- Overridden methods
 
     util::Domain domain() const;
+    virtual void adjustBoundingBox(util::BoundingBox&) const;
     virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members

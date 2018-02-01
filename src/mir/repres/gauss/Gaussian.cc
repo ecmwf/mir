@@ -41,21 +41,18 @@ static void init() {
 
 Gaussian::Gaussian(size_t N) :
     N_(N) {
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
@@ -69,7 +66,7 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) {
+void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) const {
     Latitude n = bbox.north();
     Latitude s = bbox.south();
     bool adjustedNorth = false;
@@ -105,6 +102,12 @@ void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) {
     }
 
     bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
+}
+
+
+void Gaussian::adjustBoundingBox(util::BoundingBox& bbox) const {
+    adjustBoundingBoxNorthSouth(bbox);
+    adjustBoundingBoxEastWest(bbox);
 }
 
 

@@ -127,6 +127,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     size_t count = 0;
     bool first = true;
 
+    // Interpret bounding box with the representation
+    util::BoundingBox box(bbox);
+    representation->adjustBoundingBox(box);
+
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
     eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
@@ -136,10 +140,10 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
         // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
-        if (bbox.contains(point.lat, point.lon, areaPrecision)) {
+        if (box.contains(point.lat, point.lon, areaPrecision)) {
 
             const Latitude& lat = point.lat;
-            const Longitude lon = point.lon.normalise(bbox.west());
+            const Longitude lon = point.lon.normalise(box.west());
 
             if (first) {
                 n = s = lat;

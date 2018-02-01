@@ -89,8 +89,6 @@ protected:
 
     eckit::Fraction getSmallestIncrement() const;
 
-    void adjustBoundingBoxEastWest(util::BoundingBox&);
-
     bool isPeriodicWestEast() const;
 
     size_t numberOfPoints() const;
@@ -134,6 +132,7 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
+    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const;
 
     // -- Class members
     // None
