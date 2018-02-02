@@ -115,7 +115,8 @@ bool Gaussian::includesNorthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return bbox_.north().sameWithGrib1Accuracy(lats.front());
+    return  bbox_.north().sameWithGrib1Accuracy(lats.front()) ||
+            bbox_.north() > lats.front();
 }
 
 
@@ -123,7 +124,8 @@ bool Gaussian::includesSouthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return bbox_.south().sameWithGrib1Accuracy(lats.back());
+    return  bbox_.south().sameWithGrib1Accuracy(lats.back()) ||
+            bbox_.south() < lats.back();
 }
 
 
