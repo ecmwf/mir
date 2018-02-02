@@ -129,6 +129,15 @@ bool Gaussian::includesSouthPole() const {
 }
 
 
+bool Gaussian::isPeriodicWestEast() const {
+    const Longitude we = bbox_.east() - bbox_.west();
+    const Longitude inc = getSmallestIncrement();
+
+    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+            (we + inc > Longitude::GLOBE);
+}
+
+
 std::string Gaussian::atlasMeshGenerator() const {
     return "structured";
 }

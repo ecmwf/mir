@@ -72,14 +72,16 @@ protected:
     const std::vector<double>& latitudes() const;
 
     virtual bool sameAs(const Representation& other) const;
-    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const = 0;
     virtual void adjustBoundingBoxNorthSouth(util::BoundingBox&) const;
+    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const = 0;
+    virtual eckit::Fraction getSmallestIncrement() const = 0;
 
     // -- Overridden methods
 
     void adjustBoundingBox(util::BoundingBox&) const;
     bool includesNorthPole() const;
     bool includesSouthPole() const;
+    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None
