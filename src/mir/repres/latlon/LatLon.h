@@ -139,6 +139,8 @@ private:
 
     virtual void initTrans(Trans_t&) const;
 
+    virtual void adjustBoundingBox(util::BoundingBox&) const;
+
     // -- Class members
     // None
 

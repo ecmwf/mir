@@ -528,7 +528,11 @@ const repres::Representation* MethodWeighted::adjustOutputRepresentation(const r
 
     if (cropping_.active()) {
         repres::RepresentationHandle out(representation); // Will destroy represenation
-        return representation->cropped(cropping_.boundingBox());
+
+        util::BoundingBox bbox(cropping_.boundingBox());
+        representation->adjustBoundingBox(bbox);
+
+        return representation->cropped(bbox);
     }
 
 
