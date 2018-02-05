@@ -127,7 +127,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    static bool isPeriodicWestEast(const util::BoundingBox&, const util::Increments&);
 
     // -- Overridden methods
 
