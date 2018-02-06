@@ -15,6 +15,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/YAMLParser.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/config/Resource.h"
 
 
 namespace mir {
@@ -38,6 +40,9 @@ Rules::~Rules() {
 
 SimpleParametrisation& Rules::lookup(long paramId) {
 
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
         SimpleParametrisation* s = new SimpleParametrisation();
@@ -50,8 +55,35 @@ SimpleParametrisation& Rules::lookup(long paramId) {
 
 
 const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+
     ASSERT(ruleName == PARAM_ID);
-    return lookup(ruleValue);
+
+    MIRParametrisation& s = lookup(ruleValue);
+
+    if (!s.has("class")) {
+
+        if (noted_.find(ruleValue) == noted_.end()) {
+
+            static bool abortIfUnknownOarameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
+
+
+            std::ostringstream oss;
+            oss << "No class defined for " << ruleName << "=" << ruleValue;
+
+            if (abortIfUnknownOarameterClass) {
+                throw eckit::SeriousBug(oss.str());
+            }
+            else {
+                eckit::Log::warning() << oss.str() << std::endl;
+            }
+        }
+        noted_.insert(ruleValue);
+    }
+
+    return s;
 }
 
 
@@ -80,10 +112,10 @@ void Rules::load(const std::string& kind, const std::string& path) {
         for (long paramId : list) {
 
             SimpleParametrisation& s = lookup(paramId);
-            std::cout << what << " " << paramId << " " << s << std::endl;
 
             std::string d;
             if (s.get(kind, d)) {
+
                 std::ostringstream oss;
                 oss << "Duplicate [" << kind << "] for parameter " << paramId << " " << d << " and " << what;
                 throw eckit::SeriousBug(oss.str());
