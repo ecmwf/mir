@@ -73,6 +73,8 @@ const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) 
 
 bool NetcdfFileInput::next() {
     cache_.reset();
+    FieldParametrisation::reset();
+
     current_++;
 
     if (current_ >= fields_.size()) {

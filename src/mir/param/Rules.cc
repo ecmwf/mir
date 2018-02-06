@@ -10,6 +10,7 @@
 
 
 #include "mir/param/Rules.h"
+#include "mir/param/SimpleParametrisation.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
@@ -28,36 +29,29 @@ Rules::Rules() {
 
 
 Rules::~Rules() {
+    for ( auto& rule : rules_) {
+        delete rule.second;
+    }
 }
 
 
-const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) const {
-    ASSERT(ruleName == PARAM_ID);
-    long paramId = ruleValue;
 
-    const auto i = container_t::find(paramId);
+SimpleParametrisation& Rules::lookup(long paramId) {
 
-    if (i == container_t::end()) {
-        static const SimpleParametrisation empty;
-        return empty;
+    auto p = rules_.find(paramId);
+    if (p == rules_.end()) {
+        SimpleParametrisation* s = new SimpleParametrisation();
+        rules_[paramId] = s;
+        return *s;
     }
 
-    return *(i->second);
+    return *(p->second);
 }
 
 
-SimpleParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
-
+const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
     ASSERT(ruleName == PARAM_ID);
-    long paramId = ruleValue;
-
-    auto& p = container_t::operator[](paramId);
-
-    if (!p) {
-        p.reset(new CountedParametrisation());
-    }
-
-    return *p;
+    return lookup(ruleValue);
 }
 
 
@@ -66,90 +60,73 @@ void Rules::print(std::ostream& s) const {
     eckit::JSON json(s);
 
     json.startObject();
-    for (const auto& rule : *this) {
-        json << rule.first << *rule.second;
+    for (const auto& rule : rules_) {
+        json << rule.first << rule.second;
     }
     json.endObject();
 }
 
 
-void Rules::readConfigurationFiles() {
+void Rules::load(const std::string& kind, const std::string& path) {
 
-    std::map< std::string, eckit::SharedPtr<CountedParametrisation> > allClasses;
+
+    eckit::ValueMap config = eckit::YAMLParser::decodeFile(path);
+    for (const auto& i : config) {
+        const std::string& what = i.first;
+        eckit::ValueList list = i.second;
+
+        // std::cout << what << " " << list << std::endl;
+
+        for (long paramId : list) {
+
+            SimpleParametrisation& s = lookup(paramId);
+            std::cout << what << " " << paramId << " " << s << std::endl;
+
+            std::string d;
+            if (s.get(kind, d)) {
+                std::ostringstream oss;
+                oss << "Duplicate [" << kind << "] for parameter " << paramId << " " << d << " and " << what;
+                throw eckit::SeriousBug(oss.str());
+            }
+
+            s.set(kind, what);
+        }
+    }
+}
+
+
+void Rules::readConfigurationFiles() {
 
 
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-    for (const auto& i : classes) {
-        const std::string& klass = i.first;
-        eckit::ValueMap values = i.second;
-
-        if (values.find("dimension") != values.end()) {
-            throw eckit::UserError("Class cannot use reserved key 'dimension' ('" + klass + "')");
-        }
-
-        CountedParametrisation* s = new CountedParametrisation();
-
-        for (const auto& j : values) {
-            std::string name = j.first;
-            eckit::Value value = j.second;
-            s->set(name, std::string(value));
-        }
-
-        allClasses[klass].reset(s);
-    }
 
 
-    eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
-    for (const auto& i : parameterClass) {
-        const std::string& klass = i.first;
+    load("class", "~mir/etc/mir/parameter-class.yaml");
+    load("dimension", "~mir/etc/mir/parameter-dimension.yaml");
 
-        auto j = allClasses.find(klass);
-        if (j == allClasses.end()) {
-            throw eckit::UserError("Class unknown '" + klass + "'");
-        }
+    for (auto& rule : rules_) {
 
-        eckit::ValueList list = i.second;
-        // std::cout << list << std::endl;
+        std::string klass;
+        if (rule.second->get("class", klass)) {
 
-        for (long paramId : list) {
-            if (find(paramId) != end()) {
-                throw eckit::UserError("Parameter class is set more than once, for paramId=" + std::to_string(paramId));
+            const auto& config = classes.find(klass);
+            if (config == classes.end()) {
+                std::ostringstream oss;
+                oss << "Unknown parameter class [" << klass << "] for parameter " << rule.first;
+                throw eckit::SeriousBug(oss.str());
             }
-            container_t::operator[](paramId).reset(j->second);
-        }
-    }
 
+            eckit::ValueMap values = config->second;
 
-    eckit::ValueMap parameterDimension = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-dimension.yaml");
-    for (const auto& i : parameterDimension) {
-        const std::string& dimension = i.first;
-        eckit::ValueList list = i.second;
-
-        for (long paramId : list) {
-
-            // paramId-specific 'dimension' value
-            CountedParametrisation* s = new CountedParametrisation();
-            s->set("dimension", dimension);
-
-            auto p = find(paramId);
-            if (p != end()) {
-
-                // known parameter: copy class settings to new entry
-                std::string d;
-                if (p->second->get("dimension", d)) {
-                    throw eckit::UserError("Parameter dimension is set more than once, for paramId=" + std::to_string(paramId));
-                }
-                p->second->copyValuesTo(*s);
-                p->second.reset(s);
-
-            } else {
-
-                // unknown parameter: set dimension only
-                container_t::operator[](paramId).reset(s);
-
+            for (const auto& j : values) {
+                std::string name = j.first;
+                std::string value = j.second;
+                rule.second->set(name, value); // TODO: implement set() with a value
             }
         }
+
     }
+
 }
 
 

@@ -32,7 +32,6 @@ class MIRField;
 
 namespace param {
 class MIRParametrisation;
-class Rules;
 }
 
 }

@@ -13,25 +13,19 @@
 #define mir_param_Rules_h
 
 #include <map>
-#include "eckit/memory/Owned.h"
-#include "eckit/memory/SharedPtr.h"
-#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
 namespace param {
 
+class MIRParametrisation;
+class SimpleParametrisation;
 
-// provide attach/detach to SimpleParametrisation under SharedPtr
-struct CountedParametrisation : SimpleParametrisation, eckit::OwnedLock {};
 
-
-class Rules : protected std::map< long, eckit::SharedPtr<CountedParametrisation> > {
+class Rules  {
 protected:
 
     // -- Types
-
-    typedef std::map< long, eckit::SharedPtr<CountedParametrisation> > container_t;
 
 public:
 
@@ -45,8 +39,7 @@ public:
 
     // -- Operators
 
-    const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue) const;
-    SimpleParametrisation& lookup(const std::string& ruleName, long ruleValue);
+    const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
 
     // -- Methods
 
@@ -54,7 +47,15 @@ public:
 
 private:
 
+    // -- Rules
+
+    std::map<long, SimpleParametrisation*> rules_;
+
     // -- Methods
+
+    SimpleParametrisation& lookup(long paramId);
+    void load(const std::string& kind, const std::string& path);
+
 
     virtual void print(std::ostream&) const;
 
