@@ -333,6 +333,9 @@ bool TypeT<T>::coordinateOutputVariableMerge( Variable &out, const Variable &in,
     else {
         return false;
     }
+#else
+    // FIXME
+    return false;
 #endif
 }
 

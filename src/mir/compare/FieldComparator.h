@@ -136,7 +136,6 @@ private:
   const eckit::option::CmdArgs &args_;
   bool normaliseLongitudes_;
   bool ignoreWrappingAreas_;
-  bool whiteListEntries_;
 
 
 
@@ -145,6 +144,7 @@ private:
   size_t maximumNumberOfErrors_;
 
   const WhiteLister& whiteLister_;
+  bool whiteListEntries_;
 
   void whiteListEntries(const Field & field, const MultiFile & multi) const;
 
