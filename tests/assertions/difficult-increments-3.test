@@ -1,0 +1,14 @@
+# Testing global bounding box that does not have integer Ni/Nj:
+#   (Ni - 1) * inc < 360
+#   (Nj - 1) * inc < 180
+# Input file
+regular_ll.2-2.grib1
+# Mir tool options
+--grid=4/4
+# grib_get assertions
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-90
+longitudeOfLastGridPointInDegrees=356
+Ni=90
+Nj=46

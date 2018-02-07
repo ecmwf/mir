@@ -3,4 +3,8 @@ param=2t,levtype=sfc
 # Mir tool options
 --gridname=f320 --area=56/-16.5/50.5/-3
 # grib_get assertions
-numberOfValues=912
+numberOfValues=931
+latitudeOfFirstGridPointInDegrees=56
+longitudeOfFirstGridPointInDegrees=-16.5
+latitudeOfLastGridPointInDegrees=50.5
+longitudeOfLastGridPointInDegrees=-3

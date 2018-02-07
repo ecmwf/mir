@@ -22,7 +22,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/param/Rules.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 

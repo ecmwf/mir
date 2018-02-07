@@ -9,7 +9,8 @@ file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
 get_target_property( MIR_TOOL      "mir-tool"      LOCATION )
 
-find_program( MARS_SCRIPT NAMES mars false )
+find_program( DIFF_TOOL NAMES "diff" "cmp" "false" )
+find_program( MARS_SCRIPT NAMES "mars" "false" )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 

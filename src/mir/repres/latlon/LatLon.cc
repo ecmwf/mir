@@ -151,12 +151,17 @@ bool LatLon::sameAs(const Representation& other) const {
 }
 
 
+bool LatLon::isPeriodicWestEast(const util::BoundingBox& bbox, const util::Increments& increments) {
+    const Longitude we = bbox.east() - bbox.west();
+    const Longitude inc = increments.west_east();
+
+    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+            (we + inc) > Longitude::GLOBE;
+}
+
+
 bool LatLon::isPeriodicWestEast() const {
-
-    // if longitude range spans the globe
-    const Longitude range = bbox_.east() - bbox_.west() + increments_.west_east();
-
-    return range.sameWithGrib1Accuracy(Longitude::GLOBE);
+    return isPeriodicWestEast(bbox_, increments_);
 }
 
 
@@ -294,6 +299,34 @@ void LatLon::shape(size_t& ni, size_t& nj) const {
 void LatLon::initTrans(Trans_t& trans) const {
     ASSERT(!increments_.isShifted(bbox_));
     ASSERT(trans_set_resol_lonlat(&trans, ni_, nj_) == 0);
+}
+
+
+void LatLon::adjustBoundingBox(util::BoundingBox& bbox) const {
+
+    // adjust East to a maximum of E = W + Ni * inc < W + 360
+    // (shifted grids can have 360 - inc < E - W < 360)
+    eckit::Fraction Ni;
+    if (isPeriodicWestEast(bbox, increments_)) {
+        Ni = Longitude::GLOBE.fraction() / increments_.west_east();
+        if (Ni.integer()) {
+            Ni = eckit::Fraction(Ni.integralPart() - 1);
+        }
+        ASSERT(Ni > 0);
+    } else {
+        Ni = (bbox.east() - bbox.west()).fraction() / increments_.west_east();
+    }
+
+
+    // adjust North to a maximum of N = S + Nj * inc <= 90
+    Latitude range = bbox.north() - bbox.south();
+    eckit::Fraction Nj = (range.fraction() / increments_.south_north());
+
+
+    // set bounding box
+    Longitude e = bbox.west() + Ni.integralPart() * increments_.west_east();
+    Latitude n = bbox.south() + Nj.integralPart() * increments_.south_north();
+    bbox = util::BoundingBox(n, bbox.west(), bbox.south(), e);
 }
 
 

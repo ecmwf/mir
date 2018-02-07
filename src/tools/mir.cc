@@ -107,7 +107,8 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Filtering"));
-        options_.push_back(new VectorOption<double>("area", "Specify the cropping area: north/west/south/east", 4));
+        options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
+        options_.push_back(new SimpleOption<double>("area-precision", "cropping area precision ('outward')"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
 

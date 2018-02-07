@@ -107,7 +107,7 @@ void ActionPlan::execute(context::Context & ctx) const {
             std::cout << std::endl;
         }
         else {
-            std::ofstream out(dumpPlanFile);
+            std::ofstream out(dumpPlanFile, std::ios::app);
             custom(out);
             out << std::endl;
         }

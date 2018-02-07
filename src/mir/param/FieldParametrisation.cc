@@ -190,6 +190,10 @@ bool FieldParametrisation::get(const std::string& name, std::vector<std::string>
     return _get(name, value);
 }
 
+void FieldParametrisation::reset() {
+    // Reset cached values
+    paramId_ = -1;
+}
 
 template <class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
@@ -204,7 +208,8 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
     // return paramId-specific setting
     // This assumes that other input (NetCDF, etc) also return a paramId
 
-    if (paramId_ <= 0) {
+    if (paramId_ <= 0)
+    {
         get(PARAM_ID, paramId_);
     }
 

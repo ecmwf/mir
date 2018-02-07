@@ -13,12 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef AreaCropper_H
-#define AreaCropper_H
+#ifndef mir_action_AreaCropper_h
+#define mir_action_AreaCropper_h
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/BoundingBox.h"
-
 
 
 namespace mir {
@@ -28,85 +27,80 @@ namespace action {
 class AreaCropper : public Action {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     AreaCropper(const param::MIRParametrisation&);
-    AreaCropper(const param::MIRParametrisation &parametrisation, const util::BoundingBox&);
+    AreaCropper(const param::MIRParametrisation&, const util::BoundingBox&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~AreaCropper(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
+
+    virtual void execute(context::Context&) const;
+
+    // -- Class members
     // None
 
-    virtual void execute(context::Context & ctx) const;
-
-// -- Class members
-    // None
-
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
-
-    AreaCropper(const AreaCropper&);
-    AreaCropper& operator=(const AreaCropper&);
-
-// -- Members
+    // -- Members
 
     util::BoundingBox bbox_;
     bool caching_;
+    double areaPrecision_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
     virtual bool isCropAction() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const AreaCropper& p)
     //  { p.print(s); return s; }
@@ -116,5 +110,7 @@ private:
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

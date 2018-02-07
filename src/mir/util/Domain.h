@@ -25,7 +25,7 @@ namespace mir {
 namespace util {
 
 
-class Domain : public BoundingBox {
+class Domain : protected BoundingBox {
 public:
 
     // -- Exceptions
@@ -41,19 +41,31 @@ public:
 
     // -- Methods
 
+    /// Contains point
+    bool contains(const repres::Iterator::point_ll_t& p) const;
+
+    /// Contains point
+    bool contains(const Latitude&, const Longitude&) const;
+
+    using BoundingBox::north;
+    using BoundingBox::west;
+    using BoundingBox::south;
+    using BoundingBox::east;
+
     /// Generator for a global Domain
     static Domain makeGlobal();
 
+    // Converter to atlas::RectangularDomain
     operator atlas::RectangularDomain() const;
 
     /// Check if grid includes the North pole
-    bool includesPoleNorth() const { return north() == Latitude::NORTH_POLE; }
+    bool includesPoleNorth() const;
 
     /// Check if grid includes the South pole
-    bool includesPoleSouth() const { return south() == Latitude::SOUTH_POLE; }
+    bool includesPoleSouth() const;
 
     /// Check if grid spans the complete range East-West (periodic)
-    bool isPeriodicEastWest() const { return east() - west() == Longitude::GLOBE; }
+    bool isPeriodicEastWest() const;
 
     /// Check if domain represents the complete globe surface
     bool isGlobal() const {
@@ -73,7 +85,9 @@ public:
     // None
 
 protected:
+
     // -- Members
+    // None
 
     // -- Methods
     // None
@@ -91,6 +105,7 @@ protected:
     // None
 
 private:
+
     // -- Members
     // None
 

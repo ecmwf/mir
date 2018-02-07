@@ -15,9 +15,11 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "eckit/log/Log.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -29,11 +31,24 @@ Gridded::Gridded() {}
 
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
     bbox_(parametrisation) {
+    const util::BoundingBox bbox(bbox_);
+
+    adjustBoundingBox(bbox_);
+
+    if (bbox_ != bbox) {
+        eckit::Log::debug<LibMir>() << "Gridded: " << bbox << " adjusted to " << bbox_ << std::endl;
+    }
 }
 
 
 Gridded::Gridded(const util::BoundingBox& bbox) :
     bbox_(bbox) {
+
+    adjustBoundingBox(bbox_);
+
+    if (bbox_ != bbox) {
+        eckit::Log::debug<LibMir>() << "Gridded: " << bbox << " adjusted to " << bbox_ << std::endl;
+    }
 }
 
 
@@ -73,6 +88,11 @@ util::Domain Gridded::domain() const {
     const Longitude& e = isPeriodicWestEast()? bbox_.west() + Longitude::GLOBE : bbox_.east();
 
     return util::Domain(n, w, s, e);
+}
+
+
+void Gridded::adjustBoundingBox(util::BoundingBox&) const{
+    // normally, no adjustments are necessary
 }
 
 

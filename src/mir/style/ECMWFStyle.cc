@@ -426,25 +426,6 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
-    bool globalise = false;
-    parametrisation_.userParametrisation().get("globalise", globalise);
-
-    if (globalise) {
-        plan.add("filter.globalise");
-    }
-
-    if (parametrisation_.userParametrisation().has("area")) {
-        plan.add("crop.area");
-    }
-
-    if (parametrisation_.userParametrisation().has("bitmap")) {
-        plan.add("filter.bitmap");
-    }
-
-    if (parametrisation_.userParametrisation().has("frame")) {
-        plan.add("filter.frame");
-    }
-
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.epilogue", formula)) {
         std::string metadata;
@@ -570,6 +551,31 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
         }
         grid2grid(plan);
     }
+
+
+    if (field_gridded || user_wants_gridded) {
+
+        bool globalise = false;
+        parametrisation_.userParametrisation().get("globalise", globalise);
+
+        if (globalise) {
+            plan.add("filter.globalise");
+        }
+
+        if (parametrisation_.userParametrisation().has("area")) {
+            plan.add("crop.area");
+        }
+
+        if (parametrisation_.userParametrisation().has("bitmap")) {
+            plan.add("filter.bitmap");
+        }
+
+        if (parametrisation_.userParametrisation().has("frame")) {
+            plan.add("filter.frame");
+        }
+
+    }
+
 
     epilogue(plan);
 }

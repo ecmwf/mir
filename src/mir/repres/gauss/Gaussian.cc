@@ -41,21 +41,18 @@ static void init() {
 
 Gaussian::Gaussian(size_t N) :
     N_(N) {
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
-    adjustBoundingBoxNorthSouth(bbox_);
 }
 
 
@@ -69,7 +66,7 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) {
+void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) const {
     Latitude n = bbox.north();
     Latitude s = bbox.south();
     bool adjustedNorth = false;
@@ -108,11 +105,18 @@ void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) {
 }
 
 
+void Gaussian::adjustBoundingBox(util::BoundingBox& bbox) const {
+    adjustBoundingBoxNorthSouth(bbox);
+    adjustBoundingBoxEastWest(bbox);
+}
+
+
 bool Gaussian::includesNorthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return bbox_.north().sameWithGrib1Accuracy(lats.front());
+    return  bbox_.north().sameWithGrib1Accuracy(lats.front()) ||
+            bbox_.north() > lats.front();
 }
 
 
@@ -120,7 +124,17 @@ bool Gaussian::includesSouthPole() const {
     const std::vector<double>& lats = latitudes();
     ASSERT(lats.size() >= 2);
 
-    return bbox_.south().sameWithGrib1Accuracy(lats.back());
+    return  bbox_.south().sameWithGrib1Accuracy(lats.back()) ||
+            bbox_.south() < lats.back();
+}
+
+
+bool Gaussian::isPeriodicWestEast() const {
+    const Longitude we = bbox_.east() - bbox_.west();
+    const Longitude inc = getSmallestIncrement();
+
+    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+            (we + inc > Longitude::GLOBE);
 }
 
 
