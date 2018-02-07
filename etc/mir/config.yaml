@@ -5,7 +5,7 @@
     "parameter-configuration": "~mir/etc/mir/parameter.yaml",
 
     "legendre-loader": "mapped-memory",
-    "interpolator-loader": "file-io",
+    "matrix-loader": "file-io",
 
     "mir-cache-path": "/tmp/cache"
 }
