@@ -175,9 +175,8 @@ class PointSearchTreeMemory: public PointSearchTree {
     }
 
 public:
-    PointSearchTreeMemory( const repres::Representation&,
-                           const param::MIRParametrisation&,
-                           size_t itemCount) {}
+    PointSearchTreeMemory(const repres::Representation&, const param::MIRParametrisation&, size_t itemCount) {}
+    PointSearchTreeMemory(const param::MIRParametrisation&, size_t itemCount) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMemory> builder1("memory");
@@ -304,7 +303,20 @@ protected:
         }
 
         return p;
+    }
 
+    static eckit::PathName treePath(const param::MIRParametrisation& param,
+                                    bool makeUnique) {
+
+        // LocalPathName::unique calls mkdir, make sure it uses umask = 0
+        eckit::AutoUmask umask(0);
+
+        eckit::PathName p = T::path(param);
+        if (makeUnique && !p.exists()) {
+            p = eckit::PathName::unique(p);
+        }
+
+        return p;
     }
 
     static eckit::PathName lockFile(const std::string& path) {
@@ -318,11 +330,25 @@ protected:
 
 public:
 
-    PointSearchTreeMappedFile( const repres::Representation& r,
-                               const param::MIRParametrisation& param,
-                               size_t itemCount) :
+    PointSearchTreeMappedFile(const repres::Representation& r,
+                              const param::MIRParametrisation& param,
+                              size_t itemCount) :
         PointSearchTreeMapped(treePath(r, param, true), itemCount),
         real_(treePath(r, param, false)),
+        lock_(lockFile(real_))
+    {
+
+        lockFile(real_).touch();
+
+        if (ready()) {
+            eckit::Log::info() << "Loading " << *this << std::endl;
+        }
+    }
+
+    PointSearchTreeMappedFile(const param::MIRParametrisation& param,
+                              size_t itemCount) :
+        PointSearchTreeMapped(treePath(param, true), itemCount),
+        real_(treePath(param, false)),
         lock_(lockFile(real_))
     {
 
@@ -345,7 +371,6 @@ public:
 
     static eckit::PathName path(const repres::Representation& r,
                                 const param::MIRParametrisation&) {
-
         std::ostringstream oss;
         oss  << LibMir::cacheDir()
              << "/mir/trees/"
@@ -353,17 +378,27 @@ public:
              << "/"
              << r.uniqueName()
              << ".kdtree";
-
         return oss.str();
+    }
 
+    static eckit::PathName path(const param::MIRParametrisation&) {
+        std::ostringstream oss;
+        oss  << LibMir::cacheDir()
+             << "/mir/trees/"
+             << VERSION
+             << "/"
+             << "no-representation-FIXME"
+             << ".kdtree";
+        return oss.str();
     }
 
 public:
-    PointSearchTreeMappedCacheFile( const repres::Representation& r,
-                                    const param::MIRParametrisation& param,
-                                    size_t itemCount):
-        PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(r, param, itemCount) {
-    }
+
+    PointSearchTreeMappedCacheFile(const repres::Representation& r, const param::MIRParametrisation& param, size_t itemCount) :
+        PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(r, param, itemCount) {}
+
+    PointSearchTreeMappedCacheFile(const param::MIRParametrisation& param, size_t itemCount) :
+        PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(param, itemCount) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
@@ -379,24 +414,32 @@ class PointSearchTreeMappedTempFile : public PointSearchTreeMappedFile<PointSear
 public:
     static eckit::PathName path(const repres::Representation& r,
                                 const param::MIRParametrisation&) {
-
         std::ostringstream oss;
         oss  << "/tmp/"
              << r.uniqueName()
              << "-"
              << VERSION
              << ".kdtree";
-
         return oss.str();
-
     }
 
+    static eckit::PathName path(const param::MIRParametrisation&) {
+        std::ostringstream oss;
+        oss  << "/tmp/"
+             << "no-representation-FIXME"
+             << "-"
+             << VERSION
+             << ".kdtree";
+        return oss.str();
+    }
 
 public:
-    PointSearchTreeMappedTempFile( const repres::Representation& r,
-                                   const param::MIRParametrisation& param,
-                                   size_t itemCount):
+
+    PointSearchTreeMappedTempFile(const repres::Representation& r, const param::MIRParametrisation& param, size_t itemCount) :
         PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>(r, param, itemCount) {}
+
+    PointSearchTreeMappedTempFile(const param::MIRParametrisation& param, size_t itemCount) :
+        PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>(param, itemCount) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMappedTempFile> builder3("mapped-temporary-file");
@@ -419,9 +462,13 @@ class PointSearchTreeMappedDevZero: public PointSearchTreeMapped {
 
 public:
 
-    PointSearchTreeMappedDevZero( const repres::Representation&,
-                                  const param::MIRParametrisation&,
-                                  size_t itemCount):
+    PointSearchTreeMappedDevZero(const repres::Representation&,
+                                 const param::MIRParametrisation&,
+                                 size_t itemCount):
+        PointSearchTreeMapped("/dev/zero", itemCount) {}
+
+    PointSearchTreeMappedDevZero(const param::MIRParametrisation&,
+                                 size_t itemCount):
         PointSearchTreeMapped("/dev/zero", itemCount) {}
 };
 
@@ -449,6 +496,25 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
     }
 
 }
+
+
+PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
+                         const std::vector<PointSearch::PointValueType>& v) :
+    parametrisation_(parametrisation) {
+
+    tree_.reset(PointSearchTreeFactory::build(parametrisation, v.size()));
+
+    eckit::AutoLock<PointSearchTree> lock(*tree_);
+    eckit::Log::info() << "PointSearch using " << *tree_ << std::endl;
+
+    if (!tree_->ready()) {
+        for (const auto& pv : v) {
+            tree_->insert(pv);
+        }
+        tree_->commit();
+    }
+}
+
 
 void PointSearch::build(const repres::Representation& r) {
     const size_t npts = r.numberOfPoints();
@@ -559,6 +625,8 @@ PointSearchTree *PointSearchTreeFactory::build(
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    ASSERT(itemCount > 0);
+
     std::string name = "mapped-cache-file";
     params.get("point-search-trees", name);
 
@@ -571,6 +639,29 @@ PointSearchTree *PointSearchTreeFactory::build(
     }
 
     return (*j).second->make(r, params, itemCount);
+}
+
+
+PointSearchTree*PointSearchTreeFactory::build(const param::MIRParametrisation& params,
+                                              size_t itemCount) {
+
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    ASSERT(itemCount > 0);
+
+    std::string name = "mapped-cache-file";
+    params.get("point-search-trees", name);
+
+    eckit::Log::info() << "PointSearchTreeFactory: looking for '" << name << "'" << std::endl;
+
+    auto j = m->find(name);
+    if (j == m->end()) {
+        list(eckit::Log::error() << "PointSearchTreeFactory: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("PointSearchTreeFactory: unknown '" + name + "'");
+    }
+
+    return (*j).second->make(params, itemCount);
 }
 
 

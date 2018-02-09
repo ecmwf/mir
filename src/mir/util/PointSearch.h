@@ -87,8 +87,11 @@ public:
 
 public:
 
-    PointSearch(const param::MIRParametrisation& parametrisation,
+    PointSearch(const param::MIRParametrisation&,
                 const repres::Representation&);
+
+    PointSearch(const param::MIRParametrisation&,
+                const std::vector<PointValueType>&);
 
 public:
 
@@ -109,9 +112,7 @@ private:
     const param::MIRParametrisation& parametrisation_;
     eckit::ScopedPtr<PointSearchTree> tree_;
 
-
     void build(const repres::Representation& r);
-
 
 };
 
@@ -120,21 +121,27 @@ class PointSearchTreeFactory {
 
     std::string name_;
 
-    virtual PointSearchTree *make(const repres::Representation& r,
-                                  const param::MIRParametrisation &,
+    virtual PointSearchTree* make(const repres::Representation&,
+                                  const param::MIRParametrisation&,
+                                  size_t itemCount) = 0;
+
+    virtual PointSearchTree* make(const param::MIRParametrisation&,
                                   size_t itemCount) = 0;
 
 protected:
 
-    PointSearchTreeFactory(const std::string &);
+    PointSearchTreeFactory(const std::string&);
 
     virtual  ~PointSearchTreeFactory();
 
 public:
 
-    static PointSearchTree *build( const repres::Representation& r,
-                                   const param::MIRParametrisation&,
-                                   size_t itemCount);
+    static PointSearchTree* build(const repres::Representation&,
+                                  const param::MIRParametrisation&,
+                                  size_t itemCount);
+
+    static PointSearchTree* build(const param::MIRParametrisation&,
+                                  size_t itemCount);
 
     static void list(std::ostream&);
 
@@ -143,15 +150,18 @@ public:
 
 template<class T>
 class PointSearchTreeBuilder : public PointSearchTreeFactory {
-    virtual PointSearchTree *make( const repres::Representation& r,
-                                   const param::MIRParametrisation &param,
-                                   size_t itemCount) {
+    virtual PointSearchTree* make(const repres::Representation& r,
+                                  const param::MIRParametrisation& param,
+                                  size_t itemCount) {
         return new T(r, param, itemCount);
+    }
+    virtual PointSearchTree* make(const param::MIRParametrisation& param,
+                                  size_t itemCount) {
+        return new T(param, itemCount);
     }
 public:
     PointSearchTreeBuilder(const std::string &name) : PointSearchTreeFactory(name) {}
 };
-
 
 
 }  // namespace util

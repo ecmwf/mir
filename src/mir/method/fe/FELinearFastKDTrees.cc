@@ -53,7 +53,7 @@ static MethodBuilder< FELinearFastKDTrees > __linear_fast_kdtrees("linear-fast-k
 static const double parametricEpsilon = 1e-15;
 
 
-typedef std::vector< size_t > element_indices_t;
+typedef std::forward_list< size_t > element_indices_t;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
@@ -235,9 +235,31 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
     }
 
 
+
+    // build point-search tree
+
+
+
+
+#if 0
+    pTree_.reset(new PointIndex3);
+
+
+    for (size_t ip = 0; ip < meshSource.nodes().size(); ++ip) {
+        PointIndex3::Point p{coords(ip,0),coords(ip,1),coords(ip,2)};
+        pTree_->insert(PointIndex3::Value(p, ip));
+    }
+
+#endif
+
+
+
+
     // generate nodes-to-elements/elements-to-nodes connectivity
     const atlas::mesh::HybridElements::Connectivity& elementsToNodes = inMesh.cells().node_connectivity();
+
     std::vector< element_indices_t > nodesToElements(inNodes.size());
+    element_indices_t patch_elements;
     {
         const size_t Nnodes = inNodes.size();
         const size_t Nelems = inMesh.cells().size();
@@ -246,10 +268,14 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
 
         auto patched = atlas::array::make_view< int, 1 >(inMesh.cells().field("patch"));
         for (size_t e = 0; e < Nelems; ++e, ++progress) {
-            for (size_t i = 0; not patched(e) and i < elementsToNodes.cols(e); ++i) {
+            if (patched(e)) {
+                patch_elements.push_front(e);
+            }
+
+            for (size_t i = 0; i < elementsToNodes.cols(e); ++i) {
                 size_t n = elementsToNodes(e, i);
                 ASSERT(n < Nnodes);
-                nodesToElements[n].push_back(e);
+                nodesToElements[n].push_front(e);
             }
         }
 
@@ -307,8 +333,6 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
 
                 size_t n = closest.payload();
                 ASSERT(n < nbInputPoints);
-
-                ASSERT(nodesToElements[n].size() < 12);
 
                 size_t nbProjectionAttempts;
                 triplet_vector_t triplets = projectPointTo3DElements(
