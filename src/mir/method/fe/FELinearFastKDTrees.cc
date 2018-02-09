@@ -35,6 +35,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/PointSearch.h"
 
 
 namespace mir {
@@ -52,6 +53,7 @@ static MethodBuilder< FELinearFastKDTrees > __linear_fast_kdtrees("linear-fast-k
 static const double parametricEpsilon = 1e-15;
 
 
+typedef std::vector< size_t > element_indices_t;
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
 typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
@@ -75,41 +77,39 @@ static void normalise(triplet_vector_t& triplets) {
 
 /// Find in which element the point is contained by projecting the point with each nearest element
 static triplet_vector_t projectPointTo3DElements(
+    const element_indices_t& closestElements,
     size_t nbInputPoints,
     const atlas::array::ArrayView<double, 2>& icoords,
-    const atlas::mesh::HybridElements::Connectivity& connectivity,
+    const atlas::mesh::HybridElements::Connectivity& elementsToNodes,
     const repres::Iterator::point_3d_t& p,
     size_t ip,
     size_t firstVirtualPoint,
-    size_t& nbProjectionAttempts,
-    const element_tree_t::NodeList& closest ) {
-
-    ASSERT(!closest.empty());
+    size_t& nbProjectionAttempts) {
 
     triplet_vector_t triplets;
 
     bool mustNormalise = false;
     size_t idx[4];
     double w[4];
-    atlas::interpolation::method::Ray ray( p.data() );
+    atlas::interpolation::method::Ray ray( p.data() );    
+
 
     nbProjectionAttempts = 0;
-    for (const auto& close : closest) {
+    for (const size_t& elem_id : closestElements) {
         ++nbProjectionAttempts;
 
-        const size_t elem_id = close.value().payload();
-        ASSERT(elem_id < connectivity.rows());
+        ASSERT(elem_id < elementsToNodes.rows());
 
         /* assumes:
          * - nb_cols == 3 implies triangle
          * - nb_cols == 4 implies quadrilateral
          * - no other element is supported at the time
          */
-        const size_t nb_cols = connectivity.cols(elem_id);
+        const size_t nb_cols = elementsToNodes.cols(elem_id);
         ASSERT(nb_cols == 3 || nb_cols == 4);
 
         for (size_t i = 0; i < nb_cols; ++i) {
-            idx[i] = size_t(connectivity(elem_id, i));
+            idx[i] = size_t(elementsToNodes(elem_id, i));
             ASSERT(idx[i] < nbInputPoints);
         }
 
@@ -235,49 +235,35 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
     }
 
 
-    // generate node-to-elements connectivity
-    typedef std::vector< size_t > element_indices_t;
+    // generate nodes-to-elements/elements-to-nodes connectivity
+    const atlas::mesh::HybridElements::Connectivity& elementsToNodes = inMesh.cells().node_connectivity();
     std::vector< element_indices_t > nodesToElements(inNodes.size());
-
     {
-        const atlas::mesh::HybridElements::Connectivity& elementToNodes = inMesh.cells().node_connectivity();
+        const size_t Nnodes = inNodes.size();
+        const size_t Nelems = inMesh.cells().size();
 
+        eckit::ProgressTimer progress("Building reverse connectivity", Nelems, "element", double(1), eckit::Log::debug<LibMir>());
+
+        auto patched = atlas::array::make_view< int, 1 >(inMesh.cells().field("patch"));
+        for (size_t e = 0; e < Nelems; ++e, ++progress) {
+            for (size_t i = 0; not patched(e) and i < elementsToNodes.cols(e); ++i) {
+                size_t n = elementsToNodes(e, i);
+                ASSERT(n < Nnodes);
+                nodesToElements[n].push_back(e);
+            }
+        }
 
 #if 0
-        const size_t elem_id = close.value().payload();
-        ASSERT(elem_id < connectivity.rows());
-
-        /* assumes:
-         * - nb_cols == 3 implies triangle
-         * - nb_cols == 4 implies quadrilateral
-         * - no other element is supported at the time
-         */
-        const size_t nb_cols = connectivity.cols(elem_id);
-        ASSERT(nb_cols == 3 || nb_cols == 4);
-
-        for (size_t i = 0; i < nb_cols; ++i) {
-            idx[i] = size_t(connectivity(elem_id, i));
-            ASSERT(idx[i] < nbInputPoints);
+        for (auto& elems : nodesToElements) {
+            std::set<size_t> unique(elems.cbegin(), elems.cend());
+            elems.assign(unique.cbegin(), unique.cend());
         }
 #endif
     }
 
 
-
-
-
-
-
-
-
-
-    // generate k-d tree with cell centres
-    eckit::ScopedPtr<element_tree_t> eTree;
-    {
-        eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
-        eckit::TraceTimer<LibMir> timer("k-d tree: create");
-        eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
-    }
+    // generate k-d tree with node indices
+    const util::PointSearch sptree(parametrisation_, in);
 
     double R = 0.;
     if (!in.getLongestElementDiagonal(R)) {
@@ -290,8 +276,6 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
     // some statistics
     const size_t nbInputPoints = inNodes.size();
     const size_t nbOutputPoints = out.numberOfPoints();
-    size_t nbMinElementsSearched = std::numeric_limits<size_t>::max();
-    size_t nbMaxElementsSearched = 0;
     size_t nbMaxProjectionAttempts = 0;
     size_t nbProjections = 0;
     size_t nbFailures = 0;
@@ -304,9 +288,6 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
 
     {
         eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
-
-        const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
-
 
         // output points
         const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
@@ -321,22 +302,25 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
                 // 3D point to lookup
                 repres::Iterator::point_3d_t p(it->point3D());
 
-                // 3D projection, trying elements closest to p first
-                element_tree_t::NodeList closest = eTree->findInSphere(p, R);
+                const util::PointSearch::PointValueType closest = sptree.closestPoint(p);
+                ASSERT(R > util::PointSearch::PointType::distance(closest.point(), p));
+
+                size_t n = closest.payload();
+                ASSERT(n < nbInputPoints);
+
+                ASSERT(nodesToElements[n].size() < 12);
 
                 size_t nbProjectionAttempts;
                 triplet_vector_t triplets = projectPointTo3DElements(
+                            nodesToElements[n],
                             nbInputPoints,
                             icoords,
-                            connectivity,
+                            elementsToNodes,
                             p,
                             ip,
                             firstVirtualPoint,
-                            nbProjectionAttempts,
-                            closest );
+                            nbProjectionAttempts );
 
-                nbMaxElementsSearched = std::max(nbMaxElementsSearched, closest.size());
-                nbMinElementsSearched = std::min(nbMinElementsSearched, closest.size());
                 nbMaxProjectionAttempts = std::max(nbMaxProjectionAttempts, nbProjectionAttempts);
 
                 if (triplets.empty()) {
@@ -357,7 +341,7 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
             << "Projected " << eckit::BigNum(nbProjections)
             << " of " << eckit::Plural(nbOutputPoints, "point")
             << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
-            << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and " << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to " << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
+            << "k-d tree: up to " << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
             << std::endl;
 
     if (nbFailures) {
@@ -367,10 +351,10 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
         size_t count = 0;
         for (const failed_projection_t& f : failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
-            if (++count > 10) {
-                eckit::Log::debug<LibMir>() << "\n\t...";
-                break;
-            }
+//            if (++count > 10) {
+//                eckit::Log::debug<LibMir>() << "\n\t...";
+//                break;
+//            }
         }
         eckit::Log::debug<LibMir>() << std::endl;
         throw eckit::SeriousBug(msg.str());
