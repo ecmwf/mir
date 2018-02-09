@@ -235,6 +235,42 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
     }
 
 
+    // generate node-to-elements connectivity
+    typedef std::vector< size_t > element_indices_t;
+    std::vector< element_indices_t > nodesToElements(inNodes.size());
+
+    {
+        const atlas::mesh::HybridElements::Connectivity& elementToNodes = inMesh.cells().node_connectivity();
+
+
+#if 0
+        const size_t elem_id = close.value().payload();
+        ASSERT(elem_id < connectivity.rows());
+
+        /* assumes:
+         * - nb_cols == 3 implies triangle
+         * - nb_cols == 4 implies quadrilateral
+         * - no other element is supported at the time
+         */
+        const size_t nb_cols = connectivity.cols(elem_id);
+        ASSERT(nb_cols == 3 || nb_cols == 4);
+
+        for (size_t i = 0; i < nb_cols; ++i) {
+            idx[i] = size_t(connectivity(elem_id, i));
+            ASSERT(idx[i] < nbInputPoints);
+        }
+#endif
+    }
+
+
+
+
+
+
+
+
+
+
     // generate k-d tree with cell centres
     eckit::ScopedPtr<element_tree_t> eTree;
     {
