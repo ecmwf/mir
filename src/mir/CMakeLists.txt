@@ -551,6 +551,8 @@ list(
     method/fe/FEBilinear.h
     method/fe/FELinear.cc
     method/fe/FELinear.h
+    method/fe/FELinearFastKDTrees.cc
+    method/fe/FELinearFastKDTrees.h
     method/fe/FiniteElement.cc
     method/fe/FiniteElement.h
     method/fe/Tessellation.cc
