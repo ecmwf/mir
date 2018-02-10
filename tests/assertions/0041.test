@@ -1,14 +1,11 @@
-#
+# MARS request
 param=2t,levtype=sfc
-#
---area=12.4/-25.6/-13.3/23.8 --rotation=-47/10 --grid=.1/.1 --dont-compress-plan
-
+# mir
+--area=12.4/-25.6/-13.3/23.8 --grid=.1/.1 --dont-compress-plan
 # grib_get assertions
 latitudeOfFirstGridPointInDegrees=12.4
 latitudeOfLastGridPointInDegrees=-13.3
 longitudeOfFirstGridPointInDegrees=-25.6
 longitudeOfLastGridPointInDegrees=23.8
-latitudeOfSouthernPoleInDegrees=-47
-longitudeOfSouthernPoleInDegrees=10
 jDirectionIncrementInDegrees=0.1
 iDirectionIncrementInDegrees=0.1
