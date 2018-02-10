@@ -62,7 +62,7 @@ BoundingBox::BoundingBox(const Latitude& north,
 }
 
 
-BoundingBox::BoundingBox(const param::MIRParametrisation &parametrisation) {
+BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
     ASSERT(parametrisation.get("north", north_));
     ASSERT(parametrisation.get("west",  west_ ));
     ASSERT(parametrisation.get("south", south_));
@@ -82,7 +82,7 @@ BoundingBox::~BoundingBox() {
 }
 
 
-void BoundingBox::print(std::ostream &out) const {
+void BoundingBox::print(std::ostream& out) const {
     out << "BoundingBox["
         <<  "north=" << north_
         << ",west=" << west_
@@ -143,22 +143,11 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
-bool BoundingBox::contains(const Latitude& lat, const Longitude& lon, double anglePrecision) const {
-    return (lat.value() <= north_.value() + anglePrecision) &&
-           (lat.value() >= south_.value() - anglePrecision) &&
-            (lon.normalise(west_).value() - anglePrecision <= east_.value() + anglePrecision);
-}
-
-
 void BoundingBox::makeName(std::ostream& out) const {
-    out << "-"
-        << north_
-        << ":"
-        << west_
-        << ":"
-        << south_
-        << ":"
-        << east_;
+    out << "-" << north_
+        << ":" << west_
+        << ":" << south_
+        << ":" << east_;
 }
 
 
