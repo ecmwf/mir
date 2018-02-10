@@ -1,7 +1,7 @@
 #
 param=2t,levtype=sfc
 #
---area=12.4/-25.6/-13.3/23.8 --rotation=-47/10 --grid=.1/.1
+--area=12.4/-25.6/-13.3/23.8 --rotation=-47/10 --grid=.1/.1 --dont-compress-plan
 
 # grib_get assertions
 latitudeOfFirstGridPointInDegrees=12.4
