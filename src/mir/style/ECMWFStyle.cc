@@ -353,7 +353,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("intgrid", "none");
 
-    Resol resol(parametrisation_);
+    Resol resol(runtime);
     eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion

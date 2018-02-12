@@ -21,6 +21,7 @@
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/SpectralOrder.h"
+#include "mir/style/truncation/Ordinal.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -31,7 +32,6 @@ namespace style {
 
 Resol::Resol(const param::MIRParametrisation& parametrisation) :
     parametrisation_(parametrisation) {
-    std::string value;
 
     // Get input truncation and a Gaussian grid number based on input (truncation) and output (grid)
     inputTruncation_ = 0;
@@ -43,9 +43,9 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
 
     // Setup intermediate grid (before truncation)
     // NOTE: truncation can depend on the intermediate grid Gaussian number
-    value = "automatic";
-    parametrisation_.userParametrisation().get("intgrid", value);
-    intgrid_.reset(IntgridFactory::build(value, parametrisation_, N));
+    std::string intgrid = "automatic";
+    parametrisation_.userParametrisation().get("intgrid", intgrid);
+    intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
     ASSERT(intgrid_);
 
     const std::string Gi = intgrid_->gridname();
@@ -55,9 +55,15 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
     }
 
     // Setup truncation
-    value = "automatic";
-    parametrisation_.userParametrisation().get("truncation", value);
-    truncation_.reset(TruncationFactory::build(value, parametrisation_, N));
+    // NOTE: number takes priority over possible names
+    long T = 0;
+    if (parametrisation_.userParametrisation().get("truncation", T) && T > 0) {
+        truncation_.reset(new truncation::Ordinal(T, parametrisation_));
+    } else {
+        std::string name = "automatic";
+        parametrisation_.userParametrisation().get("truncation", name);
+        truncation_.reset(TruncationFactory::build(name, parametrisation_, N));
+    }
     ASSERT(truncation_);
 }
 
