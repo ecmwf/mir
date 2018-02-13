@@ -25,7 +25,7 @@ ProdgenHeaders::ProdgenHeaders(const std::string& name):
 
     }
 
-void ProdgenHeaders::execute(const param::MIRParametrisation&, grib_info& info) const {
+void ProdgenHeaders::execute(const param::MIRParametrisation&, grib_handle*, grib_info& info) const {
     info.packing.deleteLocalDefinition = 1;
 }
 

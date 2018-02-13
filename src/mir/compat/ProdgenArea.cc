@@ -15,7 +15,9 @@
 
 #include "mir/compat/ProdgenArea.h"
 #include "mir/util/Grib.h"
+#include "mir/param/MIRParametrisation.h"
 
+// TODO: move to prodgen
 
 namespace mir {
 namespace compat {
@@ -23,11 +25,34 @@ namespace compat {
 ProdgenArea::ProdgenArea(const std::string& name):
     GribCompatibility(name) {
 
+}
+
+void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, grib_info& info) const {
+
+    double d;
+
+    switch (info.grid.grid_type) {
+
+    case GRIB_UTIL_GRID_SPEC_REGULAR_LL:
+
+        if (info.grid.longitudeOfLastGridPointInDegrees > 180) {
+            info.grid.longitudeOfLastGridPointInDegrees -= 360;
+        }
+
+        break;
+
+
+    case GRIB_UTIL_GRID_SPEC_REDUCED_GG:
+
+        if (param.userParametrisation().get("user-east", d)) {
+            info.grid.longitudeOfLastGridPointInDegrees = d;
+        }
+
+        break;
+
     }
 
-void ProdgenArea::execute(const param::MIRParametrisation&, grib_info& info) const {
-    info.packing.deleteLocalDefinition = 1;
-	NOTIMP;
+
 }
 
 void ProdgenArea::print(std::ostream& out) const {

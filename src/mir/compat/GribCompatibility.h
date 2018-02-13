@@ -20,6 +20,7 @@
 #include "eckit/memory/NonCopyable.h"
 
 struct grib_info;
+struct grib_handle;
 
 
 namespace mir {
@@ -38,7 +39,7 @@ public:
 
     static const GribCompatibility& lookup(const std::string& name);
 
-    virtual void execute(const param::MIRParametrisation&, grib_info&) const = 0;
+    virtual void execute(const param::MIRParametrisation&, grib_handle*, grib_info&) const = 0;
 
     static void list(std::ostream& out);
 

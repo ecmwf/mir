@@ -30,7 +30,7 @@ public:
 
 private:
 
-    virtual void execute(const param::MIRParametrisation&, grib_info&) const;
+    virtual void execute(const param::MIRParametrisation&, grib_handle*, grib_info&) const;
     virtual void print(std::ostream&) const;
 
 
