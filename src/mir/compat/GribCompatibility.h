@@ -17,11 +17,16 @@
 
 #include <iosfwd>
 #include <string>
+#include <map>
+
 #include "eckit/memory/NonCopyable.h"
 
 struct grib_info;
 struct grib_handle;
 
+namespace metkit {
+class MarsRequest;
+}
 
 namespace mir {
 namespace param {
@@ -38,10 +43,18 @@ class GribCompatibility : private eckit::NonCopyable {
 public:
 
 
-    virtual void execute(const param::MIRParametrisation&, grib_handle*, grib_info&) const = 0;
-    virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const = 0;
+    virtual void execute(const param::MIRParametrisation&,
+                         grib_handle*,
+                         grib_info&) const = 0;
+
+    virtual void printParametrisation(std::ostream& out,
+                                      const param::MIRParametrisation &param) const = 0;
+
     virtual bool sameParametrisation(const param::MIRParametrisation &param1,
                                      const param::MIRParametrisation &param2) const = 0;
+
+    virtual void initialise(const metkit::MarsRequest& request,
+                            std::map<std::string, std::string>& postproc) const = 0;
 
 
     static const GribCompatibility& lookup(const std::string& name);
