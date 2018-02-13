@@ -36,6 +36,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/PointSearch.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -207,21 +208,17 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
                                    const repres::Representation& out) const {
     eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
-    auto inputMeshGenerationParams = inputMeshGenerationParams_;
-    auto outputMeshGenerationParams = outputMeshGenerationParams_;
 
-    // let representations set the mesh generator
-    if (inputMeshGenerationParams.meshGenerator_ == "") {
-        inputMeshGenerationParams.meshGenerator_ = in.atlasMeshGenerator();
-    }
+    // let the representation set the mesh generator
+    util::MeshGeneratorParameters inputMeshGenerationParams = inputMeshGenerationParams_;
+    in.fill(inputMeshGenerationParams);
+    parametrisation_.userParametrisation().get("input-mesh-generator", inputMeshGenerationParams.meshGenerator_);
+    parametrisation_.userParametrisation().get("input-mesh-file", inputMeshGenerationParams.file_);
 
-    if (outputMeshGenerationParams.meshGenerator_ == "") {
-        outputMeshGenerationParams.meshGenerator_ = out.atlasMeshGenerator();
-    }
+    ASSERT(!inputMeshGenerationParams.meshGenerator_.empty());
 
 
     // get input mesh (cell centres are required for the k-d tree)
-    ASSERT(inputMeshGenerationParams.meshCellCentres_);
     util::MIRGrid gin(in.atlasGrid());
     const atlas::Mesh& inMesh = gin.mesh(statistics, inputMeshGenerationParams);
     const util::Domain& inDomain = in.domain();
@@ -233,26 +230,6 @@ void FELinearFastKDTrees::assemble(util::MIRStatistics& statistics,
     if (inNodes.metadata().has("NbRealPts")) {
         firstVirtualPoint = inNodes.metadata().get<size_t>("NbRealPts");
     }
-
-
-
-    // build point-search tree
-
-
-
-
-#if 0
-    pTree_.reset(new PointIndex3);
-
-
-    for (size_t ip = 0; ip < meshSource.nodes().size(); ++ip) {
-        PointIndex3::Point p{coords(ip,0),coords(ip,1),coords(ip,2)};
-        pTree_->insert(PointIndex3::Value(p, ip));
-    }
-
-#endif
-
-
 
 
     // generate nodes-to-elements/elements-to-nodes connectivity

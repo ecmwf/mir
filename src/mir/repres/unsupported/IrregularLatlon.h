@@ -99,9 +99,11 @@ private:
 
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
+
     virtual void fill(grib_info&) const;
+    virtual void fill(util::MeshGeneratorParameters&) const;
+
     virtual atlas::Grid atlasGrid() const;
-    virtual std::string atlasMeshGenerator() const;
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;
     virtual bool isPeriodicWestEast() const;

@@ -26,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -90,13 +91,18 @@ bool UnstructuredGrid::sameAs(const Representation& other) const {
 }
 
 
-void UnstructuredGrid::fill(grib_info &info) const  {
+void UnstructuredGrid::fill(grib_info& info) const  {
     NOTIMP;
 }
 
 
-void UnstructuredGrid::fill(api::MIRJob &job) const  {
+void UnstructuredGrid::fill(api::MIRJob& job) const  {
     NOTIMP;
+}
+
+
+void UnstructuredGrid::fill(util::MeshGeneratorParameters& parameters) const {
+    parameters.meshGenerator_ = "delaunay";
 }
 
 
@@ -124,11 +130,6 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
     }
 
     return atlas::grid::UnstructuredGrid(pts);
-}
-
-
-std::string UnstructuredGrid::atlasMeshGenerator() const {
-    return "delaunay";
 }
 
 

@@ -97,7 +97,7 @@ private:
 
     // -- Overridden methods
 
-    virtual std::string atlasMeshGenerator() const;
+    void fill(util::MeshGeneratorParameters&) const;
 
     // -- Class members
     // None

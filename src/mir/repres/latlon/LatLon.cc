@@ -26,6 +26,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -138,6 +139,11 @@ void LatLon::fill(api::MIRJob& job) const {
 }
 
 
+void LatLon::fill(util::MeshGeneratorParameters& parameters) const {
+    parameters.meshGenerator_ = "structured";
+}
+
+
 void LatLon::makeName(std::ostream& out) const {
     out << "LL";
     increments_.makeName(out);
@@ -245,11 +251,6 @@ Representation* LatLon::globalise(data::MIRField& field) const {
     field.hasMissing(true);
 
     return newll.release();
-}
-
-
-std::string LatLon::atlasMeshGenerator() const {
-    return "structured";
 }
 
 

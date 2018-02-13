@@ -29,6 +29,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
@@ -137,17 +138,32 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     //    IM.save("IM.mat");
 
 
+    // let the representations set the mesh generator, override with user options
+    util::MeshGeneratorParameters inputMeshGenerationParams = inputMeshGenerationParams_;
+    in.fill(inputMeshGenerationParams);
+    parametrisation_.userParametrisation().get("input-mesh-generator", inputMeshGenerationParams.meshGenerator_);
+    parametrisation_.userParametrisation().get("input-mesh-file", inputMeshGenerationParams.file_);
+
+    util::MeshGeneratorParameters outputMeshGenerationParams = outputMeshGenerationParams_;
+    out.fill(outputMeshGenerationParams);
+    parametrisation_.userParametrisation().get("output-mesh-generator", outputMeshGenerationParams.meshGenerator_);
+    parametrisation_.userParametrisation().get("output-mesh-file", outputMeshGenerationParams.file_);
+
+    ASSERT(!inputMeshGenerationParams.meshGenerator_.empty());
+    ASSERT(!outputMeshGenerationParams.meshGenerator_.empty());
+
+
     // 2) M_s compute the lumped mass matrix (source mesh)
     util::MIRGrid gin(in.atlasGrid());
     eckit::linalg::Vector M_s(in.numberOfPoints());
-    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams_);
+    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams);
     computeLumpedMassMatrix(M_s, inputMesh);
 
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
     util::MIRGrid gout(out.atlasGrid());
     eckit::linalg::Vector M_d(out.numberOfPoints());
-    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams_);
+    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams);
     computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
         v = 1. / v;
@@ -188,6 +204,7 @@ const char* Conservative::name() const {
 
 void Conservative::hash(eckit::MD5& md5) const {
     FELinear::hash(md5);
+    outputMeshGenerationParams_.hash(md5);
     md5.add(name());
 }
 

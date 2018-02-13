@@ -21,6 +21,7 @@
 #include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -135,6 +136,11 @@ void IrregularLatlon::fill(grib_info &info) const  {
 }
 
 
+void IrregularLatlon::fill(util::MeshGeneratorParameters& parameters) const {
+    parameters.meshGenerator_ = "delaunay";
+}
+
+
 util::Domain IrregularLatlon::domain() const {
     return util::Domain(includesNorthPole() ? Latitude::NORTH_POLE.value() : north_,
                         west_,
@@ -228,12 +234,6 @@ atlas::Grid IrregularLatlon::atlasGrid() const {
     }
 
     return atlas::grid::UnstructuredGrid(pts);
-}
-
-
-std::string IrregularLatlon::atlasMeshGenerator() const {
-    return "delaunay";
-//FIXME    return "structured";
 }
 
 

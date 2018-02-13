@@ -22,6 +22,7 @@
 #include "eckit/thread/Once.h"
 #include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -124,8 +125,10 @@ bool Gaussian::isPeriodicWestEast() const {
 }
 
 
-std::string Gaussian::atlasMeshGenerator() const {
-    return "structured";
+void Gaussian::fill(util::MeshGeneratorParameters& parameters) const {
+    parameters.meshGenerator_ = "structured";
+    parameters.patchNorthPole_ = includesNorthPole();
+    parameters.patchSouthPole_ = includesSouthPole();
 }
 
 

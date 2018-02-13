@@ -43,6 +43,7 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
+class MeshGeneratorParameters;
 }
 
 namespace context {
@@ -102,6 +103,7 @@ public:
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
+    virtual void fill(util::MeshGeneratorParameters&) const;
 
     // Return a cropped version
     virtual const Representation* cropped(const util::BoundingBox&) const;
@@ -115,7 +117,6 @@ public:
     virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
 
     virtual atlas::Grid atlasGrid() const;
-    virtual std::string atlasMeshGenerator() const;
 
     virtual util::Domain domain() const;
     virtual void adjustBoundingBox(util::BoundingBox&) const;

@@ -73,8 +73,8 @@ protected:
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-
     virtual void fill(api::MIRJob&) const;
+    void fill(util::MeshGeneratorParameters&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
 
@@ -92,7 +92,6 @@ protected:
     virtual bool getLongestElementDiagonal(double&) const;
 
     virtual Representation* globalise(data::MIRField&) const;
-    virtual std::string atlasMeshGenerator() const;
 
     const LatLon* cropped(const util::BoundingBox&) const;
 

@@ -14,14 +14,13 @@
 /// @date   May 2016
 
 
-#ifndef mir_method_MIRGrid_h
-#define mir_method_MIRGrid_h
+#ifndef mir_util_MIRGrid_h
+#define mir_util_MIRGrid_h
 
-#include <string>
-#include <vector>
 #include "atlas/grid/Grid.h"
 #include "atlas/meshgenerator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace eckit {
@@ -44,27 +43,6 @@ namespace util {
 class MIRGrid {
 public:
 
-    // -- Types
-
-    // Deriving from any eckit::Parametrisation should work
-    class MeshGenParams : public atlas::MeshGenerator::Parameters {
-    public:
-        MeshGenParams();
-        MeshGenParams(const std::string& label, const param::MIRParametrisation&);
-        void hash(eckit::MD5&) const;
-        void print(std::ostream&) const;
-        std::string meshGenerator_;
-        bool meshParallelEdgesConnectivity_;
-        bool meshXYZField_;
-        bool meshCellCentres_;
-        std::string file_;
-    private:
-        friend std::ostream& operator<<(std::ostream& s, const MeshGenParams& p) {
-            p.print(s);
-            return s;
-        }
-    };
-
     // -- Contructors
 
     explicit MIRGrid(const atlas::Grid&);
@@ -73,7 +51,7 @@ public:
 
     // -- Methods
 
-    const atlas::Mesh& mesh(MIRStatistics&, const MeshGenParams&) const;
+    const atlas::Mesh& mesh(MIRStatistics&, const MeshGeneratorParameters&) const;
     const atlas::Mesh& mesh() const;
     double getMeshLongestElementDiagonal() const;
 
@@ -85,11 +63,11 @@ private:
 
     atlas::Grid grid_;
     mutable atlas::Mesh mesh_;
-    mutable MeshGenParams meshGenParams_;
+    mutable MeshGeneratorParameters meshGenParams_;
 
     // -- Methods
 
-    atlas::Mesh generateMeshAndCache(MIRStatistics&, const MeshGenParams&) const;
+    atlas::Mesh generateMeshAndCache(MIRStatistics&, const MeshGeneratorParameters&) const;
 
 };
 

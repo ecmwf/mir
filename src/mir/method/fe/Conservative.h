@@ -55,6 +55,8 @@ private:
     void print(std::ostream&) const;
     const char* name() const;
 
+    util::MeshGeneratorParameters outputMeshGenerationParams_;
+
 };
 
 

@@ -18,7 +18,7 @@
 #define mir_method_fe_FiniteElement_h
 
 #include "mir/method/MethodWeighted.h"
-#include "mir/util/MIRGrid.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -47,10 +47,7 @@ protected: // methods
 
 protected: // members
 
-    util::MIRGrid::MeshGenParams inputMeshGenerationParams_;
-
-    // FIXME: this does not belong in that class
-    util::MIRGrid::MeshGenParams outputMeshGenerationParams_;
+    util::MeshGeneratorParameters inputMeshGenerationParams_;
 
 };
 

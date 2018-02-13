@@ -24,6 +24,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -139,6 +140,11 @@ void ReducedLL::fill(api::MIRJob& job) const  {
 }
 
 
+void ReducedLL::fill(util::MeshGeneratorParameters& parameters) const {
+    parameters.meshGenerator_ = "structured";
+}
+
+
 atlas::Grid ReducedLL::atlasGrid() const {
     const util::Domain dom = domain();
 
@@ -146,11 +152,6 @@ atlas::Grid ReducedLL::atlasGrid() const {
     atlas::grid::StructuredGrid::YSpace yspace( atlas::grid::LinearSpacing( { {dom.north().value(), dom.south().value()} }, pl_.size()));
 
     return atlas::grid::StructuredGrid(xspace, yspace);
-}
-
-
-std::string ReducedLL::atlasMeshGenerator() const {
-    return "structured";
 }
 
 
