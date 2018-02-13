@@ -310,6 +310,12 @@ list(
     output/GribMemoryOutput.h
     output/GribOutput.cc
     output/GribOutput.h
+    compat/GribCompatibility.cc
+    compat/GribCompatibility.h
+    compat/ProdgenArea.cc
+    compat/ProdgenArea.h
+    compat/ProdgenHeaders.cc
+    compat/ProdgenHeaders.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
     output/MIROutput.cc
