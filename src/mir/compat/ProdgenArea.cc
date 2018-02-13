@@ -29,6 +29,14 @@ ProdgenArea::ProdgenArea(const std::string& name):
 
 void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, grib_info& info) const {
 
+    eckit::Log::info() << "BEFORE ProdgenArea::execute "
+                       << info.grid.latitudeOfFirstGridPointInDegrees << "/"
+                       << info.grid.longitudeOfFirstGridPointInDegrees << "/"
+                       << info.grid.latitudeOfLastGridPointInDegrees << "/"
+                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid=" 
+                       << info.grid.grid_type
+                       << std::endl;
+
     double d;
     std::ostringstream oss;
 
@@ -62,11 +70,13 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
     info.grid.latitudeOfLastGridPointInDegrees = long(10000 * info.grid.latitudeOfLastGridPointInDegrees) / 10000.0;
     info.grid.latitudeOfFirstGridPointInDegrees = long(10000 * info.grid.latitudeOfFirstGridPointInDegrees) / 10000.0;
 
-    eckit::Log::info() << "ProdgenArea::execute "
+    eckit::Log::info() << "AFTER ProdgenArea::execute "
                        << info.grid.latitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.longitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.latitudeOfLastGridPointInDegrees << "/"
-                       << info.grid.longitudeOfLastGridPointInDegrees << std::endl;
+                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid=" 
+                       << info.grid.grid_type
+                       << std::endl;
 }
 
 void ProdgenArea::print(std::ostream& out) const {
