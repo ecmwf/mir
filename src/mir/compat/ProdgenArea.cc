@@ -33,8 +33,9 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
                        << info.grid.latitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.longitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.latitudeOfLastGridPointInDegrees << "/"
-                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid=" 
+                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid="
                        << info.grid.grid_type
+                       << " param=" << param
                        << std::endl;
 
     double d;
@@ -42,6 +43,7 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
 
     switch (info.grid.grid_type) {
 
+    case GRIB_UTIL_GRID_SPEC_ROTATED_LL:
     case GRIB_UTIL_GRID_SPEC_REGULAR_LL:
 
         if (info.grid.longitudeOfLastGridPointInDegrees > 180) {
@@ -50,13 +52,26 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
 
         break;
 
+    case GRIB_UTIL_GRID_SPEC_REGULAR_GG:
+    case GRIB_UTIL_GRID_SPEC_ROTATED_GG:
+        break;
 
     case GRIB_UTIL_GRID_SPEC_REDUCED_GG:
+    case GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG:
 
         ASSERT (param.userParametrisation().get("user-east", d));
         info.grid.longitudeOfLastGridPointInDegrees = d;
 
+        eckit::Log::info() << "AFTER ProdgenArea::execute user-east " << d << std::endl;
         break;
+
+    case GRIB_UTIL_GRID_SPEC_SH:
+        break;
+
+
+    case  GRIB_UTIL_GRID_SPEC_REDUCED_LL:
+        break;
+
 
     default:
         oss << "ProdgenArea::execute grid_type " << info.grid.grid_type;
@@ -74,7 +89,7 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
                        << info.grid.latitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.longitudeOfFirstGridPointInDegrees << "/"
                        << info.grid.latitudeOfLastGridPointInDegrees << "/"
-                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid=" 
+                       << info.grid.longitudeOfLastGridPointInDegrees <<  " grid="
                        << info.grid.grid_type
                        << std::endl;
 }
