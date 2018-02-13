@@ -30,6 +30,7 @@ ProdgenArea::ProdgenArea(const std::string& name):
 void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, grib_info& info) const {
 
     double d;
+    std::ostringstream oss;
 
     switch (info.grid.grid_type) {
 
@@ -47,6 +48,11 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
         ASSERT (param.userParametrisation().get("user-east", d));
         info.grid.longitudeOfLastGridPointInDegrees = d;
 
+        break;
+
+    default:
+        oss << "ProdgenArea::execute grid_type " << info.grid.grid_type;
+        throw eckit::SeriousBug(oss.str());
         break;
 
     }
