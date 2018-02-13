@@ -44,9 +44,8 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
 
     case GRIB_UTIL_GRID_SPEC_REDUCED_GG:
 
-        if (param.userParametrisation().get("user-east", d)) {
-            info.grid.longitudeOfLastGridPointInDegrees = d;
-        }
+        ASSERT (param.userParametrisation().get("user-east", d));
+        info.grid.longitudeOfLastGridPointInDegrees = d;
 
         break;
 
