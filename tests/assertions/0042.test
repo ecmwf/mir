@@ -1,0 +1,5 @@
+# MARS request
+param=t,level=1000
+# mir
+--area=37.6025/-114.8907/27.7626/-105.1875 --gridname=O1280 --dont-compress-plan
+# grib_get assertions
