@@ -62,6 +62,11 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
     info.grid.latitudeOfLastGridPointInDegrees = long(10000 * info.grid.latitudeOfLastGridPointInDegrees) / 10000.0;
     info.grid.latitudeOfFirstGridPointInDegrees = long(10000 * info.grid.latitudeOfFirstGridPointInDegrees) / 10000.0;
 
+    eckit::Log::info() << "ProdgenArea::execute "
+                       << info.grid.latitudeOfFirstGridPointInDegrees << "/"
+                       << info.grid.longitudeOfFirstGridPointInDegrees << "/"
+                       << info.grid.latitudeOfLastGridPointInDegrees << "/"
+                       << info.grid.longitudeOfLastGridPointInDegrees << std::endl;
 }
 
 void ProdgenArea::print(std::ostream& out) const {
