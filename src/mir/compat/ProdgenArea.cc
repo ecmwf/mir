@@ -52,6 +52,10 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
 
     }
 
+    info.grid.longitudeOfLastGridPointInDegrees = long(10000 * info.grid.longitudeOfLastGridPointInDegrees) / 10000.0;
+    info.grid.longitudeOfFirstGridPointInDegrees = long(10000 * info.grid.longitudeOfFirstGridPointInDegrees) / 10000.0;
+    info.grid.latitudeOfLastGridPointInDegrees = long(10000 * info.grid.latitudeOfLastGridPointInDegrees) / 10000.0;
+    info.grid.latitudeOfFirstGridPointInDegrees = long(10000 * info.grid.latitudeOfFirstGridPointInDegrees) / 10000.0;
 
 }
 
