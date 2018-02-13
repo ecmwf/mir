@@ -27,6 +27,9 @@ ProdgenArea::ProdgenArea(const std::string& name):
 
 }
 
+
+
+
 void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, grib_info& info) const {
 
     eckit::Log::info() << "BEFORE ProdgenArea::execute "
@@ -94,7 +97,78 @@ void ProdgenArea::execute(const param::MIRParametrisation& param, grib_handle*, 
                        << std::endl;
 }
 
-void ProdgenArea::print(std::ostream& out) const {
+void ProdgenArea::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+
+    double d;
+
+    if (param.userParametrisation().get("user-north", d)) {
+        out << ",user-north=" << d;
+    }
+
+    if (param.userParametrisation().get("user-west", d)) {
+        out << ",user-west=" << d;
+    }
+
+    if (param.userParametrisation().get("user-south", d)) {
+        out << ",user-south=" << d;
+    }
+    if (param.userParametrisation().get("user-east", d)) {
+        out << ",user-east=" << d;
+    }
+}
+
+bool ProdgenArea::sameParametrisation(const param::MIRParametrisation & param1,
+                                      const param::MIRParametrisation & param2) const {
+
+    double d1, d2;
+
+
+    d1 = d2 = 0;
+
+    if (param1.userParametrisation().get("user-north", d1) != param2.userParametrisation().get("user-north", d2)) {
+        return false;
+    }
+
+    if (d1 != d2) {
+        return false;
+    }
+
+    d1 = d2 = 0;
+
+    if (param1.userParametrisation().get("user-west", d1) != param2.userParametrisation().get("user-west", d2)) {
+        return false;
+    }
+
+    if (d1 != d2) {
+        return false;
+    }
+    
+    d1 = d2 = 0;
+
+    if (param1.userParametrisation().get("user-south", d1) != param2.userParametrisation().get("user-south", d2)) {
+        return false;
+    }
+
+    if (d1 != d2) {
+        return false;
+    }
+
+    d1 = d2 = 0;
+
+    if (param1.userParametrisation().get("user-east", d1) != param2.userParametrisation().get("user-east", d2)) {
+        return false;
+    }
+
+    if (d1 != d2) {
+        return false;
+    }
+
+    return true;
+}
+
+
+
+void ProdgenArea::print(std::ostream & out) const {
     out << "prodgen-areas";
 }
 

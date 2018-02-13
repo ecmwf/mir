@@ -23,7 +23,7 @@ namespace compat {
 ProdgenHeaders::ProdgenHeaders(const std::string& name):
     GribCompatibility(name) {
 
-    }
+}
 
 void ProdgenHeaders::execute(const param::MIRParametrisation&, grib_handle*, grib_info& info) const {
     info.packing.deleteLocalDefinition = 1;
@@ -31,6 +31,14 @@ void ProdgenHeaders::execute(const param::MIRParametrisation&, grib_handle*, gri
 
 void ProdgenHeaders::print(std::ostream& out) const {
     out << "no-local-extension";
+}
+
+void ProdgenHeaders::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+}
+
+bool ProdgenHeaders::sameParametrisation(const param::MIRParametrisation &param1,
+        const param::MIRParametrisation &param2) const {
+    return true;
 }
 
 static ProdgenHeaders instance("no-local-extension");

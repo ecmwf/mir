@@ -25,14 +25,16 @@ namespace compat {
 class ProdgenHeaders : public GribCompatibility {
 public:
 
-    ProdgenHeaders(const std::string&);
+	ProdgenHeaders(const std::string&);
 
 
 private:
 
-    virtual void execute(const param::MIRParametrisation&, grib_handle*, grib_info&) const;
-    virtual void print(std::ostream&) const;
-
+	virtual void execute(const param::MIRParametrisation&, grib_handle*, grib_info&) const;
+	virtual void print(std::ostream&) const;
+	virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
+	virtual bool sameParametrisation(const param::MIRParametrisation &param1,
+	                                 const param::MIRParametrisation &param2) const;
 
 };
 
