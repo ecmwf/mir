@@ -1,0 +1,83 @@
+:
+
+set -eaux
+
+echo "======> $1"
+
+t=$(basename $1)
+
+mir="@MIR_TOOL@"
+mir_compare="@MIR_COMPARE@"
+grib_get="@GRIB_GET@"
+grib_compare="@GRIB_COMPARE@"
+mars_script="@MARS_SCRIPT@"
+
+tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
+tmp_assertions_dir="@CMAKE_CURRENT_BINARY_DIR@"
+
+pwd
+ok=0
+
+state=mars
+while read n
+do
+    if [[ "$n" = "" ]]
+    then
+        continue
+    fi
+    echo $n
+    case $n in
+        \#*)
+            ;;
+
+        *)
+        case $state in
+
+            mars)
+            ok=0
+            m=$(echo $n | tr '/' '_')
+            if [[ -f "${tests_assertions_dir}/$m" ]]
+            then
+                ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
+            elif [[ -f "${tmp_assertions_dir}/$m" ]]
+            then
+                ln -sf "${tmp_assertions_dir}/$m" data.in.$t && ok=1
+            else
+                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+                $mars_script mars.r.$t || rm data.in.$t
+                cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
+            fi
+            state=mir
+            ;;
+
+            mir)
+            ok=0
+            eval n=\"$n\"
+            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
+            state=eccodes
+            ;;
+
+            eccodes)
+            ok=0
+            set $(echo $n | tr '=' ' ')
+            g=$($grib_get -wcount=1  -p $1 data.out.$t)
+            if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
+            then
+                echo "$1: expected [$2], got [$g]" 1>&2
+                exit 1
+            fi
+            ok=1
+            ;;
+
+        esac
+        ;;
+
+
+    esac
+done < $1
+
+if [[ $ok -ne 1 ]]
+then
+    echo "No assertions defined"
+    exit 1
+fi

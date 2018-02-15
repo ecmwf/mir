@@ -1,0 +1,6 @@
+# MARS request
+param=q,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
+# MIR options
+--resol=auto --grid=0.5/0.5 --area=31/-57.5/-30.5/34 --bitmap=ilamrot.bit --rotation=-32.5/10
+# grib_get assertions
+

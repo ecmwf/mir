@@ -1,0 +1,6 @@
+# MARS request
+param=q,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
+# MIR options
+--resol=auto --grid=f140 --area=26.6309703990471/55.92857118/-24.7058404746344/58.49999974
+# grib_get assertions
+
