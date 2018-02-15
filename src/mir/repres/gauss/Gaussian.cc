@@ -41,18 +41,21 @@ static void init() {
 
 Gaussian::Gaussian(size_t N) :
     N_(N) {
+    adjustBoundingBoxLatitudes();
 }
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
+    adjustBoundingBoxLatitudes();
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
+    adjustBoundingBoxLatitudes();
 }
 
 
@@ -66,55 +69,40 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-void Gaussian::adjustBoundingBoxNorthSouth(util::BoundingBox& bbox) const {
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
-    bool adjustedNorth = false;
-    bool adjustedSouth = false;
-
+void Gaussian::adjustBoundingBoxLatitudes() {
     const std::vector<double>& lats = latitudes();
-    ASSERT(lats.size() >= 2);
+    Latitude n = bbox_.north();
+    Latitude s = bbox_.south();
 
-    auto range = std::minmax_element(lats.begin(), lats.end());
-    ASSERT(*(range.first) < *(range.second));
-
-    if (n > *(range.second)) {
-        adjustedNorth = true;
-        n = *range.second;
-    }
-    if (s < *(range.first)) {
-        adjustedSouth = true;
-        s = *range.first;
-    }
-
-    for (const double& l : lats) {
-        if (!adjustedNorth && bbox.north().sameWithGrib1Accuracy(l)) {
-            adjustedNorth = true;
-            n = l;
-        }
-        if (!adjustedSouth && bbox.south().sameWithGrib1Accuracy(l)) {
-            adjustedSouth = true;
-            s = l;
-        }
-        if (adjustedNorth && adjustedSouth) {
-            break;
-        }
+    if (n < lats.back()) {
+        n = lats.back();
+    } else {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n.value(),
+                                     [](const Latitude& l1, const Latitude& l2) {
+            return !(l1 < l2 || l1.sameWithGrib1Accuracy(l2));
+        });
+        ASSERT(best != lats.end());
+        n = *best;
     }
 
-    bbox = util::BoundingBox(n, bbox.west(), s, bbox.east());
-}
+    if (s > lats.front()) {
+        s = lats.front();
+    } else {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s.value(),
+                                     [](const Latitude& l1, const Latitude& l2) {
+            return !(l1 > l2 || l1.sameWithGrib1Accuracy(l2));
+        });
+        ASSERT(best != lats.rend());
+        s = *best;
+    }
 
-
-void Gaussian::adjustBoundingBox(util::BoundingBox& bbox) const {
-    adjustBoundingBoxNorthSouth(bbox);
-    adjustBoundingBoxEastWest(bbox);
+    ASSERT(!s.sameWithGrib1Accuracy(n));
+    bbox_ = util::BoundingBox(n, bbox_.west(), s, bbox_.east());
 }
 
 
 bool Gaussian::includesNorthPole() const {
     const std::vector<double>& lats = latitudes();
-    ASSERT(lats.size() >= 2);
-
     return  bbox_.north().sameWithGrib1Accuracy(lats.front()) ||
             bbox_.north() > lats.front();
 }
@@ -122,8 +110,6 @@ bool Gaussian::includesNorthPole() const {
 
 bool Gaussian::includesSouthPole() const {
     const std::vector<double>& lats = latitudes();
-    ASSERT(lats.size() >= 2);
-
     return  bbox_.south().sameWithGrib1Accuracy(lats.back()) ||
             bbox_.south() < lats.back();
 }
@@ -150,11 +136,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(N);
     auto latitudesIt = m->find(N);
     if (latitudesIt == m->end()) {
-
-        std::ostringstream oss;
-        oss << "Gaussian latitudes " << N;
-
-        eckit::Timer timer(oss.str());
+        eckit::Timer timer("Gaussian latitudes " + std::to_string(N));
 
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
@@ -163,8 +145,18 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
         m->operator[](N) = latitudes;
         latitudesIt = m->find(N);
     }
-
     ASSERT(latitudesIt != m->end());
+
+
+    // these are the assumptions we expect from the Gaussian latitudes values
+    ASSERT(latitudesIt->second.size() >= 2);
+    ASSERT(std::is_sorted(
+               latitudesIt->second.begin(),
+               latitudesIt->second.end(),
+               [](const double& a, const double& b) {
+        return a > b;
+    } ));
+
     return (*latitudesIt).second;
 }
 

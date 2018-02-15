@@ -110,7 +110,6 @@ private:
 
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
-    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const;
     eckit::Fraction getSmallestIncrement() const;
 
     // -- Class members

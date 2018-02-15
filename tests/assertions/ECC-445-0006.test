@@ -4,7 +4,7 @@ param=2t,levtype=sfc
 --gridname=f160 --area=71.8/-10.66/34.56/32.6
 # grib_get assertions
 numberOfValues=5082
-latitudeOfFirstGridPointInDegrees=71.8
+latitudeOfFirstGridPointInDegrees=71.607
 longitudeOfFirstGridPointInDegrees=-10.66
-latitudeOfLastGridPointInDegrees=34.56
+latitudeOfLastGridPointInDegrees=35.101
 longitudeOfLastGridPointInDegrees=32.6
