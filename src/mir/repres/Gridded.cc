@@ -32,23 +32,11 @@ Gridded::Gridded() {}
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
     bbox_(parametrisation) {
     const util::BoundingBox bbox(bbox_);
-
-    adjustBoundingBox(bbox_);
-
-    if (bbox_ != bbox) {
-        eckit::Log::debug<LibMir>() << "Gridded: " << bbox << " adjusted to " << bbox_ << std::endl;
-    }
 }
 
 
 Gridded::Gridded(const util::BoundingBox& bbox) :
     bbox_(bbox) {
-
-    adjustBoundingBox(bbox_);
-
-    if (bbox_ != bbox) {
-        eckit::Log::debug<LibMir>() << "Gridded: " << bbox << " adjusted to " << bbox_ << std::endl;
-    }
 }
 
 
