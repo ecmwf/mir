@@ -178,6 +178,7 @@ intensity:
 - 141  # Snow depth
 - 148  # Charnock
 - 151  # Mean sea level pressure
+- 152  # Logarithm of surface pressure
 - 153  # Short-wave heating rate
 - 154  # Long-wave heating rate
 - 155  # Divergence
@@ -208,6 +209,7 @@ intensity:
 - 202  # Minimum temperature at 2 metres since previous post-processing
 - 206  # Total column ozone
 - 207  # 10 metre wind speed
+- 213  # Vertically integrated moisture divergence
 - 214  # Diabatic heating by radiation
 - 215  # Diabatic heating by vertical diffusion
 - 216  # Diabatic heating by cumulus convection
@@ -218,11 +220,13 @@ intensity:
 - 221  # North-South gravity wave drag tendency
 - 222  # Convective tendency of zonal wind
 - 223  # Convective tendency of meridional wind
+- 234  # Logarithm of surface roughness length for heat
 - 235  # Skin temperature
 - 236  # Soil temperature level 4
 - 237  # Soil wetness level 4
 - 238  # Temperature of snow layer
 - 244  # Forecast surface roughness
+- 245  # Forecast logarithm of surface roughness for heat
 - 251  # Adiabatic tendency of temperature
 - 253  # Adiabatic tendency of zonal wind
 - 254  # Adiabatic tendency of meridional wind
@@ -541,6 +545,17 @@ intensity:
 - 160226  # Standard deviation of vertical velocity
 - 160246  # 10 metre wind speed
 - 162051  # Surface geopotential
+- 162054  # Vertical integral of temperature
+- 162064  # Vertical integral of energy conversion
+- 162079  # Vertical integral of divergence of cloud liquid water flux
+- 162080  # Vertical integral of divergence of cloud frozen water flux
+- 162081  # Vertical integral of divergence of mass flux
+- 162082  # Vertical integral of divergence of kinetic energy flux
+- 162083  # Vertical integral of divergence of thermal energy flux
+- 162084  # Vertical integral of divergence of moisture flux
+- 162085  # Vertical integral of divergence of geopotential flux
+- 162086  # Vertical integral of divergence of total energy flux
+- 162087  # Vertical integral of divergence of ozone flux
 - 162100  # Tendency of short wave radiation
 - 162101  # Tendency of long wave radiation
 - 162102  # Tendency of clear sky short wave radiation
@@ -690,6 +705,7 @@ intensity:
 - 171251  # Adiabatic tendency of temperature anomaly
 - 171253  # Adiabatic tendency of zonal wind anomaly
 - 171254  # Adiabatic tendency of meridional wind anomaly
+- 172189  # Vertical integral of northward cloud liquid water flux
 - 174006  # Total soil moisture
 - 174025  # Visibility at 1.5m
 - 174034  # Open-sea surface temperature
@@ -883,6 +899,10 @@ intensity:
 - 210146  # Total column GRG tracer 8
 - 210148  # Total column GRG tracer 9
 - 210150  # Total column GRG tracer 10
+- 210167  # Wildfire day-time radiative power
+- 210169  # Wildfire night-time radiative power
+- 210177  # Wildfire day-time inverse variance of radiative power
+- 210179  # Wildfire night-time inverse variance of radiative power
 - 210183  # Total column Radon
 - 210184  # Total column Sulphur Hexafluoride
 - 210206  # GEMS Total column ozone
@@ -994,6 +1014,7 @@ intensity:
 - 228017  # Duct base height
 - 228018  # Trapping layer base height
 - 228019  # Trapping layer top height
+- 228023  # Cloud base height
 - 228024  # Zero degree level
 - 228025  # Horizontal visibility
 - 228026  # Maximum temperature at 2 metres in the last 3 hours
@@ -1003,6 +1024,7 @@ intensity:
 - 228035  # maximum CAPE in the last 6 hours
 - 228036  # maximum CAPES in the last 6 hours
 - 228044  # Convective available potential energy shear
+- 228046  # Height of convective cloud top
 - 228047  # Height of zero-degree wet-bulb temperature
 - 228048  # Height of one-degree wet-bulb temperature
 - 228050  # Instantaneous total lightning density
@@ -1511,6 +1533,14 @@ rate.energy-flux:
 - 3121  # Latent heat flux
 - 3122  # Sensible heat flux
 - 3123  # Boundary layer dissipation
+- 162067  # Vertical integral of eastward kinetic energy flux
+- 162068  # Vertical integral of northward kinetic energy flux
+- 162069  # Vertical integral of eastward heat flux
+- 162070  # Vertical integral of northward heat flux
+- 162073  # Vertical integral of eastward geopotential flux
+- 162074  # Vertical integral of northward geopotential flux
+- 162075  # Vertical integral of eastward total energy flux
+- 162076  # Vertical integral of northward total energy flux
 - 172145  # Boundary layer dissipation
 - 172146  # Surface sensible heat flux
 - 172147  # Surface latent heat flux
@@ -1735,6 +1765,11 @@ rate.energy-flux.accumulated:
 - 151162  # Heat flux correction
 - 160231  # Instantaneous surface heat flux
 - 160249  # Gravity wave dissipation flux
+- 162059  # Vertical integral of kinetic energy
+- 162060  # Vertical integral of thermal energy
+- 162061  # Vertical integral of potential+internal energy
+- 162062  # Vertical integral of potential+internal+latent energy
+- 162063  # Vertical integral of total energy
 - 170179  # Top net thermal radiation
 - 171047  # Direct solar radiation anomaly
 - 171057  # Downward UV radiation at the surface anomaly
@@ -1860,6 +1895,17 @@ rate.mass-flux:
 - 160205  # Runoff
 - 160239  # Convective snowfall
 - 160240  # Large scale snowfall
+- 162065  # Vertical integral of eastward mass flux
+- 162066  # Vertical integral of northward mass flux
+- 162071  # Vertical integral of eastward water vapour flux
+- 162072  # Vertical integral of northward water vapour flux
+- 162077  # Vertical integral of eastward ozone flux
+- 162078  # Vertical integral of northward ozone flux
+- 162088  # Vertical integral of eastward cloud liquid water flux
+- 162089  # Vertical integral of northward cloud liquid water flux
+- 162090  # Vertical integral of eastward cloud frozen water flux
+- 162091  # Vertical integral of northward cloud frozen water flux
+- 162092  # Vertical integral of mass tendency
 - 174142  # Large scale rainfall rate
 - 174143  # Convective rainfall rate
 - 174239  # Convective snowfall rate
@@ -2119,6 +2165,7 @@ rate.mass-flux.accumulated:
 - 129045  # Snowmelt gradient
 - 129182  # Evaporation gradient
 - 160141  # Snow depth
+- 162053  # Vertical integral of mass of atmosphere
 - 162108  # Total precipitation flux
 - 162130  # Liquid Precipitation flux from convection
 - 162131  # Ice Precipitation flux from convection
@@ -2377,6 +2424,7 @@ ratio:
 - 162229  # Variance of relative humidity
 - 171157  # Relative humidity anomaly
 - 200157  # Relative humidity difference
+- 228012  # Lake shape factor
 - 228030  # Relative humidity with respect to water
 - 228031  # Relative humidity with respect to ice
 - 228040  # Soil wetness index in layer 1

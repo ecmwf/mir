@@ -16,7 +16,6 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/resol/SpectralOrder.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
@@ -39,15 +38,8 @@ Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targ
 }
 
 
-std::string Automatic::gridname() const {
+const std::string& Automatic::gridname() const {
     return gridname_;
-}
-
-
-void Automatic::print(std::ostream& out) const {
-    out << "Automatic["
-        << (gridname_.empty() ? "" : "gridname=" + gridname_)
-        << "]";
 }
 
 

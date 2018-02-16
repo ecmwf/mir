@@ -28,6 +28,7 @@ namespace compare {
 static bool normaliseLongitudes_ = false;
 static bool ignoreAccuracy_ = false;
 static bool ignorePacking_ = false;
+static bool whiteListAccuracyPacking_ = false;
 
 
 static double areaPrecisionN_ = 0.;
@@ -63,6 +64,9 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("area-precision-east",
                       "Epsilon when comparing latitude and logitude of bounding box"));
 
+    options.push_back(new SimpleOption<bool>("white-list-accuracy-packing",
+                      "Report difference with accuracy & packing"));
+
 }
 
 
@@ -90,9 +94,8 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
     args.get("area-precision-west", areaPrecisionW_);
     args.get("area-precision-south", areaPrecisionS_);
     args.get("area-precision-east", areaPrecisionE_);
-
+    args.get("white-list-accuracy-packing", whiteListAccuracyPacking_);
 }
-
 
 
 Field::Field(const std::string& path, off_t offset, size_t length):
@@ -104,6 +107,7 @@ Field::Field(const std::string& path, off_t offset, size_t length):
     south_(0),
     east_(0),
     accuracy_(-1),
+    decimalScaleFactor_(0),
     grid_(false),
     west_east_(0),
     north_south_(0),
@@ -141,6 +145,10 @@ const std::string& Field::path() const {
     return info_.path();
 }
 
+const std::string& Field::format() const {
+    return format_;
+}
+
 // double Field::compare(const Field& other) const {
 //     return compareAreas(other);
 // }
@@ -163,6 +171,8 @@ void Field::compareAreas(std::ostream& out, const Field& other) const {
     double s2 = other.south_;
 
     out << ::fabs(n1 - n2) << '/' << ::fabs(w1 - w2) << '/' << ::fabs(s1 - s2) << '/' << ::fabs(e1 - e2);
+
+    out << " [" << (::fabs(n1 - n2) - areaPrecisionN_ ) << '/' << (::fabs(w1 - w2) - areaPrecisionW_) << '/' << (::fabs(s1 - s2) - areaPrecisionS_) << '/' << (::fabs(e1 - e2) - areaPrecisionE_) << "]";
 
 }
 
@@ -302,10 +312,14 @@ bool Field::sameAccuracy(const Field& other) const {
         return true;
     }
 
-
     if (accuracy_ == 0 || other.accuracy_ == 0) {
         return true;
     }
+
+    if (decimalScaleFactor_ ||  other.decimalScaleFactor_) {
+        return decimalScaleFactor_  == other.decimalScaleFactor_;
+    }
+
     return accuracy_  == other.accuracy_;
 }
 
@@ -583,6 +597,10 @@ void Field::accuracy(long n) {
     accuracy_ = n;
 }
 
+void Field::decimalScaleFactor(long n) {
+    decimalScaleFactor_ = n;
+}
+
 void Field::packing(const std::string & packing) {
     packing_ = packing;
 }
@@ -628,6 +646,10 @@ void Field::print(std::ostream & out) const {
 
     if (accuracy_ >= 0) {
         out << ",accuracy=" << accuracy_;
+    }
+
+    if (decimalScaleFactor_) {
+        out << ",decimal_scale_factor=" << decimalScaleFactor_;
     }
 
     if (hasMissing_) {
@@ -685,7 +707,22 @@ bool Field::same(const Field & other) const {
            sameArea(other);
 }
 
-
+size_t Field::differences(const Field & other) const {
+    size_t result = 0;
+    if(!sameParam(other)) result+=100;
+           if(!sameField(other)) result++;
+           if(!sameNumberOfPoints(other)) result++;
+           if(!sameGrid(other)) result++;
+           if(!sameAccuracy(other)) result++;
+           if(!samePacking(other)) result++;
+           if(!sameRotation(other)) result++;
+           if(!sameResol(other)) result++;
+           if(!sameGridname(other)) result++;
+           if(!sameGridtype(other)) result++;
+           if(!sameFormat(other)) result++;
+           if(!sameArea(other)) result++;
+return result;
+}
 
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     std::vector<Field> matches;
@@ -717,24 +754,47 @@ static void pdiff(std::ostream & out, const T& v1, const T& v2) {
 
 void Field::whiteListEntries(std::ostream& out) const {
     const char* sep = "";
-    if (!gridname_.empty()) {
-        out << sep << "gridname=" << gridname_;
-        sep = ",";
-    }
 
-     if (grid_) {
-        out << sep << "grid=" << north_south_ << "/" << west_east_;
-        sep = ",";
+    if (whiteListAccuracyPacking_) {
+        if (param_) {
+            out << sep << "param=" << param_; sep = ",";
+        }
+        if (format_.length()) {
+            out << sep << "format=" << format_; sep = ",";
+        }
+        if (packing_.length()) {
+            out << sep << "packing=" << packing_; sep = ",";
+        }
+        if (gridtype_.length()) {
+            out << sep << "gridtype=" << gridtype_; sep = ",";
+        }
+        if (accuracy_ >= 0) {
+            out << sep << "accuracy=" << accuracy_; sep = ",";
+        }
+        if (decimalScaleFactor_) {
+            out << sep << "decimal_scale_factor=" << decimalScaleFactor_; sep = ",";
+        }
     }
+    else {
+        if (!gridname_.empty()) {
+            out << sep << "gridname=" << gridname_;
+            sep = ",";
+        }
 
-    if (area_) {
-        out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
-        sep = ",";
-    }
+        if (grid_) {
+            out << sep << "grid=" << north_south_ << "/" << west_east_;
+            sep = ",";
+        }
 
-     if (rotation_) {
-        out << sep << "rotation=" << rotation_latitude_<< "/"  << rotation_longitude_;
-        sep = ",";
+        if (area_) {
+            out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
+            sep = ",";
+        }
+
+        if (rotation_) {
+            out << sep << "rotation=" << rotation_latitude_ << "/"  << rotation_longitude_;
+            sep = ",";
+        }
     }
 }
 
@@ -767,9 +827,15 @@ std::ostream& Field::printDifference(std::ostream & out, const Field & other) co
         out << ",resol="; pdiff(out, resol_, other.resol_);
     }
 
-    if (accuracy_ >= 0) {
-        out << ",accuracy=";
-        pdiff(out, accuracy_, other.accuracy_);
+    if (decimalScaleFactor_ >= 0) {
+        out << ",decimal_scale_factor=";
+        pdiff(out, decimalScaleFactor_, other.decimalScaleFactor_);
+    }
+    else {
+        if (accuracy_ >= 0) {
+            out << ",accuracy=";
+            pdiff(out, accuracy_, other.accuracy_);
+        }
     }
 
     if (hasMissing_) {
@@ -830,6 +896,11 @@ bool Field::wrapped() const {
     double e = normalize(east_);
 
     return w == e;
+}
+
+
+size_t Field::numberOfPoints() const {
+    return numberOfPoints_;
 }
 
 bool Field::match(const std::string& name, const std::string& value) const {
@@ -901,6 +972,12 @@ bool Field::match(const std::string& name, const std::string& value) const {
     if (name == "accuracy") {
         std::ostringstream oss;
         oss << accuracy_;
+        return value == oss.str();
+    }
+
+    if (name == "decimal_scale_factor") {
+        std::ostringstream oss;
+        oss << decimalScaleFactor_;
         return value == oss.str();
     }
 

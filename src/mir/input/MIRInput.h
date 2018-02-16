@@ -32,7 +32,6 @@ class MIRField;
 
 namespace param {
 class MIRParametrisation;
-class Rules;
 }
 
 }
@@ -141,7 +140,7 @@ protected:
 
 public:
 
-    static MIRInput *build(const std::string&);
+    static MIRInput *build(const std::string&, const param::MIRParametrisation&);
 
     static void list(std::ostream&);
 

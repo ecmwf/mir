@@ -97,6 +97,23 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
+class GlobalSemaphore {
+public:
+
+    GlobalSemaphore(eckit::PathName path) : path_(path) {
+
+        eckit::Log::debug<LibMir>() << "Semaphore for " << path << std::endl;
+
+        key_t key = ::ftok(path.asString().c_str(), 1);
+        if (key == key_t(-1)) {
+            throw eckit::FailedSystemCall("ftok(" + path.asString() + ")");
+        }
+        SYSCALL(semaphore_ = ::semget(key, 1, IPC_CREAT | 0600));
+    }
+
+    eckit::PathName path_;
+    int semaphore_;
+};
 
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path),
@@ -106,22 +123,12 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     eckit::Log::debug<LibMir>() << "Loading shared memory matrix from " << path << std::endl;
 
-    /// FIXME size is based on file.size() -- which is assumed to be bigger than the memory footprint
-    /** size_t sz = sizeof(SHMInfo) + w.footprint(); **/
-
-    size_t sz = size_t(path.size()) + sizeof(SHMInfo);
-    long page_size = ::sysconf(_SC_PAGESIZE);
-    ASSERT(page_size > 0);
-    size_t shmsize = eckit::round(sz, page_size);
-
-    size_ = shmsize;
-
     unload_ = name.substr(0, 4) == "tmp-";
 
     eckit::TraceTimer<LibMir> timer("Loading interpolation matrix from shared memory");
     eckit::PathName real = path.realName();
 
-    // eckit::Log::debug<LibMir>() << "Loading interpolation matrix from " << real << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading interpolation matrix from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -129,18 +136,26 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
         throw eckit::SeriousBug(os.str());
     }
 
-    key_t key = ftok(real.asString().c_str(), 1);
+    // Try to get an exclusing lock, we may be waiting for another process
+    // to create the memory segment and load it with the file content
+//    GlobalSemaphore gsem(real.dirName());
+//    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+//    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+
+    key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
 
-     static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+    // NOTE: size is based on file.size() which is assumed to be bigger than the memory footprint. Real size would be:
+    //       size_t sz = sizeof(SHMInfo) + w.footprint();
 
-    // Try to get an exclusing lock, we may be waiting for another process
-    // to create the memory segment and load it with the file content
-    int sem;
-    SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
-    eckit::SemLocker locker(sem, real, max_wait_lock);
+    size_t sz = size_t(path.size()) + sizeof(SHMInfo);
+    long page_size = ::sysconf(_SC_PAGESIZE);
+    ASSERT(page_size > 0);
+    size_t shmsize = eckit::round(sz, page_size);
+
+    size_ = shmsize;
 
 #ifdef IPC_INFO
     // Only on Linux?
@@ -152,11 +167,11 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-    //                          std::hex << key << std::dec << ", page size: "
-    //                          << eckit::Bytes(page_size) << ", pages: "
-    //                          << eckit::BigNum(shmsize / page_size)
-    //                          << std::endl;
+    eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize
+                                << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
+                                << ", page size: " << eckit::Bytes(page_size)
+                                << ", pages: " << eckit::BigNum(shmsize / page_size)
+                                << std::endl;
 
 
     int shmid;
@@ -194,8 +209,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     address_ = eckit::Shmget::shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
-         std::ostringstream oss;
-         oss << "sfmat(" << real << "), id=" << shmid << ", size=" << shmsize;
+        std::ostringstream oss;
+        oss << "shmat(" << real << "), id=" << shmid << ", size=" << shmsize;
         throw eckit::FailedSystemCall(oss.str());
     }
 
@@ -246,11 +261,17 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             Unloader::instance().add(path);
         }
 
-
     } catch (...) {
         eckit::Shmget::shmdt(address_);
         throw;
     }
+
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];
+
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "LOAD IPCS " << line << std::endl;
+    // }
 }
 
 
@@ -296,22 +317,12 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
         eckit::Log::debug<LibMir>() << "Succefully unloaded SharedMemory from " << path << std::endl;
     }
-#if 0
-    sem = semget(key, 1, 0600);
-    if (sem < 0 && errno != ENOENT) {
-        eckit::Log::info() << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << std::endl;
-        return;
-    }
 
-    if (sem < 0 && errno == ENOENT) {
-        // eckit::Log::info() << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
-    } else {
-        if (semctl(sem, 0, IPC_RMID, 0) < 0) {
-            eckit::Log::info() << "Cannot delete semaphore for " << path << eckit::Log::syserr << std::endl;
-        }
-        // eckit::Log::info() << "SharedMemory removed semaphore for " << path  <<std::endl;
-    }
-#endif
+    // eckit::StdPipe f("ipcs", "r");
+    // char line[1024];s
+    // while(fgets(line, sizeof(line), f)) {
+    //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
+    // }
 }
 
 void SharedMemoryLoader::print(std::ostream &out) const {

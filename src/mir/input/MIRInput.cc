@@ -23,6 +23,7 @@
 #include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
 
@@ -126,9 +127,14 @@ static void put(std::ostream& out, unsigned long magic) {
 }
 
 
-MIRInput *MIRInputFactory::build(const std::string& path) {
+MIRInput *MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    bool dummy = false;
+    if (parametrisation.get("dummy", dummy) && dummy) {
+        return new DummyInput();
+    }
 
     eckit::StdFile f(path);
     unsigned long magic = 0;

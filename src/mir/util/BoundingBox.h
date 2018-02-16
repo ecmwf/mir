@@ -102,8 +102,6 @@ public:
 
     bool contains(const Latitude& lat, const Longitude& lon) const;
 
-    bool contains(const repres::Iterator::point_ll_t&) const;
-
     void fill(grib_info&) const;
 
     void fill(api::MIRJob&) const;

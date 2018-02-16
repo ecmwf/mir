@@ -32,6 +32,8 @@ class NoMask : public Mask {
 
     void print(std::ostream& out) const;
 
+    std::string cacheName() const;
+
 };
 
 

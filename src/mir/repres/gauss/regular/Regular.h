@@ -87,12 +87,6 @@ protected:
 
     virtual bool sameAs(const Representation&) const;
 
-    eckit::Fraction getSmallestIncrement() const;
-
-    void adjustBoundingBoxEastWest(util::BoundingBox&);
-
-    bool isPeriodicWestEast() const;
-
     size_t numberOfPoints() const;
     bool getLongestElementDiagonal(double &d) const;
 
@@ -134,6 +128,7 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
+    eckit::Fraction getSmallestIncrement() const;
 
     // -- Class members
     // None

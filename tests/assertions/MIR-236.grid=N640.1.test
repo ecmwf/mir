@@ -1,0 +1,10 @@
+# Mars
+param=2t,levtype=sfc,grid=N640
+# Mir
+--area=51.5189/2.08333/50.5349/5.83333
+# grib_get assertions
+gridName = N640
+# FIXME latitudeOfFirstGridPointInDegrees = 
+# FIXME longitudeOfFirstGridPointInDegrees = 
+# FIXME latitudeOfLastGridPointInDegrees = 
+# FIXME longitudeOfLastGridPointInDegrees = 

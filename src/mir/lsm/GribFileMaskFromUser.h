@@ -20,7 +20,10 @@ namespace lsm {
 
 
 class GribFileMaskFromUser : public GribFileMask {
-    bool cacheable() const;
+
+    virtual bool cacheable() const;
+    virtual std::string cacheName() const;
+
 public:
     using GribFileMask::GribFileMask;
 };

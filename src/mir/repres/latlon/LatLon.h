@@ -127,7 +127,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    static bool isPeriodicWestEast(const util::BoundingBox&, const util::Increments&);
 
     // -- Overridden methods
 
@@ -138,6 +139,8 @@ private:
     virtual void validate(const std::vector<double>&) const;
 
     virtual void initTrans(Trans_t&) const;
+
+    virtual void adjustBoundingBox(util::BoundingBox&) const;
 
     // -- Class members
     // None

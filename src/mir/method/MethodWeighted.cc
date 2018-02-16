@@ -39,6 +39,7 @@
 #include "mir/util/MIRStatistics.h"
 
 #include "mir/method/MatrixCacheCreator.h"
+#include "mir/method/Cropping.h"
 
 namespace mir {
 namespace method {
@@ -64,22 +65,35 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() {
 }
 
+void MethodWeighted::print(std::ostream &out) const {
+    out << "cropping="
+        << cropping_
+        << ",lsmWeightAdjustment="
+        << lsmWeightAdjustment_
+        << ",pruneEpsilon="
+        << pruneEpsilon_;
+}
+
+
 
 bool MethodWeighted::sameAs(const Method& other) const {
     const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
     return o
            && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
            && (pruneEpsilon_ == o->pruneEpsilon_)
-           &&  lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_);
+           && lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_)
+           && cropping_ == o->cropping_;
 
 }
 
 
+// Called from MatrixCacheCreator when a matrix in not found in disk cache
 void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& in,
                                   const repres::Representation& out,
                                   WeightMatrix& W,
-                                  const lsm::LandSeaMasks& masks) const {
+                                  const lsm::LandSeaMasks& masks,
+                                  const Cropping& cropping) const {
 
     eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
@@ -116,7 +130,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
-    std::string key = std::string(name()) + "-" + shortName_in + "-" + shortName_out;
+    std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out;
     eckit::MD5 hash;
     hash << *this
          << shortName_in
@@ -124,16 +138,27 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
          << pruneEpsilon_
          << lsmWeightAdjustment_;
 
-    if (masks.active() && masks.cacheable()) {
-        hash << masks;
-        key += "-LSM-";
+    disk_key += hash;
+    std::string memory_key = disk_key;
+
+    // Add masks if any
+    if (masks.active()) {
+
+        std::string masks_key = "-lsm-";
+        masks_key += masks.cacheName();
+
+        memory_key += masks_key;
+
+        if (masks.cacheable()) {
+            disk_key += masks_key;
+        }
     }
-    key += std::string(hash);
+
 
     {
-        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(key);
+        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(memory_key);
         const bool found = j != matrix_cache.end();
-        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
             const WeightMatrix& mat = *j;
             eckit::Log::debug<LibMir>() << "Using matrix from InMemoryCache " <<  mat << std::endl;
@@ -153,24 +178,26 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         // The WeightCache is parametrised by 'caching',
         // as caching may be disabled on a field by field basis (unstructured grids)
         static caching::WeightCache cache(parametrisation_);
-        MatrixCacheCreator creator(*this, ctx, in, out, masks);
-        cache.getOrCreate(key, creator, W);
+        MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
+        cache.getOrCreate(disk_key, creator, W);
 
     } else {
-        createMatrix(ctx, in, out, W, masks);
+        createMatrix(ctx, in, out, W, masks, cropping_);
     }
 
-    // If LSM not cacheable, e.g. user provided, we apply the mask after
+    // If LSM not cacheable to disk, because it is user provided
+    // it will be cached in memory nevertheless
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
         W.validate("applyMasks");
     }
+
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
     // insert matrix in the in-memory cache and update memory footprint
 
-    WeightMatrix& w = matrix_cache[key];
+    WeightMatrix& w = matrix_cache[memory_key];
     W.swap(w);
 
     size_t footprint = w.footprint();
@@ -178,7 +205,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
     eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
-    matrix_cache.footprint(key, usage);
+    matrix_cache.footprint(memory_key, usage);
     return w;
 }
 
@@ -485,6 +512,32 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
+}
+
+void MethodWeighted::setCropping(const util::BoundingBox& bbox) {
+    cropping_.boundingBox(bbox);
+
+}
+
+bool MethodWeighted::canCrop() const {
+    return true;
+}
+
+
+const repres::Representation* MethodWeighted::adjustOutputRepresentation(const repres::Representation* representation) {
+
+    if (cropping_.active()) {
+        repres::RepresentationHandle out(representation); // Will destroy represenation
+
+        // bounding box needs adjustment because it can come from the user
+        util::BoundingBox bbox(cropping_.boundingBox());
+        representation->adjustBoundingBox(bbox);
+
+        return representation->cropped(bbox);
+    }
+
+
+    return representation;
 }
 
 

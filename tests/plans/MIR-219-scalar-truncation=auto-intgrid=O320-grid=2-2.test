@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--truncation=auto --intgrid=O320 --grid=2/2 
+# plan
+ShTruncate[truncation=639]|ShScalarToNamedGrid[gridname=O320]|Gridded2RegularLL[increments=Increments[west_east=2,south_north=2],bbox=BoundingBox[north=90,west=0,south=-90,east=358],interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]

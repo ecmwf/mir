@@ -104,6 +104,8 @@ private:
 // -- Overridden methods
 
     virtual void execute(context::Context & ctx) const;
+    virtual bool mergeWithNext(const Action& other);
+
 
 // -- Class members
     // None

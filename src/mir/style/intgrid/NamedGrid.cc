@@ -12,8 +12,6 @@
 #include "mir/style/intgrid/NamedGrid.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -28,16 +26,9 @@ NamedGrid::NamedGrid(const std::string& gridname, const param::MIRParametrisatio
 }
 
 
-std::string NamedGrid::gridname() const {
+const std::string& NamedGrid::gridname() const {
     return gridname_;
 }
-
-
-void NamedGrid::print(std::ostream& out) const {
-    out << "NamedGrid[gridname=" << gridname_ << "]";
-}
-
-
 
 
 }  // namespace intgrid

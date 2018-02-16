@@ -46,6 +46,18 @@ void Action::perform(context::Context & ctx) const {
     execute(ctx);
 }
 
+bool Action::mergeWithNext(const Action& next) {
+    return false;
+}
+
+
+bool Action::isCropAction() const {
+    return false;
+}
+
+const util::BoundingBox& Action::croppingBoundingBox() const {
+    NOTIMP;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -140,6 +152,8 @@ void ActionFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
+
+
 
 
 }  // namespace action

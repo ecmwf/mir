@@ -63,8 +63,7 @@ Mask* FileLSM::create(
         const param::MIRParametrisation& param,
         const repres::Representation& representation,
         const std::string& which) const {
-    std::string dummy_name;
-    return new GribFileMaskFromUser(dummy_name, path(param, which), param, representation, which);
+    return new GribFileMaskFromUser(path(param, which), param, representation, which);
 }
 
 

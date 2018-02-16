@@ -94,8 +94,6 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     eckit::Log::info() << bbox << std::endl;
 
-
-
     // count each file(s) message(s)
     for (size_t i = 0; i < args.count(); ++i) {
         eckit::Log::info() << args(i) << std::endl;

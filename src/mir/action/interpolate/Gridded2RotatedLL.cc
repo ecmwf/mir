@@ -48,9 +48,7 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
 
 
 void Gridded2RotatedLL::print(std::ostream &out) const {
-    out << "Gridded2RotatedLL["
-        << ",rotation=" << rotation_
-        << ",";
+    out << "Gridded2RotatedLL[rotation=" << rotation_ << ",";
     Gridded2LatLon::print(out);
     out << "]";
 }

@@ -100,6 +100,24 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
+class GlobalSemaphore {
+public:
+
+    GlobalSemaphore(eckit::PathName path) : path_(path) {
+
+        eckit::Log::debug<LibMir>() << "Semaphore for " << path << std::endl;
+
+        key_t key = ::ftok(path.asString().c_str(), 1);
+        if (key == key_t(-1)) {
+            throw eckit::FailedSystemCall("ftok(" + path.asString() + ")");
+        }
+        SYSCALL(semaphore_ = ::semget(key, 1, IPC_CREAT | 0600));
+    }
+
+    eckit::PathName path_;
+    int semaphore_;
+};
+
 
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
     LegendreLoader(parametrisation, path),
@@ -118,7 +136,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
 
-    // eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << real << std::endl;
+    eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -126,18 +144,16 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::SeriousBug(os.str());
     }
 
-    key_t key = ftok(real.asString().c_str(), 1);
+    // Try to get an exclusing lock, we may be waiting for another process
+    // to create the memory segment and load it with the file content
+//    GlobalSemaphore gsem(real.dirName());
+//    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+//    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+
+    key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
         throw eckit::FailedSystemCall("ftok(" + real.asString() + ")");
     }
-
-    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-
-    // Try to get an exclusing lock, we may be waiting for another process
-    // to create the memory segment and load it with the file content
-    int sem;
-    SYSCALL(sem = ::semget(key, 1, IPC_CREAT | 0600));
-    eckit::SemLocker locker(sem, real, max_wait_lock);
 
     int page_size = ::getpagesize();
     ASSERT(page_size > 0);
@@ -153,11 +169,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize << " (" << eckit::Bytes(shmsize) << "), key=0x" <<
-    //                          std::hex << key << std::dec << ", page size: "
-    //                          << eckit::Bytes(page_size) << ", pages: "
-    //                          << eckit::BigNum(shmsize / page_size)
-    //                          << std::endl;
+    eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize
+                                << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
+                                << ", page size: " << eckit::Bytes(page_size)
+                                << ", pages: " << eckit::BigNum(shmsize / page_size)
+                                << std::endl;
 
     int shmid;
     if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
@@ -167,6 +183,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     }
 
     eckit::Log::debug<LibMir>() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+
+    // Make sure memory is unloaded on exit
+    if (unload_) {
+        Unloader::instance().add(path);
+    }
 
 #ifdef SHM_PAGESIZE
     {
@@ -191,8 +212,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
     address_ = eckit::Shmget::shmat( shmid, NULL, 0 );
     if (address_ == (void*) - 1) {
-        throw eckit::FailedSystemCall("sfmat(" + real.asString() + ")");
+        std::ostringstream oss;
+        oss << "shmat(" << real << "), id=" << shmid << ", size=" << shmsize;
+        throw eckit::FailedSystemCall(oss.str());
     }
+
 
     try {
 
@@ -244,7 +268,6 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw;
     }
 
-
     // eckit::StdPipe f("ipcs", "r");
     // char line[1024];
 
@@ -269,7 +292,6 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 }
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
-    // eckit::Log::info() << "Unloading SharedMemory from " << path << std::endl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -283,39 +305,21 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
         // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
-        eckit::Log::info() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
+        eckit::Log::warning() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
         return;
     }
 
     if (shmid < 0 && errno == ENOENT) {
-        // eckit::Log::info() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+        eckit::Log::debug<LibMir>() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
     } else {
         if (shmctl(shmid, IPC_RMID, 0) < 0) {
-            eckit::Log::info() << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
+            eckit::Log::warning() << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
         }
-        // eckit::Log::info() << "Succefully unloaded SharedMemory from " << path  << std::endl;
+        eckit::Log::debug<LibMir>() << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
-#if 0
-    sem = semget(key, 1, 0600);
-    if (sem < 0 && errno != ENOENT) {
-        eckit::Log::info() << "Cannot get shared shemaphore for " << path << eckit::Log::syserr << std::endl;
-        return;
-    }
-
-    if (sem < 0 && errno == ENOENT) {
-        // eckit::Log::info() << "SharedMemory semaphore for " << path  << " already unloaded" <<std::endl;
-    } else {
-        if (semctl(sem, 0, IPC_RMID, 0) < 0) {
-            eckit::Log::info() << "Cannot delete semaphore for " << path << eckit::Log::syserr << std::endl;
-        }
-        // eckit::Log::info() << "SharedMemory removed semaphore for " << path  <<std::endl;
-    }
-#endif
-
 
     // eckit::StdPipe f("ipcs", "r");
-    // char line[1024];
-
+    // char line[1024];s
     // while(fgets(line, sizeof(line), f)) {
     //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
     // }

@@ -19,10 +19,8 @@
 #include <string>
 
 
-#include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
-#include "mir/param/Rules.h"
 #include "eckit/memory/ScopedPtr.h"
 
 namespace mir {

@@ -62,6 +62,7 @@ public:
 
     void param(long n);
     void accuracy(long n);
+    void decimalScaleFactor(long n);
     void packing(const std::string& packing);
 
     bool operator<(const Field& other) const;
@@ -75,6 +76,7 @@ public:
     std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
 
     std::vector<Field> bestMatches(const FieldSet& fields) const;
+    size_t differences(const Field& other) const;
 
     void compareAreas(std::ostream& out, const Field& other) const;
 
@@ -104,6 +106,10 @@ public:
 
     size_t length() const ;
 
+    size_t numberOfPoints() const;
+
+    const std::string& format() const ;
+
     const std::string& path() const ;
     void whiteListEntries(std::ostream& out) const;
 
@@ -129,6 +135,7 @@ private:
     double east_;
 
     long accuracy_;
+    long decimalScaleFactor_;
 
     bool grid_;
     double west_east_;

@@ -44,11 +44,6 @@ static void init() {
     cache = new std::map<std::string, Mask *>();
 }
 
-static void setParametrisation(param::RuntimeParametrisation& runtime) {
-    runtime.set("Ni", 360L);
-    runtime.set("Nj", 181L);
-}
-
 }  // (anonymous namespace)
 
 
@@ -160,7 +155,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
         return false;
     }
 
-
     // Check LSM cache key
     // TODO: this creates a dummy representation, could be better...
     param::RuntimeParametrisation runtime1(parametrisation1);
@@ -180,7 +174,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
         return false;
     }
 #endif
-
     return true;
 }
 

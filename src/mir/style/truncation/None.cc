@@ -32,11 +32,6 @@ long None::truncation() const {
 }
 
 
-void None::print(std::ostream& out) const {
-    out << "None[]";
-}
-
-
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir

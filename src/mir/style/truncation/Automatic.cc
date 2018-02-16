@@ -14,11 +14,8 @@
 #include <algorithm>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/style/resol/SpectralOrder.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
+#include "mir/style/SpectralOrder.h"
 
 
 namespace mir {
@@ -46,7 +43,7 @@ Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targ
     std::string order;
     parametrisation_.get("spectral-order", order);
 
-    eckit::ScopedPtr<resol::SpectralOrder> spectralOrder(resol::SpectralOrderFactory::build(order));
+    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build(order));
     ASSERT(spectralOrder);
 
     // Set truncation
@@ -57,11 +54,6 @@ Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targ
 
 long Automatic::truncation() const {
     return truncation_;
-}
-
-
-void Automatic::print(std::ostream& out) const {
-    out << "Automatic[truncation=" << truncation_ << "]";
 }
 
 

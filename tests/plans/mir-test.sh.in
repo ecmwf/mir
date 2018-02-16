@@ -7,6 +7,7 @@ echo "======> $1"
 t=$(basename $1)
 
 mir="@MIR_TOOL@"
+diff="@DIFF_TOOL@"
 mars_script="@MARS_SCRIPT@"
 
 tests_plans_dir="@CMAKE_CURRENT_SOURCE_DIR@"
@@ -47,19 +48,13 @@ do
 
             mir)
             eval n=\"$n\"
-            $mir --dump-plan-file=$(pwd)/plan.$t $n $(pwd)/data.in.$t $(pwd)/data.out.$t
+            rm -f plan.${t}{,.reference}
+            $mir --dryrun --dump-plan-file=plan.$t $n data.in.$t data.out.$t
             state=plan
             ;;
 
             plan)
-            m=$(cat $(pwd)/plan.$t)
-            if [[ "$n" != "$m" ]]
-            then
-                echo "Expected: $n"
-                echo "     Got: $m"
-                exit 1
-            fi
-            state=done
+            echo "$n" >> plan.${t}.reference
             ;;
 
         esac
@@ -68,6 +63,15 @@ do
 
     esac
 done < $1
+
+if [[ "$state" == "plan" ]] && [[ -r plan.${t} ]]  && [[ -r plan.${t}.reference ]]
+then
+    $diff plan.${t} plan.${t}.reference
+    if [[ $? -eq 0 ]]
+    then
+        state=done
+    fi
+fi
 
 if [[ "$state" != "done" ]]
 then

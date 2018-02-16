@@ -40,11 +40,11 @@ public:
     // -- Contructors
 
     TenMinutesMask(
-            const std::string& name,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation&,
-            const std::string& which);
+        const std::string& name,
+        const eckit::PathName&,
+        const param::MIRParametrisation&,
+        const repres::Representation&,
+        const std::string& which);
 
     // -- Destructor
 
@@ -72,6 +72,7 @@ private:
 
     // -- Members
 
+    std::string name_;
     eckit::PathName path_;
     std::vector<bool> mask_;
 
@@ -85,6 +86,7 @@ private:
     virtual void hash(eckit::MD5&) const;
     virtual const std::vector<bool>& mask() const;
     virtual void print(std::ostream&) const;
+    virtual std::string cacheName() const;
 
     // -- Class members
     // None

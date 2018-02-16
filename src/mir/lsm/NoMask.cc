@@ -42,6 +42,9 @@ void NoMask::print(std::ostream& out) const {
     out << "NoMask[]";
 }
 
+std::string NoMask::cacheName() const {
+    NOTIMP;
+}
 
 }  // namespace lsm
 }  // namespace mir

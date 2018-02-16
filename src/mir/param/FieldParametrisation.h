@@ -21,7 +21,6 @@
 
 namespace mir {
 namespace param {
-class Rules;
 
 
 class FieldParametrisation : public MIRParametrisation {
@@ -61,7 +60,8 @@ protected:
     // -- Members
 
     // -- Methods
-    // None
+
+    void reset();
 
     // -- Overridden methods
 

@@ -22,7 +22,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/param/Rules.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -258,7 +257,9 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 
 MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
 
-    const repres::Representation* repres = input.field().representation();
+    const data::MIRField field = input.field();
+    const repres::Representation* repres = field.representation();
+    ASSERT(repres);
 
     // eckit::Log::debug<LibMir>() << "Copy from " << *repres << std::endl;
     repres->fill(*this);

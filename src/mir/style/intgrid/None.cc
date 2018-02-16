@@ -11,8 +11,6 @@
 
 #include "mir/style/intgrid/None.h"
 
-#include <iostream>
-
 
 namespace mir {
 namespace style {
@@ -28,13 +26,9 @@ None::None(const param::MIRParametrisation& parametrisation, long) :
 }
 
 
-std::string None::gridname() const {
-    return std::string();
-}
-
-
-void None::print(std::ostream& out) const {
-    out << "None[]";
+const std::string& None::gridname() const {
+    static std::string empty;
+    return empty;
 }
 
 

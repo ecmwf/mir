@@ -57,6 +57,10 @@ const std::string& MultiFile::name() const {
     return name_;
 }
 
+const std::string& MultiFile::from() const {
+    return from_;
+}
+
 
 void MultiFile::save() const {
     eckit::PathName out(name_ + "." + from_);

@@ -42,17 +42,21 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     const param::MIRParametrisation& metadata = input.parametrisation();
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-
-    job.get("dump-plan-file", dumpFile_);
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
+    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
     if (!style->postProcessingRequested(job)) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
+
+            if (eckit::Log::debug<LibMir>()) {
+                eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
+                plan_->dump(eckit::Log::debug<LibMir>());
+            }
+
             return;
         }
     }
@@ -68,8 +72,14 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    if(eckit::Log::debug<LibMir>()){
-        // eckit::Log::debug<LibMir>() << "Action plan is: " << *plan_ << std::endl;
+    bool dont_compress = false;
+    combined_->get("dont-compress-plan", dont_compress);
+
+    if (!dont_compress) {
+        plan_->compress();
+    }
+
+    if (eckit::Log::debug<LibMir>()) {
         eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
         plan_->dump(eckit::Log::debug<LibMir>());
     }
@@ -81,18 +91,7 @@ Job::~Job() {
 
 
 void Job::execute(util::MIRStatistics &statistics) const {
-
     ASSERT(plan_);
-
-    if(dumpFile_.size()) {
-        std::ofstream out(dumpFile_);
-        plan_->custom(out);
-        out << std::endl;
-    }
-
-    if (LibMir::dryRun()) {
-        return;
-    }
 
     context::Context ctx(input_, statistics);
     plan_->execute(ctx);

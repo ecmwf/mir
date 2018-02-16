@@ -522,6 +522,12 @@ void FieldComparator::getField(const MultiFile& multi,
         field.accuracy(bitsPerValue);
     }
 
+    long decimalScaleFactor;
+    if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+        field.decimalScaleFactor(decimalScaleFactor);
+    }
+
+
     {
         char value[1024];
         size_t len = sizeof(value);
@@ -560,7 +566,7 @@ void FieldComparator::getField(const MultiFile& multi,
         }
     }
 
-    if (whiteLister_.whiteListed(multi.name(), field)) {
+    if (whiteLister_.whiteListed(multi, field)) {
         eckit::Log::info() << "Field white listed " << field << std::endl;
         return;
     }
@@ -859,6 +865,19 @@ void FieldComparator::whiteListEntries(const Field & field, const MultiFile & mu
 }
 
 
+namespace {
+struct Compare {
+	const Field & field_;
+	Compare(const Field & field) : field_(field) {}
+        bool operator()(const Field &a, const Field & b) {
+		size_t da = field_.differences(a);
+		size_t db = field_.differences(b);
+                return da < db;
+}
+};
+
+}
+
 void FieldComparator::missingField(const MultiFile & multi1,
                                    const MultiFile & multi2,
                                    const Field & field,
@@ -874,6 +893,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
 
         std::vector<Field> matches = field.bestMatches(fields);
+        std::sort(matches.begin(), matches.end(), Compare(field));
         if (matches.size() > 0) {
             for (auto m = matches.begin(); m != matches.end(); ++m) {
                 const auto& other = (*m);

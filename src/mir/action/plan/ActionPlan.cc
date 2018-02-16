@@ -42,6 +42,7 @@ ActionPlan::~ActionPlan() {
 }
 
 
+
 void ActionPlan::add(const std::string &name)  {
     actions_.push_back(ActionFactory::build(name, parametrisation_));
 }
@@ -96,6 +97,27 @@ void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime
 
 void ActionPlan::execute(context::Context & ctx) const {
 
+    std::string dumpPlanFile;
+    parametrisation_.get("dump-plan-file", dumpPlanFile);
+
+    if (dumpPlanFile.size()) {
+
+        if (dumpPlanFile == "-") {
+            custom(std::cout);
+            std::cout << std::endl;
+        }
+        else {
+            std::ofstream out(dumpPlanFile, std::ios::app);
+            custom(out);
+            out << std::endl;
+        }
+    }
+
+    bool dryrun = false;
+    if (parametrisation_.get("dryrun", dryrun) && dryrun) {
+        return;
+    }
+
     const char* sep = "###################################################################################";
 
     for (const auto& p : actions_) {
@@ -111,6 +133,37 @@ void ActionPlan::execute(context::Context & ctx) const {
                                     << "\n" << sep
                                     << std::endl;
     }
+}
+
+
+void ActionPlan::compress() {
+
+    eckit::Log::debug<LibMir>() << "ActionPlan::compress ===>" << std::endl;
+
+    bool more = true;
+    while (more) {
+        more = false;
+
+        for (size_t i = 0; i < actions_.size() - 1; ++i) {
+            if (actions_[i]->mergeWithNext(*actions_[i + 1])) {
+
+                eckit::Log::debug<LibMir>() << "ActionPlan::compress merge "
+                                            << *actions_[i]
+                                            << " and "
+                                            << *actions_[i + 1]
+                                            << std::endl;
+
+                delete actions_[i + 1];
+                actions_.erase(actions_.begin() + i + 1);
+
+                more = true;
+                break;
+            }
+        }
+
+    }
+    eckit::Log::debug<LibMir>() << "ActionPlan::compress <===" << std::endl;
+
 }
 
 
@@ -148,7 +201,7 @@ void ActionPlan::dump(std::ostream &out) const {
 
 
 void ActionPlan::custom(std::ostream &out) const {
-   const char *sep = "";
+    const char *sep = "";
     for (const auto& p : actions_) {
         out << sep;
         p->custom(out);

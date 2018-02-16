@@ -118,6 +118,7 @@ public:
     virtual std::string atlasMeshGenerator() const;
 
     virtual util::Domain domain() const;
+    virtual void adjustBoundingBox(util::BoundingBox&) const;
     virtual bool isGlobal() const;
 
     virtual size_t truncation() const;

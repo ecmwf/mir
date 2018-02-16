@@ -32,6 +32,7 @@ class MIRParametrisation;
 }
 namespace util {
 class MIRStatistics;
+class BoundingBox;
 }
 }
 
@@ -41,7 +42,7 @@ namespace action {
 
 
 class Action : public eckit::NonCopyable {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -69,6 +70,12 @@ class Action : public eckit::NonCopyable {
     virtual void custom(std::ostream &) const; // Change to virtual if base class
     virtual const char* name() const = 0;
 
+    virtual bool mergeWithNext(const Action& other);
+
+    // For optimising plans
+    virtual bool isCropAction() const;
+    virtual const util::BoundingBox& croppingBoundingBox() const;
+
     // -- Overridden methods
     // None
 
@@ -78,7 +85,7 @@ class Action : public eckit::NonCopyable {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
 
@@ -97,7 +104,7 @@ class Action : public eckit::NonCopyable {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
@@ -137,15 +144,15 @@ class ActionFactory {
 
     virtual Action *make(const param::MIRParametrisation &) = 0;
 
-  protected:
+protected:
 
     ActionFactory(const std::string &);
 
     virtual ~ActionFactory();
 
-  public:
+public:
 
-    static Action *build(const std::string&, const param::MIRParametrisation&, bool exact=true);
+    static Action *build(const std::string&, const param::MIRParametrisation&, bool exact = true);
 
     static void list(std::ostream&);
 
@@ -157,7 +164,7 @@ class ActionBuilder : public ActionFactory {
     virtual Action *make(const param::MIRParametrisation &param) {
         return new T(param);
     }
-  public:
+public:
     ActionBuilder(const std::string &name) : ActionFactory(name) {}
 };
 

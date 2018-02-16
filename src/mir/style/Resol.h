@@ -15,6 +15,9 @@
 #include <iosfwd>
 #include <string>
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "mir/style/Intgrid.h"
+#include "mir/style/Truncation.h"
 
 
 namespace mir {
@@ -39,9 +42,7 @@ public:
 
     // -- Contructors
 
-    Resol(const param::MIRParametrisation& parametrisation) :
-        parametrisation_(parametrisation) {
-    }
+    Resol(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -55,8 +56,10 @@ public:
 
     // -- Methods
 
-    virtual void prepare(action::ActionPlan&) const = 0;
-    virtual bool resultIsSpectral() const = 0;
+    virtual void prepare(action::ActionPlan&) const;
+    virtual bool resultIsSpectral() const;
+    const std::string& gridname() const;
+    long truncation() const;
 
     // -- Overridden methods
     // None
@@ -75,7 +78,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -89,10 +92,15 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    long inputTruncation_;
+    eckit::ScopedPtr<Intgrid> intgrid_;
+    eckit::ScopedPtr<Truncation> truncation_;
 
     // -- Methods
-    // None
+
+    long getTargetGaussianNumber() const;
+    long getSourceGaussianNumber() const;
 
     // -- Overridden methods
     // None
@@ -112,29 +120,9 @@ private:
 };
 
 
-class ResolFactory {
-    std::string name_;
-    virtual Resol *make(const param::MIRParametrisation&) = 0;
-protected:
-    ResolFactory(const std::string&);
-    virtual ~ResolFactory();
-public:
-    static Resol *build(const std::string&, const param::MIRParametrisation&);
-    static void list(std::ostream&);
-};
-
-
-template <class T> class ResolBuilder : public ResolFactory {
-    virtual Resol *make(const param::MIRParametrisation& parametrisation) {
-        return new T(parametrisation);
-    }
-public:
-    ResolBuilder(const std::string& name) : ResolFactory(name) {}
-};
-
-
 }  // namespace style
 }  // namespace mir
 
 
 #endif
+

@@ -133,60 +133,6 @@ void Increments::fill(api::MIRJob& job) const  {
 }
 
 
-bool Increments::multipleOf(const Increments& other) const {
-    eckit::Fraction we = west_east_ / other.west_east_;
-    eckit::Fraction ns = south_north_ / other.south_north_;
-    return we.integer() && ns.integer();
-}
-
-
-void Increments::ratio(const Increments& other, size_t& we, size_t& ns) const {
-    we = size_t(static_cast<eckit::Fraction::value_type>(west_east_ / other.west_east_));
-    ns = size_t(static_cast<eckit::Fraction::value_type>(south_north_ / other.south_north_));
-}
-
-
-bool Increments::matches(const BoundingBox& bbox) const {
-    eckit::Fraction we = (bbox.east() - bbox.west()).fraction() / west_east_;
-    eckit::Fraction ns = (bbox.north() - bbox.south()).fraction() / south_north_;
-    return we.integer() && ns.integer();
-}
-
-
-static eckit::Fraction multiple(const eckit::Fraction& box1,
-                                const eckit::Fraction& box2,
-                                const eckit::Fraction& inc) {
-
-    static const eckit::Fraction min(1, 100);
-
-    for (size_t i = 2; i < 1000; i++) {
-        eckit::Fraction x = inc / i;
-        if ((box1 / x).integer() && (box2 / x).integer()) {
-            return x;
-        }
-
-        ASSERT(x > min);
-    }
-    NOTIMP;
-}
-
-
-Increments Increments::bestSubsetting(const BoundingBox& bbox) const {
-    bool zero_zero = (bbox.north().fraction() /south_north_).integer()
-                     && (bbox.south().fraction() /south_north_).integer()
-                     && (bbox.west().fraction() /west_east_).integer()
-                     && (bbox.east().fraction() /west_east_).integer();
-
-    if (!zero_zero) {
-        eckit::Fraction we = multiple(bbox.east().fraction(), bbox.west().fraction(), west_east_);
-        eckit::Fraction ns = multiple(bbox.north().fraction(), bbox.south().fraction(), south_north_);
-        return Increments(we, ns);
-    }
-
-    return *this;
-}
-
-
 static eckit::Fraction adjust(bool up, const eckit::Fraction& target, const eckit::Fraction& increment) {
     eckit::Fraction r = target / increment;
 

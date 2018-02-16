@@ -22,8 +22,7 @@ namespace netcdf {
 
 DummyMatrix::DummyMatrix(const Variable &v):
     Matrix(v.matrix()->type(), v.name(), v.matrix()->size()),
-    other_(v.matrix()),
-    merged_(false)
+    other_(v.matrix())
 {
     other_->attach();
 }

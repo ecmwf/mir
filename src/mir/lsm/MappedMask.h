@@ -85,6 +85,7 @@ protected:
     virtual bool cacheable() const;
     virtual void hash(eckit::MD5&) const;
     virtual void print(std::ostream&) const;
+    virtual std::string cacheName() const;
 
     // -- Class members
     // None
@@ -96,6 +97,7 @@ private:
 
     // -- Members
 
+    std::string name_;
     eckit::PathName path_;
     std::vector<bool> mask_;
 

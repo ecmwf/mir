@@ -73,30 +73,6 @@ eckit::Fraction Reduced::getSmallestIncrement() const {
 }
 
 
-void Reduced::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
-    const eckit::Fraction inc = getSmallestIncrement();
-
-    Longitude e = bbox.east();
-    Longitude w = bbox.west();
-
-    if ((e - w + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
-        (e - w + inc > Longitude::GLOBE )) {
-        e = w + Longitude::GLOBE - inc;
-    }
-
-    bbox = util::BoundingBox(bbox.north(), w, bbox.south(), e);
-}
-
-
-bool Reduced::isPeriodicWestEast() const {
-    const Longitude we = bbox_.east() - bbox_.west();
-    const Longitude inc = getSmallestIncrement();
-
-    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
-            (we + inc >= Longitude::GLOBE);
-}
-
-
 class ReducedIterator {
     const std::vector<double>& latitudes_;
     const std::vector<long>& pl_;
@@ -117,7 +93,6 @@ protected:
 public:
     ReducedIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain&);
 };
-
 
 
 ReducedIterator::ReducedIterator(const std::vector<double>& latitudes, const std::vector<long>& pl, const util::Domain& dom) :

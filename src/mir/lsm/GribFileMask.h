@@ -44,8 +44,7 @@ public:
 
     // -- Contructors
 
-    GribFileMask(const std::string& name,
-                 const eckit::PathName&,
+    GribFileMask(const eckit::PathName&,
                  const param::MIRParametrisation&,
                  const repres::Representation&,
                  const std::string& which);
@@ -93,11 +92,15 @@ protected:
     // -- Class methods
     // None
 
+protected:
+
+    const eckit::PathName path_;
+
+
 private:
 
     // -- Members
 
-    const eckit::PathName path_;
     std::vector<bool> mask_;
 
     // -- Methods

@@ -71,13 +71,14 @@ protected:
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
-    virtual bool sameAs(const Representation& other) const;
-    void adjustBoundingBoxNorthSouth(util::BoundingBox&);
+    virtual eckit::Fraction getSmallestIncrement() const = 0;
 
     // -- Overridden methods
 
+    virtual bool sameAs(const Representation& other) const;
     bool includesNorthPole() const;
     bool includesSouthPole() const;
+    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None
@@ -91,7 +92,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    void adjustBoundingBoxLatitudes();
 
     // -- Overridden methods
 

@@ -24,9 +24,34 @@ Domain::Domain(Latitude north, Longitude west, Latitude south, Longitude east) :
 }
 
 
+bool Domain::contains(const repres::Iterator::point_ll_t& p) const {
+    return BoundingBox::contains(p.lat, p.lon);
+}
+
+
+bool Domain::contains(const Latitude& lat, const Longitude& lon) const {
+    return BoundingBox::contains(lat, lon);
+}
+
+
 Domain Domain::makeGlobal() {
     return Domain(Latitude::NORTH_POLE, Longitude::GREENWICH,
                   Latitude::SOUTH_POLE, Longitude::GLOBE);
+}
+
+
+bool Domain::includesPoleNorth() const {
+    return north() == Latitude::NORTH_POLE;
+}
+
+
+bool Domain::includesPoleSouth() const {
+    return south() == Latitude::SOUTH_POLE;
+}
+
+
+bool Domain::isPeriodicEastWest() const {
+    return east() - west() == Longitude::GLOBE;
 }
 
 
@@ -35,7 +60,6 @@ Domain::operator atlas::RectangularDomain() const {
         {{west().value(),  east().value()} },
         {{south().value(), north().value()} } );
 }
-
 
 
 void Domain::print(std::ostream& os) const {

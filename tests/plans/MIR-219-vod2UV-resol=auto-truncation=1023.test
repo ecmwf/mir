@@ -1,6 +1,0 @@
-# mars
-param=vo_d,level=1000
-# mir
---vod2uv --resol=auto --truncation=1023 --intgrid=none
-# plan
-ShTruncate[truncation=1023]|ShVodToUV[]|Save[output=...]

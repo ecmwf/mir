@@ -36,21 +36,18 @@ namespace regular {
 
 Regular::Regular(const param::MIRParametrisation& parametrisation):
     Gaussian(parametrisation) {
-    adjustBoundingBoxEastWest(bbox_);
     setNiNj();
 }
 
 
 Regular::Regular(size_t N):
     Gaussian(N) {
-    adjustBoundingBoxEastWest(bbox_);
     setNiNj();
 }
 
 
 Regular::Regular(size_t N, const util::BoundingBox& bbox):
     Gaussian(N, bbox) {
-    adjustBoundingBoxEastWest(bbox_);
     setNiNj();
 }
 
@@ -113,45 +110,6 @@ bool Regular::sameAs(const Representation& other) const {
 eckit::Fraction Regular::getSmallestIncrement() const {
     ASSERT(N_);
     return eckit::Fraction(90, N_);
-}
-
-
-void Regular::adjustBoundingBoxEastWest(util::BoundingBox& bbox) {
-    Longitude e = bbox.east();
-    Longitude w = bbox.west();
-
-    bool adjustedEast = false;
-    bool adjustedWest = false;
-
-    eckit::Fraction inc = getSmallestIncrement();
-    if (e - w > Longitude::GLOBE - inc) {
-        adjustedEast = true;
-        e = w + Longitude::GLOBE - inc;
-    }
-
-    const long range = 4 * long(N_);
-    for (long i = -range; i <= range; ++i) {
-        const Longitude l = w - i * inc;
-        if (!adjustedEast && bbox.east().sameWithGrib1Accuracy(l)) {
-            adjustedEast = true;
-            e = l;
-        }
-        if (!adjustedWest && bbox.west().sameWithGrib1Accuracy(l)) {
-            adjustedWest = true;
-            w = l;
-        }
-        if (adjustedEast && adjustedWest) {
-            break;
-        }
-    }
-
-    bbox = util::BoundingBox(bbox.north(), w, bbox.south(), e);
-}
-
-
-bool Regular::isPeriodicWestEast() const {
-    const Longitude inc = Longitude(eckit::Fraction(90, N_));
-    return (bbox_.east() - bbox_.west() + inc).sameWithGrib1Accuracy(Longitude::GLOBE);
 }
 
 

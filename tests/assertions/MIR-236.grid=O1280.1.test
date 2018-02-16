@@ -1,0 +1,10 @@
+# Mars (mentioned in ECC-474)
+param=msl,levtype=sfc,grid=O1280
+# Mir
+--area=-25/135/-47/179
+# grib_get assertions
+gridName = O1280
+# FIXME latitudeOfFirstGridPointInDegrees = 
+# FIXME longitudeOfFirstGridPointInDegrees = 
+# FIXME latitudeOfLastGridPointInDegrees = 
+# FIXME longitudeOfLastGridPointInDegrees = 

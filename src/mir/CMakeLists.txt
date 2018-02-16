@@ -88,6 +88,8 @@ list(
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
     action/misc/SetMetadata.h
+    action/misc/Noop.cc
+    action/misc/Noop.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
@@ -206,6 +208,8 @@ list(
     input/GribStreamInput.h
     input/MIRInput.cc
     input/MIRInput.h
+    input/MultiScalarInput.cc
+    input/MultiScalarInput.h
     input/RawInput.cc
     input/RawInput.h
     input/RawMetadata.cc
@@ -244,6 +248,8 @@ list(
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
+    method/Cropping.cc
+    method/Cropping.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
     method/knn/KNearest.cc
@@ -304,10 +310,14 @@ list(
     output/GribMemoryOutput.h
     output/GribOutput.cc
     output/GribOutput.h
+    compat/GribCompatibility.cc
+    compat/GribCompatibility.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
     output/MIROutput.cc
     output/MIROutput.h
+    output/MultiScalarOutput.cc
+    output/MultiScalarOutput.h
     output/RawOutput.cc
     output/RawOutput.h
     output/ValuesOutput.cc
@@ -461,6 +471,10 @@ list(
     style/MIRStyle.h
     style/Resol.cc
     style/Resol.h
+    style/SpectralOrder.cc
+    style/SpectralOrder.h
+    style/SpectralOrderT.cc
+    style/SpectralOrderT.h
     style/Truncation.cc
     style/Truncation.h
     style/intgrid/Automatic.cc
@@ -471,24 +485,12 @@ list(
     style/intgrid/None.h
     style/intgrid/Source.cc
     style/intgrid/Source.h
-    style/resol/ArchivedValue.cc
-    style/resol/ArchivedValue.h
-    style/resol/AutomaticResolution.cc
-    style/resol/AutomaticResolution.h
-    style/resol/NamedGrid.cc
-    style/resol/NamedGrid.h
-    style/resol/SpectralOrder.cc
-    style/resol/SpectralOrder.h
-    style/resol/SpectralOrderT.cc
-    style/resol/SpectralOrderT.h
-    style/resol/Truncation.cc
-    style/resol/Truncation.h
     style/truncation/Automatic.cc
     style/truncation/Automatic.h
     style/truncation/None.cc
     style/truncation/None.h
-    style/truncation/Truncation.cc
-    style/truncation/Truncation.h
+    style/truncation/Ordinal.cc
+    style/truncation/Ordinal.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h

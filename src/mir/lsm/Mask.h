@@ -65,6 +65,9 @@ public:
     virtual void hash(eckit::MD5&) const;
     virtual const std::vector<bool>& mask() const = 0;
 
+    virtual std::string cacheName() const = 0;
+
+
     // Cache key takes the interpolation method into account
     static void hashCacheKey(
             eckit::MD5&,

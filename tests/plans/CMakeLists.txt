@@ -9,7 +9,8 @@ file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
 get_target_property( MIR_TOOL      "mir-tool"      LOCATION )
 
-find_program( MARS_SCRIPT NAMES mars false )
+find_program( DIFF_TOOL NAMES "diff" "cmp" "false" )
+find_program( MARS_SCRIPT NAMES "mars" "false" )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
@@ -28,7 +29,6 @@ foreach( _t ${test_files} )
       ARGS       ${_t}
       ENVIRONMENT
         "MIR_DEBUG=1"
-        "MIR_DRY_RUN=1"
         "MIR_HOME=${CMAKE_BINARY_DIR}"
         "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
         ${eccodes_environment}
