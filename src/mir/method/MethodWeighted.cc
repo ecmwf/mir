@@ -530,7 +530,7 @@ const repres::Representation* MethodWeighted::adjustOutputRepresentation(const r
         repres::RepresentationHandle out(representation); // Will destroy represenation
 
         util::BoundingBox bbox(cropping_.boundingBox());
-        representation->adjustBoundingBox(bbox);
+        representation->adjustBoundingBox(bbox); // bbox is provided by user, and may not fit representation
 
         return representation->cropped(bbox);
     }
