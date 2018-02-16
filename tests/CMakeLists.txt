@@ -121,5 +121,4 @@ endforeach()
 add_subdirectory(assertions)
 add_subdirectory(plans)
 add_subdirectory(unit)
-add_subdirectory(temp)
 
