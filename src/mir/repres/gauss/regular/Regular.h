@@ -128,7 +128,6 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
-    virtual void adjustBoundingBoxEastWest(util::BoundingBox&) const;
     eckit::Fraction getSmallestIncrement() const;
 
     // -- Class members
