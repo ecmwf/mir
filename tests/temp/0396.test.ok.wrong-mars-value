@@ -1,0 +1,6 @@
+# MARS request
+param=t,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
+# MIR options
+--intgrid=source --truncation=none --gridname=n16
+# grib_get assertions
+
