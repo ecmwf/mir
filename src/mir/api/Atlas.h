@@ -56,11 +56,10 @@ struct Config {
     void set(const char*, T) {}
 };
 struct Earth {
-    static double radiusInMeters();
-    static double radiusInKm();
-    static double distanceInMeters(const PointLonLat&, const PointLonLat&);
-    static double distanceInMeters(const PointXYZ&, const PointXYZ&);
-    static void convertGeodeticToGeocentric(const PointLonLat&, PointXYZ&, const double& height = 0, const double& radius = radiusInMeters());
+    static double radius();
+    static double distance(const PointLonLat&, const PointLonLat&);
+    static double distance(const PointXYZ&, const PointXYZ&);
+    static void convertSphericalToCartesian(const double& radius, const Point2& Alonlat, Point3& B, double height = 0.);
 };
 struct Rotation {
     Rotation(const PointLonLat&);

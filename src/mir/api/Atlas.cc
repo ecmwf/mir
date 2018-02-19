@@ -148,27 +148,22 @@ void util::gaussian_latitudes_npole_spole(int, double*)
     NOTIMP;
 }
 
-double util::Earth::radiusInMeters()
+double util::Earth::radius()
 {
     NOTIMP;
 }
 
-double util::Earth::radiusInKm()
+double util::Earth::distance(const PointLonLat&, const PointLonLat&)
 {
     NOTIMP;
 }
 
-double util::Earth::distanceInMeters(const PointLonLat&, const PointLonLat&)
+double util::Earth::distance(const PointXYZ&, const PointXYZ&)
 {
     NOTIMP;
 }
 
-double util::Earth::distanceInMeters(const PointXYZ&, const PointXYZ&)
-{
-    NOTIMP;
-}
-
-void util::Earth::convertGeodeticToGeocentric(const PointLonLat&, PointXYZ&, const double&, const double&)
+void util::Earth::convertSphericalToCartesian(const double&, const Point2&, Point3&, double)
 {
     NOTIMP;
 }
