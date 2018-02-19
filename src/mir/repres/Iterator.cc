@@ -80,7 +80,9 @@ const Iterator::point_3d_t Iterator::point3D() const {
 
     // notice the order
     const atlas::PointLonLat pll(point_[1], point_[0]);
-    atlas::PointXYZ pxyz = atlas::util::Earth::convertGeodeticToGeocentric(pll);
+
+    atlas::PointXYZ pxyz;
+    atlas::util::Earth::convertSphericalToCartesian(pll, pxyz);
 
     return pxyz;
 }

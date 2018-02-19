@@ -141,7 +141,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 //    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view< double, 2 >( mesh_.nodes().lonlat() );
 
     // set maximum to Earth radius
-    const double dMax = Earth::radiusInMeters();
+    const double dMax = Earth::radius();
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (mesh_.nodes().metadata().has("NbRealPts")) {
@@ -173,7 +173,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
                 const size_t j = size_t(connectivity(e, nj));
 
                 if (i < firstVirtualPoint && j < firstVirtualPoint) {
-                    d = std::max(d, Earth::distanceInMeters(P[ni], P[nj]));
+                    d = std::max(d, Earth::distance(P[ni], P[nj]));
                     if (d > dMax) {
                         eckit::Log::warning() << "MIRGrid::getMeshLongestElementDiagonal: limited to maximum " << dMax << "m";
                         return dMax;
