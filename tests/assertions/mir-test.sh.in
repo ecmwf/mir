@@ -54,6 +54,8 @@ do
             ok=0
             eval n=\"$n\"
             $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
+			# For some reasons set -e does not trigger
+			[[ $? -eq 0 ]] || exit 1	
             state=eccodes
             ;;
 
