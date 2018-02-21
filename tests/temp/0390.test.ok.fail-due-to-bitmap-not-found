@@ -1,6 +1,0 @@
-# MARS request
-param=t,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
-# MIR options
---intgrid=source --truncation=none --grid=0.2/0.2 --area=-10/112/-11/113 --bitmap=fp.bitmap
-# grib_get assertions
-

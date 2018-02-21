@@ -1,6 +1,0 @@
-# MARS request
-param=q,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
-# MIR options
---gridname=f640 --area=89.8923964455935/-180/-89.8923964455935/179.859375 --bitmap=bmap/GAUSS640_EU_GL
-# grib_get assertions
-

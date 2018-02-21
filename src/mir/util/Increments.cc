@@ -32,8 +32,8 @@ namespace {
 
 
 static void check(const Increments& inc) {
-    ASSERT(inc.west_east().longitude() > 0);
-    ASSERT(inc.south_north().latitude() > 0);
+    ASSERT(inc.west_east().longitude() >= 0);
+    ASSERT(inc.south_north().latitude() >= 0);
 }
 
 
@@ -162,7 +162,8 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShif
     ASSERT(south_north_.latitude() > 0);
     LatitudeIncrement shift_sn(0);
     if (allowLatitudeShift) {
-        shift_sn = (bbox.south().fraction() / south_north_.latitude().fraction()).decimalPart() * south_north_.latitude().fraction();
+        const eckit::Fraction sn(south_north_.latitude().fraction());
+        shift_sn = (bbox.south().fraction() / sn).decimalPart() * sn;
     }
 
 
@@ -177,7 +178,8 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShif
     ASSERT(west_east_.longitude() > 0);
     LongitudeIncrement shift_we(0);
     if (allowLongitudeShift) {
-        shift_we = (bbox.west().fraction() / west_east_.longitude().fraction()).decimalPart() * west_east_.longitude().fraction();
+        const eckit::Fraction we(west_east_.longitude().fraction());
+        shift_we = (bbox.west().fraction() / we).decimalPart() * we;
     }
 
     Longitude w = bbox.west();

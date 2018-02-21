@@ -1,6 +1,0 @@
-# MARS request
-param=t,levtype=pl,date=-1,step=3,time=1200,levelist=500,type=fc
-# MIR options
---truncation=127 --gridname=f64
-# grib_get assertions
-
