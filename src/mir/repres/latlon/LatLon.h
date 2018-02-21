@@ -108,6 +108,8 @@ protected:
         size_t i_;
         size_t j_;
         size_t count_;
+        Latitude latValue_;
+        Longitude lonValue_;
         eckit::Fraction lat_;
         eckit::Fraction lon_;
     protected:
@@ -115,7 +117,7 @@ protected:
         void print(std::ostream&) const;
         bool next(Latitude&, Longitude&);
     public:
-        LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, double we, double ns);
+        LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments);
     };
 
     // -- Class methods

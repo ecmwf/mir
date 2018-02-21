@@ -118,8 +118,8 @@ const mir::repres::Representation* output_representation(const mir::param::MIRPa
             increments->globaliseBoundingBox(boundingBox, false, false);
         }
 
-        bool isLatitudeShifted = !(boundingBox.south().fraction() / increments->south_north()).integer();
-        bool isLongitudeShifted = !(boundingBox.west().fraction() / increments->west_east()).integer();
+        bool isLatitudeShifted = increments->isLatitudeShifted(boundingBox);
+        bool isLongitudeShifted = increments->isLongitudeShifted(boundingBox);
         eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box shifted: "
                                          << "in latitude? " << (isLatitudeShifted ? "yes" : "no") << ", "
                                          << "in longitude? " << (isLongitudeShifted ? "yes" : "no")

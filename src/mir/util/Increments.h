@@ -17,7 +17,8 @@
 #define mir_util_Increments_h
 
 #include <iosfwd>
-#include "eckit/types/Fraction.h"
+#include "mir/util/LatitudeIncrement.h"
+#include "mir/util/LongitudeIncrement.h"
 
 
 struct grib_info;
@@ -53,9 +54,7 @@ public:
 
     // NOTE: maybe to be substituded by (Longitude&, Latitude&), and no defaults
     explicit Increments(double west_east = 0, double south_north = 0);
-    explicit Increments(const eckit::Fraction& west_east, const eckit::Fraction& south_north);
-    explicit Increments(double west_east, const eckit::Fraction& south_north);
-    explicit Increments(const eckit::Fraction& west_east, double south_north);
+    explicit Increments(const LongitudeIncrement& west_east, const LatitudeIncrement& south_north);
 
     // -- Destructor
 
@@ -66,13 +65,9 @@ public:
 
     // -- Operators
 
-    bool operator==(const Increments& other) const {
-        return (west_east_ == other.west_east_) && (south_north_ == other.south_north_);
-    }
+    bool operator==(const Increments& other) const;
 
-    bool operator!=(const Increments& other) const {
-        return (west_east_ != other.west_east_) || (south_north_ != other.south_north_);
-    }
+    bool operator!=(const Increments& other) const;
 
     // -- Methods
 
@@ -86,11 +81,11 @@ public:
 
     size_t computeNj(const BoundingBox&) const;
 
-    const eckit::Fraction& west_east() const {
+    const LongitudeIncrement& west_east() const {
         return west_east_;
     }
 
-    const eckit::Fraction& south_north() const {
+    const LatitudeIncrement& south_north() const {
         return south_north_;
     }
 
@@ -99,6 +94,10 @@ public:
     void fill(api::MIRJob&) const;
 
     void makeName(std::ostream& out) const;
+
+    bool isLatitudeShifted(const BoundingBox&) const;
+
+    bool isLongitudeShifted(const BoundingBox&) const;
 
     // -- Overridden methods
     // None
@@ -112,9 +111,7 @@ public:
 protected:
 
     // -- Members
-
-    bool isLatitudeShifted(const BoundingBox&) const;
-    bool isLongitudeShifted(const BoundingBox&) const;
+    // None
 
     // -- Methods
 
@@ -133,8 +130,8 @@ private:
 
     // -- Members
 
-    eckit::Fraction west_east_;
-    eckit::Fraction south_north_;
+    LongitudeIncrement west_east_;
+    LatitudeIncrement south_north_;
 
     // -- Methods
     // None
