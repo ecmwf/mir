@@ -1,6 +1,0 @@
-# MARS request
-param=t,level=1000
-# MIR options
---gridname=f1280 --area=58.5940228153455/16.171875/58.5940228153455/16.2421875
-# grib_get assertions
-
