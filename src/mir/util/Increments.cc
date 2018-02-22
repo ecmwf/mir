@@ -45,12 +45,21 @@ static size_t computeN(const T& first, const T& last, const T& inc) {
     eckit::Fraction l = last.fraction();
     eckit::Fraction f = first.fraction();
     eckit::Fraction i = inc.fraction();
+    eckit::Fraction r = (l - f) / i;
 
-    // std::cout << double(last) << " " << double(first) << " " << double(inc) << std::endl;
+//    std::cout << "\t" << last
+//              << "\t" << first
+//              << "\t" << inc
+//              << "\t" << l
+//              << "\t" << f
+//              << "\t" << i
+//              << "\t" << double(l)
+//              << "\t" << double(f)
+//              << "\t" << double(i)
+//              << std::endl;
 
-    // std::cout << l << " " << f << " " << i << std::endl;
-
-    eckit::Fraction::value_type n = (l - f) / i;
+//    eckit::Fraction::value_type n = r.integralPart();
+    long long n = ((l - f) / i).integralPart();
 
     return size_t(n + 1);
 }
@@ -63,7 +72,7 @@ static T adjust(bool up, const T& target, const T& inc) {
     eckit::Fraction i = inc.fraction();
     eckit::Fraction r = target.fraction() / i;
 
-    eckit::Fraction::value_type n = r;
+    eckit::Fraction::value_type n = r.integralPart();
     if (!r.integer() && (r > 0) == up) {
         n += (up ? 1 : -1);
     }
@@ -156,40 +165,39 @@ void Increments::fill(api::MIRJob& job) const  {
 
 
 void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShift, bool allowLatitudeShift) const {
+    const Latitude& sn = south_north_.latitude();
+    const Longitude& we = west_east_.longitude();
 
     // Latitude limits
 
-    ASSERT(south_north_.latitude() > 0);
+    ASSERT(sn > 0);
     LatitudeIncrement shift_sn(0);
     if (allowLatitudeShift) {
-        const eckit::Fraction sn(south_north_.latitude().fraction());
-        shift_sn = (bbox.south().fraction() / sn).decimalPart() * sn;
+        shift_sn = (bbox.south().fraction() / sn.fraction()).decimalPart() * sn.fraction();
     }
 
-
-    Latitude n = adjust(false, Latitude::NORTH_POLE - shift_sn.latitude(), south_north_.latitude()) + shift_sn.latitude();
-    Latitude s = adjust(true,  Latitude::SOUTH_POLE - shift_sn.latitude(), south_north_.latitude()) + shift_sn.latitude();
+    Latitude n = adjust(false, Latitude::NORTH_POLE - shift_sn.latitude(), sn) + shift_sn.latitude();
+    Latitude s = adjust(true,  Latitude::SOUTH_POLE - shift_sn.latitude(), sn) + shift_sn.latitude();
 
 
     // Longitude limits
     // - West for non-periodic grids is not corrected!
     // - East for periodic grids is W + 360 - increment
 
-    ASSERT(west_east_.longitude() > 0);
+    ASSERT(we > 0);
     LongitudeIncrement shift_we(0);
     if (allowLongitudeShift) {
-        const eckit::Fraction we(west_east_.longitude().fraction());
-        shift_we = (bbox.west().fraction() / we).decimalPart() * we;
+        shift_we = (bbox.west().fraction() / we.fraction()).decimalPart() *  we.fraction();
     }
 
     Longitude w = bbox.west();
     if (isPeriodic()) {
-        w = adjust(true, Longitude::GREENWICH - shift_we.longitude(), west_east_.longitude()) + shift_we.longitude();
+        w = adjust(true, Longitude::GREENWICH - shift_we.longitude(), we) + shift_we.longitude();
     }
 
-    Longitude e = adjust(false, w + Longitude::GLOBE - shift_we.longitude(), west_east_.longitude()) + shift_we.longitude();
+    Longitude e = adjust(false, w + Longitude::GLOBE - shift_we.longitude(), we) + shift_we.longitude();
     if (e - w == Longitude::GLOBE) {
-        e -= west_east_.longitude();
+        e -= we;
     }
 
     bbox = BoundingBox(n, w, s, e);

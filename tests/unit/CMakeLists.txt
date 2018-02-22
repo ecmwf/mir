@@ -6,6 +6,7 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 foreach( _t
         test_spectral_order
+        test_increments
         )
   ecbuild_add_test(
       TARGET       ${_t}
