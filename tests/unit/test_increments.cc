@@ -120,58 +120,57 @@ struct Case {
 
 
 struct UserAndGlobalisedCase {
-    UserAndGlobalisedCase(const BoundingBox& localBoundingBox,
-                       size_t localNi,
-                       size_t localNj,
-                       bool localIsLatitudeShifted,
-                       bool localIsLongitudeShifted,
-                       const BoundingBox& globalBoundingBox,
-                       size_t globalNi,
-                       size_t globalNj,
-                       bool globalIsLatitudeShifted,
-                       bool globalIsLongitudeShifted,
-                       bool allowLatitudeShift,
-                       bool allowLongitudeShift) :
-        user ("user", localBoundingBox,  localNi,  localNj,  localIsLatitudeShifted,  localIsLongitudeShifted),
-        globalised("globalised", globalBoundingBox, globalNi, globalNj, globalIsLatitudeShifted, globalIsLongitudeShifted),
+    UserAndGlobalisedCase(const Increments& increments,
+                          bool allowLatitudeShift,
+                          bool allowLongitudeShift,
+                          const Case& user,
+                          const Case& globalised) :
+        increments_(increments),
         allowLatitudeShift_(allowLatitudeShift),
-        allowLongitudeShift_(allowLongitudeShift) {}
+        allowLongitudeShift_(allowLongitudeShift),
+        user_(user),
+        globalised_(globalised) {}
 
     void print(std::ostream& out) const {
         out << "UserAndGlobalisedCase["
                "\n\t" "allowLatitudeShift?"    << allowLatitudeShift_ << ","
                "\n\t" "allowLongitudeShift?"   << allowLongitudeShift_ << ","
-               "\n\t" "localCase=" << user << ","
-               "\n\t" "globalCase=" << globalised
+               "\n\t" "user=" << user_ << ","
+               "\n\t" "globalised=" << globalised_
             << "]";
     }
 
-    const Case user;
-    const Case globalised;
+    const Increments& increments() const {
+        return increments_;
+    }
+
+    const Increments increments_;
     const bool allowLatitudeShift_;
     const bool allowLongitudeShift_;
+    const Case user_;
+    const Case globalised_;
 
-    bool check(const Increments& increments) const {
+    bool check() const {
 
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
-        if (!user.compare(Case("calculated",
-                               user.boundingBox_,
-                               increments.computeNi(user.boundingBox_),
-                               increments.computeNj(user.boundingBox_),
-                               increments.isLatitudeShifted(user.boundingBox_),
-                               increments.isLongitudeShifted(user.boundingBox_) ))) {
+        if (!user_.compare(Case("calculated",
+                                user_.boundingBox_,
+                                increments_.computeNi(user_.boundingBox_),
+                                increments_.computeNj(user_.boundingBox_),
+                                increments_.isLatitudeShifted(user_.boundingBox_),
+                                increments_.isLongitudeShifted(user_.boundingBox_) ))) {
             return false;
         }
 
         // 'globalise' user-provided area, check if allowed shifts are respected
-        BoundingBox global(user.boundingBox_);
-        increments.globaliseBoundingBox(global, allowLongitudeShift_, allowLatitudeShift_);
+        BoundingBox global(user_.boundingBox_);
+        increments_.globaliseBoundingBox(global, allowLongitudeShift_, allowLatitudeShift_);
 
-        const bool isLatitudeShifted  = increments.isLatitudeShifted(global);
-        const bool isLongitudeShifted = increments.isLongitudeShifted(global);
+        const bool isLatitudeShifted  = increments_.isLatitudeShifted(global);
+        const bool isLongitudeShifted = increments_.isLongitudeShifted(global);
         if ((!allowLatitudeShift_  && isLatitudeShifted) ||
             (!allowLongitudeShift_ && isLongitudeShifted)) {
-            eckit::Log::debug<LibMir>() << "globaliseBoundingBox(" << user << ") = " << global << ":"
+            eckit::Log::debug<LibMir>() << "globaliseBoundingBox(" << user_ << ") = " << global << ":"
                                         << "\t" "allowLatitudeShift_?  " << allowLatitudeShift_  << " isLatitudeShifted?  " << isLatitudeShifted
                                         << "\t" "allowLongitudeShift_? " << allowLongitudeShift_ << " isLongitudeShifted? " << isLongitudeShifted
                                         << std::endl;
@@ -179,23 +178,23 @@ struct UserAndGlobalisedCase {
         }
 
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
-        if (!globalised.compare(Case("calculated",
-                                     global,
-                                     increments.computeNi(global),
-                                     increments.computeNj(global),
-                                     isLatitudeShifted,
-                                     isLongitudeShifted))) {
+        if (!globalised_.compare(Case("calculated",
+                                      global,
+                                      increments_.computeNi(global),
+                                      increments_.computeNj(global),
+                                      isLatitudeShifted,
+                                      isLongitudeShifted))) {
 
-            Latitude s = user.boundingBox_.south();
+            Latitude s = user_.boundingBox_.south();
             Latitude n = s;
-            const Latitude sn(increments.south_north().latitude());
+            const Latitude sn(increments_.south_north().latitude());
 
             while (n + sn <= Latitude::NORTH_POLE) { n += sn; }
             while (s - sn >= Latitude::SOUTH_POLE) { s -= sn; }
 
-            Longitude w = user.boundingBox_.west();
+            Longitude w = user_.boundingBox_.west();
             Longitude e = w;
-            const Longitude we(increments.west_east().longitude());
+            const Longitude we(increments_.west_east().longitude());
 
             while (e - w >= Longitude::GLOBE)      { e -= we; }
             while (e - w <  Longitude::GLOBE - we) { e += we; }
@@ -204,11 +203,11 @@ struct UserAndGlobalisedCase {
             std::streamsize p = eckit::Log::debug<LibMir>().precision(15);
             eckit::Log::debug<LibMir>() << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
                                         << "\n\t" << maybe
-                                        << "\n\t" "Ni=" << increments.computeNi(maybe)
-                                        << "\n\t" "Nj=" << increments.computeNj(maybe)
-                                        << "\n\t" "includesNorthPole?  " << LatLon::includesNorthPole(increments, maybe)
-                                        << "\n\t" "includesSouthPole?  " << LatLon::includesSouthPole(increments, maybe)
-                                        << "\n\t" "isPeriodicWestEast? " << LatLon::isPeriodicWestEast(increments, maybe)
+                                        << "\n\t" "Ni=" << increments_.computeNi(maybe)
+                                        << "\n\t" "Nj=" << increments_.computeNj(maybe)
+                                        << "\n\t" "includesNorthPole?  " << LatLon::includesNorthPole(increments_, maybe)
+                                        << "\n\t" "includesSouthPole?  " << LatLon::includesSouthPole(increments_, maybe)
+                                        << "\n\t" "isPeriodicWestEast? " << LatLon::isPeriodicWestEast(increments_, maybe)
                                         << std::endl;
             eckit::Log::debug<LibMir>().precision(p);
 
@@ -225,38 +224,48 @@ struct UserAndGlobalisedCase {
 };
 
 
-CASE( "test_Increments[west_east=2,south_north=2]" ) {
-    Increments increments(2, 2);
-
+CASE( "test_increments" ) {
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
 
-    {{   2,   0,   0,   2   },   2,  2, false, false,  // user bbox, Ni, Nj, is lat/lon shifted
-     {  90,   0, -90, 358   }, 180, 91, false, false,  // globalised ...
-     true, true },                                     // allowed lat/lon shifts
+        { Increments(2, 2), true, true,                                     // increments, allowed lat/lon shift
+          Case("user",   {   2,   0,   0,   2   },   2,  2, false, false),  // user bbox, Ni, Nj, is lat/lon shifted
+          Case("global", {  90,   0, -90, 358   }, 180, 91, false, false)   // globalised bbox ...
+        },
 
-    {{   2.1, 0,   0,   2.1 },   2,  2, false, false,
-     {  90,   0, -90, 358   }, 180, 91, false, false,
-     true, true },
+        { Increments(2, 2), true, true,
+          Case("user",   {   2.1, 0,   0,   2.1 },   2,  2, false, false),
+          Case("global", {  90,   0, -90, 358   }, 180, 91, false, false)
+        },
 
-    {{  3, 1,   1,   3 },   2,  2, true, true,
-     { 89, 1, -89, 359 }, 180, 90, true, true,
-     true, true },
+        { Increments(2, 2), true, true,
+          Case("user",   {  3, 1,   1,   3 },   2,  2, true, true),
+          Case("global", { 89, 1, -89, 359 }, 180, 90, true, true),
+        },
 
-//    {{ 37.6025,           -114.8907,             27.7626, -105.1875}, 4, 4, true, true,
-//     { 89.7626,           -114.8907,            -88.2374,  243.1093}, 1, 1, true, true,
-//     true, true },
+#if 0
+        { Increments(2, 2), true, true,
+          Case("user",   { 37.6025,           -114.8907,             27.7626, -105.1875}, 4, 4, true, true),
+          Case("global", { 89.7626,           -114.8907,            -88.2374,  243.1093}, 1, 1, true, true),
+        },
+#endif
 
-//            {{ 37.6025,           -114.8915,             27.7626, -105.188  },   4,  4, true, true,
-//             { 89.7626,           -114.8915,            -88.2374,  243.1085 }, 179,  4, true, true,
-//             true, true },
+#if 0
+        { Increments(2, 2), true, true,
+          Case("user",   { 37.6025,           -114.8915,             27.7626, -105.188  },   4,  4, true, true),
+          Case("global", { 89.7626,           -114.8915,            -88.2374,  243.1085 }, 179,  4, true, true),
+        },
+#endif
 
-//            {{ 88,                -178,                 -88,       180},      1, 1, false, false,
-//             { 88,                -178,                 -88,       180},      1, 1, false, false,
-//             false, false },
+#if 0
+        { Increments(2, 2), true, true,
+          Case("user",   { 88,                -178,                 -88,       180},      1, 1, false, false),
+          Case("global", { 88,                -178,                 -88,       180},      1, 1, false, false),
+        },
+#endif
 
         })) {
-        eckit::Log::debug<LibMir>() << "Test increments=" << increments << " with cases=" << cases << ":" << std::endl;
-        EXPECT( cases.check(increments) );
+        eckit::Log::debug<LibMir>() << "Test increments=" << cases.increments() << " with cases=" << cases << ":" << std::endl;
+        EXPECT( cases.check() );
     }
 }
 
