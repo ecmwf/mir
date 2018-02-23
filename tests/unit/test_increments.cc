@@ -83,11 +83,11 @@ struct Case {
     void print(std::ostream& out) const {
         out << "name='" << name_ << "',\t"
                "Case["
-               ",boundingBox="           << boundingBox_
-            << ",Ni="                    << Ni_
-            << ",Nj="                    << Nj_
-            << ",isLatitudeShifted_?"    << isLatitudeShifted_
-            << ",isLongitudeShifted_?"   << isLongitudeShifted_
+                "boundingBox="         << boundingBox_
+            << ",Ni="                  << Ni_
+            << ",Nj="                  << Nj_
+            << ",isLatitudeShifted_?"  << isLatitudeShifted_
+            << ",isLongitudeShifted_?" << isLongitudeShifted_
             << "]";
     }
 
@@ -135,8 +135,8 @@ struct UserAndGlobalisedCase {
         out << "UserAndGlobalisedCase["
                "\n\t" "allowLatitudeShift?"    << allowLatitudeShift_ << ","
                "\n\t" "allowLongitudeShift?"   << allowLongitudeShift_ << ","
-               "\n\t" "user=" << user_ << ","
-               "\n\t" "globalised=" << globalised_
+               "\n\t" << user_ << ","
+               "\n\t" << globalised_
             << "]";
     }
 
@@ -225,6 +225,8 @@ struct UserAndGlobalisedCase {
 
 
 CASE( "test_increments" ) {
+    BoundingBox GLOBE;
+
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
 
         { Increments(2, 2), true, true,                                     // increments, allowed lat/lon shift
@@ -260,6 +262,28 @@ CASE( "test_increments" ) {
         { Increments(2, 2), true, true,
           Case("user",   { 88,                -178,                 -88,       180},      1, 1, false, false),
           Case("global", { 88,                -178,                 -88,       180},      1, 1, false, false),
+        },
+#endif
+
+        { Increments(7, 7), true, true,
+          Case("user",   {  85,   0, -90, 357   },  52,  26, true, false),
+          Case("global", {  85,   0, -90, 357   },  52,  26, true, false)
+        },
+
+        { Increments(7, 7), true, true,
+          Case("user",   GLOBE,                     52,  26, true, false),
+          Case("global", {  85,   0, -90, 357   },  52,  26, true, false)
+        },
+
+        { Increments(4, 4), true, true,
+          Case("user",   {  90,   0, -90, 356   },  90,  46, true, false),
+          Case("global", {  90,   0, -90, 356   },  90,  46, true, false)
+        },
+
+#if 0
+        { Increments(4, 4), true, true,
+          Case("user",   GLOBE,                     90,  46, true, false),
+          Case("global", {  90,   0, -90, 356   },  90,  46, true, false)
         },
 #endif
 
