@@ -1,6 +1,0 @@
-# MARS request
-levtype=ml,levelist=137,param=133
-# mir
---area=90/0/-90/359.929 --gridname=O1280 --dont-compress-plan
-# grib_get assertions
-latitudeOfFirstGridPointInDegrees = 90

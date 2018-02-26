@@ -1,0 +1,6 @@
+# MARS request (GRIB1)
+rotated_ll.3-3.grib1
+# MIR
+--area=90/0/-90/359.929 --gridname=O1280 --dont-compress-plan
+# grib_get assertions (global: 6599680)
+numberOfValues = 6599646
