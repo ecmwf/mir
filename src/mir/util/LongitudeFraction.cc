@@ -100,11 +100,6 @@ void LongitudeFraction::decode(eckit::Stream& s) {
     s >> value_;
 }
 
-bool LongitudeFraction::sameWithGrib1Accuracy(const LongitudeFraction& other) const {
-    static const double GRIB1EPSILON = 0.001;
-    return eckit::types::is_approximately_equal(value(), other.value(), GRIB1EPSILON);
-}
-
 LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum) const {
     LongitudeFraction lon(*this);
     while (lon < minimum) {

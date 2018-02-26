@@ -46,8 +46,6 @@ public:
     double value() const { return value_; }
     eckit::Fraction fraction() const { return eckit::Fraction(value_); }
 
-    bool sameWithGrib1Accuracy(const Latitude& other) const;
-
     //========================================
     bool operator==(double other) const;
     bool operator!=(double other) const;

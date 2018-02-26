@@ -22,6 +22,7 @@
 #include "eckit/thread/Once.h"
 #include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -79,7 +80,7 @@ void Gaussian::adjustBoundingBoxLatitudes() {
     } else {
         auto best = std::lower_bound(lats.begin(), lats.end(), n.value(),
                                      [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 < l2 || l1.sameWithGrib1Accuracy(l2));
+            return !(l1 < l2 || same_with_grib1_accuracy(l1, l2));
         });
         ASSERT(best != lats.end());
         n = *best;
@@ -90,27 +91,27 @@ void Gaussian::adjustBoundingBoxLatitudes() {
     } else {
         auto best = std::lower_bound(lats.rbegin(), lats.rend(), s.value(),
                                      [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 > l2 || l1.sameWithGrib1Accuracy(l2));
+            return !(l1 > l2 || same_with_grib1_accuracy(l1, l2));
         });
         ASSERT(best != lats.rend());
         s = *best;
     }
 
-    ASSERT(!s.sameWithGrib1Accuracy(n));
+    ASSERT(!same_with_grib1_accuracy(s, n));
     bbox_ = util::BoundingBox(n, bbox_.west(), s, bbox_.east());
 }
 
 
 bool Gaussian::includesNorthPole() const {
     const std::vector<double>& lats = latitudes();
-    return  bbox_.north().sameWithGrib1Accuracy(lats.front()) ||
+    return  same_with_grib1_accuracy(bbox_.north(), Latitude(lats.front())) ||
             bbox_.north() > lats.front();
 }
 
 
 bool Gaussian::includesSouthPole() const {
     const std::vector<double>& lats = latitudes();
-    return  bbox_.south().sameWithGrib1Accuracy(lats.back()) ||
+    return  same_with_grib1_accuracy(bbox_.south(), Latitude(lats.back())) ||
             bbox_.south() < lats.back();
 }
 
@@ -119,7 +120,7 @@ bool Gaussian::isPeriodicWestEast() const {
     const Longitude we = bbox_.east() - bbox_.west();
     const Longitude inc = getSmallestIncrement();
 
-    return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+    return  same_with_grib1_accuracy(we + inc, Longitude::GLOBE) ||
             (we + inc > Longitude::GLOBE);
 }
 

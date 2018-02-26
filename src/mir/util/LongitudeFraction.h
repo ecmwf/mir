@@ -160,8 +160,6 @@ public:
 
     eckit::Fraction fraction() const { return eckit::Fraction(value_); }
 
-    bool sameWithGrib1Accuracy(const LongitudeFraction& other) const;
-
     LongitudeFraction normalise(const LongitudeFraction& minimum) const;
 
 protected:

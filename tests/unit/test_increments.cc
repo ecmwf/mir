@@ -19,6 +19,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Grib.h"
 #include "mir/util/Increments.h"
 
 
@@ -42,8 +43,8 @@ struct LatLon {
         const Latitude range = bbox.north() - bbox.south();
         const Latitude reach = std::min(bbox.north() + increments.south_north().latitude(), Latitude::NORTH_POLE);
 
-        return  range.sameWithGrib1Accuracy(Latitude::GLOBE) ||
-                reach.sameWithGrib1Accuracy(Latitude::NORTH_POLE);
+        return  same_with_grib1_accuracy(range, Latitude::GLOBE) ||
+                same_with_grib1_accuracy(reach, Latitude::NORTH_POLE);
     }
 
     static bool includesSouthPole(const Increments& increments, const BoundingBox& bbox) {
@@ -52,15 +53,15 @@ struct LatLon {
         const Latitude range = bbox.north() - bbox.south();
         const Latitude reach = std::max(bbox.south() - increments.south_north().latitude(), Latitude::SOUTH_POLE);
 
-        return  range.sameWithGrib1Accuracy(Latitude::GLOBE) ||
-                reach.sameWithGrib1Accuracy(Latitude::SOUTH_POLE);
+        return  same_with_grib1_accuracy(range, Latitude::GLOBE) ||
+                same_with_grib1_accuracy(reach, Latitude::SOUTH_POLE);
     }
 
     static bool isPeriodicWestEast(const Increments& increments, const BoundingBox& bbox) {
         const Longitude we = bbox.east() - bbox.west();
         const Longitude inc = increments.west_east().longitude();
 
-        return  (we + inc).sameWithGrib1Accuracy(Longitude::GLOBE) ||
+        return  same_with_grib1_accuracy(we + inc, Longitude::GLOBE) ||
                 (we + inc) > Longitude::GLOBE;
     }
 };

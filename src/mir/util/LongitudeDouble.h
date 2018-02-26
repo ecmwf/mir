@@ -151,8 +151,6 @@ public:
 
     eckit::Fraction fraction() const { return eckit::Fraction(value_); }
 
-    bool sameWithGrib1Accuracy(const LongitudeDouble& other) const;
-
     LongitudeDouble normalise(const LongitudeDouble& minimum) const;
 
 protected:

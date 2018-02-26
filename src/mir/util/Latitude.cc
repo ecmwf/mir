@@ -75,9 +75,5 @@ void Latitude::decode(eckit::Stream& s) {
     s >> value_;
 }
 
-bool Latitude::sameWithGrib1Accuracy(const Latitude& other) const {
-    static const double GRIB1EPSILON = 0.001;
-    return eckit::types::is_approximately_equal(value_, other.value_, GRIB1EPSILON);
-}
 }  // namespace mir
 
