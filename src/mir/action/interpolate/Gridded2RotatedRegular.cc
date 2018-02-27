@@ -59,7 +59,7 @@ void Gridded2RotatedRegular::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RotatedRegular::outputRepresentation() const {
-    return new repres::gauss::regular::RotatedGG(N_, util::BoundingBox(), rotation_);
+    return new repres::gauss::regular::RotatedGG(N_, rotation_);
 }
 
 const char* Gridded2RotatedRegular::name() const {

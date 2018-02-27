@@ -31,7 +31,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Classic(size_t);
 
@@ -73,8 +73,6 @@ protected:
 
     atlas::Grid atlasGrid() const;
 
-    virtual const std::vector<long> &pls() const;
-
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
@@ -99,7 +97,8 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    virtual const std::vector<long> &pls() const;
 
     // -- Class members
     // None

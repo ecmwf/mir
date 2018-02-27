@@ -31,7 +31,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Octahedral(size_t);
 
@@ -57,7 +57,7 @@ public:
     // None
 
 protected:
-    Octahedral(long, const util::BoundingBox &);
+    Octahedral(size_t, const util::BoundingBox&);
 
     // -- Members
 

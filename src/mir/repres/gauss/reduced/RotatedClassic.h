@@ -33,9 +33,9 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    RotatedClassic(long, const util::BoundingBox&, const util::Rotation&);
+    RotatedClassic(size_t, const util::BoundingBox&, const util::Rotation&);
 
     // -- Destructor
 

@@ -31,11 +31,11 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RegularGG(const param::MIRParametrisation&);
     RegularGG(size_t N);
-    RegularGG(size_t N, const util::BoundingBox&);
+    RegularGG(size_t N, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Destructor
 
@@ -78,8 +78,6 @@ protected:
 
 private:
 
-    RegularGG();
-
     // -- Members
     // None
 
@@ -88,14 +86,13 @@ private:
 
     // -- Overridden methods
 
-    virtual const Gridded* cropped(const util::BoundingBox &bbox) const;
+    virtual const Gridded* cropped(const util::BoundingBox& bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
     virtual void initTrans(Trans_t& trans) const;
     virtual Iterator* iterator() const;
 
     //virtual void validate(const std::vector<double>&) const;
-
 
     // -- Class members
     // None

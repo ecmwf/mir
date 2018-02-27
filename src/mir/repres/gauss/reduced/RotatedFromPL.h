@@ -33,10 +33,10 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RotatedFromPL(const param::MIRParametrisation&);
-    RotatedFromPL(long, const std::vector<long>&, const util::BoundingBox&, const util::Rotation&);
+    RotatedFromPL(size_t, const std::vector<long>&, const util::BoundingBox&, const util::Rotation&, bool correctBoundingBox);
     RotatedFromPL(const std::vector<long>&, const util::Rotation&);
 
     // -- Destructor

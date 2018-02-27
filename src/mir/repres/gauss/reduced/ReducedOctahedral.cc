@@ -46,7 +46,7 @@ Iterator *ReducedOctahedral::iterator() const {
 
 const Reduced *ReducedOctahedral::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     // We lose the ReducedOctahedral nature of the grid
-    return new ReducedFromPL(N_, pl, bbox);
+    return new ReducedFromPL(N_, pl, bbox, false);
 }
 
 

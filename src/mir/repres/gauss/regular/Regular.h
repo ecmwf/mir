@@ -32,11 +32,10 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Regular(const param::MIRParametrisation&);
     Regular(size_t N);
-    Regular(size_t N, const util::BoundingBox&);
 
     // -- Destructor
 
@@ -62,6 +61,10 @@ public:
     // None
 
 protected:
+
+    // -- Constructors
+
+    Regular(size_t N, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Members
 

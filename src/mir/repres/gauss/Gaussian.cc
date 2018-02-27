@@ -17,10 +17,12 @@
 
 #include <algorithm>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "mir/api/Atlas.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
 
@@ -42,21 +44,18 @@ static void init() {
 
 Gaussian::Gaussian(size_t N) :
     N_(N) {
-    adjustBoundingBoxLatitudes();
 }
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
-    adjustBoundingBoxLatitudes();
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
-    adjustBoundingBoxLatitudes();
 }
 
 
@@ -70,11 +69,13 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-void Gaussian::adjustBoundingBoxLatitudes() {
-    const std::vector<double>& lats = latitudes();
+void Gaussian::correctBoundingBox() {
+
+    // adjust latitudes
     Latitude n = bbox_.north();
     Latitude s = bbox_.south();
 
+    const std::vector<double>& lats = latitudes();
     if (n < lats.back()) {
         n = lats.back();
     } else {
@@ -98,30 +99,42 @@ void Gaussian::adjustBoundingBoxLatitudes() {
     }
 
     ASSERT(!same_with_grib1_accuracy(s, n));
-    bbox_ = util::BoundingBox(n, bbox_.west(), s, bbox_.east());
+
+
+    // adjust East
+    Longitude e = bbox_.east();
+
+    const Longitude we = e - bbox_.west();
+    const Longitude inc = getSmallestIncrement();
+    if (same_with_grib1_accuracy(we + inc, Longitude::GLOBE) || we + inc > Longitude::GLOBE) {
+        e = bbox_.west() + Longitude::GLOBE - inc;
+    }
+
+
+    // inrform user
+    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    std::streamsize old = log.precision(12);
+    log << "Correcting bounding box from " << bbox_;
+
+    bbox_ = util::BoundingBox(n, bbox_.west(), s, e);
+
+    log << " to " << bbox_ << "." << std::endl;
+    log.precision(old);
 }
 
 
 bool Gaussian::includesNorthPole() const {
-    const std::vector<double>& lats = latitudes();
-    return  same_with_grib1_accuracy(bbox_.north(), Latitude(lats.front())) ||
-            bbox_.north() > lats.front();
+    return bbox_.north() == latitudes().front();
 }
 
 
 bool Gaussian::includesSouthPole() const {
-    const std::vector<double>& lats = latitudes();
-    return  same_with_grib1_accuracy(bbox_.south(), Latitude(lats.back())) ||
-            bbox_.south() < lats.back();
+    return bbox_.south() == latitudes().back();
 }
 
 
 bool Gaussian::isPeriodicWestEast() const {
-    const Longitude we = bbox_.east() - bbox_.west();
-    const Longitude inc = getSmallestIncrement();
-
-    return  same_with_grib1_accuracy(we + inc, Longitude::GLOBE) ||
-            (we + inc > Longitude::GLOBE);
+    return bbox_.east() - bbox_.west() + getSmallestIncrement() == Longitude::GLOBE;
 }
 
 

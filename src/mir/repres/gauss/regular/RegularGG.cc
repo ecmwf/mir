@@ -27,7 +27,7 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation &parametrisation):
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
     Regular(parametrisation) {
 }
 
@@ -37,8 +37,8 @@ RegularGG::RegularGG(size_t N):
 }
 
 
-RegularGG::RegularGG(size_t N, const util::BoundingBox &bbox):
-    Regular(N, bbox) {
+RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, bool correctBoundingBox):
+    Regular(N, bbox, correctBoundingBox) {
 }
 
 
@@ -46,7 +46,7 @@ RegularGG::~RegularGG() {
 }
 
 
-void RegularGG::print(std::ostream &out) const {
+void RegularGG::print(std::ostream& out) const {
     out << "RegularGG[N" << N_ << ",bbox=" << bbox_ << "]";
 }
 
@@ -62,7 +62,7 @@ bool RegularGG::sameAs(const Representation& other) const {
 }
 
 
-void RegularGG::initTrans(Trans_t &trans) const {
+void RegularGG::initTrans(Trans_t& trans) const {
 
     const std::vector<int> pl(Nj_, int(Ni_));
     ASSERT(trans_set_resol(&trans, int(Nj_), pl.data()) == 0);
@@ -92,8 +92,8 @@ Iterator* RegularGG::iterator() const {
 }
 
 
-const Gridded *RegularGG::cropped(const util::BoundingBox &bbox) const {
-    return new RegularGG(N_, bbox);
+const Gridded *RegularGG::cropped(const util::BoundingBox& bbox) const {
+    return new RegularGG(N_, bbox, false);
 }
 
 

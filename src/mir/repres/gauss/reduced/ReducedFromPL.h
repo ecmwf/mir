@@ -31,10 +31,10 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ReducedFromPL(const param::MIRParametrisation&);
-    ReducedFromPL(long, const std::vector<long>&, const util::BoundingBox&);
+    ReducedFromPL(size_t, const std::vector<long>&, const util::BoundingBox&, bool correctBoundingBox);
     ReducedFromPL(const std::vector<long>&);
 
     // -- Destructor

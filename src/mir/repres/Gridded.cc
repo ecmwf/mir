@@ -31,7 +31,6 @@ Gridded::Gridded() {}
 
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
     bbox_(parametrisation) {
-    const util::BoundingBox bbox(bbox_);
 }
 
 

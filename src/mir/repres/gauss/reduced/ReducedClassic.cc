@@ -56,7 +56,7 @@ bool ReducedClassic::sameAs(const Representation& other) const {
 
 Reduced *ReducedClassic::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     // We lose the ReducedClassic nature of the grid
-    return new ReducedFromPL(N_, pl, bbox);
+    return new ReducedFromPL(N_, pl, bbox, false);
 }
 
 

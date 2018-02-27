@@ -31,9 +31,9 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    FromPL(const param::MIRParametrisation &);
+    FromPL(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -58,8 +58,8 @@ public:
 
 protected:
 
-    FromPL(size_t, const std::vector<long> &, const util::BoundingBox &);
-    FromPL(const std::vector<long> &);
+    FromPL(size_t, const std::vector<long>&, const util::BoundingBox&, bool correctBoundingBox);
+    FromPL(const std::vector<long>&);
 
     // -- Members
 
@@ -69,10 +69,9 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
-    virtual const std::vector<long>& pls() const;
     virtual bool sameAs(const Representation& other) const;
     virtual void makeName(std::ostream&) const;
 
@@ -86,8 +85,8 @@ private:
 
     // No copy allowed
 
-    FromPL(const FromPL &);
-    FromPL &operator=(const FromPL &);
+    FromPL(const FromPL&);
+    FromPL& operator=(const FromPL&);
 
     // -- Members
     // None
@@ -96,7 +95,8 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    virtual const std::vector<long>& pls() const;
 
     // -- Class members
     // None

@@ -30,7 +30,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gaussian(size_t N);
     Gaussian(size_t N, const util::BoundingBox &);
@@ -71,6 +71,7 @@ protected:
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
+    void correctBoundingBox();
     virtual eckit::Fraction getSmallestIncrement() const = 0;
 
     // -- Overridden methods
@@ -92,8 +93,7 @@ private:
     // None
 
     // -- Methods
-
-    void adjustBoundingBoxLatitudes();
+    // None
 
     // -- Overridden methods
 

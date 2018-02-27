@@ -27,15 +27,16 @@ namespace regular {
 
 
 class RotatedGG : public Regular {
-  public:
+public:
 
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    RotatedGG(const param::MIRParametrisation &);
-    RotatedGG(size_t, const util::BoundingBox &, const util::Rotation&);
+    RotatedGG(const param::MIRParametrisation&);
+    RotatedGG(size_t N, const util::Rotation&);
+    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Destructor
 
@@ -58,7 +59,7 @@ class RotatedGG : public Regular {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
 
@@ -66,7 +67,7 @@ class RotatedGG : public Regular {
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -77,7 +78,7 @@ class RotatedGG : public Regular {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // -- Members
     // None
@@ -87,13 +88,13 @@ class RotatedGG : public Regular {
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
 
     virtual atlas::Grid atlasGrid() const;
     virtual Iterator* iterator() const;
 
-    virtual const Gridded *cropped(const util::BoundingBox &bbox) const;
+    virtual const Gridded *cropped(const util::BoundingBox& bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
