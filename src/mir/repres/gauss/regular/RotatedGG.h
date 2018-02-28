@@ -36,7 +36,6 @@ public:
 
     RotatedGG(const param::MIRParametrisation&);
     RotatedGG(size_t N, const util::Rotation&);
-    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Destructor
 
@@ -80,6 +79,10 @@ protected:
 
 private:
 
+    // Constructors
+
+    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox&, bool correctBoundingBox);
+
     // -- Members
     // None
 
@@ -94,7 +97,7 @@ private:
     virtual atlas::Grid atlasGrid() const;
     virtual Iterator* iterator() const;
 
-    virtual const Gridded *cropped(const util::BoundingBox& bbox) const;
+    virtual const Gridded *croppedRepresentation(const util::BoundingBox& bbox) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 

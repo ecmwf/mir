@@ -97,13 +97,13 @@ private:
 
     // -- Methods
 
-    virtual const Reduced *cropped(const util::BoundingBox& bbox, const std::vector<long>& pl) const;
+    virtual const Reduced *croppedRepresentation(const util::BoundingBox& bbox, const std::vector<long>& pl) const;
 
     virtual const std::vector<long>& pls() const = 0;
 
     // -- Overridden methods
 
-    virtual const Reduced* cropped(const util::BoundingBox&) const ;
+    virtual const Reduced* croppedRepresentation(const util::BoundingBox&) const ;
     virtual void validate(const std::vector<double>& values) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     virtual void initTrans(Trans_t&) const;

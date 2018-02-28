@@ -92,7 +92,7 @@ private:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
-    virtual const Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const;
+    virtual const Reduced *croppedRepresentation(const util::BoundingBox&, const std::vector<long>&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
 

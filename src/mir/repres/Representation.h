@@ -104,7 +104,8 @@ public:
     virtual void fill(api::MIRJob&) const;
 
     // Return a cropped version
-    virtual const Representation* cropped(const util::BoundingBox&) const;
+    virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField& field) const;
@@ -118,7 +119,8 @@ public:
     virtual std::string atlasMeshGenerator() const;
 
     virtual util::Domain domain() const;
-    virtual void adjustBoundingBox(util::BoundingBox&) const;
+    virtual const util::BoundingBox& boundingBox() const;
+
     virtual bool isGlobal() const;
 
     virtual size_t truncation() const;

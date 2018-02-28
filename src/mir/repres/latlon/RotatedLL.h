@@ -80,7 +80,7 @@ private:
     bool sameAs(const Representation&) const;
 
     // From Representation
-    const RotatedLL* cropped(const util::BoundingBox&) const;
+    const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;
 
     // -- Class members
     // None

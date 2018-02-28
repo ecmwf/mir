@@ -272,7 +272,7 @@ void AreaCropper::execute(context::Context& ctx) const {
             result.push_back(values[*j]);
         }
 
-        repres::RepresentationHandle cropped(representation->cropped(c.bbox_));
+        repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
         // eckit::Log::debug<LibMir>() << *cropped << std::endl;
 
         if (result.size() == 0) {

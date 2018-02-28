@@ -79,7 +79,7 @@ private:
     bool sameAs(const Representation&) const;
 
     // From Representation
-    const RegularLL* cropped(const util::BoundingBox&) const;
+    const RegularLL* croppedRepresentation(const util::BoundingBox&) const;
 
     // -- Class members
     // None

@@ -86,7 +86,7 @@ private:
     // -- Overridden methods
 
     virtual Iterator* iterator() const;
-    virtual Reduced *cropped(const util::BoundingBox&, const std::vector<long>&) const;
+    virtual Reduced* croppedRepresentation(const util::BoundingBox&, const std::vector<long>&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 

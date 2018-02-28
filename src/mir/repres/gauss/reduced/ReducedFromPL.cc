@@ -33,12 +33,12 @@ ReducedFromPL::~ReducedFromPL() {
 }
 
 
-ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long> &pl, const util::BoundingBox &bbox, bool correctBoundingBox):
+ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox, bool correctBoundingBox):
     FromPL(N, pl, bbox, correctBoundingBox) {
 }
 
 
-ReducedFromPL::ReducedFromPL(const std::vector<long> &pl):
+ReducedFromPL::ReducedFromPL(const std::vector<long>& pl):
     FromPL(pl) {
 }
 
@@ -53,7 +53,7 @@ Iterator *ReducedFromPL::iterator() const {
 }
 
 
-Reduced *ReducedFromPL::cropped(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
+Reduced *ReducedFromPL::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     return new ReducedFromPL(N_, pl, bbox, false);
 }
 

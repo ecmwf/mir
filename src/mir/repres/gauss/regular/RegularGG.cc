@@ -92,7 +92,7 @@ Iterator* RegularGG::iterator() const {
 }
 
 
-const Gridded *RegularGG::cropped(const util::BoundingBox& bbox) const {
+const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RegularGG(N_, bbox, false);
 }
 

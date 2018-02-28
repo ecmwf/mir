@@ -67,8 +67,7 @@ protected:
     size_t nj_;
 
     // -- Methods
-
-    void setNiNj();
+    // None
 
     // -- Overridden methods
 
@@ -93,8 +92,6 @@ protected:
 
     virtual Representation* globalise(data::MIRField&) const;
     virtual std::string atlasMeshGenerator() const;
-
-    const LatLon* cropped(const util::BoundingBox&) const;
 
     // -- Class members
 
@@ -130,7 +127,7 @@ private:
 
     // -- Methods
 
-    static bool isPeriodicWestEast(const util::BoundingBox&, const util::Increments&);
+    void correctBoundingBox();
 
     // -- Overridden methods
 
@@ -142,7 +139,8 @@ private:
 
     virtual void initTrans(Trans_t&) const;
 
-    virtual void adjustBoundingBox(util::BoundingBox&) const;
+    const LatLon* croppedRepresentation(const util::BoundingBox&) const;
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

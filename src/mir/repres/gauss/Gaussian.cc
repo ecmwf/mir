@@ -76,6 +76,7 @@ void Gaussian::correctBoundingBox() {
     Latitude s = bbox_.south();
 
     const std::vector<double>& lats = latitudes();
+
     if (n < lats.back()) {
         n = lats.back();
     } else {
@@ -98,28 +99,61 @@ void Gaussian::correctBoundingBox() {
         s = *best;
     }
 
+    // This is not necessary, but maybe a good idea to require elements of dimensionality 2
     ASSERT(!same_with_grib1_accuracy(s, n));
 
 
-    // adjust East
+    // adjust longitudes
     Longitude e = bbox_.east();
+    Longitude w = bbox_.west();
 
-    const Longitude we = e - bbox_.west();
-    const Longitude inc = getSmallestIncrement();
+    eckit::Fraction inc = getSmallestIncrement();
+    ASSERT(inc > 0);
+
+#if 0
+    // suitable only for regular_gg: adjust both East and West
+    auto computeN = [](const eckit::Fraction& target, const eckit::Fraction& inc) {
+        eckit::Fraction::value_type n = (target / inc).integralPart();
+        for (auto& k : { n, n - 1, n + 1 }) {
+            if (same_with_grib1_accuracy(target, k * inc)) {
+                return k;
+            }
+        }
+
+        return n;
+    };
+
+    w = computeN(w.fraction(), inc) * inc;
+    e = computeN(e.fraction(), inc) * inc;
+#else
+    // suitable for regular/reduced_gg: adjust only East
+    const Longitude we = e - w;
     if (same_with_grib1_accuracy(we + inc, Longitude::GLOBE) || we + inc > Longitude::GLOBE) {
-        e = bbox_.west() + Longitude::GLOBE - inc;
+        e = w + Longitude::GLOBE - inc;
+    }
+#endif
+
+    // ensure 0 <= East - West < 360
+    bool same(e == w);
+    if (!same) {
+        e = e.normalise(w);
+        if (e == w) {
+            e = w + Longitude::GLOBE - inc;
+        }
     }
 
 
-    // inrform user
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
-    std::streamsize old = log.precision(12);
-    log << "Correcting bounding box from " << bbox_;
+    // set bounding box and inform
+    util::BoundingBox newBox = util::BoundingBox(n, w, s, e);
 
-    bbox_ = util::BoundingBox(n, bbox_.west(), s, e);
+    if (newBox != bbox_) {
+        eckit::Channel& log = eckit::Log::debug<LibMir>();
+        std::streamsize old = log.precision(12);
+        log << "Gaussian::correctBoundingBox: " << bbox_ << " => "<< newBox << std::endl;
+        log.precision(old);
 
-    log << " to " << bbox_ << "." << std::endl;
-    log.precision(old);
+        bbox_ = newBox;
+    }
 }
 
 
@@ -135,6 +169,66 @@ bool Gaussian::includesSouthPole() const {
 
 bool Gaussian::isPeriodicWestEast() const {
     return bbox_.east() - bbox_.west() + getSmallestIncrement() == Longitude::GLOBE;
+}
+
+
+util::BoundingBox Gaussian::croppedBoundingBox(const util::BoundingBox& bbox) const {
+
+    // adjust latitudes
+    Latitude n = bbox.north();
+    Latitude s = bbox.south();
+
+    const std::vector<double>& lats = latitudes();
+
+    if (n < lats.back()) {
+        n = lats.back();
+    } else {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n.value(),
+                                     [](const Latitude& l1, const Latitude& l2) {
+            return !(l1 <= l2);
+        });
+        ASSERT(best != lats.end());
+        n = *best;
+    }
+
+    if (s > lats.front()) {
+        s = lats.front();
+    } else {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s.value(),
+                                     [](const Latitude& l1, const Latitude& l2) {
+            return !(l1 >= l2);
+        });
+        ASSERT(best != lats.rend());
+        s = *best;
+    }
+
+
+    // adjust East, ensuring 0 <= East - West < 360
+    Longitude e = bbox.east();
+    const Longitude w = bbox.west();
+
+    if (e != w) {
+        eckit::Fraction inc = getSmallestIncrement();
+        ASSERT(inc > 0);
+
+        e = e.normalise(w);
+        if (e > w + Longitude::GLOBE - inc || e == w) {
+            e = w + Longitude::GLOBE - inc;
+        }
+    }
+
+
+    // set bounding box and inform
+    util::BoundingBox newBox = util::BoundingBox(n, w, s, e);
+
+    if (newBox != bbox) {
+        eckit::Channel& log = eckit::Log::debug<LibMir>();
+        std::streamsize old = log.precision(12);
+        log << "Gaussian::croppedBoundingBox: " << bbox << " => "<< newBox << std::endl;
+        log.precision(old);
+
+    }
+    return newBox;
 }
 
 

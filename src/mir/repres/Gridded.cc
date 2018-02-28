@@ -78,7 +78,12 @@ util::Domain Gridded::domain() const {
 }
 
 
-void Gridded::adjustBoundingBox(util::BoundingBox&) const{
+const util::BoundingBox& Gridded::boundingBox() const {
+    return bbox_;
+}
+
+
+util::BoundingBox Gridded::croppedBoundingBox(const util::BoundingBox&) const{
     // normally, no adjustments are necessary
 }
 
