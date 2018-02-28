@@ -1,5 +1,5 @@
 # MARS request (GRIB1)
-param=2t,levtype=src
+param=2t,levtype=sfc
 # MIR
 --area=90/0/-90/359.929
 # grib_get assertions (global: 6599680)
