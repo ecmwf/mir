@@ -135,6 +135,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     hash << *this
          << shortName_in
          << shortName_out
+         << in.boundingBox()
+         << out.boundingBox()
          << pruneEpsilon_
          << lsmWeightAdjustment_;
 
