@@ -60,6 +60,7 @@ public:
 protected:
 
     // -- Constructors
+
     RegularGG(size_t N, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Members
