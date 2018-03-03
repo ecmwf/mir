@@ -26,6 +26,10 @@ namespace action {
 namespace transform {
 
 
+#if 1
+struct Trans_t {};
+#endif
+
 struct TransCache {
 
     bool inited_;

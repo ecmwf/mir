@@ -136,7 +136,6 @@ public:
     virtual void crop(const param::MIRParametrisation&, context::Context&) const;
 
     virtual void shape(size_t& ni, size_t& nj) const;
-    virtual void initTrans(Trans_t&) const;
 
     // -- Overridden methods
     // None

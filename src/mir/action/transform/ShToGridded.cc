@@ -31,7 +31,6 @@
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/transform/TransCache.h"
-#include "mir/action/transform/TransInitor.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/LegendreCache.h"
@@ -59,6 +58,7 @@ static mir::InMemoryCache<TransCache> trans_cache("mirCoefficient",
 static void fillTrans(struct Trans_t& trans,
                       trans_options_t& options,
                       const repres::Representation& representation) {
+#if 0
 
     ASSERT(trans_new(&trans) == 0);
     trans.flt = int(options.flt);
@@ -67,6 +67,7 @@ static void fillTrans(struct Trans_t& trans,
 
     representation.initTrans(trans);
 
+#endif
 }
 
 
@@ -74,6 +75,7 @@ static void createCoefficients(const eckit::PathName& path,
                                trans_options_t& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
+#if 0
 
     eckit::TraceResourceUsage<LibMir> usage("Create legendre coefficients");
 
@@ -94,6 +96,7 @@ static void createCoefficients(const eckit::PathName& path,
 
     trans_delete(&tmp_trans);
 
+#endif
 }
 
 
@@ -166,6 +169,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
     }
     // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
+#if 0
     {
         eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_set_cache");
         ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
@@ -184,6 +188,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
         //     memory += after - before;
         // }
     }
+#endif
 
     memory += tc.loader_->inSharedMemory() ? 0 : size_t(path.size());
     shared += tc.loader_->inSharedMemory() ? size_t(path.size()) : 0;
@@ -216,7 +221,9 @@ void ShToGridded::transform(
                                    options,
                                    estimate);
 
+#if 0
     sh2grid(tc.trans_, field);
+#endif
 
 
 }
@@ -224,8 +231,6 @@ void ShToGridded::transform(
 
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
-
-    TransInitor::instance(); // Will init trans if needed
 
     trans_options_t options(transOptions_);
     options.truncation = field.representation()->truncation();

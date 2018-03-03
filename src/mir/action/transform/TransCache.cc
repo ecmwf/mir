@@ -30,7 +30,9 @@ TransCache::TransCache() :
 TransCache::~TransCache() {
         if (inited_) {
             eckit::Log::info() << "Delete " << *this << std::endl;
+#if 0
             trans_delete(&trans_);
+#endif
         }
         else {
             eckit::Log::info() << "Not Deleting " << *this << std::endl;

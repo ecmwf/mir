@@ -19,7 +19,6 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
-#include "mir/action/transform/TransInitor.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -55,21 +54,22 @@ void ShVodToUV::print(std::ostream &out) const {
 
 
 void ShVodToUV::execute(context::Context & ctx) const {
-    data::MIRField& field = ctx.field();
-
-    ASSERT(field.dimensions() == 2);
-
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().vod2uvTiming_);
 
+    // get field properties
+    data::MIRField& field = ctx.field();
+    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
+    ASSERT(field.dimensions() == 2);
 
     size_t truncation = field.representation()->truncation();
     size_t size = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+    ASSERT(truncation);
+    ASSERT(size);
 
 
-    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
-
-    const std::vector<double> &field_vo = field.values(0);
-    const std::vector<double> &field_d = field.values(1);
+    // get vo/d, allocate U/V
+    const std::vector<double>& field_vo = field.values(0);
+    const std::vector<double>& field_d = field.values(1);
 
     eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation
                                 << ", size=" << size
@@ -78,27 +78,20 @@ void ShVodToUV::execute(context::Context & ctx) const {
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
 
-    std::vector<double> result_U(size, 0);
-    std::vector<double> result_V(size, 0);
-
-    struct VorDivToUV_t vod_to_UV = new_vordiv_to_UV();
-    vod_to_UV.nfld   = 1;
-    vod_to_UV.ncoeff = static_cast<int>(size);        // number of coefficients
-    vod_to_UV.nsmax  = static_cast<int>(truncation);  // spectral resolution (T)
-    vod_to_UV.rspvor = field_vo.data();
-    vod_to_UV.rspdiv = field_d.data();
-    vod_to_UV.rspu   = result_U.data();
-    vod_to_UV.rspv   = result_V.data();
+    std::vector<double> result_U(size, 0.);
+    std::vector<double> result_V(size, 0.);
 
 
-    TransInitor::instance(); // Will init trans if needed
-    int err = trans_vordiv_to_UV(&vod_to_UV);
+    // transform
+    // NOTE: only type="ifs" is supprted since we don't support local spectral fields
+    const int T = int(truncation);
+    const int nb_coeff = int(size);
+    const int nb_fields = 1;
 
-    if (err != TRANS_SUCCESS) {
-        std::ostringstream oss;
-        oss << "trans_vordiv_to_UV failed: " << trans_error_msg(err);
-        throw eckit::SeriousBug(oss.str());
-    }
+    atlas::trans::VorDivToUV vordiv_to_UV(T, atlas::option::type("ifs"));
+    ASSERT(vordiv_to_UV.truncation() == T);
+
+    vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());
 
 
     // configure paramIds for U/V

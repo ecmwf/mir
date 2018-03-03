@@ -36,6 +36,7 @@ ShScalarToGridded::~ShScalarToGridded() {
 
 
 void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+#if 0
 
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields > 0);
@@ -90,6 +91,7 @@ void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) co
         }
     }
 
+#endif
 }
 
 

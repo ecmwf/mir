@@ -62,13 +62,6 @@ bool RegularGG::sameAs(const Representation& other) const {
 }
 
 
-void RegularGG::initTrans(Trans_t& trans) const {
-
-    const std::vector<int> pl(Nj_, int(Ni_));
-    ASSERT(trans_set_resol(&trans, int(Nj_), pl.data()) == 0);
-}
-
-
 Iterator* RegularGG::iterator() const {
 
     class RegularGGIterator : protected RegularIterator, public Iterator {

@@ -761,8 +761,6 @@ if(HAVE_ATLAS)
             action/transform/ShVodTouvRegularLL.h
             action/transform/TransCache.cc
             action/transform/TransCache.h
-            action/transform/TransInitor.cc
-            action/transform/TransInitor.h
             )
        endif()
 endif()

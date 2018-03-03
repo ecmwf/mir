@@ -24,7 +24,9 @@
 #ifdef HAVE_ATLAS
 
 #include "atlas/grid/Grid.h"
+#include "atlas/option/Options.h"
 #include "atlas/projection/Projection.h"
+#include "atlas/trans/VorDivToUV.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Rotation.h"
@@ -174,84 +176,6 @@ template<class T>
 }
 
 }
-
-
-#endif
-
-
-#ifdef ATLAS_HAVE_TRANS
-#include "transi/trans.h"
-#else
-
-const int TRANS_SUCCESS = 0;
-
-struct Trans_t {
-    int ngptotg;
-    int myproc;
-    int nspec2g;
-    int ngptot;
-    int nspec2;
-    int flt;
-    int ndgl;
-};
-
-struct GathGrid_t {
-    const void* rgpg;
-    const void* rgp;
-    int nfld;
-    const void* nto;
-};
-
-struct DistSpec_t {
-    void* nfrom;
-    const void* rspecg;
-    const void* rspec;
-    int nfld;
-};
-
-struct InvTrans_t {
-    int nscalar;
-    const void* rspscalar;
-    const void* rgp;
-    int nvordiv;
-    const void* rspvor;
-    const void* rspdiv;
-};
-
-struct VorDivToUV_t {
-    int nfld;
-    int ncoeff;
-    int nsmax;
-    const void* rspvor;
-    const void* rspdiv;
-    const void* rspu;
-    const void* rspv;
-};
-
-GathGrid_t new_gathgrid(Trans_t*);
-DistSpec_t new_distspec(Trans_t*);
-InvTrans_t new_invtrans(Trans_t*);
-VorDivToUV_t new_vordiv_to_UV();
-
-int trans_distspec(DistSpec_t*);
-int trans_invtrans(InvTrans_t*);
-int trans_gathgrid(GathGrid_t*);
-int trans_new(Trans_t*);
-int trans_set_trunc(Trans_t*, int);
-int trans_set_write(Trans_t*, const char*);
-int trans_setup(Trans_t*);
-int trans_delete(Trans_t*);
-int trans_set_cache(Trans_t*, const void*, size_t);
-int trans_set_resol(Trans_t*, size_t, const int*);
-int trans_set_resol_lonlat(Trans_t*, int, int);
-
-
-int trans_vordiv_to_UV(VorDivToUV_t*);
-const char* trans_error_msg(int);
-
-int trans_use_mpi(bool);
-int trans_init();
-int trans_finalize();
 
 
 #endif

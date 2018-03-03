@@ -38,6 +38,8 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
+
+#if 0
     ASSERT(trans.myproc == 1);
     ASSERT(trans.nspec2g == int(field.values(0).size()));
     ASSERT(trans.nspec2g == int(field.values(1).size()));
@@ -74,6 +76,7 @@ void ShVodTouvGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) con
     result.assign(output.begin() + trans.ngptotg, output.end());
     field.update(result, 1);
     field.metadata(1, "paramId", id_v);
+#endif
 
 }
 

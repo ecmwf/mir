@@ -137,8 +137,6 @@ private:
 
     virtual void validate(const std::vector<double>&) const;
 
-    virtual void initTrans(Trans_t&) const;
-
     const LatLon* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
