@@ -2,7 +2,7 @@ file( GLOB config_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.yaml" )
 
 install(
     FILES       ${config_files}
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/etc/mir"
+    DESTINATION "etc/mir"
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 foreach( _f ${config_files} )
