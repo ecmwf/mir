@@ -30,9 +30,11 @@ public:
     // None
 
     // -- Contructors
+
     ShVodTouvRegularLL(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShVodTouvRegularLL(); // Change to virtual if base class
 
     // -- Convertors
@@ -59,6 +61,7 @@ protected:
     // None
 
     // -- Methods
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -72,17 +75,15 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShVodTouvRegularLL(const ShVodTouvRegularLL&);
-    ShVodTouvRegularLL& operator=(const ShVodTouvRegularLL&);
-
     // -- Members
+
     util::Increments increments_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
+
     virtual bool sameAs(const Action& other) const;
     virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
     virtual const char* name() const;

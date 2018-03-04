@@ -35,7 +35,7 @@ ShScalarToGridded::~ShScalarToGridded() {
 }
 
 
-void ShScalarToGridded::sh2grid(struct Trans_t& trans, data::MIRField& field) const {
+void ShScalarToGridded::sh2grid(atlas::trans::Trans& trans, data::MIRField& field) const {
 #if 0
 
     size_t number_of_fields = field.dimensions();

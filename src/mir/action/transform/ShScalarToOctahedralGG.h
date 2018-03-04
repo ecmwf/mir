@@ -31,9 +31,11 @@ public:
     // None
 
     // -- Contructors
+
     ShScalarToOctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShScalarToOctahedralGG(); // Change to virtual if base class
 
     // -- Convertors
@@ -60,6 +62,7 @@ protected:
     // None
 
     // -- Methods
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -73,17 +76,15 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShScalarToOctahedralGG(const ShScalarToOctahedralGG&);
-    ShScalarToOctahedralGG& operator=(const ShScalarToOctahedralGG&);
-
     // -- Members
+
     size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
+
     virtual bool sameAs(const Action& other) const;
     virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
     virtual const char* name() const;

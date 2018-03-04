@@ -42,13 +42,12 @@ public:
     // -- Exceptions
     // None
 
-    // Types
-    typedef atlas::util::Config options_t;
-
     // -- Contructors
+
     ShToGridded(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShToGridded();
 
     // -- Convertors
@@ -88,22 +87,21 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShToGridded(const ShToGridded&);
-    ShToGridded& operator=(const ShToGridded&);
-
     // -- Members
-    options_t options_;
+
+    atlas::util::Config options_;
 
     // -- Methods
-    virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
+    
+    virtual void sh2grid(atlas::trans::Trans&, data::MIRField&) const = 0;
+
     virtual const repres::Representation* outputRepresentation() const = 0;
 
     void transform(data::MIRField& field,
                    const repres::Representation& representation,
                    context::Context& ctx,
                    const std::string& key,
-                   const options_t& options,
+                   const atlas::util::Config& options,
                    size_t estimate) const;
 
     void transform(data::MIRField& field,
@@ -111,6 +109,7 @@ private:
                    context::Context& ctx) const;
 
     // -- Overridden methods
+    
     virtual void execute(context::Context&) const;
 
     // -- Class members

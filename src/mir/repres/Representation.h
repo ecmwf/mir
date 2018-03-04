@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Representation_H
-#define Representation_H
+#ifndef mir_repres_Representation_h
+#define mir_repres_Representation_h
 
 #include <iosfwd>
 #include <string>
@@ -23,7 +23,6 @@
 
 
 struct grib_info;
-struct Trans_t;
 
 
 namespace atlas {

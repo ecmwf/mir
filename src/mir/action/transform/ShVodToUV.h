@@ -32,9 +32,11 @@ public:
     // None
 
     // -- Contructors
+
     ShVodToUV(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShVodToUV(); // Change to virtual if base class
 
     // -- Convertors
@@ -61,6 +63,7 @@ protected:
     // None
 
     // -- Methods
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -74,10 +77,6 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShVodToUV(const ShVodToUV&);
-    ShVodToUV& operator=(const ShVodToUV&);
-
     // -- Members
     // None
 
@@ -85,6 +84,7 @@ private:
     // None
 
     // -- Overridden methods
+
     virtual bool sameAs(const Action& other) const;
     virtual void execute(context::Context & ctx) const;
     virtual const char* name() const;

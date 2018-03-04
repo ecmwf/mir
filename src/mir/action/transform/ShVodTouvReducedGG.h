@@ -29,9 +29,11 @@ public:
     // None
 
     // -- Contructors
+
     ShVodTouvReducedGG(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShVodTouvReducedGG(); // Change to virtual if base class
 
     // -- Convertors
@@ -58,6 +60,7 @@ protected:
     // None
 
     // -- Methods
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -71,17 +74,15 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShVodTouvReducedGG(const ShVodTouvReducedGG&);
-    ShVodTouvReducedGG& operator=(const ShVodTouvReducedGG&);
-
     // -- Members
+
     size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
+
     virtual bool sameAs(const Action& other) const;
     virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
     virtual const char* name() const;

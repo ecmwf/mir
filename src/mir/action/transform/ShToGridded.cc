@@ -56,7 +56,7 @@ static mir::InMemoryCache<TransCache> trans_cache("mirCoefficient",
 
 
 static void createCoefficients(const eckit::PathName& path,
-                               const ShToGridded::options_t& options,
+                               const atlas::util::Config& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
 #if 0
@@ -87,7 +87,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
                                  const repres::Representation& representation,
                                  context::Context& ctx,
                                  const std::string& key,
-                                 const ShToGridded::options_t& options,
+                                 const atlas::util::Config& options,
                                  size_t estimate) {
 
 
@@ -110,7 +110,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
         class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
-            ShToGridded::options_t options_;
+            atlas::util::Config options_;
             const repres::Representation& representation_;
             context::Context & ctx_;
 
@@ -118,7 +118,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
                 createCoefficients(path, options_, representation_, ctx_);
             }
         public:
-            LegendreCacheCreator(const ShToGridded::options_t& options,
+            LegendreCacheCreator(const atlas::util::Config& options,
                                  const repres::Representation& representation,
                                  context::Context& ctx):
                 options_(options), representation_(representation), ctx_(ctx) {}
@@ -138,7 +138,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
     TransCache &tc = trans_cache[key];
 
-    struct Trans_t &trans = tc.trans_;
+    atlas::trans::Trans& trans = tc.trans_;
 
     size_t memory = 0;
     size_t shared = 0;
@@ -188,7 +188,7 @@ void ShToGridded::transform(data::MIRField& field,
                             const repres::Representation& representation,
                             context::Context& ctx,
                             const std::string& key,
-                            const options_t& options,
+                            const atlas::util::Config& options,
                             size_t estimate) const {
 
 
@@ -202,11 +202,7 @@ void ShToGridded::transform(data::MIRField& field,
                                    options,
                                    estimate);
 
-#if 0
     sh2grid(tc.trans_, field);
-#endif
-
-
 }
 
 

@@ -29,9 +29,11 @@ public:
     // None
 
     // -- Contructors
+
     ShScalarToGridded(const param::MIRParametrisation&);
 
     // -- Destructor
+    
     virtual ~ShScalarToGridded();
 
     // -- Convertors
@@ -78,7 +80,8 @@ private:
     // None
 
     // -- Overridden methods
-    void sh2grid(struct Trans_t&, data::MIRField&) const;
+
+    void sh2grid(atlas::trans::Trans&, data::MIRField&) const;
 
     // -- Class members
     // None

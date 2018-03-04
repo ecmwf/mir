@@ -54,7 +54,7 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
 
@@ -75,11 +75,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    ShTruncate(const ShTruncate&);
-    ShTruncate& operator=(const ShTruncate&);
 
     // -- Members
 

@@ -29,6 +29,7 @@
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Rotation.h"
+#include "atlas/trans/Trans.h"
 
 #else
 

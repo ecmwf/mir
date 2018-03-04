@@ -32,9 +32,11 @@ public:
     // None
 
     // -- Contructors
+
     ShScalarToReducedGGPLGiven(const param::MIRParametrisation&);
 
     // -- Destructor
+
     virtual ~ShScalarToReducedGGPLGiven(); // Change to virtual if base class
 
     // -- Convertors
@@ -61,6 +63,7 @@ protected:
     // None
 
     // -- Methods
+
     void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
@@ -74,17 +77,15 @@ protected:
 
 private:
 
-    // No copy allowed
-    ShScalarToReducedGGPLGiven(const ShScalarToReducedGGPLGiven&);
-    ShScalarToReducedGGPLGiven& operator=(const ShScalarToReducedGGPLGiven&);
-
     // -- Members
+
     std::vector<long> pl_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
+
     virtual bool sameAs(const Action& other) const;
     virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
     virtual const char* name() const;

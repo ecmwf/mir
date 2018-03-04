@@ -14,11 +14,10 @@
 #ifndef mir_action_transform_TransCache_h
 #define mir_action_transform_TransCache_h
 
-#include "mir/caching/legendre/LegendreLoader.h"
-
 #include <iosfwd>
 
 #include "mir/api/Atlas.h"
+#include "mir/caching/legendre/LegendreLoader.h"
 
 
 namespace mir {
@@ -26,14 +25,10 @@ namespace action {
 namespace transform {
 
 
-#if 1
-struct Trans_t {};
-#endif
-
 struct TransCache {
 
     bool inited_;
-    struct Trans_t trans_;
+    atlas::trans::Trans trans_;
     mir::caching::legendre::LegendreLoader *loader_;
 
     TransCache();
