@@ -35,63 +35,15 @@ ShScalarToGridded::~ShScalarToGridded() {
 }
 
 
-void ShScalarToGridded::sh2grid(atlas::trans::Trans& trans, data::MIRField& field) const {
-#if 0
+void ShScalarToGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid& grid) const {
+    eckit::Timer timer("ShScalarToGridded::sh2grid", eckit::Log::debug<mir::LibMir>());
+    ASSERT(field.dimensions() == 1);
 
-    size_t number_of_fields = field.dimensions();
-    ASSERT(number_of_fields > 0);
-    ASSERT(trans.myproc == 1);
-    ASSERT(trans.nspec2g == int(field.values(0).size()));
+    // do inverse transform and set gridded values
+    std::vector<double> output(grid.size());
+    trans.invtrans(1, field.values(0).data(), output.data(), atlas::option::global());
 
-    // only support global spectral-to-gridded transforms
-    ASSERT(field.representation()->isGlobal());
-
-    // set input & output working area (avoid copies if transforming one field only)
-    std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
-
-    std::vector<double> input;
-    if (number_of_fields > 1) {
-        long size = long(field.values(0).size());
-        input.resize(number_of_fields * size_t(size));
-
-        // spectral coefficients are "interlaced"
-        for (size_t i = 0; i < number_of_fields; i++) {
-            const std::vector<double>& values = field.values(i);
-            ASSERT(int(values.size()) == trans.nspec2g);
-
-            for (size_t j = 0; j < size_t(size); ++j) {
-                input[ j * number_of_fields + i ] = values[j];
-            }
-        }
-    }
-
-    {
-        // transform
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG ShScalarToGridded");
-
-        struct InvTrans_t invtrans = new_invtrans(&trans);
-        invtrans.nscalar   = int(number_of_fields);
-        invtrans.rspscalar = number_of_fields > 1 ? input.data() : field.values(0).data();
-        invtrans.rgp       = output.data();
-        invtrans.lglobal   = 1;
-        ASSERT(trans_invtrans(&invtrans) == 0);
-    }
-
-    // set field values (again, avoid copies for one field only)
-    if (number_of_fields == 1) {
-//        output.resize(size_t(trans.ngptotg));
-        field.update(output, 0);
-    } else {
-        std::vector<double>::const_iterator here = output.begin();
-        for (size_t i = 0; i < number_of_fields; i++) {
-            std::vector<double> output_field(here, here + trans.ngptotg);
-
-            field.update(output_field, i);
-            here += trans.ngptotg;
-        }
-    }
-
-#endif
+    field.update(output, 0);
 }
 
 

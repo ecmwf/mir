@@ -195,6 +195,7 @@ void ShToGridded::transform(data::MIRField& field,
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
     // eckit::Timer timer("SH2GRID");
 
+#if 0
     TransCache& tc = getTransCache(parametrisation_,
                                    representation,
                                    ctx,
@@ -203,6 +204,19 @@ void ShToGridded::transform(data::MIRField& field,
                                    estimate);
 
     sh2grid(tc.trans_, field);
+#else
+
+    atlas::Grid grid = representation.atlasGrid();
+    int truncation = int(field.representation()->truncation());
+
+    atlas::util::Config config;
+    config.set("type", "ifs");
+
+    atlas::trans::Trans trans(grid, truncation, config);
+
+    sh2grid(field, trans, grid);
+#endif
+
 }
 
 

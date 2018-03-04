@@ -35,7 +35,7 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 }
 
 
-void ShVodTouvGridded::sh2grid(atlas::trans::Trans& trans, data::MIRField& field) const {
+void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid&) const {
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
 

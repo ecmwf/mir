@@ -93,7 +93,7 @@ private:
 
     // -- Methods
     
-    virtual void sh2grid(atlas::trans::Trans&, data::MIRField&) const = 0;
+    virtual void sh2grid(data::MIRField&, atlas::trans::Trans&, const atlas::Grid&) const = 0;
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
