@@ -55,24 +55,8 @@ static mir::InMemoryCache<TransCache> trans_cache("mirCoefficient",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static void fillTrans(struct Trans_t& trans,
-                      trans_options_t& options,
-                      const repres::Representation& representation) {
-#if 0
-
-    ASSERT(trans_new(&trans) == 0);
-    trans.flt = int(options.flt);
-
-    ASSERT(trans_set_trunc(&trans, options.truncation) == 0);
-
-    representation.initTrans(trans);
-
-#endif
-}
-
-
 static void createCoefficients(const eckit::PathName& path,
-                               trans_options_t& options,
+                               const ShToGridded::options_t& options,
                                const repres::Representation& representation,
                                context::Context& ctx) {
 #if 0
@@ -89,7 +73,6 @@ static void createCoefficients(const eckit::PathName& path,
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
 
     struct Trans_t tmp_trans;
-    fillTrans(tmp_trans, options, representation);
 
     ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
     ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
@@ -104,7 +87,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
                                  const repres::Representation& representation,
                                  context::Context& ctx,
                                  const std::string& key,
-                                 trans_options_t& options,
+                                 const ShToGridded::options_t& options,
                                  size_t estimate) {
 
 
@@ -127,7 +110,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
         class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
-            trans_options_t options_;
+            ShToGridded::options_t options_;
             const repres::Representation& representation_;
             context::Context & ctx_;
 
@@ -135,7 +118,7 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
                 createCoefficients(path, options_, representation_, ctx_);
             }
         public:
-            LegendreCacheCreator(trans_options_t& options,
+            LegendreCacheCreator(const ShToGridded::options_t& options,
                                  const repres::Representation& representation,
                                  context::Context& ctx):
                 options_(options), representation_(representation), ctx_(ctx) {}
@@ -156,7 +139,6 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
     TransCache &tc = trans_cache[key];
 
     struct Trans_t &trans = tc.trans_;
-    fillTrans(trans, options, representation);
 
     size_t memory = 0;
     size_t shared = 0;
@@ -202,13 +184,12 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
 
 
-void ShToGridded::transform(
-    data::MIRField& field,
-    const repres::Representation& representation,
-    context::Context& ctx,
-    const std::string& key,
-    trans_options_t& options ,
-    size_t estimate) const {
+void ShToGridded::transform(data::MIRField& field,
+                            const repres::Representation& representation,
+                            context::Context& ctx,
+                            const std::string& key,
+                            const options_t& options,
+                            size_t estimate) const {
 
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
@@ -232,20 +213,20 @@ void ShToGridded::transform(
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
 
-    trans_options_t options(transOptions_);
-    options.truncation = field.representation()->truncation();
+    bool flt = options_.getBool("flt");
+    size_t truncation = field.representation()->truncation();
 
     std::ostringstream os;
-    os << "T" << options.truncation
-       << ":" << "flt" << options.flt
+    os << "T" << truncation
+       << ":" << "flt" << flt
        << ":" << representation.uniqueName();
     std::string key(os.str());
 
     // TODO: take target grid into consideration
-    size_t estimate = options.truncation * options.truncation * options.truncation / 2 * sizeof(double);
+    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
 
     try {
-        transform(field, representation, ctx, key, options, estimate);
+        transform(field, representation, ctx, key, options_, estimate);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_cache.erase(key);
@@ -257,9 +238,11 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
-    // MIR-183: optimal solution is setting flt = -1 to let Trans decide the best Legendre transform method
-    transOptions_.flt = 0;
-    parametrisation.get("trans-fast-legendre-transform", transOptions_.flt);
+    // MIR-183: optimal solution is letting Trans decide the best Legendre transform method
+
+    bool flt = false;
+    parametrisation.get("atlas-trans-flt", flt);
+    options_.set("flt", flt);
 }
 
 

@@ -26,7 +26,6 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/option/Options.h"
 #include "atlas/projection/Projection.h"
-#include "atlas/trans/VorDivToUV.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Rotation.h"

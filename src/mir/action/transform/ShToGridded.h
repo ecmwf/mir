@@ -16,6 +16,7 @@
 #ifndef mir_action_transform_ShToGridded_h
 #define mir_action_transform_ShToGridded_h
 
+#include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/Atlas.h"
 
@@ -35,17 +36,14 @@ namespace action {
 namespace transform {
 
 
-struct trans_options_t {
-    size_t truncation;
-    long flt;
-};
-
-
 class ShToGridded : public Action {
 public:
 
     // -- Exceptions
     // None
+
+    // Types
+    typedef atlas::util::Config options_t;
 
     // -- Contructors
     ShToGridded(const param::MIRParametrisation&);
@@ -95,7 +93,7 @@ private:
     ShToGridded& operator=(const ShToGridded&);
 
     // -- Members
-    trans_options_t transOptions_;
+    options_t options_;
 
     // -- Methods
     virtual void sh2grid(struct Trans_t& trans, data::MIRField& field) const = 0;
@@ -104,7 +102,8 @@ private:
     void transform(data::MIRField& field,
                    const repres::Representation& representation,
                    context::Context& ctx,
-                   const std::string& key, trans_options_t& options,
+                   const std::string& key,
+                   const options_t& options,
                    size_t estimate) const;
 
     void transform(data::MIRField& field,

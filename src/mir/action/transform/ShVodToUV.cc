@@ -17,7 +17,11 @@
 
 #include <complex>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
+#include "atlas/trans/VorDivToUV.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
