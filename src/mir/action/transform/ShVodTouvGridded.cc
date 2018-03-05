@@ -35,49 +35,40 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 }
 
 
-void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid&) const {
+void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid& grid) const {
+    eckit::Timer timer("ShVodTouvGridded::sh2grid", eckit::Log::debug<mir::LibMir>());
+
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
 
-#if 0
-    ASSERT(trans.myproc == 1);
-    ASSERT(trans.nspec2g == int(field.values(0).size()));
-    ASSERT(trans.nspec2g == int(field.values(1).size()));
+    const int number_of_grid_points = int(grid.size());
+    ASSERT(number_of_grid_points > 0);
 
-    // only support global spectral-to-gridded transforms
-    ASSERT(field.representation()->isGlobal());
-
-    // set output working area
-    std::vector<double> output(number_of_fields * size_t(trans.ngptotg));
-
-    {
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG ShVodTouvGridded");
-
-        // transform
-        struct InvTrans_t invtrans = new_invtrans(&trans);
-        invtrans.nvordiv = 1;
-        invtrans.rspvor  = field.values(0).data();
-        invtrans.rspdiv  = field.values(1).data();
-        invtrans.rgp     = output.data();
-        invtrans.lglobal = 1;
-        ASSERT(trans_invtrans(&invtrans) == 0);
-    }
-
-    // configure paramIds for u/v
     const eckit::Configuration& config = LibMir::instance().configuration();
     const long id_u = config.getLong("parameter-id-u", 131);
     const long id_v = config.getLong("parameter-id-v", 132);
+    ASSERT(id_u > 0);
+    ASSERT(id_v > 0);
 
+    // do inverse transform and set gridded values
+    std::vector<double> output(number_of_grid_points * 2);
+    const std::vector<double>& input_vo = field.values(0);
+    const std::vector<double>& input_d  = field.values(1);
 
-    std::vector<double> result(output.begin(), output.begin() + trans.ngptotg);
-    field.update(result, 0);
+    trans.invtrans(1, input_vo.data(), input_d.data(),  output.data(), atlas::option::global() );
+
+    // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
+    std::vector<double> output_field;
+
+    auto here = output.cbegin();
+    output_field.assign(here, here + number_of_grid_points);
+    field.update(output_field, 0);
     field.metadata(0, "paramId", id_u);
 
-    result.assign(output.begin() + trans.ngptotg, output.end());
-    field.update(result, 1);
+    here += number_of_grid_points;
+    output_field.assign(here, here + number_of_grid_points);
+    field.update(output_field, 1);
     field.metadata(1, "paramId", id_v);
-#endif
-
 }
 
 
