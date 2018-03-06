@@ -44,12 +44,22 @@ MIROutputFactory::~MIROutputFactory() {
 MIROutput* MIROutputFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation) {
 
     bool dryrun = false;
-    if (parametrisation.get("dryrun", dryrun) && dryrun) {
+    if (parametrisation.userParametrisation().get("dryrun", dryrun) && dryrun) {
         return new EmptyOutput();
     }
 
     if (parametrisation.has("griddef")) {
         return new GeoPointsFileOutput(name);
+    }
+
+    //TODO: a proper factory
+    std::string output;
+    if (parametrisation.userParametrisation().get("output", output)) {
+        if (output == "geopoints") {
+            return new GeoPointsFileOutput(name);
+        } else {
+            throw eckit::SeriousBug("MIROutputFactory: unknown '" + output + "'");
+        }
     }
 
     return new GribFileOutput(name);
