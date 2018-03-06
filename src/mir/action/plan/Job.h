@@ -54,7 +54,7 @@ public:
 
     // -- Contructors
 
-    Job(const api::MIRJob&, input::MIRInput&, output::MIROutput&);
+    Job(const api::MIRJob&, input::MIRInput&, output::MIROutput&, bool compress);
 
     // -- Destructor
 

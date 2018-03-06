@@ -145,7 +145,7 @@ MIRComplexJob &MIRComplexJob::add(api::MIRJob *job,
 
 
     apis_.push_back(job); // We keep it becase the Job needs a reference
-    jobs_.push_back(new action::Job(*job, input, output));
+    jobs_.push_back(new action::Job(*job, input, output, false));
     watchers_.push_back(watcher);
 
     return *this;

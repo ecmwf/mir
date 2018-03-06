@@ -33,7 +33,7 @@ namespace mir {
 namespace action {
 
 
-Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output) :
+Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
     input_(input),
     output_(output)  {
 
@@ -72,10 +72,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->add(new action::Save(*combined_, input_, output_));
     }
 
-    bool dont_compress = false;
-    combined_->get("dont-compress-plan", dont_compress);
 
-    if (!dont_compress) {
+    if (compress) {
         plan_->compress();
     }
 

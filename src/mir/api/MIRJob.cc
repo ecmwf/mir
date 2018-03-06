@@ -39,7 +39,11 @@ MIRJob::~MIRJob() {
 
 
 void MIRJob::execute(input::MIRInput& input, output::MIROutput& output, util::MIRStatistics& statistics) const {
-    action::Job(*this, input, output).execute(statistics);
+
+    bool dont_compress = false;
+    get("dont-compress-plan", dont_compress);
+
+    action::Job(*this, input, output, !dont_compress).execute(statistics);
 }
 
 
