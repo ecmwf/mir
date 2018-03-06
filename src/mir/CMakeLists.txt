@@ -725,6 +725,44 @@ if(HAVE_ATLAS)
     if(ATLAS_HAVE_TRANS)
         list( APPEND libatlas transi)
         list( APPEND mir_srcs
+            action/transform/LocalShScalarToGridDef.cc
+            action/transform/LocalShScalarToGridDef.h
+            action/transform/LocalShScalarToGridded.cc
+            action/transform/LocalShScalarToGridded.h
+            action/transform/LocalShScalarToNamedGrid.cc
+            action/transform/LocalShScalarToNamedGrid.h
+            action/transform/LocalShScalarToOctahedralGG.cc
+            action/transform/LocalShScalarToOctahedralGG.h
+            action/transform/LocalShScalarToPoints.cc
+            action/transform/LocalShScalarToPoints.h
+            action/transform/LocalShScalarToReducedGG.cc
+            action/transform/LocalShScalarToReducedGG.h
+            action/transform/LocalShScalarToReducedGGPLGiven.cc
+            action/transform/LocalShScalarToReducedGGPLGiven.h
+            action/transform/LocalShScalarToRegularGG.cc
+            action/transform/LocalShScalarToRegularGG.h
+            action/transform/LocalShScalarToRegularLL.cc
+            action/transform/LocalShScalarToRegularLL.h
+            action/transform/LocalShToGridded.cc
+            action/transform/LocalShToGridded.h
+            action/transform/LocalShVodTouvGridDef.cc
+            action/transform/LocalShVodTouvGridDef.h
+            action/transform/LocalShVodTouvGridded.cc
+            action/transform/LocalShVodTouvGridded.h
+            action/transform/LocalShVodTouvNamedGrid.cc
+            action/transform/LocalShVodTouvNamedGrid.h
+            action/transform/LocalShVodTouvOctahedralGG.cc
+            action/transform/LocalShVodTouvOctahedralGG.h
+            action/transform/LocalShVodTouvPoints.cc
+            action/transform/LocalShVodTouvPoints.h
+            action/transform/LocalShVodTouvReducedGG.cc
+            action/transform/LocalShVodTouvReducedGG.h
+            action/transform/LocalShVodTouvReducedGGPLGiven.cc
+            action/transform/LocalShVodTouvReducedGGPLGiven.h
+            action/transform/LocalShVodTouvRegularGG.cc
+            action/transform/LocalShVodTouvRegularGG.h
+            action/transform/LocalShVodTouvRegularLL.cc
+            action/transform/LocalShVodTouvRegularLL.h
             action/transform/ShScalarToGridded.cc
             action/transform/ShScalarToGridded.h
             action/transform/ShScalarToNamedGrid.cc
