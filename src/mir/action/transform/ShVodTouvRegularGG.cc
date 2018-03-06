@@ -45,13 +45,20 @@ void ShVodTouvRegularGG::print(std::ostream& out) const {
 }
 
 
+const char* ShVodTouvRegularGG::name() const {
+    return "ShVodTouvRegularGG";
+}
+
+
 const repres::Representation* ShVodTouvRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
-const char* ShVodTouvRegularGG::name() const {
-    return "ShVodTouvRegularGG";
+
+void ShVodTouvRegularGG::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShVodTouvRegularGG > __action("transform.sh-vod-to-uv-regular-gg");

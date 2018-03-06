@@ -47,14 +47,20 @@ void ShVodTouvReducedGG::print(std::ostream& out) const {
 }
 
 
+const char* ShVodTouvReducedGG::name() const {
+    return "ShVodTouvReducedGG";
+}
+
+
 const repres::Representation* ShVodTouvReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 
-const char* ShVodTouvReducedGG::name() const {
-    return "ShVodTouvReducedGG";
+void ShVodTouvReducedGG::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShVodTouvReducedGG > __action("transform.sh-vod-to-uv-reduced-gg");

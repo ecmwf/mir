@@ -47,13 +47,20 @@ void ShVodTouvOctahedralGG::print(std::ostream& out) const {
 }
 
 
+const char* ShVodTouvOctahedralGG::name() const {
+    return "ShVodTouvOctahedralGG";
+}
+
+
 const repres::Representation* ShVodTouvOctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
-const char* ShVodTouvOctahedralGG::name() const {
-    return "ShVodTouvOctahedralGG";
+
+void ShVodTouvOctahedralGG::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShVodTouvOctahedralGG > __action("transform.sh-vod-to-uv-octahedral-gg");

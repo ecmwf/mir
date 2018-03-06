@@ -49,13 +49,20 @@ void ShScalarToReducedGG::print(std::ostream& out) const {
 }
 
 
+const char* ShScalarToReducedGG::name() const {
+    return "ShScalarToReducedGG";
+}
+
+
 const repres::Representation* ShScalarToReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
-const char* ShScalarToReducedGG::name() const {
-    return "ShScalarToReducedGG";
+
+void ShScalarToReducedGG::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShScalarToReducedGG > __action("transform.sh-scalar-to-reduced-gg");

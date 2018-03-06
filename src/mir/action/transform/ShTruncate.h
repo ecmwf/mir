@@ -85,7 +85,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
 
     virtual void execute(context::Context&) const;
 

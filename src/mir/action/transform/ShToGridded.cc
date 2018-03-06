@@ -209,10 +209,7 @@ void ShToGridded::transform(data::MIRField& field,
     atlas::Grid grid = representation.atlasGrid();
     int truncation = int(field.representation()->truncation());
 
-    atlas::util::Config config;
-    config.set("type", "ifs");
-
-    atlas::trans::Trans trans(grid, truncation, config);
+    atlas::trans::Trans trans(grid, truncation, options);
 
     sh2grid(field, trans, grid);
 #endif
@@ -223,7 +220,17 @@ void ShToGridded::transform(data::MIRField& field,
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
 
-    bool flt = options_.getBool("flt");
+    // Set Trans options, overridden by the user
+    // TODO: MIR-183 let Trans decide the best method
+    atlas::util::Config options;
+    setTransOptions(options);
+
+    bool user_flt = false;
+    parametrisation_.userParametrisation().get("atlas-trans-flt", user_flt);
+    options.set("flt", user_flt);
+
+
+    bool flt = options.getBool("flt");
     size_t truncation = field.representation()->truncation();
 
     std::ostringstream os;
@@ -236,7 +243,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
 
     try {
-        transform(field, representation, ctx, key, options_, estimate);
+        transform(field, representation, ctx, key, options, estimate);
     } catch (std::exception& e) {
         eckit::Log::error() << "Error while running SH2GRID: " << e.what() << std::endl;
         trans_cache.erase(key);
@@ -245,14 +252,8 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 }
 
 
-ShToGridded::ShToGridded(const param::MIRParametrisation &parametrisation):
+ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
-
-    // MIR-183: optimal solution is letting Trans decide the best Legendre transform method
-
-    bool flt = false;
-    parametrisation.get("atlas-trans-flt", flt);
-    options_.set("flt", flt);
 }
 
 

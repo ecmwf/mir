@@ -45,12 +45,18 @@ void ShVodTouvReducedGGPLGiven::print(std::ostream& out) const {
 }
 
 
+const char* ShVodTouvReducedGGPLGiven::name() const {
+    return "ShVodTouvReducedGGPLGiven";
+}
+
+
 const repres::Representation* ShVodTouvReducedGGPLGiven::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedFromPL(pl_);
 }
 
-const char* ShVodTouvReducedGGPLGiven::name() const {
-    return "ShVodTouvReducedGGPLGiven";
+
+void ShVodTouvReducedGGPLGiven::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
 
 

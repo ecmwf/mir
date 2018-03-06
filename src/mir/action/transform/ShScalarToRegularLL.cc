@@ -52,6 +52,11 @@ void ShScalarToRegularLL::print(std::ostream &out) const {
 }
 
 
+const char* ShScalarToRegularLL::name() const {
+    return "ShScalarToRegularLL";
+}
+
+
 const repres::Representation *ShScalarToRegularLL::outputRepresentation() const {
 
     if (!increments_.isPeriodic()) {
@@ -65,9 +70,11 @@ const repres::Representation *ShScalarToRegularLL::outputRepresentation() const 
     return new repres::latlon::RegularLL(bbox, increments_);
 }
 
-const char* ShScalarToRegularLL::name() const {
-    return "ShScalarToRegularLL";
+
+void ShScalarToRegularLL::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShScalarToRegularLL > __action("transform.sh-scalar-to-regular-ll");

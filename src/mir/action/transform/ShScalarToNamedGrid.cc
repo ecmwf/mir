@@ -48,14 +48,19 @@ void ShScalarToNamedGrid::print(std::ostream& out) const {
 }
 
 
+const char* ShScalarToNamedGrid::name() const {
+    return "ShScalarToNamedGrid";
+}
+
+
 const repres::Representation* ShScalarToNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 
 
-const char* ShScalarToNamedGrid::name() const {
-    return "ShScalarToNamedGrid";
+void ShScalarToNamedGrid::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
 
 

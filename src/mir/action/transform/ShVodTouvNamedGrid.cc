@@ -46,14 +46,21 @@ void ShVodTouvNamedGrid::print(std::ostream& out) const {
 }
 
 
+const char* ShVodTouvNamedGrid::name() const {
+    return "ShVodTouvNamedGrid";
+}
+
+
 const repres::Representation* ShVodTouvNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 
-const char* ShVodTouvNamedGrid::name() const {
-    return "ShVodTouvNamedGrid";
+
+void ShVodTouvNamedGrid::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
+
 
 namespace {
 static ActionBuilder< ShVodTouvNamedGrid > __action("transform.sh-vod-to-uv-namedgrid");

@@ -49,12 +49,18 @@ void ShScalarToOctahedralGG::print(std::ostream& out) const {
 }
 
 
+const char* ShScalarToOctahedralGG::name() const {
+    return "ShScalarToOctahedralGG";
+}
+
+
 const repres::Representation* ShScalarToOctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
-const char* ShScalarToOctahedralGG::name() const {
-    return "ShScalarToOctahedralGG";
+
+void ShScalarToOctahedralGG::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
 }
 
 

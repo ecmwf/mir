@@ -85,9 +85,11 @@ private:
 
     // -- Overridden methods
     
-    virtual bool sameAs(const Action& other) const;
-    virtual const repres::Representation* outputRepresentation() const;  // from ShToGridded
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
+
+    virtual const repres::Representation* outputRepresentation() const;
+    virtual void setTransOptions(atlas::util::Config&) const;
 
     // -- Class members
     // None

@@ -67,6 +67,11 @@ const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
 }
 
 
+void ShVodTouvRegularLL::setTransOptions(atlas::util::Config& options) const {
+    options.set(atlas::option::type("ifs"));
+}
+
+
 namespace {
 static ActionBuilder< ShVodTouvRegularLL > __action("transform.sh-vod-to-uv-regular-ll");
 }

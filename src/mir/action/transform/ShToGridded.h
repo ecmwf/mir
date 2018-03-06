@@ -74,7 +74,8 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    virtual void setTransOptions(atlas::util::Config&) const = 0;
 
     // -- Overridden methods
     // None
@@ -88,8 +89,7 @@ protected:
 private:
 
     // -- Members
-
-    atlas::util::Config options_;
+    // None
 
     // -- Methods
     
