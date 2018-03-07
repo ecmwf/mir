@@ -41,7 +41,10 @@ bool ShVodTouvReducedGGPLGiven::sameAs(const Action& other) const {
 
 
 void ShVodTouvReducedGGPLGiven::print(std::ostream& out) const {
-    out << "ShVodTouvReducedGGPLGive[pl=" << pl_.size() << "]";
+    out << "ShVodTouvReducedGGPLGive[";
+    ShToGridded::print(out);
+    out << ",pl=" << pl_.size()
+        << "]";
 }
 
 
@@ -52,11 +55,6 @@ const char* ShVodTouvReducedGGPLGiven::name() const {
 
 const repres::Representation* ShVodTouvReducedGGPLGiven::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedFromPL(pl_);
-}
-
-
-void ShVodTouvReducedGGPLGiven::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

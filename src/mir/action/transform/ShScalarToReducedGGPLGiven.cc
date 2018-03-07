@@ -43,7 +43,10 @@ bool ShScalarToReducedGGPLGiven::sameAs(const Action& other) const {
 
 
 void ShScalarToReducedGGPLGiven::print(std::ostream& out) const {
-    out << "ShScalarToReducedGGPLGive[pl=" << pl_.size() << "]";
+    out << "ShScalarToReducedGGPLGiven[";
+    ShToGridded::print(out);
+    out << ",pl=" << pl_.size()
+        << "]";
 }
 
 
@@ -54,11 +57,6 @@ const char* ShScalarToReducedGGPLGiven::name() const {
 
 const repres::Representation* ShScalarToReducedGGPLGiven::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedFromPL(pl_);
-}
-
-
-void ShScalarToReducedGGPLGiven::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

@@ -43,7 +43,10 @@ ShVodTouvOctahedralGG::~ShVodTouvOctahedralGG() {
 
 
 void ShVodTouvOctahedralGG::print(std::ostream& out) const {
-    out << "ShVodTouvOctahedralGG[N=" << N_ << "]";
+    out << "ShVodTouvOctahedralGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -54,11 +57,6 @@ const char* ShVodTouvOctahedralGG::name() const {
 
 const repres::Representation* ShVodTouvOctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
-}
-
-
-void ShVodTouvOctahedralGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

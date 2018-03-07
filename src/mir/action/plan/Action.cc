@@ -24,6 +24,7 @@
 #include "mir/action/plan/Action.h"
 #include "mir/config/LibMir.h"
 
+
 namespace mir {
 namespace action {
 
@@ -36,6 +37,7 @@ Action::Action(const param::MIRParametrisation &parametrisation):
 Action::~Action() {
 }
 
+
 void Action::custom(std::ostream & out) const {
     out << *this;
 }
@@ -46,7 +48,8 @@ void Action::perform(context::Context & ctx) const {
     execute(ctx);
 }
 
-bool Action::mergeWithNext(const Action& next) {
+
+bool Action::mergeWithNext(const Action&) {
     return false;
 }
 
@@ -55,9 +58,16 @@ bool Action::isCropAction() const {
     return false;
 }
 
+
+bool Action::isInterpolationAction() const {
+    return false;
+}
+
+
 const util::BoundingBox& Action::croppingBoundingBox() const {
     NOTIMP;
 }
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

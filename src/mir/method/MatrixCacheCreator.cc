@@ -35,7 +35,7 @@ MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
                                        const repres::Representation& in,
                                        const repres::Representation& out,
                                        const lsm::LandSeaMasks& masks,
-                                       const Cropping& cropping):
+                                       const util::Cropping& cropping):
     owner_(owner),
     ctx_(ctx),
     in_(in),

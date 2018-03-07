@@ -13,19 +13,14 @@
 /// @date May 2015
 
 
-#include "mir/method/Cropping.h"
+#include "mir/util/Cropping.h"
 
-// #include "eckit/exception/Exceptions.h"
-// #include "eckit/thread/AutoLock.h"
-// #include "eckit/thread/Mutex.h"
-
-// #include "mir/config/LibMir.h"
-// #include "mir/param/MIRParametrisation.h"
 
 namespace mir {
-namespace method {
+namespace util {
 
-Cropping::Cropping():
+
+Cropping::Cropping() :
     active_(false) {
 }
 
@@ -34,16 +29,18 @@ Cropping::~Cropping() {
 }
 
 
-void Cropping::boundingBox(const util::BoundingBox& bbox) {
+void Cropping::boundingBox(const BoundingBox& bbox) {
     bbox_ = bbox;
     active_ = true;
 }
+
 
 bool Cropping::operator==(const Cropping& other) const {
     return (active_ == other.active_) && (bbox_ == other.bbox_);
 }
 
-const util::BoundingBox& Cropping::boundingBox() const {
+
+const BoundingBox& Cropping::boundingBox() const {
     ASSERT(active_);
     return bbox_;
 }
@@ -52,18 +49,17 @@ const util::BoundingBox& Cropping::boundingBox() const {
 void Cropping::print(std::ostream &out) const {
     if (active_) {
         out << bbox_;
-    }
-    else {
+    } else {
         out << "none";
     }
 }
+
 
 bool Cropping::active() const {
     return active_;
 }
 
 
-
-}  // namespace Cropping
+}  // namespace util
 }  // namespace mir
 

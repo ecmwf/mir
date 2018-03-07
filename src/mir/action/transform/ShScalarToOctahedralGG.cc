@@ -45,7 +45,10 @@ ShScalarToOctahedralGG::~ShScalarToOctahedralGG() {
 
 
 void ShScalarToOctahedralGG::print(std::ostream& out) const {
-    out << "ShScalarToOctahedralGG[N=" << N_ << "]";
+    out << "ShScalarToOctahedralGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -56,11 +59,6 @@ const char* ShScalarToOctahedralGG::name() const {
 
 const repres::Representation* ShScalarToOctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
-}
-
-
-void ShScalarToOctahedralGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

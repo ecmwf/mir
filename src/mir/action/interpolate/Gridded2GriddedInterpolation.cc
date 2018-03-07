@@ -23,7 +23,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/BoundingBox.h"
+#include "mir/util/Cropping.h"
 
 
 
@@ -47,16 +47,14 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 
 bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
 
-    eckit::Log::debug<LibMir>() << "Gridded2GriddedInterpolation::mergeWithNext "
-    << *this
-     << std::endl
-    << "With "
-    << next
-    << std::endl
-    << "next.isCropAction " << next.isCropAction() << std::endl
-    << "method_->canCrop() " << method_->canCrop()
-    << std::endl;
-
+    eckit::Log::debug<LibMir>()
+            << "Gridded2GriddedInterpolation::mergeWithNext: "
+            << "\n\t" "   " << *this
+            << "\n\t" " + " << next
+            << std::endl
+            << "\n\t" "next.isCropAction() " << next.isCropAction()
+            << "\n\t" "method_->canCrop() " << method_->canCrop()
+            << std::endl;
 
     if (next.isCropAction() && method_->canCrop()) {
         method_->setCropping(next.croppingBoundingBox());
@@ -64,6 +62,18 @@ bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
     }
     return false;
 }
+
+
+bool Gridded2GriddedInterpolation::isInterpolationAction() const {
+    return true;
+}
+
+
+const util::BoundingBox& Gridded2GriddedInterpolation::croppingBoundingBox() const {
+    repres::RepresentationHandle out(outputRepresentation());
+    return out->boundingBox();
+}
+
 
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 

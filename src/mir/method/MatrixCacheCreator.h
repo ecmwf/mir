@@ -39,9 +39,19 @@ class LandSeaMasks;
 }
 
 namespace method {
-
-class Cropping;
 class MethodWeighted;
+}
+
+namespace util {
+class Cropping;
+}
+
+}
+
+
+namespace mir {
+namespace method {
+
 
 class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
 
@@ -52,7 +62,7 @@ public:
                      const repres::Representation & in,
                      const repres::Representation & out,
                      const lsm::LandSeaMasks & masks,
-                     const Cropping& cropping);
+                     const util::Cropping& cropping);
 
 
 private:
@@ -68,7 +78,7 @@ private:
   const repres::Representation& in_;
   const repres::Representation& out_;
   const lsm::LandSeaMasks& masks_;
-  const Cropping& cropping_;
+  const util::Cropping& cropping_;
 
 };
 

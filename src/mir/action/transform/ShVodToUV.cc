@@ -87,11 +87,11 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 
     // transform
-    // NOTE: only type="ifs" is supprted since we don't support local spectral fields
     const int T = int(truncation);
     const int nb_coeff = int(size);
     const int nb_fields = 1;
 
+    // NOTE: only type="ifs" is supported since we don't support local spectral fields
     atlas::trans::VorDivToUV vordiv_to_UV(T, atlas::option::type("ifs"));
     ASSERT(vordiv_to_UV.truncation() == T);
 

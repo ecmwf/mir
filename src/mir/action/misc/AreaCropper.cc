@@ -27,6 +27,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Cropping.h"
 
 
 namespace mir {

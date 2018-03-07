@@ -42,7 +42,10 @@ bool ShVodTouvNamedGrid::sameAs(const Action& other) const {
 
 
 void ShVodTouvNamedGrid::print(std::ostream& out) const {
-    out << "ShVodTouvNamedGrid[gridname=" << gridname_ << "]";
+    out << "ShVodTouvNamedGrid[";
+    ShToGridded::print(out);
+    out << ",gridname=" << gridname_
+        << "]";
 }
 
 
@@ -54,11 +57,6 @@ const char* ShVodTouvNamedGrid::name() const {
 const repres::Representation* ShVodTouvNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
-}
-
-
-void ShVodTouvNamedGrid::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

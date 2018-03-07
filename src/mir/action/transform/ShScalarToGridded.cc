@@ -35,7 +35,7 @@ ShScalarToGridded::~ShScalarToGridded() {
 }
 
 
-void ShScalarToGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid& grid) const {
+void ShScalarToGridded::sh2grid(data::MIRField& field, atlas_trans_t& trans, const atlas::Grid& grid) const {
     eckit::Timer timer("ShScalarToGridded::sh2grid", eckit::Log::debug<mir::LibMir>());
 
     size_t number_of_fields = field.dimensions();

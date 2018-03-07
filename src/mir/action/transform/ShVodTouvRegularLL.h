@@ -88,7 +88,6 @@ private:
     virtual const char* name() const;
 
     virtual const repres::Representation* outputRepresentation() const;
-    virtual void setTransOptions(atlas::util::Config&) const;
 
     // -- Class members
     // None

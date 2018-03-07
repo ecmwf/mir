@@ -250,8 +250,6 @@ list(
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/Cropping.cc
-    method/Cropping.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
     method/knn/KNearest.cc
@@ -505,6 +503,8 @@ list(
     util/BoundingBox.cc
     util/BoundingBox.h
     util/Compare.h
+    util/Cropping.cc
+    util/Cropping.h
     util/DeprecatedFunctionality.cc
     util/DeprecatedFunctionality.h
     util/Domain.cc
@@ -731,50 +731,16 @@ if(HAVE_ATLAS)
     if(ATLAS_HAVE_TRANS)
         list( APPEND libatlas transi)
         list( APPEND mir_srcs
-            action/transform/LocalShScalarToGridDef.cc
-            action/transform/LocalShScalarToGridDef.h
-            action/transform/LocalShScalarToGridded.cc
-            action/transform/LocalShScalarToGridded.h
-            action/transform/LocalShScalarToNamedGrid.cc
-            action/transform/LocalShScalarToNamedGrid.h
-            action/transform/LocalShScalarToOctahedralGG.cc
-            action/transform/LocalShScalarToOctahedralGG.h
-            action/transform/LocalShScalarToPoints.cc
-            action/transform/LocalShScalarToPoints.h
-            action/transform/LocalShScalarToReducedGG.cc
-            action/transform/LocalShScalarToReducedGG.h
-            action/transform/LocalShScalarToReducedGGPLGiven.cc
-            action/transform/LocalShScalarToReducedGGPLGiven.h
-            action/transform/LocalShScalarToRegularGG.cc
-            action/transform/LocalShScalarToRegularGG.h
-            action/transform/LocalShScalarToRegularLL.cc
-            action/transform/LocalShScalarToRegularLL.h
-            action/transform/LocalShToGridded.cc
-            action/transform/LocalShToGridded.h
-            action/transform/LocalShVodTouvGridDef.cc
-            action/transform/LocalShVodTouvGridDef.h
-            action/transform/LocalShVodTouvGridded.cc
-            action/transform/LocalShVodTouvGridded.h
-            action/transform/LocalShVodTouvNamedGrid.cc
-            action/transform/LocalShVodTouvNamedGrid.h
-            action/transform/LocalShVodTouvOctahedralGG.cc
-            action/transform/LocalShVodTouvOctahedralGG.h
-            action/transform/LocalShVodTouvPoints.cc
-            action/transform/LocalShVodTouvPoints.h
-            action/transform/LocalShVodTouvReducedGG.cc
-            action/transform/LocalShVodTouvReducedGG.h
-            action/transform/LocalShVodTouvReducedGGPLGiven.cc
-            action/transform/LocalShVodTouvReducedGGPLGiven.h
-            action/transform/LocalShVodTouvRegularGG.cc
-            action/transform/LocalShVodTouvRegularGG.h
-            action/transform/LocalShVodTouvRegularLL.cc
-            action/transform/LocalShVodTouvRegularLL.h
+            action/transform/ShScalarToGridDef.cc
+            action/transform/ShScalarToGridDef.h
             action/transform/ShScalarToGridded.cc
             action/transform/ShScalarToGridded.h
             action/transform/ShScalarToNamedGrid.cc
             action/transform/ShScalarToNamedGrid.h
             action/transform/ShScalarToOctahedralGG.cc
             action/transform/ShScalarToOctahedralGG.h
+            action/transform/ShScalarToPoints.cc
+            action/transform/ShScalarToPoints.h
             action/transform/ShScalarToReducedGG.cc
             action/transform/ShScalarToReducedGG.h
             action/transform/ShScalarToReducedGGPLGiven.cc
@@ -789,12 +755,16 @@ if(HAVE_ATLAS)
             action/transform/ShTruncate.h
             action/transform/ShVodToUV.cc
             action/transform/ShVodToUV.h
+            action/transform/ShVodTouvGridDef.cc
+            action/transform/ShVodTouvGridDef.h
             action/transform/ShVodTouvGridded.cc
             action/transform/ShVodTouvGridded.h
             action/transform/ShVodTouvNamedGrid.cc
             action/transform/ShVodTouvNamedGrid.h
             action/transform/ShVodTouvOctahedralGG.cc
             action/transform/ShVodTouvOctahedralGG.h
+            action/transform/ShVodTouvPoints.cc
+            action/transform/ShVodTouvPoints.h
             action/transform/ShVodTouvReducedGG.cc
             action/transform/ShVodTouvReducedGG.h
             action/transform/ShVodTouvReducedGGPLGiven.cc

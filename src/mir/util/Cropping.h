@@ -14,11 +14,10 @@
 /// @date May 2015
 
 
-#ifndef mir_method_Cropping_h
-#define mir_method_Cropping_h
+#ifndef mir_util_Cropping_h
+#define mir_util_Cropping_h
 
 #include <iosfwd>
-#include <string>
 
 #include "mir/util/BoundingBox.h"
 
@@ -29,7 +28,7 @@ class MD5;
 
 
 namespace mir {
-namespace method {
+namespace util {
 
 
 class Cropping {
@@ -41,23 +40,21 @@ public:
 
     void hash(eckit::MD5&) const;
 
-
     bool operator==(const Cropping& other) const;
 
     bool active() const;
 
-    void boundingBox(const util::BoundingBox& bbox);
-    const util::BoundingBox& boundingBox() const;
+    void boundingBox(const BoundingBox& bbox);
+    const BoundingBox& boundingBox() const;
 
 protected:
-
 
     void print(std::ostream&) const;
 
 private:
 
     bool active_;
-    util::BoundingBox bbox_;
+    BoundingBox bbox_;
 
     friend std::ostream& operator<<(std::ostream& s, const Cropping& p) {
         p.print(s);
@@ -67,7 +64,7 @@ private:
 };
 
 
-}  // namespace method
+}  // namespace util
 }  // namespace mir
 
 

@@ -35,7 +35,7 @@ ShVodTouvGridded::~ShVodTouvGridded() {
 }
 
 
-void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans, const atlas::Grid& grid) const {
+void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas_trans_t& trans, const atlas::Grid& grid) const {
     eckit::Timer timer("ShVodTouvGridded::sh2grid", eckit::Log::debug<mir::LibMir>());
 
     size_t number_of_fields = field.dimensions();
@@ -52,10 +52,7 @@ void ShVodTouvGridded::sh2grid(data::MIRField& field, atlas::trans::Trans& trans
 
     // do inverse transform and set gridded values
     std::vector<double> output(number_of_grid_points * 2);
-    const std::vector<double>& input_vo = field.values(0);
-    const std::vector<double>& input_d  = field.values(1);
-
-    trans.invtrans(1, input_vo.data(), input_d.data(),  output.data(), atlas::option::global() );
+    trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), atlas::option::global() );
 
     // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
     std::vector<double> output_field;

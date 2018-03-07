@@ -48,7 +48,10 @@ bool ShScalarToRegularLL::sameAs(const Action& other) const {
 
 
 void ShScalarToRegularLL::print(std::ostream &out) const {
-    out << "ShScalarToRegularLL[increments=" << increments_ << "]";
+    out << "ShScalarToRegularLL[";
+    ShToGridded::print(out);
+    out << ",increments=" << increments_
+        << "]";
 }
 
 
@@ -68,11 +71,6 @@ const repres::Representation *ShScalarToRegularLL::outputRepresentation() const 
     increments_.globaliseBoundingBox(bbox, false, false);
 
     return new repres::latlon::RegularLL(bbox, increments_);
-}
-
-
-void ShScalarToRegularLL::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

@@ -9,10 +9,11 @@
  */
 
 
-#ifndef mir_action_transform_LocalShVodTouvRegularGG_h
-#define mir_action_transform_LocalShVodTouvRegularGG_h
+#ifndef mir_action_transform_shScalarToGridDef_h
+#define mir_action_transform_shScalarToGridDef_h
 
-#include "mir/action/transform/LocalShVodTouvGridded.h"
+#include <string>
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -20,7 +21,7 @@ namespace action {
 namespace transform {
 
 
-class LocalShVodTouvRegularGG : public LocalShVodTouvGridded {
+class ShScalarToGridDef : public ShScalarToGridded {
 public:
 
     // -- Exceptions
@@ -28,11 +29,11 @@ public:
 
     // -- Contructors
 
-    LocalShVodTouvRegularGG(const param::MIRParametrisation&);
+    ShScalarToGridDef(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~LocalShVodTouvRegularGG(); // Change to virtual if base class
+    virtual ~ShScalarToGridDef(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,7 +75,7 @@ private:
 
     // -- Members
 
-    size_t N_;
+    std::string griddef_;
 
     // -- Methods
     // None
@@ -83,9 +84,7 @@ private:
 
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
-
     virtual const repres::Representation* outputRepresentation() const;
-    virtual void setTransOptions(atlas::util::Config&) const;
 
     // -- Class members
     // None

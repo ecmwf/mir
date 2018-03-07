@@ -46,7 +46,10 @@ bool ShVodTouvRegularLL::sameAs(const Action& other) const {
 
 
 void ShVodTouvRegularLL::print(std::ostream &out) const {
-    out << "ShVodTouvRegularLL[increments=" << increments_ << "]";
+    out << "ShVodTouvRegularLL[";
+    ShToGridded::print(out);
+    out << ",increments=" << increments_
+        << "]";
 }
 
 const char* ShVodTouvRegularLL::name() const {
@@ -64,11 +67,6 @@ const repres::Representation *ShVodTouvRegularLL::outputRepresentation() const {
     increments_.globaliseBoundingBox(bbox, false, false);
 
     return new repres::latlon::RegularLL(bbox, increments_);
-}
-
-
-void ShVodTouvRegularLL::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

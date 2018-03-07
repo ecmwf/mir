@@ -9,22 +9,11 @@
  */
 
 
-#ifndef mir_action_transform_LocalShToGridded_h
-#define mir_action_transform_LocalShToGridded_h
+#ifndef mir_action_transform_ShVodTouvGridDef_h
+#define mir_action_transform_ShVodTouvGridDef_h
 
-#include "atlas/option/TransOptions.h"
-#include "mir/action/plan/Action.h"
-#include "mir/api/Atlas.h"
-
-
-namespace mir {
-namespace data {
-class MIRField;
-}
-namespace repres {
-class Representation;
-}
-}
+#include <string>
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -32,7 +21,7 @@ namespace action {
 namespace transform {
 
 
-class LocalShToGridded : public Action {
+class ShVodTouvGridDef : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
@@ -40,11 +29,11 @@ public:
 
     // -- Contructors
 
-    LocalShToGridded(const param::MIRParametrisation&);
+    ShVodTouvGridDef(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~LocalShToGridded();
+    virtual ~ShVodTouvGridDef(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -71,7 +60,7 @@ protected:
 
     // -- Methods
 
-    virtual void setTransOptions(atlas::util::Config&) const = 0;
+    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -85,21 +74,17 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::string griddef_;
 
     // -- Methods
-    
-    virtual void sh2grid(data::MIRField&, atlas::trans::Trans&, const atlas::Grid&) const = 0;
-
-    virtual const repres::Representation* outputRepresentation() const = 0;
-
-    void transform(data::MIRField& field,
-                   const repres::Representation& representation,
-                   context::Context& ctx) const;
+    // None
 
     // -- Overridden methods
-    
-    virtual void execute(context::Context&) const;
+
+    virtual bool sameAs(const Action&) const;
+    virtual const char* name() const;
+    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -108,9 +93,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const LocalShToGriddedTransform& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 
@@ -121,3 +104,4 @@ private:
 
 
 #endif
+

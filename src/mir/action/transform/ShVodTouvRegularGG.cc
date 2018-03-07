@@ -41,7 +41,10 @@ bool ShVodTouvRegularGG::sameAs(const Action& other) const {
 
 
 void ShVodTouvRegularGG::print(std::ostream& out) const {
-    out << "ShVodTouvRegularGG[N=" << N_ << "]";
+    out << "ShVodTouvRegularGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -52,11 +55,6 @@ const char* ShVodTouvRegularGG::name() const {
 
 const repres::Representation* ShVodTouvRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
-}
-
-
-void ShVodTouvRegularGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

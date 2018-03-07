@@ -88,7 +88,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
     virtual bool isCropAction() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;

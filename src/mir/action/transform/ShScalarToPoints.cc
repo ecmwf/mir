@@ -9,9 +9,10 @@
  */
 
 
-#include "mir/action/transform/LocalShVodTouvPoints.h"
+#include "mir/action/transform/ShScalarToPoints.h"
 
 #include <iostream>
+#include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
@@ -22,8 +23,8 @@ namespace action {
 namespace transform {
 
 
-LocalShVodTouvPoints::LocalShVodTouvPoints(const param::MIRParametrisation &parametrisation):
-    LocalShVodTouvGridded(parametrisation) {
+ShScalarToPoints::ShScalarToPoints(const param::MIRParametrisation& parametrisation):
+    ShScalarToGridded(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("latitudes", latitudes_));
     ASSERT(parametrisation_.userParametrisation().get("longitudes", longitudes_));
 
@@ -31,36 +32,36 @@ LocalShVodTouvPoints::LocalShVodTouvPoints(const param::MIRParametrisation &para
 }
 
 
-LocalShVodTouvPoints::~LocalShVodTouvPoints() {
+ShScalarToPoints::~ShScalarToPoints() {
 }
 
 
-bool LocalShVodTouvPoints::sameAs(const Action& other) const {
-    const LocalShVodTouvPoints* o = dynamic_cast<const LocalShVodTouvPoints*>(&other);
+bool ShScalarToPoints::sameAs(const Action& other) const {
+    const ShScalarToPoints* o = dynamic_cast<const ShScalarToPoints*>(&other);
     return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
 
-void LocalShVodTouvPoints::print(std::ostream &out) const {
-    out << "LocalShVodTouvPoints[points=" << latitudes_.size() << "]";
+void ShScalarToPoints::print(std::ostream &out) const {
+    out << "ShScalarToPoints[";
+    ShToGridded::print(out);
+    out << ",points=" << latitudes_.size()
+        << "]";
 }
 
-const char* LocalShVodTouvPoints::name() const {
-    return "LocalShVodTouvPoints";
+
+const char* ShScalarToPoints::name() const {
+    return "ShScalarToPoints";
 }
 
-const repres::Representation *LocalShVodTouvPoints::outputRepresentation() const {
+
+const repres::Representation *ShScalarToPoints::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
 }
 
 
-void LocalShVodTouvPoints::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("local"));
-}
-
-
 namespace {
-static ActionBuilder< LocalShVodTouvPoints > __action("transform.local-sh-vod-to-uv-points");
+static ActionBuilder< ShScalarToPoints > __action("transform.sh-scalar-to-points");
 }
 
 

@@ -20,7 +20,7 @@
 #include "mir/caching/WeightCache.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
-#include "mir/method/Cropping.h"
+#include "mir/util/Cropping.h"
 
 
 namespace mir {
@@ -42,7 +42,6 @@ class MIRStatistics;
 namespace mir {
 namespace method {
 
-class Cropping;
 
 class MethodWeighted : public Method {
 
@@ -125,14 +124,14 @@ private:
                       const repres::Representation& out,
                       WeightMatrix&,
                       const lsm::LandSeaMasks&,
-                      const Cropping&) const;
+                      const util::Cropping&) const;
 
 
 private:
 
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
-    Cropping cropping_;
+    util::Cropping cropping_;
 
     friend class MatrixCacheCreator;
 

@@ -45,7 +45,10 @@ bool ShScalarToReducedGG::sameAs(const Action& other) const {
 
 
 void ShScalarToReducedGG::print(std::ostream& out) const {
-    out << "ShScalarToReducedGG[N=" << N_ << "]";
+    out << "ShScalarToReducedGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -56,11 +59,6 @@ const char* ShScalarToReducedGG::name() const {
 
 const repres::Representation* ShScalarToReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
-}
-
-
-void ShScalarToReducedGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

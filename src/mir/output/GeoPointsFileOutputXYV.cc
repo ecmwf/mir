@@ -81,12 +81,13 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
         out << "#GEO"
                "\n#FORMAT XYV";
 
-        for (auto& key : keys) {
-            std::string v;
-            if (runtime.get(key, v)) {
-                out << "\n# " << key << "=" << v;
-            }
-        }
+        // FIXME: what's going on??
+//        for (auto& key : keys) {
+//            std::string v;
+//            if (runtime.get(key, v)) {
+//                out << "\n# " << key << "=" << v;
+//            }
+//        }
 
         out << "\n#DATA";
 

@@ -13,12 +13,12 @@
 /// @author Tiago Quintino
 /// @date   Apr 2015
 
-#ifndef Action_H
-#define Action_H
+
+#ifndef mir_action_plan_Action_h
+#define mir_action_plan_Action_h
 
 #include <iosfwd>
 #include <string>
-
 
 #include "eckit/memory/NonCopyable.h"
 
@@ -31,8 +31,8 @@ namespace param {
 class MIRParametrisation;
 }
 namespace util {
-class MIRStatistics;
 class BoundingBox;
+class MIRStatistics;
 }
 }
 
@@ -70,10 +70,10 @@ public:
     virtual void custom(std::ostream &) const; // Change to virtual if base class
     virtual const char* name() const = 0;
 
-    virtual bool mergeWithNext(const Action& other);
-
     // For optimising plans
+    virtual bool mergeWithNext(const Action& other);
     virtual bool isCropAction() const;
+    virtual bool isInterpolationAction() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;
 
     // -- Overridden methods
@@ -89,11 +89,11 @@ protected:
 
     // -- Members
 
-    const param::MIRParametrisation &parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -106,18 +106,13 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    Action(const Action &);
-    Action &operator=(const Action &);
-
     // -- Members
     // None
 
     // -- Methods
 
     // call perform() for the public interface
-    virtual void execute(context::Context & ctx) const = 0;
+    virtual void execute(context::Context&) const = 0;
 
     // -- Overridden methods
     // None

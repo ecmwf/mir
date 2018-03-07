@@ -9,10 +9,11 @@
  */
 
 
-#ifndef mir_action_transform_LocalShScalarToOctahedralGG_h
-#define mir_action_transform_LocalShScalarToOctahedralGG_h
+#ifndef mir_action_transform_ShVodTouvPoints_h
+#define mir_action_transform_ShVodTouvPoints_h
 
-#include "mir/action/transform/LocalShScalarToGridded.h"
+#include <vector>
+#include "mir/action/transform/ShVodTouvGridded.h"
 
 
 namespace mir {
@@ -20,7 +21,7 @@ namespace action {
 namespace transform {
 
 
-class LocalShScalarToOctahedralGG : public LocalShScalarToGridded {
+class ShVodTouvPoints : public ShVodTouvGridded {
 public:
 
     // -- Exceptions
@@ -28,11 +29,11 @@ public:
 
     // -- Contructors
 
-    LocalShScalarToOctahedralGG(const param::MIRParametrisation&);
+    ShVodTouvPoints(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~LocalShScalarToOctahedralGG(); // Change to virtual if base class
+    virtual ~ShVodTouvPoints(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,7 +75,8 @@ private:
 
     // -- Members
 
-    size_t N_;
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
     // -- Methods
     // None
@@ -83,9 +85,7 @@ private:
 
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
-
     virtual const repres::Representation* outputRepresentation() const;
-    virtual void setTransOptions(atlas::util::Config&) const;
 
     // -- Class members
     // None

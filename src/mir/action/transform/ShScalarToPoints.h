@@ -9,10 +9,11 @@
  */
 
 
-#ifndef mir_action_transform_LocalShVodTouvNamedGrid_h
-#define mir_action_transform_LocalShVodTouvNamedGrid_h
+#ifndef mir_action_transform_shScalarToPoints_h
+#define mir_action_transform_shScalarToPoints_h
 
-#include "mir/action/transform/LocalShVodTouvGridded.h"
+#include <vector>
+#include "mir/action/transform/ShScalarToGridded.h"
 
 
 namespace mir {
@@ -20,7 +21,7 @@ namespace action {
 namespace transform {
 
 
-class LocalShVodTouvNamedGrid : public LocalShVodTouvGridded {
+class ShScalarToPoints : public ShScalarToGridded {
 public:
 
     // -- Exceptions
@@ -28,11 +29,11 @@ public:
 
     // -- Contructors
 
-    LocalShVodTouvNamedGrid(const param::MIRParametrisation&);
+    ShScalarToPoints(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~LocalShVodTouvNamedGrid(); // Change to virtual if base class
+    virtual ~ShScalarToPoints(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -74,7 +75,8 @@ private:
 
     // -- Members
 
-    std::string gridname_;
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
     // -- Methods
     // None
@@ -83,9 +85,7 @@ private:
 
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
-
     virtual const repres::Representation* outputRepresentation() const;
-    virtual void setTransOptions(atlas::util::Config&) const;
 
     // -- Class members
     // None

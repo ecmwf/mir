@@ -44,7 +44,10 @@ bool ShScalarToNamedGrid::sameAs(const Action& other) const {
 
 
 void ShScalarToNamedGrid::print(std::ostream& out) const {
-    out << "ShScalarToNamedGrid[gridname=" << gridname_ << "]";
+    out << "ShScalarToNamedGrid[";
+    ShToGridded::print(out);
+    out << ",gridname=" << gridname_
+        << "]";
 }
 
 
@@ -56,11 +59,6 @@ const char* ShScalarToNamedGrid::name() const {
 const repres::Representation* ShScalarToNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
-}
-
-
-void ShScalarToNamedGrid::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

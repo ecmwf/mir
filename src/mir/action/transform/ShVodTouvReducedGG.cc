@@ -43,7 +43,10 @@ bool ShVodTouvReducedGG::sameAs(const Action& other) const {
 
 
 void ShVodTouvReducedGG::print(std::ostream& out) const {
-    out << "ShVodTouvReducedGG[N=" << N_ << "]";
+    out << "ShVodTouvReducedGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -54,11 +57,6 @@ const char* ShVodTouvReducedGG::name() const {
 
 const repres::Representation* ShVodTouvReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
-}
-
-
-void ShVodTouvReducedGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 

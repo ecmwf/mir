@@ -34,86 +34,80 @@ namespace action {
 class Gridded2GriddedInterpolation : public Action {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation(); // Change to virtual if base class
+    virtual ~Gridded2GriddedInterpolation();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-    virtual bool sameAs(const Action& other) const = 0;
+    virtual bool sameAs(const Action&) const = 0;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
-
-    Gridded2GriddedInterpolation(const Gridded2GriddedInterpolation&);
-    Gridded2GriddedInterpolation& operator=(const Gridded2GriddedInterpolation&);
-
-// -- Members
+    // -- Members
 
     std::string interpolation_;
     eckit::ScopedPtr<method::Method> method_;
 
-
-// -- Methods
+    // -- Methods
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
-    virtual bool mergeWithNext(const Action& other);
+    virtual void execute(context::Context&) const;
+    virtual bool mergeWithNext(const Action&);
+    bool isInterpolationAction() const;
+    const util::BoundingBox& croppingBoundingBox() const;
 
-
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
     //  { p.print(s); return s; }
@@ -123,5 +117,7 @@ private:
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

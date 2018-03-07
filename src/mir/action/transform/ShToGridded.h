@@ -19,6 +19,7 @@
 #include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/Atlas.h"
+#include "mir/util/Cropping.h"
 
 
 namespace mir {
@@ -38,6 +39,11 @@ namespace transform {
 
 class ShToGridded : public Action {
 public:
+
+    // -- Types
+
+    typedef atlas::trans::Trans atlas_trans_t;
+    typedef atlas::util::Config atlas_config_t;
 
     // -- Exceptions
     // None
@@ -74,11 +80,11 @@ protected:
     // None
 
     // -- Methods
-
-    virtual void setTransOptions(atlas::util::Config&) const = 0;
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual void print(std::ostream&) const = 0;
 
     // -- Class members
     // None
@@ -89,28 +95,24 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    double radius_;
+    util::Cropping cropping_;
+    atlas_config_t options_;
 
     // -- Methods
     
-    virtual void sh2grid(data::MIRField&, atlas::trans::Trans&, const atlas::Grid&) const = 0;
+    virtual void sh2grid(data::MIRField&, atlas_trans_t&, const atlas::Grid&) const = 0;
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
-    void transform(data::MIRField& field,
-                   const repres::Representation& representation,
-                   context::Context& ctx,
-                   const std::string& key,
-                   const atlas::util::Config& options,
-                   size_t estimate) const;
-
-    void transform(data::MIRField& field,
-                   const repres::Representation& representation,
-                   context::Context& ctx) const;
+    void transform(data::MIRField&, const repres::Representation&, context::Context&) const;
 
     // -- Overridden methods
     
     virtual void execute(context::Context&) const;
+
+    virtual bool mergeWithNext(const Action&);
 
     // -- Class members
     // None

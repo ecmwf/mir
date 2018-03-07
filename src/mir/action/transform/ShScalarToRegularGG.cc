@@ -43,7 +43,10 @@ bool ShScalarToRegularGG::sameAs(const Action& other) const {
 
 
 void ShScalarToRegularGG::print(std::ostream& out) const {
-    out << "ShScalarToRegularGG[N=" << N_ << "]";
+    out << "ShScalarToRegularGG[";
+    ShToGridded::print(out);
+    out << ",N=" << N_
+        << "]";
 }
 
 
@@ -54,11 +57,6 @@ const char* ShScalarToRegularGG::name() const {
 
 const repres::Representation* ShScalarToRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RegularGG(N_);
-}
-
-
-void ShScalarToRegularGG::setTransOptions(atlas::util::Config& options) const {
-    options.set(atlas::option::type("ifs"));
 }
 
 
