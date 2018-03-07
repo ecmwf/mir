@@ -1,6 +1,6 @@
 # Mars request
 param=vo/d,level=1000,resol=20
 # Mir tool options
---plan=local-sh-vod-to-uv-griddef(griddef=tour.pts) --output=geopoints --vod2uv
+--plan=local-sh-vod-to-uv-griddef(griddef=tour.pts) --output=geopoints-xy-vector --vod2uv
 # grib_get assertions
 # none: output file is GEOPOINTS

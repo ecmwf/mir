@@ -300,10 +300,16 @@ list(
     namedgrids/OctahedralPattern.h
     namedgrids/RegularPattern.cc
     namedgrids/RegularPattern.h
+    compat/GribCompatibility.cc
+    compat/GribCompatibility.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
     output/GeoPointsFileOutput.h
+    output/GeoPointsFileOutputXYV.cc
+    output/GeoPointsFileOutputXYV.h
+    output/GeoPointsFileOutputXYVector.cc
+    output/GeoPointsFileOutputXYVector.h
     output/GeoPointsOutput.cc
     output/GeoPointsOutput.h
     output/GribFileOutput.cc

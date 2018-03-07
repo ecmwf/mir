@@ -13,9 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef GeoPointsOutput_H
-#define GeoPointsOutput_H
+#ifndef mir_output_GeoPointsOutput_h
+#define mir_output_GeoPointsOutput_h
 
+#include <vector>
 #include "mir/output/MIROutput.h"
 
 
@@ -31,84 +32,81 @@ namespace output {
 class GeoPointsOutput : public MIROutput {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GeoPointsOutput();
 
-// -- Destructor
+    // -- Destructor
 
-    ~GeoPointsOutput(); // Change to virtual if base class
+    virtual ~GeoPointsOutput();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
+
+    bool once();
 
     virtual eckit::DataHandle& dataHandle() const = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
+
     // From MIROutput
+    virtual bool sameParametrisation(const param::MIRParametrisation&,
+                                     const param::MIRParametrisation&) const;
 
-
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-
-    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
-                                     const param::MIRParametrisation & param2) const;
-
-    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
 
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// -- Members
+    // -- Members
 
     bool once_;
 
-// -- Methods
+    // -- Methods
     // None
 
-
-// -- Overridden methods
-
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
     // { p.print(s); return s; }
@@ -118,5 +116,7 @@ private:
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif
 

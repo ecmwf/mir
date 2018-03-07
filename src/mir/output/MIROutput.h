@@ -13,10 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef mir_output_MIROutput_H
-#define mir_output_MIROutput_H
+#ifndef mir_output_MIROutput_h
+#define mir_output_MIROutput_h
 
 #include <iosfwd>
+#include <string>
+#include <vector>
 #include "eckit/memory/NonCopyable.h"
 
 
@@ -117,23 +119,30 @@ private:
 
 
 class MIROutputFactory {
-//    virtual MIROutput *make(const std::string &path) = 0;
+    const std::string name_;
+    const std::vector<std::string>& extensions_;
 protected:
-    MIROutputFactory();
+    MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions = {});
     virtual ~MIROutputFactory();
+    static const std::vector<std::string> no_extensions;
 public:
-    static MIROutput* build(const std::string&, const param::MIRParametrisation&);
+    virtual MIROutput* make(const std::string& path, const param::MIRParametrisation&) = 0;
+    static MIROutput* build(const std::string& path, const param::MIRParametrisation&);
+    static void list(std::ostream&);
 };
 
 
-// template<class T>
-// class MIROutputBuilder : public MIROutputFactory {
-//     virtual MIROutput* make(const std::string& path, const param::MIRParametrisation& parametrisation) {
-//         return new T(path, parametrisation);
-//     }
-// public:
-//     MIROutputBuilder() : MIROutputFactory() {}
-// };
+template<class T>
+class MIROutputBuilder : public MIROutputFactory {
+    virtual MIROutput* make(const std::string& path, const param::MIRParametrisation& parametrisation) {
+        return new T(path, parametrisation);
+    }
+public:
+    MIROutputBuilder(const std::string& name) : MIROutputFactory(name) {}
+    MIROutputBuilder(const std::string& name, const std::vector<std::string>& extensions) :
+        MIROutputFactory(name, extensions) {
+    }
+};
 
 
 }  // namespace output

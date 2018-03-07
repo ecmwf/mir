@@ -13,19 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef mir_output_GeoPointsFileOutput_h
-#define mir_output_GeoPointsFileOutput_h
+#ifndef mir_output_GeoPointsFileOutputXYVector_h
+#define mir_output_GeoPointsFileOutputXYVector_h
 
-#include "mir/output/GeoPointsOutput.h"
-
-#include "eckit/memory/ScopedPtr.h"
+#include "mir/output/GeoPointsFileOutput.h"
 
 
 namespace mir {
 namespace output {
 
 
-class GeoPointsFileOutput : public GeoPointsOutput {
+class GeoPointsFileOutputXYVector : public GeoPointsFileOutput {
 public:
 
     // -- Exceptions
@@ -33,11 +31,10 @@ public:
 
     // -- Contructors
 
-    GeoPointsFileOutput(const std::string& path);
+    GeoPointsFileOutputXYVector(const::std::string& path, const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~GeoPointsFileOutput();
+    // None
 
     // -- Convertors
     // None
@@ -60,17 +57,16 @@ public:
 protected:
 
     // -- Members
-
-    std::string path_;
-    mutable eckit::ScopedPtr<eckit::DataHandle> handle_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From GeoPointsOutput
-    virtual eckit::DataHandle& dataHandle() const;
+    // From MIROutput
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     // -- Class members
     // None
@@ -87,10 +83,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    // From MIROutput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-    virtual bool sameAs(const MIROutput& other) const;
+    // None
 
     // -- Class members
     // None
@@ -100,7 +93,7 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
+    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYVector& p)
     // { p.print(s); return s; }
 
 };

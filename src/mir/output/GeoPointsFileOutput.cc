@@ -14,22 +14,23 @@
 
 
 #include "mir/output/GeoPointsFileOutput.h"
-#include "eckit/io/DataHandle.h"
+
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
 
 
 namespace mir {
 namespace output {
 
 
-
-GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path):
+GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path) :
     path_(path) {
 }
 
 
 GeoPointsFileOutput::~GeoPointsFileOutput() {
 }
+
 
 eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
     if (!handle_) {
@@ -47,11 +48,9 @@ bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
 }
 
 
-
 void GeoPointsFileOutput::print(std::ostream &out) const {
     out << "GeoPointsFileOutput[path=" << path_ << "]";
 }
-
 
 
 }  // namespace output

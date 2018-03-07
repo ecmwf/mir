@@ -27,6 +27,10 @@ EmptyOutput::EmptyOutput() {
 }
 
 
+EmptyOutput::EmptyOutput(const std::string&, const param::MIRParametrisation&) {
+}
+
+
 EmptyOutput::~EmptyOutput() {
 }
 
@@ -82,6 +86,9 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
 void EmptyOutput::print(std::ostream& out) const {
     out << "EmptyOutput[]";
 }
+
+
+static MIROutputBuilder<EmptyOutput> output("empty");
 
 
 }  // namespace output
