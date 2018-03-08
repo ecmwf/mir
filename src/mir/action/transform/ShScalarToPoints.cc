@@ -29,6 +29,7 @@ ShScalarToPoints::ShScalarToPoints(const param::MIRParametrisation& parametrisat
     ASSERT(parametrisation_.userParametrisation().get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
+    local(true);
 }
 
 

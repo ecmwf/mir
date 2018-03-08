@@ -80,7 +80,9 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void local(bool l);
+    bool local() const;
 
     // -- Overridden methods
 
@@ -96,6 +98,7 @@ private:
 
     // -- Members
 
+    bool unstructured_;
     double radius_;
     util::Cropping cropping_;
     atlas_config_t options_;

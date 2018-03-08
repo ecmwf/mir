@@ -25,6 +25,7 @@ namespace transform {
 ShScalarToGridDef::ShScalarToGridDef(const param::MIRParametrisation& parametrisation):
     ShScalarToGridded(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
+    local(true);
 }
 
 
