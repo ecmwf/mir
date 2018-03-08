@@ -81,31 +81,22 @@ static void createCoefficients(const eckit::PathName& path,
 }
 
 
-static ShToGridded::atlas_trans_t getTrans(const param::MIRParametrisation& parametrisation,
-                                           const repres::Representation& representation,
-                                           atlas::Grid grid,
-                                           context::Context& ctx,
-                                           const std::string& key,
-                                           const ShToGridded::atlas_config_t& options,
-                                           size_t truncation) {
+static TransCache& getTransCache(const param::MIRParametrisation &parametrisation,
+                                 const repres::Representation& representation,
+                                 context::Context& ctx,
+                                 const std::string& key,
+                                 const ShToGridded::atlas_config_t& options,
+                                 size_t estimate) {
 
 
     InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
     if (j != trans_cache.end()) {
-        return j->trans_;
+        return *j;
     }
 
-
-    // Shortcut for local transforms (use in-memory cache, but not disk)
-    if (options.getString("type") == "local") {
-        return ShToGridded::atlas_trans_t(grid, int(truncation), options);
-    }
 
     // Make sure we have enough space in cache to add new coefficients
     // otherwise we may get killed by OOM thread
-
-    // TODO: take target grid into consideration
-    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
     trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
 
 
@@ -184,7 +175,9 @@ static ShToGridded::atlas_trans_t getTrans(const param::MIRParametrisation& para
     trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
 
 
-    return trans;
+    return tc;
+
+
 }
 
 
@@ -207,31 +200,44 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
             + ":" + "flt" + std::to_string(options_.getBool("flt"))
             + ":" + representation.uniqueName();
 
+    atlas_trans_t trans;
     try {
-        atlas_trans_t trans = getTrans(parametrisation_,
-                                       representation,
-                                       grid,
-                                       ctx,
-                                       key,
-                                       options_,
-                                       truncation);
-        {
-            eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+        eckit::Timer time("ShToGridded::transform: setup", eckit::Log::debug<LibMir>());
 
-            sh2grid(field, trans, grid);
+        if (local()) {
+            trans = atlas_trans_t(grid, int(truncation), options_);
+        } else {
+
+            size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
+            const TransCache& tc = getTransCache(parametrisation_,
+                                                 representation,
+                                                 ctx,
+                                                 key,
+                                                 options_,
+                                                 estimate);
+            trans = tc.trans_;
         }
 
     } catch (std::exception& e) {
-        eckit::Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
+        eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
         trans_cache.erase(key);
+        throw;
+    }
+
+    try {
+
+        eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+        sh2grid(field, trans, grid);
+
+    } catch (std::exception& e) {
+        eckit::Log::error() << "ShToGridded::transform: invtrans: " << e.what() << std::endl;
         throw;
     }
 }
 
 
 ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
-    Action(parametrisation),
-    radius_(0.) {
+    Action(parametrisation) {
 
     bool local_ = false;
     parametrisation.userParametrisation().get("atlas-trans-local", local_);
@@ -260,7 +266,6 @@ ShToGridded::~ShToGridded() {
 void ShToGridded::print(std::ostream& out) const {
     out << "ShToGridded=["
             "cropping=" << cropping_
-        << ",radius=" << radius_
         << ",unstructured=" << unstructured_
         << ",options=" << options_
         << "]";
@@ -278,30 +283,32 @@ void ShToGridded::execute(context::Context& ctx) const {
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
-    if (next.isCropAction() || next.isInterpolationAction()) {
+    if (!cropping_.active()) {
+        if (next.isCropAction() || next.isInterpolationAction()) {
 
-        static util::BoundingBox global;
+            static util::BoundingBox global;
+            const util::BoundingBox& bbox = next.croppingBoundingBox();
 
-        util::BoundingBox bbox = next.croppingBoundingBox();
-        if (bbox != global) {
+            if (bbox != global) {
+                repres::RepresentationHandle out(outputRepresentation());
+                const util::BoundingBox extended = out->extendedBoundingBox(bbox);
 
-            eckit::Log::debug<LibMir>()
-                    << "ShToGridded::mergeWithNext: "
-                    << "\n\t" "   " << *this
-                    << "\n\t" " + " << next
-                    << std::endl;
+                eckit::Log::debug<LibMir>()
+                        << "ShToGridded::mergeWithNext: "
+                        << "\n\t   " << *this
+                        << "\n\t + " << next
+                        << "\n\t extendedBoundingBox:"
+                        << "\n\t   " << bbox
+                        << "\n\t > " << extended
+                        << std::endl;
 
-            // NOTE: not necessary, just a Gaussian grid condition
-            repres::RepresentationHandle out(outputRepresentation());
-            radius_ = 0.;
-            ASSERT(out->getLongestElementDiagonal(radius_));
-            ASSERT(eckit::types::is_strictly_greater(radius_, 0.));
+                // Magic super-powers!
+                cropping_.boundingBox(extended);
+                local(true);
 
-            // Magic super-powers!
-            cropping_.boundingBox(bbox);
-            local();
+                return true;
+            }
 
-            return true;
         }
     }
     return false;
@@ -309,15 +316,18 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 
 void ShToGridded::local(bool l) {
-    if (!l && local()) {
-        throw eckit::SeriousBug("ShToGridded::local: trans 'local' has been set, cannot revert");
+    if (!l) {
+        if (local()) {
+            throw eckit::SeriousBug("ShToGridded::local: Atlas/Trans 'local' has been set, cannot revert");
+        }
+        return;
     }
-    options_. set(atlas::option::type(l ? "local" : "ifs"));
+    options_.set(atlas::option::type("local"));
 }
 
 
 bool ShToGridded::local() const {
-    return options_.getString("type") == "local";
+    return options_.has("type") && options_.getString("type") == "local";
 }
 
 

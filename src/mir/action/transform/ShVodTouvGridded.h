@@ -81,7 +81,7 @@ private:
 
     // -- Overridden methods
 
-    void sh2grid(data::MIRField&, atlas::trans::Trans&, const atlas::Grid&) const;
+    void sh2grid(data::MIRField&, const atlas::trans::Trans&, const atlas::Grid&) const;
 
     // -- Class members
     // None

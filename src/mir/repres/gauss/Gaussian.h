@@ -80,7 +80,8 @@ protected:
     bool includesNorthPole() const;
     bool includesSouthPole() const;
     bool isPeriodicWestEast() const;
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

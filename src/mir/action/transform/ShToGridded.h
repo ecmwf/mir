@@ -103,15 +103,15 @@ private:
     atlas_config_t options_;
 
     // -- Methods
-    
-    virtual void sh2grid(data::MIRField&, atlas_trans_t&, const atlas::Grid&) const = 0;
+
+    virtual void sh2grid(data::MIRField&, const atlas_trans_t&, const atlas::Grid&) const = 0;
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
     void transform(data::MIRField&, const repres::Representation&, context::Context&) const;
 
     // -- Overridden methods
-    
+
     virtual void execute(context::Context&) const;
 
     virtual bool mergeWithNext(const Action&);

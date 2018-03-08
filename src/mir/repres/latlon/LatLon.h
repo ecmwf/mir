@@ -138,7 +138,8 @@ private:
     virtual void validate(const std::vector<double>&) const;
 
     const LatLon* croppedRepresentation(const util::BoundingBox&) const;
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

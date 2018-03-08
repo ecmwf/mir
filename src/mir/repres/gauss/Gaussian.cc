@@ -232,6 +232,12 @@ util::BoundingBox Gaussian::croppedBoundingBox(const util::BoundingBox& bbox) co
 }
 
 
+util::BoundingBox Gaussian::extendedBoundingBox(const util::BoundingBox& bbox) const {
+    // FIXME of course this is the opposite of what we want
+    return croppedBoundingBox(bbox);
+}
+
+
 std::string Gaussian::atlasMeshGenerator() const {
     return "structured";
 }
