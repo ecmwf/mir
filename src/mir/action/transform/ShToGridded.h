@@ -19,7 +19,7 @@
 #include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/Atlas.h"
-#include "mir/util/Cropping.h"
+#include "mir/method/Cropping.h"
 
 
 namespace mir {
@@ -99,8 +99,7 @@ private:
     // -- Members
 
     bool unstructured_;
-    double radius_;
-    util::Cropping cropping_;
+    method::Cropping cropping_;
     atlas_config_t options_;
 
     // -- Methods

@@ -37,7 +37,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Cropping.h"
 #include "mir/util/MIRStatistics.h"
 
 

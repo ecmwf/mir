@@ -244,6 +244,8 @@ list(
     lsm/NoneLSM.h
     lsm/TenMinutesMask.cc
     lsm/TenMinutesMask.h
+    method/Cropping.cc
+    method/Cropping.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
@@ -503,8 +505,6 @@ list(
     util/BoundingBox.cc
     util/BoundingBox.h
     util/Compare.h
-    util/Cropping.cc
-    util/Cropping.h
     util/DeprecatedFunctionality.cc
     util/DeprecatedFunctionality.h
     util/Domain.cc

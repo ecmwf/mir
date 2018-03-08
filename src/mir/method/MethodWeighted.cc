@@ -35,11 +35,11 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/MatrixCacheCreator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Cropping.h"
 #include "mir/util/MIRStatistics.h"
 
+#include "mir/method/MatrixCacheCreator.h"
+#include "mir/method/Cropping.h"
 
 namespace mir {
 namespace method {
@@ -93,7 +93,7 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& out,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks,
-                                  const util::Cropping& cropping) const {
+                                  const Cropping& cropping) const {
 
     eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
