@@ -41,7 +41,7 @@ GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(
 
 static const char* keys[] = {"class", "type", "stream", "expver",
                              "date", "time", "step", "number", "levtype",
-                             "levelist", "param", 0
+                             "levelist", "param"
                             };
 
 
@@ -81,13 +81,12 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
         out << "#GEO"
                "\n#FORMAT XYV";
 
-        // FIXME: what's going on??
-//        for (auto& key : keys) {
-//            std::string v;
-//            if (runtime.get(key, v)) {
-//                out << "\n# " << key << "=" << v;
-//            }
-//        }
+        for (auto& key : keys) {
+            std::string v;
+            if (runtime.get(key, v)) {
+                out << "\n# " << key << "=" << v;
+            }
+        }
 
         out << "\n#DATA";
 
