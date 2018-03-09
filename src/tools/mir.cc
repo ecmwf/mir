@@ -33,7 +33,6 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
-#include "mir/compat/GribCompatibility.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
@@ -80,6 +79,7 @@ public:
 
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
+        options_.push_back(new SimpleOption<std::string>("transform-compress-if", "Compress plan for spectral transforms given predicate formula, on parameters N/W/S/E and AR (area ratio)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-local", "Atlas/Trans transform 'local' type"));
 
@@ -148,7 +148,6 @@ public:
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
-        options_.push_back(new FactoryOption<mir::compat::GribCompatibility>("grib-compatibility", "GRIB output compatibility mode"));
 
         options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
         options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));

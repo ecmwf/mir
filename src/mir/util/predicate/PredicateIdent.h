@@ -1,0 +1,48 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
+#ifndef mir_util_predicate_PredicateIdent_h
+#define mir_util_predicate_PredicateIdent_h
+
+#include <string>
+#include "mir/util/predicate/Predicate.h"
+
+
+namespace mir {
+namespace util {
+namespace predicate {
+
+
+class PredicateIdent : public Predicate {
+public:
+
+    PredicateIdent(const std::string& name);
+    virtual ~PredicateIdent();
+
+private:
+
+    virtual void print(std::ostream& s) const;
+    virtual void execute(context::Context & ctx) const;
+    virtual const char* name() const;
+
+private:
+
+    std::string name_;
+
+};
+
+
+}  // namespace predicate
+}  // namespace util
+}  // namespace mir
+
+
+#endif

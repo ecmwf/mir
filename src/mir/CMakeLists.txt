@@ -547,6 +547,22 @@ list(
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
+    util/predicate/Function.cc
+    util/predicate/Function.h
+    util/predicate/Predicate.cc
+    util/predicate/Predicate.h
+    util/predicate/PredicateBinop.cc
+    util/predicate/PredicateBinop.h
+    util/predicate/PredicateFunction.cc
+    util/predicate/PredicateFunction.h
+    util/predicate/PredicateIdent.cc
+    util/predicate/PredicateIdent.h
+    util/predicate/PredicateNumber.cc
+    util/predicate/PredicateNumber.h
+    util/predicate/PredicateParser.cc
+    util/predicate/PredicateParser.h
+    util/predicate/PredicateString.cc
+    util/predicate/PredicateString.h
   )
 
 
@@ -731,6 +747,12 @@ if(HAVE_ATLAS)
     if(ATLAS_HAVE_TRANS)
         list( APPEND libatlas transi)
         list( APPEND mir_srcs
+            action/transform/CompressIf.cc
+            action/transform/CompressIf.h
+            action/transform/CompressIfFormula.cc
+            action/transform/CompressIfFormula.h
+            action/transform/CompressIfNotGlobal.cc
+            action/transform/CompressIfNotGlobal.h
             action/transform/ShScalarToGridDef.cc
             action/transform/ShScalarToGridDef.h
             action/transform/ShScalarToGridded.cc

@@ -239,14 +239,20 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
 ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
+    const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    if (parametrisation.userParametrisation().has("atlas-trans-local")) {
+    compressIf_.reset(CompressIfFactory::build(
+                          user.has("transform-compress-if") ? "formula" : "not-global",
+                          parametrisation));
+    ASSERT(compressIf_);
+
+    if (user.has("atlas-trans-local")) {
         local(true);
     }
 
     // TODO: MIR-183 let Trans decide the best Legendre transform method
     bool flt = false;
-    parametrisation.userParametrisation().get("atlas-trans-flt", flt);
+    user.get("atlas-trans-flt", flt);
     options_.set("flt", flt);
 
     // no partitioning
@@ -280,10 +286,9 @@ bool ShToGridded::mergeWithNext(const Action& next) {
     if (!cropping_.active()) {
         if (next.isCropAction() || next.isInterpolationAction()) {
 
-            static util::BoundingBox global;
             const util::BoundingBox& bbox = next.croppingBoundingBox();
+            if (local() || (*compressIf_)(bbox)) {
 
-            if (bbox != global) {
                 repres::RepresentationHandle out(outputRepresentation());
                 const util::BoundingBox extended = out->extendedBoundingBox(bbox);
 
@@ -302,7 +307,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
                 return true;
             }
-
         }
     }
     return false;
