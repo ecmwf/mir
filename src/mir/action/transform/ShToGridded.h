@@ -98,7 +98,6 @@ private:
 
     // -- Members
 
-    bool unstructured_;
     method::Cropping cropping_;
     atlas_config_t options_;
 

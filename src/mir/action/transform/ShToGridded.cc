@@ -190,10 +190,10 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
 
     const size_t truncation = field.representation()->truncation();
+    ASSERT(truncation);
 
-    const atlas::Grid grid = unstructured_ ?
-                atlas::grid::UnstructuredGrid(representation.atlasGrid()) :
-                representation.atlasGrid();
+    const atlas::Grid grid = representation.atlasGrid();
+    ASSERT(grid);
 
     const std::string key =
             "T" + std::to_string(truncation)
@@ -223,6 +223,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         trans_cache.erase(key);
         throw;
     }
+    ASSERT(trans);
 
     try {
 
@@ -239,13 +240,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
 
-    bool local_ = false;
-    parametrisation.userParametrisation().get("atlas-trans-local", local_);
-
-    unstructured_ = false;
-    parametrisation.userParametrisation().get("atlas-trans-unstructured-grid", unstructured_);
-
-    if (unstructured_ || local_) {
+    if (parametrisation.userParametrisation().has("atlas-trans-local")) {
         local(true);
     }
 
@@ -266,7 +261,6 @@ ShToGridded::~ShToGridded() {
 void ShToGridded::print(std::ostream& out) const {
     out << "ShToGridded=["
             "cropping=" << cropping_
-        << ",unstructured=" << unstructured_
         << ",options=" << options_
         << "]";
 }

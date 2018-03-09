@@ -82,7 +82,6 @@ public:
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-local", "Atlas/Trans transform 'local' type"));
-        options_.push_back(new SimpleOption<bool>("atlas-trans-unstructured-grid", "Atlas/Trans transform to unstructured grid"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
