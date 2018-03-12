@@ -94,6 +94,11 @@ void BoundingBox::print(std::ostream& out) const {
 
 void BoundingBox::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
+    info.grid.latitudeOfFirstGridPointInDegrees  = north_.value();
+    info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
+    info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
+    info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
+
     const long c = info.packing.extra_settings_count++;
     info.packing.extra_settings[c].type = GRIB_TYPE_LONG;
     info.packing.extra_settings[c].name = "expandBoundingBox";
