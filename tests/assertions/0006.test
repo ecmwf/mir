@@ -6,5 +6,5 @@ param=2t,levtype=sfc
 numberOfValues=931
 latitudeOfFirstGridPointInDegrees = 55.785
 longitudeOfFirstGridPointInDegrees = -16.5
-latitudeOfLastGridPointInDegrees = 50.726
+latitudeOfLastGridPointInDegrees = 50.725
 longitudeOfLastGridPointInDegrees = -3
