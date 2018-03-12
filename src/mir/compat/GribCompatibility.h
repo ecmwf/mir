@@ -36,6 +36,10 @@ class MIRParametrisation;
 
 
 namespace mir {
+namespace output {
+class MIROutput;
+}
+
 namespace compat {
 
 
@@ -43,7 +47,8 @@ class GribCompatibility : private eckit::NonCopyable {
 public:
 
 
-    virtual void execute(const param::MIRParametrisation&,
+    virtual void execute(const output::MIROutput&,
+                         const param::MIRParametrisation&,
                          grib_handle*,
                          grib_info&) const = 0;
 
