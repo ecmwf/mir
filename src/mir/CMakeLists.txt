@@ -162,6 +162,12 @@ list(
     compare/Scalar.h
     compare/Spectral.cc
     compare/Spectral.h
+    compat/GribCompatibility.cc
+    compat/GribCompatibility.h
+    compat/GribExpandBoundingBox.cc
+    compat/GribExpandBoundingBox.h
+    compat/GribRoundToAngularPrecision.cc
+    compat/GribRoundToAngularPrecision.h
     config/LibMir.cc
     config/LibMir.h
     data/CartesianVector2DField.cc
@@ -310,8 +316,6 @@ list(
     output/GribMemoryOutput.h
     output/GribOutput.cc
     output/GribOutput.h
-    compat/GribCompatibility.cc
-    compat/GribCompatibility.h
     output/GribStreamOutput.cc
     output/GribStreamOutput.h
     output/MIROutput.cc

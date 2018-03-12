@@ -31,8 +31,9 @@
 
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
-#include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/caching/matrix/MatrixLoader.h"
+#include "mir/compat/GribCompatibility.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
@@ -50,8 +51,8 @@
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/PointSearch.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/PointSearch.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -146,6 +147,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
         options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
+        options_.push_back(new FactoryOption<mir::compat::GribCompatibility>("grib-compatibility", "GRIB output compatibility mode"));
 
         options_.push_back(new SimpleOption<bool>("remove-local-extension", "Remove GRIB local extension"));
         options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
