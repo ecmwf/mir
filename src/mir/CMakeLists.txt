@@ -164,10 +164,6 @@ list(
     compare/Spectral.h
     compat/GribCompatibility.cc
     compat/GribCompatibility.h
-    compat/GribExpandBoundingBox.cc
-    compat/GribExpandBoundingBox.h
-    compat/GribRoundToAngularPrecision.cc
-    compat/GribRoundToAngularPrecision.h
     config/LibMir.cc
     config/LibMir.h
     data/CartesianVector2DField.cc

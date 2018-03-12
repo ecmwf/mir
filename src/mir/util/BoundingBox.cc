@@ -92,19 +92,12 @@ void BoundingBox::print(std::ostream& out) const {
 }
 
 
-const double ROUNDING = 1e14;
-
-static double rounded(double x) {
-    return round(x * ROUNDING) / ROUNDING;
-}
-
-
 void BoundingBox::fill(grib_info &info) const  {
     // Warning: scanning mode not considered
-    info.grid.latitudeOfFirstGridPointInDegrees  = rounded(north_.value());
-    info.grid.longitudeOfFirstGridPointInDegrees = rounded(west_.value());
-    info.grid.latitudeOfLastGridPointInDegrees   = rounded(south_.value());
-    info.grid.longitudeOfLastGridPointInDegrees  = rounded(east_.value());
+    const long c = info.packing.extra_settings_count++;
+    info.packing.extra_settings[c].type = GRIB_TYPE_LONG;
+    info.packing.extra_settings[c].name = "expandBoundingBox";
+    info.packing.extra_settings[c].long_value = 1;
 }
 
 
