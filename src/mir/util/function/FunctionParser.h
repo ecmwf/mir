@@ -9,18 +9,18 @@
  */
 
 
-#ifndef mir_util_predicate_PredicateParser_h
-#define mir_util_predicate_PredicateParser_h
+#ifndef mir_util_function_FunctionParser_h
+#define mir_util_function_FunctionParser_h
 
+#include <iosfwd>
 #include <vector>
 #include "eckit/parser/StreamParser.h"
-#include "eckit/types/Types.h"
 
 
 namespace mir {
 namespace util {
-namespace predicate {
-class Predicate;
+namespace function {
+class Function;
 }
 }
 }
@@ -28,31 +28,31 @@ class Predicate;
 
 namespace mir {
 namespace util {
-namespace predicate {
+namespace function {
 
-class PredicateParser : public eckit::StreamParser {
+class FunctionParser : public eckit::StreamParser {
 
 public:
 
-    PredicateParser(std::istream&);
-    Predicate* parse();
+    FunctionParser(std::istream&);
+    Function* parse();
 
 private:
 
-    Predicate* parseAtom();
-    Predicate* parseTest();
-    Predicate* parsePower();
-    std::vector<Predicate*> parseList();
-    Predicate* parseFactor();
-    Predicate* parseTerm();
+    Function* parseAtom();
+    Function* parseTest();
+    Function* parsePower();
+    std::vector<Function*> parseList();
+    Function* parseFactor();
+    Function* parseTerm();
     std::string parseIdent();
-    Predicate* parseString();
-    Predicate* parseNumber();
+    Function* parseString();
+    Function* parseNumber();
 
 };
 
 
-}  // namespace predicate
+}  // namespace function
 }  // namespace util
 }  // namespace mir
 

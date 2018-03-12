@@ -19,9 +19,9 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
-#include "mir/action/transform/CompressIf.h"
 #include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
+#include "mir/util/function/Function.h"
 
 
 namespace mir {
@@ -102,7 +102,7 @@ private:
 
     method::Cropping cropping_;
     atlas_config_t options_;
-    eckit::ScopedPtr<CompressIf> compressIf_;
+    eckit::ScopedPtr<util::function::Function> compressIf_;
 
     // -- Methods
 

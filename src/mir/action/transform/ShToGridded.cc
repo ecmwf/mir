@@ -19,9 +19,11 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/geometry/UnitSphere.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Timer.h"
 #include "eckit/system/SystemInfo.h"
@@ -36,8 +38,10 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/function/FunctionParser.h"
 
 
 namespace mir {
@@ -241,10 +245,12 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    compressIf_.reset(CompressIfFactory::build(
-                          user.has("transform-compress-if") ? "formula" : "not-global",
-                          parametrisation));
-    ASSERT(compressIf_);
+    std::string compressIf;
+    if (user.get("transform-compress-if", compressIf)) {
+        std::istringstream in(compressIf);
+        mir::util::function::FunctionParser p(in);
+        compressIf_.reset(p.parse());
+    }
 
     if (user.has("atlas-trans-local")) {
         local(true);
@@ -287,7 +293,34 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         if (next.isCropAction() || next.isInterpolationAction()) {
 
             const util::BoundingBox& bbox = next.croppingBoundingBox();
-            if (local() || (*compressIf_)(bbox)) {
+
+            bool compress = local();
+            if (local()) {
+                compress = true;
+            } else if (compressIf_) {
+                using namespace eckit::geometry;
+
+                // evaluate according to bounding box and area ratio to globe
+                Point2 WestNorth(bbox.west().value(), bbox.north().value());
+                Point2 EastSouth(bbox.east().value(), bbox.south().value());
+
+                double ar = UnitSphere::area(WestNorth, EastSouth) /
+                            UnitSphere::area();
+
+                param::SimpleParametrisation vars;
+                vars.set("N", WestNorth[1]);
+                vars.set("W", WestNorth[0]);
+                vars.set("S", EastSouth[1]);
+                vars.set("E", EastSouth[0]);
+                vars.set("ar", ar);
+
+                compress = bool(compressIf_->eval(vars));
+            } else {
+                static util::BoundingBox global;
+                compress = bbox != global;
+            }
+
+            if (compress) {
 
                 repres::RepresentationHandle out(outputRepresentation());
                 const util::BoundingBox extended = out->extendedBoundingBox(bbox);
