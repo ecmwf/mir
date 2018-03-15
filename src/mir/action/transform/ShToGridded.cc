@@ -261,6 +261,14 @@ void ShToGridded::print(std::ostream& out) const {
 }
 
 
+void ShToGridded::custom(std::ostream& out) const {
+    out << "ShToGridded=["
+           "cropping=" << cropping_
+        << ",options=[...]"
+        << "]";
+}
+
+
 void ShToGridded::execute(context::Context& ctx) const {
 
     repres::RepresentationHandle out(outputRepresentation());

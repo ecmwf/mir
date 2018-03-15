@@ -48,6 +48,14 @@ void ShVodTouvRegularGG::print(std::ostream& out) const {
 }
 
 
+void ShVodTouvRegularGG::custom(std::ostream& out) const {
+    out << "ShVodTouvRegularGG[";
+    ShToGridded::custom(out);
+    out << ",N=" << N_
+        << "]";
+}
+
+
 const char* ShVodTouvRegularGG::name() const {
     return "ShVodTouvRegularGG";
 }

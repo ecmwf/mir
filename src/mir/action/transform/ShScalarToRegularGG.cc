@@ -50,6 +50,14 @@ void ShScalarToRegularGG::print(std::ostream& out) const {
 }
 
 
+void ShScalarToRegularGG::custom(std::ostream& out) const {
+    out << "ShScalarToRegularGG[";
+    ShToGridded::custom(out);
+    out << ",N=" << N_
+        << "]";
+}
+
+
 const char* ShScalarToRegularGG::name() const {
     return "ShScalarToRegularGG";
 }

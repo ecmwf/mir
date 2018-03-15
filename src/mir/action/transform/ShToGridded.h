@@ -89,6 +89,7 @@ protected:
     // -- Overridden methods
 
     virtual void print(std::ostream&) const = 0;
+    virtual void custom(std::ostream&) const = 0;
 
     // -- Class members
     // None

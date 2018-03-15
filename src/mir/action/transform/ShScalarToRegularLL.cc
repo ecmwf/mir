@@ -47,9 +47,17 @@ bool ShScalarToRegularLL::sameAs(const Action& other) const {
 }
 
 
-void ShScalarToRegularLL::print(std::ostream &out) const {
+void ShScalarToRegularLL::print(std::ostream& out) const {
     out << "ShScalarToRegularLL[";
     ShToGridded::print(out);
+    out << ",increments=" << increments_
+        << "]";
+}
+
+
+void ShScalarToRegularLL::custom(std::ostream& out) const {
+    out << "ShScalarToRegularLL[";
+    ShToGridded::custom(out);
     out << ",increments=" << increments_
         << "]";
 }

@@ -39,9 +39,17 @@ bool ShVodTouvGridDef::sameAs(const Action& other) const {
 }
 
 
-void ShVodTouvGridDef::print(std::ostream &out) const {
+void ShVodTouvGridDef::print(std::ostream& out) const {
     out << "ShVodTouvGridDef[";
     ShToGridded::print(out);
+    out << "griddef=.../" << eckit::PathName(griddef_).baseName()
+        << "]";
+}
+
+
+void ShVodTouvGridDef::custom(std::ostream& out) const {
+    out << "ShVodTouvGridDef[";
+    ShToGridded::custom(out);
     out << "griddef=.../" << eckit::PathName(griddef_).baseName()
         << "]";
 }

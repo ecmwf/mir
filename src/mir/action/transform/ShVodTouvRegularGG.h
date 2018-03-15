@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShVodTouvRegularGG(); // Change to virtual if base class
+    ~ShVodTouvRegularGG(); // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -44,24 +44,6 @@ public:
 
     // -- Methods
     // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -83,10 +65,11 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-
-    virtual const repres::Representation* outputRepresentation() const;
+    bool sameAs(const Action&) const;
+    const char* name() const;
+    const repres::Representation* outputRepresentation() const;
+    void print(std::ostream&) const;
+    void custom(std::ostream&) const;
 
     // -- Class members
     // None

@@ -48,6 +48,14 @@ void ShVodTouvReducedGGPLGiven::print(std::ostream& out) const {
 }
 
 
+void ShVodTouvReducedGGPLGiven::custom(std::ostream& out) const {
+    out << "ShVodTouvReducedGGPLGive[";
+    ShToGridded::custom(out);
+    out << ",pl=" << pl_.size()
+        << "]";
+}
+
+
 const char* ShVodTouvReducedGGPLGiven::name() const {
     return "ShVodTouvReducedGGPLGiven";
 }

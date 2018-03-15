@@ -51,6 +51,14 @@ void ShScalarToPoints::print(std::ostream &out) const {
 }
 
 
+void ShScalarToPoints::custom(std::ostream& out) const {
+    out << "ShScalarToPoints[";
+    ShToGridded::custom(out);
+    out << ",points=" << latitudes_.size()
+        << "]";
+}
+
+
 const char* ShScalarToPoints::name() const {
     return "ShScalarToPoints";
 }

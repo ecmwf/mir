@@ -52,6 +52,14 @@ void ShScalarToOctahedralGG::print(std::ostream& out) const {
 }
 
 
+void ShScalarToOctahedralGG::custom(std::ostream& out) const {
+    out << "ShScalarToOctahedralGG[";
+    ShToGridded::custom(out);
+    out << ",N=" << N_
+        << "]";
+}
+
+
 const char* ShScalarToOctahedralGG::name() const {
     return "ShScalarToOctahedralGG";
 }

@@ -52,6 +52,15 @@ void ShVodTouvRegularLL::print(std::ostream &out) const {
         << "]";
 }
 
+
+void ShVodTouvRegularLL::custom(std::ostream& out) const {
+    out << "ShVodTouvRegularLL[";
+    ShToGridded::custom(out);
+    out << ",increments=" << increments_
+        << "]";
+}
+
+
 const char* ShVodTouvRegularLL::name() const {
     return "ShVodTouvRegularLL";
 }

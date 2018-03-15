@@ -47,6 +47,14 @@ void ShScalarToGridDef::print(std::ostream &out) const {
 }
 
 
+void ShScalarToGridDef::custom(std::ostream& out) const {
+    out << "ShScalarToGridDef[";
+    ShToGridded::custom(out);
+    out << ",griddef=.../" << eckit::PathName(griddef_).baseName()
+        << "]";
+}
+
+
 const char* ShScalarToGridDef::name() const {
     return "ShScalarToGridDef";
 }
