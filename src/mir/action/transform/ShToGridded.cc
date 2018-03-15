@@ -75,11 +75,6 @@ static ShToGridded::atlas_trans_t getTrans(
     }
 
 
-    // Make sure we have enough space in cache to add new coefficients
-    // otherwise we may get killed by OOM thread
-    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
-    trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
-
     if (!parametrisation.has("caching")) {
         TransCache& tc = trans_cache[key];
         ShToGridded::atlas_trans_t& trans = tc.trans_;
@@ -89,25 +84,26 @@ static ShToGridded::atlas_trans_t getTrans(
         return trans;
     }
 
+    // Make sure we have enough space in cache to add new coefficients
+    // otherwise we may get killed by OOM thread
+    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
+    trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
+
     eckit::PathName path;
-    ShToGridded::atlas_config_t optionsModified(options);
 
     {   // Block for timers
 
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
-        class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
+        class LegendreCacheCreator final : public caching::LegendreCache::CacheContentCreator {
 
             context::Context& ctx_;
             const atlas::Grid& grid_;
             const size_t truncation_;
             const ShToGridded::atlas_config_t& options_;
 
-            void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) {
-                eckit::TraceResourceUsage<LibMir> usage("Create legendre coefficients");
-
-                eckit::Log::info() << "Create legendre coefficients: " << path << std::endl;
-
+            void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
+                eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create coefficients");
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 ShToGridded::atlas_config_t write(options_);
@@ -145,26 +141,26 @@ static ShToGridded::atlas_trans_t getTrans(
     ShToGridded::atlas_trans_t& trans = tc.trans_;
 
     {
+        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG load coefficients");
-        eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
+        const eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
 
         tc.inited_ = true;
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
-        eckit::Log::debug<LibMir>() << "SH2GG LegendreLoader " << *tc.loader_ << std::endl;
+        ASSERT(tc.loader_);
+        eckit::Log::debug<LibMir>() << "ShToGridded: LegendreLoader " << *tc.loader_ << std::endl;
 
         trans = ShToGridded::atlas_trans_t(tc.loader_->transCache(), grid, int(truncation), options);
 
         eckit::system::MemoryInfo after = eckit::system::SystemInfo::instance().memoryUsage();
         after.delta(eckit::Log::info(), before);
-    }
 
-    ASSERT(tc.loader_);
-    size_t memory = 0;
-    size_t shared = 0;
-    (tc.loader_->inSharedMemory() ? memory : shared) += tc.loader_->size();
-    trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
+        size_t memory = 0;
+        size_t shared = 0;
+        (tc.loader_->inSharedMemory() ? shared : memory) = tc.loader_->size();
+        trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
+    }
 
     ASSERT(trans);
     return trans;
