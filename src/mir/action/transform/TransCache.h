@@ -16,6 +16,7 @@
 
 #include <iosfwd>
 
+#include "mir/action/transform/ShToGridded.h"
 #include "mir/api/Atlas.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -28,8 +29,8 @@ namespace transform {
 struct TransCache {
 
     bool inited_;
-    atlas::trans::Trans trans_;
-    mir::caching::legendre::LegendreLoader *loader_;
+    ShToGridded::atlas_trans_t trans_;
+    caching::legendre::LegendreLoader* loader_;
 
     TransCache();
 

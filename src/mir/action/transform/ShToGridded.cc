@@ -29,6 +29,7 @@
 #include "eckit/system/SystemInfo.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/utils/MD5.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/transform/TransCache.h"
@@ -50,61 +51,46 @@ namespace transform {
 
 
 static eckit::Mutex amutex;
-static mir::InMemoryCache<TransCache> trans_cache("mirCoefficient",
+
+
+static InMemoryCache<TransCache> trans_cache("mirCoefficient",
         8L * 1024 * 1024 * 1024,
         8L * 1024 * 1024 * 1024,
         "$MIR_COEFFICIENT_CACHE",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static void createCoefficients(const eckit::PathName& path,
-                               const ShToGridded::atlas_config_t& options,
-                               const repres::Representation& representation,
-                               context::Context& ctx) {
-#if 0
-
-    eckit::TraceResourceUsage<LibMir> usage("Create legendre coefficients");
-
-
-    eckit::Log::info() << "Create legendre coefficients "
-                       << representation
-                       << " => "
-                       << path
-                       << std::endl;
-
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().createCoeffTiming_);
-
-    struct Trans_t tmp_trans;
-
-    ASSERT(trans_set_write(&tmp_trans, path.asString().c_str()) == 0);
-    ASSERT(trans_setup(&tmp_trans) == 0); // This will create the cache
-
-    trans_delete(&tmp_trans);
-
-#endif
-}
-
-
-static TransCache& getTransCache(const param::MIRParametrisation &parametrisation,
-                                 const repres::Representation& representation,
-                                 context::Context& ctx,
-                                 const std::string& key,
-                                 const ShToGridded::atlas_config_t& options,
-                                 size_t estimate) {
+static ShToGridded::atlas_trans_t getTrans(
+        const param::MIRParametrisation& parametrisation,
+        context::Context& ctx,
+        const std::string& key,
+        const atlas::Grid& grid,
+        size_t truncation,
+        const ShToGridded::atlas_config_t& options) {
 
 
     InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
     if (j != trans_cache.end()) {
-        return *j;
+        return j->trans_;
     }
 
 
     // Make sure we have enough space in cache to add new coefficients
     // otherwise we may get killed by OOM thread
+    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
     trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
 
+    if (!parametrisation.has("caching")) {
+        TransCache& tc = trans_cache[key];
+        ShToGridded::atlas_trans_t& trans = tc.trans_;
+
+        trans = ShToGridded::atlas_trans_t(grid, int(truncation), options);
+        ASSERT(trans);
+        return trans;
+    }
 
     eckit::PathName path;
+    ShToGridded::atlas_config_t optionsModified(options);
 
     {   // Block for timers
 
@@ -112,76 +98,76 @@ static TransCache& getTransCache(const param::MIRParametrisation &parametrisatio
 
         class LegendreCacheCreator: public caching::LegendreCache::CacheContentCreator {
 
-            ShToGridded::atlas_config_t options_;
-            const repres::Representation& representation_;
-            context::Context & ctx_;
+            context::Context& ctx_;
+            const atlas::Grid& grid_;
+            const size_t truncation_;
+            const ShToGridded::atlas_config_t& options_;
 
-            void create(const eckit::PathName& path, int& /*ignore*/, bool& /*saved*/) {
-                createCoefficients(path, options_, representation_, ctx_);
+            void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) {
+                eckit::TraceResourceUsage<LibMir> usage("Create legendre coefficients");
+
+                eckit::Log::info() << "Create legendre coefficients: " << path << std::endl;
+
+                eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
+
+                ShToGridded::atlas_config_t write(options_);
+                write.set(atlas::option::write_legendre(path));
+
+                // This will create the cache
+                ShToGridded::atlas_trans_t tmp(grid_, int(truncation_), write);
+                ASSERT(tmp);
+
+                saved = path.exists();
             }
         public:
-            LegendreCacheCreator(const ShToGridded::atlas_config_t& options,
-                                 const repres::Representation& representation,
-                                 context::Context& ctx):
-                options_(options), representation_(representation), ctx_(ctx) {}
+            LegendreCacheCreator(
+                        context::Context& ctx,
+                        const atlas::Grid& grid,
+                        size_t truncation,
+                        const ShToGridded::atlas_config_t& options) :
+                ctx_(ctx),
+                grid_(grid),
+                truncation_(truncation),
+                options_(options) {
+                ASSERT(!options_.has("read_legendre"));
+            }
         };
 
         static caching::LegendreCache cache;
-        LegendreCacheCreator creator(options, representation, ctx);
+        LegendreCacheCreator creator(ctx, grid, truncation, options);
 
         int dummy = 0;
         path = cache.getOrCreate(key, creator, dummy);
     }
 
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
-
-    eckit::Timer timer("Loading coefficients");
-
-    TransCache &tc = trans_cache[key];
-
+    TransCache& tc = trans_cache[key];
     ShToGridded::atlas_trans_t& trans = tc.trans_;
 
-    size_t memory = 0;
-    size_t shared = 0;
-
     {
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG LegendreLoaderFactory");
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+
+        eckit::TraceResourceUsage<LibMir> usage("SH2GG load coefficients");
+        eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
 
         tc.inited_ = true;
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
+        eckit::Log::debug<LibMir>() << "SH2GG LegendreLoader " << *tc.loader_ << std::endl;
+
+        trans = ShToGridded::atlas_trans_t(tc.loader_->transCache(), grid, int(truncation), options);
+
+        eckit::system::MemoryInfo after = eckit::system::SystemInfo::instance().memoryUsage();
+        after.delta(eckit::Log::info(), before);
     }
-    // eckit::Log::info() << "LegendreLoader " << *tc.loader_ << std::endl;
 
-#if 0
-    {
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_set_cache");
-        ASSERT(trans_set_cache(&trans, tc.loader_->address(), tc.loader_->size()) == 0);
-    }
-
-    ASSERT(trans.ndgl > 0 && (trans.ndgl % 2) == 0);
-
-    {
-        eckit::TraceResourceUsage<LibMir> usage("SH2GG trans_setup");
-        // size_t before = eckit::system::SystemInfo::instance().memoryAllocated();
-        ASSERT(trans_setup(&trans) == 0);
-        // size_t after = eckit::system::SystemInfo::instance().memoryAllocated();
-        // if (after > before) {
-        //     eckit::Log::info() << "SH2GG trans_setup memory usage " << (after - before) << " " <<
-        //                        double(after - before) / double(path.size()) * 100.0 << "% of coefficients size" << std::endl;
-        //     memory += after - before;
-        // }
-    }
-#endif
-
-    memory += tc.loader_->inSharedMemory() ? 0 : size_t(path.size());
-    shared += tc.loader_->inSharedMemory() ? size_t(path.size()) : 0;
+    ASSERT(tc.loader_);
+    size_t memory = 0;
+    size_t shared = 0;
+    (tc.loader_->inSharedMemory() ? memory : shared) += tc.loader_->size();
     trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
 
-
-    return tc;
-
-
+    ASSERT(trans);
+    return trans;
 }
 
 
@@ -199,10 +185,13 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     const atlas::Grid grid = representation.atlasGrid();
     ASSERT(grid);
 
+    eckit::MD5 md5;
+    options_.hash(md5);
+
     const std::string key =
             "T" + std::to_string(truncation)
-            + ":" + "flt" + std::to_string(options_.getBool("flt"))
-            + ":" + representation.uniqueName();
+            + ":" + representation.uniqueName()
+            + ":" + md5.digest();
 
     atlas_trans_t trans;
     try {
@@ -212,14 +201,12 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
             trans = atlas_trans_t(grid, int(truncation), options_);
         } else {
 
-            size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
-            const TransCache& tc = getTransCache(parametrisation_,
-                                                 representation,
-                                                 ctx,
-                                                 key,
-                                                 options_,
-                                                 estimate);
-            trans = tc.trans_;
+            trans = getTrans(parametrisation_,
+                             ctx,
+                             key,
+                             grid,
+                             truncation,
+                             options_);
         }
 
     } catch (std::exception& e) {
@@ -248,7 +235,7 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     std::string compressIf;
     if (user.get("transform-compress-if", compressIf)) {
         std::istringstream in(compressIf);
-        mir::util::function::FunctionParser p(in);
+        util::function::FunctionParser p(in);
         compressIf_.reset(p.parse());
     }
 

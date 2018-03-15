@@ -8,16 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @author Willem Deconinck
+/// @date Oct 2016
+
+
 #include "mir/caching/LegendreCache.h"
 
 #include "mir/config/LibMir.h"
 
-using namespace eckit;
 
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 LegendreCache::LegendreCache() :
     CacheManager<LegendreCacheTraits>("LegendreCache", // dummy -- would be used in load() / save() static functions
@@ -31,21 +36,20 @@ const char *LegendreCacheTraits::name() {
 }
 
 int LegendreCacheTraits::version() {
-    return 1;
+    return 2;
 }
 
 const char *LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-void LegendreCacheTraits::save(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&, const PathName&) {
+void LegendreCacheTraits::save(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&, const eckit::PathName&) {
 }
 
-void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type &, const PathName&) {
+void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type &, const eckit::PathName&) {
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace method
+}  // namespace caching
 }  // namespace mir
 

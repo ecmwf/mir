@@ -130,18 +130,6 @@ list(
     caching/matrix/MatrixLoader.h
     caching/matrix/SharedMemoryLoader.cc
     caching/matrix/SharedMemoryLoader.h
-    caching/legendre/FileLoader.cc
-    caching/legendre/FileLoader.h
-    caching/legendre/LegendreLoader.cc
-    caching/legendre/LegendreLoader.h
-    caching/legendre/MappedMemoryLoader.cc
-    caching/legendre/MappedMemoryLoader.h
-    caching/legendre/NoLoader.cc
-    caching/legendre/NoLoader.h
-    caching/legendre/SharedMemoryLoader.cc
-    caching/legendre/SharedMemoryLoader.h
-    caching/LegendreCache.cc
-    caching/LegendreCache.h
     caching/MeshCache.cc
     caching/MeshCache.h
     caching/WeightCache.cc
@@ -779,6 +767,18 @@ if(HAVE_ATLAS)
             action/transform/ShVodTouvRegularLL.h
             action/transform/TransCache.cc
             action/transform/TransCache.h
+            caching/LegendreCache.cc
+            caching/LegendreCache.h
+            caching/legendre/FileLoader.cc
+            caching/legendre/FileLoader.h
+            caching/legendre/LegendreLoader.cc
+            caching/legendre/LegendreLoader.h
+            caching/legendre/MappedMemoryLoader.cc
+            caching/legendre/MappedMemoryLoader.h
+            caching/legendre/NoLoader.cc
+            caching/legendre/NoLoader.h
+            caching/legendre/SharedMemoryLoader.cc
+            caching/legendre/SharedMemoryLoader.h
             )
        endif()
 endif()

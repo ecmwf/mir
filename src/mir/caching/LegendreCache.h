@@ -10,18 +10,20 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   Oct 2016
+/// @author Pedro Maciel
+/// @author Willem Deconinck
+/// @date Oct 2016
 
-#ifndef mir_method_LegendreCache_H
-#define mir_method_LegendreCache_H
 
+#ifndef mir_caching_LegendreCache_h
+#define mir_caching_LegendreCache_h
 
 #include "eckit/container/CacheManager.h"
+
 
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 struct LegendreCacheTraits {
 
@@ -45,9 +47,9 @@ public:  // methods
     LegendreCache();
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}  // namespace method
+}  // namespace caching
 }  // namespace mir
+
 
 #endif

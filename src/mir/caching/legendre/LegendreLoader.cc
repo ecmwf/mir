@@ -9,9 +9,9 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Pedro Maciel
 /// @author Tiago Quintino
-///
+/// @author Pedro Maciel
+/// @author Willem Deconinck
 /// @date Apr 2015
 
 

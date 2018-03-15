@@ -9,9 +9,9 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Pedro Maciel
 /// @author Tiago Quintino
-///
+/// @author Pedro Maciel
+/// @author Willem Deconinck
 /// @date Apr 2015
 
 #ifndef mir_caching_LegendreLoader_H
@@ -21,6 +21,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
+#include "mir/api/Atlas.h"
+#include <memory>
+
 
 namespace mir {
 
@@ -34,7 +37,6 @@ namespace legendre {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
 class LegendreLoader : public eckit::NonCopyable {
 
 public:
@@ -45,6 +47,10 @@ public:
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
     virtual bool inSharedMemory() const = 0;
+
+    atlas::trans::LegendreCache transCache() {
+        return atlas::trans::LegendreCache(address(), size());
+    }
 
 protected:
     const param::MIRParametrisation& parametrisation_;
