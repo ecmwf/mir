@@ -350,6 +350,8 @@ list(
     param/SimpleParametrisation.h
     repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
+    repres/gauss/GaussianIterator.cc
+    repres/gauss/GaussianIterator.h
     repres/gauss/reduced/Classic.cc
     repres/gauss/reduced/Classic.h
     repres/gauss/reduced/FromPL.cc
