@@ -30,6 +30,7 @@ foreach( _t ${test_files} )
       COMMAND    mir-test.sh
       ARGS       ${_t}
       ENVIRONMENT
+        "ECCODES_DEBUG=-1"
         "MIR_DEBUG=1"
         "MIR_HOME=${CMAKE_BINARY_DIR}"
         "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"

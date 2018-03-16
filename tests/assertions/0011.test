@@ -2,7 +2,7 @@
 # Mars request
 date=19930202
 # Mir tool options
---grid=1/1
+--grid=1/1 --dont-compress-plan
 # grib_get assertions
 Ni = 360
 Nj = 181

@@ -2,6 +2,6 @@
 # mars
 param=t,level=1000
 # mir
---intgrid=auto --gridname=O640
+--intgrid=auto --gridname=O640 --dont-compress-plan
 # plan
-ShScalarToNamedGrid[gridname=F640]|Gridded2NamedGrid[gridname=O640,interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+ShScalarToNamedGrid[ShToGridded[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73]],gridname=F640]|Gridded2NamedGrid[gridname=O640,interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]

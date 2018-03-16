@@ -110,7 +110,8 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 }
 
 
-static MIROutputBuilder<GeoPointsFileOutputXYV> output("geopoints-xyv", {".gp", ".gpt", ".geo"});
+static MIROutputBuilder<GeoPointsFileOutputXYV> output1("geopoints-xyv", {".gp", ".gpt", ".geo"});
+static MIROutputBuilder<GeoPointsFileOutputXYV> output2("geopoints");
 
 
 }  // namespace output
