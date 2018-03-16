@@ -52,14 +52,6 @@ void ShScalarToReducedGG::print(std::ostream& out) const {
 }
 
 
-void ShScalarToReducedGG::custom(std::ostream& out) const {
-    out << "ShScalarToReducedGG[";
-    ShToGridded::custom(out);
-    out << ",N=" << N_
-        << "]";
-}
-
-
 const char* ShScalarToReducedGG::name() const {
     return "ShScalarToReducedGG";
 }

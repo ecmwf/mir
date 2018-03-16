@@ -50,14 +50,6 @@ void ShScalarToReducedGGPLGiven::print(std::ostream& out) const {
 }
 
 
-void ShScalarToReducedGGPLGiven::custom(std::ostream& out) const {
-    out << "ShScalarToReducedGGPLGiven[";
-    ShToGridded::custom(out);
-    out << ",pl=" << pl_.size()
-        << "]";
-}
-
-
 const char* ShScalarToReducedGGPLGiven::name() const {
     return "ShScalarToReducedGGPLGiven";
 }

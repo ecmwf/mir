@@ -50,17 +50,10 @@ void ShVodTouvPoints::print(std::ostream& out) const {
 }
 
 
-void ShVodTouvPoints::custom(std::ostream& out) const {
-    out << "ShVodTouvPoints[";
-    ShToGridded::custom(out);
-    out << ",points=" << latitudes_.size()
-        << "]";
-}
-
-
 const char* ShVodTouvPoints::name() const {
     return "ShVodTouvPoints";
 }
+
 
 const repres::Representation *ShVodTouvPoints::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(latitudes_, longitudes_);

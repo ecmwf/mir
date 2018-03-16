@@ -55,14 +55,6 @@ void ShScalarToRegularLL::print(std::ostream& out) const {
 }
 
 
-void ShScalarToRegularLL::custom(std::ostream& out) const {
-    out << "ShScalarToRegularLL[";
-    ShToGridded::custom(out);
-    out << ",increments=" << increments_
-        << "]";
-}
-
-
 const char* ShScalarToRegularLL::name() const {
     return "ShScalarToRegularLL";
 }

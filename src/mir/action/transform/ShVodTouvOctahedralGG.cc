@@ -50,14 +50,6 @@ void ShVodTouvOctahedralGG::print(std::ostream& out) const {
 }
 
 
-void ShVodTouvOctahedralGG::custom(std::ostream& out) const {
-    out << "ShVodTouvOctahedralGG[";
-    ShToGridded::custom(out);
-    out << ",N=" << N_
-        << "]";
-}
-
-
 const char* ShVodTouvOctahedralGG::name() const {
     return "ShVodTouvOctahedralGG";
 }

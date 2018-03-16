@@ -47,16 +47,10 @@ void ShVodTouvGridDef::print(std::ostream& out) const {
 }
 
 
-void ShVodTouvGridDef::custom(std::ostream& out) const {
-    out << "ShVodTouvGridDef[";
-    ShToGridded::custom(out);
-    out << "griddef=.../" << eckit::PathName(griddef_).baseName()
-        << "]";
-}
-
 const char* ShVodTouvGridDef::name() const {
     return "ShVodTouvGridDef";
 }
+
 
 const repres::Representation *ShVodTouvGridDef::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(griddef_);

@@ -71,7 +71,6 @@ private:
     const char* name() const;
     const repres::Representation* outputRepresentation() const;
     void print(std::ostream&) const;
-    void custom(std::ostream&) const;
 
     // -- Class members
     // None

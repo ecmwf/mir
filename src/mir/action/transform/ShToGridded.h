@@ -17,6 +17,7 @@
 #define mir_action_transform_ShToGridded_h
 
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/utils/Hash.h"
 #include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/Atlas.h"
@@ -45,7 +46,11 @@ public:
     // -- Types
 
     typedef atlas::trans::Trans atlas_trans_t;
-    typedef atlas::util::Config atlas_config_t;
+
+    struct atlas_config_t : public atlas::util::Config  {
+        using Config::Config;
+        eckit::Hash::digest_t digest() const;
+    };
 
     // -- Exceptions
     // None
@@ -89,7 +94,6 @@ protected:
     // -- Overridden methods
 
     virtual void print(std::ostream&) const = 0;
-    virtual void custom(std::ostream&) const = 0;
 
     // -- Class members
     // None

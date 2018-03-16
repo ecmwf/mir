@@ -49,14 +49,6 @@ void ShVodTouvNamedGrid::print(std::ostream& out) const {
 }
 
 
-void ShVodTouvNamedGrid::custom(std::ostream& out) const {
-    out << "ShVodTouvNamedGrid[";
-    ShToGridded::custom(out);
-    out << ",gridname=" << gridname_
-        << "]";
-}
-
-
 const char* ShVodTouvNamedGrid::name() const {
     return "ShVodTouvNamedGrid";
 }

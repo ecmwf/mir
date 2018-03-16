@@ -51,14 +51,6 @@ void ShScalarToNamedGrid::print(std::ostream& out) const {
 }
 
 
-void ShScalarToNamedGrid::custom(std::ostream& out) const {
-    out << "ShScalarToNamedGrid[";
-    ShToGridded::custom(out);
-    out << ",gridname=" << gridname_
-        << "]";
-}
-
-
 const char* ShScalarToNamedGrid::name() const {
     return "ShScalarToNamedGrid";
 }

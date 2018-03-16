@@ -50,14 +50,6 @@ void ShVodTouvReducedGG::print(std::ostream& out) const {
 }
 
 
-void ShVodTouvReducedGG::custom(std::ostream& out) const {
-    out << "ShVodTouvReducedGG[";
-    ShToGridded::custom(out);
-    out << ",N=" << N_
-        << "]";
-}
-
-
 const char* ShVodTouvReducedGG::name() const {
     return "ShVodTouvReducedGG";
 }

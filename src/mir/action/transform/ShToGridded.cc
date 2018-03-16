@@ -181,13 +181,10 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     const atlas::Grid grid = representation.atlasGrid();
     ASSERT(grid);
 
-    eckit::MD5 md5;
-    options_.hash(md5);
-
     const std::string key =
             "T" + std::to_string(truncation)
             + ":" + representation.uniqueName()
-            + ":" + md5.digest();
+            + ":" + options_.digest();
 
     atlas_trans_t trans;
     try {
@@ -254,17 +251,9 @@ ShToGridded::~ShToGridded() {
 
 
 void ShToGridded::print(std::ostream& out) const {
-    out << "ShToGridded=["
+    out << "ShToGridded["
             "cropping=" << cropping_
-        << ",options=" << options_
-        << "]";
-}
-
-
-void ShToGridded::custom(std::ostream& out) const {
-    out << "ShToGridded=["
-           "cropping=" << cropping_
-        << ",options=[...]"
+        << ",options=[" << options_.digest() << "]"
         << "]";
 }
 
@@ -350,6 +339,15 @@ void ShToGridded::local(bool l) {
 
 bool ShToGridded::local() const {
     return options_.has("type") && options_.getString("type") == "local";
+}
+
+
+eckit::Hash::digest_t ShToGridded::atlas_config_t::digest() const {
+    // We don't want to 'see' the internal options, just if they are set differently
+    // (so we know when they change)
+    eckit::MD5 h;
+    this->hash(h);
+    return h.digest();
 }
 
 
