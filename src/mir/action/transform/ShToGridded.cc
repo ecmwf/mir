@@ -225,12 +225,15 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    std::string compressIf;
-    if (user.get("transform-compress-if", compressIf)) {
+    // set compression condition: default is don't compress
+    {
+        std::string compressIf = "0";
+        user.get("transform-compress-if", compressIf);
         std::istringstream in(compressIf);
         util::function::FunctionParser p(in);
         compressIf_.reset(p.parse());
     }
+    ASSERT(compressIf_);
 
     if (user.has("atlas-trans-local")) {
         local(true);
@@ -275,9 +278,8 @@ bool ShToGridded::mergeWithNext(const Action& next) {
             const util::BoundingBox& bbox = next.croppingBoundingBox();
 
             bool compress = local();
-            if (local()) {
-                compress = true;
-            } else if (compressIf_) {
+            if (!compress) {
+                ASSERT(compressIf_);
                 using namespace eckit::geometry;
 
                 // evaluate according to bounding box and area ratio to globe
@@ -295,9 +297,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
                 vars.set("ar", ar);
 
                 compress = bool(compressIf_->eval(vars));
-            } else {
-                static util::BoundingBox global;
-                compress = bbox != global;
             }
 
             if (compress) {

@@ -157,6 +157,16 @@ void Gaussian::correctBoundingBox() {
 }
 
 
+Iterator* Gaussian::unrotatedIterator(gauss::GaussianIterator::ni_type Ni) const {
+    return new gauss::GaussianIterator(latitudes(), bbox_, N_, Ni);
+}
+
+
+Iterator* Gaussian::rotatedIterator(gauss::GaussianIterator::ni_type Ni, const util::Rotation& rotation) const {
+    return new gauss::GaussianIterator(latitudes(), bbox_, N_, Ni, rotation);
+}
+
+
 bool Gaussian::includesNorthPole() const {
     return bbox_.north() == latitudes().front();
 }

@@ -14,7 +14,8 @@
 
 #include <functional>
 #include "eckit/types/Fraction.h"
-#include "mir/util/Domain.h"
+#include "mir/repres/Iterator.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -22,31 +23,39 @@ namespace repres {
 namespace gauss {
 
 
-class GaussianIterator {
+class GaussianIterator : public Iterator {
 public:
-    typedef std::function<long(size_t)> pl_type;
+    typedef std::function<long(size_t)> ni_type;
+
 private:
     const std::vector<double>& latitudes_;
-    const util::Domain domain_;
+    const util::BoundingBox& bbox_;
     const size_t N_;
-    const size_t countTotal_;
-    pl_type pl_;
+    ni_type pl_;
     size_t Ni_;
     size_t Nj_;
-    const eckit::Fraction west_;
     eckit::Fraction lon_;
     eckit::Fraction inc_;
     size_t i_;
     size_t j_;
     size_t k_;
     size_t count_;
+    void resetToRow(size_t);
+    void setup();
+
 protected:
-    ~GaussianIterator();
     void print(std::ostream&) const;
     bool next(Latitude&, Longitude&);
-    virtual long Nj(size_t i) = 0;
+
 public:
-    GaussianIterator(const std::vector<double>& latitudes, const util::Domain&, size_t N, size_t countTotal, pl_type pl);
+
+    // Unrotated Gaussian grid iterator
+    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni);
+
+    // Rotated Gaussian grid iterator
+    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni, const util::Rotation&);
+
+    ~GaussianIterator();
 };
 
 

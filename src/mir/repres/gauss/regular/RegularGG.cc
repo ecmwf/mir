@@ -63,25 +63,8 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-
-    class RegularGGIterator : protected RegularIterator, public Iterator {
-        void print(std::ostream& out) const {
-            out << "RegularGGIterator[";
-            Iterator::print(out);
-            out << ",";
-            RegularIterator::print(out);
-            out << "]";
-        }
-        bool next(Latitude& lat, Longitude& lon) {
-            return RegularIterator::next(lat, lon);
-        }
-    public:
-        RegularGGIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain& dom) :
-            RegularIterator(latitudes, N, Ni, Nj, dom) {
-        }
-    };
-
-    return new RegularGGIterator(latitudes(), N_, Ni_, Nj_, domain());
+    auto Ni = [=](size_t){ return long(4 * N_); };
+    return Gaussian::unrotatedIterator(Ni);
 }
 
 

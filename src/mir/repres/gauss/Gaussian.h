@@ -13,10 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef Gaussian_H
-#define Gaussian_H
+#ifndef mir_repres_gauss_Gaussian_h
+#define mir_repres_gauss_Gaussian_h
 
 #include "mir/repres/Gridded.h"
+#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -33,8 +34,8 @@ public:
     // -- Constructors
 
     Gaussian(size_t N);
-    Gaussian(size_t N, const util::BoundingBox &);
-    Gaussian(const param::MIRParametrisation &);
+    Gaussian(size_t N, const util::BoundingBox&);
+    Gaussian(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -73,6 +74,9 @@ protected:
 
     void correctBoundingBox();
     virtual eckit::Fraction getSmallestIncrement() const = 0;
+
+    Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
+    Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
 
     // -- Overridden methods
 

@@ -94,26 +94,7 @@ protected:
     bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
-
-    class RegularIterator {
-        const std::vector<double>& latitudes_;
-        const eckit::Fraction west_;
-        const size_t N_;
-        const size_t Ni_;
-        const size_t Nj_;
-        eckit::Fraction lon_;
-        const eckit::Fraction inc_;
-        size_t i_;
-        size_t j_;
-        size_t k_;
-        size_t count_;
-    protected:
-        ~RegularIterator();
-        void print(std::ostream&) const;
-        bool next(Latitude&, Longitude&);
-    public:
-        RegularIterator(const std::vector<double>& latitudes, size_t N, size_t Ni, size_t Nj, const util::Domain&);
-    };
+    // None
 
     // -- Class methods
     // None
