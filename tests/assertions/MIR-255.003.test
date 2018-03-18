@@ -1,0 +1,7 @@
+# Mars request
+gridType=regular_gg,gridName=F80,shortName=msl,global=0.001.grib1
+# Mir tool options
+--grid=1/1
+# grib_get assertions
+Ni=119
+Nj=48
