@@ -725,48 +725,44 @@ if(HAVE_ATLAS)
     if(ATLAS_HAVE_TRANS)
         list( APPEND libatlas transi)
         list( APPEND mir_srcs
-            action/transform/ShScalarToGridDef.cc
-            action/transform/ShScalarToGridDef.h
-            action/transform/ShScalarToGridded.cc
-            action/transform/ShScalarToGridded.h
-            action/transform/ShScalarToNamedGrid.cc
-            action/transform/ShScalarToNamedGrid.h
-            action/transform/ShScalarToOctahedralGG.cc
-            action/transform/ShScalarToOctahedralGG.h
-            action/transform/ShScalarToPoints.cc
-            action/transform/ShScalarToPoints.h
-            action/transform/ShScalarToReducedGG.cc
-            action/transform/ShScalarToReducedGG.h
-            action/transform/ShScalarToReducedGGPLGiven.cc
-            action/transform/ShScalarToReducedGGPLGiven.h
-            action/transform/ShScalarToRegularGG.cc
-            action/transform/ShScalarToRegularGG.h
-            action/transform/ShScalarToRegularLL.cc
-            action/transform/ShScalarToRegularLL.h
+            action/transform/InvtransScalar.cc
+            action/transform/InvtransScalar.h
+            action/transform/InvtransVodTouv.cc
+            action/transform/InvtransVodTouv.h
+            action/transform/ShToGridDef.cc
+            action/transform/ShToGridDef.h
             action/transform/ShToGridded.cc
             action/transform/ShToGridded.h
+            action/transform/ShToNamedGrid.cc
+            action/transform/ShToNamedGrid.h
+            action/transform/ShToOctahedralGG.cc
+            action/transform/ShToOctahedralGG.h
+            action/transform/ShToPoints.cc
+            action/transform/ShToPoints.h
+            action/transform/ShToReducedGG.cc
+            action/transform/ShToReducedGG.h
+            action/transform/ShToReducedGGPLGiven.cc
+            action/transform/ShToReducedGGPLGiven.h
+            action/transform/ShToRegularGG.cc
+            action/transform/ShToRegularGG.h
+            action/transform/ShToRegularLL.cc
+            action/transform/ShToRegularLL.h
+            action/transform/ShToRotatedNamedGrid.cc
+            action/transform/ShToRotatedNamedGrid.h
+            action/transform/ShToRotatedOctahedralGG.cc
+            action/transform/ShToRotatedOctahedralGG.h
+            action/transform/ShToRotatedReducedGG.cc
+            action/transform/ShToRotatedReducedGG.h
+            action/transform/ShToRotatedReducedGGPLGiven.cc
+            action/transform/ShToRotatedReducedGGPLGiven.h
+            action/transform/ShToRotatedRegularGG.cc
+            action/transform/ShToRotatedRegularGG.h
+            action/transform/ShToRotatedRegularLL.cc
+            action/transform/ShToRotatedRegularLL.h
             action/transform/ShTruncate.cc
             action/transform/ShTruncate.h
             action/transform/ShVodToUV.cc
             action/transform/ShVodToUV.h
-            action/transform/ShVodTouvGridDef.cc
-            action/transform/ShVodTouvGridDef.h
-            action/transform/ShVodTouvGridded.cc
-            action/transform/ShVodTouvGridded.h
-            action/transform/ShVodTouvNamedGrid.cc
-            action/transform/ShVodTouvNamedGrid.h
-            action/transform/ShVodTouvOctahedralGG.cc
-            action/transform/ShVodTouvOctahedralGG.h
-            action/transform/ShVodTouvPoints.cc
-            action/transform/ShVodTouvPoints.h
-            action/transform/ShVodTouvReducedGG.cc
-            action/transform/ShVodTouvReducedGG.h
-            action/transform/ShVodTouvReducedGGPLGiven.cc
-            action/transform/ShVodTouvReducedGGPLGiven.h
-            action/transform/ShVodTouvRegularGG.cc
-            action/transform/ShVodTouvRegularGG.h
-            action/transform/ShVodTouvRegularLL.cc
-            action/transform/ShVodTouvRegularLL.h
             action/transform/TransCache.cc
             action/transform/TransCache.h
             caching/LegendreCache.cc

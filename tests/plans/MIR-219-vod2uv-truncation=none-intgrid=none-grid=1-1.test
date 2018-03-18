@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=none --intgrid=none --grid=1/1 --dont-compress-plan
 # plan
-ShVodTouvRegularLL[ShToGridded[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73]],increments=Increments[west_east=1,south_north=1]]|Save[output=...]
+ShToRegularLL[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73],invtrans=<vod2uv>,increments=Increments[west_east=1,south_north=1]]|Save[output=...]

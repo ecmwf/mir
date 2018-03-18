@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=1023 --intgrid=none --gridname=O400 --dont-compress-plan
 # plan
-ShTruncate[truncation=1023]|ShVodTouvNamedGrid[ShToGridded[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73]],gridname=O400]|Save[output=...]
+ShTruncate[truncation=1023]|ShToNamedGrid[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73],invtrans=<vod2uv>,gridname=O400]|Save[output=...]

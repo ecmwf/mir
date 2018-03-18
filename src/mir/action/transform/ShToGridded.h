@@ -94,6 +94,7 @@ protected:
     // -- Overridden methods
 
     virtual void print(std::ostream&) const = 0;
+    virtual bool sameAs(const Action& other) const = 0;
 
     // -- Class members
     // None

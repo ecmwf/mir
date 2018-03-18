@@ -254,10 +254,7 @@ ShToGridded::~ShToGridded() {
 
 
 void ShToGridded::print(std::ostream& out) const {
-    out << "ShToGridded["
-            "cropping=" << cropping_
-        << ",options=[" << options_.digest() << "]"
-        << "]";
+    out <<  "cropping=" << cropping_ << ",options=[" << options_.digest() << "]";
 }
 
 
@@ -338,6 +335,12 @@ void ShToGridded::local(bool l) {
 
 bool ShToGridded::local() const {
     return options_.has("type") && options_.getString("type") == "local";
+}
+
+
+bool ShToGridded::sameAs(const Action& other) const {
+    const ShToGridded* o = dynamic_cast<const ShToGridded*>(&other);
+    return o && options_.digest() == o->options_.digest();
 }
 
 
