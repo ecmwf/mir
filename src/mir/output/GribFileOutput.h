@@ -33,7 +33,6 @@ class GribFileOutput : public GribStreamOutput {
 
 // -- Contructors
 
-    GribFileOutput(const eckit::PathName&, const param::MIRParametrisation&);
     GribFileOutput(const eckit::PathName&, bool append = false);
 
 // -- Destructor

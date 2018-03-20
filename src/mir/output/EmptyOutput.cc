@@ -27,7 +27,7 @@ EmptyOutput::EmptyOutput() {
 }
 
 
-EmptyOutput::EmptyOutput(const std::string&, const param::MIRParametrisation&) {
+EmptyOutput::EmptyOutput(const std::string&) {
 }
 
 

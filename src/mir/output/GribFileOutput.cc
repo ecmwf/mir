@@ -21,13 +21,6 @@ namespace mir {
 namespace output {
 
 
-GribFileOutput::GribFileOutput(const eckit::PathName& path, const param::MIRParametrisation&) :
-    path_(path),
-    handle_(0),
-    append_(false) {
-}
-
-
 GribFileOutput::GribFileOutput(const eckit::PathName &path, bool append):
     path_(path),
     handle_(0),

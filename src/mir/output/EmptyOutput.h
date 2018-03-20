@@ -32,7 +32,7 @@ public:
     // -- Contructors
 
     EmptyOutput();
-    EmptyOutput(const::std::string& path, const param::MIRParametrisation&);
+    EmptyOutput(const::std::string& path);
 
     // -- Destructor
 

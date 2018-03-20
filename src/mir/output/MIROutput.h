@@ -126,7 +126,7 @@ protected:
     virtual ~MIROutputFactory();
     static const std::vector<std::string> no_extensions;
 public:
-    virtual MIROutput* make(const std::string& path, const param::MIRParametrisation&) = 0;
+    virtual MIROutput* make(const std::string& path) = 0;
     static MIROutput* build(const std::string& path, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
@@ -134,8 +134,8 @@ public:
 
 template<class T>
 class MIROutputBuilder : public MIROutputFactory {
-    virtual MIROutput* make(const std::string& path, const param::MIRParametrisation& parametrisation) {
-        return new T(path, parametrisation);
+    virtual MIROutput* make(const std::string& path) {
+        return new T(path);
     }
 public:
     MIROutputBuilder(const std::string& name) : MIROutputFactory(name) {}

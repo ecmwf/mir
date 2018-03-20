@@ -56,7 +56,7 @@ static void init() {
 // Extension handling
 struct OutputFromExtension : public MIROutputFactory {
 
-    virtual MIROutput* make(const std::string& path, const param::MIRParametrisation& parametrisation) {
+    virtual MIROutput* make(const std::string& path) {
         const eckit::PathName p(path);
         const std::string ext = p.extension();
 
@@ -65,11 +65,11 @@ struct OutputFromExtension : public MIROutputFactory {
             list(eckit::Log::debug<LibMir>() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
             eckit::Log::debug<LibMir>() << ", returning 'grib'" << std::endl;
 
-            return new GribFileOutput(p, parametrisation);
+            return new GribFileOutput(p);
         }
 
         eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
-        return j->second->make(path, parametrisation);
+        return j->second->make(path);
     }
 
     static void list(std::ostream& out) {
@@ -147,7 +147,7 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
     }
 
     eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << output << "' for '" << path << "'" << std::endl;
-    return j->second->make(path, parametrisation);
+    return j->second->make(path);
 }
 
 
