@@ -31,7 +31,7 @@ public:
 
     // -- Contructors
 
-    GeoPointsFileOutputXYVector(const::std::string& path, const param::MIRParametrisation&);
+    GeoPointsFileOutputXYVector(const::std::string& path);
 
     // -- Destructor
     // None

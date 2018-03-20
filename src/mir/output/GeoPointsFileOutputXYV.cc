@@ -32,9 +32,7 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(
-        const std::string& path,
-        const param::MIRParametrisation&) :
+GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path) :
     GeoPointsFileOutput(path) {
 }
 
