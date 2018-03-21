@@ -95,6 +95,7 @@ private:
     virtual const Reduced *croppedRepresentation(const util::BoundingBox&, const std::vector<long>&) const ;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Class members
     // None

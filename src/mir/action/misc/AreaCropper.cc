@@ -25,6 +25,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -90,12 +91,22 @@ void AreaCropper::print(std::ostream& out) const {
 }
 
 
-bool AreaCropper::isCropAction() const {
+bool AreaCropper::canCrop() const {
     return true;
 }
 
+
 const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
     return bbox_;
+}
+
+
+util::BoundingBox AreaCropper::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
+
+    // use the Gridded implementation for consistency, there's no notion of rotation
+    util::BoundingBox extend(bbox);
+    repres::Gridded::extendBoundingBox(extend, angle);
+    return extend;
 }
 
 

@@ -18,7 +18,7 @@
 #include <ostream>
 #include <vector>
 #include "eckit/exception/Exceptions.h"
-#include "atlas/util/Earth.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {

@@ -36,7 +36,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
 
     ASSERT(parametrisation_.get("interpolation", interpolation_));
     method_.reset(method::MethodFactory::build(interpolation_, parametrisation_));
-
+    ASSERT(method_);
 }
 
 
@@ -52,11 +52,11 @@ bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
             << "\n\t" "   " << *this
             << "\n\t" " + " << next
             << std::endl
-            << "\n\t" "next.isCropAction() " << next.isCropAction()
+            << "\n\t" "next.canCrop() " << next.canCrop()
             << "\n\t" "method_->canCrop() " << method_->canCrop()
             << std::endl;
 
-    if (next.isCropAction() && method_->canCrop()) {
+    if (next.canCrop() && method_->canCrop()) {
         method_->setCropping(next.croppingBoundingBox());
         return true;
     }
@@ -64,14 +64,23 @@ bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
 }
 
 
-bool Gridded2GriddedInterpolation::isInterpolationAction() const {
-    return true;
+bool Gridded2GriddedInterpolation::canCrop() const {
+    return method_->hasCropping();
 }
 
 
 const util::BoundingBox& Gridded2GriddedInterpolation::croppingBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
-    return out->boundingBox();
+
+    return method_->hasCropping() ? method_->getCropping()
+                                  : out->boundingBox();
+}
+
+
+util::BoundingBox Gridded2GriddedInterpolation::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
+    repres::RepresentationHandle out(outputRepresentation());
+
+    return out->extendedBoundingBox(bbox, angle);
 }
 
 

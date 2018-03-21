@@ -516,13 +516,24 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
 }
 
-void MethodWeighted::setCropping(const util::BoundingBox& bbox) {
-    cropping_.boundingBox(bbox);
-
-}
 
 bool MethodWeighted::canCrop() const {
     return true;
+}
+
+
+void MethodWeighted::setCropping(const util::BoundingBox& bbox) {
+    cropping_.boundingBox(bbox);
+}
+
+
+bool MethodWeighted::hasCropping() const {
+    return cropping_.active();
+}
+
+
+const util::BoundingBox& MethodWeighted::getCropping() const {
+    return cropping_.boundingBox();
 }
 
 

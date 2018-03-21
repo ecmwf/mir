@@ -72,9 +72,9 @@ public:
 
     // For optimising plans
     virtual bool mergeWithNext(const Action& other);
-    virtual bool isCropAction() const;
-    virtual bool isInterpolationAction() const;
+    virtual bool canCrop() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Overridden methods
     // None

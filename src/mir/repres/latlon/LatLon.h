@@ -93,6 +93,8 @@ protected:
     virtual Representation* globalise(data::MIRField&) const;
     virtual std::string atlasMeshGenerator() const;
 
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+
     // -- Class members
 
     class LatLonIterator {
@@ -138,8 +140,6 @@ private:
     virtual void validate(const std::vector<double>&) const;
 
     const LatLon* croppedRepresentation(const util::BoundingBox&) const;
-    util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
-    util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

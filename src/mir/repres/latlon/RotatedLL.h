@@ -81,6 +81,7 @@ private:
 
     // From Representation
     const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;
+    util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Class members
     // None

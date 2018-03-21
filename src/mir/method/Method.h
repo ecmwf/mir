@@ -63,6 +63,8 @@ public:
     // For optimising plan
     virtual bool canCrop() const;
     virtual void setCropping(const util::BoundingBox&);
+    virtual bool hasCropping() const;
+    virtual const util::BoundingBox& getCropping() const;
     virtual const repres::Representation* adjustOutputRepresentation(const repres::Representation*);
 
 

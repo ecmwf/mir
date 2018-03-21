@@ -3,4 +3,4 @@ param=t,level=1000
 # mir
 --truncation=255 --intgrid=O320 --grid=1/1 --dont-compress-plan
 # plan
-ShTruncate[truncation=255]|ShToNamedGrid[cropping=none,options=[0ddd482fc82daa70ab6a4d3b9aeedc73],invtrans=<scalar>,gridname=O320]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+ShTruncate[truncation=255]|ShToNamedGrid[cropping=none,local=0,options=[0ddd482fc82daa70ab6a4d3b9aeedc73],invtrans=<scalar>,gridname=O320]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]

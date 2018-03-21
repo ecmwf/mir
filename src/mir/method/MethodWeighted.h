@@ -63,9 +63,10 @@ private:
                          const repres::Representation& out) const;
 
 
-    virtual void setCropping(const mir::util::BoundingBox&);
-
     virtual bool canCrop() const;
+    virtual void setCropping(const mir::util::BoundingBox&);
+    virtual bool hasCropping() const;
+    virtual const util::BoundingBox& getCropping() const;
 
 
 protected:
