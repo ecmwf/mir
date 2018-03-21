@@ -107,7 +107,7 @@ private:
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
-    util::BoundingBox extendedBoundingBox(const util::BoundingBox& bbox) const;
+    util::BoundingBox extendedBoundingBox(double radius) const;
 
     // Domain operations
     virtual bool isPeriodicWestEast() const;

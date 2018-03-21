@@ -98,8 +98,9 @@ private:
 
     virtual void execute(context::Context&) const;
     virtual bool mergeWithNext(const Action&);
-    bool isInterpolationAction() const;
-    const util::BoundingBox& croppingBoundingBox() const;
+    virtual bool canCrop() const;
+    virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Class members
     // None

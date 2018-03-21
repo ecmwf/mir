@@ -21,6 +21,13 @@
 
 
 namespace mir {
+namespace util {
+class Rotation;
+}
+}
+
+
+namespace mir {
 namespace repres {
 
 
@@ -46,7 +53,9 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static void extendBoundingBox(util::BoundingBox&, double angle, const util::Rotation&);
+    static void extendBoundingBox(util::BoundingBox&, double angle);
 
     // -- Overridden methods
     // None
@@ -66,7 +75,6 @@ protected:
     // -- Members
 
     util::BoundingBox bbox_;
-//    util::BoundingBox domain_;
 
     // -- Methods
     // None
@@ -77,6 +85,8 @@ protected:
     const util::BoundingBox& boundingBox() const;
 
     virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
+
     virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members

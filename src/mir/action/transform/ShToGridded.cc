@@ -41,6 +41,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/function/FunctionParser.h"
 
@@ -225,14 +226,13 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    // set compression condition: default is don't compress
-    {
-        std::string compressIf = "0";
-        user.get("transform-compress-if", compressIf);
-        std::istringstream in(compressIf);
-        util::function::FunctionParser p(in);
-        compressIf_.reset(p.parse());
-    }
+    // set compression condition: default is don't compress (unless strictly necessary)
+    std::string compressIf = "0";
+    user.get("transform-compress-if", compressIf);
+    std::istringstream in(compressIf);
+    util::function::FunctionParser p(in);
+
+    compressIf_.reset(p.parse());
     ASSERT(compressIf_);
 
     if (user.has("atlas-trans-local")) {
@@ -254,7 +254,9 @@ ShToGridded::~ShToGridded() {
 
 
 void ShToGridded::print(std::ostream& out) const {
-    out <<  "cropping=" << cropping_ << ",options=[" << options_.digest() << "]";
+    out <<  "cropping=" << cropping_
+        << ",local=" << local()
+        << ",options=[" << options_.digest() << "]";
 }
 
 
@@ -269,54 +271,56 @@ void ShToGridded::execute(context::Context& ctx) const {
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
-    if (!cropping_.active()) {
-        if (next.isCropAction() || next.isInterpolationAction()) {
 
-            const util::BoundingBox& bbox = next.croppingBoundingBox();
+    // make use of the area cropping action downstream (no merge)
+    if (!cropping_.active() && next.canCrop()) {
+        util::BoundingBox bbox = next.croppingBoundingBox();
 
-            bool compress = local();
-            if (!compress) {
-                ASSERT(compressIf_);
-                using namespace eckit::geometry;
+        if (!local()) {
 
-                // evaluate according to bounding box and area ratio to globe
-                Point2 WestNorth(bbox.west().value(), bbox.north().value());
-                Point2 EastSouth(bbox.east().value(), bbox.south().value());
+            // evaluate according to bounding box and area ratio to globe
+            eckit::geometry::Point2 WestNorth(bbox.west().value(), bbox.north().value());
+            eckit::geometry::Point2 EastSouth(bbox.east().value(), bbox.south().value());
 
-                double ar = UnitSphere::area(WestNorth, EastSouth) /
-                            UnitSphere::area();
+            double ar = atlas::util::Earth::area(WestNorth, EastSouth)
+                      / atlas::util::Earth::area();
 
-                param::SimpleParametrisation vars;
-                vars.set("N", WestNorth[1]);
-                vars.set("W", WestNorth[0]);
-                vars.set("S", EastSouth[1]);
-                vars.set("E", EastSouth[0]);
-                vars.set("ar", ar);
+            param::SimpleParametrisation vars;
+            vars.set("N", WestNorth[1]);
+            vars.set("W", WestNorth[0]);
+            vars.set("S", EastSouth[1]);
+            vars.set("E", EastSouth[0]);
+            vars.set("ar", ar);
 
-                compress = bool(compressIf_->eval(vars));
-            }
-
-            if (compress) {
-
-                repres::RepresentationHandle out(outputRepresentation());
-                const util::BoundingBox extended = out->extendedBoundingBox(bbox);
-
-                eckit::Log::debug<LibMir>()
-                        << "ShToGridded::mergeWithNext: "
-                        << "\n\t   " << *this
-                        << "\n\t + " << next
-                        << "\n\t extendedBoundingBox:"
-                        << "\n\t   " << bbox
-                        << "\n\t > " << extended
-                        << std::endl;
-
-                // Magic super-powers!
-                cropping_.boundingBox(extended);
-                local(true);
-
-                return true;
+            if (!bool(compressIf_->eval(vars))) {
+                return false;
             }
         }
+
+        repres::RepresentationHandle out(outputRepresentation());
+
+        // extend bbox with element diagonals [m], converted to (central) angle
+        double radius = 0;
+        ASSERT(out->getLongestElementDiagonal(radius));
+        ASSERT(radius > 0);
+
+        double c = radius / atlas::util::Earth::radius();
+        double angle = util::radian_to_degree(2. * std::asin(0.5 * c));
+
+        // Extend the box, then crop to produce a valid representation
+        util::BoundingBox extended = next.extendedBoundingBox(bbox, angle);
+        util::BoundingBox best = out->croppedBoundingBox(extended);
+
+        eckit::Log::debug<LibMir>()
+                << "ShToGridded::mergeWithNext: "
+                << "\n\t   " << *this
+                << "\n\t + " << next
+                << std::endl;
+
+        // Magic super-powers!
+        cropping_.boundingBox(best);
+        local(true);
+
     }
     return false;
 }
@@ -356,4 +360,3 @@ eckit::Hash::digest_t ShToGridded::atlas_config_t::digest() const {
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

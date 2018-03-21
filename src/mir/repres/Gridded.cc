@@ -15,11 +15,15 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "eckit/geometry/Point2.h"
 #include "eckit/log/Log.h"
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/api/Atlas.h"
+#include "mir/config/LibMir.h"
+#include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/config/LibMir.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
@@ -60,10 +64,20 @@ void Gridded::setGivenPacking(grib_info&) const {
 void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
     // only crop if not global
     if (!isGlobal()) {
-        std::cout << "+++++++++++ " << *this << " is not global" << std::endl;
+        eckit::Log::info() << "+++++++++++ " << *this << " is not global" << std::endl;
         action::AreaCropper cropper(parametrisation, bbox_);
         cropper.execute(ctx);
     }
+}
+
+
+util::BoundingBox Gridded::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
+
+    // cropping bounding box after extending guarantees the representation can use it
+    util::BoundingBox extended(bbox);
+    Gridded::extendBoundingBox(extended, angle);
+
+    return croppedBoundingBox(extended);
 }
 
 
@@ -83,13 +97,72 @@ const util::BoundingBox& Gridded::boundingBox() const {
 }
 
 
-util::BoundingBox Gridded::croppedBoundingBox(const util::BoundingBox&) const{
+util::BoundingBox Gridded::croppedBoundingBox(const util::BoundingBox& bbox) const{
     // normally, no adjustments are necessary
+    return bbox;
 }
 
 
 bool Gridded::getLongestElementDiagonal(double&) const {
     return false;
+}
+
+
+void Gridded::extendBoundingBox(util::BoundingBox& bbox, double angle) {
+    util::Rotation nonRotated;
+    extendBoundingBox(bbox, angle, nonRotated);
+}
+
+
+void Gridded::extendBoundingBox(util::BoundingBox& bbox, double angle, const util::Rotation& rotation) {
+    using namespace eckit::geometry;
+
+
+    // Calculates a bbox in the un-rotated frame, containing the (possibly) rotated bbox;
+    // First rotate the bbox corners, then expand to contain all elements covering the
+    // original rotated box (for a valid interpolatation)
+
+
+    // rotate bounding box corners and find (min, max)
+    const atlas::PointLonLat southPole(
+                rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
+                rotation.south_pole_latitude().value() );
+
+    const atlas::util::Rotation r(southPole);
+    const atlas::PointLonLat p[] {
+        r.rotate({bbox.west().value(), bbox.north().value()}),
+        r.rotate({bbox.east().value(), bbox.north().value()}),
+        r.rotate({bbox.east().value(), bbox.south().value()}),
+        r.rotate({bbox.west().value(), bbox.south().value()})
+    };
+
+    Point2 min(p[0]);
+    Point2 max(p[0]);
+    for (size_t i = 1; i < 4; ++i) {
+        min = Point2::componentsMin(min, p[i]);
+        max = Point2::componentsMax(max, p[i]);
+    }
+
+
+    // for valid interpolations, extend by central 'angle' (converted from radius [m])
+    ASSERT(angle >= 0);
+
+    Latitude  n = max[1] + angle > Latitude::NORTH_POLE.value() ? Latitude::NORTH_POLE : max[1] + angle;
+    Latitude  s = min[1] - angle < Latitude::SOUTH_POLE.value() ? Latitude::SOUTH_POLE : min[1] - angle;
+    Longitude w = min[0];
+    Longitude e = max[0];
+
+    if ((Longitude::GLOBE + w - e).value() < 2. * angle) {
+        e = Longitude::GLOBE + w;
+    } else {
+        w = min[0] - angle;
+        e = max[0] + angle > (w + Longitude::GLOBE).value() ?
+                    w + Longitude::GLOBE : Longitude(max[0] + angle);
+    }
+
+
+    // validate bounding box
+    bbox = util::BoundingBox(n, w, s, e);
 }
 
 

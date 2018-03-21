@@ -41,6 +41,14 @@ void Method::setCropping(const mir::util::BoundingBox&) {
     NOTIMP;
 }
 
+bool Method::hasCropping() const {
+    return false;
+}
+
+const util::BoundingBox& Method::getCropping() const {
+    NOTIMP;
+}
+
 const repres::Representation* Method::adjustOutputRepresentation(const repres::Representation* representation) {
     return representation;
 }

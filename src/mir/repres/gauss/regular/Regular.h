@@ -51,8 +51,7 @@ public:
     // None
 
     // -- Overridden methods
-
-    virtual void validate(const std::vector<double>&) const;
+    // None
 
     // -- Class members
     // None
@@ -79,19 +78,11 @@ protected:
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-
     virtual void fill(api::MIRJob&) const;
-
-    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
-
-    virtual atlas::Grid atlasGrid() const;
-
-    virtual void makeName(std::ostream&) const;
-
     virtual bool sameAs(const Representation&) const;
-
-    size_t numberOfPoints() const;
-    bool getLongestElementDiagonal(double&) const;
+    virtual bool getLongestElementDiagonal(double&) const;
+    virtual atlas::Grid atlasGrid() const;
+    virtual void makeName(std::ostream&) const;
 
     // -- Class members
     // None
@@ -112,6 +103,9 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
+    virtual void validate(const std::vector<double>&) const;
+    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
+    size_t numberOfPoints() const;
     eckit::Fraction getSmallestIncrement() const;
 
     // -- Class members
