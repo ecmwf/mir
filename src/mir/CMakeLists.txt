@@ -124,16 +124,28 @@ list(
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
+    caching/LegendreCache.cc
+    caching/LegendreCache.h
+    caching/MeshCache.cc
+    caching/MeshCache.h
+    caching/WeightCache.cc
+    caching/WeightCache.h
+    caching/legendre/FileLoader.cc
+    caching/legendre/FileLoader.h
+    caching/legendre/LegendreLoader.cc
+    caching/legendre/LegendreLoader.h
+    caching/legendre/MappedMemoryLoader.cc
+    caching/legendre/MappedMemoryLoader.h
+    caching/legendre/NoLoader.cc
+    caching/legendre/NoLoader.h
+    caching/legendre/SharedMemoryLoader.cc
+    caching/legendre/SharedMemoryLoader.h
     caching/matrix/FileLoader.cc
     caching/matrix/FileLoader.h
     caching/matrix/MatrixLoader.cc
     caching/matrix/MatrixLoader.h
     caching/matrix/SharedMemoryLoader.cc
     caching/matrix/SharedMemoryLoader.h
-    caching/MeshCache.cc
-    caching/MeshCache.h
-    caching/WeightCache.cc
-    caching/WeightCache.h
     compare/Comparator.cc
     compare/Comparator.h
     compare/Field.cc
@@ -765,18 +777,6 @@ if(HAVE_ATLAS)
             action/transform/ShVodToUV.h
             action/transform/TransCache.cc
             action/transform/TransCache.h
-            caching/LegendreCache.cc
-            caching/LegendreCache.h
-            caching/legendre/FileLoader.cc
-            caching/legendre/FileLoader.h
-            caching/legendre/LegendreLoader.cc
-            caching/legendre/LegendreLoader.h
-            caching/legendre/MappedMemoryLoader.cc
-            caching/legendre/MappedMemoryLoader.h
-            caching/legendre/NoLoader.cc
-            caching/legendre/NoLoader.h
-            caching/legendre/SharedMemoryLoader.cc
-            caching/legendre/SharedMemoryLoader.h
             )
        endif()
 endif()
