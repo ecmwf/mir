@@ -18,8 +18,7 @@ namespace mir {
 
 
 struct LatitudeIncrement {
-    explicit LatitudeIncrement(const double& increment=0) : increment_(increment) {}
-    explicit LatitudeIncrement(const Latitude& increment) : increment_(increment) {}
+    explicit LatitudeIncrement(const Latitude& increment=Latitude(0)) : increment_(increment) {}
     const LatitudeIncrement& operator=(const Latitude& l) {
         increment_ = l;
         return *this;
