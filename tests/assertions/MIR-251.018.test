@@ -1,6 +1,0 @@
-# MARS request
-param=2t,levtype=sfc
-# MIR options
---grid=0.123456789/0.123456789
-# grib_get assertions
-
