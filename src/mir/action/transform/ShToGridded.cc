@@ -189,19 +189,14 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
+
         eckit::Timer time("ShToGridded::transform: setup", eckit::Log::debug<LibMir>());
-
-        if (local()) {
-            trans = atlas_trans_t(grid, int(truncation), options_);
-        } else {
-
-            trans = getTrans(parametrisation_,
-                             ctx,
-                             key,
-                             grid,
-                             truncation,
-                             options_);
-        }
+        trans = getTrans(parametrisation_,
+                         ctx,
+                         key,
+                         grid,
+                         truncation,
+                         options_);
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
