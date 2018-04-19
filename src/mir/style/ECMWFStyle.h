@@ -86,7 +86,7 @@ private:
     // -- Methods
 
     bool isWindComponent() const;
-    bool selectWindComponents(action::ActionPlan&) const;
+    void selectWindComponents(action::ActionPlan&) const;
 
     // -- Overridden methods
 

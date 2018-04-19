@@ -95,6 +95,9 @@ public:
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
         options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind"));
+        options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific wind component ('wind'/'vod2uv')"));
+        options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific wind component ('wind'/'vod2uv')"));
+
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by methods k-nearest"));

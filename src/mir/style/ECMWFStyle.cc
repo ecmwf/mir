@@ -328,16 +328,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     if (rotation && (wind || vod2uv)) {
         plan.add("filter.adjust-winds-directions");
-        selectWindComponents(plan);
     }
 
     if (isWindComponent()) {
         plan.add("filter.adjust-winds-scale-cos-latitude");
     }
 
-    if (!rotation) {
-        selectWindComponents(plan);
-    }
+    selectWindComponents(plan);
 
     if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
         std::string metadata;
@@ -467,7 +464,7 @@ bool ECMWFStyle::isWindComponent() const {
 }
 
 
-bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
     bool u_only = false;
     if (parametrisation_.userParametrisation().get("u-only", u_only) && u_only) {
         plan.add("select.field", "which", long(0));
@@ -477,7 +474,6 @@ bool ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
         ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
-    return (u_only || v_only);
 }
 
 
