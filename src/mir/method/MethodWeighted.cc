@@ -332,6 +332,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             if (field.hasMissing()) {
                 WeightMatrix M;
                 applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
+//exit(0);
 
                 M.multiply(mi, mo);
             } else {
@@ -399,50 +400,55 @@ void MethodWeighted::applyMissingValues(
     ASSERT( W.cols() == values.size() );
     WeightMatrix X(W);
 
+    WeightMatrix::Scalar* data = const_cast<WeightMatrix::Scalar*>(X.data());
+
+    WeightMatrix::Size i = 0;
     WeightMatrix::iterator it(X);
-    for (WeightMatrix::Size i = 0; i < X.rows(); i++) {
-        const WeightMatrix::iterator begin = X.begin(i);
-        const WeightMatrix::iterator end   = X.end(i);
+    for (WeightMatrix::Size r = 0; r < X.rows(); ++r) {
+        const WeightMatrix::iterator end = X.end(r);
 
         // count missing values, accumulate weights (disregarding missing values) and find closest value (maximum weight)
-        size_t Nmissing = 0;
-        size_t Nentries = 0;
+        size_t i_missing = i;
+        size_t N_missing = 0;
+        size_t N_entries = 0;
         double sum = 0.;
-        WeightMatrix::const_iterator closest = begin;
+        double heaviest = -1.;
+        bool heaviest_is_missing = false;
 
-        for (it = begin; it != end; ++it, ++Nentries) {
-            if (values[it.col()] == missingValue)
-                ++Nmissing;
-            else
+        WeightMatrix::iterator kt(it);
+        WeightMatrix::Size k = i;
+        for (; it != end; ++it, ++i, ++N_entries) {
+
+            const bool miss = values[it.col()] == missingValue;
+
+            if (miss) {
+                ++N_missing;
+                i_missing = i;
+            } else {
                 sum += *it;
-            if (*closest < *it)
-                closest = it;
+            }
+
+            if (heaviest < data[i]) {
+                heaviest = data[i];
+                heaviest_is_missing = miss;
+            }
         }
 
         // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
         // if all values are missing, or the closest value is missing, force missing value
-        if (Nmissing > 0) {
-            if (Nmissing == Nentries || values[closest.col()] == missingValue) {
+        if (N_missing > 0) {
+            if (N_missing == N_entries || heaviest_is_missing) {
 
-                bool found = false;
-                for (it = begin; it != end; ++it) {
-                    *it = 0.;
-                    if (values[it.col()] == missingValue && !found) {
-                        *it = 1.;
-                        found = true;
-                    }
+                for (WeightMatrix::Size j = k; j < k + N_entries; ++j) {
+                    data[j] = j == i_missing ? 1. : 0.;
                 }
-                ASSERT(found);
 
             } else {
 
                 const double factor = eckit::types::is_approximately_equal(sum, 0.) ? 0 : 1. / sum;
-                for (it = begin; it != end; ++it) {
-                    if (values[it.col()] == missingValue) {
-                        *it = 0.;
-                    } else {
-                        *it *= factor;
-                    }
+                for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
+                    const bool miss = values[kt.col()] == missingValue;
+                    data[j] = miss ? 0. : (factor * data[j]);
                 }
 
             }
