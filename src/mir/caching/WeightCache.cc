@@ -91,7 +91,10 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
     value_type tmp( MatrixLoaderFactory::build(manager.loader(), path) );
     w.swap(tmp);
 
-    w.validate("fromCache");
+    static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
+    if (matrixValidate) {
+        w.validate("fromCache");
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

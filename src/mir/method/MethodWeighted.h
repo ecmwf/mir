@@ -134,6 +134,7 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
     Cropping cropping_;
+    bool matrixValidate_;
 
     friend class MatrixCacheCreator;
 

@@ -59,6 +59,8 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 
     pruneEpsilon_ = 0;
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
+
+    matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
 }
 
 
@@ -99,11 +101,15 @@ void MethodWeighted::createMatrix(context::Context& ctx,
 
     computeMatrixWeights(ctx, in, out, W);
 
+    // matrix validation always happens after creation,
+    // because the matrix can/will be cached
     W.validate("computeMatrixWeights");
 
     if (masks.active() && masks.cacheable()) {
         applyMasks(W, masks);
-        W.validate("applyMasks");
+        if (matrixValidate_) {
+            W.validate("applyMasks");
+        }
     }
 }
 
@@ -191,7 +197,9 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // it will be cached in memory nevertheless
     if (masks.active() && !masks.cacheable())  {
         applyMasks(W, masks);
-        W.validate("applyMasks");
+        if (matrixValidate_) {
+            W.validate("applyMasks");
+        }
     }
 
     eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
@@ -442,7 +450,9 @@ void MethodWeighted::applyMissingValues(
 
     }
 
-    X.validate("MethodWeighted::applyMissingValues");
+    if (matrixValidate_) {
+        X.validate("applyMissingValues");
+    }
 
     MW.swap(X);
 }
