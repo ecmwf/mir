@@ -78,6 +78,8 @@ public:
         options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
+        options_.push_back(new SimpleOption<bool>("vod2UV-legacy-minus-one-wave", "Input is vorticity and divergence (vo/d), convert to Cartesian components (spectral U/V) by using one wave number less"));
+        options_.push_back(new SimpleOption<bool>("vod2UV-legacy-plus-one-wave", "Input is vorticity and divergence (vo/d), convert to Cartesian components (spectral U/V) by using one wave number more"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<std::string>("transform-compress-if", "Compress plan for spectral transforms given predicate formula, on parameters N/W/S/E and AR (area ratio)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
