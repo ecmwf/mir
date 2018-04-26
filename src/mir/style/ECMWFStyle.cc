@@ -346,6 +346,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+    const param::MIRParametrisation& user = parametrisation_.userParametrisation();
 
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("intgrid", "none");
@@ -358,19 +359,30 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     resol.prepare(plan);
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
+    if (user.get("formula.spectral", formula)) {
         std::string metadata;
         // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
+        user.get("formula.spectral.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+    user.get("vod2uv", vod2uv);
 
     if (vod2uv) {
-        plan.add("transform.sh-vod-to-UV");
+        bool plus  = user.has("vod2UV-legacy-plus-one-wave");
+        bool minus = user.has("vod2UV-legacy-minus-one-wave");
+
+        if (plus) {
+            ASSERT(!minus);
+            plan.add("transform.sh-vod-to-UV-legacy-plus-one-wave");
+        } else if (minus) {
+            ASSERT(!plus);
+            plan.add("transform.sh-vod-to-UV-legacy-minus-one-wave");
+        } else {
+            plan.add("transform.sh-vod-to-UV");
+        }
     }
 
     selectWindComponents(plan);

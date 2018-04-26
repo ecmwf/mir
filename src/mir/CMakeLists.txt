@@ -775,6 +775,8 @@ if(HAVE_ATLAS)
             action/transform/ShTruncate.h
             action/transform/ShVodToUV.cc
             action/transform/ShVodToUV.h
+            action/transform/ShVodToUVLegacy.cc
+            action/transform/ShVodToUVLegacy.h
             action/transform/TransCache.cc
             action/transform/TransCache.h
             )

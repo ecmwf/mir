@@ -36,16 +36,6 @@ namespace action {
 namespace transform {
 
 
-inline double dd(double pm, double pn) {
-    return -sqrt((pn * pn - pm * pm) / (4.*pn * pn - 1)) / pn;
-}
-
-
-inline double ss(double pm, double pn) {
-    return -pm / (pn * (pn + 1));
-}
-
-
 ShVodToUV::ShVodToUV(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 }
@@ -97,7 +87,6 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 
     // transform
-#if 1
     const int T = int(truncation);
     const int nb_coeff = int(size);
     const int nb_fields = 1;
@@ -107,89 +96,6 @@ void ShVodToUV::execute(context::Context & ctx) const {
     ASSERT(vordiv_to_UV.truncation() == T);
 
     vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());
-#else
-
-    std::vector<double> temp_vo;
-    std::vector<double> temp_d;
-
-
-    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_vo, temp_vo);
-    repres::sh::SphericalHarmonics::truncate(truncation, truncation - 1, field_d, temp_d);
-
-
-    typedef std::vector<std::complex<double> > veccomp;
-    const veccomp &vorticity = reinterpret_cast<const veccomp &>(temp_vo);
-    const veccomp &divergence = reinterpret_cast<const veccomp &>(temp_d);
-
-    veccomp &u_component = reinterpret_cast<veccomp &>(result_U);
-    veccomp &v_component = reinterpret_cast<veccomp &>(result_V);
-
-
-    // ref. libemos/gribex/vod2uv.F
-
-    std::complex<double> zi(0.0, 1.0);
-    const double kRadiusOfTheEarth = atlas::util::Earth::radius();
-    size_t k = 0;
-    size_t imn = 0;
-
-    size_t count = truncation;
-
-
-    for (size_t j = 0 ; j < count ;  j++) {
-        double zm = j;
-        double zn = zm;
-
-        double ddmn1 = dd(zm, zn + 1.);
-        double ssmn = ss(zm, zn);
-        if (j) {
-            u_component[k] = (-ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-            v_component[k] = ( ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-
-        } else {
-            u_component[k] = (-ddmn1 * vorticity[imn + 1]) * kRadiusOfTheEarth ;
-            v_component[k] = ( ddmn1 * divergence[imn + 1]) * kRadiusOfTheEarth;
-        }
-
-        imn++;
-        k++;
-        size_t  jmp = j + 1;
-
-        if (jmp < count - 1) {
-            for (size_t i = jmp; i < count - 1;  i++) {
-                zn = i;
-
-                double ddzmn = dd(zm, zn);
-                double ddmn1 = dd(zm, zn + 1.);
-                double ssmn = ss(zm, zn);
-                u_component[k] =  ( ddzmn * vorticity[imn - 1] - ddmn1 * vorticity[imn + 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-                v_component[k] =  (-ddzmn * divergence[imn - 1] + ddmn1 * divergence[imn + 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-                k++;
-                imn++;
-            }
-
-            zn = count - 1;
-            double ddzmn = dd(zm, zn);
-            double ssmn = ss(zm, zn);
-            u_component[k] =  ( ddzmn * vorticity[imn - 1] + zi * ssmn * divergence[imn]) * kRadiusOfTheEarth;
-            v_component[k] =  (-ddzmn * divergence[imn - 1] + zi * ssmn * vorticity[imn]) * kRadiusOfTheEarth;
-            k++;
-            imn++;
-        }
-
-        zn = count;
-        double ddzmn = dd(zm, zn);
-        u_component[k] =  ddzmn * vorticity[imn - 1] * kRadiusOfTheEarth;
-        v_component[k] =  -ddzmn * divergence[imn - 1] * kRadiusOfTheEarth;
-        k++;
-
-    }
-
-    while (2 * k < size) {
-        u_component[k] = 0;
-        v_component[k] = 0;
-        k++;
-    }
-#endif
 
 
     // configure paramIds for U/V
