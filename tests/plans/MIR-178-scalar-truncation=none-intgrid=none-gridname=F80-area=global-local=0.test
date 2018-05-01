@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--truncation=none --intgrid=none --gridname=F80
+# plan
+ShToNamedGrid[cropping=none,local=0,options=[0ddd482fc82daa70ab6a4d3b9aeedc73],invtrans=<scalar>,gridname=F80]|Save[output=...]

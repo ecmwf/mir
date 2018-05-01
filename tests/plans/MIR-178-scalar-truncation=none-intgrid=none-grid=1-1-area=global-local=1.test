@@ -1,0 +1,6 @@
+# mars
+param=t,level=1000
+# mir
+--atlas-trans-local --truncation=none --intgrid=none --grid=1/1
+# plan
+ShToRegularLL[cropping=none,local=1,options=[d0f6e642b74fc65cdaa80ee561ea0ef9],invtrans=<scalar>,increments=Increments[west_east=1,south_north=1]]|Save[output=...]

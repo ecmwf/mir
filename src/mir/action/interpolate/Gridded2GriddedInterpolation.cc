@@ -51,9 +51,6 @@ bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
             << "Gridded2GriddedInterpolation::mergeWithNext: "
             << "\n\t" "   " << *this
             << "\n\t" " + " << next
-            << std::endl
-            << "\n\t" "next.canCrop() " << next.canCrop()
-            << "\n\t" "method_->canCrop() " << method_->canCrop()
             << std::endl;
 
     if (next.canCrop() && method_->canCrop()) {
