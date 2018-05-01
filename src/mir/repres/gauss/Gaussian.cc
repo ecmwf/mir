@@ -254,7 +254,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(N);
     auto latitudesIt = m->find(N);
     if (latitudesIt == m->end()) {
-        eckit::Timer timer("Gaussian latitudes " + std::to_string(N));
+        eckit::Timer timer("Gaussian latitudes " + std::to_string(N), eckit::Log::debug<LibMir>());
 
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
