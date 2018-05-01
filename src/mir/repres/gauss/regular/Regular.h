@@ -74,6 +74,7 @@ protected:
     // -- Methods
 
     void setNiNj();
+    void checkNiNj() const;
 
     // -- Overridden methods
 

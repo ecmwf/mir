@@ -29,16 +29,19 @@ namespace regular {
 
 RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
     Regular(parametrisation) {
+    checkNiNj();
 }
 
 
 RegularGG::RegularGG(size_t N):
     Regular(N) {
+    checkNiNj();
 }
 
 
 RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, bool correctBoundingBox):
     Regular(N, bbox, correctBoundingBox) {
+    checkNiNj();
 }
 
 

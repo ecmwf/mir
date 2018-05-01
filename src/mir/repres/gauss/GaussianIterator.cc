@@ -80,13 +80,23 @@ void GaussianIterator::resetToRow(size_t j) {
     ASSERT(Ni_globe > 1);
     inc_ = Longitude::GLOBE.fraction() / Ni_globe;
 
-    const eckit::Fraction::value_type Nw = (bbox_.west().fraction() / inc_).integralPart();
-    const eckit::Fraction::value_type Ne = (bbox_.east().fraction() / inc_).integralPart();
-    ASSERT(Ne - Nw >= 0);
+    const eckit::Fraction w = bbox_.west().fraction();
+    auto Nw = (w / inc_).integralPart();
+    if (Nw * inc_ < w) {
+        Nw += 1;
+    }
+
+    const eckit::Fraction e = bbox_.east().fraction();
+    auto Ne = (e / inc_).integralPart();
+    if (Ne * inc_ > e) {
+        Ne -= 1;
+    }
+
+    ASSERT(Ne - Nw + 1 > 0);
+    Ni_ = size_t(Ne - Nw + 1);
 
     i_ = 0;
     lon_ = Nw * inc_;
-    Ni_ = size_t(Ne - Nw + 1);
 }
 
 
