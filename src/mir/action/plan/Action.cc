@@ -55,6 +55,11 @@ bool Action::mergeWithNext(const Action&) {
 }
 
 
+bool Action::isCropAction() const {
+    return false;
+}
+
+
 bool Action::canCrop() const {
     return false;
 }

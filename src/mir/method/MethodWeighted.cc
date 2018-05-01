@@ -544,7 +544,7 @@ void MethodWeighted::setCropping(const util::BoundingBox& bbox) {
 
 
 bool MethodWeighted::hasCropping() const {
-    return cropping_.active();
+    return cropping_;
 }
 
 
@@ -555,7 +555,7 @@ const util::BoundingBox& MethodWeighted::getCropping() const {
 
 const repres::Representation* MethodWeighted::adjustOutputRepresentation(const repres::Representation* representation) {
 
-    if (cropping_.active()) {
+    if (cropping_) {
         repres::RepresentationHandle out(representation); // Will destroy represenation
 
         // bounding box needs adjustment because it can come from the user

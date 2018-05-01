@@ -91,11 +91,6 @@ void AreaCropper::print(std::ostream& out) const {
 }
 
 
-bool AreaCropper::canCrop() const {
-    return true;
-}
-
-
 const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
     return bbox_;
 }
@@ -303,6 +298,16 @@ void AreaCropper::execute(context::Context& ctx) const {
 
 const char* AreaCropper::name() const {
     return "AreaCropper";
+}
+
+
+bool AreaCropper::isCropAction() const {
+    return true;
+}
+
+
+bool AreaCropper::canCrop() const {
+    return true;
 }
 
 

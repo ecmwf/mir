@@ -268,8 +268,8 @@ void ShToGridded::execute(context::Context& ctx) const {
 bool ShToGridded::mergeWithNext(const Action& next) {
 
     // make use of the area cropping action downstream (no merge)
-    if (!cropping_.active() && next.canCrop()) {
-        util::BoundingBox bbox = next.croppingBoundingBox();
+    if (!cropping_ && next.canCrop()) {
+        const util::BoundingBox& bbox = next.croppingBoundingBox();
 
         if (!local()) {
 
@@ -293,6 +293,13 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         }
 
         repres::RepresentationHandle out(outputRepresentation());
+
+        // if directly followed by cropping go straight to the cropped representation
+        if (next.isCropAction()) {
+            cropping_.boundingBox(out->croppedBoundingBox(bbox));
+            local(true);
+            return true;
+        }
 
         // extend bbox with element diagonals [m], converted to (central) angle
         double radius = 0;
