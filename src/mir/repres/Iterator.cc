@@ -34,10 +34,10 @@ void mir::repres::Iterator::point_ll_t::print(std::ostream& s) const {
 
 
 Iterator::Iterator(const util::Rotation& rotation) :
-    valid_(true),
     rotation_(atlas::PointLonLat(
                   rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                  rotation.south_pole_latitude().value() )) {
+                  rotation.south_pole_latitude().value() )),
+    valid_(true) {
 }
 
 

@@ -18,7 +18,6 @@
 
 #include <iosfwd>
 
-
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
@@ -92,11 +91,11 @@ protected:
 
     // -- Members
 
-    bool valid_;
     point_2d_t point_;
     point_ll_t pointUnrotated_;
 
     atlas::util::Rotation rotation_;
+    bool valid_;
 
     // -- Methods
 
