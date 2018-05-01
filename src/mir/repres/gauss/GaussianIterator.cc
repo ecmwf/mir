@@ -128,10 +128,8 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
             }
         }
 
-        if (bbox_.contains(lat, lon)) {
-            count_++;
-            return true;
-        }
+        count_++;
+        return true;
     }
     return false;
 }
