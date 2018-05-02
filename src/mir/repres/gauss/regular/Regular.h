@@ -104,7 +104,6 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
-    virtual void validate(const std::vector<double>&) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     size_t numberOfPoints() const;
     eckit::Fraction getSmallestIncrement() const;

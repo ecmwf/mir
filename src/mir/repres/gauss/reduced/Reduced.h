@@ -104,7 +104,6 @@ private:
     // -- Overridden methods
 
     virtual const Reduced* croppedRepresentation(const util::BoundingBox&) const ;
-    virtual void validate(const std::vector<double>& values) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual size_t numberOfPoints() const;

@@ -85,6 +85,7 @@ protected:
     bool includesSouthPole() const;
     bool isPeriodicWestEast() const;
     util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    virtual void validate(const std::vector<double>&) const;
 
     // -- Class members
     // None
