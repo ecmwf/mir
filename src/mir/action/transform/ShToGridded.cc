@@ -107,11 +107,8 @@ static ShToGridded::atlas_trans_t getTrans(
                 eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create coefficients");
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
-                ShToGridded::atlas_config_t write(options_);
-                write.set(atlas::option::write_legendre(path));
-
                 // This will create the cache
-                ShToGridded::atlas_trans_t tmp(grid_, int(truncation_), write);
+                ShToGridded::atlas_trans_t tmp(grid_, int(truncation_), options_ | atlas::option::write_legendre(path));
                 ASSERT(tmp);
 
                 saved = path.exists();
@@ -168,6 +165,17 @@ static ShToGridded::atlas_trans_t getTrans(
 }
 
 
+static atlas::Grid atlasGrid(const repres::Representation& global, const method::Cropping& cropping) {
+    if (cropping) {
+        const util::BoundingBox& bbox = cropping.boundingBox();
+        repres::RepresentationHandle local(global.croppedRepresentation(bbox));
+        return  local->atlasGrid();
+    }
+
+    return global.atlasGrid();
+}
+
+
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
 
@@ -184,19 +192,8 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
             + ":" + representation.uniqueName()
             + ":" + options_.digest();
 
-    // set grid and options (options include global grid, if cropping)
-    atlas::Grid grid = representation.atlasGrid();
+    atlas::Grid grid(atlasGrid(representation, cropping_));
     ASSERT(grid);
-
-    atlas_config_t options(options_);
-    if (cropping_) {
-        ASSERT(local());
-        const util::BoundingBox& bbox = cropping_.boundingBox();
-        repres::RepresentationHandle local(representation.croppedRepresentation(bbox));
-
-        options = options | atlas::option::global_grid(grid);
-        grid = local->atlasGrid();
-    }
 
     atlas_trans_t trans;
     try {
@@ -207,7 +204,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
                          key,
                          grid,
                          truncation,
-                         options);
+                         options_);
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
@@ -314,11 +311,15 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         }
 
         repres::RepresentationHandle out(outputRepresentation());
+        options_ = options_ | atlas::option::global_grid(out->atlasGrid());
 
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {
+
+            // Magic super-powers!
             cropping_.boundingBox(out->croppedBoundingBox(bbox));
             local(true);
+
             return true;
         }
 
@@ -375,7 +376,14 @@ eckit::Hash::digest_t ShToGridded::atlas_config_t::digest() const {
     // We don't want to 'see' the internal options, just if they are set differently
     // (so we know when they change)
     eckit::MD5 h;
+#if 0
     this->hash(h);
+#else
+    // workaround eckit::BadConversion: Cannot convert <atlas::Grid> (Map) to std::string
+    std::ostringstream stream;
+    stream << *this;
+    h.add(stream.str());
+#endif
     return h.digest();
 }
 

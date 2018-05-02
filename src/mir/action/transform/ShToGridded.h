@@ -47,7 +47,7 @@ public:
 
     typedef atlas::trans::Trans atlas_trans_t;
 
-    struct atlas_config_t : public atlas::util::Config  {
+    struct atlas_config_t : public atlas::util::Config {
         using Config::Config;
         eckit::Hash::digest_t digest() const;
     };
