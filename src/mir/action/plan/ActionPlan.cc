@@ -145,14 +145,17 @@ void ActionPlan::compress() {
         more = false;
 
         for (size_t i = 0; i < actions_.size() - 1; ++i) {
+            std::ostringstream oldAction;
+            oldAction << *actions_[i];
             if (actions_[i]->mergeWithNext(*actions_[i + 1])) {
 
-                eckit::Log::debug<LibMir>() << "ActionPlan::compress merge "
-                                            << *actions_[i]
-                                            << " and "
-                                            << *actions_[i + 1]
-                                            << std::endl;
-
+                eckit::Log::debug<LibMir>()
+                        << "ActionPlan::compress: "
+                        << "\n   " << oldAction.str()
+                        << "\n + " << *actions_[i + 1]
+                        << "\n = " << *actions_[i]
+                        << std::endl;
+                
                 delete actions_[i + 1];
                 actions_.erase(actions_.begin() + i + 1);
 
