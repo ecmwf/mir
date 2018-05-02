@@ -37,6 +37,10 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation &parametr
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
+    // non-periodic regular grids only supported by local spectral transforms
+    if (!local()) {
+        local(!increments_.isPeriodic());
+    }
 }
 
 
@@ -78,13 +82,9 @@ const char* ShToRegularLL<Invtrans>::name() const {
 template<class Invtrans>
 const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() const {
 
-    if (!increments_.isPeriodic()) {
-        throw eckit::UserError("Spectral transforms only support periodic regular grids", Here());
-    }
-
-    // use (non-shifted) global bounding box
     util::BoundingBox bbox;
-    increments_.globaliseBoundingBox(bbox, false, false);
+    bool shiftAllowed(local());
+    increments_.globaliseBoundingBox(bbox, shiftAllowed, shiftAllowed);
 
     return new repres::latlon::RegularLL(bbox, increments_);
 }

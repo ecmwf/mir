@@ -84,9 +84,8 @@ const char* ShToRotatedRegularLL<Invtrans>::name() const {
 template<class Invtrans>
 const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentation() const {
 
-    // use (non-shifted) global bounding box
     util::BoundingBox bbox;
-    increments_.globaliseBoundingBox(bbox, false, false);
+    increments_.globaliseBoundingBox(bbox);
 
     return new repres::latlon::RotatedLL(bbox, increments_, rotation_);
 }
