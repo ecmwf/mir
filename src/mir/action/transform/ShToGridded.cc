@@ -179,13 +179,24 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     const size_t truncation = field.representation()->truncation();
     ASSERT(truncation);
 
-    const atlas::Grid grid = representation.atlasGrid();
-    ASSERT(grid);
-
     const std::string key =
             "T" + std::to_string(truncation)
             + ":" + representation.uniqueName()
             + ":" + options_.digest();
+
+    // set grid and options (options include global grid, if cropping)
+    atlas::Grid grid = representation.atlasGrid();
+    ASSERT(grid);
+
+    atlas_config_t options(options_);
+    if (cropping_) {
+        ASSERT(local());
+        const util::BoundingBox& bbox = cropping_.boundingBox();
+        repres::RepresentationHandle local(representation.croppedRepresentation(bbox));
+
+        options = options | atlas::option::global_grid(grid);
+        grid = local->atlasGrid();
+    }
 
     atlas_trans_t trans;
     try {
@@ -196,7 +207,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
                          key,
                          grid,
                          truncation,
-                         options_);
+                         options);
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
@@ -261,7 +272,17 @@ void ShToGridded::execute(context::Context& ctx) const {
 
     transform(ctx.field(), *out, ctx);
 
-    ctx.field().representation(out);
+    if (cropping_) {
+        repres::RepresentationHandle local(out->croppedRepresentation(cropping_.boundingBox()));
+
+        ctx.field().representation(local);
+        ctx.field().validate();
+
+    } else {
+
+        ctx.field().representation(out);
+
+    }
 }
 
 
