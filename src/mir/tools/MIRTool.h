@@ -47,9 +47,9 @@ protected:
         return numberOfPositionalArguments();
     }
 
-    virtual void init(const eckit::option::CmdArgs&) {}
+    virtual void init(const eckit::option::CmdArgs&);
 
-    virtual void finish(const eckit::option::CmdArgs&) {}
+    virtual void finish(const eckit::option::CmdArgs&);
 
     options_t options_;
 

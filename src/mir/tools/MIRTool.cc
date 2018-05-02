@@ -14,6 +14,7 @@
 #include "mir/tools/MIRTool.h"
 
 #include "eckit/option/CmdArgs.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -23,7 +24,7 @@ namespace tools {
 namespace {
 
 
-static MIRTool* instance_ = 0;
+static MIRTool* instance_ = nullptr;
 
 
 static void usage(const std::string &tool) {
@@ -37,7 +38,7 @@ static void usage(const std::string &tool) {
 
 MIRTool::MIRTool(int argc, char **argv) :
     eckit::Tool(argc, argv, "MIR_HOME") {
-    ASSERT(instance_ == 0);
+    ASSERT(instance_ == nullptr);
     instance_ = this;
 }
 
@@ -51,6 +52,20 @@ void MIRTool::run() {
     init(args);
     execute(args);
     finish(args);
+}
+
+
+void MIRTool::init(const eckit::option::CmdArgs& args) {
+#ifdef HAVE_ATLAS
+    atlas::Library::instance().initialise(args);
+#endif
+}
+
+
+void MIRTool::finish(const eckit::option::CmdArgs&) {
+#ifdef HAVE_ATLAS
+    atlas::Library::instance().finalise();
+#endif
 }
 
 
