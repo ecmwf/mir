@@ -273,7 +273,6 @@ void ShToGridded::execute(context::Context& ctx) const {
         repres::RepresentationHandle local(out->croppedRepresentation(cropping_.boundingBox()));
 
         ctx.field().representation(local);
-        ctx.field().validate();
 
     } else {
 
