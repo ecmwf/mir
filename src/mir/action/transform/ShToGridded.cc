@@ -246,9 +246,6 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     bool flt = false;
     user.get("atlas-trans-flt", flt);
     options_.set("flt", flt);
-
-    // no partitioning
-    options_.set(atlas::option::global());
 }
 
 
@@ -312,6 +309,15 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
         repres::RepresentationHandle out(outputRepresentation());
         options_ = options_ | atlas::option::global_grid(out->atlasGrid());
+
+        // check if we can speed up with optional global grid
+        {
+            auto grid = out->atlasGrid();
+            if (atlas::grid::GaussianGrid(grid) || atlas::grid::RegularLonLatGrid(grid)) {
+                // symmetric lats and periodic West-East
+                options_ = options_ | atlas::option::global_grid(out->atlasGrid());
+            }
+        }
 
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {
