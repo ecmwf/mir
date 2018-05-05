@@ -246,6 +246,13 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 }
 
 
+util::BoundingBox AreaCropper::croppingBoundingBox(const repres::Representation* representation,
+                                                   const util::BoundingBox& bbox,
+                                                   bool caching) {
+    return getMapping(representation, bbox, caching).boundingBox();
+}
+
+
 void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it

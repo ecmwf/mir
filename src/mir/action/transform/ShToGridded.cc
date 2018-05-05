@@ -270,7 +270,8 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
-        repres::RepresentationHandle local(out->croppedRepresentation(cropping_.boundingBox()));
+        const util::BoundingBox& bbox = cropping_.boundingBox();
+        repres::RepresentationHandle local(out->croppedRepresentation(bbox));
 
         ctx.field().representation(local);
 
@@ -334,15 +335,19 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         util::BoundingBox extended = next.extendedBoundingBox(bbox, angle);
         util::BoundingBox best = out->croppedBoundingBox(extended);
 
-        eckit::Log::debug<LibMir>()
-                << "ShToGridded::mergeWithNext: "
-                << "\n\t   " << *this
-                << "\n\t + " << next
-                << std::endl;
+        std::ostringstream oldAction;
+        oldAction << *this;
 
         // Magic super-powers!
         cropping_.boundingBox(best);
         local(true);
+
+        eckit::Log::debug<LibMir>()
+                << "ShToGridded::mergeWithNext: "
+                << "\n   " << oldAction.str()
+                << "\n + " << *this
+                << "\n = " << next
+                << std::endl;
 
     }
     return false;

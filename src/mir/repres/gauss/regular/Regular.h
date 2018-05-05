@@ -103,6 +103,7 @@ private:
 
     // -- Overridden methods
 
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual void shape(size_t& ni, size_t& nj) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     size_t numberOfPoints() const;

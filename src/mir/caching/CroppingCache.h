@@ -42,6 +42,7 @@ struct CroppingCacheEntry {
     }
 
     size_t footprint() const;
+    const util::BoundingBox& boundingBox() const { return bbox_; }
 
     void save(const eckit::PathName&) const;
     void load(const eckit::PathName&);

@@ -183,66 +183,6 @@ bool Gaussian::isPeriodicWestEast() const {
 }
 
 
-util::BoundingBox Gaussian::croppedBoundingBox(const util::BoundingBox& bbox) const {
-
-    // adjust latitudes
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
-
-    const std::vector<double>& lats = latitudes();
-
-    if (n < lats.back()) {
-        n = lats.back();
-    } else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n.value(),
-                                     [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 <= l2);
-        });
-        ASSERT(best != lats.end());
-        n = *best;
-    }
-
-    if (s > lats.front()) {
-        s = lats.front();
-    } else {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s.value(),
-                                     [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 >= l2);
-        });
-        ASSERT(best != lats.rend());
-        s = *best;
-    }
-
-
-    // adjust East, ensuring 0 <= East - West < 360
-    Longitude e = bbox.east();
-    const Longitude w = bbox.west();
-
-    if (e != w) {
-        eckit::Fraction inc = getSmallestIncrement();
-        ASSERT(inc > 0);
-
-        e = e.normalise(w);
-        if (e > w + Longitude::GLOBE - inc || e == w) {
-            e = w + Longitude::GLOBE - inc;
-        }
-    }
-
-
-    // set bounding box and inform
-    util::BoundingBox newBox = util::BoundingBox(n, w, s, e);
-
-    if (newBox != bbox) {
-        eckit::Channel& log = eckit::Log::debug<LibMir>();
-        std::streamsize old = log.precision(12);
-        log << "Gaussian::croppedBoundingBox: " << bbox << " => "<< newBox << std::endl;
-        log.precision(old);
-
-    }
-    return newBox;
-}
-
-
 void Gaussian::validate(const std::vector<double>& values) const {
     const size_t count = numberOfPoints();
 

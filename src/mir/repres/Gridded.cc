@@ -97,9 +97,24 @@ const util::BoundingBox& Gridded::boundingBox() const {
 }
 
 
-util::BoundingBox Gridded::croppedBoundingBox(const util::BoundingBox& bbox) const{
-    // normally, no adjustments are necessary
-    return bbox;
+util::BoundingBox Gridded::croppedBoundingBox(const util::BoundingBox& bbox) const {
+    //FIMXE: does not respect the parameter 'caching'
+
+    // set bounding box and inform
+    bool caching = false;
+    util::BoundingBox cropped = action::AreaCropper::croppingBoundingBox(this, bbox, caching);
+
+    if (cropped != bbox) {
+        eckit::Channel& log = eckit::Log::debug<LibMir>();
+        std::streamsize old = log.precision(12);
+        log << "Gridded::croppedBoundingBox: "
+            << "\n   " << bbox
+            << "\n > " << cropped
+            << std::endl;
+        log.precision(old);
+    }
+
+    return cropped;
 }
 
 

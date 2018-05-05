@@ -21,6 +21,13 @@
 
 
 namespace mir {
+namespace repres {
+class Representation;
+}
+}
+
+
+namespace mir {
 namespace action {
 
 
@@ -46,7 +53,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static util::BoundingBox croppingBoundingBox(const repres::Representation*, const util::BoundingBox&, bool caching);
 
     // -- Overridden methods
 

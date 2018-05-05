@@ -46,13 +46,6 @@ Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
 // return method_->canCrop();
 
 bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
-
-    eckit::Log::debug<LibMir>()
-            << "Gridded2GriddedInterpolation::mergeWithNext: "
-            << "\n\t" "   " << *this
-            << "\n\t" " + " << next
-            << std::endl;
-
     if (next.canCrop() && method_->canCrop()) {
         method_->setCropping(next.croppingBoundingBox());
         return true;
