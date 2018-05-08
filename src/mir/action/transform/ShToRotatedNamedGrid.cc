@@ -67,8 +67,8 @@ void ShToRotatedNamedGrid<Invtrans>::print(std::ostream& out) const {
 
 
 template<class Invtrans>
-void ShToRotatedNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const atlas::Grid& grid) const {
-    Invtrans::sh2grid(field, trans, grid);
+void ShToRotatedNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
+    Invtrans::sh2grid(field, trans);
 }
 
 

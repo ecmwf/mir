@@ -59,8 +59,8 @@ void ShToRegularGG<Invtrans>::print(std::ostream& out) const {
 
 
 template<class Invtrans>
-void ShToRegularGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const atlas::Grid& grid) const {
-    Invtrans::sh2grid(field, trans, grid);
+void ShToRegularGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
+    Invtrans::sh2grid(field, trans);
 }
 
 

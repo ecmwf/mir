@@ -32,11 +32,11 @@ LegendreCache::LegendreCache() :
 }
 
 const char *LegendreCacheTraits::name() {
-    return "mir/coeffs";
+    return "mir/legendre";
 }
 
 int LegendreCacheTraits::version() {
-    return 2;
+    return 1;
 }
 
 const char *LegendreCacheTraits::extension() {

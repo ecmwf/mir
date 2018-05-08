@@ -45,7 +45,8 @@ public:
 
     // -- Types
 
-    typedef atlas::trans::Trans atlas_trans_t;
+    using atlas_trans_t = atlas::trans::Trans;
+    using atlas_trans_cache_t = atlas::trans::Cache;
 
     struct atlas_config_t : public atlas::util::Config {
         using Config::Config;
@@ -112,7 +113,7 @@ private:
 
     // -- Methods
 
-    virtual void sh2grid(data::MIRField&, const atlas_trans_t&, const atlas::Grid&) const = 0;
+    virtual void sh2grid(data::MIRField&, const atlas_trans_t&) const = 0;
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 

@@ -30,14 +30,14 @@ void InvtransScalar::print(std::ostream& out) const {
 }
 
 
-void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const atlas::Grid& grid) const {
+void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
     eckit::Timer timer("InvtransScalar::sh2grid", eckit::Log::debug<LibMir>());
 
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 1);
 
     // do inverse transform and set gridded values
-    std::vector<double> output(grid.size());
+    std::vector<double> output(trans.grid().size());
     trans.invtrans(1, field.values(0).data(), output.data());
 
     field.update(output, 0);

@@ -26,10 +26,11 @@
 #include "atlas/grid/Grid.h"
 #include "atlas/option/Options.h"
 #include "atlas/projection/Projection.h"
+#include "atlas/trans/LegendreCacheCreator.h"
+#include "atlas/trans/Trans.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Rotation.h"
-#include "atlas/trans/Trans.h"
 
 #else
 

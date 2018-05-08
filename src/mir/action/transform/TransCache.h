@@ -28,9 +28,9 @@ namespace transform {
 
 struct TransCache {
 
-    bool inited_;
-    ShToGridded::atlas_trans_t trans_;
     caching::legendre::LegendreLoader* loader_;
+    atlas::trans::Cache transCache_;
+    bool inited_;
 
     TransCache();
 

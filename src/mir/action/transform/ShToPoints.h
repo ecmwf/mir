@@ -71,7 +71,7 @@ private:
     const repres::Representation* outputRepresentation() const;
     void print(std::ostream&) const;
 
-    void sh2grid(data::MIRField& field, const atlas_trans_t& trans, const atlas::Grid& grid) const;
+    void sh2grid(data::MIRField& field, const atlas_trans_t& trans) const;
 
     // -- Class members
     // None

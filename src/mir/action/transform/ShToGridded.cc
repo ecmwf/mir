@@ -42,6 +42,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/function/FunctionParser.h"
 
@@ -61,82 +62,56 @@ static InMemoryCache<TransCache> trans_cache("mirCoefficient",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static ShToGridded::atlas_trans_t getTrans(
+static ShToGridded::atlas_trans_cache_t getTrans(
+        atlas::trans::LegendreCacheCreator& creator,
         const param::MIRParametrisation& parametrisation,
-        context::Context& ctx,
-        const std::string& key,
-        const atlas::Grid& grid,
-        size_t truncation,
-        const ShToGridded::atlas_config_t& options) {
+        context::Context& ctx ) {
 
-
-    InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
-    if (j != trans_cache.end()) {
-        return j->trans_;
-    }
-
-
-    if (!parametrisation.has("caching")) {
-        TransCache& tc = trans_cache[key];
-        ShToGridded::atlas_trans_t& trans = tc.trans_;
-
-        trans = ShToGridded::atlas_trans_t(grid, int(truncation), options);
-        ASSERT(trans);
-        return trans;
-    }
 
     // Make sure we have enough space in cache to add new coefficients
     // otherwise we may get killed by OOM thread
-    size_t estimate = truncation * truncation * truncation / 2 * sizeof(double);
-    trans_cache.reserve(estimate, caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
+    trans_cache.reserve(creator.estimate(), caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
 
+    const std::string key = creator.uid();
     eckit::PathName path;
 
-    {   // Block for timers
-
+    {
+        // Block for timers
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
 
         class LegendreCacheCreator final : public caching::LegendreCache::CacheContentCreator {
 
+            atlas::trans::LegendreCacheCreator& creator_;
             context::Context& ctx_;
-            const atlas::Grid& grid_;
-            const size_t truncation_;
-            const ShToGridded::atlas_config_t& options_;
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
                 eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create coefficients");
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
-                ShToGridded::atlas_trans_t tmp(grid_, int(truncation_), options_ | atlas::option::write_legendre(path));
-                ASSERT(tmp);
+                creator_.create(path);
 
                 saved = path.exists();
             }
         public:
             LegendreCacheCreator(
-                        context::Context& ctx,
-                        const atlas::Grid& grid,
-                        size_t truncation,
-                        const ShToGridded::atlas_config_t& options) :
-                ctx_(ctx),
-                grid_(grid),
-                truncation_(truncation),
-                options_(options) {
-                ASSERT(!options_.has("read_legendre"));
+                        atlas::trans::LegendreCacheCreator& creator,
+                        context::Context& ctx ) :
+                creator_(creator),
+                ctx_(ctx) {
             }
         };
 
         static caching::LegendreCache cache;
-        LegendreCacheCreator creator(ctx, grid, truncation, options);
+        LegendreCacheCreator create(creator, ctx);
 
         int dummy = 0;
-        path = cache.getOrCreate(key, creator, dummy);
+        path = cache.getOrCreate(key, create, dummy);
     }
 
 
     TransCache& tc = trans_cache[key];
-    ShToGridded::atlas_trans_t& trans = tc.trans_;
+    ShToGridded::atlas_trans_cache_t& transCache = tc.transCache_;
 
     {
         eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load coefficients");
@@ -149,7 +124,7 @@ static ShToGridded::atlas_trans_t getTrans(
         ASSERT(tc.loader_);
         eckit::Log::debug<LibMir>() << "ShToGridded: LegendreLoader " << *tc.loader_ << std::endl;
 
-        trans = ShToGridded::atlas_trans_t(tc.loader_->transCache(), grid, int(truncation), options);
+        transCache = tc.loader_->transCache();
 
         eckit::system::MemoryInfo after = eckit::system::SystemInfo::instance().memoryUsage();
         after.delta(eckit::Log::info(), before);
@@ -160,19 +135,8 @@ static ShToGridded::atlas_trans_t getTrans(
         trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
     }
 
-    ASSERT(trans);
-    return trans;
-}
-
-
-static atlas::Grid atlasGrid(const repres::Representation& global, const method::Cropping& cropping) {
-    if (cropping) {
-        const util::BoundingBox& bbox = cropping.boundingBox();
-        repres::RepresentationHandle local(global.croppedRepresentation(bbox));
-        return  local->atlasGrid();
-    }
-
-    return global.atlasGrid();
+    ASSERT(transCache);
+    return transCache;
 }
 
 
@@ -184,31 +148,47 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     InMemoryCacheUser<TransCache> use(trans_cache, ctx.statistics().transHandleCache_);
 
 
+    atlas::Grid grid = representation.atlasGrid();
+    ASSERT(grid);
+
+    atlas::Domain domain = grid.domain();
+    if (cropping_) {
+        util::BoundingBox bbox = representation.croppedBoundingBox(cropping_.boundingBox());
+        domain = util::Domain(bbox.north(), bbox.west(),
+                              bbox.south(), bbox.east());
+    }
+
     const size_t truncation = field.representation()->truncation();
     ASSERT(truncation);
 
-    const std::string key =
-            "T" + std::to_string(truncation)
-            + ":" + representation.uniqueName()
-            + ":" + options_.digest();
-
-    atlas::Grid grid(atlasGrid(representation, cropping_));
-    ASSERT(grid);
+    atlas::trans::LegendreCacheCreator creator(grid, int(truncation), options_);
 
     atlas_trans_t trans;
     try {
-
         eckit::Timer time("ShToGridded::transform: setup", eckit::Log::debug<LibMir>());
-        trans = getTrans(parametrisation_,
-                         ctx,
-                         key,
-                         grid,
-                         truncation,
-                         options_);
+
+        if (!parametrisation_.has("caching")) {
+
+            InMemoryCache<TransCache>::iterator j = trans_cache.find(creator.uid());
+            if (j != trans_cache.end()) {
+                j->transCache_ = creator.create();
+            }
+
+            ASSERT(j->transCache_);
+            trans = ShToGridded::atlas_trans_t(j->transCache_, grid, domain, int(truncation), options_);
+        } else {
+
+            ShToGridded::atlas_trans_cache_t transCache = getTrans(
+                        creator,
+                        parametrisation_,
+                        ctx);
+
+            trans = ShToGridded::atlas_trans_t(transCache, grid, domain, int(truncation), options_);
+        }
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
-        trans_cache.erase(key);
+        trans_cache.erase(creator.uid());
         throw;
     }
     ASSERT(trans);
@@ -216,7 +196,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
 
         eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
-        sh2grid(field, trans, grid);
+        sh2grid(field, trans);
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: invtrans: " << e.what() << std::endl;
@@ -308,16 +288,14 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         }
 
         repres::RepresentationHandle out(outputRepresentation());
-        options_ = options_ | atlas::option::global_grid(out->atlasGrid());
 
-        // check if we can speed up with optional global grid
-        {
-            auto grid = out->atlasGrid();
-            if (atlas::grid::GaussianGrid(grid) || atlas::grid::RegularLonLatGrid(grid)) {
-                // symmetric lats and periodic West-East
-                options_ = options_ | atlas::option::global_grid(out->atlasGrid());
-            }
-        }
+//        // check if we can speed up with optional global grid
+//        {
+//            auto grid = out->atlasGrid();
+//            if (atlas::grid::GaussianGrid(grid) || atlas::grid::RegularLonLatGrid(grid)) {
+//                // symmetric lats and periodic West-East
+//            }
+//        }
 
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {

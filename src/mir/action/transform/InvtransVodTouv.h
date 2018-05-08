@@ -60,7 +60,7 @@ protected:
     // -- Methods
 
     void print(std::ostream&) const;
-    void sh2grid(data::MIRField&, const ShToGridded::atlas_trans_t&, const atlas::Grid&) const;
+    void sh2grid(data::MIRField&, const ShToGridded::atlas_trans_t&) const;
 
     // -- Overridden methods
     // None

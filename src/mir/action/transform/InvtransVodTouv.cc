@@ -30,13 +30,13 @@ void InvtransVodTouv::print(std::ostream& out) const {
 }
 
 
-void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const atlas::Grid& grid) const {
+void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
     eckit::Timer timer("InvtransVodTouv::sh2grid", eckit::Log::debug<LibMir>());
 
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
 
-    const int number_of_grid_points = int(grid.size());
+    const int number_of_grid_points = int(trans.grid().size());
     ASSERT(number_of_grid_points > 0);
 
     const eckit::Configuration& config = LibMir::instance().configuration();
