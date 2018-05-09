@@ -62,8 +62,9 @@ static InMemoryCache<TransCache> trans_cache("mirCoefficient",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static ShToGridded::atlas_trans_cache_t getTrans(
+static atlas::trans::Cache getTrans(
         atlas::trans::LegendreCacheCreator& creator,
+        const std::string& key,
         const param::MIRParametrisation& parametrisation,
         context::Context& ctx ) {
 
@@ -72,9 +73,8 @@ static ShToGridded::atlas_trans_cache_t getTrans(
     // otherwise we may get killed by OOM thread
     trans_cache.reserve(creator.estimate(), caching::legendre::LegendreLoaderFactory::inSharedMemory(parametrisation));
 
-    const std::string key = creator.uid();
-    eckit::PathName path;
 
+    eckit::PathName path;
     {
         // Block for timers
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
@@ -111,7 +111,7 @@ static ShToGridded::atlas_trans_cache_t getTrans(
 
 
     TransCache& tc = trans_cache[key];
-    ShToGridded::atlas_trans_cache_t& transCache = tc.transCache_;
+    atlas::trans::Cache& transCache = tc.transCache_;
 
     {
         eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load coefficients");
@@ -140,6 +140,13 @@ static ShToGridded::atlas_trans_cache_t getTrans(
 }
 
 
+static eckit::Hash::digest_t atlasOptionsDigest(const ShToGridded::atlas_config_t& options) {
+    eckit::MD5 h;
+    options.hash(h);
+    return h.digest();
+}
+
+
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
     eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
 
@@ -163,32 +170,36 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas::trans::LegendreCacheCreator creator(grid, int(truncation), options_);
 
+    const std::string key(creator.uid());
+    ASSERT(!key.empty());
+
     atlas_trans_t trans;
     try {
-        eckit::Timer time("ShToGridded::transform: setup", eckit::Log::debug<LibMir>());
+        eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
 
         if (!parametrisation_.has("caching")) {
 
-            InMemoryCache<TransCache>::iterator j = trans_cache.find(creator.uid());
+            InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
             if (j != trans_cache.end()) {
                 j->transCache_ = creator.create();
             }
-
             ASSERT(j->transCache_);
-            trans = ShToGridded::atlas_trans_t(j->transCache_, grid, domain, int(truncation), options_);
+            trans = atlas_trans_t(j->transCache_, grid, domain, int(truncation), options_);
+
         } else {
 
-            ShToGridded::atlas_trans_cache_t transCache = getTrans(
+            atlas::trans::Cache transCache = getTrans(
                         creator,
+                        key,
                         parametrisation_,
                         ctx);
-
-            trans = ShToGridded::atlas_trans_t(transCache, grid, domain, int(truncation), options_);
+            ASSERT(transCache);
+            trans = atlas_trans_t(transCache, grid, domain, int(truncation), options_);
         }
 
     } catch (std::exception& e) {
-        eckit::Log::error() << "ShToGridded::transform: setup: " << e.what() << std::endl;
-        trans_cache.erase(creator.uid());
+        eckit::Log::error() << "ShToGridded::caching: " << e.what() << std::endl;
+        trans_cache.erase(key);
         throw;
     }
     ASSERT(trans);
@@ -199,7 +210,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
         sh2grid(field, trans);
 
     } catch (std::exception& e) {
-        eckit::Log::error() << "ShToGridded::transform: invtrans: " << e.what() << std::endl;
+        eckit::Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
         throw;
     }
 }
@@ -234,9 +245,11 @@ ShToGridded::~ShToGridded() {
 
 
 void ShToGridded::print(std::ostream& out) const {
+    // We don't want to 'see' the internal options, just if they are set differently
+    // (so we know when they change)
     out <<  "cropping=" << cropping_
         << ",local=" << local()
-        << ",options=[" << options_.digest() << "]";
+        << ",options=[" << atlasOptionsDigest(options_) << "]";
 }
 
 
@@ -288,14 +301,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         }
 
         repres::RepresentationHandle out(outputRepresentation());
-
-//        // check if we can speed up with optional global grid
-//        {
-//            auto grid = out->atlasGrid();
-//            if (atlas::grid::GaussianGrid(grid) || atlas::grid::RegularLonLatGrid(grid)) {
-//                // symmetric lats and periodic West-East
-//            }
-//        }
 
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {
@@ -356,23 +361,7 @@ bool ShToGridded::local() const {
 
 bool ShToGridded::sameAs(const Action& other) const {
     const ShToGridded* o = dynamic_cast<const ShToGridded*>(&other);
-    return o && options_.digest() == o->options_.digest();
-}
-
-
-eckit::Hash::digest_t ShToGridded::atlas_config_t::digest() const {
-    // We don't want to 'see' the internal options, just if they are set differently
-    // (so we know when they change)
-    eckit::MD5 h;
-#if 0
-    this->hash(h);
-#else
-    // workaround eckit::BadConversion: Cannot convert <atlas::Grid> (Map) to std::string
-    std::ostringstream stream;
-    stream << *this;
-    h.add(stream.str());
-#endif
-    return h.digest();
+    return o && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 
 

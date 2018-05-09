@@ -46,12 +46,7 @@ public:
     // -- Types
 
     using atlas_trans_t = atlas::trans::Trans;
-    using atlas_trans_cache_t = atlas::trans::Cache;
-
-    struct atlas_config_t : public atlas::util::Config {
-        using Config::Config;
-        eckit::Hash::digest_t digest() const;
-    };
+    using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
     // None
