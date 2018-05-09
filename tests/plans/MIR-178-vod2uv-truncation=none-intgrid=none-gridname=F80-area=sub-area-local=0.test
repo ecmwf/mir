@@ -1,6 +1,0 @@
-# mars
-param=vo_d,level=1000
-# mir
---vod2uv --truncation=none --intgrid=none --gridname=F80 --area=10/0/0/10
-# plan
-ShToNamedGrid[cropping=none,local=0,options=[523c53fa09e6d464ee9c49e6dcaabb89],invtrans=<vod2uv>,gridname=F80]|AreaCropper[bbox=BoundingBox[north=10,west=0,south=0,east=10]]|Save[output=...]

@@ -1,6 +1,0 @@
-# mars
-param=t,level=1000
-# mir
---truncation=none --intgrid=none --grid=1/1
-# plan
-ShToRegularLL[cropping=none,local=0,options=[523c53fa09e6d464ee9c49e6dcaabb89],invtrans=<scalar>,increments=Increments[west_east=1,south_north=1]]|Save[output=...]

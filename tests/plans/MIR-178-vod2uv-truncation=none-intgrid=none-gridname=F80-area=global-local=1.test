@@ -1,6 +1,0 @@
-# mars
-param=vo_d,level=1000
-# mir
---atlas-trans-local --vod2uv --truncation=none --intgrid=none --gridname=F80
-# plan
-ShToNamedGrid[cropping=none,local=1,options=[127ce3c11b7c50b42481a523d1d955b3],invtrans=<vod2uv>,gridname=F80]|Save[output=...]

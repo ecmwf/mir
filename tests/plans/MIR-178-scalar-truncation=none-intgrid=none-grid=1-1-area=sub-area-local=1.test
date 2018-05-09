@@ -1,6 +1,0 @@
-# mars
-param=t,level=1000
-# mir
---atlas-trans-local --truncation=none --intgrid=none --grid=1/1 --area=10/0/0/10
-# plan
-ShToRegularLL[cropping=BoundingBox[north=10,west=0,south=0,east=10],local=1,options=[0ed58c6dd2a909a24cbf8044971f4445],invtrans=<scalar>,increments=Increments[west_east=1,south_north=1]]|Save[output=...]

@@ -1,6 +1,0 @@
-# mars
-param=t,level=1000
-# mir
---atlas-trans-local --truncation=none --intgrid=none --gridname=F80 --area=10/0/0/10
-# plan
-ShToNamedGrid[cropping=BoundingBox[north=9.53266,west=0,south=0.560745,east=9],local=1,options=[1c5250022f3f6f7f04461625d875fe3e],invtrans=<scalar>,gridname=F80]|Save[output=...]
