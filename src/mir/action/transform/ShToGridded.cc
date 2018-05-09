@@ -31,7 +31,6 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 #include "mir/action/context/Context.h"
-#include "mir/action/plan/Action.h"
 #include "mir/action/transform/TransCache.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
@@ -44,7 +43,6 @@
 #include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/function/FunctionParser.h"
 
 
 namespace mir {
@@ -218,24 +216,14 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
 ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
-    const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    // set compression condition: default is don't compress (unless strictly necessary)
-    std::string compressIf = "0";
-    user.get("transform-compress-if", compressIf);
-    std::istringstream in(compressIf);
-    util::function::FunctionParser p(in);
+    // use the 'local' spectral transforms
+    options_.set(atlas::option::type("local"));
 
-    compressIf_.reset(p.parse());
-    ASSERT(compressIf_);
-
-    if (user.has("atlas-trans-local")) {
-        local(true);
-    }
 
     // TODO: MIR-183 let Trans decide the best Legendre transform method
     bool flt = false;
-    user.get("atlas-trans-flt", flt);
+    parametrisation.userParametrisation().get("atlas-trans-flt", flt);
     options_.set("flt", flt);
 }
 
@@ -248,7 +236,6 @@ void ShToGridded::print(std::ostream& out) const {
     // We don't want to 'see' the internal options, just if they are set differently
     // (so we know when they change)
     out <<  "cropping=" << cropping_
-        << ",local=" << local()
         << ",options=[" << atlasOptionsDigest(options_) << "]";
 }
 
@@ -279,27 +266,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
     if (!cropping_ && next.canCrop()) {
         const util::BoundingBox& bbox = next.croppingBoundingBox();
 
-        if (!local()) {
-
-            // evaluate according to bounding box and area ratio to globe
-            eckit::geometry::Point2 WestNorth(bbox.west().value(), bbox.north().value());
-            eckit::geometry::Point2 EastSouth(bbox.east().value(), bbox.south().value());
-
-            double ar = atlas::util::Earth::area(WestNorth, EastSouth)
-                      / atlas::util::Earth::area();
-
-            param::SimpleParametrisation vars;
-            vars.set("N", WestNorth[1]);
-            vars.set("W", WestNorth[0]);
-            vars.set("S", EastSouth[1]);
-            vars.set("E", EastSouth[0]);
-            vars.set("ar", ar);
-
-            if (!bool(compressIf_->eval(vars))) {
-                return false;
-            }
-        }
-
         repres::RepresentationHandle out(outputRepresentation());
 
         // if directly followed by cropping go straight to the cropped representation
@@ -307,7 +273,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
             // Magic super-powers!
             cropping_.boundingBox(out->croppedBoundingBox(bbox));
-            local(true);
 
             return true;
         }
@@ -329,7 +294,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
         // Magic super-powers!
         cropping_.boundingBox(best);
-        local(true);
 
         eckit::Log::debug<LibMir>()
                 << "ShToGridded::mergeWithNext: "
@@ -340,22 +304,6 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
     }
     return false;
-}
-
-
-void ShToGridded::local(bool l) {
-    if (!l) {
-        if (local()) {
-            throw eckit::SeriousBug("ShToGridded::local: Atlas/Trans 'local' has been set, cannot revert");
-        }
-        return;
-    }
-    options_.set(atlas::option::type("local"));
-}
-
-
-bool ShToGridded::local() const {
-    return options_.has("type") && options_.getString("type") == "local";
 }
 
 

@@ -32,7 +32,6 @@ ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisatio
     ASSERT(parametrisation_.userParametrisation().get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
-    local(true);
 }
 
 

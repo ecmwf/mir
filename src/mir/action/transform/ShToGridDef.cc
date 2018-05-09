@@ -28,7 +28,6 @@ template<class Invtrans>
 ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& parametrisation):
     ShToGridded(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
-    local(true);
 }
 
 

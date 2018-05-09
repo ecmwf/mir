@@ -38,8 +38,6 @@ ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParam
     ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
     rotation_ = util::Rotation(value[0], value[1]);
-
-    local(true);
 }
 
 

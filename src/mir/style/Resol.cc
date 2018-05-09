@@ -131,7 +131,7 @@ long Resol::getTargetGaussianNumber() const {
 
         // use (non-shifted) global bounding box
         util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox, false, false);
+        increments.globaliseBoundingBox(bbox);
 
         N = long(increments.computeNj(bbox) - 1) / 2;
 

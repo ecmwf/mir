@@ -549,10 +549,6 @@ list(
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
-    util/function/Function.cc
-    util/function/Function.h
-    util/function/FunctionParser.cc
-    util/function/FunctionParser.h
   )
 
 

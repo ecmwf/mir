@@ -28,6 +28,7 @@
 #include "atlas/projection/Projection.h"
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
+#include "atlas/util/Config.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Rotation.h"

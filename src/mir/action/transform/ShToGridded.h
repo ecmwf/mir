@@ -16,13 +16,9 @@
 #ifndef mir_action_transform_ShToGridded_h
 #define mir_action_transform_ShToGridded_h
 
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/utils/Hash.h"
-#include "atlas/option/TransOptions.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
-#include "mir/util/function/Function.h"
 
 
 namespace mir {
@@ -83,9 +79,7 @@ protected:
     // None
 
     // -- Methods
-
-    void local(bool l);
-    bool local() const;
+    // None
 
     // -- Overridden methods
 
@@ -104,7 +98,6 @@ private:
 
     method::Cropping cropping_;
     atlas_config_t options_;
-    eckit::ScopedPtr<util::function::Function> compressIf_;
 
     // -- Methods
 
