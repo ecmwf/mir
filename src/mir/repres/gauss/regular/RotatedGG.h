@@ -35,7 +35,7 @@ public:
     // -- Constructors
 
     RotatedGG(const param::MIRParametrisation&);
-    RotatedGG(size_t N, const util::Rotation&);
+    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -78,10 +78,6 @@ protected:
     // None
 
 private:
-
-    // Constructors
-
-    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Members
     // None

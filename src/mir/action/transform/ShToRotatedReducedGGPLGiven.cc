@@ -78,7 +78,8 @@ const char* ShToRotatedReducedGGPLGiven<Invtrans>::name() const {
 
 template<class Invtrans>
 const repres::Representation* ShToRotatedReducedGGPLGiven<Invtrans>::outputRepresentation() const {
-    return new repres::gauss::reduced::RotatedFromPL(pl_, rotation_);
+    size_t N = pl_.size() / 2;
+    return new repres::gauss::reduced::RotatedFromPL(N, pl_, rotation_);
 }
 
 

@@ -43,7 +43,7 @@ const repres::Representation *NamedOctahedral::representation() const {
 }
 
 const repres::Representation *NamedOctahedral::representation(const util::Rotation &rotation) const {
-    return new repres::gauss::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation);
+    return new repres::gauss::reduced::RotatedOctahedral(N_, rotation);
 }
 
 size_t NamedOctahedral::gaussianNumber() const {

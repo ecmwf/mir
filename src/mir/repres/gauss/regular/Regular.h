@@ -35,7 +35,7 @@ public:
     // -- Constructors
 
     Regular(const param::MIRParametrisation&);
-    Regular(size_t N);
+    Regular(size_t N, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -62,17 +62,16 @@ public:
 protected:
 
     // -- Constructors
-
-    Regular(size_t N, const util::BoundingBox&, bool correctBoundingBox);
+    // None
 
     // -- Members
 
     size_t Ni_;
-
     size_t Nj_;
 
     // -- Methods
 
+    static void cropToBoundingBox(size_t N, const std::vector<double> &latitudes, util::BoundingBox&);
     void setNiNj();
     void checkNiNj() const;
 

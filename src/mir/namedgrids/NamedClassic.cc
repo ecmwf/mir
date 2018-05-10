@@ -41,8 +41,8 @@ const repres::Representation *NamedClassic::representation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
-const repres::Representation *NamedClassic::representation(const util::Rotation &rotation) const {
-    return new repres::gauss::reduced::RotatedClassic(N_, util::BoundingBox(), rotation);
+const repres::Representation *NamedClassic::representation(const util::Rotation& rotation) const {
+    return new repres::gauss::reduced::RotatedClassic(N_, rotation);
 }
 
 size_t NamedClassic::gaussianNumber() const {

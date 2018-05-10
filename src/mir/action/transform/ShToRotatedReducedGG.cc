@@ -79,7 +79,7 @@ const char* ShToRotatedReducedGG<Invtrans>::name() const {
 
 template<class Invtrans>
 const repres::Representation* ShToRotatedReducedGG<Invtrans>::outputRepresentation() const {
-    return new repres::gauss::reduced::RotatedClassic(N_, util::BoundingBox(), rotation_);
+    return new repres::gauss::reduced::RotatedClassic(N_, rotation_);
 }
 
 

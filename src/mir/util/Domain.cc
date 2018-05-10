@@ -19,7 +19,11 @@ namespace mir {
 namespace util {
 
 
-Domain::Domain(Latitude north, Longitude west, Latitude south, Longitude east) :
+Domain::Domain() : BoundingBox() {
+}
+
+
+Domain::Domain(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
     BoundingBox(north, west, south, east) {
 }
 
@@ -31,12 +35,6 @@ bool Domain::contains(const repres::Iterator::point_ll_t& p) const {
 
 bool Domain::contains(const Latitude& lat, const Longitude& lon) const {
     return BoundingBox::contains(lat, lon);
-}
-
-
-Domain Domain::makeGlobal() {
-    return Domain(Latitude::NORTH_POLE, Longitude::GREENWICH,
-                  Latitude::SOUTH_POLE, Longitude::GLOBE);
 }
 
 

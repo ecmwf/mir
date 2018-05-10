@@ -33,14 +33,8 @@ RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
 }
 
 
-RegularGG::RegularGG(size_t N):
-    Regular(N) {
-    checkNiNj();
-}
-
-
-RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, bool correctBoundingBox):
-    Regular(N, bbox, correctBoundingBox) {
+RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox):
+    Regular(N, bbox) {
     checkNiNj();
 }
 
@@ -72,7 +66,7 @@ Iterator* RegularGG::iterator() const {
 
 
 const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new RegularGG(N_, bbox, false);
+    return new RegularGG(N_, bbox);
 }
 
 

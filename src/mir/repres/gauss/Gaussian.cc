@@ -43,11 +43,6 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Gaussian::Gaussian(size_t N) :
-    N_(N) {
-}
-
-
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
     N_(N) {
@@ -57,6 +52,7 @@ Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
+    correctBoundingBoxFromFile(parametrisation);
 }
 
 
@@ -70,7 +66,7 @@ bool Gaussian::sameAs(const Representation& other) const {
 }
 
 
-void Gaussian::correctBoundingBox() {
+void Gaussian::correctBoundingBoxFromFile(const param::MIRParametrisation&) {
 
     // adjust latitudes
     Latitude n = bbox_.north();
@@ -150,7 +146,10 @@ void Gaussian::correctBoundingBox() {
     if (newBox != bbox_) {
         eckit::Channel& log = eckit::Log::debug<LibMir>();
         std::streamsize old = log.precision(12);
-        log << "Gaussian::correctBoundingBox: " << bbox_ << " => "<< newBox << std::endl;
+        log << "Gaussian::correctBoundingBox: "
+            << "\n   " << bbox_
+            << "\n > " << newBox
+            << std::endl;
         log.precision(old);
 
         bbox_ = newBox;

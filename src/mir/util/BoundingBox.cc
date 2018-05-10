@@ -48,7 +48,6 @@ BoundingBox::BoundingBox() :
     west_(Longitude::GREENWICH),
     south_(Latitude::SOUTH_POLE),
     east_(Longitude::GLOBE) {
-    check(*this);
 }
 
 

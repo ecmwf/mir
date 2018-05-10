@@ -51,7 +51,7 @@ class SphericalHarmonics : public Representation {
     // -- Overridden methods
 
     util::Domain domain() const {
-        return util::Domain::makeGlobal();
+        return util::Domain();
     }
 
     // -- Class members

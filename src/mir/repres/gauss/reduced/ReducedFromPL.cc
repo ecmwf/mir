@@ -24,8 +24,13 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedFromPL::ReducedFromPL(const param::MIRParametrisation &parametrisation):
+ReducedFromPL::ReducedFromPL(const param::MIRParametrisation& parametrisation) :
     FromPL(parametrisation) {
+}
+
+
+ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox):
+    FromPL(N, pl, bbox) {
 }
 
 
@@ -33,28 +38,18 @@ ReducedFromPL::~ReducedFromPL() {
 }
 
 
-ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox, bool correctBoundingBox):
-    FromPL(N, pl, bbox, correctBoundingBox) {
-}
-
-
-ReducedFromPL::ReducedFromPL(const std::vector<long>& pl):
-    FromPL(pl) {
-}
-
-
 void ReducedFromPL::print(std::ostream &out) const {
-    out << "ReducedFromPL[N" << N_ << "]";
+    out << "ReducedFromPL[N" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 
-Iterator *ReducedFromPL::iterator() const {
+Iterator* ReducedFromPL::iterator() const {
     return unrotatedIterator();
 }
 
 
-Reduced *ReducedFromPL::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
-    return new ReducedFromPL(N_, pl, bbox, false);
+Reduced* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox, const std::vector<long>& pl) const {
+    return new ReducedFromPL(N_, pl, bbox);
 }
 
 

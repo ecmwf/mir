@@ -33,8 +33,7 @@ public:
 
     // -- Constructors
 
-    Gaussian(size_t N);
-    Gaussian(size_t N, const util::BoundingBox&);
+    Gaussian(size_t N, const util::BoundingBox& = util::BoundingBox());
     Gaussian(const param::MIRParametrisation&);
 
     // -- Destructor
@@ -72,7 +71,6 @@ protected:
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
-    void correctBoundingBox();
     virtual eckit::Fraction getSmallestIncrement() const = 0;
 
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
@@ -98,7 +96,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    void correctBoundingBoxFromFile(const param::MIRParametrisation&);
 
     // -- Overridden methods
 

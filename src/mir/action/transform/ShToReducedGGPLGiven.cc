@@ -72,7 +72,8 @@ const char* ShToReducedGGPLGiven<Invtrans>::name() const {
 
 template<class Invtrans>
 const repres::Representation* ShToReducedGGPLGiven<Invtrans>::outputRepresentation() const {
-    return new repres::gauss::reduced::ReducedFromPL(pl_);
+    size_t N = pl_.size() / 2;
+    return new repres::gauss::reduced::ReducedFromPL(N, pl_);
 }
 
 

@@ -47,7 +47,8 @@ void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2ReducedGGPLGiven::outputRepresentation() const {
-    return new repres::gauss::reduced::ReducedFromPL(pl_);
+    size_t N = pl_.size() / 2;
+    return new repres::gauss::reduced::ReducedFromPL(N, pl_);
 }
 
 const char* Gridded2ReducedGGPLGiven::name() const {

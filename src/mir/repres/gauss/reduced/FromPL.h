@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef FromPL_H
-#define FromPL_H
+#ifndef mir_repres_gauss_reduced_FromPL_h
+#define mir_repres_gauss_reduced_FromPL_h
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
@@ -25,6 +25,7 @@ namespace repres {
 namespace gauss {
 namespace reduced {
 
+
 class FromPL : public Reduced {
 public:
 
@@ -34,6 +35,7 @@ public:
     // -- Constructors
 
     FromPL(const param::MIRParametrisation&);
+    FromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -46,6 +48,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -58,9 +61,6 @@ public:
 
 protected:
 
-    FromPL(size_t, const std::vector<long>&, const util::BoundingBox&, bool correctBoundingBox);
-    FromPL(const std::vector<long>&);
-
     // -- Members
 
     std::vector<long> pl_;
@@ -72,8 +72,8 @@ protected:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
-    virtual bool sameAs(const Representation& other) const;
     virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation& other) const;
 
     // -- Class members
     // None
@@ -82,11 +82,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    FromPL(const FromPL&);
-    FromPL& operator=(const FromPL&);
 
     // -- Members
     // None

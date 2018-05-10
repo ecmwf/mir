@@ -41,8 +41,7 @@ public:
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N);
-    Reduced(size_t N, const util::BoundingBox&);
+    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -73,7 +72,7 @@ protected:
 
     // -- Methods
 
-    // void print(std::ostream&) const; // Change to virtual if base class
+    static void cropToBoundingBox(size_t N, const std::vector<double>& latitudes, util::BoundingBox&, std::vector<long>& pl);
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
 
@@ -103,7 +102,8 @@ private:
 
     // -- Overridden methods
 
-    virtual const Reduced* croppedRepresentation(const util::BoundingBox&) const ;
+    virtual const Reduced* croppedRepresentation(const util::BoundingBox&) const;
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
     virtual size_t numberOfPoints() const;

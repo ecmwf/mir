@@ -83,7 +83,7 @@ static atlas::trans::Cache getTrans(
             context::Context& ctx_;
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
-                eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create coefficients");
+                eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create Legendre coefficients");
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
@@ -112,7 +112,7 @@ static atlas::trans::Cache getTrans(
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load coefficients");
+        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load Legendre coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
         const eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
@@ -156,17 +156,22 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     atlas::Grid grid = representation.atlasGrid();
     ASSERT(grid);
 
+
     atlas::Domain domain = grid.domain();
     if (cropping_) {
         util::BoundingBox bbox = representation.croppedBoundingBox(cropping_.boundingBox());
         domain = util::Domain(bbox.north(), bbox.west(),
                               bbox.south(), bbox.east());
     }
+    ASSERT(domain);
 
-    const size_t truncation = field.representation()->truncation();
-    ASSERT(truncation);
 
-    atlas::trans::LegendreCacheCreator creator(grid, int(truncation), options_);
+    const int truncation = int(field.representation()->truncation());
+    ASSERT(truncation > 0);
+
+
+    atlas::trans::LegendreCacheCreator creator(grid, truncation, options_);
+
 
     const std::string key(creator.uid());
     ASSERT(!key.empty());
@@ -182,7 +187,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
                 j->transCache_ = creator.create();
             }
             ASSERT(j->transCache_);
-            trans = atlas_trans_t(j->transCache_, grid, domain, int(truncation), options_);
+            trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
 
         } else {
 
@@ -192,7 +197,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
                         parametrisation_,
                         ctx);
             ASSERT(transCache);
-            trans = atlas_trans_t(transCache, grid, domain, int(truncation), options_);
+            trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
         }
 
     } catch (std::exception& e) {
@@ -251,9 +256,7 @@ void ShToGridded::execute(context::Context& ctx) const {
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
-        repres::RepresentationHandle local(out->croppedRepresentation(bbox));
-
-        ctx.field().representation(local);
+        ctx.field().representation(out->croppedRepresentation(bbox));
 
     } else {
 
@@ -269,19 +272,18 @@ bool ShToGridded::mergeWithNext(const Action& next) {
     if (!cropping_ && next.canCrop()) {
         const util::BoundingBox& bbox = next.croppingBoundingBox();
 
-        repres::RepresentationHandle out(outputRepresentation());
-
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {
 
             // Magic super-powers!
-            cropping_.boundingBox(out->croppedBoundingBox(bbox));
+            cropping_.boundingBox(bbox);
 
             return true;
         }
 
         // extend bbox with element diagonals [m], converted to (central) angle
         double radius = 0;
+        repres::RepresentationHandle out(outputRepresentation());
         ASSERT(out->getLongestElementDiagonal(radius));
         ASSERT(radius > 0);
 

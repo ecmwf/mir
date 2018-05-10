@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Classic_H
-#define Classic_H
+#ifndef mir_repres_gauss_reduced_Classic_h
+#define mir_repres_gauss_reduced_Classic_h
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
@@ -24,6 +24,7 @@ namespace mir {
 namespace repres {
 namespace gauss {
 namespace reduced {
+
 
 class Classic : public Reduced {
 public:
@@ -46,6 +47,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -58,8 +60,6 @@ public:
 
 protected:
 
-    Classic(size_t, const util::BoundingBox&);
-
     // -- Members
 
     mutable std::vector<long> pl_;
@@ -70,13 +70,10 @@ protected:
     // -- Overridden methods
     virtual void fill(grib_info &) const;
     virtual void fill(api::MIRJob &) const;
-
-    atlas::Grid atlasGrid() const;
-
+    virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
 
-    // -- Class members
     // -- Class members
     // None
 
@@ -84,11 +81,6 @@ protected:
     // None
 
 private:
-
-    // No copy allowed
-
-    Classic(const Classic &);
-    Classic &operator=(const Classic &);
 
     // -- Members
     // None
@@ -113,9 +105,12 @@ private:
 
 };
 
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

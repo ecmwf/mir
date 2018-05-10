@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Octahedral_H
-#define Octahedral_H
+#ifndef mir_repres_gauss_reduced_Octahedral_h
+#define mir_repres_gauss_reduced_Octahedral_h
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
@@ -24,6 +24,7 @@ namespace mir {
 namespace repres {
 namespace gauss {
 namespace reduced {
+
 
 class Octahedral : public Reduced {
 public:
@@ -46,6 +47,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -57,14 +59,13 @@ public:
     // None
 
 protected:
-    Octahedral(size_t, const util::BoundingBox&);
 
     // -- Members
 
     mutable std::vector<long> pl_;
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     virtual void fill(grib_info &) const;
@@ -72,6 +73,7 @@ protected:
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
+
     // -- Class members
     // None
 
@@ -103,9 +105,12 @@ private:
 
 };
 
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
 

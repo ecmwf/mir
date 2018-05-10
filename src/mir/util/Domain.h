@@ -33,11 +33,11 @@ public:
 
     // -- Contructors
 
-    /// ctor using coordinates
-    explicit Domain(Latitude north = Latitude::NORTH_POLE,
-                    Longitude west = Longitude::GREENWICH,
-                    Latitude south = Latitude::SOUTH_POLE,
-                    Longitude east = Longitude::GLOBE);
+    Domain();
+    explicit Domain(const Latitude& north,
+                    const Longitude& west,
+                    const Latitude& south,
+                    const Longitude& east);
 
     // -- Methods
 
@@ -51,9 +51,6 @@ public:
     using BoundingBox::west;
     using BoundingBox::south;
     using BoundingBox::east;
-
-    /// Generator for a global Domain
-    static Domain makeGlobal();
 
     // Converter to atlas::RectangularDomain
     operator atlas::RectangularDomain() const;

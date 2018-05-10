@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 
 #include <iostream>
@@ -19,13 +20,14 @@
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
+
 namespace mir {
 namespace repres {
 namespace gauss {
 namespace reduced {
 
 
-ReducedClassic::ReducedClassic(size_t N):
+ReducedClassic::ReducedClassic(size_t N) :
     Classic(N) {
 }
 
@@ -55,9 +57,9 @@ bool ReducedClassic::sameAs(const Representation& other) const {
 }
 
 
-Reduced *ReducedClassic::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
+const Reduced* ReducedClassic::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
     // We lose the ReducedClassic nature of the grid
-    return new ReducedFromPL(N_, pl, bbox, false);
+    return new ReducedFromPL(N_, pl, bbox);
 }
 
 

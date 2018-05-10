@@ -34,7 +34,7 @@ public:
     // -- Constructors
 
     RegularGG(const param::MIRParametrisation&);
-    RegularGG(size_t N);
+    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -58,10 +58,6 @@ public:
     // None
 
 protected:
-
-    // -- Constructors
-
-    RegularGG(size_t N, const util::BoundingBox&, bool correctBoundingBox);
 
     // -- Members
     // None

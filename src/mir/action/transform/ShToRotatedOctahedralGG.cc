@@ -79,7 +79,7 @@ const char* ShToRotatedOctahedralGG<Invtrans>::name() const {
 
 template<class Invtrans>
 const repres::Representation* ShToRotatedOctahedralGG<Invtrans>::outputRepresentation() const {
-    return new repres::gauss::reduced::RotatedOctahedral(N_, util::BoundingBox(), rotation_);
+    return new repres::gauss::reduced::RotatedOctahedral(N_, rotation_);
 }
 
 
