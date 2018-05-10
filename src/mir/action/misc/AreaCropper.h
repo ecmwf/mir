@@ -53,8 +53,7 @@ public:
     // None
 
     // -- Methods
-
-    static util::BoundingBox croppingBoundingBox(const repres::Representation*, const util::BoundingBox&, bool caching);
+    // None
 
     // -- Overridden methods
 
