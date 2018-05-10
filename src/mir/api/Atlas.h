@@ -24,6 +24,7 @@
 #ifdef HAVE_ATLAS
 
 #include "atlas/grid/Grid.h"
+#include "atlas/library/Library.h"
 #include "atlas/option/Options.h"
 #include "atlas/projection/Projection.h"
 #include "atlas/trans/LegendreCacheCreator.h"
