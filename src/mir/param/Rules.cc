@@ -12,11 +12,12 @@
 #include "mir/param/Rules.h"
 #include "mir/param/SimpleParametrisation.h"
 
+#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
-#include "eckit/config/Resource.h"
+#include "eckit/utils/Translator.h"
 
 
 namespace mir {
@@ -67,13 +68,13 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
 
         if (noted_.find(ruleValue) == noted_.end()) {
 
-            static bool abortIfUnknownOarameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
+            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
 
 
             std::ostringstream oss;
             oss << "No class defined for " << ruleName << "=" << ruleValue;
 
-            if (abortIfUnknownOarameterClass) {
+            if (abortIfUnknownParameterClass) {
                 throw eckit::SeriousBug(oss.str());
             }
             else {
@@ -159,6 +160,23 @@ void Rules::readConfigurationFiles() {
 
     }
 
+
+
+    eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
+    for (const auto& i : parameters) {
+        eckit::ValueList options = i.second;
+
+        long paramId = eckit::Translator<std::string, long>()(i.first);
+        SimpleParametrisation& config = Rules::lookup(paramId);
+
+        for (const eckit::ValueMap j : options) {
+            for (auto k : j) {
+                std::string name = k.first;
+                std::string value = k.second;
+                config.set(name, value);
+            }
+        }
+    }
 }
 
 
