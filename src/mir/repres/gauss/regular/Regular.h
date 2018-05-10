@@ -73,7 +73,6 @@ protected:
 
     static void cropToBoundingBox(size_t N, const std::vector<double> &latitudes, util::BoundingBox&);
     void setNiNj();
-    void checkNiNj() const;
 
     // -- Overridden methods
 
