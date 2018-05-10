@@ -553,10 +553,11 @@ const util::BoundingBox& MethodWeighted::getCropping() const {
 }
 
 
-const repres::Representation* MethodWeighted::adjustOutputRepresentation(const repres::Representation* representation) {
+const repres::Representation* MethodWeighted::adjustOutputRepresentation(context::Context& ctx, const repres::Representation* representation) {
 
     if (cropping_) {
-        repres::RepresentationHandle out(representation); // Will destroy represenation
+        eckit::TraceResourceUsage<LibMir> usage("MethodWeighted::adjustOutputRepresentation");
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
         // bounding box needs adjustment because it can come from the user
         util::BoundingBox bbox = representation->croppedBoundingBox(cropping_.boundingBox());

@@ -247,6 +247,9 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
+        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: cropping");
+        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
+
         const util::BoundingBox& bbox = cropping_.boundingBox();
         repres::RepresentationHandle local(out->croppedRepresentation(bbox));
 

@@ -65,8 +65,8 @@ public:
     virtual void setCropping(const util::BoundingBox&);
     virtual bool hasCropping() const;
     virtual const util::BoundingBox& getCropping() const;
-    virtual const repres::Representation* adjustOutputRepresentation(const repres::Representation*);
-
+    virtual const repres::Representation* adjustOutputRepresentation(context::Context&,
+                                                                     const repres::Representation*);
 
 protected:
 

@@ -82,7 +82,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     eckit::Log::debug<LibMir>() << "Method is " << *method_ << std::endl;
 
     repres::RepresentationHandle in(field.representation());
-    repres::RepresentationHandle out(method_->adjustOutputRepresentation(outputRepresentation()));
+    repres::RepresentationHandle out(method_->adjustOutputRepresentation(ctx, outputRepresentation()));
 
     method_->execute(ctx, *in, *out);
 
