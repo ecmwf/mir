@@ -31,7 +31,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ReducedOctahedral(size_t);
 

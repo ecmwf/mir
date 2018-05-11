@@ -31,7 +31,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ReducedClassic(size_t);
 
@@ -111,3 +111,4 @@ private:
 
 
 #endif
+

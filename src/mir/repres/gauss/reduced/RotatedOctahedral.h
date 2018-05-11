@@ -17,7 +17,6 @@
 #define mir_repres_gauss_reduced_RotatedOctahedral_h
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
 

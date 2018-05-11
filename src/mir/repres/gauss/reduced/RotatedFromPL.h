@@ -17,7 +17,6 @@
 #define mir_repres_gauss_reduced_RotatedFromPL_h
 
 #include "mir/repres/gauss/reduced/FromPL.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
 
@@ -119,3 +118,4 @@ private:
 
 
 #endif
+

@@ -16,6 +16,7 @@
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
 #include <iostream>
+
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
 

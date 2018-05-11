@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
-#include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
 
 namespace mir {
@@ -46,6 +45,12 @@ Iterator* ReducedClassic::iterator() const {
 }
 
 
+const Reduced* ReducedClassic::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
+    // We lose the ReducedClassic nature of the grid
+    return new ReducedFromPL(N_, pl, bbox);
+}
+
+
 void ReducedClassic::makeName(std::ostream& out) const {
     Classic::makeName(out);
 }
@@ -54,12 +59,6 @@ void ReducedClassic::makeName(std::ostream& out) const {
 bool ReducedClassic::sameAs(const Representation& other) const {
     const ReducedClassic* o = dynamic_cast<const ReducedClassic*>(&other);
     return o && Classic::sameAs(other);
-}
-
-
-const Reduced* ReducedClassic::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
-    // We lose the ReducedClassic nature of the grid
-    return new ReducedFromPL(N_, pl, bbox);
 }
 
 
