@@ -85,7 +85,7 @@ public:
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
         options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
-        options_.push_back(new SimpleOption<bool>("local", "Atlas/Trans: force local transform (default false)"));
+        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas spectral transforms type (default 'local')"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
@@ -93,8 +93,7 @@ public:
 };
 
 
-const mir::repres::Representation* output_representation(const mir::param::MIRParametrisation& parametrisation,
-                                                         bool local) {
+const mir::repres::Representation* output_representation(const mir::param::MIRParametrisation& parametrisation) {
 
     std::vector<double> grid;
     if (parametrisation.get("grid", grid)) {
@@ -109,13 +108,9 @@ const mir::repres::Representation* output_representation(const mir::param::MIRPa
         if (parametrisation.get("area", area)) {
             ASSERT(area.size() == 4);
             boundingBox = mir::util::BoundingBox(area[0], area[1], area[2], area[3]);
-        } else if (local) {
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box global, lat/lon shift allowed" << std::endl;
-            increments->globaliseBoundingBox(boundingBox, true, true);
-
         } else {
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box global, lat/lon shift not allowed" << std::endl;
-            increments->globaliseBoundingBox(boundingBox, false, false);
+            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box globalised" << std::endl;
+            increments->globaliseBoundingBox(boundingBox);
         }
 
         bool isLatitudeShifted = increments->isLatitudeShifted(boundingBox);
@@ -210,12 +205,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     ASSERT(paramIdu > 0);
     ASSERT(paramIdv > 0);
 
+    std::string type = "local";
+    args.get("atlas-trans-type", type);
+
     const bool vod2uv   = args.getBool("vod2uv", false);
     const bool validate = args.getBool("validate", false);
-    const bool local    = args.getBool("local", false)
-            || args.has("griddef")
-            || args.has("unstructured")
-            || (args.has("grid") && (args.has("area") || args.has("rotation")));
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
@@ -267,7 +261,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "============> " << what << ": " << (++i * multiScalar) << std::endl;
 
             // Set representation and grid
-            const mir::repres::Representation* outputRepresentation = output_representation(parametrisation, local);
+            const mir::repres::Representation* outputRepresentation = output_representation(parametrisation);
             ASSERT(outputRepresentation);
 
             atlas::Grid outputGrid = output_grid(parametrisation, *outputRepresentation);
@@ -284,9 +278,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             // Set Trans
             atlas::util::Config transConfig;
-            if (local) {
-                transConfig.set("type", "local");
-            }
+            transConfig.set("type", type);
 
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 

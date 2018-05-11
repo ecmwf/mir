@@ -171,6 +171,18 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
 
     atlas::trans::LegendreCacheCreator creator(grid, truncation, options_);
+    if (!creator.supported()) {
+        std::string type;
+        ASSERT(options_.get("type", type));
+
+        std::ostringstream msg;
+        msg << "ShToGridded: LegendreCacheCreator is not supported for:"
+            << "\n  representation: " << representation
+            << "\n  grid: " << grid.spec()
+            << "\n  options: " << options_;
+            eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
 
 
     const std::string key(creator.uid());
@@ -223,7 +235,9 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
 
     // use the 'local' spectral transforms
-    options_.set(atlas::option::type("local"));
+    std::string type = "local";
+    parametrisation.userParametrisation().get("atlas-trans-type", type);
+    options_.set(atlas::option::type(type));
 
 
     // TODO: MIR-183 let Trans decide the best Legendre transform method

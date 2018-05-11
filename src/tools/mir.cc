@@ -82,6 +82,7 @@ public:
         options_.push_back(new SimpleOption<bool>("vod2UV-legacy-plus-one-wave", "Input is vorticity and divergence (vo/d), convert to Cartesian components (spectral U/V) by using one wave number more"));
         options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
+        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
