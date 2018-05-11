@@ -14,6 +14,8 @@ include( ecbuild_system NO_POLICY_SCOPE )
 
 ecbuild_requires_macro_version( 2.4 )
 
+ecbuild_declare_project()
+
 ###############################################################################
 # project
 
@@ -43,8 +45,6 @@ if(ATLAS_FOUND)
 endif()
 
 #ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
-
-ecbuild_declare_project()
 
 ###############################################################################
 # some variables/options of this project
