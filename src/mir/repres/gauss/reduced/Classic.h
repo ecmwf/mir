@@ -61,8 +61,7 @@ public:
 protected:
 
     // -- Members
-
-    mutable std::vector<long> pl_;
+    // None
 
     // -- Methods
     // None
@@ -89,8 +88,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    virtual const std::vector<long> &pls() const;
+    // None
 
     // -- Class members
     // None

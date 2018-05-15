@@ -49,7 +49,7 @@ Iterator* ReducedFromPL::iterator() const {
 
 
 const Gridded* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new ReducedFromPL(N_, pl_, bbox);
+    return new ReducedFromPL(N_, pls(), bbox);
 }
 
 

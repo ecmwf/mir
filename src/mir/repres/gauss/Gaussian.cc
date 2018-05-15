@@ -233,7 +233,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 
 
     // these are the assumptions we expect from the Gaussian latitudes values
-    ASSERT(latitudesIt->second.size() >= 2);
+    ASSERT(2 * N == latitudesIt->second.size());
     ASSERT(std::is_sorted(
                latitudesIt->second.begin(),
                latitudesIt->second.end(),

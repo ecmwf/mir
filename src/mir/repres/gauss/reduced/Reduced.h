@@ -41,7 +41,7 @@ public:
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -67,6 +67,10 @@ public:
 
 protected:
 
+    // -- Constructors
+
+    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox());
+
     // -- Members
 
     size_t k_;
@@ -77,6 +81,8 @@ protected:
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
 
+    const std::vector<long>& pls() const;
+    void pls(std::vector<long>&);
     void setNj();
 
     // -- Overridden methods
@@ -94,11 +100,10 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    std::vector<long> pl_;
 
     // -- Methods
-
-    virtual const std::vector<long>& pls() const = 0;
 
     // -- Overridden methods
 
