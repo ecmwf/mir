@@ -32,6 +32,7 @@ namespace method {
 namespace fe {
 
 
+// FIXME: not really an inheritance... could be better!
 class Conservative: public FELinear {
 
 public:
@@ -54,6 +55,8 @@ private:
 
     void print(std::ostream&) const;
     const char* name() const;
+
+    util::MeshGeneratorParameters outputMeshGenerationParams_;
 
 };
 

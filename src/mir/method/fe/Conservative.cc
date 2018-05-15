@@ -41,16 +41,16 @@ static const double oneFourth = 1. / 4.;
 
 
 Conservative::Conservative(const param::MIRParametrisation& param) :
-    FELinear(param) {
-
-    // output mesh requirements
-    outputMeshGenerationParams_.meshXYZField_ = true;
+    FELinear(param),
+    outputMeshGenerationParams_("output", param) {
 }
 
 
 bool Conservative::sameAs(const Method& other) const {
     const Conservative* o = dynamic_cast<const Conservative*>(&other);
-    return o && FELinear::sameAs(other);
+    return o
+            && outputMeshGenerationParams_.sameAs(o->outputMeshGenerationParams_)
+            && FELinear::sameAs(other);
 }
 
 
@@ -129,6 +129,15 @@ void Conservative::assemble(util::MIRStatistics& statistics,
                             const repres::Representation& out ) const {
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
+    // 0) let representations set the mesh generator parameters
+    auto inputMeshGenerationParams = inputMeshGenerationParams_;
+    in.fill(inputMeshGenerationParams);
+    ASSERT(inputMeshGenerationParams.meshXYZField_);  // for computeLumpedMassMatrix
+
+    auto outputMeshGenerationParams = outputMeshGenerationParams_;
+    out.fill(outputMeshGenerationParams);
+    ASSERT(outputMeshGenerationParams.meshXYZField_);  // for computeLumpedMassMatrix
+
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
     WeightMatrix IM(in.numberOfPoints(), out.numberOfPoints());
@@ -188,12 +197,16 @@ const char* Conservative::name() const {
 
 void Conservative::hash(eckit::MD5& md5) const {
     FELinear::hash(md5);
+    outputMeshGenerationParams_.hash(md5);
     md5.add(name());
 }
 
 
 void Conservative::print(std::ostream& out) const {
-    out << "Conservative[]";
+    out << "Conservative["
+            "inputMeshGenerationParams=" << inputMeshGenerationParams_
+        << ",outputMeshGenerationParams=" << outputMeshGenerationParams_
+        << "]";
 }
 
 

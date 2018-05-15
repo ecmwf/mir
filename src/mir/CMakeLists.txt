@@ -575,6 +575,8 @@ list(
     util/AddParallelEdgesConnectivity.h
     util/MIRGrid.cc
     util/MIRGrid.h
+    util/MeshGeneratorParameters.cc
+    util/MeshGeneratorParameters.h
 )
 endif()
 

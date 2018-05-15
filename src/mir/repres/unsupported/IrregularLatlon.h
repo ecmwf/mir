@@ -97,11 +97,12 @@ private:
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
-    virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
     virtual void fill(grib_info&) const;
+    virtual void fill(util::MeshGeneratorParameters&) const;
+
+    virtual void makeName(std::ostream&) const;
+    virtual bool sameAs(const Representation&) const;
     virtual atlas::Grid atlasGrid() const;
-    virtual std::string atlasMeshGenerator() const;
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;
     virtual bool isPeriodicWestEast() const;

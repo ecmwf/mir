@@ -81,13 +81,14 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Representation& other) const;
+    virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual bool sameAs(const Representation&) const;
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    virtual void validate(const std::vector<double>&) const;
+
     bool includesNorthPole() const;
     bool includesSouthPole() const;
     bool isPeriodicWestEast() const;
-    virtual void validate(const std::vector<double>&) const;
-
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None
@@ -105,8 +106,7 @@ private:
     void correctBoundingBoxFromFile(const param::MIRParametrisation&);
 
     // -- Overridden methods
-
-    virtual std::string atlasMeshGenerator() const;
+    // None
 
     // -- Class members
     // None

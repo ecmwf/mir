@@ -26,6 +26,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
+#include "mir/util/MeshGeneratorParameters.h"
 
 
 namespace mir {
@@ -200,8 +201,8 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
 }
 
 
-std::string Gaussian::atlasMeshGenerator() const {
-    return "structured";
+void Gaussian::fill(util::MeshGeneratorParameters& params) const {
+    params.meshGenerator_ = "structured";
 }
 
 

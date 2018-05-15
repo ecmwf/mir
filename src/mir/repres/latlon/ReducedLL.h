@@ -67,7 +67,6 @@ protected:
     // -- Overridden methods
 
     atlas::Grid atlasGrid() const;
-    std::string atlasMeshGenerator() const;
 
     bool isPeriodicWestEast() const;
     bool includesNorthPole() const;
@@ -93,8 +92,8 @@ private:
     // -- Overridden methods
 
     void fill(grib_info&) const;
-
     void fill(api::MIRJob &) const;
+    void fill(util::MeshGeneratorParameters&) const;
 
     void validate(const std::vector<double>&) const;
 

@@ -91,7 +91,6 @@ protected:
     virtual bool getLongestElementDiagonal(double&) const;
 
     virtual Representation* globalise(data::MIRField&) const;
-    virtual std::string atlasMeshGenerator() const;
 
     virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
@@ -132,6 +131,8 @@ private:
     void correctBoundingBox();
 
     // -- Overridden methods
+
+    virtual void fill(util::MeshGeneratorParameters&) const;
 
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
 
