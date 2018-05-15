@@ -82,6 +82,7 @@ protected:
     virtual bool getLongestElementDiagonal(double&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
+    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
 
     // -- Class members
     // None
@@ -101,7 +102,6 @@ private:
 
     // -- Overridden methods
 
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual void shape(size_t& ni, size_t& nj) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     size_t numberOfPoints() const;

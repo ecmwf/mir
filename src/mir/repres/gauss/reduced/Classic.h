@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    Classic(size_t);
+    Classic(size_t, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 

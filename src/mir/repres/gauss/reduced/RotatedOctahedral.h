@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    RotatedOctahedral(size_t, const util::Rotation&);
+    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -91,7 +91,7 @@ private:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
-    virtual const Reduced *croppedRepresentation(const util::BoundingBox&, const std::vector<long>&) const ;
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;

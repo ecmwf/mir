@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    Octahedral(size_t);
+    Octahedral(size_t, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 

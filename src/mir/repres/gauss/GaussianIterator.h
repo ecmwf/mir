@@ -40,7 +40,7 @@ private:
     size_t j_;
     size_t k_;
     size_t count_;
-    void resetToRow(size_t);
+    void resetToRow(long Ni_globe);
     void setup();
 
 protected:

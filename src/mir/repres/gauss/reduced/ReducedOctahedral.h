@@ -33,7 +33,7 @@ public:
 
     // -- Constructors
 
-    ReducedOctahedral(size_t);
+    ReducedOctahedral(size_t, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -86,7 +86,7 @@ private:
     // -- Overridden methods
 
     virtual Iterator* iterator() const;
-    virtual const Reduced* croppedRepresentation(const util::BoundingBox&, const std::vector<long>&) const;
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
 

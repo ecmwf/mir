@@ -48,8 +48,8 @@ Iterator* ReducedFromPL::iterator() const {
 }
 
 
-const Reduced* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox, const std::vector<long>& pl) const {
-    return new ReducedFromPL(N_, pl, bbox);
+const Gridded* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox) const {
+    return new ReducedFromPL(N_, pl_, bbox);
 }
 
 

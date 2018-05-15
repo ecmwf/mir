@@ -53,8 +53,8 @@ GaussianIterator::~GaussianIterator() {
 void GaussianIterator::setup() {
 
     // position to first latitude and first/last longitude
-    // NOTE: latitudes_ span the globe, k_ positions the North
-    // NOTE: pl is within bbox North/South
+    // NOTE: latitudes_ span the globe, sorted from North-to-South, k_ positions the North
+    // NOTE: pl is global
     ASSERT(N_ * 2 == latitudes_.size());
 
     k_ = 0;
@@ -71,12 +71,11 @@ void GaussianIterator::setup() {
     ASSERT(Nj_ > 0);
 
     j_ = 0;
-    resetToRow(j_);
+    resetToRow(pl_(j_ + k_));
 }
 
 
-void GaussianIterator::resetToRow(size_t j) {
-    long Ni_globe = pl_(j);
+void GaussianIterator::resetToRow(long Ni_globe) {
     ASSERT(Ni_globe > 1);
     inc_ = Longitude::GLOBE.fraction() / Ni_globe;
 
@@ -124,7 +123,7 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
         lon_ += inc_;
         if (++i_ == Ni_) {
             if (++j_ < Nj_) {
-                resetToRow(j_);
+                resetToRow(pl_(j_ + k_));
             }
         }
 

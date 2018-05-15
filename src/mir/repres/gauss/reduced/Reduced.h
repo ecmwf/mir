@@ -68,21 +68,23 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    size_t k_;
+    size_t Nj_;
 
     // -- Methods
 
-    static void cropToBoundingBox(size_t N, const std::vector<double>& latitudes, util::BoundingBox&, std::vector<long>& pl);
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
+
+    void setNj();
 
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-
     virtual void fill(api::MIRJob&) const;
-
     virtual bool sameAs(const Representation&) const;
+    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
 
     // -- Class members
 
@@ -96,16 +98,11 @@ private:
 
     // -- Methods
 
-    virtual const Reduced *croppedRepresentation(const util::BoundingBox& bbox, const std::vector<long>& pl) const;
-
     virtual const std::vector<long>& pls() const = 0;
 
     // -- Overridden methods
 
-    virtual const Reduced* croppedRepresentation(const util::BoundingBox&) const;
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
-
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
     eckit::Fraction getSmallestIncrement() const;

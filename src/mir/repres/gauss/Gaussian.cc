@@ -52,6 +52,7 @@ Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
+
     correctBoundingBoxFromFile(parametrisation);
 }
 
@@ -72,72 +73,14 @@ void Gaussian::correctBoundingBoxFromFile(const param::MIRParametrisation&) {
     Latitude n = bbox_.north();
     Latitude s = bbox_.south();
 
-    const std::vector<double>& lats = latitudes();
-
-    if (n < lats.back()) {
-        n = lats.back();
-    } else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n.value(),
-                                     [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 < l2 || same_with_grib1_accuracy(l1, l2));
-        });
-        ASSERT(best != lats.end());
-        n = *best;
-    }
-
-    if (s > lats.front()) {
-        s = lats.front();
-    } else {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s.value(),
-                                     [](const Latitude& l1, const Latitude& l2) {
-            return !(l1 > l2 || same_with_grib1_accuracy(l1, l2));
-        });
-        ASSERT(best != lats.rend());
-        s = *best;
-    }
-
-    // This is not necessary, but maybe a good idea to require elements of dimensionality 2
-    ASSERT(!same_with_grib1_accuracy(s, n));
+    correctSouthNorth(s, n, true);
 
 
     // adjust longitudes
     Longitude e = bbox_.east();
     Longitude w = bbox_.west();
 
-    eckit::Fraction inc = getSmallestIncrement();
-    ASSERT(inc > 0);
-
-#if 0
-    // suitable only for regular_gg: adjust both East and West
-    auto computeN = [](const eckit::Fraction& target, const eckit::Fraction& inc) {
-        eckit::Fraction::value_type n = (target / inc).integralPart();
-        for (auto& k : { n, n - 1, n + 1 }) {
-            if (same_with_grib1_accuracy(target, k * inc)) {
-                return k;
-            }
-        }
-
-        return n;
-    };
-
-    w = computeN(w.fraction(), inc) * inc;
-    e = computeN(e.fraction(), inc) * inc;
-#else
-    // suitable for regular/reduced_gg: adjust only East
-    const Longitude we = e - w;
-    if (same_with_grib1_accuracy(we + inc, Longitude::GLOBE) || we + inc > Longitude::GLOBE) {
-        e = w + Longitude::GLOBE - inc;
-    }
-#endif
-
-    // ensure 0 <= East - West < 360
-    bool same(e == w);
-    if (!same) {
-        e = e.normalise(w);
-        if (e == w) {
-            e = w + Longitude::GLOBE - inc;
-        }
-    }
+    correctWestEast(w, e, true);
 
 
     // set bounding box and inform
@@ -154,6 +97,41 @@ void Gaussian::correctBoundingBoxFromFile(const param::MIRParametrisation&) {
 
         bbox_ = newBox;
     }
+}
+
+
+util::BoundingBox Gaussian::croppedBoundingBox(const util::BoundingBox& bbox) const {
+
+    // adjust latitudes
+    Latitude n = bbox.north();
+    Latitude s = bbox.south();
+
+    correctSouthNorth(s, n);
+
+
+    // adjust longitudes
+    Longitude e = bbox.east();
+    Longitude w = bbox.west();
+
+    correctWestEast(w, e);
+
+
+    // set bounding box and inform
+    util::BoundingBox cropped = util::BoundingBox(n, w, s, e);
+
+    if (cropped != bbox) {
+        eckit::Channel& log = eckit::Log::debug<LibMir>();
+        std::streamsize old = log.precision(12);
+        log << "Gaussian::croppedBoundingBox: "
+            << "\n   " << bbox_
+            << "\n > " << cropped
+            << std::endl;
+        log.precision(old);
+
+        return cropped;
+    }
+
+    return bbox;
 }
 
 
@@ -187,6 +165,38 @@ void Gaussian::validate(const std::vector<double>& values) const {
 
     eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;
     ASSERT(values.size() == count);
+}
+
+
+void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
+    ASSERT(s < n);
+
+    const std::vector<double>& lats = latitudes();
+    ASSERT(!lats.empty());
+
+    if (n < lats.back()) {
+        n = lats.back();
+    } else {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, grib1 ?
+            [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
+            [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); } );
+        ASSERT(best != lats.end());
+        n = *best;
+    }
+
+    if (s > lats.front()) {
+        s = lats.front();
+    } else {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, grib1 ?
+            [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
+            [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); } );
+        ASSERT(best != lats.rend());
+        s = *best;
+    }
+
+    // This is not necessary, but maybe a good idea to require elements of dimensionality 2
+    ASSERT(grib1 ? !same_with_grib1_accuracy(s, n)
+                 : n != s);
 }
 
 

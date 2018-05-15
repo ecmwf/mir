@@ -76,6 +76,9 @@ protected:
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
     Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
 
+    virtual void correctSouthNorth(Latitude& s, Latitude& n, bool grib1=false) const;
+    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1=false) const = 0;
+
     // -- Overridden methods
 
     virtual bool sameAs(const Representation& other) const;
@@ -83,6 +86,8 @@ protected:
     bool includesSouthPole() const;
     bool isPeriodicWestEast() const;
     virtual void validate(const std::vector<double>&) const;
+
+    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

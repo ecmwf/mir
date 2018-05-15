@@ -93,9 +93,9 @@ private:
     virtual atlas::Grid atlasGrid() const;
     virtual Iterator* iterator() const;
 
-    virtual const Gridded *croppedRepresentation(const util::BoundingBox& bbox) const;
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Class members

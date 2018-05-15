@@ -17,8 +17,6 @@
 
 #include <iostream>
 
-#include "mir/repres/gauss/reduced/ReducedFromPL.h"
-
 
 namespace mir {
 namespace repres {
@@ -26,8 +24,8 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedOctahedral::ReducedOctahedral(size_t N):
-    Octahedral(N) {
+ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox):
+    Octahedral(N, bbox) {
 }
 
 
@@ -45,9 +43,8 @@ Iterator *ReducedOctahedral::iterator() const {
 }
 
 
-const Reduced* ReducedOctahedral::croppedRepresentation(const util::BoundingBox &bbox, const std::vector<long> &pl) const {
-    // We lose the ReducedOctahedral nature of the grid
-    return new ReducedFromPL(N_, pl, bbox);
+const Gridded* ReducedOctahedral::croppedRepresentation(const util::BoundingBox& bbox) const {
+    return new ReducedOctahedral(N_, bbox);
 }
 
 
