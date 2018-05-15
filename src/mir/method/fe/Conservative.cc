@@ -132,11 +132,9 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     // 0) let representations set the mesh generator parameters
     auto inputMeshGenerationParams = inputMeshGenerationParams_;
     in.fill(inputMeshGenerationParams);
-    ASSERT(inputMeshGenerationParams.meshXYZField_);  // for computeLumpedMassMatrix
 
     auto outputMeshGenerationParams = outputMeshGenerationParams_;
     out.fill(outputMeshGenerationParams);
-    ASSERT(outputMeshGenerationParams.meshXYZField_);  // for computeLumpedMassMatrix
 
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)

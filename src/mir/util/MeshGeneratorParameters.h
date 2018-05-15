@@ -46,8 +46,6 @@ public:
     void print(std::ostream&) const;
 
     std::string meshGenerator_;
-    bool meshParallelEdgesConnectivity_;
-    bool meshXYZField_;
     bool meshCellCentres_;
     std::string file_;
 

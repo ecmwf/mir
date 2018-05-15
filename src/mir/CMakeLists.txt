@@ -571,8 +571,6 @@ list(
     method/structured/StructuredLinear3D.h
     method/structured/StructuredMethod.cc
     method/structured/StructuredMethod.h
-    util/AddParallelEdgesConnectivity.cc
-    util/AddParallelEdgesConnectivity.h
     util/MIRGrid.cc
     util/MIRGrid.h
     util/MeshGeneratorParameters.cc

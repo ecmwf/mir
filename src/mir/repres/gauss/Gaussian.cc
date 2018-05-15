@@ -203,6 +203,13 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
 
 void Gaussian::fill(util::MeshGeneratorParameters& params) const {
     params.meshGenerator_ = "structured";
+
+    if (includesSouthPole() || boundingBox().south() > Latitude::EQUATOR) {
+        params.set("force_include_south_pole", true);
+    }
+    if (includesNorthPole() || boundingBox().north() < Latitude::EQUATOR) {
+        params.set("force_include_north_pole", true);
+    }
 }
 
 

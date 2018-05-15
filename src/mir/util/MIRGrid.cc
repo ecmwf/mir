@@ -28,7 +28,6 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/AddParallelEdgesConnectivity.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -128,7 +127,9 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 
 
 atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshGeneratorParameters& meshGenParams) const {
-    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", eckit::Log::debug<LibMir>());
+    eckit::Channel& log = eckit::Log::debug<LibMir>();
+
+    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", log);
     InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings
@@ -154,43 +155,31 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         mesh = generator.generate(grid_);
         ASSERT(mesh.generated());
 
-        // If domain does not include poles, we might need to recover the parallel edges
-        // TODO: move to Atlas mesh generator
-        atlas::RectangularDomain domain = grid_.domain();
-        ASSERT(domain);
-        if (meshGenParams.meshParallelEdgesConnectivity_ && !domain.global()) {
-            eckit::ResourceUsage usage("AddParallelEdgesConnectivity", eckit::Log::debug<LibMir>());
-            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: AddParallelEdgesConnectivity");
-            AddParallelEdgesConnectivity()(mesh, domain.ymax(), domain.ymin());
-        }
-
         // If meshgenerator did not create xyz field already, do it now.
-        if (meshGenParams.meshXYZField_) {
-            eckit::ResourceUsage usage("BuildXYZField", eckit::Log::debug<LibMir>());
-            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
-            atlas::mesh::actions::BuildXYZField()(mesh);
-        }
+        eckit::ResourceUsage usage("BuildXYZField", log);
+        eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
+        atlas::mesh::actions::BuildXYZField()(mesh);
 
         // Generate barycenters of mesh elements
         if (meshGenParams.meshCellCentres_) {
-            eckit::ResourceUsage usage("BuildCellCentres", eckit::Log::debug<LibMir>());
+            eckit::ResourceUsage usage("BuildCellCentres", log);
             eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildCellCentres");
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }
 
         // Some information
-        eckit::Log::debug<LibMir>() << "Mesh["
-                                        "cells=" << eckit::BigNum(mesh.cells().size())
-                                    << ",nodes=" << eckit::BigNum(mesh.nodes().size())
-                                    << "," << meshGenParams
-                                    << "]"
-                                    << std::endl;
+        log << "Mesh["
+                "cells=" << eckit::BigNum(mesh.cells().size())
+            << ",nodes=" << eckit::BigNum(mesh.nodes().size())
+            << "," << meshGenParams
+            << "]"
+            << std::endl;
 
         // Write file
         if (!meshGenParams.file_.empty()) {
             atlas::output::PathName path(meshGenParams.file_);
 
-            eckit::Log::debug<LibMir>() << "Mesh: writing to '" << path << "'" << std::endl;
+            log << "Mesh: writing to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
         }
 

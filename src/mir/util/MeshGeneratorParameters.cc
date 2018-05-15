@@ -22,15 +22,13 @@ namespace util {
 
 MeshGeneratorParameters::MeshGeneratorParameters() :
     meshGenerator_(""),
-    meshParallelEdgesConnectivity_(true),
-    meshXYZField_(true),
     meshCellCentres_(true),
     file_("") {
-    set("three_dimensional",  true);
-    set("patch_pole",         true);
-    set("include_pole",       false);
-    set("triangulate",        false);
+    set("three_dimensional", true);
+    set("triangulate",       false);
     set("angle",             0.);
+    set("force_include_north_pole", false);
+    set("force_include_south_pole", false);
 }
 
 
@@ -39,9 +37,7 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     ASSERT(!label.empty());
     const param::MIRParametrisation& user = param.userParametrisation();
 
-    user.get(label + "-mesh-add-parallel-edges-connectivity", meshParallelEdgesConnectivity_);
-    user.get(label + "-mesh-add-field-xyz", meshXYZField_);
-    user.get(label + "-mesh-add-field-cell-centres", meshCellCentres_);
+    user.get(label + "-mesh-cell-centres", meshCellCentres_);
     user.get(label + "-mesh-generator", meshGenerator_);
     user.get(label + "-mesh-file", file_);
 }
@@ -63,7 +59,11 @@ bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const
 
 void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
 
-    for (const char* p : {"three_dimensional", "patch_pole", "include_pole", "triangulate"}) {
+    for (const char* p : {
+         "three_dimensional",
+         "triangulate",
+         "force_include_north_pole",
+         "force_include_south_pole" }) {
         bool value = false;
         ASSERT(get(p, value));
         hash << value;
@@ -72,25 +72,21 @@ void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
     double angle = 0.;
     ASSERT(get("angle", angle));
 
-    hash << angle
-        << meshGenerator_
-        << meshParallelEdgesConnectivity_
-        << meshXYZField_
-        << meshCellCentres_;
+    hash << angle;
+    hash << meshGenerator_;
+    hash << meshCellCentres_;
 }
 
 
 void MeshGeneratorParameters::print(std::ostream& s) const {
     s << "MeshGeneratorParameters["
-      <<  "meshGenerator="                 << meshGenerator_
-      << ",meshParallelEdgesConnectivity=" << meshParallelEdgesConnectivity_
-      << ",meshXYZField="                  << meshXYZField_
-      << ",meshCellCentres="               << meshCellCentres_
-      << ",three_dimensional=" << getBool("three_dimensional")
-      << ",patch_pole="        << getBool("patch_pole")
-      << ",include_pole="      << getBool("include_pole")
-      << ",triangulate="       << getBool("triangulate")
-      << ",angle="             << getDouble("angle")
+      <<  "meshGenerator="            << meshGenerator_
+      << ",meshCellCentres="          << meshCellCentres_
+      << ",three_dimensional="        << getBool("three_dimensional")
+      << ",triangulate="              << getBool("triangulate")
+      << ",angle="                    << getDouble("angle")
+      << ",force_include_north_pole=" << getBool("force_include_north_pole")
+      << ",force_include_south_pole=" << getBool("force_include_south_pole")
       << "]";
 }
 

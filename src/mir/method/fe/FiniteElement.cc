@@ -207,8 +207,6 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
     inputMeshGenerationParams_("input", param) {
 
     // input mesh requirements
-    inputMeshGenerationParams_.meshParallelEdgesConnectivity_ = true;
-    inputMeshGenerationParams_.meshXYZField_ = true;
     inputMeshGenerationParams_.meshCellCentres_ = true;
 }
 
