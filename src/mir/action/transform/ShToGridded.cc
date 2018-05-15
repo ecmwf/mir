@@ -237,6 +237,15 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     // use the 'local' spectral transforms
     std::string type = "local";
     parametrisation.userParametrisation().get("atlas-trans-type", type);
+
+    if (!atlas::trans::TransFactory::has(type)) {
+        std::ostringstream msg;
+        msg << "ShToGridded: Atlas/Trans spectral transforms type '" << type << "' not supported, available types are: ";
+        atlas::trans::TransFactory::list(msg);
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+
     options_.set(atlas::option::type(type));
 
 
@@ -283,7 +292,9 @@ void ShToGridded::execute(context::Context& ctx) const {
 bool ShToGridded::mergeWithNext(const Action& next) {
 
     // make use of the area cropping action downstream (no merge)
-    if (!cropping_ && next.canCrop()) {
+    bool canMerge = "local" == options_.getString("type", "");
+
+    if (!cropping_ && next.canCrop() && canMerge) {
         const util::BoundingBox& bbox = next.croppingBoundingBox();
 
         // if directly followed by cropping go straight to the cropped representation
