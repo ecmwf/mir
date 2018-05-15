@@ -292,7 +292,7 @@ void ShToGridded::execute(context::Context& ctx) const {
 bool ShToGridded::mergeWithNext(const Action& next) {
 
     // make use of the area cropping action downstream (no merge)
-    bool canMerge = "local" == options_.getString("type", "");
+    bool canMerge = "local" == options_.getString("type", "?");
 
     if (!cropping_ && next.canCrop() && canMerge) {
         const util::BoundingBox& bbox = next.croppingBoundingBox();
@@ -326,8 +326,8 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         eckit::Log::debug<LibMir>()
                 << "ShToGridded::mergeWithNext: "
                 << "\n   " << oldAction.str()
-                << "\n + " << *this
-                << "\n = " << next
+                << "\n + " << next
+                << "\n = " << *this
                 << std::endl;
 
     }
