@@ -147,17 +147,17 @@ Iterator* Gaussian::rotatedIterator(gauss::GaussianIterator::ni_type Ni, const u
 
 
 bool Gaussian::includesNorthPole() const {
-    return bbox_.north() == latitudes().front();
+    return bbox_.north() >= latitudes().front();
 }
 
 
 bool Gaussian::includesSouthPole() const {
-    return bbox_.south() == latitudes().back();
+    return bbox_.south() <= latitudes().back();
 }
 
 
 bool Gaussian::isPeriodicWestEast() const {
-    return bbox_.east() - bbox_.west() + getSmallestIncrement() == Longitude::GLOBE;
+    return bbox_.east() - bbox_.west() + getSmallestIncrement() >= Longitude::GLOBE;
 }
 
 
@@ -204,10 +204,11 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
 void Gaussian::fill(util::MeshGeneratorParameters& params) const {
     params.meshGenerator_ = "structured";
 
-    if (includesSouthPole() || boundingBox().south() > Latitude::EQUATOR) {
+    if (includesSouthPole() || bbox_.south() > Latitude::EQUATOR) {
         params.set("force_include_south_pole", true);
     }
-    if (includesNorthPole() || boundingBox().north() < Latitude::EQUATOR) {
+
+    if (includesNorthPole() || bbox_.north() < Latitude::EQUATOR) {
         params.set("force_include_north_pole", true);
     }
 }
