@@ -23,7 +23,8 @@ namespace util {
 MeshGeneratorParameters::MeshGeneratorParameters() :
     meshGenerator_(""),
     meshCellCentres_(true),
-    file_("") {
+    fileLonLat_(""),
+    fileXYZ_("") {
     set("three_dimensional", true);
     set("triangulate",       false);
     set("angle",             0.);
@@ -39,7 +40,8 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
 
     user.get(label + "-mesh-cell-centres", meshCellCentres_);
     user.get(label + "-mesh-generator", meshGenerator_);
-    user.get(label + "-mesh-file", file_);
+    user.get(label + "-mesh-file-ll", fileLonLat_);
+    user.get(label + "-mesh-file-xyz", fileXYZ_);
 }
 
 

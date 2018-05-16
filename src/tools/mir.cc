@@ -105,11 +105,13 @@ public:
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new SimpleOption<std::string>("input-mesh-generator", "Input mesh generator"));
-        options_.push_back(new SimpleOption<std::string>("input-mesh-file", "Input mesh file (default <empty>)"));
-        options_.push_back(new SimpleOption<std::string>("output-mesh-generator", "Output mesh generator"));
-        options_.push_back(new SimpleOption<std::string>("output-mesh-file", "Output mesh file (default <empty>)"));
         options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));
+
+        for (const std::string& which : {"input", "output"}) {
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Mesh output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in XYZ coordinates (default <empty>)"));
+        }
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

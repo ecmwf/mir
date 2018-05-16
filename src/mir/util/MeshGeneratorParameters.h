@@ -47,7 +47,8 @@ public:
 
     std::string meshGenerator_;
     bool meshCellCentres_;
-    std::string file_;
+    std::string fileLonLat_;
+    std::string fileXYZ_;
 
 private:
 

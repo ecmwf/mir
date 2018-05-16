@@ -175,10 +175,15 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
             << "]"
             << std::endl;
 
-        // Write file
-        if (!meshGenParams.file_.empty()) {
-            atlas::output::PathName path(meshGenParams.file_);
+        // Write file(s)
+        if (!meshGenParams.fileLonLat_.empty()) {
+            atlas::output::PathName path(meshGenParams.fileLonLat_);
+            log << "Mesh: writing to '" << path << "'" << std::endl;
+            atlas::output::Gmsh(path).write(mesh);
+        }
 
+        if (!meshGenParams.fileXYZ_.empty()) {
+            atlas::output::PathName path(meshGenParams.fileXYZ_);
             log << "Mesh: writing to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
         }
