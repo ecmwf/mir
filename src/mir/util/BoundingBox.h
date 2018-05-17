@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include "mir/repres/Iterator.h"
+#include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
 
 
@@ -31,6 +32,9 @@ class MIRJob;
 }
 namespace param {
 class MIRParametrisation;
+}
+namespace util {
+class Rotation;
 }
 }
 
@@ -100,7 +104,7 @@ public:
         return east_;
     }
 
-    bool contains(const Latitude& lat, const Longitude& lon) const;
+    bool contains(const Latitude&, const Longitude&) const;
 
     void fill(grib_info&) const;
 
@@ -108,7 +112,9 @@ public:
 
     void hash(eckit::MD5&) const;
 
-    void makeName(std::ostream& out) const;
+    void makeName(std::ostream&) const;
+
+    BoundingBox extend(double angle, const Rotation& = Rotation()) const;
 
     // -- Overridden methods
     // None

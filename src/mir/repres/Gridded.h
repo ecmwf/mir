@@ -53,9 +53,7 @@ public:
     // None
 
     // -- Methods
-
-    static void extendBoundingBox(util::BoundingBox&, double angle, const util::Rotation&);
-    static void extendBoundingBox(util::BoundingBox&, double angle);
+    // None
 
     // -- Overridden methods
     // None

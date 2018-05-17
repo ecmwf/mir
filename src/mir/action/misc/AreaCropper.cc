@@ -98,10 +98,8 @@ const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
 
 util::BoundingBox AreaCropper::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
 
-    // use the Gridded implementation for consistency, there's no notion of rotation
-    util::BoundingBox extend(bbox);
-    repres::Gridded::extendBoundingBox(extend, angle);
-    return extend;
+    // there's no notion of rotation ("cropping happens before rotation")
+    return bbox.extend(angle);
 }
 
 
