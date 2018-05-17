@@ -10,13 +10,16 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+///
+/// @date April 2015
 
 
 #ifndef mir_input_GribInput_h
 #define mir_input_GribInput_h
 
 #include "eckit/thread/Mutex.h"
+
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
@@ -29,56 +32,18 @@ namespace input {
 class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
 
-    // -- Exceptions
-    // None
-
-    // -- Contructors
-
     GribInput();
 
-    // -- Destructor
-
     virtual ~GribInput();
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
 
     void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
 
     // For debugging only
     void marsRequest(std::ostream&) const;
 
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 protected:
 
-    // -- Members
-    // None
-
-    // -- Methods
-
     bool handle(grib_handle*);
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
 
 private:
 
@@ -123,15 +88,6 @@ private:
     // From FieldParametrisation
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-    // None
 
 };
 

@@ -8,21 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Pedro Maciel
-/// @date Apr 2015
-
-
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Bitmap.h"
 
 // TODO: Cache bitmaps
-
 
 namespace mir {
 namespace util {
@@ -101,7 +97,7 @@ Bitmap::Bitmap(const std::string& path):
 
 void Bitmap::disseminationBitmap(const std::string& path) {
 
-    eckit::StdFile file(path);
+    eckit::AutoStdFile file(path);
     int c;
     std::string s;
 

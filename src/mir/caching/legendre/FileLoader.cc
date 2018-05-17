@@ -23,10 +23,12 @@
 #include "eckit/eckit.h"
 #include "eckit/os/Stat.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
 
 #include "mir/config/LibMir.h"
+
 
 namespace mir {
 namespace caching {
@@ -38,7 +40,7 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
     //    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from file");
     eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << path << std::endl;
 
-    eckit::StdFile file(path);
+    eckit::AutoStdFile file(path);
     ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 

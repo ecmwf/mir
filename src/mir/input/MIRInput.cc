@@ -8,16 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
-
 #include "mir/input/MIRInput.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -26,7 +22,6 @@
 #include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
-
 
 namespace mir {
 namespace input {
@@ -136,7 +131,7 @@ MIRInput *MIRInputFactory::build(const std::string& path, const param::MIRParame
         return new DummyInput();
     }
 
-    eckit::StdFile f(path);
+    eckit::AutoStdFile f(path);
     unsigned long magic = 0;
     char smagic[] = "????";
     char *p = smagic;

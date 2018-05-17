@@ -10,7 +10,9 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+///
+/// @date April 2015
 
 
 #ifndef mir_input_GribFileInput_h

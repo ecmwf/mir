@@ -14,10 +14,11 @@
 
 
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
+
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
 #include "mir/tools/MIRTool.h"
-
 
 class MIRMakeLSM : public mir::tools::MIRTool {
 
@@ -50,7 +51,8 @@ void MIRMakeLSM::usage(const std::string &tool) const {
 void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 
     mir::input::GribFileInput file(argv(1));
-    eckit::StdFile out(argv(2), "w");
+
+    eckit::AutoStdFile out(argv(2), "w");
 
     while (file.next()) {
         mir::input::MIRInput &input = file;

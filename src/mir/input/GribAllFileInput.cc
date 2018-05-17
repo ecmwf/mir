@@ -8,21 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
-
 #include "mir/input/GribAllFileInput.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
 
+using eckit::AutoStdFile;
 
 namespace mir {
 namespace input {
@@ -32,7 +31,7 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
     path_(path),
     count_(0) {
 
-    eckit::StdFile f(path);
+    AutoStdFile f(path);
     eckit::Buffer buffer(64 * 1024 * 1024);
 
     for (;;) {

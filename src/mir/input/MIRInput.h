@@ -10,7 +10,9 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+///
+/// @date April 2015
 
 
 #ifndef mir_input_MIRInput_h
@@ -18,6 +20,7 @@
 
 #include <string>
 #include <iosfwd>
+
 #include "eckit/memory/NonCopyable.h"
 
 

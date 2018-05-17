@@ -8,10 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "mir/input/GribFileInput.h"
 

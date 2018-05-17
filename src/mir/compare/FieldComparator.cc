@@ -18,6 +18,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
@@ -40,11 +41,15 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
+using eckit::PathName;
+using eckit::AutoStdFile;
+
 
 namespace mir {
 namespace compare {
 
-static mir::InMemoryCache<eckit::StdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
+
+static mir::InMemoryCache<AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
 const WhiteLister& DefaultWhiteLister::instance() {
@@ -586,7 +591,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
         int err;
         size_t size = buffer.size();
 
-        eckit::StdFile f(*p);
+        eckit::AutoStdFile f(*p);
         while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
 
@@ -600,7 +605,6 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             size = buffer.size();
         }
-
     }
 
     return fields.size();
@@ -617,7 +621,7 @@ size_t FieldComparator::list(const std::string& path) {
     int err;
     size_t size = buffer.size();
 
-    eckit::StdFile f(path);
+    eckit::AutoStdFile f(path);
     while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
 
@@ -643,10 +647,10 @@ size_t FieldComparator::list(const std::string& path) {
 
 
 
-static eckit::StdFile& open(const std::string& path) {
+static AutoStdFile& open(const std::string& path) {
     auto j = cache_.find(path);
     if (j == cache_.end()) {
-        cache_.insert(path, new eckit::StdFile(path));
+        cache_.insert(path, new AutoStdFile(path));
         j = cache_.find(path);
     }
     return *j;
@@ -678,8 +682,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
-//====================
-    eckit::StdFile& f = open(field.path());
+    AutoStdFile& f = open(field.path());
     size_t size = buffer.size();
     fseek(f, field.offset(), SEEK_SET);
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
@@ -755,7 +758,7 @@ void FieldComparator::compareFieldStatistics(
     const Field & field2) {
 
     mir::InMemoryCacheStatistics ignore;
-    mir::InMemoryCacheUser<eckit::StdFile> lock(cache_, ignore);
+    mir::InMemoryCacheUser<AutoStdFile> lock(cache_, ignore);
 
     Statistics s1;
     getStats(field1, s1);

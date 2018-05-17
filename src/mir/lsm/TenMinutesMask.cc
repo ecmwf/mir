@@ -17,6 +17,7 @@
 #include "TenMinutesMask.h"
 
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -64,7 +65,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
         eckit::Log::debug<LibMir>() << "TenMinutesMask loading " << path_ << std::endl;
 
-        eckit::StdFile file(path_);
+        eckit::AutoStdFile file(path_);
         ten_minutes_.resize(ROWS);
 
         size_t bytes = (((COLS + 31) / 32) * 32) / 8;

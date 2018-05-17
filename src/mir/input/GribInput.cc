@@ -8,29 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
-
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
-
 
 namespace mir {
 namespace input {
@@ -671,7 +668,8 @@ bool GribInput::handle(grib_handle *h) {
 void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    eckit::StdFile f(path);
+    eckit::AutoStdFile f(path);
+
     int e;
     grib_handle *h = 0;
 

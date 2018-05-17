@@ -10,11 +10,13 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @author Tiago Quintino
+///
+/// @date April 2015
 
 
-#ifndef Bitmap_H
-#define Bitmap_H
+#ifndef mir_util_Bitmap_H
+#define mir_util_Bitmap_H
 
 #include <string>
 #include <vector>

@@ -12,6 +12,7 @@
 #include "mir/caching/CroppingCache.h"
 
 #include "eckit/log/Bytes.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/serialisation/FileStream.h"
 #include "mir/config/LibMir.h"
 
@@ -50,7 +51,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
 
     eckit::TraceTimer<LibMir> timer("Saving cropping to cache");
 
-    eckit::FileStream f(path, "w");
+    eckit::FileStream f(path, "w"); auto c = closer(f);
     f << bbox_.north();
     f << bbox_.west();
     f << bbox_.south();
@@ -67,7 +68,7 @@ void CroppingCacheEntry::load(const eckit::PathName& path)  {
 
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
-    eckit::FileStream f(path, "r");
+    eckit::FileStream f(path, "r"); auto c = closer(f);
 
     Latitude n;
     Longitude w;

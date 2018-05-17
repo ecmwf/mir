@@ -82,7 +82,8 @@ void LSM::run() {
         const std::vector<double> &v = field.values(0);
         std::vector<int32_t> p(v.size());
 
-        eckit::StdFile f("zzzzz", "w");
+        eckit::AutoStdFile f("zzzzz", "w");
+
         unsigned char c = 0;
         size_t n = 0;
         for (size_t i = 0; i < v.size(); i++) {

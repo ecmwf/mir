@@ -33,6 +33,7 @@
 #include "eckit/memory/Shmget.h"
 #include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
@@ -245,9 +246,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
 
         if (loadfile) {
+
             eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
             eckit::Timer("Loading " + path_ + " into shared memory ");
-            eckit::StdFile file(real);
+
+            eckit::AutoStdFile file(real);
             ASSERT(::fread(address_, 1, size_, file) == size_);
 
             // Set info record for checkes

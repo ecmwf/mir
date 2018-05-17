@@ -10,6 +10,8 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+///
 /// @date Apr 2015
 
 
@@ -17,7 +19,9 @@
 #define mir_lsm_TenMinutesMask_h
 
 #include <iosfwd>
+
 #include "eckit/filesystem/PathName.h"
+
 #include "mir/lsm/Mask.h"
 
 
