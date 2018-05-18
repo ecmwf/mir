@@ -1,10 +1,4 @@
-############################################################################################
-#
-#   MIR - Meteorological Interpolation and Regridding      ECMWF
-#
-############################################################################################
-
-cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
 
 project( mir C CXX )
 
@@ -12,9 +6,14 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 2.4 )
+ecbuild_requires_macro_version( 2.9 )
+
+set( PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "" ) # needed for generating .b files for persistent support
 
 ecbuild_declare_project()
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ###############################################################################
 # project
@@ -48,9 +47,6 @@ endif()
 
 ###############################################################################
 # some variables/options of this project
-
-ecbuild_add_cxx11_flags()
-ecbuild_check_cxx11( PRINT )
 
 ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
