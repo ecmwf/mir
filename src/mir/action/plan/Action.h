@@ -75,7 +75,6 @@ public:
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
 
     // -- Overridden methods
     // None

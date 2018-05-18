@@ -96,13 +96,6 @@ const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
 }
 
 
-util::BoundingBox AreaCropper::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
-
-    // there's no notion of rotation ("cropping happens before rotation")
-    return bbox.extend(angle);
-}
-
-
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
                                      const repres::Representation* representation,
                                      const util::BoundingBox& bbox) {

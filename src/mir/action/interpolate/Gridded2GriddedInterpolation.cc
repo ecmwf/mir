@@ -67,13 +67,6 @@ const util::BoundingBox& Gridded2GriddedInterpolation::croppingBoundingBox() con
 }
 
 
-util::BoundingBox Gridded2GriddedInterpolation::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
-    repres::RepresentationHandle out(outputRepresentation());
-
-    return out->extendedBoundingBox(bbox, angle);
-}
-
-
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);

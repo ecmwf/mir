@@ -70,11 +70,6 @@ const util::BoundingBox& Action::croppingBoundingBox() const {
 }
 
 
-util::BoundingBox Action::extendedBoundingBox(const util::BoundingBox&, double) const {
-    NOTIMP;
-}
-
-
 //----------------------------------------------------------------------------------------------------------------------
 
 
