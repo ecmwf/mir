@@ -140,6 +140,14 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 }
 
 
+bool BoundingBox::contains(const BoundingBox& other) const {
+    return contains(other.north(), other.west()) &&
+            contains(other.north(), other.east()) &&
+            contains(other.south(), other.west()) &&
+            contains(other.south(), other.east());
+}
+
+
 void BoundingBox::makeName(std::ostream& out) const {
     out << "-" << north_
         << ":" << west_
@@ -148,7 +156,7 @@ void BoundingBox::makeName(std::ostream& out) const {
 }
 
 
-BoundingBox BoundingBox::extend(double angle, const Rotation& rotation) const {
+BoundingBox BoundingBox::rotate(const Rotation& rotation) const {
     using eckit::geometry::Point2;
 
     // rotate bounding box corners and find (min, max)
@@ -173,6 +181,7 @@ BoundingBox BoundingBox::extend(double angle, const Rotation& rotation) const {
 
 
     // extend by 'angle' latitude- and longitude-wise
+    constexpr double angle = 0.; //0.001 ??
     ASSERT(angle >= 0);
 
     Latitude n = max[1] + angle > Latitude::NORTH_POLE.value() ? Latitude::NORTH_POLE : max[1] + angle;

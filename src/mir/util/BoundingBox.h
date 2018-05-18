@@ -106,6 +106,8 @@ public:
 
     bool contains(const Latitude&, const Longitude&) const;
 
+    bool contains(const BoundingBox&) const;
+
     void fill(grib_info&) const;
 
     void fill(api::MIRJob&) const;
@@ -114,7 +116,7 @@ public:
 
     void makeName(std::ostream&) const;
 
-    BoundingBox extend(double angle, const Rotation& = Rotation()) const;
+    BoundingBox rotate(const Rotation&) const;
 
     // -- Overridden methods
     // None
