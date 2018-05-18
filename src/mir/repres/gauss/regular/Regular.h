@@ -79,10 +79,10 @@ protected:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual bool getLongestElementDiagonal(double&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
     virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None
@@ -104,8 +104,9 @@ private:
 
     virtual void shape(size_t& ni, size_t& nj) const;
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
-    size_t numberOfPoints() const;
-    eckit::Fraction getSmallestIncrement() const;
+    virtual size_t numberOfPoints() const;
+    virtual eckit::Fraction getSmallestIncrement() const;
+    virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
     // None

@@ -93,6 +93,7 @@ protected:
     virtual Representation* globalise(data::MIRField&) const;
 
     virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
 
@@ -140,7 +141,7 @@ private:
 
     virtual void validate(const std::vector<double>&) const;
 
-    const LatLon* croppedRepresentation(const util::BoundingBox&) const;
+    virtual const LatLon* croppedRepresentation(const util::BoundingBox&) const;
 
     // -- Class members
     // None

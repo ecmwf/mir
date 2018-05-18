@@ -71,14 +71,6 @@ void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Co
 }
 
 
-util::BoundingBox Gridded::extendedBoundingBox(const util::BoundingBox& bbox, double angle) const {
-
-    // cropping bounding box after extending guarantees the representation can use it
-    util::BoundingBox extended(bbox.extend(angle));
-    return croppedBoundingBox(extended);
-}
-
-
 util::Domain Gridded::domain() const {
 
     const Latitude& n = includesNorthPole()? Latitude::NORTH_POLE : bbox_.north();

@@ -306,22 +306,13 @@ bool ShToGridded::mergeWithNext(const Action& next) {
             return true;
         }
 
-        // extend bbox with element diagonals [m], converted to (central) angle
-        double radius = 0;
-        repres::RepresentationHandle out(outputRepresentation());
-        ASSERT(out->getLongestElementDiagonal(radius));
-        ASSERT(radius > 0);
-
-        double c = radius / atlas::util::Earth::radius();
-        double angle = util::radian_to_degree(2. * std::asin(0.5 * c));
-
-        util::BoundingBox extended = next.extendedBoundingBox(bbox, angle);
-
+        // otherwise, calculate a bounding box containing the next action's cropping
         std::ostringstream oldAction;
         oldAction << *this;
 
         // Magic super-powers!
-        cropping_.boundingBox(extended);
+        repres::RepresentationHandle out(outputRepresentation());
+        cropping_.boundingBox(out->extendedBoundingBox(bbox));
 
         eckit::Log::debug<LibMir>()
                 << "ShToGridded::mergeWithNext: "

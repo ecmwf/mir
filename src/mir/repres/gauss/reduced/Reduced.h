@@ -91,6 +91,7 @@ protected:
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
     virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
+    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
 
@@ -109,8 +110,8 @@ private:
 
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
+    virtual eckit::Fraction getSmallestIncrement() const;
     virtual bool getLongestElementDiagonal(double&) const;
-    eckit::Fraction getSmallestIncrement() const;
 
     // -- Class members
     // None

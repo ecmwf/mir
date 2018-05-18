@@ -81,7 +81,6 @@ protected:
 
     util::Domain domain() const;
     const util::BoundingBox& boundingBox() const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double angle) const;
     virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members
