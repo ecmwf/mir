@@ -169,7 +169,7 @@ void Gaussian::validate(const std::vector<double>& values) const {
 }
 
 
-void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
+void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) const {
     ASSERT(s < n);
 
     const std::vector<double>& lats = latitudes();
@@ -178,9 +178,10 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
     if (n < lats.back()) {
         n = lats.back();
     } else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n, grib1 ?
-            [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
-            [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); } );
+        auto best = std::lower_bound(lats.begin(), lats.end(), n,
+             grib1 ? [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
+             in ?    [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); } :
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2); });
         ASSERT(best != lats.end());
         n = *best;
     }
@@ -188,9 +189,10 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1) const {
     if (s > lats.front()) {
         s = lats.front();
     } else {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, grib1 ?
-            [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
-            [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); } );
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s,
+             grib1 ? [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
+             in ?    [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); } :
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2); });
         ASSERT(best != lats.rend());
         s = *best;
     }
