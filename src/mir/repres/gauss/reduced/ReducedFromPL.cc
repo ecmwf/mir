@@ -39,7 +39,7 @@ ReducedFromPL::~ReducedFromPL() {
 
 
 void ReducedFromPL::print(std::ostream &out) const {
-    out << "ReducedFromPL[N" << N_ << ",bbox=" << bbox_ << "]";
+    out << "ReducedFromPL[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 

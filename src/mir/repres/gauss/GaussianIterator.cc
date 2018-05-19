@@ -101,8 +101,8 @@ void GaussianIterator::resetToRow(long Ni_globe) {
 
 void GaussianIterator::print(std::ostream& out) const {
     out << "GaussianIterator["
-            "bbox=" << bbox_
-        << ",N=" << N_
+            "N=" << N_
+        << ",bbox=" << bbox_
         << ",Ni=" << Ni_
         << ",Nj=" << Nj_
         << ",i=" << i_

@@ -42,7 +42,7 @@ RegularGG::~RegularGG() {
 
 
 void RegularGG::print(std::ostream& out) const {
-    out << "RegularGG[N" << N_ << ",bbox=" << bbox_ << "]";
+    out << "RegularGG[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 
