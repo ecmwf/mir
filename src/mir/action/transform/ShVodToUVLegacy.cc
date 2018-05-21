@@ -48,11 +48,15 @@ inline double ss(double pm, double pn) {
 
 ShVodToUVLegacy::ShVodToUVLegacy(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
+#if 0
     bool plus = parametrisation.has("vod2UV-legacy-plus-one-wave");
     bool minus = parametrisation.has("vod2UV-legacy-minus-one-wave");
 
     ASSERT(plus != minus);
     plusOneWave_ = plus;
+#else
+    plusOneWave_ = false;
+#endif
 }
 
 
