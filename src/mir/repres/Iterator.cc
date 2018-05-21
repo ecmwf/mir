@@ -45,7 +45,7 @@ Iterator::~Iterator() {
 }
 
 
-const Iterator::point_2d_t& Iterator::operator*() const {
+const Iterator::point_2d_t& Iterator::pointRotated() const {
     ASSERT(valid_);
     return point_;
 }

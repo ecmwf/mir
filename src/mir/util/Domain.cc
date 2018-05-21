@@ -19,17 +19,14 @@ namespace mir {
 namespace util {
 
 
-Domain::Domain() : BoundingBox() {
-}
-
-
-Domain::Domain(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
-    BoundingBox(north, west, south, east) {
-}
-
-
 bool Domain::contains(const repres::Iterator::point_ll_t& p) const {
     return BoundingBox::contains(p.lat, p.lon);
+}
+
+
+bool Domain::contains(const repres::Iterator::point_2d_t& p) const {
+    // notice the order
+    return BoundingBox::contains(p[0], p[1]);
 }
 
 

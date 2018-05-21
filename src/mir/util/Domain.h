@@ -33,16 +33,15 @@ public:
 
     // -- Contructors
 
-    Domain();
-    explicit Domain(const Latitude& north,
-                    const Longitude& west,
-                    const Latitude& south,
-                    const Longitude& east);
+    using BoundingBox::BoundingBox;
 
     // -- Methods
 
     /// Contains point
     bool contains(const repres::Iterator::point_ll_t& p) const;
+
+    /// Contains point
+    bool contains(const repres::Iterator::point_2d_t& p) const;
 
     /// Contains point
     bool contains(const Latitude&, const Longitude&) const;

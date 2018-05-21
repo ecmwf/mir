@@ -69,10 +69,13 @@ public:
 
     // -- Operators
 
-    const point_2d_t& operator*() const;
+    inline const point_2d_t& operator*() const {
+        return pointRotated();
+    }
 
     // -- Methods
 
+    const point_2d_t& pointRotated() const;
     const point_ll_t& pointUnrotated() const;
     const point_3d_t point3D() const;
 
