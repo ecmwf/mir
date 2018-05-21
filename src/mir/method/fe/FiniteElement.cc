@@ -19,14 +19,17 @@
 #include <forward_list>
 #include <limits>
 #include <utility>
+
 #include "eckit/config/Resource.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
-#include "eckit/log/TraceTimer.h"
+#include "eckit/log/Timer.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/PointIndex3.h"
@@ -34,7 +37,7 @@
 #include "atlas/mesh/ElementType.h"
 #include "atlas/mesh/Elements.h"
 #include "atlas/mesh/Nodes.h"
-#include "atlas/output/Gmsh.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -59,17 +62,30 @@ typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
 
 
 static void normalise(triplet_vector_t& triplets) {
+    ASSERT(!triplets.empty());
 
     // sum all calculated weights for normalisation
-    double sum = 0.0;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        sum += triplets[j].value();
+    double sum = 0.;
+    for (auto& t : triplets) {
+        sum += t.value();
     }
 
-    // now normalise all weights according to the total
-    const double invSum = 1.0 / sum;
-    for (size_t j = 0; j < triplets.size(); ++j) {
-        triplets[j].value() *= invSum;
+    if (sum > std::numeric_limits<double>::epsilon()) {
+
+        // now normalise all weights according to the total
+        const double invSum = 1. / sum;
+        for (auto& t : triplets) {
+            t.value() *= invSum;
+        }
+
+    } else {
+
+        // if no reasonable seight sum is found, distribute equitably
+        const double invSum = 1. / triplets.size();
+        for (auto& t : triplets) {
+            t.value() = invSum;
+        }
+
     }
 }
 
@@ -356,10 +372,10 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         size_t count = 0;
         for (const failed_projection_t& f : failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
-            if (++count > 10) {
-                eckit::Log::debug<LibMir>() << "\n\t...";
-                break;
-            }
+//            if (++count > 10) {
+//                eckit::Log::debug<LibMir>() << "\n\t...";
+//                break;
+//            }
         }
         eckit::Log::debug<LibMir>() << std::endl;
         throw eckit::SeriousBug(msg.str());

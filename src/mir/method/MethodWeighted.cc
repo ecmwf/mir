@@ -332,8 +332,6 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             if (field.hasMissing()) {
                 WeightMatrix M;
                 applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
-//exit(0);
-
                 M.multiply(mi, mo);
             } else {
                 W.multiply(mi, mo);
@@ -560,8 +558,7 @@ const repres::Representation* MethodWeighted::adjustOutputRepresentation(context
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
         // bounding box needs adjustment because it can come from the user
-        util::BoundingBox bbox = representation->croppedBoundingBox(cropping_.boundingBox());
-
+        const util::BoundingBox& bbox = cropping_.boundingBox();
         return representation->croppedRepresentation(bbox);
     }
 
