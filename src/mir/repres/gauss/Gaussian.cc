@@ -177,23 +177,32 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
 
     if (n < lats.back()) {
         n = lats.back();
-    } else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n,
-             grib1 ? [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
-             in ?    [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); } :
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2); });
+    } else if (in) {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, grib1 ?
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); });
         ASSERT(best != lats.end());
+        n = *best;
+    } else if (n > lats.front()) {
+        // extend 'outwards': don't change, it's already above the Gaussian latitudes
+    } else {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), n);
         n = *best;
     }
 
     if (s > lats.front()) {
         s = lats.front();
-    } else {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s,
-             grib1 ? [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
-             in ?    [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); } :
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2); });
+    } else if (in) {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, grib1 ?
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
+                     [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); });
         ASSERT(best != lats.rend());
+        s = *best;
+    } else if (s < lats.back()) {
+        // extend 'outwards': don't change, it's already below the Gaussian latitudes
+    } else {
+        auto best = std::lower_bound(lats.begin(), lats.end(), s,
+                     [](const Latitude& l1, const Latitude& l2) { return l1 > l2; });
         s = *best;
     }
 
