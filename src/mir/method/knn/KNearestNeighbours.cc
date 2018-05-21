@@ -151,12 +151,12 @@ void KNearestNeighbours::assemble(
 
 
 void KNearestNeighbours::print(std::ostream& out) const {
-    out << "KNearestNeighbours[";
-    MethodWeighted::print(out);
-    out <<  ",name=" << name()
+    out << "KNearestNeighbours["
+            "name=" << name()
         << ",nClosest=" << nClosest_
-        << ",distanceWeighting=" << distanceWeighting()
-        << "]";
+        << ",distanceWeighting=" << distanceWeighting();
+    MethodWeighted::print(out);
+    out << "]";
 }
 
 
