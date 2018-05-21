@@ -85,7 +85,7 @@ public:
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
         options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
-        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas spectral transforms type (default 'local')"));
+        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'ifs')"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
@@ -205,7 +205,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     ASSERT(paramIdu > 0);
     ASSERT(paramIdv > 0);
 
-    std::string type = "local";
+    std::string type = "ifs";
     args.get("atlas-trans-type", type);
 
     const bool vod2uv   = args.getBool("vod2uv", false);

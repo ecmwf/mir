@@ -238,7 +238,7 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
 
     // use the 'local' spectral transforms
-    std::string type = "local";
+    std::string type = "ifs";
     parametrisation.userParametrisation().get("atlas-trans-type", type);
 
     if (!atlas::trans::TransFactory::has(type)) {
