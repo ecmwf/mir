@@ -72,12 +72,10 @@ protected:
     const std::vector<double>& latitudes() const;
 
     virtual eckit::Fraction getSmallestIncrement() const = 0;
+    void correctSouthNorth(Latitude& s, Latitude& n, bool grib1=false, bool in=true) const;
 
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
     Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
-
-    virtual void correctSouthNorth(Latitude& s, Latitude& n, bool grib1=false, bool in=true) const;
-    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1=false) const = 0;
 
     // -- Overridden methods
 
@@ -101,8 +99,7 @@ private:
     // None
 
     // -- Methods
-
-    void correctBoundingBoxFromFile(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
     // None

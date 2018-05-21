@@ -87,11 +87,11 @@ void GaussianIterator::resetToRow(long Ni_globe) {
 
     const eckit::Fraction e = bbox_.east().fraction();
     auto Ne = (e / inc_).integralPart();
-    if (Ne * inc_ > e) {
+    if (Ne * inc_ > e && Ne > Nw) {
         Ne -= 1;
     }
+    ASSERT(Ne >= Nw);
 
-    ASSERT(Ne - Nw + 1 > 0);
     Ni_ = std::min(size_t(Ni_globe), size_t(Ne - Nw + 1));
 
     i_ = 0;

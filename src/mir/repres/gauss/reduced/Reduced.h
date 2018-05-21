@@ -41,7 +41,7 @@ public:
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -84,13 +84,13 @@ protected:
     const std::vector<long>& pls() const;
     void pls(std::vector<long>&);
     void setNj();
+    void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false);
 
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
@@ -105,6 +105,7 @@ private:
     std::vector<long> pl_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
 

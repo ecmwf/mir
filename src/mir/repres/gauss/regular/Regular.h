@@ -71,7 +71,7 @@ protected:
 
     // -- Methods
 
-    static void cropToBoundingBox(size_t N, const std::vector<double> &latitudes, util::BoundingBox&);
+    void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
     void setNiNj();
 
     // -- Overridden methods
@@ -81,7 +81,6 @@ protected:
     virtual bool sameAs(const Representation&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
-    virtual void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members

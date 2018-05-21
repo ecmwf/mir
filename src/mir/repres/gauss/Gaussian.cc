@@ -53,8 +53,6 @@ Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     Gridded(parametrisation) {
     ASSERT(parametrisation.get("N", N_));
-
-    correctBoundingBoxFromFile(parametrisation);
 }
 
 
@@ -65,39 +63,6 @@ Gaussian::~Gaussian() {
 bool Gaussian::sameAs(const Representation& other) const {
     const Gaussian* o = dynamic_cast<const Gaussian*>(&other);
     return o && (N_ == o->N_) && (bbox_ == o->bbox_);
-}
-
-
-void Gaussian::correctBoundingBoxFromFile(const param::MIRParametrisation&) {
-
-    // adjust latitudes
-    Latitude n = bbox_.north();
-    Latitude s = bbox_.south();
-
-    correctSouthNorth(s, n, true);
-
-
-    // adjust longitudes
-    Longitude e = bbox_.east();
-    Longitude w = bbox_.west();
-
-    correctWestEast(w, e, true);
-
-
-    // set bounding box and inform
-    util::BoundingBox newBox = util::BoundingBox(n, w, s, e);
-
-    if (newBox != bbox_) {
-        eckit::Channel& log = eckit::Log::debug<LibMir>();
-        std::streamsize old = log.precision(12);
-        log << "Gaussian::correctBoundingBox: "
-            << "\n   " << bbox_
-            << "\n > " << newBox
-            << std::endl;
-        log.precision(old);
-
-        bbox_ = newBox;
-    }
 }
 
 
