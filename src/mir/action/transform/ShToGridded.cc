@@ -322,6 +322,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
                 << "\n   " << oldAction.str()
                 << "\n + " << next
                 << "\n = " << *this
+                << "\n + " << "(...)"
                 << std::endl;
 
     }
