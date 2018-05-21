@@ -92,7 +92,7 @@ void GaussianIterator::resetToRow(long Ni_globe) {
     }
 
     ASSERT(Ne - Nw + 1 > 0);
-    Ni_ = size_t(Ne - Nw + 1);
+    Ni_ = std::min(size_t(Ni_globe), size_t(Ne - Nw + 1));
 
     i_ = 0;
     lon_ = Nw * inc_;
