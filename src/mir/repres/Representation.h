@@ -106,7 +106,6 @@ public:
 
     // Return a cropped version
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;

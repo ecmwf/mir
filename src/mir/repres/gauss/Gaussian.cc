@@ -101,41 +101,6 @@ void Gaussian::correctBoundingBoxFromFile(const param::MIRParametrisation&) {
 }
 
 
-util::BoundingBox Gaussian::croppedBoundingBox(const util::BoundingBox& bbox) const {
-
-    // adjust latitudes
-    Latitude n = bbox.north();
-    Latitude s = bbox.south();
-
-    correctSouthNorth(s, n);
-
-
-    // adjust longitudes
-    Longitude e = bbox.east();
-    Longitude w = bbox.west();
-
-    correctWestEast(w, e);
-
-
-    // set bounding box and inform
-    util::BoundingBox cropped = util::BoundingBox(n, w, s, e);
-
-    if (cropped != bbox) {
-        eckit::Channel& log = eckit::Log::debug<LibMir>();
-        std::streamsize old = log.precision(12);
-        log << "Gaussian::croppedBoundingBox: "
-            << "\n   " << bbox_
-            << "\n > " << cropped
-            << std::endl;
-        log.precision(old);
-
-        return cropped;
-    }
-
-    return bbox;
-}
-
-
 Iterator* Gaussian::unrotatedIterator(gauss::GaussianIterator::ni_type Ni) const {
     return new gauss::GaussianIterator(latitudes(), bbox_, N_, Ni);
 }

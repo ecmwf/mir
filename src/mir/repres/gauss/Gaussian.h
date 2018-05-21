@@ -83,7 +83,6 @@ protected:
 
     virtual void fill(util::MeshGeneratorParameters&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual util::BoundingBox croppedBoundingBox(const util::BoundingBox&) const;
     virtual void validate(const std::vector<double>&) const;
 
     bool includesNorthPole() const;

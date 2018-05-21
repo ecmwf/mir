@@ -157,11 +157,14 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     ASSERT(grid);
 
 
-    atlas::Domain domain = grid.domain();
+    atlas::Domain domain = representation.domain();
     if (cropping_) {
-        util::BoundingBox bbox = representation.croppedBoundingBox(cropping_.boundingBox());
-        domain = util::Domain(bbox.north(), bbox.west(),
-                              bbox.south(), bbox.east());
+
+        // bounding box needs adjustment because it can come from the user
+        const util::BoundingBox& bbox = cropping_.boundingBox();
+        repres::RepresentationHandle cropped(representation.croppedRepresentation(bbox));
+
+        domain = cropped->domain();
     }
     ASSERT(domain);
 
