@@ -44,7 +44,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
     // Setup intermediate grid (before truncation)
     // NOTE: truncation can depend on the intermediate grid Gaussian number
     std::string intgrid = "automatic";
-    parametrisation_.userParametrisation().get("intgrid", intgrid);
+    parametrisation_.get("intgrid", intgrid);
     intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
     ASSERT(intgrid_);
 

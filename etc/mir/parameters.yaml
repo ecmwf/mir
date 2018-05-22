@@ -1,4 +1,3 @@
 ---
-157:
-    - truncation: none
+157:  # Relative humidity
     - intgrid: source
