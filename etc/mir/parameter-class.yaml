@@ -956,18 +956,18 @@ intensity:
 - 218010  # Total column ethene
 - 218011  # Total column olefins
 - 218012  # Total column aldehydes
-- 218013  # Total column  peroxyacetyl nitrate
+- 218013  # Total column peroxyacetyl nitrate
 - 218014  # Total column peroxides
 - 218015  # Total column organic nitrates
-- 218016  # Total column  isoprene
+- 218016  # Total column isoprene
 - 218018  # Total column dimethyl sulfide
 - 218019  # Total column ammonia
-- 218020  # Total column  sulfate
+- 218020  # Total column sulfate
 - 218021  # Total column ammonium
-- 218022  # Total column  methane sulfonic acid
+- 218022  # Total column methane sulfonic acid
 - 218023  # Total column methyl glyoxal
 - 218024  # Total column stratospheric ozone
-- 218026  # Total column  lead
+- 218026  # Total column lead
 - 218027  # Total column nitrogen monoxide
 - 218028  # Total column hydroperoxy radical
 - 218029  # Total column methylperoxy radical
@@ -976,16 +976,16 @@ intensity:
 - 218033  # Total column dinitrogen pentoxide
 - 218034  # Total column pernitric acid
 - 218035  # Total column peroxy acetyl radical
-- 218036  # Total column  organic ethers
+- 218036  # Total column organic ethers
 - 218037  # Total column PAR budget corrector
 - 218038  # Total column NO to NO2 operator
 - 218039  # Total column NO to alkyl nitrate operator
 - 218040  # Total column amine
-- 218041  # Total column  polar stratospheric cloud
+- 218041  # Total column polar stratospheric cloud
 - 218042  # Total column methanol
 - 218043  # Total column formic acid
-- 218044  # Total column  methacrylic acid
-- 218045  # Total column  ethane
+- 218044  # Total column methacrylic acid
+- 218045  # Total column ethane
 - 218046  # Total column ethanol
 - 218047  # Total column propane
 - 218048  # Total column propene
@@ -1627,7 +1627,7 @@ rate:
 - 221047  # Propane deposition velocity
 - 221048  # Propene deposition velocity
 - 221049  # Terpenes deposition velocity
-- 221050  # Methacrolein MVK  deposition velocity
+- 221050  # Methacrolein MVK deposition velocity
 - 221051  # Nitrate deposition velocity
 - 221052  # Acetone deposition velocity
 - 221053  # Acetone product deposition velocity
@@ -2559,11 +2559,11 @@ rate.mass-flux:
 - 219209  # Wildfire flux of aldehydes
 - 219210  # Wildfire flux of ketones
 - 219211  # Wildfire flux of f a-pinene cyclic terpenes
-- 219212  # Wildfire flux of  toluene less reactive aromatics
+- 219212  # Wildfire flux of toluene less reactive aromatics
 - 219213  # Wildfire flux of xylene more reactive aromatics
 - 219214  # Wildfire flux of d-limonene cyclic diene
-- 219215  # Wildfire flux of  terminal alkenes
-- 219216  # Wildfire flux of  alkanes low oh rate
+- 219215  # Wildfire flux of terminal alkenes
+- 219216  # Wildfire flux of alkanes low oh rate
 - 219217  # Wildfire flux of alkanes med oh rate
 - 219218  # Wildfire flux of alkanes high oh rate
 - 219219  # Wildfire flux of hydrogen cyanide
@@ -2743,7 +2743,7 @@ rate.mass-flux.accumulated:
 - 219047  # Propane emissions
 - 219048  # Propene emissions
 - 219049  # Terpenes emissions
-- 219050  # Methacrolein MVK  emissions
+- 219050  # Methacrolein MVK emissions
 - 219051  # Nitrate emissions
 - 219052  # Acetone emissions
 - 219053  # Acetone product emissions
