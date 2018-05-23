@@ -1,0 +1,11 @@
+# MARS request
+regular_ll.2-2.grib1
+# MIR options
+--gridname=f1280 --area=58.5940228153455/16.171875/58.5940228153455/16.2421875
+# grib_get assertions
+Ni=2
+Nj=1
+latitudeOfFirstGridPointInDegrees=58.595
+longitudeOfFirstGridPointInDegrees=16.171
+latitudeOfLastGridPointInDegrees=58.594
+longitudeOfLastGridPointInDegrees=16.243
