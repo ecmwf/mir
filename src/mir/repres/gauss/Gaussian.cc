@@ -100,11 +100,12 @@ void Gaussian::validate(const std::vector<double>& values) const {
 
 
 void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) const {
-    ASSERT(s < n);
+    ASSERT(s <= n);
 
     const std::vector<double>& lats = latitudes();
     ASSERT(!lats.empty());
 
+    const bool same(s == n);
     if (n < lats.back()) {
         n = lats.back();
     } else if (in) {
@@ -120,7 +121,9 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
         n = *best;
     }
 
-    if (s > lats.front()) {
+    if (same) {
+        s = n;
+    } else if (s > lats.front()) {
         s = lats.front();
     } else if (in) {
         auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, grib1 ?
@@ -136,9 +139,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
         s = *best;
     }
 
-    // This is not necessary, but maybe a good idea to require elements of dimensionality 2
-    ASSERT(grib1 ? !same_with_grib1_accuracy(s, n)
-                 : n != s);
+    ASSERT(s <= n);
 }
 
 
