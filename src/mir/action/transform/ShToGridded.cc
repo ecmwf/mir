@@ -60,11 +60,18 @@ static InMemoryCache<TransCache> trans_cache("mirCoefficient",
         false); // Don't cleanup at exit: the Fortran part will dump core
 
 
-static atlas::trans::Cache getTrans(
+static atlas::trans::Cache getTransCache(
         atlas::trans::LegendreCacheCreator& creator,
         const std::string& key,
         const param::MIRParametrisation& parametrisation,
         context::Context& ctx ) {
+
+
+    InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+    if (j != trans_cache.end()) {
+        ASSERT(j->transCache_);
+        return j->transCache_;
+    }
 
 
     // Make sure we have enough space in cache to add new coefficients
@@ -195,10 +202,13 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
         eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
 
-        if (!parametrisation_.has("caching")) {
+        bool caching = true;
+        parametrisation_.get("caching", caching);
+
+        if (!caching) {
 
             InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
-            if (j != trans_cache.end()) {
+            if (j == trans_cache.end()) {
                 j->transCache_ = creator.create();
             }
             ASSERT(j->transCache_);
@@ -206,7 +216,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
         } else {
 
-            atlas::trans::Cache transCache = getTrans(
+            atlas::trans::Cache transCache = getTransCache(
                         creator,
                         key,
                         parametrisation_,
