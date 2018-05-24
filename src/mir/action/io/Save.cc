@@ -12,33 +12,42 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/io/Save.h"
 
 #include <iostream>
 
-#include "mir/output/MIROutput.h"
+#include "eckit/log/Statistics.h"
+
+#include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
+#include "mir/output/MIROutput.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
 namespace action {
 
-Save::Save(const param::MIRParametrisation &parametrisation, input::MIRInput &input, output::MIROutput &output):
+
+Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output):
     Action(parametrisation),
     input_(input),
     output_(output) {
 }
 
+
 Save::~Save() {
 }
+
 
 bool Save::sameAs(const Action& other) const {
     const Save* o = dynamic_cast<const Save*>(&other);
     return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
-           && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+            && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
-void Save::print(std::ostream &out) const {
+
+void Save::print(std::ostream& out) const {
     out << "Save[";
     if (output_.printParametrisation(out, parametrisation_)) {
         out << ",";
@@ -46,7 +55,8 @@ void Save::print(std::ostream &out) const {
     out << "output=" << output_ << "]";
 }
 
-void Save::custom(std::ostream &out) const {
+
+void Save::custom(std::ostream& out) const {
     out << "Save[";
     if (output_.printParametrisation(out, parametrisation_)) {
         out << ",";
@@ -54,13 +64,17 @@ void Save::custom(std::ostream &out) const {
     out << "output=...]";
 }
 
-void Save::execute(context::Context & ctx) const {
+
+void Save::execute(context::Context& ctx) const {
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
     output_.save(parametrisation_, ctx);
 }
+
 
 const char* Save::name() const {
     return "Save";
 }
+
 
 }  // namespace action
 }  // namespace mir

@@ -13,30 +13,33 @@
 /// @author Tiago Quintino
 /// @date   April 2016
 
-#ifndef util_MIRStatistics_H
-#define util_MIRStatistics_H
+
+#ifndef mir_util_MIRStatistics_h
+#define mir_util_MIRStatistics_h
 
 #include <iosfwd>
 
 #include "eckit/log/Statistics.h"
+
 #include "mir/caching/InMemoryCacheStatistics.h"
+
 
 namespace eckit {
 class Stream;
 }
 
+
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class MIRStatistics : public eckit::Statistics {
 public:
-    MIRStatistics() ;
-    MIRStatistics(eckit::Stream &) ;
+    MIRStatistics();
+    MIRStatistics(eckit::Stream&);
 
-    MIRStatistics &operator+=(const MIRStatistics &rhs) ;
-    MIRStatistics &operator/=(size_t) ;
+    MIRStatistics &operator+=(const MIRStatistics&);
+    MIRStatistics &operator/=(size_t);
 
     InMemoryCacheStatistics bitmapCache_;
     InMemoryCacheStatistics areaCroppingCache_;
@@ -47,9 +50,7 @@ public:
     eckit::Timing cropTiming_;
     eckit::Timing frameTiming_;
     eckit::Timing globaliseTiming_;
-
     eckit::Timing bitmapTiming_;
-
     eckit::Timing coefficientTiming_;
     eckit::Timing sh2gridTiming_;
     eckit::Timing grid2gridTiming_;
@@ -59,24 +60,25 @@ public:
     eckit::Timing loadCoeffTiming_;
     eckit::Timing createCoeffTiming_;
     eckit::Timing calcTiming_;
+    eckit::Timing saveTiming_;
 
-    void report(std::ostream& out, const char* indent = "") const;
+    void report(std::ostream&, const char* indent = "") const;
 
-    void csvHeader(std::ostream& out) const;
+    void csvHeader(std::ostream&) const;
 
-    void csvRow(std::ostream& out) const;
+    void csvRow(std::ostream&) const;
 
-    void encode(eckit::Stream &) const;
+    void encode(eckit::Stream&) const;
 
-    friend eckit::Stream &operator<<(eckit::Stream &s, const MIRStatistics &x) {
+    friend eckit::Stream &operator<<(eckit::Stream& s, const MIRStatistics& x) {
         x.encode(s);
         return s;
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir
+
 
 #endif

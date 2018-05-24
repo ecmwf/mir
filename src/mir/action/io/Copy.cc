@@ -12,44 +12,59 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/io/Copy.h"
 
 #include <iostream>
-#include "mir/output/MIROutput.h"
+
+#include "eckit/log/Statistics.h"
+
+#include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
+#include "mir/output/MIROutput.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
 namespace action {
 
-Copy::Copy(const param::MIRParametrisation &parametrisation, output::MIROutput &output):
+
+Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output):
     Action(parametrisation),
     output_(output) {
 }
 
+
 Copy::~Copy() {
 }
+
 
 bool Copy::sameAs(const Action& other) const {
     const Copy* o = dynamic_cast<const Copy*>(&other);
     return o && output_.sameAs(o->output_);
 }
 
-void Copy::print(std::ostream &out) const {
+
+void Copy::print(std::ostream& out) const {
     out << "Copy[output=" << output_ << "]";
 }
 
-void Copy::custom(std::ostream &out) const {
+
+void Copy::custom(std::ostream& out) const {
     out << "Copy[...]";
 }
 
-void Copy::execute(context::Context & ctx) const {
+
+void Copy::execute(context::Context&  ctx) const {
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
     output_.copy(parametrisation_, ctx);
 }
+
 
 const char* Copy::name() const {
     return "Copy";
 }
+
 
 }  // namespace action
 }  // namespace mir

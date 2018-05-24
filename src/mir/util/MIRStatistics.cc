@@ -8,29 +8,29 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "mir/util/MIRStatistics.h"
+
 #include "eckit/serialisation/Stream.h"
+
 
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 MIRStatistics::MIRStatistics() {
 }
 
-MIRStatistics::MIRStatistics(eckit::Stream &s):
+
+MIRStatistics::MIRStatistics(eckit::Stream& s):
     bitmapCache_(s),
     areaCroppingCache_(s),
     transHandleCache_(s),
     matrixCache_(s),
-    meshCache_(s)
-{
+    meshCache_(s) {
     s >> cropTiming_;
     s >> frameTiming_;
     s >> globaliseTiming_;
-
-
     s >> bitmapTiming_;
     s >> coefficientTiming_;
     s >> sh2gridTiming_;
@@ -41,10 +41,11 @@ MIRStatistics::MIRStatistics(eckit::Stream &s):
     s >> loadCoeffTiming_;
     s >> createCoeffTiming_;
     s >> calcTiming_;
-
+    s >> saveTiming_;
 }
 
-void MIRStatistics::encode(eckit::Stream &s) const {
+
+void MIRStatistics::encode(eckit::Stream& s) const {
     s << bitmapCache_;
     s << areaCroppingCache_;
     s << transHandleCache_;
@@ -53,7 +54,6 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << cropTiming_;
     s << frameTiming_;
     s << globaliseTiming_;
-
     s << bitmapTiming_;
     s << coefficientTiming_;
     s << sh2gridTiming_;
@@ -64,9 +64,11 @@ void MIRStatistics::encode(eckit::Stream &s) const {
     s << loadCoeffTiming_;
     s << createCoeffTiming_;
     s << calcTiming_;
+    s << saveTiming_;
 }
 
-MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
+
+MIRStatistics& MIRStatistics::operator+=(const MIRStatistics& other) {
     bitmapCache_ += other.bitmapCache_;
     areaCroppingCache_ += other.areaCroppingCache_;
     transHandleCache_ += other.transHandleCache_;
@@ -85,11 +87,12 @@ MIRStatistics &MIRStatistics::operator+=(const MIRStatistics &other) {
     loadCoeffTiming_ += other.loadCoeffTiming_;
     createCoeffTiming_ += other.createCoeffTiming_;
     calcTiming_ += other.calcTiming_;
+    saveTiming_ += other.saveTiming_;
     return *this;
 }
 
 
-MIRStatistics &MIRStatistics::operator/=(size_t n) {
+MIRStatistics& MIRStatistics::operator/=(size_t n) {
     bitmapCache_ /= n;
     areaCroppingCache_ /= n;
     transHandleCache_ /= n;
@@ -108,17 +111,18 @@ MIRStatistics &MIRStatistics::operator/=(size_t n) {
     loadCoeffTiming_ /= n;
     createCoeffTiming_ /= n;
     calcTiming_ /= n;
+    saveTiming_ /= n;
     return *this;
 }
 
-void MIRStatistics::report(std::ostream &out, const char *indent) const {
+
+void MIRStatistics::report(std::ostream& out, const char *indent) const {
 
     bitmapCache_.report("Bitmap cache", out, indent);
     areaCroppingCache_.report("Area cache", out, indent);
     transHandleCache_.report("Trans cache", out, indent);
     matrixCache_.report("Matrix cache", out, indent);
     meshCache_.report("Mesh cache", out, indent);
-
 
     reportTime(out, "Time in grid to grid interp.", grid2gridTiming_, indent);
     reportTime(out, "Time in SH to grid transform", sh2gridTiming_, indent);
@@ -131,17 +135,20 @@ void MIRStatistics::report(std::ostream &out, const char *indent) const {
     reportTime(out, "Time in extending to globe", globaliseTiming_, indent);
 
     reportTime(out, "Time applying bitmaps", bitmapTiming_, indent);
-
     reportTime(out, "Time compute matrices", computeMatrixTiming_, indent);
     reportTime(out, "Time matrix multiply", matrixTiming_, indent);
     reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
     reportTime(out, "Time loading coefficients", loadCoeffTiming_, indent);
+
+    reportTime(out, "Time saving", saveTiming_, indent);
 }
+
 
 void MIRStatistics::csvHeader(std::ostream& out) const {
     out << "grid2grid,sh2grid,coefficient,vod2uv,calc,crop,frame,globalise,bitmap,"
-        << "computeMatrix,matrix,createCoeff,loadCoeff";
+        << "computeMatrix,matrix,createCoeff,loadCoeff,save";
 }
+
 
 void MIRStatistics::csvRow(std::ostream& out) const {
     out << grid2gridTiming_ << ","
@@ -156,10 +163,10 @@ void MIRStatistics::csvRow(std::ostream& out) const {
         << computeMatrixTiming_ << ","
         << matrixTiming_ << ","
         << createCoeffTiming_ << ","
-        << loadCoeffTiming_;
+        << loadCoeffTiming_ << ","
+        << saveTiming_;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir
