@@ -908,6 +908,10 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
     }
 
+    if(whiteLister_.ignoreError(multi1, field)) {
+        return;
+    }
+
     if (show) {
         error("fields-not-found");
         eckit::Log::info() << "Fields in " << multi1 << " not in " << multi2 << std::endl;

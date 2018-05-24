@@ -44,10 +44,15 @@ namespace compare {
 class WhiteLister {
 public:
     virtual bool whiteListed(const MultiFile& name, const Field&) const = 0;
+    virtual bool ignoreError(const MultiFile& name, const Field&) const = 0;
+
 };
 
 class DefaultWhiteLister : public WhiteLister {
-    virtual bool whiteListed(const MultiFile& name, const Field&) const { return false; };
+
+    virtual bool whiteListed(const MultiFile& name, const Field&) const { return false; }
+    virtual bool ignoreError(const MultiFile& name, const Field&) const { return false; }
+
 public:
     static const WhiteLister& instance();
 };

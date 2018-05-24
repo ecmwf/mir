@@ -606,6 +606,7 @@ bool ECMWFStyle::postProcessingRequested(const api::MIRJob& job) const {
         "packing",
         "pattern",
         "vod2uv",
+        "compatibility",
         0
     };
 
