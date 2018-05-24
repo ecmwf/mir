@@ -16,7 +16,6 @@
 
 #include <iosfwd>
 
-#include "mir/action/transform/ShToGridded.h"
 #include "mir/api/Atlas.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -28,13 +27,17 @@ namespace transform {
 
 struct TransCache {
 
-    caching::legendre::LegendreLoader* loader_;
-    atlas::trans::Cache transCache_;
-    bool inited_;
+    using loader_t = caching::legendre::LegendreLoader;
+    using cache_t = atlas::trans::Cache;
+
+    loader_t* loader_;
+    cache_t transCache_;
 
     TransCache();
 
     ~TransCache();
+
+    TransCache& operator=(cache_t&& other);
 
     void print(std::ostream&) const;
 

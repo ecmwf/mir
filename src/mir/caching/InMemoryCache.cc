@@ -196,11 +196,9 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
     }
 
     cache_[key] = new Entry(ptr);
+    keys_[key] = InMemoryCacheUsage(size_t(1), size_t(0));
 
-    keys_[key] =     InMemoryCacheUsage(size_t(1), size_t(0));
-    ;
     statistics_.unique_ = keys_.size();
-
 
     return *ptr;
 

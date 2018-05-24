@@ -124,7 +124,6 @@ static atlas::trans::Cache getTransCache(
 
         const eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
 
-        tc.inited_ = true;
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
         ASSERT(tc.loader_);
         eckit::Log::debug<LibMir>() << "ShToGridded: LegendreLoader " << *tc.loader_ << std::endl;
@@ -209,10 +208,17 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
             if (j == trans_cache.end()) {
-                j->transCache_ = creator.create();
+
+                auto& entry(trans_cache[key] = creator.create());
+                ASSERT(entry.transCache_);
+                trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
+
+            } else {
+
+                ASSERT(j->transCache_);
+                trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
+
             }
-            ASSERT(j->transCache_);
-            trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
 
         } else {
 

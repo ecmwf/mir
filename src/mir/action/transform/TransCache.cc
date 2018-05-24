@@ -13,8 +13,7 @@
 
 #include "mir/action/transform/TransCache.h"
 
-#include "eckit/log/Log.h"
-#include "eckit/exception/Exceptions.h"
+#include <iostream>
 
 
 namespace mir {
@@ -23,21 +22,28 @@ namespace transform {
 
 
 TransCache::TransCache() :
-    loader_(nullptr),
-    inited_(false) {
+    loader_(nullptr) {
 }
 
 
 TransCache::~TransCache() {
-    if (inited_) {
-        eckit::Log::info() << "Delete " << *this << std::endl;
-#if 0
-        trans_delete(&trans_);
-#endif
-    } else {
-        eckit::Log::info() << "Not Deleting " << *this << std::endl;
+    if (loader_) {
+        delete loader_;
     }
-    delete loader_;
+}
+
+
+TransCache& TransCache::operator=(cache_t&& transCache) {
+
+    // on assignment, loader is discarded
+    if (loader_) {
+        delete loader_;
+    }
+
+    loader_ = nullptr;
+    transCache_ = transCache;
+
+    return *this;
 }
 
 
