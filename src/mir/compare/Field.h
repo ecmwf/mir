@@ -115,6 +115,9 @@ public:
 
     std::ostream& printDifference(std::ostream& out, const Field & other) const;
 
+    std::ostream& printGrid(std::ostream &out) const;
+
+
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);
 

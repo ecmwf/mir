@@ -675,6 +675,47 @@ void Field::print(std::ostream & out) const {
     out << "]";
 }
 
+
+std::ostream & Field::printGrid(std::ostream & out) const {
+
+    bool comma = false;
+
+    if (!gridname_.empty()) {
+        if(comma) {
+            out << ',';
+        }
+        comma = true;
+        out << "gridname=" << gridname_;
+    }
+
+    if (resol_ >= 0) {
+        if(comma) {
+            out << ',';
+        }
+        comma = true;
+        out << "resol=" << resol_;
+    }
+
+    if (grid_) {
+        if(comma) {
+            out << ',';
+        }
+        comma = true;
+        out << "grid=" << west_east_ << "/" << north_south_;
+    }
+
+    if (area_) {
+        if(comma) {
+            out << ',';
+        }
+        comma = true;
+        out << "area=" << north_ << "/" << west_ << "/" << south_ << "/" << east_;
+    }
+
+    return out;
+
+}
+
 bool Field::sameField(const Field & other) const {
     return values_ == other.values_;
 }
@@ -709,19 +750,19 @@ bool Field::same(const Field & other) const {
 
 size_t Field::differences(const Field & other) const {
     size_t result = 0;
-    if(!sameParam(other)) result+=100;
-           if(!sameField(other)) result++;
-           if(!sameNumberOfPoints(other)) result++;
-           if(!sameGrid(other)) result++;
-           if(!sameAccuracy(other)) result++;
-           if(!samePacking(other)) result++;
-           if(!sameRotation(other)) result++;
-           if(!sameResol(other)) result++;
-           if(!sameGridname(other)) result++;
-           if(!sameGridtype(other)) result++;
-           if(!sameFormat(other)) result++;
-           if(!sameArea(other)) result++;
-return result;
+    if (!sameParam(other)) result += 100;
+    if (!sameField(other)) result++;
+    if (!sameNumberOfPoints(other)) result++;
+    if (!sameGrid(other)) result++;
+    if (!sameAccuracy(other)) result++;
+    if (!samePacking(other)) result++;
+    if (!sameRotation(other)) result++;
+    if (!sameResol(other)) result++;
+    if (!sameGridname(other)) result++;
+    if (!sameGridtype(other)) result++;
+    if (!sameFormat(other)) result++;
+    if (!sameArea(other)) result++;
+    return result;
 }
 
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
