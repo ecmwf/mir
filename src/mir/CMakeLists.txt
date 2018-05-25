@@ -276,6 +276,8 @@ list(
     method/knn/distance/NearestNeighbour.h
     method/knn/distance/NearestNeighbourWithLowestIndex.cc
     method/knn/distance/NearestNeighbourWithLowestIndex.h
+    method/knn/distance/NoDistanceWeighting.cc
+    method/knn/distance/NoDistanceWeighting.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
