@@ -11,6 +11,8 @@
 
 #include "mir/method/knn/distance/NearestNeighbour.h"
 
+#include "eckit/utils/MD5.h"
+
 
 namespace mir {
 namespace method {
@@ -30,6 +32,24 @@ void NearestNeighbour::operator()(
 
     ASSERT(!neighbours.empty());
     triplets.assign(1, WeightMatrix::Triplet(ip, neighbours.front().payload(), 1.));
+}
+
+
+bool NearestNeighbour::sameAs(const DistanceWeighting& other) const {
+    const NearestNeighbour* o = dynamic_cast<const NearestNeighbour*>(&other);
+    return o;
+}
+
+
+void NearestNeighbour::print(std::ostream& out) const {
+    out << "NearestNeighbour[]";
+}
+
+
+void NearestNeighbour::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
 }
 
 

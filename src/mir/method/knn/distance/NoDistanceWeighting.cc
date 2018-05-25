@@ -11,6 +11,8 @@
 
 #include "mir/method/knn/distance/NoDistanceWeighting.h"
 
+#include "eckit/utils/MD5.h"
+
 
 namespace mir {
 namespace method {
@@ -38,6 +40,24 @@ void NoDistanceWeighting::operator()(
     for (auto& n : neighbours) {
         triplets.push_back(WeightMatrix::Triplet(ip, n.payload(), weight));
     }
+}
+
+
+bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
+    const NoDistanceWeighting* o = dynamic_cast<const NoDistanceWeighting*>(&other);
+    return o;
+}
+
+
+void NoDistanceWeighting::print(std::ostream& out) const {
+    out << "NoDistanceWeighting[]";
+}
+
+
+void NoDistanceWeighting::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
 }
 
 

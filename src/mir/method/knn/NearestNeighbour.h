@@ -18,6 +18,8 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
+#include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
+
 
 namespace mir {
 namespace method {
@@ -34,9 +36,10 @@ public:
 private:
 
     virtual const char* name() const;
-
-    virtual std::string distanceWeighting() const;
     virtual bool sameAs(const Method& other) const;
+    virtual const distance::DistanceWeighting& distanceWeighting() const;
+
+    distance::NearestNeighbourWithLowestIndex distanceWeighting_;
 
 };
 

@@ -19,6 +19,8 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
+#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
+
 
 namespace mir {
 namespace method {
@@ -42,10 +44,10 @@ private:
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
     virtual const char* name() const;
-
-    virtual std::string distanceWeighting() const;
-
     virtual bool sameAs(const Method& other) const;
+    virtual const distance::DistanceWeighting& distanceWeighting() const;
+
+    distance::DistanceWeightingWithLSM distanceWeighting_;
 
 };
 

@@ -12,6 +12,7 @@
 #include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
 
 #include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -47,6 +48,24 @@ void NearestNeighbourWithLowestIndex::operator()(
     }
 
     triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
+}
+
+
+bool NearestNeighbourWithLowestIndex::sameAs(const DistanceWeighting& other) const {
+    const NearestNeighbourWithLowestIndex* o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
+    return o;
+}
+
+
+void NearestNeighbourWithLowestIndex::print(std::ostream& out) const {
+    out << "NearestNeighbourWithLowestIndex[]";
+}
+
+
+void NearestNeighbourWithLowestIndex::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
 }
 
 

@@ -264,6 +264,8 @@ list(
     method/knn/NearestNeighbour.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
+    method/knn/distance/DistanceWeightingWithLSM.cc
+    method/knn/distance/DistanceWeightingWithLSM.h
     method/knn/distance/InverseDistanceWeighting.cc
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc

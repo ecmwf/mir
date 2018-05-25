@@ -11,6 +11,8 @@
 
 #include "mir/method/knn/distance/InverseDistanceWeightingSquared.h"
 
+#include "eckit/utils/MD5.h"
+
 
 namespace mir {
 namespace method {
@@ -52,6 +54,24 @@ void InverseDistanceWeightingSquared::operator()(
         size_t jp = neighbours[i].payload();
         triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[i] / sum));
     }
+}
+
+
+bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) const {
+    const InverseDistanceWeightingSquared* o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
+    return o;
+}
+
+
+void InverseDistanceWeightingSquared::print(std::ostream& out) const {
+    out << "InverseDistanceWeightingSquared[]";
+}
+
+
+void InverseDistanceWeightingSquared::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
 }
 
 

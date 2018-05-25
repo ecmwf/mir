@@ -18,6 +18,8 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
+#include "eckit/memory/ScopedPtr.h"
+
 
 namespace mir {
 namespace method {
@@ -35,6 +37,9 @@ private:
 
     virtual const char* name() const;
     virtual bool sameAs(const Method& other) const;
+    virtual const distance::DistanceWeighting& distanceWeighting() const;
+
+    eckit::ScopedPtr<const distance::DistanceWeighting> distanceWeighting_;
 
 };
 

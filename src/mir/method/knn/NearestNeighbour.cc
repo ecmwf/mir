@@ -24,7 +24,9 @@ namespace method {
 namespace knn {
 
 
-NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
+    KNearestNeighbours(param),
+    distanceWeighting_(param) {
 }
 
 
@@ -38,13 +40,13 @@ bool NearestNeighbour::sameAs(const Method& other) const {
 }
 
 
-const char* NearestNeighbour::name() const {
-    return "nearest-neighbour";
+const distance::DistanceWeighting& NearestNeighbour::distanceWeighting() const {
+    return distanceWeighting_;
 }
 
 
-std::string NearestNeighbour::distanceWeighting() const {
-    return "nearest-neighbour-with-lowest-index";
+const char* NearestNeighbour::name() const {
+    return "nearest-neighbour";
 }
 
 

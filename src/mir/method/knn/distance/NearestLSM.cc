@@ -11,7 +11,9 @@
 
 #include "mir/method/knn/distance/NearestLSM.h"
 
+#include "eckit/utils/MD5.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 
 namespace mir {
@@ -57,6 +59,27 @@ void NearestLSM::operator()(
 
     triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
 }
+
+
+bool NearestLSM::sameAs(const DistanceWeighting& other) const {
+    const NearestLSM* o = dynamic_cast<const NearestLSM*>(&other);
+    return o;
+}
+
+
+void NearestLSM::print(std::ostream& out) const {
+    out << "NearestLSM[]";
+}
+
+
+void NearestLSM::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
+}
+
+
+static DistanceWeightingWithLSMBuilder<NearestLSM> __distance("nearest-lsm");
 
 
 }  // namespace distance

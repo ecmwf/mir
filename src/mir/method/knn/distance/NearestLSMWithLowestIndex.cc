@@ -13,7 +13,9 @@
 
 #include <limits>
 #include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 
 namespace mir {
@@ -73,6 +75,27 @@ void NearestLSMWithLowestIndex::operator()(
 
     triplets.assign(1, WeightMatrix::Triplet(ip, jp, 1.));
 }
+
+
+bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
+    const NearestLSMWithLowestIndex* o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
+    return o;
+}
+
+
+void NearestLSMWithLowestIndex::print(std::ostream& out) const {
+    out << "NearestLSMWithLowestIndex[]";
+}
+
+
+void NearestLSMWithLowestIndex::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
+}
+
+
+static DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("nearest-lsm-with-lowest-index");
 
 
 }  // namespace distance

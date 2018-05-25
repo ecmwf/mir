@@ -28,7 +28,10 @@ struct InverseDistanceWeighting : DistanceWeighting {
             const eckit::geometry::Point3& point,
             const std::vector<util::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
-
+private:
+    virtual bool sameAs(const DistanceWeighting&) const;
+    virtual void print(std::ostream&) const;
+    virtual void hash(eckit::MD5&) const;
 };
 
 

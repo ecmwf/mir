@@ -46,9 +46,10 @@ KNearestNeighbours::~KNearestNeighbours() {
 
 bool KNearestNeighbours::sameAs(const Method& other) const {
     const KNearestNeighbours* o = dynamic_cast<const KNearestNeighbours*>(&other);
-    return o && (nClosest_ == o->nClosest_);
+    return o
+            && (nClosest_ == o->nClosest_)
+            && distanceWeighting().sameAs(o->distanceWeighting());
 }
-
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
@@ -56,19 +57,14 @@ void KNearestNeighbours::hash(eckit::MD5& md5) const {
 }
 
 
-
 void KNearestNeighbours::assemble(
         util::MIRStatistics& stats,
         WeightMatrix& W,
         const repres::Representation& in,
-        const repres::Representation& out ) const {
-    using namespace distance;
-
-    // get distance weighting method
-    eckit::ScopedPtr<const DistanceWeighting> calculateWeights(DistanceWeightingFactory::build(distanceWeighting(), parametrisation_));
+        const repres::Representation& out) const {
 
     // assemble with specific distance weighting method
-    assemble(stats, W, in, out, *calculateWeights);
+    assemble(stats, W, in, out, distanceWeighting());
 }
 
 
@@ -77,7 +73,7 @@ void KNearestNeighbours::assemble(
         WeightMatrix& W,
         const repres::Representation& in,
         const repres::Representation& out,
-        const distance::DistanceWeighting& calculateWeights ) const {
+        const distance::DistanceWeighting& distanceWeighting ) const {
 
     eckit::Log::debug<LibMir>() << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
@@ -127,7 +123,7 @@ void KNearestNeighbours::assemble(
                 }
 
                 // calculate weights from distance
-                calculateWeights(ip, p, closest, triplets);
+                distanceWeighting(ip, p, closest, triplets);
                 ASSERT(!triplets.empty());
 
                 // insert the interpolant weights into the global (sparse) interpolant matrix
@@ -157,13 +153,6 @@ void KNearestNeighbours::print(std::ostream& out) const {
         << ",distanceWeighting=" << distanceWeighting();
     MethodWeighted::print(out);
     out << "]";
-}
-
-
-std::string KNearestNeighbours::distanceWeighting() const {
-    std::string n = "inverse-distance-weighting-squared";
-    parametrisation_.get("distance-weighting", n);
-    return n;
 }
 
 

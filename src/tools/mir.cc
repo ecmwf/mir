@@ -41,6 +41,7 @@
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/mir_ecbuild_config.h"
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
@@ -102,7 +103,8 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by methods k-nearest"));
-        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by methods k-nearest"));
+        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by k-nearest methods"));
+        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingWithLSMFactory>("distance-weighting-with-lsm", "Distance weighting with land-sea mask, used by nearest-lsm method"));
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));

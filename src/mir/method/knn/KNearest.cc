@@ -16,6 +16,7 @@
 #include "mir/method/knn/KNearest.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/method/knn/distance/DistanceWeighting.h"
 
 
 namespace mir {
@@ -24,6 +25,12 @@ namespace knn {
 
 
 KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
+
+    std::string name = "inverse-distance-weighting-squared";
+    param.get("distance-weighting", name);
+
+    distanceWeighting_.reset(distance::DistanceWeightingFactory::build(name, param));
+    ASSERT(distanceWeighting_);
 }
 
 
@@ -34,6 +41,12 @@ KNearest::~KNearest() {
 bool KNearest::sameAs(const Method& other) const {
     const KNearest* o = dynamic_cast<const KNearest*>(&other);
     return o && KNearestNeighbours::sameAs(other);
+}
+
+
+const distance::DistanceWeighting& KNearest::distanceWeighting() const {
+    ASSERT(distanceWeighting_);
+    return *distanceWeighting_;
 }
 
 

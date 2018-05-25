@@ -68,8 +68,7 @@ private:
 
     virtual const char *name() const = 0;
 
-    virtual std::string distanceWeighting() const;
-
+    virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
 
     size_t nClosest_;
 

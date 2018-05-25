@@ -16,10 +16,11 @@
 
 #include "mir/method/knn/NearestLSM.h"
 
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/param/RuntimeParametrisation.h"
 #include "mir/method/knn/distance/NearestLSMWithLowestIndex.h"
+#include "mir/param/RuntimeParametrisation.h"
 
 
 namespace mir {
@@ -27,7 +28,9 @@ namespace method {
 namespace knn {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
+NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
+    KNearestNeighbours(param),
+    distanceWeighting_(param) {
 }
 
 
@@ -42,10 +45,12 @@ void NearestLSM::assemble(
     const repres::Representation& out) const {
 
     // get distance weighting method
-    const distance::NearestLSMWithLowestIndex calculateWeights(parametrisation_, getMasks(in, out));
+    eckit::ScopedPtr<const distance::DistanceWeighting> method(
+                distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)) );
+    ASSERT(method);
 
     // assemble with specific distance weighting method
-    KNearestNeighbours::assemble(stats, W, in, out, calculateWeights);
+    KNearestNeighbours::assemble(stats, W, in, out, *method);
 }
 
 
@@ -89,14 +94,13 @@ bool NearestLSM::sameAs(const Method& other) const {
 }
 
 
-
-const char* NearestLSM::name() const {
-    return "nearest-lsm";
+const distance::DistanceWeighting& NearestLSM::distanceWeighting() const {
+    return distanceWeighting_;
 }
 
 
-std::string NearestLSM::distanceWeighting() const {
-    return "nearest-lsm-with-lowest-index";
+const char* NearestLSM::name() const {
+    return "nearest-lsm";
 }
 
 

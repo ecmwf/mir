@@ -12,8 +12,14 @@
 #ifndef mir_method_knn_distance_DistanceWeighting_h
 #define mir_method_knn_distance_DistanceWeighting_h
 
+#include <iosfwd>
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/PointSearch.h"
+
+
+namespace eckit {
+class MD5;
+}
 
 
 namespace mir {
@@ -33,6 +39,19 @@ struct DistanceWeighting {
             const eckit::geometry::Point3& point,
             const std::vector<util::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
+
+    virtual bool sameAs(const DistanceWeighting& other) const = 0;
+
+    virtual void hash(eckit::MD5&) const = 0;
+
+private:
+
+    virtual void print(std::ostream&) const = 0;
+
+    friend std::ostream& operator<<(std::ostream& s, const DistanceWeighting& p) {
+        p.print(s);
+        return s;
+    }
 
 };
 

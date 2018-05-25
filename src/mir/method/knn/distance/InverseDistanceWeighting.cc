@@ -12,6 +12,7 @@
 #include "mir/method/knn/distance/InverseDistanceWeighting.h"
 
 #include "eckit/types/FloatCompare.h"
+#include "eckit/utils/MD5.h"
 
 
 namespace mir {
@@ -62,6 +63,24 @@ void InverseDistanceWeighting::operator()(
         size_t jp = neighbours[j].payload();
         triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
     }
+}
+
+
+bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
+    const InverseDistanceWeighting* o = dynamic_cast<const InverseDistanceWeighting*>(&other);
+    return o;
+}
+
+
+void InverseDistanceWeighting::print(std::ostream& out) const {
+    out << "InverseDistanceWeighting[]";
+}
+
+
+void InverseDistanceWeighting::hash(eckit::MD5& h) const {
+    std::ostringstream s;
+    s << *this;
+    h.add(s.str());
 }
 
 
