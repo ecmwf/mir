@@ -266,6 +266,8 @@ list(
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
     method/knn/distance/DistanceWeightingWithLSM.h
+    method/knn/distance/GaussianDistanceWeighting.cc
+    method/knn/distance/GaussianDistanceWeighting.h
     method/knn/distance/InverseDistanceWeighting.cc
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc
