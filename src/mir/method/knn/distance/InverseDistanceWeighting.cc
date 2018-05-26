@@ -13,6 +13,7 @@
 
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -21,7 +22,15 @@ namespace knn {
 namespace distance {
 
 
-InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation&) {
+InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisation& parametrisation) {
+
+    power_ = 2.;
+    parametrisation.get("distance-weighting-shepard-power", power_);
+    ASSERT(power_ >= 0.);
+
+    // half power is used to avoid the eckit::geometry::Point3::distance extra srqt
+    halfPower_ = power_ * 0.5;
+    ASSERT(halfPower_ >= 0.);
 }
 
 
@@ -44,12 +53,12 @@ void InverseDistanceWeighting::operator()(
         const double d2 = eckit::geometry::Point3::distance2(point, neighbours[j].point());
         if (eckit::types::is_strictly_greater(d2, 0.)) {
 
-            weights[j] = 1. / d2;
+            weights[j] = 1. / std::pow(d2, halfPower_);
             sum += weights[j];
 
         } else {
 
-            // exact match found, use this neighbour only
+            // exact match found, use this neighbour only (inverse distance tends to infinity)
             triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
             return;
 
@@ -68,12 +77,12 @@ void InverseDistanceWeighting::operator()(
 
 bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     const InverseDistanceWeighting* o = dynamic_cast<const InverseDistanceWeighting*>(&other);
-    return o;
+    return o && eckit::types::is_approximately_equal(power_, o->power_);
 }
 
 
 void InverseDistanceWeighting::print(std::ostream& out) const {
-    out << "InverseDistanceWeighting[]";
+    out << "InverseDistanceWeighting[power=" << power_ << "]";
 }
 
 
@@ -84,7 +93,8 @@ void InverseDistanceWeighting::hash(eckit::MD5& h) const {
 }
 
 
-static DistanceWeightingBuilder<InverseDistanceWeighting> __distance("inverse-distance-weighting");
+static DistanceWeightingBuilder<InverseDistanceWeighting> __distance1("inverse-distance-weighting");
+static DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard");
 
 
 }  // namespace distance

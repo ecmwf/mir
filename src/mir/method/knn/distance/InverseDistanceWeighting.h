@@ -29,6 +29,8 @@ struct InverseDistanceWeighting : DistanceWeighting {
             const std::vector<util::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
 private:
+    double power_;
+    double halfPower_;
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;
