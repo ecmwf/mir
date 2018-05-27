@@ -26,11 +26,13 @@ namespace distance {
 
 GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisation& parametrisation) {
 
-    double stddev = atlas::util::Earth::radius();
-    parametrisation.get("distance-weighting-gaussian-stddev", stddev);
+    stddev_ = atlas::util::Earth::radius();
+    parametrisation.get("distance-weighting-gaussian-stddev", stddev_);
+    ASSERT(stddev_ > 0.);
 
-    ASSERT(stddev > 0.);
-    exponentFactor_ = - 1. / (2. * stddev * stddev);
+    // exponent factor is used (instead of stddev) to speed weights calculations
+    exponentFactor_ = - 1. / (2. * stddev_ * stddev_);
+    ASSERT(exponentFactor_ < 0.);
 }
 
 
@@ -65,12 +67,12 @@ void GaussianDistanceWeighting::operator()(
 
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     const GaussianDistanceWeighting* o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
-    return o && eckit::types::is_approximately_equal(exponentFactor_, o->exponentFactor_);
+    return o && eckit::types::is_approximately_equal(stddev_, o->stddev_);
 }
 
 
 void GaussianDistanceWeighting::print(std::ostream& out) const {
-    out << "GaussianDistanceWeighting[]";
+    out << "GaussianDistanceWeighting[stddev=" << stddev_ << "]";
 }
 
 

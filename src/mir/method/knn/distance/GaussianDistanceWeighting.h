@@ -29,6 +29,7 @@ struct GaussianDistanceWeighting : DistanceWeighting {
             const std::vector<util::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
 private:
+    double stddev_;
     double exponentFactor_;
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
