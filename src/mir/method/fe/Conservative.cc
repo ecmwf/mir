@@ -201,10 +201,9 @@ void Conservative::hash(eckit::MD5& md5) const {
 
 
 void Conservative::print(std::ostream& out) const {
-    out << "Conservative["
-            "inputMeshGenerationParams=" << inputMeshGenerationParams_
-        << ",outputMeshGenerationParams=" << outputMeshGenerationParams_
-        << "]";
+    out << "Conservative[";
+    FELinear::print(out);
+    out << "]";
 }
 
 

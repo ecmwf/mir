@@ -68,12 +68,9 @@ MethodWeighted::~MethodWeighted() {
 }
 
 void MethodWeighted::print(std::ostream &out) const {
-    out << ",cropping="
-        << cropping_
-        << ",lsmWeightAdjustment="
-        << lsmWeightAdjustment_
-        << ",pruneEpsilon="
-        << pruneEpsilon_;
+    out <<  "cropping=" << cropping_
+        << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
+        << ",pruneEpsilon=" << pruneEpsilon_;
 }
 
 

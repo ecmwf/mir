@@ -47,7 +47,9 @@ void Tessellation::hash( eckit::MD5 &md5) const {
 
 
 void Tessellation::print(std::ostream &out) const {
-    out << "Tessellation[]";
+    out << "Tessellation[";
+    FiniteElement::print(out);
+    out << "]";
 }
 
 

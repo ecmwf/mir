@@ -25,34 +25,21 @@ namespace fe {
 
 
 class FEBilinear: public FiniteElement {
-  public:
+public:
 
     FEBilinear(const param::MIRParametrisation&);
 
     virtual ~FEBilinear();
 
-  protected:
+protected:
 
-    virtual void hash( eckit::MD5& ) const;
-
-  private:
-
-// -- Methods
-    // None
-
-// -- Overridden methods
-
-    virtual void print(std::ostream&) const;
-    virtual const char* name() const;
+    virtual void hash(eckit::MD5&) const;
     virtual bool sameAs(const Method& other) const;
+    virtual void print(std::ostream&) const;
 
-// -- Class members
-    // None
+private:
 
-// -- Class methods
-    // None
-
-// -- Friends
+    virtual const char* name() const;
 
 };
 
@@ -60,6 +47,7 @@ class FEBilinear: public FiniteElement {
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
+
 
 #endif
 

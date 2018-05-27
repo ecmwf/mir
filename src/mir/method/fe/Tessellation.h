@@ -33,12 +33,12 @@ public:
 
 protected:
 
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash(eckit::MD5&) const;
     virtual bool sameAs(const Method& other) const;
+    virtual void print(std::ostream&) const;
 
 private:
 
-    virtual void print(std::ostream&) const;
     virtual const char* name() const;
 
 };

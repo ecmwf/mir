@@ -74,6 +74,7 @@ protected:
 
     virtual bool sameAs(const Method& other) const = 0;
 
+    virtual void print(std::ostream&) const;
 
 private:
 

@@ -187,6 +187,13 @@ void StructuredMethod::assemble(util::MIRStatistics&,
 }
 
 
+void StructuredMethod::print(std::ostream& out) const {
+    out << "StructuredMethod[";
+    MethodWeighted::print(out);
+    out << "]";
+}
+
+
 }  // namespace structured
 }  // namespace method
 }  // namespace mir

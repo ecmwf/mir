@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=auto --intgrid=auto --grid=1/1 --dont-compress-plan
 # plan
-ShTruncate[truncation=179]|ShToNamedGrid[cropping=none,options=[b82352656646acfa9f5e79989a5d41fc],invtrans=<vod2uv>,gridname=F90]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FELinear[MeshGeneratorParameters[meshGenerator=,meshCellCentres=1,three_dimensional=1,triangulate=1,angle=0,force_include_north_pole=0,force_include_south_pole=0],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+ShTruncate[truncation=179]|ShToNamedGrid[cropping=none,options=[b82352656646acfa9f5e79989a5d41fc],invtrans=<vod2uv>,gridname=F90]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FELinear[cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]

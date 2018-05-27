@@ -230,8 +230,8 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
 FiniteElement::~FiniteElement() {
 }
 
+
 void FiniteElement::print(std::ostream &out) const {
-    out << inputMeshGenerationParams_;
     MethodWeighted::print(out);
 }
 

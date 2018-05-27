@@ -302,7 +302,9 @@ void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
 
 
 void StructuredBilinearLatLon::print(std::ostream& out) const {
-    out << "StructuredBilinearLatLon[]";
+    out << "StructuredBilinearLatLon[";
+    StructuredMethod::print(out);
+    out << "]";
 }
 
 

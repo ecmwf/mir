@@ -228,7 +228,9 @@ void StructuredLinear3D::hash(eckit::MD5& md5) const {
 
 
 void StructuredLinear3D::print(std::ostream& out) const {
-    out << "StructuredLinear3D[]";
+    out << "StructuredLinear3D[";
+    StructuredMethod::print(out);
+    out << "]";
 }
 
 

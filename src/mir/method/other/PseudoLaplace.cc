@@ -159,8 +159,10 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 }
 
 
-void PseudoLaplace::print(std::ostream& os) const {
-    os << "PseudoLaplace[]";
+void PseudoLaplace::print(std::ostream& out) const {
+    out << "PseudoLaplace[";
+    MethodWeighted::print(out);
+    out << "]";
 }
 
 
