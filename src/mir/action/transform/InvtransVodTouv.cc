@@ -39,15 +39,19 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     const int number_of_grid_points = int(trans.grid().size());
     ASSERT(number_of_grid_points > 0);
 
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const long id_u = config.getLong("parameter-id-u", 131);
-    const long id_v = config.getLong("parameter-id-v", 132);
+    // set invtrans options
+    atlas::util::Config config;
+    config.set(atlas::option::global());
+
+    const eckit::Configuration& lib = LibMir::instance().configuration();
+    const long id_u = lib.getLong("parameter-id-u", 131);
+    const long id_v = lib.getLong("parameter-id-v", 132);
     ASSERT(id_u > 0);
     ASSERT(id_v > 0);
 
     // do inverse transform and set gridded values
     std::vector<double> output(size_t(number_of_grid_points) * 2);
-    trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data());
+    trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), config);
 
     // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
     std::vector<double> output_field;
