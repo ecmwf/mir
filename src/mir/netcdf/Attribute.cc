@@ -61,22 +61,22 @@ const Value &Attribute::value() const {
 }
 
 void Attribute::invalidate() {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::merge(const Attribute &) {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::clone(Endowed &) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::create(int) const {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 

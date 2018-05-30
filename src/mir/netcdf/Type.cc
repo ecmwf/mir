@@ -287,7 +287,7 @@ void TypeT<short>::save(const Matrix &m, int out, int varid, const std::string &
 template<>
 bool TypeT<std::string>::coordinateOutputVariableMerge( Variable &out, const Variable &in, MergePlan &plan)
 {
-    std::cout << __FUNCTION__ << " " << *this << std::endl;
+    std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
     return false;
 }
