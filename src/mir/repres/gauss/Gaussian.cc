@@ -121,7 +121,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
         n = *best;
     }
 
-    if (same) {
+    if (same && in) {
         s = n;
     } else if (s > lats.front()) {
         s = lats.front();
