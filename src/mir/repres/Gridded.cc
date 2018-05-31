@@ -15,15 +15,11 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "eckit/geometry/Point2.h"
 #include "eckit/log/Log.h"
 #include "mir/action/misc/AreaCropper.h"
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
-#include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Rotation.h"
 
 
 namespace mir {
@@ -64,7 +60,7 @@ void Gridded::setGivenPacking(grib_info&) const {
 void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
     // only crop if not global
     if (!isGlobal()) {
-        eckit::Log::info() << "+++++++++++ " << *this << " is not global" << std::endl;
+        eckit::Log::debug<LibMir>() << "+++++++++++ " << *this << " is not global" << std::endl;
         action::AreaCropper cropper(parametrisation, bbox_);
         cropper.execute(ctx);
     }
