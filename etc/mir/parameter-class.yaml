@@ -24,8 +24,7 @@ concentration:
 - 260619  # Mass concentration of condensed water in soil
 - 300089  # Density
 
-angle:
-- 162  # Angle of sub-gridscale orography
+dimension.1d.angle.degree.asymmetric:
 - 3031  # Wind direction
 - 3047  # Direction of current
 - 3093  # Direction of ice drift
@@ -33,15 +32,12 @@ angle:
 - 3104  # Direction of swell waves
 - 3107  # Primary wave direction
 - 3109  # Secondary wave direction
-- 129162  # Angle of sub-gridscale orography gradient
 - 140113  # Wave energy flux mean direction
 - 140230  # Mean wave direction
 - 140235  # Mean direction of wind waves
 - 140238  # Mean direction of total swell
 - 140242  # Mean wind direction
 - 140249  # 10 metre wind direction
-- 171162  # Angle of sub-gridscale orography anomaly
-- 200162  # Angle of sub-gridscale orography difference
 - 210079  # Wildfire viewing angle of observation
 - 260225  # Solar zenith angle
 - 260226  # Relative azimuth angle
@@ -49,15 +45,10 @@ angle:
 - 260233  # Primary wave direction
 - 260236  # Current direction
 - 260260  # 10 metre wind direction
-- 260295  # Latitude of U Wind Component of Velocity
 - 260296  # Longitude of U Wind Component of Velocity
-- 260297  # Latitude of V Wind Component of Velocity
 - 260298  # Longitude of V Wind Component of Velocity
-- 260299  # Latitude of Presure Point
 - 260300  # Longitude of Presure Point
-- 260421  # Latitude (-90 to +90)
 - 260422  # East Longitude (0 - 360)
-- 260425  # Latitude (nearest neighbor) (-90 to +90)
 - 260426  # East Longitude (nearest neighbor) (0 - 360)
 - 300031  # Wind direction
 - 300047  # Direction of current
@@ -66,6 +57,151 @@ angle:
 - 300104  # Direction of swell wave
 - 300107  # Primary wave direction
 - 300109  # Second wave direction
+
+dimension.1d.angle.degree.symmetric:
+- 260295  # Latitude of U Wind Component of Velocity
+- 260297  # Latitude of V Wind Component of Velocity
+- 260299  # Latitude of Presure Point
+- 260421  # Latitude (-90 to +90)
+- 260425  # Latitude (nearest neighbor) (-90 to +90)
+
+dimension.1d.angle.radian.symmetric:
+- 162  # Angle of sub-gridscale orography
+- 129162  # Angle of sub-gridscale orography gradient
+- 171162  # Angle of sub-gridscale orography anomaly
+- 200162  # Angle of sub-gridscale orography difference
+
+dimension.2d.vector.u:
+- 11  # U component of divergent wind
+- 13  # U component of rotational wind
+- 131  # U component of wind
+- 165  # 10 metre U wind component
+- 222  # Convective tendency of zonal wind
+- 253  # Adiabatic tendency of zonal wind
+- 3049  # U-component of current
+- 3095  # U-component of ice drift
+- 3124  # Momentum flux, u-component
+- 129011  # U component of divergent wind gradient
+- 129013  # U component of rotational wind gradient
+- 129131  # U component of wind gradient
+- 129165  # 10 metre U wind component gradient
+- 129222  # Convective tendency of zonal wind gradient
+- 129253  # Adiabatic tendency of zonal wind gradient
+- 130230  # Adiabatic tendency of zonal wind
+- 140215  # U-component stokes drift
+- 171006  # 100 metre U wind component anomaly
+- 171011  # U component of divergent wind anomaly
+- 171013  # U component of rotational wind anomaly
+- 171131  # U component of wind anomaly
+- 171165  # 10 metre U wind component anomaly
+- 171222  # Convective tendency of zonal wind anomaly
+- 171253  # Adiabatic tendency of zonal wind anomaly
+- 174085  # 10m U wind over land
+- 175085  # 10m U wind over land
+- 200011  # U component of divergent wind difference
+- 200013  # U component of rotational wind difference
+- 200131  # U component of wind difference
+- 200165  # 10 metre U wind component difference
+- 200222  # Convective tendency of zonal wind difference
+- 200253  # Adiabatic tendency of zonal wind difference
+- 228131  # Neutral wind at 10 m u-component
+- 228246  # 100 metre U wind component
+- 260062  # Momentum flux, u component
+- 260066  # u-component of wind (gust)
+- 260070  # U-component storm motion
+- 260081  # Zonal flux of gravity wave stress
+- 260222  # Estimated u component of wind
+- 260305  # Vertical Diffusion Zonal Acceleration
+- 260307  # Gravity wave drag zonal acceleration
+- 260309  # Convective zonal momentum mixing acceleration
+- 260313  # Convective Gravity wave drag zonal acceleration
+- 260484  # Scatterometer Estimated U Wind Component
+- 260607  # Adiabatic zonal acceleration
+- 260613  # Gravity wave zonal acceleration
+- 260626  # Zonal momentum flux by long gravity wave
+- 260629  # Zonal momentum flux by short gravity wave
+- 260637  # Vertical diffusion zonal acceleration
+- 300033  # Zonal wind (u)
+- 300049  # U-component of current
+- 300130  # 10 metre u-wind component
+- 300147  # Storm motion u-component
+- 300159  # Tropopause u-wind component
+- 300164  # Gravity wave drag sfc zonal stress
+- 300192  # Surface zonal wind (u)
+- 300230  # Time mean surface zonal wind (u)
+- 300255  # Time mean zonal wind (u)
+
+dimension.2d.vector.v:
+- 12  # V component of divergent wind
+- 14  # V component of rotational wind
+- 132  # V component of wind
+- 166  # 10 metre V wind component
+- 223  # Convective tendency of meridional wind
+- 254  # Adiabatic tendency of meridional wind
+- 3050  # V-component of current
+- 3096  # V-component of ice drift
+- 3125  # Momentum flux, v-component
+- 129012  # V component of divergent wind gradient
+- 129014  # V component of rotational wind gradient
+- 129132  # V component of wind gradient
+- 129166  # 10 metre V wind component gradient
+- 129223  # Convective tendency of meridional wind gradient
+- 129254  # Adiabatic tendency of meridional wind gradient
+- 130231  # Adiabatic tendency of meridional wind
+- 140216  # V-component stokes drift
+- 171007  # 100 metre V wind component anomaly
+- 171012  # V component of divergent wind anomaly
+- 171014  # V component of rotational wind anomaly
+- 171132  # V component of wind anomaly
+- 171166  # 10 metre V wind component anomaly
+- 171223  # Convective tendency of meridional wind anomaly
+- 171254  # Adiabatic tendency of meridional wind anomaly
+- 174086  # 10m V wind over land
+- 175086  # 10m V wind over land
+- 200012  # V component of divergent wind difference
+- 200014  # V component of rotational wind difference
+- 200132  # V component of wind difference
+- 200166  # 10 metre V wind component difference
+- 200223  # Convective tendency of meridional wind difference
+- 200254  # Adiabatic tendency of meridional wind difference
+- 228132  # Neutral wind at 10 m v-component
+- 228247  # 100 metre V wind component
+- 260063  # Momentum flux, v component
+- 260067  # v-component of wind (gust)
+- 260071  # V-component storm motion
+- 260082  # Meridional flux of gravity wave stress
+- 260223  # Estimated v component of wind
+- 260306  # Vertical Diffusion Meridional Acceleration
+- 260308  # Gravity wave drag meridional acceleration
+- 260310  # Convective meridional momentum mixing acceleration
+- 260314  # Convective Gravity wave drag meridional acceleration
+- 260485  # Scatterometer Estimated V Wind Component
+- 260609  # Adiabatic meridional acceleration
+- 260614  # Gravity wave meridional acceleration
+- 260627  # Meridional momentum flux by long gravity wave
+- 260628  # Meridional momentum flux by short gravity wave
+- 260638  # Vertical diffusion meridional acceleration
+- 300034  # Meridional wind (v)
+- 300050  # V-component of current
+- 300131  # 10 metre v-wind component
+- 300148  # Storm motion v-component
+- 300160  # Tropopause v-wind component
+- 300165  # Gravity wave drag sfc meridional stress
+- 300194  # Surface meridional wind (v)
+- 300231  # Time mean surface meridional wind (v)
+- 300241  # Time mean meridional wind (v)
+
+dimension.3d.vector.u:
+- 150133  # Ocean U wind component
+- 151131  # Ocean current zonal component
+
+dimension.3d.vector.v:
+- 150134  # Ocean V wind component
+- 151132  # Ocean current meridional component
+
+dimension.3d.vector.w:
+- 150135  # Ocean W wind component
+- 151133  # Ocean current vertical component
 
 index:
 - 29  # Type of low vegetation

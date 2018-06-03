@@ -2,8 +2,41 @@
 # composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [kg m**-3])
 concentration: {}
 
-# angle (typical units: radians or degrees)
-angle: {}
+# Angle starting from 0 (units: degree)
+dimension.1d.angle.degree.asymmetric:
+  dimension: 1d.angle.degree.asymmetric
+
+# Angle symmetric around 0 (units: degree)
+dimension.1d.angle.degree.symmetric:
+  dimension: 1d.angle.degree.symmetric
+
+# Angle starting from 0 (units: radian)
+dimension.1d.angle.radian.asymmetric:
+  dimension: 1d.angle.radian.asymmetric
+
+# Angle symmetric around 0 (units: radian)
+dimension.1d.angle.radian.symmetric:
+  dimension: 1d.angle.radian.symmetric
+
+# Vector in 2D Cartesian space, X component
+dimension.2d.vector.u:
+  dimension: 2d.vector.u
+
+# Vector in 2D Cartesian space, Y component
+dimension.2d.vector.v:
+  dimension: 2d.vector.v
+
+# Vector in 3D Cartesian space, X component
+dimension.3d.vector.u:
+  dimension: 3d.vector.u
+
+# Vector in 3D Cartesian space, Y component
+dimension.3d.vector.v:
+  dimension: 3d.vector.v
+
+# Vector in 3D Cartesian space, Z component
+dimension.3d.vector.w:
+  dimension: 3d.vector.w
 
 # associated to a table
 index:
