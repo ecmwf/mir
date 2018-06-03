@@ -18,9 +18,14 @@
 
 namespace mir {
 namespace param {
-
 class MIRParametrisation;
 class SimpleParametrisation;
+}
+}
+
+
+namespace mir {
+namespace param {
 
 
 class Rules  {
@@ -57,9 +62,6 @@ private:
     // -- Methods
 
     SimpleParametrisation& lookup(long paramId);
-    void load(const std::string& kind, const std::string& path);
-
-
     virtual void print(std::ostream&) const;
 
     // -- Friends

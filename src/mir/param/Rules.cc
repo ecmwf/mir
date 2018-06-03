@@ -10,7 +10,6 @@
 
 
 #include "mir/param/Rules.h"
-#include "mir/param/SimpleParametrisation.h"
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
@@ -18,6 +17,7 @@
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/utils/Translator.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -32,17 +32,14 @@ Rules::Rules() {
 
 
 Rules::~Rules() {
-    for ( auto& rule : rules_) {
+    for (auto& rule : rules_) {
         delete rule.second;
     }
 }
 
 
-
 SimpleParametrisation& Rules::lookup(long paramId) {
-
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
 
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
@@ -56,31 +53,25 @@ SimpleParametrisation& Rules::lookup(long paramId) {
 
 
 const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
-
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
 
     ASSERT(ruleName == PARAM_ID);
 
     MIRParametrisation& s = lookup(ruleValue);
 
     if (!s.has("class")) {
-
         if (noted_.find(ruleValue) == noted_.end()) {
 
+            const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
+
             static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
-
-
-            std::ostringstream oss;
-            oss << "No class defined for " << ruleName << "=" << ruleValue;
-
             if (abortIfUnknownParameterClass) {
-                throw eckit::SeriousBug(oss.str());
-            }
-            else {
-                eckit::Log::warning() << oss.str() << std::endl;
+                throw eckit::SeriousBug(msg);
+            } else {
+                eckit::Log::warning() << msg << std::endl;
             }
         }
+
         noted_.insert(ruleValue);
     }
 
@@ -100,10 +91,9 @@ void Rules::print(std::ostream& s) const {
 }
 
 
-void Rules::load(const std::string& kind, const std::string& path) {
+void Rules::readConfigurationFiles() {
 
-
-    eckit::ValueMap config = eckit::YAMLParser::decodeFile(path);
+    eckit::ValueMap config = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
     for (const auto& i : config) {
         const std::string& what = i.first;
         eckit::ValueList list = i.second;
@@ -111,32 +101,22 @@ void Rules::load(const std::string& kind, const std::string& path) {
         // std::cout << what << " " << list << std::endl;
 
         for (long paramId : list) {
-
             SimpleParametrisation& s = lookup(paramId);
 
             std::string d;
-            if (s.get(kind, d)) {
+            if (s.get("class", d)) {
 
                 std::ostringstream oss;
-                oss << "Duplicate [" << kind << "] for parameter " << paramId << " " << d << " and " << what;
+                oss << "Duplicate [class] for parameter " << paramId << " " << d << " and " << what;
                 throw eckit::SeriousBug(oss.str());
             }
 
-            s.set(kind, what);
+            s.set("class", what);
         }
     }
-}
-
-
-void Rules::readConfigurationFiles() {
 
 
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-
-
-    load("class", "~mir/etc/mir/parameter-class.yaml");
-    load("dimension", "~mir/etc/mir/parameter-dimension.yaml");
-
     for (auto& rule : rules_) {
 
         std::string klass;
@@ -150,25 +130,22 @@ void Rules::readConfigurationFiles() {
             }
 
             eckit::ValueMap values = config->second;
-
             for (const auto& j : values) {
                 std::string name = j.first;
                 std::string value = j.second;
                 rule.second->set(name, value); // TODO: implement set() with a value
             }
         }
-
     }
-
 
 
     eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
     for (const auto& i : parameters) {
-        eckit::ValueList options = i.second;
 
         long paramId = eckit::Translator<std::string, long>()(i.first);
         SimpleParametrisation& config = Rules::lookup(paramId);
 
+        eckit::ValueList options = i.second;
         for (const eckit::ValueMap j : options) {
             for (auto k : j) {
                 std::string name = k.first;
