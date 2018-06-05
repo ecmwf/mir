@@ -93,47 +93,34 @@ void Rules::print(std::ostream& s) const {
 
 void Rules::readConfigurationFiles() {
 
-    eckit::ValueMap config = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
-    for (const auto& i : config) {
-        const std::string& what = i.first;
-        eckit::ValueList list = i.second;
-
-        // std::cout << what << " " << list << std::endl;
-
-        for (long paramId : list) {
-            SimpleParametrisation& s = lookup(paramId);
-
-            std::string d;
-            if (s.get("class", d)) {
-
-                std::ostringstream oss;
-                oss << "Duplicate [class] for parameter " << paramId << " " << d << " and " << what;
-                throw eckit::SeriousBug(oss.str());
-            }
-
-            s.set("class", what);
-        }
-    }
-
-
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-    for (auto& rule : rules_) {
+    eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
+    for (const auto& i : parameterClass) {
 
-        std::string klass;
-        if (rule.second->get("class", klass)) {
+        // class
+        const std::string& klassName = i.first;
+        const auto& config = classes.find(klassName);
+        if (config == classes.end()) {
+            throw eckit::SeriousBug("Rules: unkown class '" + klassName + "'");
+        }
+        const eckit::ValueMap klassConfig = config->second;
 
-            const auto& config = classes.find(klass);
-            if (config == classes.end()) {
-                std::ostringstream oss;
-                oss << "Unknown parameter class [" << klass << "] for parameter " << rule.first;
-                throw eckit::SeriousBug(oss.str());
-            }
+        // paramId(s)
+        eckit::ValueList paramIds = i.second;
+        for (long paramId : paramIds) {
+            SimpleParametrisation& pidConfig = lookup(paramId);
 
-            eckit::ValueMap values = config->second;
-            for (const auto& j : values) {
-                std::string name = j.first;
-                std::string value = j.second;
-                rule.second->set(name, value); // TODO: implement set() with a value
+            for (const auto& j : klassConfig) {
+                const std::string& keyName = j.first;
+                const std::string& keyValue = j.second;
+
+                if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
+                    throw eckit::SeriousBug("Rules: parameter " + std::to_string(paramId)
+                                            + " already has key '" + keyName
+                                            + "' when setting class '"
+                                            + klassName + "'");
+                }
+                pidConfig.set(keyName, keyValue);
             }
         }
     }
