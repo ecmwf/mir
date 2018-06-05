@@ -42,17 +42,24 @@ class MIRConfig : public mir::tools::MIRTool {
     }
 
     void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
-        static mir::param::DefaultParametrisation defaults;
-        mir::param::CombinedParametrisation combined(metadata, defaults, defaults);
-        const mir::param::MIRParametrisation& c = combined;
+        using namespace mir::param;
+
+        static DefaultParametrisation defaults;
+        CombinedParametrisation combined(metadata, defaults, defaults);
+        const MIRParametrisation& c = combined;
 
         long paramId = 0;
         c.get("paramId", paramId);
 
-        std::string value = "???";
-        c.get(key, value);
-
-        eckit::Log::info() << "paramId=" << paramId << "," << key << "=" << value << std::endl;
+        if (key.empty()) {
+            // FIXME: fieldParametrisation() is used to access defaults, because
+            // CombinedParametrisation is not printing properly (maybe with good reason)
+            eckit::Log::info() << "paramId=" << paramId << ": " << c.fieldParametrisation() << std::endl;
+        } else {
+            std::string value = "???";
+            c.get(key, value);
+            eckit::Log::info() << "paramId=" << paramId << "," << key << "=" << value << std::endl;
+        }
     }
 
 public:
@@ -64,7 +71,7 @@ public:
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("rule-name", "Display configuration for named rule (default 'paramId')"));
         options_.push_back(new SimpleOption<long>("rule-value", "Display configuration with named rule value (default -1)"));
-        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key (default 'interpolation')"));
+        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
         options_.push_back(new SimpleOption<bool>("file-rules", "Display rules as per configuration files"));
     }
 
@@ -88,7 +95,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     using namespace mir::param;
 
-    std::string key = "interpolation";
+    std::string key;
     args.get("key", key);
 
     for (size_t i = 0; i < args.count(); i++) {
