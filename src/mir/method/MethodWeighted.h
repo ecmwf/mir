@@ -68,6 +68,7 @@ private:
     virtual bool hasCropping() const;
     virtual const util::BoundingBox& getCropping() const;
 
+    virtual bool canIntroduceMissingValues() const;
 
 protected:
 

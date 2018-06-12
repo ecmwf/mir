@@ -291,6 +291,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     data::MIRField& field = ctx.field();
     const double missingValue = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
+    bool checkMissing = canIntroduceMissingValues();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
 
@@ -327,6 +328,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(field.hasMissing()), eckit::Log::debug<LibMir>());
 
             if (field.hasMissing()) {
+                checkMissing = true;
                 WeightMatrix M;
                 applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
                 M.multiply(mi, mo);
@@ -362,7 +364,9 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     }
 
     // interpolation could change if missing values are (still) present, re-check
-    field.checkMissing();
+    if (checkMissing) {
+        field.checkMissing();
+    }
 }
 
 
@@ -545,6 +549,11 @@ bool MethodWeighted::hasCropping() const {
 
 const util::BoundingBox& MethodWeighted::getCropping() const {
     return cropping_.boundingBox();
+}
+
+
+bool MethodWeighted::canIntroduceMissingValues() const {
+    return false;
 }
 
 

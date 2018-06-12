@@ -66,6 +66,8 @@ private:
 
     virtual void print(std::ostream&) const;
 
+    virtual bool canIntroduceMissingValues() const;
+
     virtual const char *name() const = 0;
 
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
