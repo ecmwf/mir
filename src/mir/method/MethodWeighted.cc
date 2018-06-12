@@ -92,7 +92,7 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   const repres::Representation& out,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks,
-                                  const Cropping& cropping) const {
+                                  const Cropping& /*cropping*/) const {
 
     eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
 
@@ -290,7 +290,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT( W.cols() == npts_inp );
 
     data::MIRField& field = ctx.field();
-    const double missingValue = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
+    const bool hasMissing = field.hasMissing();
+    const double missingValue = hasMissing ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
     bool checkMissing = canIntroduceMissingValues();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -307,16 +308,12 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             istats = field.statistics(i);
         }
 
-
-        // results should be local to the loop as field.update() will take ownership of result with std::swap()
-        // For optimisation, one can also create result outside the loop, and resize() it here
-        std::vector<double> result(npts_out);
-
         // Get input/output matrices
         std::string dimension;
         parametrisation_.get("dimension", dimension);
         const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
 
+        std::vector<double> result(npts_out);  // field.update() takes ownership with std::swap()
         WeightMatrix::Matrix mi;
         WeightMatrix::Matrix mo;
         setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, dim);
@@ -325,9 +322,9 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
-            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(field.hasMissing()), eckit::Log::debug<LibMir>());
+            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(hasMissing), eckit::Log::debug<LibMir>());
 
-            if (field.hasMissing()) {
+            if (hasMissing) {
                 checkMissing = true;
                 WeightMatrix M;
                 applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
