@@ -76,12 +76,11 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const
 }
 
 
-AreaCropper::~AreaCropper() {
-}
+AreaCropper::~AreaCropper() = default;
 
 
 bool AreaCropper::sameAs(const Action& other) const {
-    const AreaCropper* o = dynamic_cast<const AreaCropper*>(&other);
+    auto o = dynamic_cast<const AreaCropper*>(&other);
     return o && (bbox_ == o->bbox_);
 }
 
@@ -146,7 +145,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     }
 
     // Don't support empty results
-    if (!m.size()) {
+    if (m.empty()) {
         std::ostringstream oss;
         oss << "Cropping " << *representation << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
@@ -184,12 +183,12 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
     if (caching) {
         static caching::CroppingCache disk;
 
-        class CroppingCacheCreator: public caching::CroppingCache::CacheContentCreator {
+        class CroppingCacheCreator final : public caching::CroppingCache::CacheContentCreator {
 
             const repres::Representation* representation_;
             const util::BoundingBox& bbox_;
 
-            virtual void create(const eckit::PathName& path, caching::CroppingCacheEntry& c, bool& saved) {
+            void create(const eckit::PathName& /*path*/, caching::CroppingCacheEntry& c, bool& /*saved*/) final {
                 createCroppingCacheEntry(c, representation_, bbox_);
             }
 
@@ -265,28 +264,23 @@ void AreaCropper::execute(context::Context& ctx) const {
 
         result.reserve(c.mapping_.size());
 
-        for (std::vector<size_t>::const_iterator j = c.mapping_.begin(); j != c.mapping_.end(); ++j) {
-            result.push_back(values[*j]);
+        for (const auto& j : c.mapping_) {
+            result.push_back(values[j]);
         }
 
         repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
         // eckit::Log::debug<LibMir>() << *cropped << std::endl;
 
-        if (result.size() == 0) {
+        if (result.empty()) {
             std::ostringstream oss;
             oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_ << " cropped=" << *cropped ;
             throw eckit::UserError(oss.str());
         }
 
-        ASSERT(result.size() > 0);
         cropped->validate(result);
 
-        if (field.hasMissing()) {
-            field.recomputeHasMissing();
-        }
-
         field.representation(cropped);
-        field.update(result, i);
+        field.update(result, i, field.hasMissing());
     }
 }
 

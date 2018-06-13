@@ -64,8 +64,8 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 }
 
 
-MethodWeighted::~MethodWeighted() {
-}
+MethodWeighted::~MethodWeighted() = default;
+
 
 void MethodWeighted::print(std::ostream &out) const {
     out <<  "cropping=" << cropping_
@@ -76,7 +76,7 @@ void MethodWeighted::print(std::ostream &out) const {
 
 
 bool MethodWeighted::sameAs(const Method& other) const {
-    const MethodWeighted* o = dynamic_cast<const MethodWeighted*>(&other);
+    auto o = dynamic_cast<const MethodWeighted*>(&other);
     return o
            && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
            && (pruneEpsilon_ == o->pruneEpsilon_)
@@ -127,8 +127,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
 
     here = timer.elapsed();
-    const std::string shortName_in  = in.uniqueName();
-    const std::string shortName_out = out.uniqueName();
+    const std::string& shortName_in  = in.uniqueName();
+    const std::string& shortName_out = out.uniqueName();
 
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
@@ -334,10 +334,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         // update field values with interpolation result
         setVectorFromOperandMatrix(mo, result, missingValue, dim);
-        field.update(result, i);
-        if (hasMissing || canIntroduceMissingValues()) {
-            field.recomputeHasMissing();
-        }
+        field.update(result, i, hasMissing || canIntroduceMissingValues());
 
 
         if (check_stats) {
@@ -392,7 +389,7 @@ void MethodWeighted::applyMissingValues(
     ASSERT( W.cols() == values.size() );
     WeightMatrix X(W);
 
-    WeightMatrix::Scalar* data = const_cast<WeightMatrix::Scalar*>(X.data());
+    auto data = const_cast<WeightMatrix::Scalar*>(X.data());
 
     WeightMatrix::Size i = 0;
     WeightMatrix::iterator it(X);

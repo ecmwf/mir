@@ -76,7 +76,7 @@ public:
     const repres::Representation *representation() const;
 
     /// @warning Takes ownership of the vector
-    void update(std::vector<double> &, size_t which);
+    void update(std::vector<double> &, size_t which, bool recomputeHasMissing = false);
 
     const std::vector<double> &values(size_t which) const;
     std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
@@ -88,7 +88,6 @@ public:
     void missingValue(double value);
     double missingValue() const;
 
-    void recomputeHasMissing();
     void hasMissing(bool on);
     bool hasMissing() const;
 

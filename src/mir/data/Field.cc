@@ -76,10 +76,10 @@ Field *Field::clone() const {
 }
 
 // Warning: take ownership of values
-void Field::update(std::vector<double> &values, size_t which) {
+void Field::update(std::vector<double> &values, size_t which, bool recomputeHasMissing) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    // eckit::Log::info() << "Field::update => " << values.size() << std::endl;
+    recomputeHasMissing_ = recomputeHasMissing;
 
     if (values_.size() <= which) {
         values_.resize(which + 1);
@@ -137,11 +137,11 @@ void Field::print(std::ostream &out) const {
         out << ",representation=" << *representation_;
     }
 
-    if (metadata_.size()) {
+    if (!metadata_.empty()) {
         out << ",params=";
         char sep = '(';
-        for (size_t i = 0; i < metadata_.size(); i++) {
-            out << sep << metadata_[i];
+        for (const auto& m : metadata_) {
+            out << sep << m;
             sep = ',';
         }
         out << ')';
@@ -179,9 +179,9 @@ MIRFieldStats Field::statistics(size_t i) const {
         tmp.reserve(vals.size());
         size_t missing = 0;
 
-        for (size_t j = 0; j < vals.size(); j++) {
-            if (vals[j] != missingValue_) {
-                tmp.push_back(vals[j]);
+        for (auto& value : vals) {
+            if (value != missingValue_) {
+                tmp.push_back(value);
             } else {
                 missing++;
             }
@@ -225,7 +225,7 @@ void Field::metadata(size_t which, const std::map<std::string, long>& md) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     while (metadata_.size() <= which) {
-        metadata_.push_back(std::map<std::string, long>());
+        metadata_.emplace_back(std::map<std::string, long>());
     }
     metadata_[which] = md;
 }
@@ -234,7 +234,7 @@ void Field::metadata(size_t which, const std::string& name, long value) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     while (metadata_.size() <= which) {
-        metadata_.push_back(std::map<std::string, long>());
+        metadata_.emplace_back(std::map<std::string, long>());
     }
     metadata_[which][name] = value;
 }
@@ -272,12 +272,6 @@ double Field::missingValue() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     return missingValue_;
-}
-
-void Field::recomputeHasMissing() {
-    eckit::AutoLock<const eckit::Counted> lock(this);
-
-    recomputeHasMissing_ = true;
 }
 
 void Field::hasMissing(bool on) {
