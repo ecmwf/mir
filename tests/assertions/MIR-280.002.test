@@ -1,0 +1,6 @@
+# MARS request
+stream=wave,param=swh,special
+# mir
+--area=25/-30/15/-20
+# grib_get assertions
+missingValuesPresent = 0
