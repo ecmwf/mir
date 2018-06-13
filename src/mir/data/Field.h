@@ -85,6 +85,7 @@ public:
     void missingValue(double value);
     double missingValue() const;
 
+    void recomputeHasMissing();
     void hasMissing(bool on);
     bool hasMissing() const;
 
@@ -134,7 +135,9 @@ private:
     std::vector<std::vector<double> > values_;
     std::vector<std::map<std::string, long> > metadata_;
 
-    bool hasMissing_;
+    mutable bool recomputeHasMissing_;
+    mutable bool hasMissing_;
+
     double missingValue_;
     const repres::Representation* representation_;
 

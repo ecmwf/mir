@@ -30,6 +30,7 @@ namespace data {
 
 Field::Field(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
     values_(),
+    recomputeHasMissing_(false),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
     representation_(repres::RepresentationFactory::build(param)) {
@@ -42,6 +43,7 @@ Field::Field(const param::MIRParametrisation &param, bool hasMissing, double mis
 
 Field::Field(const repres::Representation *repres, bool hasMissing, double missingValue):
     values_(),
+    recomputeHasMissing_(false),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
     representation_(repres) {
@@ -54,6 +56,7 @@ Field::Field(const repres::Representation *repres, bool hasMissing, double missi
 Field::Field(const Field& other):
     values_(other.values_),
     metadata_(other.metadata_),
+    recomputeHasMissing_(other.recomputeHasMissing_),
     hasMissing_(other.hasMissing_),
     missingValue_(other.missingValue_),
     representation_(other.representation_)
@@ -251,6 +254,17 @@ const std::map<std::string, long>& Field::metadata(size_t which) const {
 bool Field::hasMissing() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
+    // re-check for missing values if required
+    if (recomputeHasMissing_) {
+        recomputeHasMissing_ = false;
+        hasMissing_ = false;
+        for (const std::vector<double>& v : values_) {
+            if ((hasMissing_ = std::find(v.begin(), v.end(), missingValue_) != v.end())) {
+                break;
+            }
+        }
+    }
+
     return hasMissing_;
 }
 
@@ -260,10 +274,16 @@ double Field::missingValue() const {
     return missingValue_;
 }
 
+void Field::recomputeHasMissing() {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    recomputeHasMissing_ = true;
+}
 
 void Field::hasMissing(bool on) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
+    recomputeHasMissing_ = false;
     hasMissing_ = on;
 }
 

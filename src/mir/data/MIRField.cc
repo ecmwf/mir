@@ -184,24 +184,17 @@ bool MIRField::hasMissing() const {
 }
 
 
-bool MIRField::checkMissing() {
-    const double miss = missingValue();
-    bool stillMissing = false;
-
-    for (size_t i = 0; i < dimensions() && !stillMissing; ++i) {
-        const std::vector<double>& v = values(i);
-        stillMissing = std::find(v.begin(), v.end(), miss) != v.end();
-    }
-
-    hasMissing(stillMissing);
-    return stillMissing;
-}
-
-
 double MIRField::missingValue() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     return field_->missingValue();
+}
+
+
+void MIRField::recomputeHasMissing() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    field_->recomputeHasMissing();
 }
 
 

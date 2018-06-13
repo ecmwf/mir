@@ -88,11 +88,9 @@ public:
     void missingValue(double value);
     double missingValue() const;
 
+    void recomputeHasMissing();
     void hasMissing(bool on);
     bool hasMissing() const;
-
-    /// @note not in Field
-    bool checkMissing();
 
     void validate() const;
 
