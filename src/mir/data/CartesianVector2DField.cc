@@ -64,10 +64,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());
     ASSERT(valuesX.size());
-
     const size_t N = valuesX.size();
-    std::vector<double> resultX(N);
-    std::vector<double> resultY(N);
 
     // determine angle between meridians (c) using the (first) spherical law of cosines:
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
@@ -85,7 +82,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
         ASSERT(i < N);
 
         if (valuesX[i] == missingValue_ || valuesY[i] == missingValue_) {
-            resultX[i] = resultY[i] = missingValue_;
+            valuesX[i] = valuesY[i] = missingValue_;
             ++i;
             continue;
         }
@@ -103,13 +100,13 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<
                 sin_c = q * std::sqrt(1. - cos_c * cos_c);
 
         // TODO: use matrix multiplication
-        resultX[i] = cos_c * valuesX[i] - sin_c * valuesY[i];
-        resultY[i] = sin_c * valuesX[i] + cos_c * valuesY[i];
+        const double
+                x = cos_c * valuesX[i] - sin_c * valuesY[i],
+                y = sin_c * valuesX[i] + cos_c * valuesY[i];
+        valuesX[i] = x;
+        valuesY[i] = y;
         ++i;
     }
-
-    valuesX.swap(resultX);
-    valuesY.swap(resultY);
 }
 
 

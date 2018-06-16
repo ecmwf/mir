@@ -65,14 +65,11 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     ASSERT((field.dimensions() % 2) == 0);
     for (size_t i = 0; i < field.dimensions(); i += 2 ) {
 
-        // copy vector field components
-        std::vector<double> valuesX = field.values(i);
-        std::vector<double> valuesY = field.values(i + 1);
+        // set field components directly
+        std::vector<double>& valuesX = field.direct(i);
+        std::vector<double>& valuesY = field.direct(i + 1);
 
         cf.rotate(rotation_, valuesX, valuesY);
-
-        field.update(valuesX, i);
-        field.update(valuesY, i + 1);
 
         field.metadata(i, "uvRelativeToGrid", 1);
         field.metadata(i + 1, "uvRelativeToGrid", 1);

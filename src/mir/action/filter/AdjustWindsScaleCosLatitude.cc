@@ -61,22 +61,22 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
 
     std::vector<double> scale(N);
-    for (std::vector<double>::iterator s = scale.begin(); s != scale.end() && iter->next(); ++s) {
+    for (auto& s : scale) {
+        ASSERT(iter->next());
         const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        *s = (p.lat == Latitude::SOUTH_POLE)? 0.
-           : (p.lat == Latitude::NORTH_POLE)? 0.
-           : 1./std::cos( util::degree_to_radian(p.lat.value()) );
+        s = (p.lat == Latitude::SOUTH_POLE)? 0.
+          : (p.lat == Latitude::NORTH_POLE)? 0.
+          : 1./std::cos( util::degree_to_radian(p.lat.value()) );
     }
+    ASSERT(!(iter->next()));
 
 
-    // apply scaling to each field values vector
+    // apply scaling to each field component directly
     for (size_t i = 0; i < field.dimensions(); ++i ) {
-        std::vector<double> values = field.values(i);
+        std::vector<double>& values = field.direct(i);
         ASSERT(values.size() == N);
 
         std::transform(values.begin(), values.end(), scale.begin(), values.begin(), std::multiplies<double>());
-
-        field.update(values, i);
     }
 }
 
