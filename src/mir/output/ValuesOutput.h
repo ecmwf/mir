@@ -78,7 +78,7 @@ protected:
     // From MIROutput
 
 
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // Not iterpolation performed
+    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     virtual bool sameParametrisation(const param::MIRParametrisation &param1,
