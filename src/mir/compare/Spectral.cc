@@ -17,6 +17,7 @@
 #include <cmath>
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/data/MIRValuesVector.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 
@@ -65,8 +66,8 @@ void Spectral::execute(const data::MIRField& field1, const data::MIRField& field
     ASSERT(field1.dimensions() == field2.dimensions());
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
-        const std::vector<double>& values1 = field1.values(w);
-        const std::vector<double>& values2 = field2.values(w);
+        const MIRValuesVector& values1 = field1.values(w);
+        const MIRValuesVector& values2 = field2.values(w);
         ASSERT(values1.size() == values2.size());
         ASSERT(values1.size() >= Ts);
 

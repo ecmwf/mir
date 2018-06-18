@@ -134,7 +134,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
                 atlas::Grid grid(rep->atlasGrid());
 
-                std::vector<double>::const_iterator v = field.values(0).begin();
+                auto v = field.values(0).begin();
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     eckit::Log::info() << "\n\t" << p.lat() << '\t' << p.lon() << '\t' << *v;
                     ++v;

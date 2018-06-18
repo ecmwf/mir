@@ -92,8 +92,8 @@ void ShVodToUVLegacy::execute(context::Context & ctx) const {
 
 
     // get vo/d, allocate U/V
-    const std::vector<double>& field_vo = field.values(0);
-    const std::vector<double>& field_d = field.values(1);
+    const MIRValuesVector& field_vo = field.values(0);
+    const MIRValuesVector& field_d = field.values(1);
 
     eckit::Log::debug<LibMir>() << "ShVodToUVLegacy truncation=" << truncation
                                 << ", size=" << size
@@ -102,26 +102,26 @@ void ShVodToUVLegacy::execute(context::Context & ctx) const {
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
 
-    std::vector<double> result_U(size, 0.);
-    std::vector<double> result_V(size, 0.);
+    MIRValuesVector result_U(size, 0.);
+    MIRValuesVector result_V(size, 0.);
 
 
     // transform
 
-    std::vector<double> temp_vo;
-    std::vector<double> temp_d;
+    MIRValuesVector temp_vo;
+    MIRValuesVector temp_d;
 
     size_t to = plusOneWave_? truncation + 1 : truncation - 1;
     repres::sh::SphericalHarmonics::truncate(truncation, to, field_vo, temp_vo);
     repres::sh::SphericalHarmonics::truncate(truncation, to, field_d, temp_d);
 
 
-    typedef std::vector<std::complex<double> > veccomp;
-    const veccomp &vorticity = reinterpret_cast<const veccomp &>(temp_vo);
-    const veccomp &divergence = reinterpret_cast<const veccomp &>(temp_d);
+    using veccomp = data::MIRValuesVectorT<std::complex<double>>;
+    auto& vorticity = reinterpret_cast<const veccomp&>(temp_vo);
+    auto& divergence = reinterpret_cast<const veccomp&>(temp_d);
 
-    veccomp &u_component = reinterpret_cast<veccomp &>(result_U);
-    veccomp &v_component = reinterpret_cast<veccomp &>(result_V);
+    auto& u_component = reinterpret_cast<veccomp&>(result_U);
+    auto& v_component = reinterpret_cast<veccomp&>(result_V);
 
 
     // ref. libemos/gribex/vod2uv.F

@@ -176,6 +176,8 @@ list(
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
+    data/MIRValuesVector.cc
+    data/MIRValuesVector.h
     data/dimension/Dimension1DAngleT.cc
     data/dimension/Dimension1DAngleT.h
     data/dimension/Dimension1DLinear.cc

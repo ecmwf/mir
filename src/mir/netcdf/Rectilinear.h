@@ -10,11 +10,12 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+
 #ifndef mir_netcdf_RegularLL
 #define mir_netcdf_RegularLL
 
-#include "mir/netcdf/GridSpec.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/netcdf/GridSpec.h"
 
 
 namespace mir {
@@ -75,10 +76,13 @@ private:
   virtual bool get(const std::string &name, double &value) const;
   virtual bool get(const std::string &name, std::vector<double> &value) const;
 
-  virtual void reorder(std::vector<double>& values) const;
+  virtual void reorder(MIRValuesVector& values) const;
 
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

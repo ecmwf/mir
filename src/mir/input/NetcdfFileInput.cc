@@ -94,7 +94,7 @@ data::MIRField NetcdfFileInput::field() const {
 
     size_t n = ncField.count2DValues();
     for (size_t i = 0; i < n; ++i) {
-        std::vector<double> values;
+        MIRValuesVector values;
         ncField.get2DValues(values, i);
         field.update(values, i);
 

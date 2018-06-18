@@ -190,14 +190,14 @@ GridSpec* Rectilinear::guess(const Variable &variable,
 }
 
 
-void Rectilinear::reorder(std::vector<double>& values) const {
+void Rectilinear::reorder(MIRValuesVector& values) const {
   size_t ni = latitudes_.size();
   size_t nj = longitudes_.size();
 
   if (jScansPositively_) {
     ASSERT(values.size() == ni * nj);
 
-    std::vector<double> out(values.size());
+    MIRValuesVector out(values.size());
 
     size_t count = 0;
     for (int j = nj - 1 ; j >= 0; --j) {
@@ -213,5 +213,8 @@ void Rectilinear::reorder(std::vector<double>& values) const {
 
 
 static GridSpecGuesserBuilder<Rectilinear> builder(1);
-}
-}
+
+
+}  // namespace netcdf
+}  // namespace mir
+

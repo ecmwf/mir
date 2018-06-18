@@ -62,7 +62,7 @@ void getStatisticsValues(mir::context::Context& ctx, mir::output::MIROutput& out
     const size_t N = stats.size();
     ASSERT(N);
 
-    std::vector<double> values(N);
+    mir::MIRValuesVector values(N);
     size_t i = 0;
 
     mir::param::SimpleParametrisation dummy;

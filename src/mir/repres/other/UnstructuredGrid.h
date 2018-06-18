@@ -101,7 +101,7 @@ private:
     virtual void fill(util::MeshGeneratorParameters&) const;
 
     virtual atlas::Grid atlasGrid() const;
-    virtual void validate(const std::vector<double>& values) const;
+    virtual void validate(const MIRValuesVector& values) const;
 
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;

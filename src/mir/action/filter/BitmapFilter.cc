@@ -90,7 +90,7 @@ void BitmapFilter::execute(context::Context & ctx) const {
     for (size_t f = 0; f < field.dimensions() ; f++) {
 
         double missingValue = field.missingValue();
-        std::vector<double> &values = field.direct(f);
+        MIRValuesVector& values = field.direct(f);
 
         // if (values.size() != b.width() * b.height()) {
         if (values.size() > b.width() * b.height()) { // TODO: fixe me

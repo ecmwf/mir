@@ -86,7 +86,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
 
         mir::data::MIRField field(input.field());
 
-        const std::vector<double>& values = field.values(0);
+        const mir::MIRValuesVector& values = field.values(0);
 
         ASSERT(!field.hasMissing());
 

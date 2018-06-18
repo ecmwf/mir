@@ -13,13 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef Field_H
-#define Field_H
+#ifndef mir_data_Field_h
+#define mir_data_Field_h
 
 #include <iosfwd>
 #include <vector>
 
 #include "eckit/memory/Counted.h"
+#include "mir/data/MIRValuesVector.h"
 
 
 namespace mir {
@@ -73,10 +74,10 @@ public:
     const repres::Representation *representation() const;
 
     /// @warning Takes ownership of the vector
-    void update(std::vector<double> &, size_t which, bool recomputeHasMissing = false);
+    void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
 
-    const std::vector<double> &values(size_t which) const;
-    std::vector<double> &direct(size_t which);   // Non-const version for direct update (Filter)
+    const MIRValuesVector& values(size_t which) const;
+    MIRValuesVector& direct(size_t which);   // Non-const version for direct update (Filter)
 
     void metadata(size_t which, const std::map<std::string, long>&);
     void metadata(size_t which, const std::string& name, long value);
@@ -131,7 +132,7 @@ private:
 
     // -- Members
 
-    std::vector<std::vector<double> > values_;
+    std::vector<MIRValuesVector> values_;
     std::vector<std::map<std::string, long> > metadata_;
 
     mutable bool recomputeHasMissing_;

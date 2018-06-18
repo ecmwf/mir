@@ -222,11 +222,11 @@ GridSpec* RegularLL::guess(const Variable &variable,
 }
 
 
-void RegularLL::reorder(std::vector<double>& values) const {
+void RegularLL::reorder(MIRValuesVector& values) const {
   if (jScansPositively_) {
     ASSERT(values.size() == ni_ * nj_);
 
-    std::vector<double> out(values.size());
+    MIRValuesVector out(values.size());
 
     size_t count = 0;
     for (int j = nj_ - 1 ; j >= 0; --j) {
@@ -242,5 +242,7 @@ void RegularLL::reorder(std::vector<double>& values) const {
 
 
 static GridSpecGuesserBuilder<RegularLL> builder(0); // First choice
-}
-}
+
+
+}  // namespace netcdf
+}  // namespace mir

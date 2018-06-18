@@ -68,7 +68,7 @@ size_t RawOutput::save(const param::MIRParametrisation &param, context::Context&
 
 
     ASSERT(field.dimensions() == 1);
-    const std::vector<double> &values = field.values(0);
+    const MIRValuesVector& values = field.values(0);
 
     eckit::Log::debug<LibMir>() << "RawOutput::save values: " << values.size() << ", user: " << count_ << std::endl;
 

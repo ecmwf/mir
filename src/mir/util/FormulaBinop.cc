@@ -71,11 +71,11 @@ class Unop : public Function {
 
         for (size_t i = 0; i < field1.dimensions(); ++i)
         {
-            const std::vector<double> &values1 = field1.values(i);
+            const MIRValuesVector& values1 = field1.values(i);
 
             size_t size = values1.size();
 
-            std::vector<double> values(size);
+            MIRValuesVector values(size);
 
             if (field1.hasMissing()) {
                 double missingValue1 = field1.missingValue();
@@ -153,13 +153,13 @@ class Binop : public Function {
 
         for (size_t i = 0; i < field1.dimensions(); ++i)
         {
-            const std::vector<double> &values1 = field1.values(i);
-            const std::vector<double> &values2 = field2.values(i);
+            const MIRValuesVector& values1 = field1.values(i);
+            const MIRValuesVector& values2 = field2.values(i);
 
             size_t size = values1.size();
             ASSERT(values1.size() == values2.size());
 
-            std::vector<double> values(size);
+            MIRValuesVector values(size);
 
             if (field1.hasMissing() || field2.hasMissing()) {
                 double missingValue1 = field1.missingValue();
@@ -203,11 +203,11 @@ class Binop : public Function {
 
         for (size_t i = 0; i < field1.dimensions(); ++i)
         {
-            const std::vector<double> &values1 = field1.values(i);
+            const MIRValuesVector& values1 = field1.values(i);
 
             size_t size = values1.size();
 
-            std::vector<double> values(size);
+            MIRValuesVector values(size);
 
             if (field1.hasMissing()) {
                 double missingValue1 = field1.missingValue();
@@ -246,11 +246,11 @@ class Binop : public Function {
 
         for (size_t i = 0; i < field2.dimensions(); ++i)
         {
-            const std::vector<double> &values2 = field2.values(i);
+            const MIRValuesVector& values2 = field2.values(i);
 
             size_t size = values2.size();
 
-            std::vector<double> values(size);
+            MIRValuesVector values(size);
 
             if (field2.hasMissing()) {
                 double missingValue2 = field2.missingValue();

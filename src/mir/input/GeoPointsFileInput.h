@@ -16,6 +16,7 @@
 #ifndef mir_input_GeoPointsFileInput_h
 #define mir_input_GeoPointsFileInput_h
 
+#include "mir/data/MIRValuesVector.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
 
@@ -47,7 +48,7 @@ public:
 
     const std::vector<double>& latitudes() const;
     const std::vector<double>& longitudes() const;
-    const std::vector<double>& values() const;
+    const MIRValuesVector& values() const;
 
     // -- Overridden methods
     // None
@@ -89,7 +90,7 @@ private:
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
-    std::vector<double> values_;
+    MIRValuesVector values_;
 
     // -- Methods
 

@@ -64,8 +64,8 @@ void ShTruncate::execute(context::Context& ctx) const {
 
 
     for (size_t i = 0; i < field.dimensions(); i++) {
-        const std::vector<double>& values = field.values(i);
-        std::vector<double> result;
+        const MIRValuesVector& values = field.values(i);
+        MIRValuesVector result;
 
         const repres::Representation* repres = representation->truncate(truncation_, values, result);
 

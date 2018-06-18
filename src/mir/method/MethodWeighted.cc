@@ -220,8 +220,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 void MethodWeighted::setOperandMatricesFromVectors(
     WeightMatrix::Matrix& A,
     WeightMatrix::Matrix& B,
-    const std::vector<double>& Avector,
-    const std::vector<double>& Bvector,
+    const MIRValuesVector& Avector,
+    const MIRValuesVector& Bvector,
     const double& missingValue,
     const data::Dimension& dimension ) const {
 
@@ -251,7 +251,7 @@ void MethodWeighted::setOperandMatricesFromVectors(
 
 void MethodWeighted::setVectorFromOperandMatrix(
     const WeightMatrix::Matrix& A,
-    std::vector<double>& Avector,
+    MIRValuesVector& Avector,
     const double& missingValue,
     const data::Dimension& dimension ) const {
 
@@ -312,7 +312,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         parametrisation_.get("dimension", dimension);
         const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
 
-        std::vector<double> result(npts_out);  // field.update() takes ownership with std::swap()
+        MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
         WeightMatrix::Matrix mi;
         WeightMatrix::Matrix mo;
         setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, dim);
@@ -379,7 +379,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
 
 void MethodWeighted::applyMissingValues(
     const WeightMatrix& W,
-    const std::vector<double>& values,
+    const MIRValuesVector& values,
     const double& missingValue,
     WeightMatrix& MW) const {
 

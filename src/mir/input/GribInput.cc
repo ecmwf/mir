@@ -218,7 +218,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 }
 
 
-void get_unique_missing_value(const std::vector<double>& values, double& missing) {
+void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
     ASSERT(values.size());
 
     if (!std::count(values.begin(), values.end(), missing)) {
@@ -308,7 +308,7 @@ data::MIRField GribInput::field() const {
     GRIB_CALL(grib_get_size(grib_, "values", &count));
 
     size_t size = count;
-    std::vector<double> values(count);
+    MIRValuesVector values(count);
     GRIB_CALL(grib_get_double_array(grib_, "values", &values[0], &size));
     ASSERT(count == size);
 
@@ -348,7 +348,7 @@ data::MIRField GribInput::field() const {
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
             eckit::Log::debug<LibMir>() << "GribInput::field(): correcting values array with " << new_values << " new missing values." << std::endl;
 
-            std::vector<double> values_extended;
+            MIRValuesVector values_extended;
             values_extended.reserve(count + new_values);
 
             ASSERT(pl.size() == pl_fixed.size());

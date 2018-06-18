@@ -18,6 +18,7 @@
 
 #include <iosfwd>
 #include <vector>
+#include "mir/data/MIRValuesVector.h"
 
 
 namespace mir {
@@ -59,9 +60,7 @@ public:
 
     // -- Methods
 
-    void rotate(const util::Rotation&);
-
-    void rotate(const util::Rotation&, std::vector<double>& valuesX, std::vector<double>& valuesY) const;
+    void rotate(const util::Rotation&, MIRValuesVector& valuesX, MIRValuesVector& valuesY) const;
 
     // -- Overridden methods
     // None
@@ -94,11 +93,11 @@ private:
 
     // -- Members
 
-    std::vector<double> valuesX_;
-    std::vector<double> valuesY_;
-    bool hasMissing_;
+    MIRValuesVector valuesX_;
+    MIRValuesVector valuesY_;
     double missingValue_;
     const repres::Representation* representation_;
+    bool hasMissing_;
 
     // -- Methods
     // None

@@ -36,6 +36,7 @@
 #include "mir/input/GribFileInput.h"
 // #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
+#include "mir/data/MIRValuesVector.h"
 
 
 class LSM : public eckit::Tool {
@@ -79,7 +80,7 @@ void LSM::run() {
         input.parametrisation(); //
         mir::data::MIRField field(input.field());
 
-        const std::vector<double> &v = field.values(0);
+        const mir::MIRValuesVector& v = field.values(0);
         std::vector<int32_t> p(v.size());
 
         eckit::AutoStdFile f("zzzzz", "w");

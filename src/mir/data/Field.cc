@@ -76,7 +76,7 @@ Field *Field::clone() const {
 }
 
 // Warning: take ownership of values
-void Field::update(std::vector<double> &values, size_t which, bool recomputeHasMissing) {
+void Field::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     recomputeHasMissing_ = recomputeHasMissing;
@@ -174,8 +174,8 @@ MIRFieldStats Field::statistics(size_t i) const {
 
 
     if (hasMissing_) {
-        const std::vector<double> &vals = values(i);
-        std::vector<double> tmp;
+        const MIRValuesVector& vals = values(i);
+        MIRValuesVector tmp;
         tmp.reserve(vals.size());
         size_t missing = 0;
 
@@ -203,14 +203,14 @@ void Field::representation(const repres::Representation *representation) {
     representation_ = representation;
 }
 
-const std::vector<double> &Field::values(size_t which) const {
+const MIRValuesVector& Field::values(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     ASSERT(which < values_.size());
     return values_[which];
 }
 
-std::vector<double> &Field::direct(size_t which)  {
+MIRValuesVector& Field::direct(size_t which)  {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     // eckit::Log::info() << "Field::direct => " << values_.size() << std::endl;
@@ -258,7 +258,7 @@ bool Field::hasMissing() const {
     if (recomputeHasMissing_) {
         recomputeHasMissing_ = false;
         hasMissing_ = false;
-        for (const std::vector<double>& v : values_) {
+        for (const auto& v : values_) {
             if ((hasMissing_ = std::find(v.begin(), v.end(), missingValue_) != v.end())) {
                 break;
             }

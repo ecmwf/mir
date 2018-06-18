@@ -13,27 +13,20 @@
 /// @date Apr 2015
 
 
-
 #include "mir/output/ValuesOutput.h"
+
 #include "eckit/exception/Exceptions.h"
-#include "mir/data/MIRField.h"
-#include "mir/repres/Iterator.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/repres/Representation.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "eckit/io/HandleBuf.h"
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace output {
 
-// See https://software.ecmwf.int/wiki/display/METV/Geopoints
-
 
 ValuesOutput::ValuesOutput():
-    hasMissing_(false),
-    missingValue_(9999) {
+    missingValue_(9999),
+    hasMissing_(false) {
 }
 
 
@@ -41,17 +34,16 @@ ValuesOutput::~ValuesOutput() {
 }
 
 
-size_t ValuesOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
     NOTIMP;
-    return 0;
 }
 
-bool ValuesOutput::sameParametrisation(const param::MIRParametrisation &param1,
-                                       const param::MIRParametrisation & param2) const {
+bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&,
+                                       const param::MIRParametrisation&) const {
     return true;
 }
 
-bool ValuesOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
     return false;
 }
 
@@ -67,9 +59,7 @@ void ValuesOutput::print(std::ostream &out) const {
 }
 
 
-size_t ValuesOutput::save(const param::MIRParametrisation &param, context::Context &ctx) {
-
-
+size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ctx) {
     data::MIRField& field = ctx.field();
 
     ASSERT(field.dimensions() == 1);
@@ -83,7 +73,6 @@ size_t ValuesOutput::save(const param::MIRParametrisation &param, context::Conte
         std::swap(values_[i], field.direct(i));
     }
 
-
     return 0;
 }
 
@@ -92,19 +81,21 @@ bool ValuesOutput::hasMissing() const {
     return hasMissing_;
 }
 
+
 double ValuesOutput::missingValue() const {
     return missingValue_;
 }
+
 
 size_t ValuesOutput::dimensions() const {
     return values_.size();
 }
 
-const std::vector<double>& ValuesOutput::values(size_t which) const {
+
+const MIRValuesVector& ValuesOutput::values(size_t which) const {
     ASSERT(which < values_.size());
     return values_[which];
 }
-
 
 
 }  // namespace output

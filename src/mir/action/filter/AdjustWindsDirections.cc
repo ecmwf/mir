@@ -66,8 +66,8 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     for (size_t i = 0; i < field.dimensions(); i += 2 ) {
 
         // set field components directly
-        std::vector<double>& valuesX = field.direct(i);
-        std::vector<double>& valuesY = field.direct(i + 1);
+        MIRValuesVector& valuesX = field.direct(i);
+        MIRValuesVector& valuesY = field.direct(i + 1);
 
         cf.rotate(rotation_, valuesX, valuesY);
 

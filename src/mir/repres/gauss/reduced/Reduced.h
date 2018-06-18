@@ -109,7 +109,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
     virtual eckit::Fraction getSmallestIncrement() const;
     virtual bool getLongestElementDiagonal(double&) const;

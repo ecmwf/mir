@@ -10,24 +10,29 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+
 #ifndef mir_netcdf_Field
 #define mir_netcdf_Field
 
 #include <iosfwd>
-
 #include "eckit/memory/ScopedPtr.h"
+#include "mir/data/MIRValuesVector.h"
 
 
 namespace mir {
-
 namespace data {
 class MIRField;
 }
+namespace netcdf {
+class GridSpec;
+class Variable;
+}
+}
 
+
+namespace mir {
 namespace netcdf {
 
-class Variable;
-class GridSpec;
 
 class Field  {
 public:
@@ -40,7 +45,7 @@ public:
     // std::vector<size_t> dimensions() const;
 
     size_t count2DValues() const;
-    void get2DValues(std::vector<double>& values, size_t i) const;
+    void get2DValues(MIRValuesVector&, size_t i) const;
 
     bool hasMissing() const;
     double missingValue() const;
@@ -85,6 +90,9 @@ private:
     }
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

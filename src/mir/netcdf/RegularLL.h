@@ -79,10 +79,13 @@ private:
     virtual bool get(const std::string &name, double &value) const;
     virtual bool get(const std::string &name, std::vector<double> &value) const;
 
-    virtual void reorder(std::vector<double>& values) const;
+    virtual void reorder(MIRValuesVector& values) const;
 
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

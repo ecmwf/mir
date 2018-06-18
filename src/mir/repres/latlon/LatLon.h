@@ -133,11 +133,11 @@ private:
 
     virtual void fill(util::MeshGeneratorParameters&) const;
 
-    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
 
-    virtual void reorder(long scanningMode, std::vector<double>& values) const;
+    virtual void reorder(long scanningMode, MIRValuesVector& values) const;
 
-    virtual void validate(const std::vector<double>&) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual const LatLon* croppedRepresentation(const util::BoundingBox&) const;
 

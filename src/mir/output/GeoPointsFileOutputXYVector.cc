@@ -55,8 +55,8 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
     ASSERT(field.dimensions() % 2 == 0);
     for (size_t j = 0; j < field.dimensions(); j += 2) {
 
-        const std::vector<double>& values_u = field.values(j);
-        const std::vector<double>& values_v = field.values(j + 1);
+        const MIRValuesVector& values_u = field.values(j);
+        const MIRValuesVector& values_v = field.values(j + 1);
         ASSERT(values_u.size() == values_v.size());
 
         // eckit::Log::info() << "GeoPointsFileOutputXYVector::save => " << handle << std::endl;
@@ -74,8 +74,8 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
             extra += ' ' + v;
         }
 
-        std::vector<double>::const_iterator u = values_u.cbegin();
-        std::vector<double>::const_iterator v = values_v.cbegin();
+        auto u = values_u.cbegin();
+        auto v = values_v.cbegin();
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {

@@ -90,8 +90,6 @@ private:
     virtual bool sameAs(const Representation&) const;
     virtual Iterator* iterator() const;
 
-    //virtual void validate(const std::vector<double>&) const;
-
     // -- Class members
     // None
 

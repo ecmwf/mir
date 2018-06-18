@@ -34,7 +34,7 @@ private:
     virtual void collectField(std::vector<Field *>&) const;
 
     virtual size_t count2DValues() const;
-    virtual void get2DValues(std::vector<double>& values, size_t i) const;
+    virtual void get2DValues(MIRValuesVector&, size_t i) const;
 
     // Used during identtification
     virtual void addCoordinateVariable(const Variable*);
@@ -48,6 +48,9 @@ private:
 
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

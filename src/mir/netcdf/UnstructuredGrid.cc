@@ -196,7 +196,7 @@ GridSpec* UnstructuredGrid::guess(const Variable &variable,
 }
 
 
-void UnstructuredGrid::reorder(std::vector<double>& values) const {
+void UnstructuredGrid::reorder(MIRValuesVector& values) const {
     // size_t ni = latitudes_.size();
     // size_t nj = longitudes_.size();
 
@@ -219,5 +219,8 @@ void UnstructuredGrid::reorder(std::vector<double>& values) const {
 
 
 static GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
-}
-}
+
+
+}  // namespace netcdf
+}  // namespace mir
+

@@ -73,12 +73,10 @@ void MIRMakeLSM::execute(const eckit::option::CmdArgs&) {
 
         ASSERT(!field.hasMissing());
 
-        const std::vector<double>  &values = field.values(0);
-
         unsigned char byte = 0;
         size_t n = 0;
-        for (std::vector<double>::const_iterator j = values.begin(); j != values.end(); ++j) {
-            bool land = (*j) >= 0.5;
+        for (const auto& v : field.values(0)) {
+            bool land = v >= 0.5;
             byte <<= 1;
             if (land) {
                 byte |= 1;

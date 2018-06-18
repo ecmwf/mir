@@ -18,10 +18,12 @@
 #include <iostream>
 
 #include "mir/netcdf/Endowed.h"
+#include "mir/data/MIRValuesVector.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class Dataset;
 class Type;
@@ -109,7 +111,7 @@ public:
     virtual size_t numberOfDimensions() const;
 
     virtual size_t count2DValues() const;
-    virtual void get2DValues(std::vector<double>& values, size_t i) const;
+    virtual void get2DValues(MIRValuesVector& values, size_t i) const;
     virtual bool hasMissing() const;
     virtual double missingValue() const;
 
@@ -154,6 +156,9 @@ private:
     }
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

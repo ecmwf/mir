@@ -57,7 +57,7 @@ void FrameFilter::execute(context::Context & ctx) const {
 
     for (size_t i = 0; i < field.dimensions(); i++ ) {
 
-        std::vector<double> &values = field.direct(i);
+        MIRValuesVector& values = field.direct(i);
 
         const repres::Representation *representation = field.representation();
         size_t count = representation->frame(values, size_, missingValue);

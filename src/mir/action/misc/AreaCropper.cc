@@ -258,10 +258,9 @@ void AreaCropper::execute(context::Context& ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
-        const std::vector<double> &values = field.values(i);
+        const MIRValuesVector& values = field.values(i);
 
-        std::vector<double> result;
-
+        MIRValuesVector result;
         result.reserve(c.mapping_.size());
 
         for (const auto& j : c.mapping_) {

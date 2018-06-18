@@ -59,7 +59,11 @@ class SphericalHarmonics : public Representation {
 
     // -- Class methods
 
-    static void truncate(size_t truncation_from, size_t truncation_to, const std::vector<double>& in, std::vector<double>& out);
+    static void truncate(
+            size_t truncation_from,
+            size_t truncation_to,
+            const MIRValuesVector& in,
+            MIRValuesVector& out);
 
     static size_t number_of_complex_coefficients(size_t truncation) {
         return (truncation + 1) * (truncation + 2) / 2;
@@ -104,13 +108,15 @@ class SphericalHarmonics : public Representation {
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob &) const;
-    virtual const Representation* truncate(size_t truncation,
-                                           const std::vector<double>&, std::vector<double>&) const;
+    virtual const Representation* truncate(
+            size_t truncation,
+            const MIRValuesVector&,
+            MIRValuesVector&) const;
     virtual size_t truncation() const;
 
     virtual void comparison(std::string&) const;
 
-    virtual void validate(const std::vector<double>&) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;

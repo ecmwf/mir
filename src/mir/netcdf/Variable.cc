@@ -386,7 +386,7 @@ void Variable::values(std::vector<double>& v) const {
     v = matrix_->values<double>();
 }
 
-void Variable::get2DValues(std::vector<double>& values, size_t i) const {
+void Variable::get2DValues(MIRValuesVector&, size_t) const {
     std::ostringstream os;
     os << "Variable::get2DValues() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -410,5 +410,5 @@ double Variable::missingValue() const {
     return v;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

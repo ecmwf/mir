@@ -70,7 +70,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
             runtime.set("param", oss.str());
         }
 
-        const std::vector<double>& values = field.values(j);
+        const MIRValuesVector& values = field.values(j);
 
 
         // eckit::Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
@@ -89,7 +89,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
         out << "\n#DATA";
 
 
-        std::vector<double>::const_iterator v = values.cbegin();
+        auto v = values.cbegin();
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {

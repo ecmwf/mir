@@ -50,11 +50,11 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     ASSERT(id_v > 0);
 
     // do inverse transform and set gridded values
-    std::vector<double> output(size_t(number_of_grid_points) * 2);
+    MIRValuesVector output(size_t(number_of_grid_points) * 2);
     trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), config);
 
     // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
-    std::vector<double> output_field;
+    MIRValuesVector output_field;
 
     auto here = output.cbegin();
     output_field.assign(here, here + number_of_grid_points);

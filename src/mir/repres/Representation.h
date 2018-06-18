@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 #include <string>
-#include <vector>
 #include "eckit/memory/Counted.h"
+#include "mir/data/MIRValuesVector.h"
 
 
 struct grib_info;
@@ -94,11 +94,11 @@ public:
     // --------------------
 
     virtual const std::string& uniqueName() const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
 
     virtual Iterator* iterator() const;
 
-    virtual void validate(const std::vector<double>& values) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
@@ -108,13 +108,13 @@ public:
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
-    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
-    virtual const Representation* globalise(data::MIRField& field) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
+    virtual const Representation* globalise(data::MIRField&) const;
 
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
-    virtual const Representation* truncate(size_t truncation, const std::vector<double>&, std::vector<double>&) const;
+    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;
 
     virtual atlas::Grid atlasGrid() const;
 
@@ -127,7 +127,7 @@ public:
 
     virtual void comparison(std::string&) const;
 
-    virtual void reorder(long scanningMode, std::vector<double>& values) const;
+    virtual void reorder(long scanningMode, MIRValuesVector&) const;
 
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;

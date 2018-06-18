@@ -41,7 +41,7 @@ const GridSpec &Field::gridSpec() const {
 }
 // ==========================================================
 
-void Field::get2DValues(std::vector<double>& values, size_t i) const {
+void Field::get2DValues(MIRValuesVector& values, size_t i) const {
     variable_.get2DValues(values, i);
     gridSpec().reorder(values);
 }
@@ -123,5 +123,6 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
+

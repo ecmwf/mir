@@ -59,7 +59,7 @@ void MIRField::copyOnWrite() {
 
 
 // Warning: take ownership of values
-void MIRField::update(std::vector<double> &values, size_t which, bool recomputeHasMissing) {
+void MIRField::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     // eckit::Log::info() << "MIRField::update " << *field_ << std::endl;
@@ -136,14 +136,14 @@ void MIRField::representation(const repres::Representation *representation) {
 }
 
 
-const std::vector<double> &MIRField::values(size_t which) const {
+const MIRValuesVector& MIRField::values(size_t which) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     return field_->values(which);
 }
 
 
-std::vector<double> &MIRField::direct(size_t which)  {
+MIRValuesVector& MIRField::direct(size_t which)  {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     // eckit::Log::info() << "MIRField::direct " << *field_ << std::endl;

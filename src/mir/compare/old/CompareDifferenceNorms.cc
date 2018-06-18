@@ -80,8 +80,8 @@ bool CompareDifferenceNorms::compare(
     while (cmp && w<dim1 && w<dim2) {
 
         // access field values
-        const std::vector<double>& values1 = field1.values(w);
-        const std::vector<double>& values2 = field2.values(w);
+        const MIRValuesVector& values1 = field1.values(w);
+        const MIRValuesVector& values2 = field2.values(w);
         ++w;
 
         const size_t N = std::min(values1.size(), values2.size());

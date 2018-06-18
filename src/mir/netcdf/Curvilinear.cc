@@ -273,7 +273,7 @@ GridSpec* Curvilinear::guess(const Variable &variable,
 }
 
 
-void Curvilinear::reorder(std::vector<double>& values) const {
+void Curvilinear::reorder(MIRValuesVector& values) const {
     // size_t ni = latitudes_.size();
     // size_t nj = longitudes_.size();
 
@@ -296,5 +296,8 @@ void Curvilinear::reorder(std::vector<double>& values) const {
 
 
 static GridSpecGuesserBuilder<Curvilinear> builder(3);
-}
-}
+
+
+}  // namespace netcdf
+}  // namespace mir
+

@@ -72,8 +72,8 @@ void ShVodToUV::execute(context::Context & ctx) const {
 
 
     // get vo/d, allocate U/V
-    const std::vector<double>& field_vo = field.values(0);
-    const std::vector<double>& field_d = field.values(1);
+    const MIRValuesVector& field_vo = field.values(0);
+    const MIRValuesVector& field_d = field.values(1);
 
     eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation
                                 << ", size=" << size
@@ -82,8 +82,8 @@ void ShVodToUV::execute(context::Context & ctx) const {
     ASSERT(field_vo.size() == size);
     ASSERT(field_d.size() == size);
 
-    std::vector<double> result_U(size, 0.);
-    std::vector<double> result_V(size, 0.);
+    MIRValuesVector result_U(size, 0.);
+    MIRValuesVector result_V(size, 0.);
 
 
     // transform

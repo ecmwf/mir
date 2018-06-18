@@ -57,7 +57,7 @@ data::MIRField RawInput::field() const {
 
     data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
 
-    std::vector< double > values(count_);
+    MIRValuesVector values(count_);
     ::memcpy(&values[0], values_, sizeof(double) * count_);
     field.update(values, 0);
 

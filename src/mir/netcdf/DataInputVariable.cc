@@ -108,7 +108,7 @@ size_t DataInputVariable::count2DValues() const {
 
 }
 
-void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) const {
+void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const {
 
     std::vector<size_t> dims;
     for (auto d : dimensions_) {
@@ -122,8 +122,6 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) c
 
     size_t nx = dims[size - 1];
     size_t ny = dims[size - 2];
-
-    values.resize(nx * ny);
 
     count[size - 1] = nx;
     count[size - 2] = ny;
@@ -143,8 +141,11 @@ void DataInputVariable::get2DValues(std::vector<double>& values, size_t index) c
         start[j] = coords[j];
     }
 
-    matrix_->read(values, start, count);
+    std::vector<double> data(nx * ny);
+    matrix_->read(data, start, count);
 
+    // FIXME: this copies, so is slow, but we could 'move' data instead
+    values.assign(data.begin(), data.end());
 }
 
 
@@ -170,5 +171,7 @@ std::vector<std::string> DataInputVariable::coordinates() const {
     return result;
 }
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+

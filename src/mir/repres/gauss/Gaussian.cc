@@ -91,7 +91,7 @@ bool Gaussian::isPeriodicWestEast() const {
 }
 
 
-void Gaussian::validate(const std::vector<double>& values) const {
+void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
     eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;

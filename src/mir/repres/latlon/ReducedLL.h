@@ -95,7 +95,7 @@ private:
     void fill(api::MIRJob &) const;
     void fill(util::MeshGeneratorParameters&) const;
 
-    void validate(const std::vector<double>&) const;
+    void validate(const MIRValuesVector&) const;
 
     Iterator* iterator() const;
 

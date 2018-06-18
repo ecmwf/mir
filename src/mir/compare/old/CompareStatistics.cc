@@ -25,7 +25,7 @@ Compare::CompareResults CompareStatistics::getFieldStatisticsScalar(const data::
     Calculator calc(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
 
     ASSERT(field.dimensions()==1);
-    const std::vector<double>& values = field.values(0);
+    const MIRValuesVector& values = field.values(0);
 
     for (std::vector<double>::const_iterator v=values.begin(); v!=values.end(); ++v) {
         calc(*v);
@@ -55,7 +55,7 @@ Compare::CompareResults CompareStatistics::getFieldStatisticsAngleDegrees(const 
     Calculator calc(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
 
     ASSERT(field.dimensions()==1);
-    const std::vector<double>& values = field.values(0);
+    const MIRValuesVector& values = field.values(0);
 
     for (std::vector<double>::const_iterator v=values.begin(); v!=values.end(); ++v) {
         calc(*v);

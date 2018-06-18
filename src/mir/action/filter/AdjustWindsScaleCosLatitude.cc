@@ -73,7 +73,7 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
 
     // apply scaling to each field component directly
     for (size_t i = 0; i < field.dimensions(); ++i ) {
-        std::vector<double>& values = field.direct(i);
+        MIRValuesVector& values = field.direct(i);
         ASSERT(values.size() == N);
 
         std::transform(values.begin(), values.end(), scale.begin(), values.begin(), std::multiplies<double>());

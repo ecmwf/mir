@@ -10,17 +10,20 @@
 
 /// @author Tiago Quintino
 /// @author Baudouin Raoult
-/// @date   May 2015
+/// @author Pedro Maciel
+/// @date May 2015
+
+
+#include "mir/data/MIRFieldStats.h"
 
 #include <iostream>
 #include <cmath>
-
-#include "mir/data/MIRFieldStats.h"
 #include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
 namespace data {
+
 
 MIRFieldStats::MIRFieldStats():
     count_(0),
@@ -32,7 +35,7 @@ MIRFieldStats::MIRFieldStats():
     stdev_(0) {
 }
 
-MIRFieldStats::MIRFieldStats(const std::vector<double> &vs, size_t missing) :
+MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
     count_(vs.size()),
     missing_(missing),
     min_(0),
@@ -46,8 +49,7 @@ MIRFieldStats::MIRFieldStats(const std::vector<double> &vs, size_t missing) :
         min_ = max_ = vs[0];
 
         double sum = 0.;
-        for (std::vector<double>::const_iterator it = vs.begin(); it != vs.end(); ++it ) {
-            double v = *it;
+        for (auto& v : vs) {
             min_ = std::min(v, min_);
             max_ = std::max(v, max_);
             sum += v;
@@ -59,22 +61,25 @@ MIRFieldStats::MIRFieldStats(const std::vector<double> &vs, size_t missing) :
     }
 }
 
+
 void MIRFieldStats::print(std::ostream &s) const {
     s << "["
-      << "min=" << min_
-      << ", max=" << max_
-      << ", mean=" << mean_
-      << ", stdev=" << stdev_
-      << ", l2norm=" << std::sqrt(sqsum_)
-      << ", count=" << count_
-      << ", missing=" << missing_
-      << ", total=" << count_ + missing_
+          "min=" << min_
+      << ",max=" << max_
+      << ",mean=" << mean_
+      << ",stdev=" << stdev_
+      << ",l2norm=" << std::sqrt(sqsum_)
+      << ",count=" << count_
+      << ",missing=" << missing_
+      << ",total=" << count_ + missing_
       << "]";
 }
+
 
 double MIRFieldStats::maximum() const {
     return max_;
 }
+
 
 double MIRFieldStats::minimum() const {
     return min_;

@@ -43,8 +43,8 @@ void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2)
 
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
-        const std::vector<double>& values1 = field1.values(w);
-        const std::vector<double>& values2 = field2.values(w);
+        const MIRValuesVector& values1 = field1.values(w);
+        const MIRValuesVector& values2 = field2.values(w);
         ASSERT(values1.size() == values2.size());
 
         if (field1.hasMissing() || field2.hasMissing()) {

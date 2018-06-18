@@ -40,9 +40,9 @@ CartesianVector2DField::CartesianVector2DField(
         double missingValue) :
     valuesX_(),
     valuesY_(),
-    hasMissing_(hasMissing),
     missingValue_(missingValue),
-    representation_(representation) {
+    representation_(representation),
+    hasMissing_(hasMissing) {
 
     ASSERT(representation_);
     representation_->attach();
@@ -53,13 +53,7 @@ CartesianVector2DField::~CartesianVector2DField() {
 }
 
 
-void CartesianVector2DField::rotate(const util::Rotation& rotation) {
-    std::vector<double> dummyX, dummyY;
-    rotate(rotation, dummyX, dummyY);
-}
-
-
-void CartesianVector2DField::rotate(const util::Rotation& rotation, std::vector<double>& valuesX, std::vector<double>& valuesY) const {
+void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX, MIRValuesVector& valuesY) const {
 
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());

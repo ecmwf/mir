@@ -10,11 +10,14 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+
 #ifndef mir_netcdf_GridSpec
 #define mir_netcdf_GridSpec
 
 #include <iosfwd>
 #include <vector>
+#include "mir/data/MIRValuesVector.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -38,7 +41,7 @@ public:
     virtual bool get(const std::string &name, double &value) const = 0;
     virtual bool get(const std::string &name, std::vector<double> &value) const = 0;
 
-    virtual void reorder(std::vector<double>& values) const = 0;
+    virtual void reorder(MIRValuesVector& values) const = 0;
 
 
 protected:
@@ -105,6 +108,8 @@ public:
 };
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

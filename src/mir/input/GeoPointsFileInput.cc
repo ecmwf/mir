@@ -227,7 +227,7 @@ data::MIRField GeoPointsFileInput::field() const {
     data::MIRField field(new repres::other::UnstructuredGrid(latitudes_, longitudes_), hasMissing_, missingValue_);
 
     // copy, to preserve consistent internal state
-    std::vector<double> values(values_);
+    MIRValuesVector values(values_);
     field.update(values, 0);
 
     return field;
@@ -242,15 +242,18 @@ void GeoPointsFileInput::print(std::ostream &out) const {
         << "]";
 }
 
+
 const std::vector<double>& GeoPointsFileInput::latitudes() const {
     return latitudes_;
 }
+
 
 const std::vector<double>& GeoPointsFileInput::longitudes() const {
     return longitudes_;
 }
 
-const std::vector<double>& GeoPointsFileInput::values() const {
+
+const MIRValuesVector& GeoPointsFileInput::values() const {
     return values_;
 }
 

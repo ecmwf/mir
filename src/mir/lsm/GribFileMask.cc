@@ -84,7 +84,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
     ASSERT(!ctx.field().hasMissing());
     ASSERT(ctx.field().dimensions() == 1);
 
-    const std::vector< double >& values = ctx.field().values(0);
+    const MIRValuesVector& values = ctx.field().values(0);
     mask_.resize(values.size());
 
     /// Compare values inequality, "is greater or equal to"

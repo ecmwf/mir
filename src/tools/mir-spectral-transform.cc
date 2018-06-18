@@ -35,6 +35,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/data/MIRValuesVector.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiScalarInput.h"
@@ -170,8 +171,8 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
 
 
 void interlace_spectra(
-        std::vector<double>& interlacedSpectra,
-        const std::vector<double>& spectra,
+        mir::MIRValuesVector& interlacedSpectra,
+        const mir::MIRValuesVector& spectra,
         size_t truncation,
         size_t numberOfComplexCoefficients,
         size_t index,
@@ -299,8 +300,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
-                    std::vector<double> input_vo;
-                    std::vector<double> input_d;
+                    mir::MIRValuesVector input_vo;
+                    mir::MIRValuesVector input_d;
                     if (F > 1) {
                         eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
                         input_vo.resize(F * N * 2);
@@ -337,7 +338,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
                             const size_t which = (numberOfFieldPairsProcessed + i) * 2;
-                            std::vector<double> output_field(here, here + int(Ngp));
+                            mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
                             field.metadata(which, "paramId", paramIdu);
@@ -346,7 +347,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                         for (size_t i = 0; i < F; ++i) {
                             const size_t which = (numberOfFieldPairsProcessed + i) * 2 + 1;
-                            std::vector<double> output_field(here, here + int(Ngp));
+                            mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
                             field.metadata(which, "paramId", paramIdv);
@@ -367,7 +368,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
-                    std::vector<double> input;
+                    mir::MIRValuesVector input;
                     if (F > 1) {
                         eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
                         input.resize(F * N * 2);
@@ -379,7 +380,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set output working area
                     const size_t Ngp = outputGrid.size();
-                    std::vector<double> output(F * Ngp);
+                    mir::MIRValuesVector output(F * Ngp);
 
                     // inverse transform
                     {
@@ -397,7 +398,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
-                            std::vector<double> output_field(here, here + int(Ngp));
+                            mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, numberOfFieldsProcessed + i);
                             here += int(Ngp);

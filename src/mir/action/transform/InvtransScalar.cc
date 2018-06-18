@@ -41,7 +41,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     config.set(atlas::option::global());
 
     // do inverse transform and set gridded values
-    std::vector<double> output(trans.grid().size());
+    MIRValuesVector output(trans.grid().size());
     trans.invtrans(1, field.values(0).data(), output.data(), config);
 
     field.update(output, 0);

@@ -10,22 +10,27 @@
 
 /// @author Tiago Quintino
 /// @author Baudouin Raoult
-/// @date   May 2015
+/// @author Pedro Maciel
+/// @date May 2015
 
-#ifndef MIRFieldStats_H
-#define MIRFieldStats_H
+
+#ifndef mir_data_MIRFieldStats_h
+#define mir_data_MIRFieldStats_h
 
 #include <iosfwd>
 #include <vector>
+#include "mir/data/MIRValuesVector.h"
+
 
 namespace mir {
 namespace data {
+
 
 class MIRFieldStats {
 public:
 
     MIRFieldStats();
-    MIRFieldStats(const std::vector<double>& vs, size_t missing);
+    MIRFieldStats(const MIRValuesVector&, size_t missing);
 
     double maximum() const;
     double minimum() const;
@@ -40,16 +45,18 @@ private:
     double sqsum_;
     double stdev_;
 
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
-    friend std::ostream &operator<<(std::ostream &s, const MIRFieldStats &p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRFieldStats &p) {
         p.print(s);
         return s;
     }
 };
 
+
 }  // namespace data
 }  // namespace mir
+
 
 #endif
 

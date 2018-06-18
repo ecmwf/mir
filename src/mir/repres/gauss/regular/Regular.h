@@ -102,7 +102,7 @@ private:
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
-    virtual size_t frame(std::vector<double>& values, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
     virtual eckit::Fraction getSmallestIncrement() const;
     virtual bool getLongestElementDiagonal(double&) const;

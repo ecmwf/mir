@@ -18,6 +18,7 @@
 #define mir_method_MethodWeighted_h
 
 #include "mir/caching/WeightCache.h"
+#include "mir/data/MIRValuesVector.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/method/Cropping.h"
@@ -59,7 +60,7 @@ private:
     // -- From Method
 
     virtual void execute(context::Context&,
-                         const repres::Representation &in,
+                         const repres::Representation& in,
                          const repres::Representation& out) const;
 
 
@@ -77,7 +78,7 @@ protected:
                                           const repres::Representation& out) const;
     virtual bool sameAs(const Method& other) const = 0;
 
-    virtual void print(std::ostream &out) const = 0;
+    virtual void print(std::ostream& out) const = 0;
 
 private:
 
@@ -90,7 +91,7 @@ private:
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W,
-                            const std::vector<double>& values,
+                            const MIRValuesVector& values,
                             const double& missingValue,
                             WeightMatrix& MW) const;
 
@@ -101,14 +102,14 @@ private:
     /// Get interpolation operand matrices, from A = W × B
     virtual void setOperandMatricesFromVectors(WeightMatrix::Matrix& A,
             WeightMatrix::Matrix& B,
-            const std::vector<double>& Avector,
-            const std::vector<double>& Bvector,
+            const MIRValuesVector& Avector,
+            const MIRValuesVector& Bvector,
             const double& missingValue,
             const data::Dimension&) const;
 
     /// Get interpolation operand matrices, from A = W × B
     virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A,
-                                            std::vector<double>& Avector,
+                                            MIRValuesVector& Avector,
                                             const double& missingValue, const data::Dimension&) const;
 
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in,
