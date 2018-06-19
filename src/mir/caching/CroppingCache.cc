@@ -37,9 +37,7 @@ void CroppingCacheEntry::print(std::ostream& out) const {
 }
 
 
-CroppingCacheEntry::~CroppingCacheEntry() {
-    // eckit::Log::info() << "Delete " << *this << std::endl;
-}
+CroppingCacheEntry::~CroppingCacheEntry() = default;
 
 
 size_t CroppingCacheEntry::footprint() const {
@@ -123,9 +121,6 @@ void CroppingCacheTraits::load(const eckit::CacheManagerBase&, value_type& c, co
 }
 
 
-//--------------------------------------------------------------------------
-
-
-}  // namespace method
+}  // namespace caching
 }  // namespace mir
 

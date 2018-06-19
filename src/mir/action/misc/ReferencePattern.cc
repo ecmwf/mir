@@ -34,8 +34,8 @@ ReferencePattern::ReferencePattern(const param::MIRParametrisation &parametrisat
 }
 
 
-ReferencePattern::~ReferencePattern() {
-}
+ReferencePattern::~ReferencePattern() = default;
+
 
 bool ReferencePattern::sameAs(const Action& other) const {
     return false;

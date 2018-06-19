@@ -31,11 +31,11 @@ Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2NamedGrid::~Gridded2NamedGrid() {
-}
+Gridded2NamedGrid::~Gridded2NamedGrid() = default;
+
 
 bool Gridded2NamedGrid::sameAs(const Action& other) const {
-    const Gridded2NamedGrid* o = dynamic_cast<const Gridded2NamedGrid*>(&other);
+    auto o = dynamic_cast<const Gridded2NamedGrid*>(&other);
     return o && (gridname_ == o->gridname_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

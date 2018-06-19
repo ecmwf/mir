@@ -37,7 +37,7 @@ namespace util {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<atlas::Mesh> mesh_cache(
+static caching::InMemoryCache<atlas::Mesh> mesh_cache(
         "mirMesh",
         512 * 1024 * 1024,
         0,
@@ -130,7 +130,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
     eckit::Channel& log = eckit::Log::debug<LibMir>();
 
     eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", log);
-    InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
+    caching::InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings
     eckit::MD5 md5;
@@ -138,7 +138,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
     hash(md5);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    InMemoryCache<atlas::Mesh>::iterator j = mesh_cache.find(md5);
+    auto j = mesh_cache.find(md5);
     if (j != mesh_cache.end()) {
         return *j;
     }
@@ -195,7 +195,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         throw;
     }
 
-    mesh_cache.footprint(md5, InMemoryCacheUsage(mesh.footprint(), 0) ) ;
+    mesh_cache.footprint(md5, caching::InMemoryCacheUsage(mesh.footprint(), 0) ) ;
 
     return mesh;
 }

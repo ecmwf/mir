@@ -46,8 +46,7 @@ namespace util {
 
 const long VERSION = 1;
 
-PointSearchTree::~PointSearchTree() {
-}
+PointSearchTree::~PointSearchTree() = default;
 
 void PointSearchTree::build(std::vector<PointValueType>&) {
     std::ostringstream os;

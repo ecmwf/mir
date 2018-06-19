@@ -31,8 +31,7 @@ MIRStyle::MIRStyle(const param::MIRParametrisation &parametrisation):
 }
 
 
-MIRStyle::~MIRStyle() {
-}
+MIRStyle::~MIRStyle() = default;
 
 
 //=========================================================================

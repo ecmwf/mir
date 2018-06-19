@@ -38,13 +38,12 @@ ShToReducedGG<Invtrans>::ShToReducedGG(const param::MIRParametrisation& parametr
 
 
 template<class Invtrans>
-ShToReducedGG<Invtrans>::~ShToReducedGG() {
-}
+ShToReducedGG<Invtrans>::~ShToReducedGG() = default;
 
 
 template<class Invtrans>
 bool ShToReducedGG<Invtrans>::sameAs(const Action& other) const {
-    const ShToReducedGG* o = dynamic_cast<const ShToReducedGG*>(&other);
+    auto o = dynamic_cast<const ShToReducedGG*>(&other);
     return o && (N_ == o->N_);
 }
 

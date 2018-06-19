@@ -44,13 +44,12 @@ ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisa
 
 
 template<class Invtrans>
-ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() {
-}
+ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() = default;
 
 
 template<class Invtrans>
 bool ShToRotatedRegularLL<Invtrans>::sameAs(const Action& other) const {
-    const ShToRotatedRegularLL* o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
+    auto o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
     return o && (increments_ == o->increments_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 

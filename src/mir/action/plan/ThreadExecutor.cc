@@ -65,9 +65,9 @@ ThreadExecutor::ThreadExecutor(const std::string& name):
 
 }
 
-ThreadExecutor::~ThreadExecutor() {
 
-}
+ThreadExecutor::~ThreadExecutor() = default;
+
 
 void ThreadExecutor::print(std::ostream& out) const {
     out << "ThreadExecutor[]";

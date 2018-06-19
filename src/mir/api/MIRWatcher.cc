@@ -25,8 +25,8 @@ MIRWatcher::MIRWatcher() {
 }
 
 
-MIRWatcher::~MIRWatcher() {
-}
+MIRWatcher::~MIRWatcher() = default;
+
 
 }  // namespace api
 }  // namespace mir

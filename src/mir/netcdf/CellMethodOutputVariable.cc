@@ -28,9 +28,7 @@ CellMethodOutputVariable::CellMethodOutputVariable(Dataset &owner,
 {
 }
 
-CellMethodOutputVariable::~CellMethodOutputVariable() {
-
-}
+CellMethodOutputVariable::~CellMethodOutputVariable() = default;
 
 void CellMethodOutputVariable::print(std::ostream &out) const {
     out << "CellMethodOutputVariable[name=" << name_ << "]";
@@ -42,5 +40,5 @@ void CellMethodOutputVariable::merge(const Variable &other, MergePlan &plan)
     plan.add(new MergeDataStep(*this, other));
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

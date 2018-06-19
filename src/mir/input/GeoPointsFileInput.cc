@@ -155,7 +155,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
 }
 
 
-GeoPointsFileInput::~GeoPointsFileInput() {}
+GeoPointsFileInput::~GeoPointsFileInput() = default;
 
 
 bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
@@ -201,7 +201,7 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
 
 bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
-    const GeoPointsFileInput* o = dynamic_cast<const GeoPointsFileInput*>(&other);
+    auto o = dynamic_cast<const GeoPointsFileInput*>(&other);
     return o && (path_ == o->path_);
 }
 

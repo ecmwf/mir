@@ -29,8 +29,7 @@ namespace netcdf {
 Codec::Codec() {
 }
 
-Codec::~Codec() {
-}
+Codec::~Codec() = default;
 
 void Codec::decode(std::vector<double> &) const {
     std::ostringstream os;
@@ -184,5 +183,5 @@ void CodecFactory::list(std::ostream& out) {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

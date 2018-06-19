@@ -116,5 +116,5 @@ const std::map<std::string, Attribute *> &Endowed::attributes() const {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

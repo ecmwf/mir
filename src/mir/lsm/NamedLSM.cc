@@ -64,8 +64,7 @@ NamedLSM::NamedLSM(const std::string& name) :
 }
 
 
-NamedLSM::~NamedLSM() {
-}
+NamedLSM::~NamedLSM() = default;
 
 
 void NamedLSM::print(std::ostream& out) const {

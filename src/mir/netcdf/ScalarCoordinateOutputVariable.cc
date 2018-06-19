@@ -19,13 +19,10 @@ namespace mir {
 namespace netcdf {
 
 ScalarCoordinateOutputVariable::ScalarCoordinateOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
-    OutputVariable(owner, name, dimensions)
-{
+    OutputVariable(owner, name, dimensions) {
 }
 
-ScalarCoordinateOutputVariable::~ScalarCoordinateOutputVariable() {
-
-}
+ScalarCoordinateOutputVariable::~ScalarCoordinateOutputVariable() = default;
 
 void ScalarCoordinateOutputVariable::print(std::ostream &out) const {
     out << "ScalarCoordinateOutputVariable[name=" << name_ << "]";
@@ -55,5 +52,5 @@ void ScalarCoordinateOutputVariable::merge(const Variable &other, MergePlan &pla
     }
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

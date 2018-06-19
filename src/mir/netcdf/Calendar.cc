@@ -20,13 +20,11 @@ namespace netcdf {
 Calendar::Calendar() {
 }
 
-Calendar::~Calendar() {
-
-}
+Calendar::~Calendar() = default;
 
 bool Calendar::timeAxis() const {
     return true;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

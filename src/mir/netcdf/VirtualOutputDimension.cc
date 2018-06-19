@@ -29,9 +29,7 @@ VirtualOutputDimension::VirtualOutputDimension(Dataset &owner, const std::string
 
 }
 
-VirtualOutputDimension::~VirtualOutputDimension()
-{
-}
+VirtualOutputDimension::~VirtualOutputDimension() = default;
 
 void VirtualOutputDimension::create(int nc) const {
     ASSERT(len_ > 1);
@@ -63,5 +61,5 @@ void VirtualOutputDimension::grow(size_t count) {
     grown_ = true;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

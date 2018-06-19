@@ -60,12 +60,11 @@ ShVodToUVLegacy::ShVodToUVLegacy(const param::MIRParametrisation& parametrisatio
 }
 
 
-ShVodToUVLegacy::~ShVodToUVLegacy() {
-}
+ShVodToUVLegacy::~ShVodToUVLegacy() = default;
 
 
 bool ShVodToUVLegacy::sameAs(const Action& other) const {
-    const ShVodToUVLegacy* o = dynamic_cast<const ShVodToUVLegacy*>(&other);
+    auto o = dynamic_cast<const ShVodToUVLegacy*>(&other);
     return o;
 }
 

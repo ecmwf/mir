@@ -34,9 +34,7 @@ OutputDataset::OutputDataset(const std::string &path, NCFileCache &cache, int fo
 {
 }
 
-OutputDataset::~OutputDataset()
-{
-}
+OutputDataset::~OutputDataset() = default;
 
 
 void OutputDataset::print(std::ostream &out) const
@@ -197,5 +195,5 @@ void OutputDataset::save() const
     NC_CALL(nc_close(nc), path_);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -32,8 +32,7 @@ VectorOutput::VectorOutput(MIROutput &component1, MIROutput &component2):
 }
 
 
-VectorOutput::~VectorOutput() {
-}
+VectorOutput::~VectorOutput() = default;
 
 
 size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
@@ -41,7 +40,7 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
     input::MIRInput& input = ctx.input();
 
     try {
-        input::VectorInput& v = dynamic_cast<input::VectorInput&>(input);
+        auto& v = dynamic_cast<input::VectorInput&>(input);
         size_t size = 0;
 
         context::Context ctx1(v.component1_, ctx.statistics());
@@ -67,7 +66,7 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
     ASSERT(field.dimensions() == 2);
 
     try {
-        input::VectorInput& vectorInput = dynamic_cast<input::VectorInput&>(input);
+        auto& vectorInput = dynamic_cast<input::VectorInput&>(input);
         size_t size = 0;
 
         context::Context uCtx(vectorInput.component1_, ctx.statistics());
@@ -97,7 +96,7 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
 
 
 bool VectorOutput::sameAs(const MIROutput& other) const {
-    const VectorOutput* o = dynamic_cast<const VectorOutput*>(&other);
+    auto o = dynamic_cast<const VectorOutput*>(&other);
     return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 

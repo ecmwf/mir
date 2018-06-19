@@ -56,8 +56,7 @@ void Rotation::normalize() {
 }
 
 
-Rotation::~Rotation() {
-}
+Rotation::~Rotation() = default;
 
 
 void Rotation::print(std::ostream& out) const {

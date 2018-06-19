@@ -160,8 +160,7 @@ MappedMask::MappedMask(const std::string& name,
 }
 
 
-MappedMask::~MappedMask() {
-}
+MappedMask::~MappedMask() = default;
 
 
 bool MappedMask::active() const {

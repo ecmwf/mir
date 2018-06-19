@@ -39,7 +39,7 @@ Gridded::Gridded(const util::BoundingBox& bbox) :
 }
 
 
-Gridded::~Gridded() {}
+Gridded::~Gridded() = default;
 
 
 void Gridded::setComplexPacking(grib_info& info) const {

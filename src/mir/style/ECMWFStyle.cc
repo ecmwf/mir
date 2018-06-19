@@ -225,8 +225,7 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
 }
 
 
-ECMWFStyle::~ECMWFStyle() {
-}
+ECMWFStyle::~ECMWFStyle() = default;
 
 
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {

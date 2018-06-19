@@ -40,13 +40,12 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation &parametr
 
 
 template<class Invtrans>
-ShToRegularLL<Invtrans>::~ShToRegularLL() {
-}
+ShToRegularLL<Invtrans>::~ShToRegularLL() = default;
 
 
 template<class Invtrans>
 bool ShToRegularLL<Invtrans>::sameAs(const Action& other) const {
-    const ShToRegularLL* o = dynamic_cast<const ShToRegularLL*>(&other);
+    auto o = dynamic_cast<const ShToRegularLL*>(&other);
     return o && (increments_ == o->increments_);
 }
 

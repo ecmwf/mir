@@ -23,12 +23,11 @@ SimpleOutputVariable::SimpleOutputVariable(Dataset &owner, const std::string &na
 {
 }
 
-SimpleOutputVariable::~SimpleOutputVariable() {
-}
+SimpleOutputVariable::~SimpleOutputVariable() = default;
 
 void SimpleOutputVariable::print(std::ostream &out) const {
     out << "SimpleOutputVariable[name=" << name_ << "]";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

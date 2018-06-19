@@ -41,12 +41,11 @@ AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation &pa
 }
 
 
-AdjustWindsDirections::~AdjustWindsDirections() {
-}
+AdjustWindsDirections::~AdjustWindsDirections() = default;
 
 
 bool AdjustWindsDirections::sameAs(const Action& other) const {
-    const AdjustWindsDirections* o = dynamic_cast<const AdjustWindsDirections*>(&other);
+    auto o = dynamic_cast<const AdjustWindsDirections*>(&other);
     return o && (rotation_ == o->rotation_);
 }
 

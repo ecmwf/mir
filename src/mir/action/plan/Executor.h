@@ -28,15 +28,6 @@ class Context;
 }
 
 
-namespace util {
-class MIRStatistics;
-}
-
-
-namespace api {
-class MIRWatcher;
-}
-
 namespace param {
 class MIRParametrisation;
 }
@@ -48,86 +39,84 @@ class ActionNode;
 class Executor {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
-
-
-// -- Destructor
-
-
-// -- Convertors
+    // -- Contructors
     // None
 
-// -- Operators
+    // -- Destructor
     // None
 
-// -- Methods
+    // -- Convertors
+    // None
 
-    virtual void execute(context::Context& ctx, const ActionNode& node) const = 0;
+    // -- Operators
+    // None
+
+    // -- Methods
+
+    virtual void execute(context::Context&, const ActionNode&) const = 0;
     virtual void wait() const = 0;
-    virtual void parametrisation(const param::MIRParametrisation &parametrisation) = 0;
+    virtual void parametrisation(const param::MIRParametrisation&) = 0;
 
     //=====================================
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
 
-    static const Executor &lookup(const param::MIRParametrisation &parametrisation);
-    static void list(std::ostream &);
+    static const Executor &lookup(const param::MIRParametrisation&);
+    static void list(std::ostream&);
 
 protected:
 
-    Executor(const std::string &name);
+    Executor(const std::string& name);
     virtual ~Executor(); // Change to virtual if base class
 
-// -- Members
+    // -- Members
 
     std::string name_;
 
-
-// -- Methods
+    // -- Methods
 
     virtual void print(std::ostream&) const = 0; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
-
+    // No copy allowed
     Executor(const Executor&);
     Executor& operator=(const Executor&);
 
-// -- Members
-
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const Executor& p) {
         p.print(s);
@@ -139,5 +128,7 @@ private:
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

@@ -110,8 +110,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
 }
 
 
-TenMinutesMask::~TenMinutesMask() {
-}
+TenMinutesMask::~TenMinutesMask() = default;
 
 
 bool TenMinutesMask::active() const {

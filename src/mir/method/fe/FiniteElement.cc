@@ -227,8 +227,7 @@ FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
 }
 
 
-FiniteElement::~FiniteElement() {
-}
+FiniteElement::~FiniteElement() = default;
 
 
 void FiniteElement::print(std::ostream &out) const {
@@ -237,7 +236,7 @@ void FiniteElement::print(std::ostream &out) const {
 
 
 bool FiniteElement::sameAs(const Method& other) const {
-    const FiniteElement* o = dynamic_cast<const FiniteElement*>(&other);
+    auto o = dynamic_cast<const FiniteElement*>(&other);
     return o
             && inputMeshGenerationParams_.sameAs(o->inputMeshGenerationParams_)
             && MethodWeighted::sameAs(other);

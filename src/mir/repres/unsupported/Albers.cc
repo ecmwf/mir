@@ -32,8 +32,7 @@ Albers::Albers() {
 }
 
 
-Albers::~Albers() {
-}
+Albers::~Albers() = default;
 
 
 void Albers::print(std::ostream &out) const {

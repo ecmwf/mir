@@ -29,9 +29,7 @@ InputVariable::InputVariable(Dataset &owner,
 {
 }
 
-InputVariable::~InputVariable()
-{
-}
+InputVariable::~InputVariable() = default;
 
 int InputVariable::varid() const {
     ASSERT(id_ >= 0);
@@ -62,5 +60,5 @@ void InputVariable::print(std::ostream &out) const {
     out << "InputVariable[name=" << name_ << "]";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -41,11 +41,11 @@ public:
     MIRStatistics &operator+=(const MIRStatistics&);
     MIRStatistics &operator/=(size_t);
 
-    InMemoryCacheStatistics bitmapCache_;
-    InMemoryCacheStatistics areaCroppingCache_;
-    InMemoryCacheStatistics transHandleCache_;
-    InMemoryCacheStatistics matrixCache_;
-    InMemoryCacheStatistics meshCache_;
+    caching::InMemoryCacheStatistics bitmapCache_;
+    caching::InMemoryCacheStatistics areaCroppingCache_;
+    caching::InMemoryCacheStatistics transHandleCache_;
+    caching::InMemoryCacheStatistics matrixCache_;
+    caching::InMemoryCacheStatistics meshCache_;
 
     eckit::Timing cropTiming_;
     eckit::Timing frameTiming_;

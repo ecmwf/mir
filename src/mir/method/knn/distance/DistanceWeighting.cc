@@ -45,8 +45,7 @@ DistanceWeighting::DistanceWeighting() {
 }
 
 
-DistanceWeighting::~DistanceWeighting() {
-}
+DistanceWeighting::~DistanceWeighting() = default;
 
 
 DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) :

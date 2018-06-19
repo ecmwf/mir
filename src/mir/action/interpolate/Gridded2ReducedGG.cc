@@ -30,11 +30,11 @@ Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2ReducedGG::~Gridded2ReducedGG() {
-}
+Gridded2ReducedGG::~Gridded2ReducedGG() = default;
+
 
 bool Gridded2ReducedGG::sameAs(const Action& other) const {
-    const Gridded2ReducedGG* o = dynamic_cast<const Gridded2ReducedGG*>(&other);
+    auto o = dynamic_cast<const Gridded2ReducedGG*>(&other);
     return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

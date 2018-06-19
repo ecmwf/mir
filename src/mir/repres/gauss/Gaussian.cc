@@ -56,12 +56,11 @@ Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
 }
 
 
-Gaussian::~Gaussian() {
-}
+Gaussian::~Gaussian() = default;
 
 
 bool Gaussian::sameAs(const Representation& other) const {
-    const Gaussian* o = dynamic_cast<const Gaussian*>(&other);
+    auto o = dynamic_cast<const Gaussian*>(&other);
     return o && (N_ == o->N_) && (bbox_ == o->bbox_);
 }
 

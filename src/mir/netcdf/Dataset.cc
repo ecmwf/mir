@@ -168,5 +168,5 @@ bool Dataset::hasVariable(const std::string& name) const {
     return (j != variables_.end()) ;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

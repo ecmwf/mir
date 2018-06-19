@@ -34,8 +34,7 @@ StretchedRotatedSH::StretchedRotatedSH() {
 }
 
 
-StretchedRotatedSH::~StretchedRotatedSH() {
-}
+StretchedRotatedSH::~StretchedRotatedSH() = default;
 
 
 void StretchedRotatedSH::print(std::ostream &out) const {

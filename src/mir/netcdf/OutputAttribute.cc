@@ -37,9 +37,7 @@ OutputAttribute::OutputAttribute(Endowed &owner, const std::string &name, Value 
 
 }
 
-OutputAttribute::~OutputAttribute()
-{
-}
+OutputAttribute::~OutputAttribute() = default;
 
 void OutputAttribute::create(int nc) const {
     if (valid_) {
@@ -80,5 +78,5 @@ void OutputAttribute::print(std::ostream &out) const {
     out << "OutputAttribute[name=" << name_ << "]";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

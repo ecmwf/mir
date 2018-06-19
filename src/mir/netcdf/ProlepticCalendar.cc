@@ -30,9 +30,7 @@ ProlepticCalendar::ProlepticCalendar(const Variable& variable)
 {
 }
 
-ProlepticCalendar::~ProlepticCalendar() {
-
-}
+ProlepticCalendar::~ProlepticCalendar() = default;
 
 void ProlepticCalendar::print(std::ostream &out) const {
     out << "ProlepticCalendar[]";
@@ -40,5 +38,5 @@ void ProlepticCalendar::print(std::ostream &out) const {
 
 static CodecBuilder<ProlepticCalendar> builder("proleptic_gregorian");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

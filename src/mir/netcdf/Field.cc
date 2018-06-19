@@ -28,8 +28,7 @@ Field::Field(const Variable &variable):
     units_(variable.getAttributeValue<std::string>("units")) {
 }
 
-Field::~Field() {
-}
+Field::~Field() = default;
 
 const GridSpec &Field::gridSpec() const {
     if (!gridSpec_) {

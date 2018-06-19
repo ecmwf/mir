@@ -34,8 +34,7 @@ EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {
 }
 
 
-EquatorialAzimuthalEquidistant::~EquatorialAzimuthalEquidistant() {
-}
+EquatorialAzimuthalEquidistant::~EquatorialAzimuthalEquidistant() = default;
 
 
 void EquatorialAzimuthalEquidistant::print(std::ostream &out) const {

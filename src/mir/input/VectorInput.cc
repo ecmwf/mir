@@ -32,8 +32,7 @@ VectorInput::VectorInput(MIRInput &component1, MIRInput &component2):
 }
 
 
-VectorInput::~VectorInput() {
-}
+VectorInput::~VectorInput() = default;
 
 
 const param::MIRParametrisation &VectorInput::parametrisation(size_t which) const {
@@ -70,7 +69,7 @@ bool VectorInput::next() {
 
 
 bool VectorInput::sameAs(const MIRInput& other) const {
-    const VectorInput* o = dynamic_cast<const VectorInput*>(&other);
+    auto o = dynamic_cast<const VectorInput*>(&other);
     return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 

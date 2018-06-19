@@ -34,8 +34,7 @@ CombinedParametrisation::CombinedParametrisation(
 }
 
 
-CombinedParametrisation::~CombinedParametrisation() {
-}
+CombinedParametrisation::~CombinedParametrisation() = default;
 
 
 const MIRParametrisation& CombinedParametrisation::userParametrisation() const {

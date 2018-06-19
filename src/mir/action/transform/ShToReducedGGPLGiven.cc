@@ -36,13 +36,12 @@ ShToReducedGGPLGiven<Invtrans>::ShToReducedGGPLGiven(const param::MIRParametrisa
 
 
 template<class Invtrans>
-ShToReducedGGPLGiven<Invtrans>::~ShToReducedGGPLGiven() {
-}
+ShToReducedGGPLGiven<Invtrans>::~ShToReducedGGPLGiven() = default;
 
 
 template<class Invtrans>
 bool ShToReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
-    const ShToReducedGGPLGiven* o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
+    auto o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
     return o && (pl_ == o->pl_);
 }
 

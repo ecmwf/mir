@@ -32,7 +32,6 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 FormulaBinop::FormulaBinop(const param::MIRParametrisation &parametrisation,
                            const std::string& name,
@@ -42,14 +41,13 @@ FormulaBinop::FormulaBinop(const param::MIRParametrisation &parametrisation,
 
 }
 
-FormulaBinop::~FormulaBinop() {
-}
+FormulaBinop::~FormulaBinop() = default;
 
 void FormulaBinop::print(std::ostream& out) const {
     out << '(' << *args_[0] << ") " << function_ << " (" << *args_[1] << ')' ;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
 template<typename T>
 class Unop : public Function {
 

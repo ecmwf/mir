@@ -212,9 +212,7 @@ InputDataset::InputDataset(const std::string &path, NCFileCache &cache):
 
 }
 
-InputDataset::~InputDataset()
-{
-}
+InputDataset::~InputDataset() = default;
 
 
 void InputDataset::print(std::ostream &out) const
@@ -236,5 +234,5 @@ std::vector<Field *> InputDataset::fields() const {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

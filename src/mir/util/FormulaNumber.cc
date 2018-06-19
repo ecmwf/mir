@@ -23,16 +23,14 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
+
 FormulaNumber::FormulaNumber(const param::MIRParametrisation &parametrisation, double value):
     Formula(parametrisation),
     value_(value) {
 
 }
 
-FormulaNumber::~FormulaNumber() {
-
-}
+FormulaNumber::~FormulaNumber() = default;
 
 void FormulaNumber::print(std::ostream& out) const {
     out << value_;
@@ -44,7 +42,7 @@ void FormulaNumber::execute(mir::context::Context& ctx) const {
 }
 
 bool FormulaNumber::sameAs(const mir::action::Action& other) const {
-    const FormulaNumber* o = dynamic_cast<const FormulaNumber*>(&other);
+    auto o = dynamic_cast<const FormulaNumber*>(&other);
     return o && (value_ == o->value_);
 }
 
@@ -53,7 +51,6 @@ const char* FormulaNumber::name() const {
     return "FormulaNumber";
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir

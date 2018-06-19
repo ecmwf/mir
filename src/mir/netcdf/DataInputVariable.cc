@@ -31,8 +31,7 @@ DataInputVariable::DataInputVariable(Dataset &owner,
 {
 }
 
-DataInputVariable::~DataInputVariable() {
-}
+DataInputVariable::~DataInputVariable() = default;
 
 Variable *DataInputVariable::makeOutputVariable(Dataset &owner,
         const std::string &name,
@@ -55,8 +54,8 @@ const std::string &DataInputVariable::ncname() const {
 
 
 void DataInputVariable::addCoordinateVariable(const Variable* v) {
-    for (auto j = coordinates_.begin(); j != coordinates_.end(); ++j) {
-        if ((*j) == v) {
+    for (auto j : coordinates_) {
+        if (j == v) {
             return;
         }
     }
@@ -104,7 +103,7 @@ size_t DataInputVariable::count2DValues() const {
     dims.pop_back();
 
 
-    return std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<size_t>());
+    return std::accumulate(dims.begin(), dims.end(), 1ul, std::multiplies<size_t>());
 
 }
 
@@ -131,10 +130,11 @@ void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const
     dims.pop_back();
 
     std::vector<size_t>  coords(dims.size());
-    for (int i = dims.size() - 1; i >= 0; i--)
+    for (int i = int(dims.size()) - 1; i >= 0; i--)
     {
-        coords[i] = (index % dims[i]);
-        index    /= dims[i];
+        auto j = size_t(i);
+        coords[j] = (index % dims[j]);
+        index    /= dims[j];
     }
 
     for (size_t j = 0; j < coords.size(); ++j) {
@@ -165,6 +165,8 @@ void DataInputVariable::dumpAttributes(std::ostream &s, const char* prefix) cons
 
 std::vector<std::string> DataInputVariable::coordinates() const {
     std::vector<std::string> result;
+    result.reserve(coordinates_.size());
+
     for (auto c : coordinates_) {
         result.push_back(c->name());
     }

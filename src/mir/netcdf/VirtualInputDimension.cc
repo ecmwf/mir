@@ -25,9 +25,7 @@ VirtualInputDimension::VirtualInputDimension(Dataset &owner, const std::string &
 {
 }
 
-VirtualInputDimension::~VirtualInputDimension()
-{
-}
+VirtualInputDimension::~VirtualInputDimension() = default;
 
 void VirtualInputDimension::clone(Dataset &owner) const {
     owner.add(new VirtualOutputDimension(owner, name_));
@@ -47,5 +45,5 @@ void VirtualInputDimension::realDimensions(std::vector<size_t>& dims) const {
 
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -28,8 +28,7 @@ Gridded2ReducedLL::Gridded2ReducedLL(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2ReducedLL::~Gridded2ReducedLL() {
-}
+Gridded2ReducedLL::~Gridded2ReducedLL() = default;
 
 
 bool Gridded2ReducedLL::sameAs(const Action& other) const {

@@ -31,12 +31,11 @@ Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2RegularGG::~Gridded2RegularGG() {
-}
+Gridded2RegularGG::~Gridded2RegularGG() = default;
 
 
 bool Gridded2RegularGG::sameAs(const Action& other) const {
-    const Gridded2RegularGG* o = dynamic_cast<const Gridded2RegularGG*>(&other);
+    auto o = dynamic_cast<const Gridded2RegularGG*>(&other);
     return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

@@ -53,5 +53,5 @@ const std::string &NCFile::path() const {
     return path_;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

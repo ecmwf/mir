@@ -29,8 +29,7 @@ Simple::Simple(const std::string &name):
 }
 
 
-Simple::~Simple() {
-}
+Simple::~Simple() = default;
 
 void Simple::print(std::ostream& out) const {
     out << "Simple[]";

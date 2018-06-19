@@ -33,9 +33,7 @@ InputMatrix::InputMatrix(Type &type, int varid, const std::string &name, size_t 
 {
 }
 
-InputMatrix::~InputMatrix()
-{
-}
+InputMatrix::~InputMatrix() = default;
 
 void InputMatrix::print(std::ostream &out) const {
     out << "InputMatrix[name=" << name_ << ",type=" << *type_ << ", size=" << size_ << "]";
@@ -172,5 +170,5 @@ void InputMatrix::read(std::vector<long long> &values,
 // ========================================================================
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

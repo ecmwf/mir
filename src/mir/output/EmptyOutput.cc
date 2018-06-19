@@ -31,8 +31,7 @@ EmptyOutput::EmptyOutput(const std::string&) {
 }
 
 
-EmptyOutput::~EmptyOutput() {
-}
+EmptyOutput::~EmptyOutput() = default;
 
 
 size_t EmptyOutput::copy(const param::MIRParametrisation&, context::Context&) {
@@ -46,7 +45,7 @@ size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
 
 
 bool EmptyOutput::sameAs(const MIROutput& other) const {
-    const EmptyOutput* o = dynamic_cast<const EmptyOutput*>(&other);
+    auto o = dynamic_cast<const EmptyOutput*>(&other);
     return o;
 }
 

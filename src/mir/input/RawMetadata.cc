@@ -13,24 +13,19 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
-#include "eckit/log/Log.h"
 #include "mir/input/RawMetadata.h"
-#include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace input {
 
 
-RawMetadata::RawMetadata(){
-}
+RawMetadata::RawMetadata() = default;
 
 
-RawMetadata::~RawMetadata() {
-}
+RawMetadata::~RawMetadata() = default;
 
 
-}  // namespace api
+}  // namespace input
 }  // namespace mir
 

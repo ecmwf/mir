@@ -29,9 +29,7 @@ OutputDimension::OutputDimension(Dataset &owner, const std::string &name, size_t
 
 }
 
-OutputDimension::~OutputDimension()
-{
-}
+OutputDimension::~OutputDimension() = default;
 
 void OutputDimension::create(int nc) const {
     ASSERT(!created_);
@@ -55,5 +53,5 @@ void OutputDimension::grow(size_t count) {
     grown_ = true;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

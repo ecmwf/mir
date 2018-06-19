@@ -34,8 +34,7 @@ ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::
 }
 
 
-ReducedFromPL::~ReducedFromPL() {
-}
+ReducedFromPL::~ReducedFromPL() = default;
 
 
 void ReducedFromPL::print(std::ostream &out) const {
@@ -59,7 +58,7 @@ void ReducedFromPL::makeName(std::ostream& out) const {
 
 
 bool ReducedFromPL::sameAs(const Representation& other) const {
-    const ReducedFromPL* o = dynamic_cast<const ReducedFromPL*>(&other);
+    auto o = dynamic_cast<const ReducedFromPL*>(&other);
     return o && FromPL::sameAs(other);
 }
 

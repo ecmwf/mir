@@ -51,8 +51,7 @@ Mask::Mask() {
 }
 
 
-Mask::~Mask() {
-}
+Mask::~Mask() = default;
 
 
 void Mask::hash(eckit::MD5&) const {

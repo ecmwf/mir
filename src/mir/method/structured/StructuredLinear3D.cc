@@ -40,11 +40,11 @@ StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) :
 }
 
 
-StructuredLinear3D::~StructuredLinear3D() {
-}
+StructuredLinear3D::~StructuredLinear3D() = default;
+
 
 bool StructuredLinear3D::sameAs(const Method& other) const {
-    const StructuredLinear3D* o = dynamic_cast<const StructuredLinear3D*>(&other);
+    auto o = dynamic_cast<const StructuredLinear3D*>(&other);
     return o && StructuredMethod::sameAs(other);
 }
 

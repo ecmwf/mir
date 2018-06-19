@@ -41,12 +41,11 @@ ShVodToUV::ShVodToUV(const param::MIRParametrisation &parametrisation):
 }
 
 
-ShVodToUV::~ShVodToUV() {
-}
+ShVodToUV::~ShVodToUV() = default;
 
 
 bool ShVodToUV::sameAs(const Action& other) const {
-    const ShVodToUV* o = dynamic_cast<const ShVodToUV*>(&other);
+    auto o = dynamic_cast<const ShVodToUV*>(&other);
     return o;
 }
 

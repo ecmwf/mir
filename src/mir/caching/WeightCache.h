@@ -58,7 +58,7 @@ private: // members
 };
 
 
-}  // namespace method
+}  // namespace caching
 }  // namespace mir
 
 

@@ -34,8 +34,7 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
 }
 
 
-NearestLSM::~NearestLSM() {
-}
+NearestLSM::~NearestLSM() = default;
 
 
 void NearestLSM::assemble(
@@ -87,7 +86,7 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1, const par
 
 
 bool NearestLSM::sameAs(const Method& other) const {
-    const NearestLSM* o = dynamic_cast<const NearestLSM*>(&other);
+    auto o = dynamic_cast<const NearestLSM*>(&other);
     return o
            && KNearestNeighbours::sameAs(other)
            && sameLsm(parametrisation_, o->parametrisation_);

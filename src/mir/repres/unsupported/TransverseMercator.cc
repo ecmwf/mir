@@ -34,8 +34,7 @@ TransverseMercator::TransverseMercator() {
 }
 
 
-TransverseMercator::~TransverseMercator() {
-}
+TransverseMercator::~TransverseMercator() = default;
 
 
 void TransverseMercator::print(std::ostream &out) const {

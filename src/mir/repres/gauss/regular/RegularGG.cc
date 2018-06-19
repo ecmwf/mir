@@ -37,8 +37,7 @@ RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox):
 }
 
 
-RegularGG::~RegularGG() {
-}
+RegularGG::~RegularGG() = default;
 
 
 void RegularGG::print(std::ostream& out) const {
@@ -52,7 +51,7 @@ void RegularGG::makeName(std::ostream& out) const {
 
 
 bool RegularGG::sameAs(const Representation& other) const {
-    const RegularGG* o = dynamic_cast<const RegularGG*>(&other);
+    auto o = dynamic_cast<const RegularGG*>(&other);
     return o && Regular::sameAs(other);
 }
 

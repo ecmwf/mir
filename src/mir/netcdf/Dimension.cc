@@ -27,9 +27,7 @@ Dimension::Dimension(Dataset &owner, const std::string &name, size_t len):
     len_(len) {
 }
 
-Dimension::~Dimension()
-{
-}
+Dimension::~Dimension() = default;
 
 void Dimension::dump(std::ostream &out) const
 {
@@ -85,5 +83,5 @@ void Dimension::realDimensions(std::vector<size_t>& dims) const {
     throw eckit::SeriousBug(os.str());
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

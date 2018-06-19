@@ -47,7 +47,7 @@ Conservative::Conservative(const param::MIRParametrisation& param) :
 
 
 bool Conservative::sameAs(const Method& other) const {
-    const Conservative* o = dynamic_cast<const Conservative*>(&other);
+    auto o = dynamic_cast<const Conservative*>(&other);
     return o
             && outputMeshGenerationParams_.sameAs(o->outputMeshGenerationParams_)
             && FELinear::sameAs(other);

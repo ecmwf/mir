@@ -34,8 +34,7 @@ NoneLSM::NoneLSM(const std::string &name):
 }
 
 
-NoneLSM::~NoneLSM() {
-}
+NoneLSM::~NoneLSM() = default;
 
 
 Mask& NoneLSM::noMask() {

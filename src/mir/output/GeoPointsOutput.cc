@@ -29,8 +29,7 @@ GeoPointsOutput::GeoPointsOutput():
 }
 
 
-GeoPointsOutput::~GeoPointsOutput() {
-}
+GeoPointsOutput::~GeoPointsOutput() = default;
 
 
 bool GeoPointsOutput::once() {

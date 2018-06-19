@@ -44,7 +44,7 @@ void NoDistanceWeighting::operator()(
 
 
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    const NoDistanceWeighting* o = dynamic_cast<const NoDistanceWeighting*>(&other);
+    auto o = dynamic_cast<const NoDistanceWeighting*>(&other);
     return o;
 }
 

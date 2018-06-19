@@ -32,7 +32,7 @@ namespace legendre {
 NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
     : LegendreLoader(parametrisation, path) {}
 
-NoLoader::~NoLoader() {}
+NoLoader::~NoLoader() = default;
 
 void NoLoader::print(std::ostream& out) const {
     out << "NoLoader[]";

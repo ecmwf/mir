@@ -101,7 +101,7 @@ bool GribAllFileInput::next() {
 
 
 bool GribAllFileInput::sameAs(const MIRInput &other) const {
-    const GribAllFileInput *o = dynamic_cast<const GribAllFileInput *>(&other);
+    auto o = dynamic_cast<const GribAllFileInput *>(&other);
     return o && path_ == o->path_;
 }
 

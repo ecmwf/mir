@@ -29,8 +29,7 @@ RuntimeParametrisation::RuntimeParametrisation(const MIRParametrisation& owner):
 }
 
 
-RuntimeParametrisation::~RuntimeParametrisation() {
-}
+RuntimeParametrisation::~RuntimeParametrisation() = default;
 
 
 void RuntimeParametrisation::print(std::ostream& out) const {

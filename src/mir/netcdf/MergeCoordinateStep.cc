@@ -24,14 +24,10 @@ namespace netcdf {
 
 MergeCoordinateStep::MergeCoordinateStep( Variable &out, const Variable &in):
     out_(out),
-    in_(in)
-{
-
+    in_(in) {
 }
 
-MergeCoordinateStep::~MergeCoordinateStep() {
-
-}
+MergeCoordinateStep::~MergeCoordinateStep() = default;
 
 int MergeCoordinateStep::rank() const {
     return 4;
@@ -71,5 +67,5 @@ void MergeCoordinateStep::execute(MergePlan &plan) {
 #endif
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

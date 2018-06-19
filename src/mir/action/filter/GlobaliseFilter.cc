@@ -33,12 +33,11 @@ GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation &parametrisatio
 }
 
 
-GlobaliseFilter::~GlobaliseFilter() {
-}
+GlobaliseFilter::~GlobaliseFilter() = default;
 
 
 bool GlobaliseFilter::sameAs(const Action& other) const {
-    const GlobaliseFilter* o = dynamic_cast<const GlobaliseFilter*>(&other);
+    auto o = dynamic_cast<const GlobaliseFilter*>(&other);
     return o;
 }
 

@@ -35,9 +35,7 @@ DummyInputVariable::DummyInputVariable(Dataset &owner, const Variable &parent):
 
 }
 
-DummyInputVariable::~DummyInputVariable()
-{
-}
+DummyInputVariable::~DummyInputVariable() = default;
 
 const std::string &DummyInputVariable::ncname() const {
     return parent_.ncname();
@@ -68,5 +66,5 @@ bool DummyInputVariable::sameAsDummy(const Variable &other) const {
     return &parent_ == &other;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

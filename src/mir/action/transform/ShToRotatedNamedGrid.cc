@@ -41,13 +41,12 @@ ShToRotatedNamedGrid<Invtrans>::ShToRotatedNamedGrid(const param::MIRParametrisa
 
 
 template<class Invtrans>
-ShToRotatedNamedGrid<Invtrans>::~ShToRotatedNamedGrid() {
-}
+ShToRotatedNamedGrid<Invtrans>::~ShToRotatedNamedGrid() = default;
 
 
 template<class Invtrans>
 bool ShToRotatedNamedGrid<Invtrans>::sameAs(const Action& other) const {
-    const ShToRotatedNamedGrid* o = dynamic_cast<const ShToRotatedNamedGrid*>(&other);
+    auto o = dynamic_cast<const ShToRotatedNamedGrid*>(&other);
     return o && (gridname_ == o->gridname_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 

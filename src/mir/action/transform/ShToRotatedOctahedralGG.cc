@@ -43,14 +43,13 @@ ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParam
 
 template<class Invtrans>
 bool ShToRotatedOctahedralGG<Invtrans>::sameAs(const Action& other) const {
-    const ShToRotatedOctahedralGG* o = dynamic_cast<const ShToRotatedOctahedralGG*>(&other);
+    auto o = dynamic_cast<const ShToRotatedOctahedralGG*>(&other);
     return o && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
 
 template<class Invtrans>
-ShToRotatedOctahedralGG<Invtrans>::~ShToRotatedOctahedralGG() {
-}
+ShToRotatedOctahedralGG<Invtrans>::~ShToRotatedOctahedralGG() = default;
 
 
 template<class Invtrans>

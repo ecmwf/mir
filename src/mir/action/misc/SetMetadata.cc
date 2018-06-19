@@ -16,12 +16,8 @@
 
 #include <iostream>
 
-// #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
-// #include "mir/repres/Iterator.h"
-// #include "mir/repres/Representation.h"
 #include "mir/data/MIRField.h"
 
 #include "eckit/parser/Tokenizer.h"
@@ -57,12 +53,11 @@ SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
 }
 
 
-SetMetadata::~SetMetadata() {
-}
+SetMetadata::~SetMetadata() = default;
 
 
 bool SetMetadata::sameAs(const Action& other) const {
-    const SetMetadata* o = dynamic_cast<const SetMetadata*>(&other);
+    auto o = dynamic_cast<const SetMetadata*>(&other);
     return o && (metadata_ == o->metadata_);
 }
 

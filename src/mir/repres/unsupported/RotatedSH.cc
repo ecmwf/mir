@@ -30,8 +30,7 @@ RotatedSH::RotatedSH(const param::MIRParametrisation &parametrisation):
     SphericalHarmonics(parametrisation) {
 }
 
-RotatedSH::~RotatedSH() {
-}
+RotatedSH::~RotatedSH() = default;
 
 
 void RotatedSH::print(std::ostream &out) const {

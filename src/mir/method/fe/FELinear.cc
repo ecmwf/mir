@@ -30,12 +30,11 @@ FELinear::FELinear(const param::MIRParametrisation &param) :
 }
 
 
-FELinear::~FELinear() {
-}
+FELinear::~FELinear() = default;
 
 
 bool FELinear::sameAs(const Method& other) const {
-    const FELinear* o = dynamic_cast<const FELinear*>(&other);
+    auto o = dynamic_cast<const FELinear*>(&other);
     return o && FiniteElement::sameAs(other);
 }
 

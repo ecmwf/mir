@@ -40,12 +40,11 @@ KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) :
 }
 
 
-KNearestNeighbours::~KNearestNeighbours() {
-}
+KNearestNeighbours::~KNearestNeighbours() = default;
 
 
 bool KNearestNeighbours::sameAs(const Method& other) const {
-    const KNearestNeighbours* o = dynamic_cast<const KNearestNeighbours*>(&other);
+    auto o = dynamic_cast<const KNearestNeighbours*>(&other);
     return o
             && (nClosest_ == o->nClosest_)
             && distanceWeighting().sameAs(o->distanceWeighting());

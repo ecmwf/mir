@@ -13,121 +13,99 @@
 /// @date Apr 2015
 
 
-#ifndef ThreadExecutor_h
-#define ThreadExecutor_h
+#ifndef mir_action_ThreadExecutor_h
+#define mir_action_ThreadExecutor_h
 
 #include <iosfwd>
 
 #include "mir/action/plan/Executor.h"
 
 namespace mir {
-
-namespace data {
-class Context;
-}
-
-
-namespace util {
-class MIRStatistics;
-}
-
-
-namespace api {
-class MIRWatcher;
-}
-
 namespace action {
 
-class Action;
-
 class ThreadExecutor : public Executor {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ThreadExecutor(const std::string& name);
 
-// -- Destructor
+    // -- Destructor
 
     ~ThreadExecutor(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
-
-
-    //=====================================
-
-
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-  protected:
+    // -- Class methods
+    // None
 
-// -- Members
+protected:
 
+    // -- Members
+    // None
 
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
+    // No copy allowed
     ThreadExecutor(const ThreadExecutor&);
     ThreadExecutor& operator=(const ThreadExecutor&);
 
-// -- Members
-
-    // eckit::ThreadPool pool_;
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
-    virtual void execute(context::Context& ctx, const ActionNode& node) const;
+
+    // -- Overridden methods
+
+    virtual void execute(context::Context&, const ActionNode& node) const;
     virtual void wait() const;
-    virtual void parametrisation(const param::MIRParametrisation &parametrisation);
+    virtual void parametrisation(const param::MIRParametrisation&);
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-
+    // -- Friends
+    // None
 
 };
 
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

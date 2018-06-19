@@ -47,7 +47,7 @@ namespace method {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
+static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
         512 * 1024 * 1024, 0,
         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 }  // (anonymous namespace)
@@ -161,7 +161,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
 
     {
-        InMemoryCache<WeightMatrix>::iterator j = matrix_cache.find(memory_key);
+        auto j = matrix_cache.find(memory_key);
         const bool found = j != matrix_cache.end();
         eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
@@ -208,7 +208,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     W.swap(w);
 
     size_t footprint = w.footprint();
-    InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
+    caching::InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
 
     eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
@@ -273,7 +273,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
+    caching::InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
 
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);

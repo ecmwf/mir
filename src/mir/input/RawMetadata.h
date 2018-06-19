@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef RawMetadata_H
-#define RawMetadata_H
+#ifndef mir_input_RawMetadata_h
+#define mir_input_RawMetadata_h
 
 #include <string>
 #include <vector>
@@ -27,7 +27,7 @@ namespace input {
 
 
 class RawMetadata {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -48,17 +48,13 @@ class RawMetadata {
 
     // -- Methods
 
-
-
-    // ============
-
     virtual const std::vector<long>& pl() const = 0;
 
     virtual size_t N() const = 0;
     virtual size_t truncation() const = 0;
 
-    virtual const util::BoundingBox &bbox() const = 0;
-    virtual const std::string &gridType() const = 0;
+    virtual const util::BoundingBox& bbox() const = 0;
+    virtual const std::string& gridType() const = 0;
 
     virtual bool gridded() const = 0;
     virtual bool spectral() const = 0;
@@ -78,17 +74,16 @@ class RawMetadata {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
-
-
+    // None
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -96,20 +91,16 @@ class RawMetadata {
     // -- Class methods
     // None
 
-  private:
-
+private:
 
     // -- Members
-
+    // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
-
-    // From MIRParametrisation
-
-    virtual void print(std::ostream &) const = 0;
+    // None
 
     // -- Class members
     // None
@@ -118,11 +109,14 @@ class RawMetadata {
     // None
 
     // -- Friends
+    // None
 
 };
 
 
-}  // namespace api
+}  // namespace input
 }  // namespace mir
+
+
 #endif
 

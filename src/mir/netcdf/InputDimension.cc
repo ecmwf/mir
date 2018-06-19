@@ -29,10 +29,7 @@ InputDimension::InputDimension(Dataset &owner,
 {
 }
 
-InputDimension::~InputDimension()
-{
-
-}
+InputDimension::~InputDimension() = default;
 
 void InputDimension::clone(Dataset &owner) const {
     owner.add(new OutputDimension(owner, name_, len_));
@@ -50,5 +47,5 @@ void InputDimension::realDimensions(std::vector<size_t>& dims) const {
     dims.push_back(len_);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

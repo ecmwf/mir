@@ -30,9 +30,7 @@ NoneCalendar::NoneCalendar(const Variable& variable)
 {
 }
 
-NoneCalendar::~NoneCalendar() {
-
-}
+NoneCalendar::~NoneCalendar() = default;
 
 void NoneCalendar::print(std::ostream &out) const {
     out << "NoneCalendar[]";
@@ -40,5 +38,5 @@ void NoneCalendar::print(std::ostream &out) const {
 
 static CodecBuilder<NoneCalendar> builder("none");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

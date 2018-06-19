@@ -181,8 +181,7 @@ Context::Context(input::MIRInput &input, util::MIRStatistics& statistics) :
 }
 
 
-Context::~Context() {
-}
+Context::~Context() = default;
 
 
 bool Context::isField() const {

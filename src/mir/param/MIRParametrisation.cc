@@ -27,8 +27,7 @@ MIRParametrisation::MIRParametrisation() {
 }
 
 
-MIRParametrisation::~MIRParametrisation() {
-}
+MIRParametrisation::~MIRParametrisation() = default;
 
 
 const MIRParametrisation& MIRParametrisation::userParametrisation() const {

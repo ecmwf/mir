@@ -23,11 +23,10 @@
 
 
 namespace mir {
+namespace caching {
+
+
 class InMemoryCacheStatistics;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
 
 class InMemoryCacheBase : public eckit::NonCopyable {
 
@@ -54,8 +53,7 @@ private:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
+}  // namespace caching
 }  // namespace mir
 
 

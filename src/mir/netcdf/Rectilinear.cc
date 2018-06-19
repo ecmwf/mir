@@ -45,9 +45,7 @@ Rectilinear::Rectilinear(const Variable &variable,
 
 }
 
-Rectilinear::~Rectilinear()
-{
-}
+Rectilinear::~Rectilinear() = default;
 
 
 void Rectilinear::print(std::ostream& s) const

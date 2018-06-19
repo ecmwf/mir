@@ -26,8 +26,7 @@ Dimension::Dimension() {
 }
 
 
-Dimension::~Dimension() {
-}
+Dimension::~Dimension() = default;
 
 
 //=========================================================================

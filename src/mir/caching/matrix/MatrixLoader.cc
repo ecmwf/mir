@@ -30,8 +30,6 @@ namespace mir {
 namespace caching {
 namespace matrix {
 
-//----------------------------------------------------------------------------------------------------------------------
-
 
 MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
     path_(path.realName())
@@ -39,8 +37,7 @@ MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
 }
 
 
-MatrixLoader::~MatrixLoader() {
-}
+MatrixLoader::~MatrixLoader() = default;
 
 
 eckit::linalg::SparseMatrix::Layout MatrixLoader::allocate(eckit::linalg::SparseMatrix::Shape& shape) {
@@ -54,9 +51,6 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
     // We assume that the MatrixLoader is deleted at the same time as the matrix
     // and release the memory in its destructor
 }
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
@@ -113,7 +107,6 @@ void MatrixLoaderFactory::list(std::ostream& out) {
     }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace matrix
 }  // namespace caching

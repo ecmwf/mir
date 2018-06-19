@@ -36,7 +36,7 @@ void NearestNeighbour::operator()(
 
 
 bool NearestNeighbour::sameAs(const DistanceWeighting& other) const {
-    const NearestNeighbour* o = dynamic_cast<const NearestNeighbour*>(&other);
+    auto o = dynamic_cast<const NearestNeighbour*>(&other);
     return o;
 }
 

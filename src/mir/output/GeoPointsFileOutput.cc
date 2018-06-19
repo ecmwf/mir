@@ -28,8 +28,7 @@ GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path) :
 }
 
 
-GeoPointsFileOutput::~GeoPointsFileOutput() {
-}
+GeoPointsFileOutput::~GeoPointsFileOutput() = default;
 
 
 eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
@@ -43,7 +42,7 @@ eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
 
 
 bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
-    const GeoPointsFileOutput* o = dynamic_cast<const GeoPointsFileOutput*>(&other);
+    auto o = dynamic_cast<const GeoPointsFileOutput*>(&other);
     return o && (path_ == o->path_);
 }
 

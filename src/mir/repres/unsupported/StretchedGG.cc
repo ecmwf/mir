@@ -34,8 +34,7 @@ StretchedGG::StretchedGG() {
 }
 
 
-StretchedGG::~StretchedGG() {
-}
+StretchedGG::~StretchedGG() = default;
 
 
 void StretchedGG::print(std::ostream &out) const {

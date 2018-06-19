@@ -33,8 +33,7 @@ RawInput::RawInput(const RawMetadata& metadata, const double *values, size_t cou
 }
 
 
-RawInput::~RawInput() {
-}
+RawInput::~RawInput() = default;
 
 
 bool RawInput::sameAs(const MIRInput& other) const {

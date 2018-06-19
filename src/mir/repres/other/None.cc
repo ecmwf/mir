@@ -16,13 +16,6 @@
 #include "mir/repres/other/None.h"
 
 #include <iostream>
-// #include <fstream>
-// #include "eckit/exception/Exceptions.h"
-// #include "eckit/filesystem/PathName.h"
-//
-// #include "mir/param/MIRParametrisation.h"
-// #include "mir/config/LibMir.h"
-// #include "mir/repres/Iterator.h"
 
 
 namespace mir {
@@ -30,17 +23,15 @@ namespace repres {
 namespace other {
 
 
-None::None(const param::MIRParametrisation &parametrisation) {
+None::None(const param::MIRParametrisation&) {
 }
 
-None::None() {
-}
+None::None() = default;
 
-None::~None() {
-}
+None::~None() = default;
 
 
-void None::print(std::ostream &out) const {
+void None::print(std::ostream& out) const {
     out << "None[]";
 }
 

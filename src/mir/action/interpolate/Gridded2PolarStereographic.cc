@@ -38,8 +38,7 @@ Gridded2PolarStereographic::Gridded2PolarStereographic(const param::MIRParametri
 }
 
 
-Gridded2PolarStereographic::~Gridded2PolarStereographic() {
-}
+Gridded2PolarStereographic::~Gridded2PolarStereographic() = default;
 
 
 bool Gridded2PolarStereographic::sameAs(const Action& other) const {

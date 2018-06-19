@@ -84,8 +84,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 }
 
 
-Job::~Job() {
-}
+Job::~Job() = default;
 
 
 void Job::execute(util::MIRStatistics &statistics) const {

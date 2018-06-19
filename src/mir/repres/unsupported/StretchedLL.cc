@@ -34,8 +34,7 @@ StretchedLL::StretchedLL() {
 }
 
 
-StretchedLL::~StretchedLL() {
-}
+StretchedLL::~StretchedLL() = default;
 
 
 void StretchedLL::print(std::ostream &out) const {

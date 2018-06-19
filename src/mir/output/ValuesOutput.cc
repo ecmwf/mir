@@ -30,8 +30,7 @@ ValuesOutput::ValuesOutput():
 }
 
 
-ValuesOutput::~ValuesOutput() {
-}
+ValuesOutput::~ValuesOutput() = default;
 
 
 size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
@@ -49,7 +48,7 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 
 
 bool ValuesOutput::sameAs(const MIROutput& other) const {
-    const ValuesOutput* o = dynamic_cast<const ValuesOutput*>(&other);
+    auto o = dynamic_cast<const ValuesOutput*>(&other);
     return o && this == o;
 }
 

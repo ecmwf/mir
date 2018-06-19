@@ -38,12 +38,11 @@ Gridded2RotatedRegular::Gridded2RotatedRegular(const param::MIRParametrisation &
 }
 
 
-Gridded2RotatedRegular::~Gridded2RotatedRegular() {
-}
+Gridded2RotatedRegular::~Gridded2RotatedRegular() = default;
 
 
 bool Gridded2RotatedRegular::sameAs(const Action& other) const {
-    const Gridded2RotatedRegular* o = dynamic_cast<const Gridded2RotatedRegular*>(&other);
+    auto o = dynamic_cast<const Gridded2RotatedRegular*>(&other);
     return o && (N_ == o->N_) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

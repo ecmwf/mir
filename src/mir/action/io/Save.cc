@@ -36,12 +36,11 @@ Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& in
 }
 
 
-Save::~Save() {
-}
+Save::~Save() = default;
 
 
 bool Save::sameAs(const Action& other) const {
-    const Save* o = dynamic_cast<const Save*>(&other);
+    auto o = dynamic_cast<const Save*>(&other);
     return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
             && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }

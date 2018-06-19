@@ -20,8 +20,7 @@
 #include "eckit/parser/Tokenizer.h"
 
 namespace mir {
-
-//----------------------------------------------------------------------------------------------------------------------
+namespace caching {
 
 
 InMemoryCacheUsage::InMemoryCacheUsage():
@@ -147,9 +146,7 @@ size_t InMemoryCacheUsage::shared() const {
     return shared_;
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
-
+}  // namespace caching
 }  // namespace mir
 
 

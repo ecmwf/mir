@@ -157,5 +157,5 @@ bool ReshapeVariableStep::merge(Step *other) {
     return false;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

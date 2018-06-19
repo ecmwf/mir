@@ -31,9 +31,7 @@ JulianCalendar::JulianCalendar(const Variable& variable)
 {
 }
 
-JulianCalendar::~JulianCalendar() {
-
-}
+JulianCalendar::~JulianCalendar() = default;
 
 void JulianCalendar::print(std::ostream &out) const {
     out << "JulianCalendar[]";
@@ -41,5 +39,5 @@ void JulianCalendar::print(std::ostream &out) const {
 
 static CodecBuilder<JulianCalendar> builder("julian");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

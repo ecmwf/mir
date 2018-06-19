@@ -30,12 +30,11 @@ Gridded2ReducedGGPLGiven::Gridded2ReducedGGPLGiven(const param::MIRParametrisati
 }
 
 
-Gridded2ReducedGGPLGiven::~Gridded2ReducedGGPLGiven() {
-}
+Gridded2ReducedGGPLGiven::~Gridded2ReducedGGPLGiven() = default;
 
 
 bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
-    const Gridded2ReducedGGPLGiven* o = dynamic_cast<const Gridded2ReducedGGPLGiven*>(&other);
+    auto o = dynamic_cast<const Gridded2ReducedGGPLGiven*>(&other);
     return o && (pl_ == o->pl_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

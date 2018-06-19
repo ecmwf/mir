@@ -37,7 +37,7 @@ GribFileOutput::~GribFileOutput() {
 
 
 bool GribFileOutput::sameAs(const MIROutput& other) const {
-    const GribFileOutput* o = dynamic_cast<const GribFileOutput*>(&other);
+    auto o = dynamic_cast<const GribFileOutput*>(&other);
     return o && (path_ == o->path_) && (append_ == o->append_);
 }
 

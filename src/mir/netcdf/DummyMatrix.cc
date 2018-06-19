@@ -36,5 +36,5 @@ void DummyMatrix::print(std::ostream &out) const {
     out << "DummyMatrix[type=" << *type_ << ",name=" << name_ << ",other=" << *other_ << "]";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

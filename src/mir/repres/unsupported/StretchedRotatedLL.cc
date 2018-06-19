@@ -34,8 +34,7 @@ StretchedRotatedLL::StretchedRotatedLL() {
 }
 
 
-StretchedRotatedLL::~StretchedRotatedLL() {
-}
+StretchedRotatedLL::~StretchedRotatedLL() = default;
 
 
 void StretchedRotatedLL::print(std::ostream &out) const {

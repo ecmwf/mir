@@ -26,9 +26,7 @@ Remapping::Remapping(size_t s) {
     }
 }
 
-Remapping::~Remapping() {
-
-}
+Remapping::~Remapping() = default;
 
 void Remapping::print(std::ostream &out) const {
     size_t i = 0;
@@ -48,5 +46,5 @@ void Remapping::validate() const {
     }
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

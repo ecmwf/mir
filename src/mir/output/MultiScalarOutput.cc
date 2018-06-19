@@ -43,7 +43,7 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
     input::MIRInput& input = ctx.input();
 
     try {
-        input::MultiScalarInput& multi = dynamic_cast<input::MultiScalarInput&>(input);
+        auto& multi = dynamic_cast<input::MultiScalarInput&>(input);
         size_t size = 0;
         size_t count = 0;
 
@@ -69,7 +69,7 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
     ASSERT(field.dimensions() > 0);
 
     try {
-        input::MultiScalarInput& multi = dynamic_cast<input::MultiScalarInput&>(input);
+        auto& multi = dynamic_cast<input::MultiScalarInput&>(input);
         size_t size = 0;
         size_t count = 0;
 
@@ -96,7 +96,7 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
 
 
 bool MultiScalarOutput::sameAs(const MIROutput& other) const {
-    const MultiScalarOutput* o = dynamic_cast<const MultiScalarOutput*>(&other);
+    auto o = dynamic_cast<const MultiScalarOutput*>(&other);
 
     if (!o || components_.size() != o->components_.size()) {
         return false;

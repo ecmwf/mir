@@ -21,6 +21,7 @@
 #include "mir/caching/InMemoryCacheStatistics.h"
 
 namespace mir {
+namespace caching {
 
 inline static double utime() {
     struct timeval t;
@@ -329,9 +330,9 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
     }
 
     return purged;
-
 }
 
 
+}  // namespace caching
 }  // namespace mir
 

@@ -20,19 +20,15 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 Formula::Formula(const param::MIRParametrisation &parametrisation):
     Action(parametrisation) {
 
 }
 
-Formula::~Formula() {
 
-}
+Formula::~Formula() = default;
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir

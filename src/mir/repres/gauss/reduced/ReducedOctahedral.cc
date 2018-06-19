@@ -29,8 +29,7 @@ ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox):
 }
 
 
-ReducedOctahedral::~ReducedOctahedral() {
-}
+ReducedOctahedral::~ReducedOctahedral() = default;
 
 
 void ReducedOctahedral::print(std::ostream &out) const {
@@ -54,7 +53,7 @@ void ReducedOctahedral::makeName(std::ostream& out) const {
 
 
 bool ReducedOctahedral::sameAs(const Representation& other) const {
-    const ReducedOctahedral* o = dynamic_cast<const ReducedOctahedral*>(&other);
+    auto o = dynamic_cast<const ReducedOctahedral*>(&other);
     return o && Octahedral::sameAs(other);
 }
 

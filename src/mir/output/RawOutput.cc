@@ -33,8 +33,7 @@ RawOutput::RawOutput(double *values, size_t count):
 }
 
 
-RawOutput::~RawOutput() {
-}
+RawOutput::~RawOutput() = default;
 
 
 bool RawOutput::sameAs(const MIROutput& other) const {

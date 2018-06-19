@@ -34,8 +34,7 @@ AzimuthRange::AzimuthRange() {
 }
 
 
-AzimuthRange::~AzimuthRange() {
-}
+AzimuthRange::~AzimuthRange() = default;
 
 
 void AzimuthRange::print(std::ostream &out) const {

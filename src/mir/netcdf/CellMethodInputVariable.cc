@@ -23,8 +23,7 @@ CellMethodInputVariable::CellMethodInputVariable(Dataset &owner, const std::stri
 {
 }
 
-CellMethodInputVariable::~CellMethodInputVariable() {
-}
+CellMethodInputVariable::~CellMethodInputVariable() = default;
 
 Variable *CellMethodInputVariable::makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const {
     return new CellMethodOutputVariable(owner, name, dimensions);
@@ -39,5 +38,5 @@ const char* CellMethodInputVariable::kind() const {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -40,10 +40,8 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
 }
 
 
-Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() {
-}
+Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() = default;
 
-// return method_->canCrop();
 
 bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
     if (next.canCrop() && method_->canCrop()) {
@@ -87,7 +85,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 }
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
-    const Gridded2GriddedInterpolation* o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
+    auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
     return o && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_);
 }
 

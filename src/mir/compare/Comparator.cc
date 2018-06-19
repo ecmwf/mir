@@ -33,8 +33,7 @@ Comparator::Comparator(const param::MIRParametrisation& param1, const param::MIR
 }
 
 
-Comparator::~Comparator() {
-}
+Comparator::~Comparator() = default;
 
 
 //=========================================================================

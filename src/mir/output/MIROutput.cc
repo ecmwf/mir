@@ -33,8 +33,7 @@ MIROutput::MIROutput() {
 }
 
 
-MIROutput::~MIROutput() {
-}
+MIROutput::~MIROutput() = default;
 
 
 namespace {

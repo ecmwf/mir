@@ -16,12 +16,8 @@
 
 #include <iostream>
 
-// #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
-// #include "mir/repres/Iterator.h"
-// #include "mir/repres/Representation.h"
 #include "mir/data/MIRField.h"
 
 
@@ -35,12 +31,11 @@ Noop::Noop(const param::MIRParametrisation &parametrisation):
 }
 
 
-Noop::~Noop() {
-}
+Noop::~Noop() = default;
 
 
 bool Noop::sameAs(const Action& other) const {
-    const Noop* o = dynamic_cast<const Noop*>(&other);
+    auto o = dynamic_cast<const Noop*>(&other);
     return o;
 }
 

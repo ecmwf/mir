@@ -30,8 +30,7 @@ NamedClassic::NamedClassic(const std::string &name, size_t N):
 }
 
 
-NamedClassic::~NamedClassic() {
-}
+NamedClassic::~NamedClassic() = default;
 
 void NamedClassic::print(std::ostream &out) const {
     out << "NamedClassic[name=" << name_ << ",N=" << N_ << "]";

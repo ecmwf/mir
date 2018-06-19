@@ -28,8 +28,7 @@ SecondOrder::SecondOrder(const std::string &name):
 }
 
 
-SecondOrder::~SecondOrder() {
-}
+SecondOrder::~SecondOrder() = default;
 
 void SecondOrder::print(std::ostream& out) const {
     out << "SecondOrder[]";

@@ -80,5 +80,5 @@ void Attribute::create(int) const {
     NOTIMP;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

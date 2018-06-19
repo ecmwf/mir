@@ -48,9 +48,7 @@ GridSpec::GridSpec(const Variable &variable):
     variable_(variable) {
 }
 
-GridSpec::~GridSpec()
-{
-}
+GridSpec::~GridSpec() = default;
 
 GridSpec* GridSpec::create(const Variable &variable) {
 
@@ -151,5 +149,5 @@ GridSpec* GridSpecGuesser::guess(const Variable &variable) {
 
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

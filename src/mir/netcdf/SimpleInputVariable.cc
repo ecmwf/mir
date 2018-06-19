@@ -29,9 +29,7 @@ SimpleInputVariable::SimpleInputVariable(Dataset &owner, const std::string &name
 {
 }
 
-SimpleInputVariable::~SimpleInputVariable() {
-
-}
+SimpleInputVariable::~SimpleInputVariable() = default;
 
 bool SimpleInputVariable::identified() const {
     // Only SimpleInputVariable are not identified
@@ -116,5 +114,5 @@ std::vector<std::string> SimpleInputVariable::coordinates() const {
     return result;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -18,6 +18,7 @@
 namespace mir {
 namespace param {
 
+
 DefaultParametrisation::DefaultParametrisation() {
     set("style", "ecmwf");
     set("executor", "simple");
@@ -43,8 +44,8 @@ DefaultParametrisation::DefaultParametrisation() {
     set("absolute-error", 1e-10);
 }
 
-DefaultParametrisation::~DefaultParametrisation() {
-}
+
+DefaultParametrisation::~DefaultParametrisation() = default;
 
 
 }  // namespace param

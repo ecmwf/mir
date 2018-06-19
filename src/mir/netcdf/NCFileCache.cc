@@ -36,5 +36,5 @@ NCFile &NCFileCache::lookUp(const std::string &path) {
     return *((*j).second);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

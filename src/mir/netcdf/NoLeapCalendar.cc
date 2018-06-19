@@ -30,9 +30,7 @@ NoLeapCalendar::NoLeapCalendar(const Variable& variable)
 {
 }
 
-NoLeapCalendar::~NoLeapCalendar() {
-
-}
+NoLeapCalendar::~NoLeapCalendar() = default;
 
 void NoLeapCalendar::print(std::ostream &out) const {
     out << "NoLeapCalendar[]";
@@ -41,5 +39,5 @@ void NoLeapCalendar::print(std::ostream &out) const {
 static CodecBuilder<NoLeapCalendar> builder1("noleap");
 static CodecBuilder<NoLeapCalendar> builder2("365_day");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

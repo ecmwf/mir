@@ -34,7 +34,7 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static InMemoryCache<util::Bitmap> cache("mirBitmap",
+static caching::InMemoryCache<util::Bitmap> cache("mirBitmap",
         256 * 1024 * 1024,
         0,
         "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT",
@@ -48,14 +48,11 @@ BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
 }
 
 
-BitmapFilter::~BitmapFilter() {
-}
-
-
+BitmapFilter::~BitmapFilter() = default;
 
 
 bool BitmapFilter::sameAs(const Action& other) const {
-    const BitmapFilter* o = dynamic_cast<const BitmapFilter*>(&other);
+    auto o = dynamic_cast<const BitmapFilter*>(&other);
     return o && (path_ == o->path_);
 }
 
@@ -66,12 +63,12 @@ void BitmapFilter::print(std::ostream &out) const {
 
 util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
+    caching::InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
     if (j == cache.end()) {
         eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
-        cache.footprint(path_, InMemoryCacheUsage(footprint, 0));
+        cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));
         return result;
     }
     return *j;
@@ -80,7 +77,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
 void BitmapFilter::execute(context::Context & ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
+    caching::InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
     data::MIRField& field = ctx.field();

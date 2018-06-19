@@ -34,8 +34,7 @@ MIRJob::MIRJob() {
 }
 
 
-MIRJob::~MIRJob() {
-}
+MIRJob::~MIRJob() = default;
 
 
 void MIRJob::execute(input::MIRInput& input, output::MIROutput& output, util::MIRStatistics& statistics) const {

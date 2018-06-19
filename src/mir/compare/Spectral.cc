@@ -33,8 +33,7 @@ Spectral::Spectral(const param::MIRParametrisation& param1, const param::MIRPara
 }
 
 
-Spectral::~Spectral() {
-}
+Spectral::~Spectral() = default;
 
 
 void Spectral::execute(const data::MIRField& field1, const data::MIRField& field2) const {

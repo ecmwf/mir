@@ -77,8 +77,7 @@ BoundingBox::BoundingBox(const BoundingBox& other) {
 }
 
 
-BoundingBox::~BoundingBox() {
-}
+BoundingBox::~BoundingBox() = default;
 
 
 void BoundingBox::print(std::ostream& out) const {

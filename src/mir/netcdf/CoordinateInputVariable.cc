@@ -28,8 +28,7 @@ CoordinateInputVariable::CoordinateInputVariable(Dataset &owner,
 {
 }
 
-CoordinateInputVariable::~CoordinateInputVariable() {
-}
+CoordinateInputVariable::~CoordinateInputVariable() = default;
 
 Variable *CoordinateInputVariable::makeOutputVariable(Dataset &owner,
         const std::string &name,
@@ -56,5 +55,5 @@ const char* CoordinateInputVariable::kind() const {
     return "coordinate";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

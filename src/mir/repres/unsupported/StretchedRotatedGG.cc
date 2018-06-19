@@ -34,8 +34,7 @@ StretchedRotatedGG::StretchedRotatedGG() {
 }
 
 
-StretchedRotatedGG::~StretchedRotatedGG() {
-}
+StretchedRotatedGG::~StretchedRotatedGG() = default;
 
 
 void StretchedRotatedGG::print(std::ostream &out) const {

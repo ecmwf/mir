@@ -27,11 +27,11 @@ Tessellation::Tessellation(const param::MIRParametrisation &param) :
 }
 
 
-Tessellation::~Tessellation() {
-}
+Tessellation::~Tessellation() = default;
+
 
 bool Tessellation::sameAs(const Method& other) const {
-    const Tessellation* o = dynamic_cast<const Tessellation*>(&other);
+    auto o = dynamic_cast<const Tessellation*>(&other);
     return o && FiniteElement::sameAs(other);
 }
 

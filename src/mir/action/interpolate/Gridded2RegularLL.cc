@@ -32,12 +32,11 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
 }
 
 
-Gridded2RegularLL::~Gridded2RegularLL() {
-}
+Gridded2RegularLL::~Gridded2RegularLL() = default;
 
 
 bool Gridded2RegularLL::sameAs(const Action& other) const {
-    const Gridded2RegularLL* o = dynamic_cast<const Gridded2RegularLL*>(&other);
+    auto o = dynamic_cast<const Gridded2RegularLL*>(&other);
     return o && Gridded2LatLon::sameAs(*o);
 }
 

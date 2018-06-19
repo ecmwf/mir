@@ -51,7 +51,7 @@ struct LL {
 
 static eckit::Mutex local_mutex;
 
-static InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
+static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0, "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
@@ -174,7 +174,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
+    caching::InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
     if (a != cache.end()) {
         return *a;
     }
@@ -209,7 +209,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
     }
 
-    cache.footprint(key, InMemoryCacheUsage(c.footprint(), 0));
+    cache.footprint(key, caching::InMemoryCacheUsage(c.footprint(), 0));
     return c;
 
 }
@@ -239,7 +239,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
+    caching::InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
 
 
     data::MIRField& field = ctx.field();

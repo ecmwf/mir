@@ -48,7 +48,7 @@ size_t GribFileInput::dimensions() const {
 }
 
 bool GribFileInput::sameAs(const MIRInput& other) const {
-    const GribFileInput* o = dynamic_cast<const GribFileInput*>(&other);
+    auto o = dynamic_cast<const GribFileInput*>(&other);
     return o && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
 }
 

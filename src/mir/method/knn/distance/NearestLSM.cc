@@ -62,7 +62,7 @@ void NearestLSM::operator()(
 
 
 bool NearestLSM::sameAs(const DistanceWeighting& other) const {
-    const NearestLSM* o = dynamic_cast<const NearestLSM*>(&other);
+    auto o = dynamic_cast<const NearestLSM*>(&other);
     return o;
 }
 

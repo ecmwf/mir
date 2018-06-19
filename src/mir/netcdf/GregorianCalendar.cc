@@ -50,9 +50,7 @@ GregorianCalendar::GregorianCalendar(const Variable& variable):
     offset_ -= offset;
 }
 
-GregorianCalendar::~GregorianCalendar() {
-
-}
+GregorianCalendar::~GregorianCalendar() = default;
 
 void GregorianCalendar::print(std::ostream &out) const {
     out << "GregorianCalendar[reference=" << reference_ << ", calendar=" << calendar_ << ", offset=" << offset_ << "]";
@@ -146,5 +144,5 @@ void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &p
 static CodecBuilder<GregorianCalendar> builder1("gregorian");
 static CodecBuilder<GregorianCalendar> builder2("standard");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

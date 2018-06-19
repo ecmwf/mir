@@ -43,10 +43,7 @@ UnstructuredGrid::UnstructuredGrid(const Variable &variable,
     }
 }
 
-UnstructuredGrid::~UnstructuredGrid()
-{
-}
-
+UnstructuredGrid::~UnstructuredGrid() = default;
 
 void UnstructuredGrid::print(std::ostream& s) const
 {

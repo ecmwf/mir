@@ -31,9 +31,7 @@ ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& variable)
 {
 }
 
-ThreeSixtyCalendar::~ThreeSixtyCalendar() {
-
-}
+ThreeSixtyCalendar::~ThreeSixtyCalendar() = default;
 
 void ThreeSixtyCalendar::print(std::ostream &out) const {
     out << "ThreeSixtyCalendar[]";
@@ -41,5 +39,5 @@ void ThreeSixtyCalendar::print(std::ostream &out) const {
 
 static CodecBuilder<ThreeSixtyCalendar> builder("360_day");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

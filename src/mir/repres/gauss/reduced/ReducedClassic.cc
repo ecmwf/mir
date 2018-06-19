@@ -29,8 +29,7 @@ ReducedClassic::ReducedClassic(size_t N, const util::BoundingBox& bbox) :
 }
 
 
-ReducedClassic::~ReducedClassic() {
-}
+ReducedClassic::~ReducedClassic() = default;
 
 
 void ReducedClassic::print(std::ostream &out) const {
@@ -54,7 +53,7 @@ void ReducedClassic::makeName(std::ostream& out) const {
 
 
 bool ReducedClassic::sameAs(const Representation& other) const {
-    const ReducedClassic* o = dynamic_cast<const ReducedClassic*>(&other);
+    auto o = dynamic_cast<const ReducedClassic*>(&other);
     return o && Classic::sameAs(other);
 }
 

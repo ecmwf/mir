@@ -118,8 +118,7 @@ Increments::Increments(const LongitudeIncrement& west_east, const LatitudeIncrem
 }
 
 
-Increments::~Increments() {
-}
+Increments::~Increments() = default;
 
 
 bool Increments::operator==(const Increments& other) const {

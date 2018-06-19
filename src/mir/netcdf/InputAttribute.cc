@@ -26,9 +26,7 @@ InputAttribute::InputAttribute(Endowed &owner, const std::string &name, Value *v
 {
 }
 
-InputAttribute::~InputAttribute()
-{
-}
+InputAttribute::~InputAttribute() = default;
 
 void InputAttribute::clone(Endowed &owner) const {
     owner.add(new OutputAttribute(owner, name_, value_->clone()));
@@ -38,5 +36,5 @@ void InputAttribute::print(std::ostream &out) const {
     out << "InputAttribute[name=" << name_ << "]";
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -65,7 +65,7 @@ FieldParametrisation::FieldParametrisation():
 }
 
 
-FieldParametrisation::~FieldParametrisation() {}
+FieldParametrisation::~FieldParametrisation() = default;
 
 
 bool FieldParametrisation::has(const std::string& name) const {

@@ -26,14 +26,11 @@ Value::Value(Type &type):
 
 }
 
-Value::~Value() {
-
-}
-
+Value::~Value() = default;
 
 Value *Value::newFromString(const std::string &s) {
     return new ValueT<std::string>(Type::lookup(NC_CHAR), s);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -58,7 +58,7 @@ void InverseDistanceWeightingSquared::operator()(
 
 
 bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) const {
-    const InverseDistanceWeightingSquared* o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
+    auto o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
     return o;
 }
 

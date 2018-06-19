@@ -66,7 +66,7 @@ void GaussianDistanceWeighting::operator()(
 
 
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
-    const GaussianDistanceWeighting* o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
+    auto o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
     return o && eckit::types::is_approximately_equal(stddev_, o->stddev_);
 }
 

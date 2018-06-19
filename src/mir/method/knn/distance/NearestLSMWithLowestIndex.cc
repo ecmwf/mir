@@ -78,7 +78,7 @@ void NearestLSMWithLowestIndex::operator()(
 
 
 bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
-    const NearestLSMWithLowestIndex* o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
+    auto o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
     return o;
 }
 

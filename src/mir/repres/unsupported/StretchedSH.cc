@@ -34,8 +34,7 @@ StretchedSH::StretchedSH() {
 }
 
 
-StretchedSH::~StretchedSH() {
-}
+StretchedSH::~StretchedSH() = default;
 
 
 void StretchedSH::print(std::ostream &out) const {

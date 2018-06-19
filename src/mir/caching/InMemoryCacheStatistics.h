@@ -13,8 +13,9 @@
 /// @author Tiago Quintino
 /// @date   April 2016
 
-#ifndef util_InMemoryCacheStatistics_H
-#define util_InMemoryCacheStatistics_H
+
+#ifndef mir_caching_InMemoryCacheStatistics_h
+#define mir_caching_InMemoryCacheStatistics_h
 
 #include <iosfwd>
 
@@ -26,8 +27,8 @@ class Stream;
 }
 
 namespace mir {
+namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class InMemoryCacheStatistics : public eckit::Statistics {
 public:
@@ -60,8 +61,9 @@ public:
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
+} // namespace caching
 } // namespace mir
+
 
 #endif

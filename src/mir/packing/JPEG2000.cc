@@ -29,8 +29,7 @@ JPEG2000::JPEG2000(const std::string &name):
 }
 
 
-JPEG2000::~JPEG2000() {
-}
+JPEG2000::~JPEG2000() = default;
 
 void JPEG2000::print(std::ostream& out) const {
     out << "JPEG2000[]";

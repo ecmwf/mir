@@ -136,7 +136,7 @@ bool NetcdfFileInput::get(const std::string &name, std::vector<double> &value) c
 }
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
-    const NetcdfFileInput* o = dynamic_cast<const NetcdfFileInput*>(&other);
+    auto o = dynamic_cast<const NetcdfFileInput*>(&other);
     return o && (path_ == o->path_);
 }
 

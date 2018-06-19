@@ -68,5 +68,5 @@ Dataset &MergePlan::field() const {
     return field_;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -31,9 +31,7 @@ UpdateCoordinateStep::UpdateCoordinateStep( Variable &out, const Variable &in, s
 {
 }
 
-UpdateCoordinateStep::~UpdateCoordinateStep() {
-
-}
+UpdateCoordinateStep::~UpdateCoordinateStep() = default;
 
 int UpdateCoordinateStep::rank() const {
     return 1;
@@ -61,5 +59,5 @@ void UpdateCoordinateStep::execute(MergePlan &plan) {
 #endif
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

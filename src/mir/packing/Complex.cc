@@ -29,8 +29,7 @@ Complex::Complex(const std::string &name):
 }
 
 
-Complex::~Complex() {
-}
+Complex::~Complex() = default;
 
 void Complex::print(std::ostream& out) const {
     out << "Complex[]";

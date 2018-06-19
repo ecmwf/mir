@@ -42,8 +42,7 @@ PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
 }
 
 
-PseudoLaplace::~PseudoLaplace() {
-}
+PseudoLaplace::~PseudoLaplace() = default;
 
 
 const char* PseudoLaplace::name() const {
@@ -57,7 +56,7 @@ void PseudoLaplace::hash( eckit::MD5& md5) const {
 }
 
 bool PseudoLaplace::sameAs(const Method& other) const {
-    const PseudoLaplace* o = dynamic_cast<const PseudoLaplace*>(&other);
+    auto o = dynamic_cast<const PseudoLaplace*>(&other);
     return o && (nclosest_ == o->nclosest_) && MethodWeighted::sameAs(other);
 }
 

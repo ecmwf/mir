@@ -32,9 +32,7 @@ OutputVariable::OutputVariable(Dataset &owner, const std::string &name, const st
 {
 }
 
-OutputVariable::~OutputVariable()
-{
-}
+OutputVariable::~OutputVariable() = default;
 
 
 void OutputVariable::create(int nc) const {
@@ -88,5 +86,5 @@ int OutputVariable::varid() const {
     return id_;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

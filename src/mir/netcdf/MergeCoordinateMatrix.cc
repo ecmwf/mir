@@ -49,5 +49,5 @@ void MergeCoordinateMatrix::dumpTree(std::ostream &out, size_t depth) const {
     in_->dumpTree(out, depth + 1);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

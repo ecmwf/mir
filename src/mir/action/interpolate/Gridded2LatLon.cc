@@ -49,12 +49,11 @@ Gridded2LatLon::Gridded2LatLon(const param::MIRParametrisation& parametrisation)
 }
 
 
-Gridded2LatLon::~Gridded2LatLon() {
-}
+Gridded2LatLon::~Gridded2LatLon() = default;
 
 
 bool Gridded2LatLon::sameAs(const Action& other) const {
-    const Gridded2LatLon* o = dynamic_cast<const Gridded2LatLon*>(&other);
+    auto o = dynamic_cast<const Gridded2LatLon*>(&other);
     return o  && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

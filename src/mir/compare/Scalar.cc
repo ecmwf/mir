@@ -34,8 +34,7 @@ Scalar::Scalar(const param::MIRParametrisation& param1, const param::MIRParametr
 }
 
 
-Scalar::~Scalar() {
-}
+Scalar::~Scalar() = default;
 
 
 void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2) const {

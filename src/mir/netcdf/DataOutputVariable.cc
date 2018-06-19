@@ -27,9 +27,7 @@ DataOutputVariable::DataOutputVariable(Dataset &owner,
 {
 }
 
-DataOutputVariable::~DataOutputVariable() {
-
-}
+DataOutputVariable::~DataOutputVariable() = default;
 
 void DataOutputVariable::print(std::ostream &out) const {
     out << "DataOutputVariable[name=" << name_ << ",nc=" << ncname() << "]";
@@ -55,5 +53,5 @@ void DataOutputVariable::collectField(std::vector<Field *>&) const {
     NOTIMP;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

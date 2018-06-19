@@ -34,8 +34,7 @@ CheckerBoard::CheckerBoard(const param::MIRParametrisation &parametrisation):
 }
 
 
-CheckerBoard::~CheckerBoard() {
-}
+CheckerBoard::~CheckerBoard() = default;
 
 
 bool CheckerBoard::sameAs(const Action& other) const {

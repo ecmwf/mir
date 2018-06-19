@@ -44,7 +44,7 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
     ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 
-FileLoader::~FileLoader() {}
+FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
     out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";

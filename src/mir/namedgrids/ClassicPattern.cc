@@ -29,8 +29,7 @@ ClassicPattern::ClassicPattern(const std::string &name):
 }
 
 
-ClassicPattern::~ClassicPattern() {
-}
+ClassicPattern::~ClassicPattern() = default;
 
 void ClassicPattern::print(std::ostream &out) const {
     out << "ClassicPattern[pattern=" <<  pattern_ << "]";

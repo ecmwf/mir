@@ -36,8 +36,7 @@ CustomParametrisation::CustomParametrisation(
 }
 
 
-CustomParametrisation::~CustomParametrisation() {
-}
+CustomParametrisation::~CustomParametrisation() = default;
 
 
 const param::MIRParametrisation&CustomParametrisation::userParametrisation() const {

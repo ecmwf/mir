@@ -27,8 +27,7 @@ Cropping::Cropping():
 }
 
 
-Cropping::~Cropping() {
-}
+Cropping::~Cropping() = default;
 
 
 void Cropping::hash(eckit::MD5& md5) const {

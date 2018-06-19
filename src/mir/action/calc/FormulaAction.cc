@@ -62,12 +62,11 @@ FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
 }
 
 
-FormulaAction::~FormulaAction() {
-}
+FormulaAction::~FormulaAction() = default;
 
 
 bool FormulaAction::sameAs(const Action& other) const {
-    const FormulaAction* o = dynamic_cast<const FormulaAction*>(&other);
+    auto o = dynamic_cast<const FormulaAction*>(&other);
     return o && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
 }
 

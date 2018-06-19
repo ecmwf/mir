@@ -38,12 +38,11 @@ Gridded2RotatedOctahedral::Gridded2RotatedOctahedral(const param::MIRParametrisa
 }
 
 
-Gridded2RotatedOctahedral::~Gridded2RotatedOctahedral() {
-}
+Gridded2RotatedOctahedral::~Gridded2RotatedOctahedral() = default;
 
 
 bool Gridded2RotatedOctahedral::sameAs(const Action& other) const {
-    const Gridded2RotatedOctahedral* o = dynamic_cast<const Gridded2RotatedOctahedral*>(&other);
+    auto o = dynamic_cast<const Gridded2RotatedOctahedral*>(&other);
     return o && (N_ == o->N_) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 

@@ -32,11 +32,11 @@ EmptyInput::EmptyInput(): calls_(0) {
 }
 
 
-EmptyInput::~EmptyInput() {}
+EmptyInput::~EmptyInput() = default;
 
 
 bool EmptyInput::sameAs(const MIRInput &other) const {
-    const EmptyInput *o = dynamic_cast<const EmptyInput *>(&other);
+    auto o = dynamic_cast<const EmptyInput *>(&other);
     return o;
 }
 
@@ -67,8 +67,6 @@ void EmptyInput::latitudes(std::vector<double> &) const {
 void EmptyInput::longitudes(std::vector<double> &) const {
 
 }
-
-
 
 
 }  // namespace input

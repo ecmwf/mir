@@ -39,12 +39,11 @@ StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisati
 }
 
 
-StructuredBilinearLatLon::~StructuredBilinearLatLon() {
-}
+StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
 
 
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
-    const StructuredBilinearLatLon* o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
+    auto o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
     return o && StructuredMethod::sameAs(other);
 }
 

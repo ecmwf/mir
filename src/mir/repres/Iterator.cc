@@ -41,8 +41,7 @@ Iterator::Iterator(const util::Rotation& rotation) :
 }
 
 
-Iterator::~Iterator() {
-}
+Iterator::~Iterator() = default;
 
 
 const Iterator::point_2d_t& Iterator::pointRotated() const {

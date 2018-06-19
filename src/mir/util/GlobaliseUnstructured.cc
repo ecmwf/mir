@@ -47,8 +47,7 @@ GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& pa
 }
 
 
-GlobaliseUnstructured::~GlobaliseUnstructured() {
-}
+GlobaliseUnstructured::~GlobaliseUnstructured() = default;
 
 
 size_t GlobaliseUnstructured::appendGlobalPoints(

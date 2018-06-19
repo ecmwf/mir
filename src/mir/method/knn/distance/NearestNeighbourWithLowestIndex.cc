@@ -52,7 +52,7 @@ void NearestNeighbourWithLowestIndex::operator()(
 
 
 bool NearestNeighbourWithLowestIndex::sameAs(const DistanceWeighting& other) const {
-    const NearestNeighbourWithLowestIndex* o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
+    auto o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
     return o;
 }
 

@@ -254,8 +254,8 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
     throw eckit::UserError(oss.str());
 }
 
-Bitmap::~Bitmap() {
-}
+
+Bitmap::~Bitmap() = default;
 
 
 void Bitmap::print(std::ostream &out) const {

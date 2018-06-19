@@ -38,12 +38,11 @@ ShTruncate::ShTruncate(const param::MIRParametrisation &parametrisation):
 }
 
 
-ShTruncate::~ShTruncate() {
-}
+ShTruncate::~ShTruncate() = default;
 
 
 bool ShTruncate::sameAs(const Action& other) const {
-    const ShTruncate* o = dynamic_cast<const ShTruncate*>(&other);
+    auto o = dynamic_cast<const ShTruncate*>(&other);
     return o && (truncation_ == o->truncation_);
 }
 

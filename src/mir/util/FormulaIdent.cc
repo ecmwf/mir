@@ -22,16 +22,16 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
+
 FormulaIdent::FormulaIdent(const param::MIRParametrisation &parametrisation, const std::string& name):
     Formula(parametrisation),
     name_(name) {
 
 }
 
-FormulaIdent::~FormulaIdent() {
 
-}
+FormulaIdent::~FormulaIdent() = default;
+
 
 void FormulaIdent::print(std::ostream& out) const {
     out << name_;
@@ -64,16 +64,17 @@ void FormulaIdent::execute(mir::context::Context& ctx) const {
 
 }
 
+
 bool FormulaIdent::sameAs(const mir::action::Action& other) const {
-    const FormulaIdent* o = dynamic_cast<const FormulaIdent*>(&other);
+    auto o = dynamic_cast<const FormulaIdent*>(&other);
     return o && (name_ == o->name_);
 }
+
 
 const char* FormulaIdent::name() const {
     return "FormulaIdent";
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir

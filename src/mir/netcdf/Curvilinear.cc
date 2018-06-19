@@ -44,9 +44,7 @@ Curvilinear::Curvilinear(const Variable &variable,
     }
 }
 
-Curvilinear::~Curvilinear()
-{
-}
+Curvilinear::~Curvilinear() = default;
 
 
 void Curvilinear::print(std::ostream& s) const

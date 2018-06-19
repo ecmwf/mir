@@ -36,8 +36,7 @@ FileLSM::FileLSM(const std::string& name) :
 }
 
 
-FileLSM::~FileLSM() {
-}
+FileLSM::~FileLSM() = default;
 
 
 void FileLSM::print(std::ostream& out) const {

@@ -33,9 +33,8 @@ ActionNode::ActionNode(const Action& action, api::MIRWatcher *watcher):
 }
 
 
-ActionNode::~ActionNode() {
+ActionNode::~ActionNode() = default;
 
-}
 
 void ActionNode::print(std::ostream& out) const {
     out << "ActionNode[" << action_ << "]";

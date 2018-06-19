@@ -75,8 +75,7 @@ GribStreamInput::GribStreamInput():
     ASSERT(step_ > 0);
 }
 
-GribStreamInput::~GribStreamInput() {
-}
+GribStreamInput::~GribStreamInput() = default;
 
 
 bool GribStreamInput::next() {

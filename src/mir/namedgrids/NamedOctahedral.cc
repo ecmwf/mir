@@ -30,8 +30,7 @@ NamedOctahedral::NamedOctahedral(const std::string &name, size_t N):
 }
 
 
-NamedOctahedral::~NamedOctahedral() {
-}
+NamedOctahedral::~NamedOctahedral() = default;
 
 void NamedOctahedral::print(std::ostream &out) const {
     out << "NamedOctahedral[name=" << name_ << ",N=" << N_ << "]";

@@ -28,8 +28,7 @@ CustomStyle::CustomStyle(const param::MIRParametrisation& parametrisation):
 }
 
 
-CustomStyle::~CustomStyle() {
-}
+CustomStyle::~CustomStyle() = default;
 
 
 void CustomStyle::prepare(action::ActionPlan& plan) const {

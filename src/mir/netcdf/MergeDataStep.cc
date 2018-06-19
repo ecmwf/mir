@@ -28,9 +28,7 @@ MergeDataStep::MergeDataStep( Variable &out, const Variable &in):
 
 }
 
-MergeDataStep::~MergeDataStep() {
-
-}
+MergeDataStep::~MergeDataStep() = default;
 
 int MergeDataStep::rank() const {
     return 5;
@@ -68,5 +66,5 @@ void MergeDataStep::execute(MergePlan &plan) {
 #endif
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

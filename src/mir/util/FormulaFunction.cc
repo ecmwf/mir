@@ -22,7 +22,6 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1):
     Formula(parametrisation),
@@ -72,7 +71,7 @@ void FormulaFunction::execute(mir::context::Context& ctx) const {
 }
 
 bool FormulaFunction::sameAs(const mir::action::Action& other) const {
-    const FormulaFunction* o = dynamic_cast<const FormulaFunction*>(&other);
+    auto o = dynamic_cast<const FormulaFunction*>(&other);
     if (o && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
         for (size_t i = 0; i < args_.size(); ++i) {
             if (!args_[i]->sameAs(*(o->args_[i]))) {
@@ -88,6 +87,7 @@ bool FormulaFunction::sameAs(const mir::action::Action& other) const {
 const char* FormulaFunction::name() const {
     return "FormulaFunction";
 }
+
 
 } // namespace util
 } // namespace mir

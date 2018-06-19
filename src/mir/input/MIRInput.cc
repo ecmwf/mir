@@ -31,8 +31,7 @@ MIRInput::MIRInput() {
 }
 
 
-MIRInput::~MIRInput() {
-}
+MIRInput::~MIRInput() = default;
 
 
 grib_handle *MIRInput::gribHandle(size_t which) const {
@@ -178,8 +177,6 @@ void MIRInputFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
-
-
 
 
 }  // namespace input

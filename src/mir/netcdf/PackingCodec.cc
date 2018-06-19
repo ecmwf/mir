@@ -34,9 +34,7 @@ PackingCodec::PackingCodec(const Variable& variable):
 
 }
 
-PackingCodec::~PackingCodec() {
-
-}
+PackingCodec::~PackingCodec() = default;
 
 void PackingCodec::print(std::ostream &out) const {
     out << "PackingCodec[scale_factor=" << scale_factor_ << ", add_offset=" << add_offset_ << "]";
@@ -52,5 +50,5 @@ void PackingCodec::decode(std::vector<double> &v) const {
 
 static CodecBuilder<PackingCodec> builder("packing");
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

@@ -29,8 +29,7 @@ RegularPattern::RegularPattern(const std::string &name):
 }
 
 
-RegularPattern::~RegularPattern() {
-}
+RegularPattern::~RegularPattern() = default;
 
 void RegularPattern::print(std::ostream &out) const {
     out << "RegularPattern[pattern=" <<  pattern_ << "]";

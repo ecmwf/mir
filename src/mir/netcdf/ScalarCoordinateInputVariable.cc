@@ -21,17 +21,19 @@
 namespace mir {
 namespace netcdf {
 
-ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
-    InputVariable(owner, name, id, dimensions)
-{
+
+ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions) :
+    InputVariable(owner, name, id, dimensions) {
 }
 
-ScalarCoordinateInputVariable::~ScalarCoordinateInputVariable() {
-}
+
+ScalarCoordinateInputVariable::~ScalarCoordinateInputVariable() = default;
+
 
 Variable *ScalarCoordinateInputVariable::makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const {
     return new ScalarCoordinateOutputVariable(owner, name, dimensions);
 }
+
 
 Variable *ScalarCoordinateInputVariable::makeScalarCoordinateVariable()  {
     return this;
@@ -47,6 +49,7 @@ void ScalarCoordinateInputVariable::print(std::ostream &out) const {
     out << "ScalarCoordinateInputVariable[name=" << name_ << "]";
 }
 
+
 Dimension *ScalarCoordinateInputVariable::getVirtualDimension() {
     if (dimensions_.size() == 0) {
         Dimension *dim = new VirtualInputDimension(dataset_, name_);
@@ -55,6 +58,7 @@ Dimension *ScalarCoordinateInputVariable::getVirtualDimension() {
     }
     return dimensions_[0];
 }
+
 
 }
 }

@@ -30,8 +30,7 @@ NamedRegular::NamedRegular(const std::string& name, size_t N):
 }
 
 
-NamedRegular::~NamedRegular() {
-}
+NamedRegular::~NamedRegular() = default;
 
 void NamedRegular::print(std::ostream& out) const {
     out << "NamedRegular[name=" << name_ << ",N=" << N_ << "]";

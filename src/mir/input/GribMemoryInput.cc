@@ -35,8 +35,7 @@ GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
 }
 
 
-GribMemoryInput::~GribMemoryInput() {
-}
+GribMemoryInput::~GribMemoryInput() = default;
 
 bool GribMemoryInput::sameAs(const MIRInput& other) const {
     return this == &other;

@@ -37,12 +37,11 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametris
 }
 
 
-Gridded2RotatedLL::~Gridded2RotatedLL() {
-}
+Gridded2RotatedLL::~Gridded2RotatedLL() = default;
 
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
-    const Gridded2RotatedLL* o = dynamic_cast<const Gridded2RotatedLL*>(&other);
+    auto o = dynamic_cast<const Gridded2RotatedLL*>(&other);
     return o && Gridded2LatLon::sameAs(*o) && (rotation_ == o->rotation_);
 }
 

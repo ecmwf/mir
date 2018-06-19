@@ -51,10 +51,7 @@ RegularLL::RegularLL(const Variable &variable,
 
 }
 
-RegularLL::~RegularLL()
-{
-}
-
+RegularLL::~RegularLL() = default;
 
 void RegularLL::print(std::ostream& s) const
 {

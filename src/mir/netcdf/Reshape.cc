@@ -64,9 +64,7 @@ bool Reshape::merge(Reshape &other) {
     return false;
 }
 
-Reshape::~Reshape() {
-
-}
+Reshape::~Reshape() = default;
 
 void Reshape::print(std::ostream &out) const {
     out << "Reshape[which=" << which_ << ",where=" << where_ << ",count=" << count_ ;
@@ -98,5 +96,5 @@ size_t Reshape::operator()(size_t idx) const {
     return a;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

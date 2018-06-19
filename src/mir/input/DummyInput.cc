@@ -37,11 +37,11 @@ DummyInput::DummyInput(): calls_(0) {
     parametrisation_.set("south_north_increment", 1.0);
 }
 
-DummyInput::~DummyInput() {}
+DummyInput::~DummyInput() = default;
 
 
 bool DummyInput::sameAs(const MIRInput& other) const {
-    const DummyInput* o = dynamic_cast<const DummyInput*>(&other);
+    auto o = dynamic_cast<const DummyInput*>(&other);
     return o;
 }
 

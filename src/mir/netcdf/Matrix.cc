@@ -31,8 +31,7 @@ Matrix::Matrix(Type &type, const std::string &name, size_t size):
     missingValue_(0),
     codec_(0),
     name_(name),
-    size_(size)
-{
+    size_(size) {
 }
 
 Matrix::~Matrix() {
@@ -188,5 +187,5 @@ void Matrix::read(std::vector<long long> &, const std::vector<size_t>& start, co
 
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

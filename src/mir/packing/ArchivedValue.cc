@@ -28,8 +28,7 @@ ArchivedValue::ArchivedValue(const std::string &name):
 }
 
 
-ArchivedValue::~ArchivedValue() {
-}
+ArchivedValue::~ArchivedValue() = default;
 
 void ArchivedValue::print(std::ostream& out) const {
     out << "ArchivedValue[]";

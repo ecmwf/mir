@@ -19,6 +19,7 @@
 #include "eckit/log/Bytes.h"
 
 namespace mir {
+namespace caching {
 
 static eckit::Mutex *local_mutex = 0;
 static std::set<InMemoryCacheBase *> *m = 0;
@@ -114,5 +115,6 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
 
 
+}  // namespace caching
 }  // namespace mir
 

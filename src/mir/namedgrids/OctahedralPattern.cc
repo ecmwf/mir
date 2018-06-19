@@ -29,8 +29,7 @@ OctahedralPattern::OctahedralPattern(const std::string &name):
 }
 
 
-OctahedralPattern::~OctahedralPattern() {
-}
+OctahedralPattern::~OctahedralPattern() = default;
 
 void OctahedralPattern::print(std::ostream &out) const {
     out << "OctahedralPattern[pattern=" <<  pattern_ << "]";

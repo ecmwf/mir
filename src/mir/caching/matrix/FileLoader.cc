@@ -34,9 +34,6 @@ namespace caching {
 namespace matrix {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path),
     buffer_(path.size()) {
@@ -50,7 +47,7 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     w.dump(buffer_);
 }
 
-FileLoader::~FileLoader() {}
+FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
     out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";
@@ -71,10 +68,6 @@ bool FileLoader::inSharedMemory() const {
 namespace {
 static MatrixLoaderBuilder<FileLoader> loader("file-io");
 }
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 
 } // namespace matrix

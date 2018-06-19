@@ -112,6 +112,6 @@ void Mapper<T>::set(size_t i, T v) {
     v_[i] = v;
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

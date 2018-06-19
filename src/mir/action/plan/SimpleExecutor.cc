@@ -33,9 +33,8 @@ SimpleExecutor::SimpleExecutor(const std::string& name):
 }
 
 
-SimpleExecutor::~SimpleExecutor() {
+SimpleExecutor::~SimpleExecutor() = default;
 
-}
 
 void SimpleExecutor::print(std::ostream& out) const {
     out << "SimpleExecutor[]";

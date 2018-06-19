@@ -34,12 +34,11 @@ FEBilinear::FEBilinear(const param::MIRParametrisation &param) :
 }
 
 
-FEBilinear::~FEBilinear() {
-}
+FEBilinear::~FEBilinear() = default;
 
 
 bool FEBilinear::sameAs(const Method& other) const {
-    const FEBilinear* o = dynamic_cast<const FEBilinear*>(&other);
+    auto o = dynamic_cast<const FEBilinear*>(&other);
     return o && FiniteElement::sameAs(other);
 }
 

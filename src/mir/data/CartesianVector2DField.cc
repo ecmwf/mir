@@ -49,8 +49,7 @@ CartesianVector2DField::CartesianVector2DField(
 }
 
 
-CartesianVector2DField::~CartesianVector2DField() {
-}
+CartesianVector2DField::~CartesianVector2DField() = default;
 
 
 void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX, MIRValuesVector& valuesY) const {

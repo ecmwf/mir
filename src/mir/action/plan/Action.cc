@@ -35,8 +35,7 @@ Action::Action(const param::MIRParametrisation &parametrisation):
 }
 
 
-Action::~Action() {
-}
+Action::~Action() = default;
 
 
 void Action::custom(std::ostream & out) const {

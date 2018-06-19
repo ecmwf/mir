@@ -33,8 +33,7 @@ GribMemoryOutput::GribMemoryOutput(void *message, size_t size):
 }
 
 
-GribMemoryOutput::~GribMemoryOutput() {
-}
+GribMemoryOutput::~GribMemoryOutput() = default;
 
 
 bool GribMemoryOutput::sameAs(const MIROutput& other) const {

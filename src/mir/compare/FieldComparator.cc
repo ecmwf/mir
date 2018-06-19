@@ -49,7 +49,7 @@ namespace mir {
 namespace compare {
 
 
-static mir::InMemoryCache<AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
+static caching::InMemoryCache<AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
 const WhiteLister& DefaultWhiteLister::instance() {
@@ -137,8 +137,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
 
 }
 
-FieldComparator::~FieldComparator() {
-}
+FieldComparator::~FieldComparator() = default;
 
 void FieldComparator::compare(const std::string& name,
                               const MultiFile& multi1,
@@ -757,8 +756,8 @@ void FieldComparator::compareFieldStatistics(
     const Field & field1,
     const Field & field2) {
 
-    mir::InMemoryCacheStatistics ignore;
-    mir::InMemoryCacheUser<AutoStdFile> lock(cache_, ignore);
+    mir::caching::InMemoryCacheStatistics ignore;
+    mir::caching::InMemoryCacheUser<AutoStdFile> lock(cache_, ignore);
 
     Statistics s1;
     getStats(field1, s1);

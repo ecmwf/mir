@@ -30,8 +30,8 @@ Method::Method(const param::MIRParametrisation &params) :
 }
 
 
-Method::~Method() {
-}
+Method::~Method() = default;
+
 
 bool Method::canCrop() const {
     return false;

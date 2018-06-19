@@ -53,7 +53,7 @@ namespace transform {
 static eckit::Mutex amutex;
 
 
-static InMemoryCache<TransCache> trans_cache("mirCoefficient",
+static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient",
         8L * 1024 * 1024 * 1024,
         8L * 1024 * 1024 * 1024,
         "$MIR_COEFFICIENT_CACHE",
@@ -67,7 +67,7 @@ static atlas::trans::Cache getTransCache(
         context::Context& ctx ) {
 
 
-    InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+    caching::InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
     if (j != trans_cache.end()) {
         ASSERT(j->transCache_);
         return j->transCache_;
@@ -136,7 +136,7 @@ static atlas::trans::Cache getTransCache(
         size_t memory = 0;
         size_t shared = 0;
         (tc.loader_->inSharedMemory() ? shared : memory) = tc.loader_->size();
-        trans_cache.footprint(key, InMemoryCacheUsage(memory, shared));
+        trans_cache.footprint(key, caching::InMemoryCacheUsage(memory, shared));
     }
 
     ASSERT(transCache);
@@ -156,7 +156,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()
-    InMemoryCacheUser<TransCache> use(trans_cache, ctx.statistics().transHandleCache_);
+    caching::InMemoryCacheUser<TransCache> use(trans_cache, ctx.statistics().transHandleCache_);
 
 
     atlas::Grid grid = representation.atlasGrid();
@@ -206,7 +206,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
         if (!caching) {
 
-            InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+            auto j = trans_cache.find(key);
             if (j == trans_cache.end()) {
 
                 auto& entry(trans_cache[key] = creator.create());
@@ -275,8 +275,7 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
 }
 
 
-ShToGridded::~ShToGridded() {
-}
+ShToGridded::~ShToGridded() = default;
 
 
 void ShToGridded::print(std::ostream& out) const {
@@ -347,7 +346,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 
 bool ShToGridded::sameAs(const Action& other) const {
-    const ShToGridded* o = dynamic_cast<const ShToGridded*>(&other);
+    auto o = dynamic_cast<const ShToGridded*>(&other);
     return o && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 

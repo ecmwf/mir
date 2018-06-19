@@ -16,12 +16,8 @@
 
 #include <iostream>
 
-// #include "eckit/memory/ScopedPtr.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
-// #include "mir/repres/Iterator.h"
-// #include "mir/repres/Representation.h"
 #include "mir/data/MIRField.h"
 
 
@@ -36,12 +32,11 @@ SelectField::SelectField(const param::MIRParametrisation &parametrisation):
 }
 
 
-SelectField::~SelectField() {
-}
+SelectField::~SelectField() = default;
 
 
 bool SelectField::sameAs(const Action& other) const {
-    const SelectField* o = dynamic_cast<const SelectField*>(&other);
+    auto o = dynamic_cast<const SelectField*>(&other);
     return o && (which_ == o->which_);
 }
 

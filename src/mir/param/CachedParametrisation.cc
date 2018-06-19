@@ -24,8 +24,7 @@ CachedParametrisation::CachedParametrisation(MIRParametrisation& parametrisation
     parametrisation_(parametrisation) {
 }
 
-CachedParametrisation::~CachedParametrisation() {
-}
+CachedParametrisation::~CachedParametrisation() = default;
 
 void CachedParametrisation::print(std::ostream &out) const {
     out << "CachedParametrisation[" << parametrisation_ << "]";
