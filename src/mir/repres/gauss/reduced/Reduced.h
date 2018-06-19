@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef Reduced_H
-#define Reduced_H
+#ifndef mir_repres_gauss_reduced_reduced_h
+#define mir_repres_gauss_reduced_reduced_h
 
 #include "mir/repres/gauss/Gaussian.h"
 
@@ -82,8 +82,7 @@ protected:
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
-    void pls(std::vector<long>&);
-    void setNj();
+    void setNj(const std::vector<long>&, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false);
 
     // -- Overridden methods
@@ -92,6 +91,9 @@ protected:
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+
+    // from Representation
+    virtual bool isPeriodicWestEast() const;
 
     // -- Class members
 
@@ -105,13 +107,13 @@ private:
     std::vector<long> pl_;
 
     // -- Methods
-    // None
+
+    eckit::Fraction getSmallestIncrement() const;
 
     // -- Overridden methods
 
     virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
-    virtual eckit::Fraction getSmallestIncrement() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members

@@ -71,7 +71,6 @@ protected:
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
-    virtual eckit::Fraction getSmallestIncrement() const = 0;
     void correctSouthNorth(Latitude& s, Latitude& n, bool grib1=false, bool in=true) const;
 
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
@@ -85,7 +84,6 @@ protected:
 
     bool includesNorthPole() const;
     bool includesSouthPole() const;
-    bool isPeriodicWestEast() const;
 
     // -- Class members
     // None

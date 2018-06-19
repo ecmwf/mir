@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef Regular_H
-#define Regular_H
+#ifndef mir_repres_gauss_regular_Regular_h
+#define mir_repres_gauss_regular_Regular_h
 
 #include "mir/repres/gauss/Gaussian.h"
-#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -83,6 +82,9 @@ protected:
     virtual void makeName(std::ostream&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
+    // from Representation
+    virtual bool isPeriodicWestEast() const;
+
     // -- Class members
     // None
 
@@ -97,14 +99,14 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    eckit::Fraction getSmallestIncrement() const;
 
     // -- Overridden methods
 
     virtual void shape(size_t& ni, size_t& nj) const;
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
-    virtual eckit::Fraction getSmallestIncrement() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
     // -- Class members

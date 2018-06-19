@@ -85,11 +85,6 @@ bool Gaussian::includesSouthPole() const {
 }
 
 
-bool Gaussian::isPeriodicWestEast() const {
-    return bbox_.east() - bbox_.west() + getSmallestIncrement() >= Longitude::GLOBE;
-}
-
-
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
