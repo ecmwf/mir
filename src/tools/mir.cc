@@ -34,6 +34,7 @@
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
+#include "mir/data/Dimension.h"
 #include "mir/input/GeoPointsFileInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
@@ -167,6 +168,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+        options_.push_back(new FactoryOption<mir::data::DimensionChooser>("dimension", "Select dimension"));
 
         options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
