@@ -129,7 +129,7 @@ void Field::print(std::ostream &out) const {
 
     out << "Field[count=" << count() << ",";
     out << "dimensions=" << values_.size();
-    if (hasMissing_) {
+    if (hasMissing()) {
         out << ",missingValue=" << missingValue_;
     }
 
@@ -173,7 +173,7 @@ MIRFieldStats Field::statistics(size_t i) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
 
-    if (hasMissing_) {
+    if (hasMissing()) {
         const MIRValuesVector& vals = values(i);
         MIRValuesVector tmp;
         tmp.reserve(vals.size());
