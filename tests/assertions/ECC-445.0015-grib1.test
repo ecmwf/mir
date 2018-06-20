@@ -1,0 +1,10 @@
+# mars
+param=2t,levtype=sfc
+# mir
+--area=-10/-85/-39/-56.1
+# grib_get
+numberOfValues=124143
+#latitudeOfFirstGridPointInDegrees=
+#longitudeOfFirstGridPointInDegrees=
+#latitudeOfLastGridPointInDegrees=
+#longitudeOfLastGridPointInDegrees=
