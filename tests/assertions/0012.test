@@ -3,4 +3,10 @@ param=2t,levtype=sfc
 # Mir tool options
 --area=-60/50/-90/180 --gridname=N640
 # grib_get assertions
-numberOfPoints=52671
+numberOfPoints=52654
+Nj=213
+N=640
+latitudeOfFirstGridPointInDegrees=-60.093
+longitudeOfFirstGridPointInDegrees=50
+latitudeOfLastGridPointInDegrees=-89.893
+longitudeOfLastGridPointInDegrees=180
