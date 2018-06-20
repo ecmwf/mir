@@ -1,4 +1,4 @@
-# MARS request (GRIB1)
+# MARS request (GRIB2)
 regular_ll.2-2.grib2
 # MIR
 --area=90/0/-90/359.929 --gridname=O1280

@@ -1,0 +1,12 @@
+# mars
+param=2t,levtype=sfc
+# mir
+--area=40/50/-50/169.532 --gridname=f160
+# grib_get
+numberOfValues=34080
+latitudeOfFirstGridPointInDegrees=39.595
+longitudeOfFirstGridPointInDegrees=50.062
+latitudeOfLastGridPointInDegrees=-49.704
+longitudeOfLastGridPointInDegrees=169.313
+Ni=213
+Nj=160

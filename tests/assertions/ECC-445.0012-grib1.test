@@ -1,12 +1,12 @@
-# Mars request
+# mars
 param=2t,levtype=sfc
-# Mir tool options
---gridname=f160 --area=71.8/-10.66/34.56/32.6
-# grib_get assertions
-Ni=76
-Nj=66
+# mir
+--area=71.8/-10.66/34.56/32.6 --gridname=f160
+# grib_get
 numberOfValues=5016
 latitudeOfFirstGridPointInDegrees=71.607
 longitudeOfFirstGridPointInDegrees=-10.125
 latitudeOfLastGridPointInDegrees=35.101
 longitudeOfLastGridPointInDegrees=32.063
+Ni=76
+Nj=66

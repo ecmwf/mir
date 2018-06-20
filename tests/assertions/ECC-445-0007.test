@@ -1,9 +1,0 @@
-# Mars request
-param=vo/d,level=500
-# Mir tool options
---vod2uv --area=58.5/-6.1/36/20.7 --grid=0.1/0.1 --dont-compress-plan
-# grib_get assertions
-latitudeOfFirstGridPointInDegrees=58.5
-longitudeOfFirstGridPointInDegrees=-6.1
-latitudeOfLastGridPointInDegrees=36
-longitudeOfLastGridPointInDegrees=20.7

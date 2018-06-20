@@ -1,0 +1,10 @@
+# mars
+levtype=ml,levelist=1,param=q
+# mir
+--area=-10/-85/-39/-56
+# grib_get
+numberOfValues=124577
+latitudeOfFirstGridPointInDegrees=-10.0176
+longitudeOfFirstGridPointInDegrees=275
+latitudeOfLastGridPointInDegrees=-38.9807
+longitudeOfLastGridPointInDegrees=304

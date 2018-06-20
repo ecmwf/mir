@@ -1,9 +1,12 @@
-# Mars request
+# mars
 param=2t,levtype=sfc
-# Mir tool options
+# mir
 --area=58.5/-6.1/36/20.7 --grid=0.1/0.1
-# grib_get assertions
+# grib_get
+numberOfValues=60794
 latitudeOfFirstGridPointInDegrees=58.5
 longitudeOfFirstGridPointInDegrees=-6.1
 latitudeOfLastGridPointInDegrees=36
 longitudeOfLastGridPointInDegrees=20.7
+Ni=269
+Nj=226
