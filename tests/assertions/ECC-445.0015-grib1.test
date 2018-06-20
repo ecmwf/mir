@@ -4,7 +4,7 @@ param=2t,levtype=sfc
 --area=-10/-85/-39/-56.1
 # grib_get
 numberOfValues=124143
-#latitudeOfFirstGridPointInDegrees=
-#longitudeOfFirstGridPointInDegrees=
-#latitudeOfLastGridPointInDegrees=
-#longitudeOfLastGridPointInDegrees=
+latitudeOfFirstGridPointInDegrees=-10.017
+longitudeOfFirstGridPointInDegrees=-85
+latitudeOfLastGridPointInDegrees=-38.981
+longitudeOfLastGridPointInDegrees=-56.1
