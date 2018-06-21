@@ -41,7 +41,9 @@
 #include "mir/input/MultiScalarInput.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/output/MIROutput.h"
+#include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -86,7 +88,7 @@ public:
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
         options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
         options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
-        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'ifs')"));
+        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
@@ -199,15 +201,13 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
 
     // Setup options
-    const mir::param::ConfigurationWrapper parametrisation(args);
+    static mir::param::DefaultParametrisation defaults;
+    const mir::param::ConfigurationWrapper commandLine(args);
 
     const long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u", 131);
     const long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v", 132);
     ASSERT(paramIdu > 0);
     ASSERT(paramIdv > 0);
-
-    std::string type = "ifs";
-    args.get("atlas-trans-type", type);
 
     const bool vod2uv   = args.getBool("vod2uv", false);
     const bool validate = args.getBool("validate", false);
@@ -228,11 +228,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
 
     // Setup output (file)
-    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), parametrisation));
+    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), commandLine));
     ASSERT(output);
 
 
-    // Setup input (file)
+    // Setup input (file) and parametrisation
     eckit::ScopedPtr<mir::input::MIRInput> input;
     {
         auto multi = new mir::input::MultiScalarInput();
@@ -248,6 +248,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         input.reset(multi);
     }
     ASSERT(input);
+
+    const mir::param::CombinedParametrisation combined(commandLine, input->parametrisation(), defaults);
+    auto& parametrisation = dynamic_cast<const mir::param::MIRParametrisation&>(combined);
+
 
     // Preserve statistics
     mir::util::MIRStatistics statistics;
@@ -278,6 +282,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             ASSERT(N > 0);
 
             // Set Trans
+            std::string type = "local";
+            parametrisation.get("atlas-trans-type", type);
+
             atlas::util::Config transConfig;
             transConfig.set("type", type);
 
