@@ -55,7 +55,15 @@ do
             eval n=\"$n\"
             $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
             # For some reasons set -e does not trigger
-            [[ $? -eq 0 ]] || exit 1	
+            [[ $? -eq 0 ]] || exit 1
+
+            ## Ensure we can decode gridded fields
+            #if [ $($grib_get -wcount=1 -p gridType data.out.$t) != sh ]
+            #then
+            #    $(dirname $grib_get)/grib_get_data data.out.$t ; [[ $? -eq 0 ]] || exit 1
+            #    $(dirname $grib_get)/mir-get-data  data.out.$t ; [[ $? -eq 0 ]] || exit 1
+            #fi
+
             state=eccodes
             ;;
 
