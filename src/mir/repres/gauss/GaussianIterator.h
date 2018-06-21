@@ -25,7 +25,9 @@ namespace gauss {
 
 class GaussianIterator : public Iterator {
 public:
-    typedef std::function<long(size_t)> ni_type;
+    using ni_type = std::function<long(size_t)>;
+    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni, const util::Rotation& = util::Rotation());
+    ~GaussianIterator();
 
 private:
     const std::vector<double>& latitudes_;
@@ -35,27 +37,17 @@ private:
     size_t Ni_;
     size_t Nj_;
     eckit::Fraction lon_;
+    Latitude lat_;
     eckit::Fraction inc_;
     size_t i_;
     size_t j_;
     size_t k_;
     size_t count_;
-    void resetToRow(long Ni_globe);
-    void setup();
 
 protected:
     void print(std::ostream&) const;
     bool next(Latitude&, Longitude&);
-
-public:
-
-    // Unrotated Gaussian grid iterator
-    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni);
-
-    // Rotated Gaussian grid iterator
-    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni, const util::Rotation&);
-
-    ~GaussianIterator();
+    size_t resetToRow(size_t j);
 };
 
 

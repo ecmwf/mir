@@ -13,24 +13,11 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "mir/config/LibMir.h"
 
 
 namespace mir {
 namespace repres {
 namespace gauss {
-
-
-GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox& bbox, size_t N, ni_type Ni) :
-    latitudes_(latitudes),
-    bbox_(bbox),
-    N_(N),
-    pl_(Ni),
-    Ni_(0),
-    count_(0) {
-    setup();
-}
 
 
 GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox& bbox, size_t N, ni_type Ni, const util::Rotation& rotation) :
@@ -40,17 +27,11 @@ GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const u
     N_(N),
     pl_(Ni),
     Ni_(0),
+    lon_(),
+    inc_(),
+    i_(0),
+    j_(0),
     count_(0) {
-    setup();
-}
-
-
-GaussianIterator::~GaussianIterator() {
-    eckit::Log::debug<LibMir>() << "GaussianIterator::~GaussianIterator(): count=" << count_ << std::endl;
-}
-
-
-void GaussianIterator::setup() {
 
     // position to first latitude and first/last longitude
     // NOTE: latitudes_ span the globe, sorted from North-to-South, k_ positions the North
@@ -69,14 +50,19 @@ void GaussianIterator::setup() {
         }
     }
     ASSERT(Nj_ > 0);
-
-    j_ = 0;
-    resetToRow(pl_(j_ + k_));
 }
 
 
-void GaussianIterator::resetToRow(long Ni_globe) {
+GaussianIterator::~GaussianIterator() = default;
+
+
+size_t GaussianIterator::resetToRow(size_t j) {
+    ASSERT(j < latitudes_.size());
+    lat_ = latitudes_[j];
+
+    long Ni_globe = pl_(j);
     ASSERT(Ni_globe > 1);
+
     inc_ = Longitude::GLOBE.fraction() / Ni_globe;
 
     const eckit::Fraction w = bbox_.west().fraction();
@@ -87,15 +73,12 @@ void GaussianIterator::resetToRow(long Ni_globe) {
 
     const eckit::Fraction e = bbox_.east().fraction();
     auto Ne = (e / inc_).integralPart();
-    if (Ne * inc_ > e && Ne > Nw) {
+    if (Ne * inc_ > e) {
         Ne -= 1;
     }
-    ASSERT(Ne >= Nw);
 
-    Ni_ = std::min(size_t(Ni_globe), size_t(Ne - Nw + 1));
-
-    i_ = 0;
     lon_ = Nw * inc_;
+    return Nw > Ne ? 0 : std::min(size_t(Ni_globe), size_t(Ne - Nw + 1));
 }
 
 
@@ -114,17 +97,19 @@ void GaussianIterator::print(std::ostream& out) const {
 
 
 bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
-    while (j_ < Nj_ && i_ < Ni_) {
-        ASSERT(j_ + k_ < latitudes_.size());
+    while (!Ni_ && j_ < Nj_) {
+        Ni_ = resetToRow(k_ + j_++);
+    }
 
-        lat = latitudes_[j_ + k_];
+    if (Nj_ && i_ < Ni_) {
+
+        lat = lat_;
         lon = lon_;
 
         lon_ += inc_;
         if (++i_ == Ni_) {
-            if (++j_ < Nj_) {
-                resetToRow(pl_(j_ + k_));
-            }
+            i_ = 0;
+            Ni_ = 0;
         }
 
         count_++;
