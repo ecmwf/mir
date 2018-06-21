@@ -11,18 +11,21 @@
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/io/AutoCloser.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/io/AutoCloser.h"
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -188,6 +191,7 @@ static struct {
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
 
     {"gridname", "gridName"},
+    {"angularPrecision", "angularPrecisionInDegrees"},
 
     {"spectral", "pentagonalResolutionParameterJ"},
 
@@ -200,6 +204,39 @@ static struct {
     {"param", "paramId"},
 
     {0, 0},
+};
+
+
+struct Processing : eckit::NonCopyable {
+    virtual ~Processing() = default;
+    virtual double eval(grib_handle* h) const = 0;
+};
+
+template<typename T>
+struct ProcessingT : Processing {
+    using fun_t = std::function<T(grib_handle*)>;
+    fun_t fun_;
+    ProcessingT(fun_t&& fun) : fun_(fun) {}
+    T eval(grib_handle* h) const {
+        return fun_(h);
+    }
+};
+
+static ProcessingT<double>* inverse(const char *key) {
+    return new ProcessingT<double>([=](grib_handle* h) {
+        double value = 0;
+        GRIB_CALL(grib_get_double(h, key, &value));
+        ASSERT(!eckit::types::is_approximately_equal<double>(value, 0));
+        return 1 / value;
+    });
+}
+
+static struct {
+    const char *name;
+    const Processing *processing;
+} processings[] = {
+    {"angularPrecisionInDegrees", inverse("angularPrecision")},
+    {nullptr, nullptr},
 };
 
 
@@ -487,17 +524,26 @@ bool GribInput::get(const std::string& name, double& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
-    int err = grib_get_double(grib_, key, &value);
+    const std::string key = get_key(name, grib_);
+    int err = grib_get_double(grib_, key.c_str(), &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_DOUBLE) {
+
+        for (size_t i = 0; processings[i].name; ++i) {
+            if (key == processings[i].name) {
+                ASSERT(processings[i].processing);
+                value = processings[i].processing->eval(grib_);
+                return true;
+            }
+        }
+
         return FieldParametrisation::get(name, value);
     }
 
     if (err) {
         // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
-        GRIB_ERROR(err, key);
+        GRIB_ERROR(err, key.c_str());
     }
 
     // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") " << value << std::endl;
