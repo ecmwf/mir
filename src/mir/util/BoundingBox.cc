@@ -118,9 +118,8 @@ void BoundingBox::fill(api::MIRJob &job) const  {
 
 
 void BoundingBox::normalise() {
-    Longitude eastNormalised = east_.normalise(west_);
-
     if (west_ != east_) {
+        Longitude eastNormalised = east_.normalise(west_);
         if (eastNormalised == west_) {
             eastNormalised += Longitude::GLOBE;
         }
