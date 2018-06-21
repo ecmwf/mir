@@ -370,22 +370,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     user.get("vod2uv", vod2uv);
 
     if (vod2uv) {
-#if 0
-        bool plus  = user.has("vod2UV-legacy-plus-one-wave");
-        bool minus = user.has("vod2UV-legacy-minus-one-wave");
-
-        if (plus) {
-            ASSERT(!minus);
-            plan.add("transform.sh-vod-to-UV-legacy-plus-one-wave");
-        } else if (minus) {
-            ASSERT(!plus);
-            plan.add("transform.sh-vod-to-UV-legacy-minus-one-wave");
-        } else {
-            plan.add("transform.sh-vod-to-UV");
-        }
-#else
-        plan.add("transform.sh-vod-to-UV-legacy-plus-one-wave");
-#endif
+        plan.add("transform.sh-vod-to-UV");
     }
 
     selectWindComponents(plan);

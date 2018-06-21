@@ -36,8 +36,22 @@ namespace action {
 namespace transform {
 
 
-ShVodToUV::ShVodToUV(const param::MIRParametrisation &parametrisation):
+ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
+
+    // use the 'local' spectral transforms
+    std::string type = "local";
+    parametrisation.get("atlas-trans-type", type);
+
+    if (!atlas::trans::TransFactory::has(type)) {
+        std::ostringstream msg;
+        msg << "ShVodToUV: Atlas/Trans spectral transforms type '" << type << "' not supported, available types are: ";
+        atlas::trans::TransFactory::list(msg);
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+
+    options_.set(atlas::option::type(type));
 }
 
 
@@ -50,13 +64,12 @@ bool ShVodToUV::sameAs(const Action& other) const {
 }
 
 
-void ShVodToUV::print(std::ostream &out) const {
-    out << "ShVodToUV["
-        << "]";
+void ShVodToUV::print(std::ostream& out) const {
+    out << "ShVodToUV[type=" << options_.getString("type") << "]";
 }
 
 
-void ShVodToUV::execute(context::Context & ctx) const {
+void ShVodToUV::execute(context::Context& ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().vod2uvTiming_);
 
     // get field properties
@@ -90,8 +103,7 @@ void ShVodToUV::execute(context::Context & ctx) const {
     const int nb_coeff = int(size);
     const int nb_fields = 1;
 
-    // NOTE: only type="ifs" is supported since we don't support local spectral fields
-    atlas::trans::VorDivToUV vordiv_to_UV(T, atlas::option::type("ifs"));
+    atlas::trans::VorDivToUV vordiv_to_UV(T, options_);
     ASSERT(vordiv_to_UV.truncation() == T);
 
     vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());

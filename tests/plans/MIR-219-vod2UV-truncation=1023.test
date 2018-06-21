@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=1023
 # plan
-ShTruncate[truncation=1023]|ShVodToUVLegacy[plusOneWave=0]|Save[output=...]
+ShTruncate[truncation=1023]|ShVodToUV[type=local]|Save[output=...]

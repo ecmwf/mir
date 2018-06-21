@@ -16,8 +16,8 @@
 #ifndef mir_action_transform_ShVodToUV_h
 #define mir_action_transform_ShVodToUV_h
 
-#include <vector>
 #include "mir/action/plan/Action.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -27,6 +27,10 @@ namespace transform {
 
 class ShVodToUV : public Action {
 public:
+
+    // -- Types
+
+    using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
     // None
@@ -78,7 +82,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    atlas_config_t options_;
 
     // -- Methods
     // None
@@ -86,7 +91,7 @@ private:
     // -- Overridden methods
 
     virtual bool sameAs(const Action&) const;
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context&) const;
     virtual const char* name() const;
 
     // -- Class members

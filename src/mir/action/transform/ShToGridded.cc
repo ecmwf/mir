@@ -281,7 +281,8 @@ ShToGridded::~ShToGridded() = default;
 void ShToGridded::print(std::ostream& out) const {
     // We don't want to 'see' the internal options, just if they are set differently
     // (so we know when they change)
-    out <<  "cropping=" << cropping_
+    out <<  "type=" << options_.getString("type")
+        << ",cropping=" << cropping_
         << ",options=[" << atlasOptionsDigest(options_) << "]";
 }
 
