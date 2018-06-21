@@ -46,13 +46,21 @@ static void init() {
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
     Gridded(bbox),
-    N_(N) {
+    N_(N),
+    angularPrecision_(0) {
 }
 
 
 Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
-    Gridded(parametrisation) {
+    Gridded(parametrisation),
+    N_(0),
+    angularPrecision_(0) {
+
     ASSERT(parametrisation.get("N", N_));
+    ASSERT(N_ > 0);
+
+    parametrisation.get("angularPrecision", angularPrecision_);
+    ASSERT(angularPrecision_ >= 0);
 }
 
 
@@ -93,7 +101,7 @@ void Gaussian::validate(const MIRValuesVector& values) const {
 }
 
 
-void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) const {
+void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     ASSERT(s <= n);
 
     const std::vector<double>& lats = latitudes();
@@ -103,9 +111,12 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
     if (n < lats.back()) {
         n = lats.back();
     } else if (in) {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n, grib1 ?
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 < l2 || same_with_grib1_accuracy(l1, l2)); } :
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 <= l2); });
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, [=](Latitude l1, Latitude l2) {
+            if (angularPrecision_ > 0 && eckit::types::is_approximately_equal(l1.value(), l2.value(), angularPrecision_)) {
+                return false;
+            }
+            return !(l1 <= l2);
+        });
         ASSERT(best != lats.end());
         n = *best;
     } else if (n > lats.front()) {
@@ -120,16 +131,19 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool grib1, bool in) 
     } else if (s > lats.front()) {
         s = lats.front();
     } else if (in) {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, grib1 ?
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 > l2 || same_with_grib1_accuracy(l1, l2)); } :
-                     [](const Latitude& l1, const Latitude& l2) { return !(l1 >= l2); });
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [=](Latitude l1, Latitude l2) {
+            if (angularPrecision_ > 0 && eckit::types::is_approximately_equal(l1.value(), l2.value(), angularPrecision_)) {
+                return false;
+            }
+            return !(l1 >= l2);
+        });
         ASSERT(best != lats.rend());
         s = *best;
     } else if (s < lats.back()) {
         // extend 'outwards': don't change, it's already below the Gaussian latitudes
     } else {
         auto best = std::lower_bound(lats.begin(), lats.end(), s,
-                     [](const Latitude& l1, const Latitude& l2) { return l1 > l2; });
+                     [](Latitude l1, Latitude l2) { return l1 > l2; });
         s = *best;
     }
 
@@ -176,7 +190,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(std::is_sorted(
                latitudesIt->second.begin(),
                latitudesIt->second.end(),
-               [](const double& a, const double& b) {
+               [](double a, double b) {
         return a > b;
     } ));
 

@@ -65,13 +65,14 @@ protected:
     // -- Members
 
     size_t N_;
+    double angularPrecision_;
 
     // -- Methods
 
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
-    void correctSouthNorth(Latitude& s, Latitude& n, bool grib1=false, bool in=true) const;
+    void correctSouthNorth(Latitude& s, Latitude& n, bool in=true) const;
 
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
     Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;

@@ -70,7 +70,7 @@ protected:
 
     // -- Methods
 
-    void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false) const;
+    void correctWestEast(Longitude& w, Longitude& e) const;
     void setNiNj();
 
     // -- Overridden methods

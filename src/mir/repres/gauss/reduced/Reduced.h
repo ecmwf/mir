@@ -83,7 +83,7 @@ protected:
 
     const std::vector<long>& pls() const;
     void setNj(const std::vector<long>&, const Latitude& s, const Latitude& n);
-    void correctWestEast(Longitude& w, Longitude& e, bool grib1 = false);
+    void correctWestEast(Longitude& w, Longitude& e);
 
     // -- Overridden methods
 
