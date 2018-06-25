@@ -85,7 +85,7 @@ bool CompareDifferenceNorms::compare(
         ++w;
 
         const size_t N = std::min(values1.size(), values2.size());
-        eckit::Log::debug() << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")" << std::endl;
+        eckit::Log::debug<LibMir>() << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")" << std::endl;
 
         // compare fields value count
         cmp = (values1.size() == values2.size());

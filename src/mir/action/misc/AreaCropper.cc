@@ -23,6 +23,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Gridded.h"
@@ -156,7 +157,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
 
     c.bbox_ = util::BoundingBox(n, w, s, e);
-    eckit::Log::debug() << "Creating cropping cache entry for " << c.bbox_ << std::endl;
+    eckit::Log::debug<LibMir>() << "Creating cropping cache entry for " << c.bbox_ << std::endl;
 
     c.mapping_.clear();
     c.mapping_.reserve(m.size());

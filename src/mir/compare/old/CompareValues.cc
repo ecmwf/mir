@@ -181,21 +181,21 @@ CompareValues::CompareValuesFn* CompareValues::getCompareFunctor(double missingV
 
         const double packing_factor = options_.get< double >("compare-eps-packingfactor");
         const double eps = std::max(1., packing_factor) * packingError;
-        eckit::Log::debug() << "Compare: |ε| = max(1, " << packing_factor << ")*ε|packing = " << eps << std::endl;
+        eckit::Log::debug<LibMir>() << "Compare: |ε| = max(1, " << packing_factor << ")*ε|packing = " << eps << std::endl;
         return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
 
     }
     else if (compareMode=="absolute") {
 
         const double eps = std::max(packingError, options_.get< double >("compare-eps-absolute"));
-        eckit::Log::debug() << "Compare: |ε| =  max(ε|absolute, ε|packing) = " << eps << std::endl;
+        eckit::Log::debug<LibMir>() << "Compare: |ε| =  max(ε|absolute, ε|packing) = " << eps << std::endl;
         return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
 
     }
     else if (compareMode=="relative") {
 
         const double eps = options_.get< double >("compare-eps-relative");
-        eckit::Log::debug() << "Compare: |ε| =  ε|relative = " << eps << std::endl;
+        eckit::Log::debug<LibMir>() << "Compare: |ε| =  ε|relative = " << eps << std::endl;
         return new util::compare::CompareValuesRelativeToleranceFn< double >(eps, missingValue1, missingValue2);
 
     }
@@ -206,7 +206,7 @@ CompareValues::CompareValuesFn* CompareValues::getCompareFunctor(double missingV
 
 CompareValues::CompareValuesFn* CompareValues::getCompareAnglesFunctor(double missingValue1, double missingValue2, double packingError) const {
     const double eps = std::max(packingError, options_.get< double >("compare-eps-angle"));
-    eckit::Log::debug() << "Compare: |ε| =  max(ε|angle, ε|packing) = " << eps << "°" << std::endl;
+    eckit::Log::debug<LibMir>() << "Compare: |ε| =  max(ε|angle, ε|packing) = " << eps << "°" << std::endl;
     return new util::compare::CompareValuesAbsoluteToleranceFn< double >(eps, missingValue1, missingValue2);
 }
 
@@ -237,8 +237,9 @@ bool CompareValues::compareFieldsValuesScalar(
         // set maximum allowable difference count (Ndiffmax)
         const size_t N = std::min(values1.size(), values2.size());
         const size_t Ndiffmax = getNMaxDifferences(N, options);
-        eckit::Log::debug() << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")\n"
-                               "\tNdiffmax = " << Ndiffmax << std::endl;
+        eckit::Log::debug<LibMir>()
+            << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")\n"
+               "\tNdiffmax = " << Ndiffmax << std::endl;
 
         cmp = (values1.size() == values2.size());
         if (!cmp || verbose) {
@@ -301,8 +302,9 @@ bool CompareValues::compareFieldsValuesAngleDegrees(
         // set maximum allowable difference count (Ndiffmax)
         const size_t N = std::min(values1.size(), values2.size());
         const size_t Ndiffmax = getNMaxDifferences(N, options);
-        eckit::Log::debug() << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")\n"
-                               "\tNdiffmax = " << Ndiffmax << std::endl;
+        eckit::Log::debug<LibMir>()
+            << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1.size()) << ", " << eckit::BigNum(values1.size()) << ")\n"
+               "\tNdiffmax = " << Ndiffmax << std::endl;
 
         cmp = (values1.size() == values2.size());
         if (!cmp || verbose) {
@@ -366,8 +368,9 @@ bool CompareValues::compareFieldsValuesVectorCartesian2D(
     // set maximum allowable difference count (Ndiffmax)
     const size_t N = std::min(values1x.size(), values2x.size());
     const size_t Ndiffmax = getNMaxDifferences(N, options);
-    eckit::Log::debug() << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1x.size()) << ", " << eckit::BigNum(values1x.size()) << ")\n"
-                           "\tNdiffmax = " << Ndiffmax << std::endl;
+    eckit::Log::debug<LibMir>()
+        << "\tN = min(#field A, #field B) = min(" << eckit::BigNum(values1x.size()) << ", " << eckit::BigNum(values1x.size()) << ")\n"
+        "\tNdiffmax = " << Ndiffmax << std::endl;
 
 
     // perform value comparison

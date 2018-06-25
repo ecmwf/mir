@@ -284,7 +284,7 @@ void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input
     eckit::Timer timer("Total time");
 
     mir::util::MIRStatistics statistics;
-    eckit::Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    eckit::Log::debug<mir::LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
