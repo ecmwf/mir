@@ -5,12 +5,13 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 
 foreach( _t
-        test_spectral_order
+        test_gaussian_iterator
         test_increments
+        test_spectral_order
         )
   ecbuild_add_test(
-      TARGET       ${_t}
-      SOURCES      ${_t}.cc
+      TARGET  ${_t}
+      SOURCES ${_t}.cc
       LIBS    mir
       ENVIRONMENT
         "MIR_DEBUG=1"
