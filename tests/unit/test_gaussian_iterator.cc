@@ -162,6 +162,44 @@ CASE("test area point count (O640)") {
 }
 
 
+CASE("test area point count (O1280)") {
+    auto& log = eckit::Log::info();
+
+    const size_t gaussianNumber(1280);
+    RepresentationHandle grid(new repres::gauss::reduced::ReducedOctahedral(gaussianNumber));
+
+    log << "Test " << *grid << std::endl;
+    size_t nGlobal = grid->numberOfPoints();
+    ASSERT(nGlobal > 0);
+    log << "\tnumberOfPoints =\t" << nGlobal << std::endl;
+
+    for (auto& bbox : {
+         BoundingBox{  90., 0., -90., 359.929 },
+        }) {
+        log << "Test " << *grid << " with " << bbox << "..." << std::endl;
+
+        RepresentationHandle cropped(grid->croppedRepresentation(bbox));
+
+        size_t n = cropped->numberOfPoints();
+        ASSERT(0 < n);
+        EXPECT(n < nGlobal);
+        log << "\tnumberOfPoints =\t" << n << std::endl;
+
+        size_t numberOfPointsIterator = numberOfPoints(*cropped, counting_mode_t::iterator, gaussianNumber, n);
+        EXPECT(numberOfPointsIterator == n);
+        log << "\tecCodes iterator =\t" << numberOfPointsIterator << std::endl;
+
+        size_t numberOfPoints1 = numberOfPoints(*cropped, counting_mode_t::GRIB1, gaussianNumber, n);
+        EXPECT(numberOfPoints1 == n);
+        log << "\tGRIB1 numberOfValues =\t" << n << std::endl;
+
+        size_t numberOfPoints2 = numberOfPoints(*cropped, counting_mode_t::GRIB2, gaussianNumber, n);
+        EXPECT(numberOfPoints2 == n);
+        log << "\tGRIB2 numberOfValues =\t" << n << std::endl;
+    }
+}
+
+
 }  // namespace unit
 }  // namespace tests
 }  // namespace mir

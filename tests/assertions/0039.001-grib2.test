@@ -1,6 +1,0 @@
-# MARS request (GRIB2)
-levtype=ml,levelist=1,param=q
-# MIR
---area=90/0/-90/359.929
-# grib_get assertions (global: 6599680)
-numberOfValues = 6599646
