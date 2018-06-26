@@ -77,28 +77,11 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const
 }
 
 
-AreaCropper::~AreaCropper() = default;
+void AreaCropper::crop(
+        const repres::Representation& repres,
+        util::BoundingBox& bbox,
+        std::vector<size_t>& mapping) {
 
-
-bool AreaCropper::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const AreaCropper*>(&other);
-    return o && (bbox_ == o->bbox_);
-}
-
-
-void AreaCropper::print(std::ostream& out) const {
-    out << "AreaCropper[bbox=" << bbox_ << "]";
-}
-
-
-const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
-    return bbox_;
-}
-
-
-static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
-                                     const repres::Representation* representation,
-                                     const util::BoundingBox& bbox) {
     std::map<LL, size_t> m;
 
     Latitude n = 0;
@@ -112,7 +95,7 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
-    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+    eckit::ScopedPtr<repres::Iterator> iter(repres.iterator());
 
     while (iter->next()) {
         const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
@@ -148,22 +131,51 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
     // Don't support empty results
     if (m.empty()) {
         std::ostringstream oss;
-        oss << "Cropping " << *representation << " to " << bbox << " returns no points";
+        oss << "Cropping " << repres << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
     }
 
     // Make sure we did not visit duplicate points
     ASSERT(count == m.size());
 
+    // Set resuling bounding box and mapping
+    bbox = util::BoundingBox(n, w, s, e);
 
-    c.bbox_ = util::BoundingBox(n, w, s, e);
-    eckit::Log::debug<LibMir>() << "Creating cropping cache entry for " << c.bbox_ << std::endl;
-
-    c.mapping_.clear();
-    c.mapping_.reserve(m.size());
+    mapping.clear();
+    mapping.reserve(m.size());
     for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
-        c.mapping_.push_back((*j).second);
+        mapping.push_back((*j).second);
     }
+}
+
+
+AreaCropper::~AreaCropper() = default;
+
+
+bool AreaCropper::sameAs(const Action& other) const {
+    auto o = dynamic_cast<const AreaCropper*>(&other);
+    return o && (bbox_ == o->bbox_);
+}
+
+
+void AreaCropper::print(std::ostream& out) const {
+    out << "AreaCropper[bbox=" << bbox_ << "]";
+}
+
+
+const util::BoundingBox& AreaCropper::croppingBoundingBox() const {
+    return bbox_;
+}
+
+
+static void createCroppingCacheEntry(caching::CroppingCacheEntry& c,
+                                     const repres::Representation* representation,
+                                     const util::BoundingBox& bbox) {
+
+    eckit::Log::debug<LibMir>() << "Creating cropping cache entry for " << bbox << std::endl;
+    c.bbox_ = bbox;
+    c.mapping_.clear();
+    AreaCropper::crop(*representation, c.bbox_, c.mapping_);
 }
 
 

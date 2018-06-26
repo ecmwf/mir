@@ -53,7 +53,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static void crop(const repres::Representation&, util::BoundingBox&, std::vector<size_t>& mapping);
 
     // -- Overridden methods
 
