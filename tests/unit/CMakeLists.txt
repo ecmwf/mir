@@ -5,8 +5,8 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 
 foreach( _t
-        test_gaussian_iterator
         test_increments
+        test_iterators
         test_spectral_order
         )
   ecbuild_add_test(
