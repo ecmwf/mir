@@ -9,11 +9,14 @@
  */
 
 
+#include <string>
 #include <vector>
 #include "eckit/log/Log.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
+#include "mir/action/misc/AreaCropper.h"
 #include "mir/config/LibMir.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/util/BoundingBox.h"
@@ -29,9 +32,6 @@ using repres::RepresentationHandle;
 using util::BoundingBox;
 
 
-static BoundingBox dummy;
-
-
 void numberOfPoints(
         const repres::Representation& repres,
         size_t gaussianNumber,
@@ -39,7 +39,7 @@ void numberOfPoints(
         size_t& numberOfValues1,
         size_t& numberOfValues2,
         size_t& numberOfValuesIterator,
-        BoundingBox& encodedBoundingBox = dummy) {
+        BoundingBox& encodedBoundingBox) {
 
     // Make sure handles are deleted even in case of exception
     class HandleFree {
@@ -142,50 +142,8 @@ void numberOfPoints(
 }
 
 
-size_t areaCropper(const repres::Representation& repres, BoundingBox& bbox) {
-
-    Latitude n = 0;
-    Latitude s = 0;
-    Longitude e = 0;
-    Longitude w = 0;
-
-    size_t count = 0;
-    bool first = true;
-
-    // Iterator is "unrotated", because the cropping area
-    // is expressed in before the rotation is applied
-    eckit::ScopedPtr<repres::Iterator> iter(repres.iterator());
-    while (iter->next()) {
-        const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
-        if (bbox.contains(point.lat, point.lon)) {
-
-            const Latitude& lat = point.lat;
-            const Longitude lon = point.lon.normalise(bbox.west());
-
-            if (first) {
-                n = s = lat;
-                e = w = lon;
-                first = false;
-            } else {
-                if (n < lat) { n = lat; }
-                if (s > lat) { s = lat; }
-                if (e < lon) { e = lon; }
-                if (w > lon) { w = lon; }
-            }
-
-            count++;
-        }
-    }
-
-    // Don't support empty results
-    ASSERT(count > 0);
-
-    bbox = BoundingBox(n, w, s, e);
-    return count;
-}
-
-
 CASE("test Gaussian iterator") {
+#if 0
     auto& out = eckit::Log::info();
     auto& debug = eckit::Log::debug<LibMir>();
 
@@ -199,149 +157,101 @@ CASE("test Gaussian iterator") {
         auto& p = iter->pointUnrotated();
         out << p << std::endl;
     }
+#endif
 }
 
 
-CASE("test area point count (O640)") {
+CASE("test area point count") {
+
     auto& log = eckit::Log::info();
 
-    const size_t gaussianNumber(640);
-    RepresentationHandle grid(new repres::gauss::reduced::ReducedOctahedral(gaussianNumber));
-
-    log << "Test " << *grid << std::endl;
-    size_t nGlobal = grid->numberOfPoints();
-    ASSERT(nGlobal > 0);
-    log << "\tnumberOfPoints =\t" << nGlobal << std::endl;
-
-    for (auto& bbox : {
-         BoundingBox{  51.941,    7.005,   43.084,   27.693 },
-         BoundingBox{  51.9406,   7.00599, 43.0847,  27.6923 },
-         BoundingBox{  57.9852, 230,       25.0918, 300 },
-         BoundingBox{  11.8782, 279,      -49.9727, 325 },
-         BoundingBox{ -25.0918, 135,      -46.8801, 179 },
-         BoundingBox{  43.9281,  91,       21.0152, 143 },
-         BoundingBox{  59.9531,  23,       35.0722,  80 },
-        }) {
-        log << "Test " << *grid << " with " << bbox << "..." << std::endl;
-
-        // crop "manually", to get the smallest possible bounding box
-        BoundingBox small = bbox;
-        size_t n = areaCropper(*grid, small);
-        ASSERT(0 < n);
-        EXPECT(n < nGlobal);
-        log << "\tnumberOfPoints =\t" << n << std::endl;
-
-        RepresentationHandle cropped(grid->croppedRepresentation(bbox));
-        EXPECT(n == cropped->numberOfPoints());  // (heavy!)
-
-        // check point counts
-        ASSERT(n > 0);
-        EXPECT(n < nGlobal);
-        log << "\tnumberOfPoints =\t" << n << std::endl;
-
-        size_t numberOfValues1 = 0;
-        size_t numberOfValues2 = 0;
-        size_t numberOfValuesIterator = 0;
-        numberOfPoints(*cropped, gaussianNumber, n, numberOfValues1, numberOfValues2, numberOfValuesIterator);
-        log <<   "\tGRIB1 numberOfValues =\t" << numberOfValues1
-            << "\n\tGRIB2 numberOfValues =\t" << numberOfValues2
-            << "\n\tecCodes iterator =\t" << numberOfValuesIterator
-            << std::endl;
-        EXPECT(numberOfValues1 == n);
-        EXPECT(numberOfValues2 == n);
-        EXPECT(numberOfValuesIterator == n);
-    }
-}
-
-
-CASE("test area point count (O1280)") {
-    auto& log = eckit::Log::info();
-
-    const size_t gaussianNumber(1280);
-    RepresentationHandle grid(new repres::gauss::reduced::ReducedOctahedral(gaussianNumber));
-
-    log << "Test " << *grid << std::endl;
-    size_t nGlobal = grid->numberOfPoints();
-    ASSERT(nGlobal > 0);
-    log << "\tnumberOfPoints =\t" << nGlobal << std::endl;
-
-    for (auto& bbox : {
-         BoundingBox{  90., 0., -90., 359.929 },
-        }) {
-        log << "Test " << *grid << " with " << bbox << "..." << std::endl;
-
-        // crop "manually", to get the smallest possible bounding box
-        BoundingBox small = bbox;
-        size_t n = areaCropper(*grid, small);
-        ASSERT(0 < n);
-        EXPECT(n < nGlobal);
-        log << "\tnumberOfPoints =\t" << n << std::endl;
-
-        RepresentationHandle cropped(grid->croppedRepresentation(bbox));
-        EXPECT(n == cropped->numberOfPoints());  // (heavy!)
-
-        ASSERT(0 < n);
-        EXPECT(n < nGlobal);
-        log << "\tnumberOfPoints =\t" << n << std::endl;
-
-        size_t numberOfValues1 = 0;
-        size_t numberOfValues2 = 0;
-        size_t numberOfValuesIterator = 0;
-        numberOfPoints(*cropped, gaussianNumber, n, numberOfValues1, numberOfValues2, numberOfValuesIterator);
-        log <<   "\tGRIB1 numberOfValues =\t" << numberOfValues1
-            << "\n\tGRIB2 numberOfValues =\t" << numberOfValues2
-            << "\n\tecCodes iterator =\t" << numberOfValuesIterator
-            << std::endl;
-        EXPECT(numberOfValues1 == n);
-        EXPECT(numberOfValues2 == n);
-        EXPECT(numberOfValuesIterator == n);
-    }
-}
-
-
-CASE("ECC-445 (O1280)") {
-    auto& log = eckit::Log::info();
-
-    const size_t gaussianNumber(1280);
-    RepresentationHandle grid(new repres::gauss::reduced::ReducedOctahedral(gaussianNumber));
-
-    log << "Test " << *grid << std::endl;
-    size_t nGlobal = grid->numberOfPoints();
-    ASSERT(nGlobal > 0);
-    log << "\tnumberOfPoints =\t" << nGlobal << std::endl;
 
     struct test_t {
-        size_t numberOfPoints;
+        test_t(std::string&& _gridname, BoundingBox&& _bbox, size_t _numberOfPoints, size_t _Ni = 0, size_t _Nj =0) :
+            gridname(_gridname),
+            bbox(_bbox),
+            numberOfPoints(_numberOfPoints),
+            Ni(_Ni),
+            Nj(_Nj) {
+        }
+        std::string gridname;
         BoundingBox bbox;
+        size_t numberOfPoints;
+        size_t Ni;
+        size_t Nj;
     };
 
+
     for (auto& test : {
-         test_t{  12369, {  37.6025, -114.891,  27.7626, -105.188 }},
-         test_t{     19, {  27.9,     253,      27.8,     254 }},
-         test_t{ 124577, { -10.017,   -85,     -38.981,   -56 }},
-         test_t{ 124209, { -10.0176,  275,     -38.9807,  304 }},
-         test_t{  12274, {  37.5747,  245.109,  27.8032,  254.812 }},
-         test_t{  12373, {  37.575,  -114.892,  27.803,  -105.187 }},
-         test_t{  12373, {  37.6025, -114.8915, 27.7626, -105.1875 }},
-         test_t{ 124143, { -10, -85,  -39,     -56.1 }},
+
+         // pgen
+         test_t{ "O640",  BoundingBox{  51.941,    7.005,   43.084,    27.693 },    4512 },
+         test_t{ "O640",  BoundingBox{  51.9406,   7.00599, 43.0847,   27.6923 },   4443 },
+         test_t{ "O640",  BoundingBox{  57.9852, 230,       25.0918,  300 },       63479 },
+         test_t{ "O640",  BoundingBox{  11.8782, 279,      -49.9727,  325 },      111068 },
+         test_t{ "O640",  BoundingBox{ -25.0918, 135,      -46.8801,  179 },       29294 },
+         test_t{ "O640",  BoundingBox{  43.9281,  91,       21.0152,  143 },       38990 },
+         test_t{ "O640",  BoundingBox{  59.9531,  23,       35.0722,   80 },       34426 },
+
+         // "almost" global
+         test_t{ "O1280", BoundingBox{  90.,       0.,     -90.,      359.929 }, 6599646 },
+
+         // ECC-445
+         test_t{ "O1280", BoundingBox{  37.6025, -114.891,  27.7626, -105.188 },   12369 },
+         test_t{ "O1280", BoundingBox{  27.9,     253,      27.8,     254 },          19 },
+         test_t{ "O1280", BoundingBox{ -10.017,   -85,     -38.981,   -56 },      124577 },
+         test_t{ "O1280", BoundingBox{ -10.0176,  275,     -38.9807,  304 },      124209 },
+         test_t{ "O1280", BoundingBox{  37.5747,  245.109,  27.8032,  254.812 },   12274 },
+         test_t{ "O1280", BoundingBox{  37.575,  -114.892,  27.803,  -105.187 },   12373 },
+         test_t{ "O1280", BoundingBox{  37.6025, -114.8915, 27.7626, -105.1875 },  12373 },
+         test_t{ "O1280", BoundingBox{ -10,       -85,     -39,       -56.1 },    124143 },
+         test_t{ "F160",  BoundingBox{  40,        50,     -50,       169.532 },   34080, 213, 160 },
+         test_t{ "F160",  BoundingBox{  71.8,     -10.66,   34.56,     32.6 },      5016,  76,  66 },
+         test_t{ "F320",  BoundingBox{  70.9,     -40.987,  19.73,     40 },       52416, 288, 182 },
+         test_t{ "F640",  BoundingBox{  70.9,     -40.987,  19.73,     40 },      209664, 576, 364 },
+
         }) {
+
+        auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
+        RepresentationHandle grid(ng.representation());
+
         log << "Test " << *grid << " with " << test.bbox << "..." << std::endl;
 
-        // crop "manually", to get the smallest possible bounding box
-        BoundingBox small = test.bbox;
-        size_t n = areaCropper(*grid, small);
-        ASSERT(0 < n);
-        EXPECT(n < nGlobal);
-        log << "\tnumberOfPoints =\t" << n << std::endl;
 
+        // Global representation
+        size_t nGlobal = grid->numberOfPoints();
+        ASSERT(0 < nGlobal);
+        log << "\tnumberOfPoints =\t" << nGlobal << " (global)" << std::endl;
+
+
+
+        // Crop "manually", to get the smallest possible bounding box
+        std::vector<size_t> mapping;
+        BoundingBox small(test.bbox);
+        action::AreaCropper::crop(*grid, small, mapping);
+
+        size_t nCropped = mapping.size();
+        ASSERT(0 < nCropped);
+        log << "\tnumberOfPoints =\t" << nCropped << " (manual crop)" << std::endl;
+
+        EXPECT(nCropped < nGlobal);
+        EXPECT(test.bbox.contains(small));
+
+
+        // Cropped representation
         RepresentationHandle cropped(grid->croppedRepresentation(test.bbox));
-        EXPECT(n == cropped->numberOfPoints());  // (heavy!)
+        size_t n = cropped->numberOfPoints();
+        ASSERT(0 < n);
+        log << "\tnumberOfPoints =\t" << n << " (representation crop)" << std::endl;
+
+        EXPECT(n < nGlobal);
+        EXPECT(n == nCropped);
 
         size_t numberOfValues1 = 0;
         size_t numberOfValues2 = 0;
         size_t numberOfValuesIterator = 0;
         BoundingBox encoded;
-        numberOfPoints(*cropped, gaussianNumber, n, numberOfValues1, numberOfValues2, numberOfValuesIterator, encoded);
+        numberOfPoints(*cropped, ng.gaussianNumber(), n, numberOfValues1, numberOfValues2, numberOfValuesIterator, encoded);
 
         log <<   "\tGRIB1 numberOfValues =\t" << numberOfValues1
             << "\n\tGRIB2 numberOfValues =\t" << numberOfValues2
@@ -356,11 +266,27 @@ CASE("ECC-445 (O1280)") {
             << "\n\tbbox =\t" << small << " (contained by crop)"
             << "\n\tencoded = " << encoded << " (expanded bbox)"
             << std::endl;
+
         EXPECT(test.bbox.contains(small));
         EXPECT(encoded.contains(small));
-
     }
 }
+
+
+
+
+#if 0
+--area=58.5/-6.1/36/20.7 --grid=0.1/0.1
+# grib_get
+numberOfValues=60794
+latitudeOfFirstGridPointInDegrees=58.5
+longitudeOfFirstGridPointInDegrees=-6.1
+latitudeOfLastGridPointInDegrees=36
+longitudeOfLastGridPointInDegrees=20.7
+Ni=269
+Nj=226
+#endif
+
 
 
 }  // namespace unit
