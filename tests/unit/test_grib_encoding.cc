@@ -150,6 +150,9 @@ public:
         for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
         }
 
+        grib_iterator_delete(iter);
+
+
         ASSERT(n > 0);
         return size_t(n);
     }
