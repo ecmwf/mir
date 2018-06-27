@@ -34,7 +34,7 @@ public:
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::BoundingBox&, const util::Increments&);
+    LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 

@@ -27,24 +27,15 @@ private:
     void usage(const std::string& tool) const;
 public:
     MIRGridInfo(int argc, char **argv) : tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::VectorOption<double>("grid", "Provid the West-East & South-North increments", 2));
-        options_.push_back(new eckit::option::SimpleOption<std::string>("gridname", "Provide grid name"));
-        options_.push_back(new eckit::option::VectorOption<double>("area", "Specify the area: north/west/south/east", 4));
+        options_.push_back(new eckit::option::VectorOption<double>("grid", "West-East & South-North increments", 2));
+        options_.push_back(new eckit::option::SimpleOption<std::string>("gridname", "grid name"));
+        options_.push_back(new eckit::option::VectorOption<double>("area", "North/West/South/East", 4));
     }
 };
 
 
 void MIRGridInfo::usage(const std::string &tool) const {
     eckit::Log::info() << tool << " --area=n/w/s/e --gridname=name|--grid=we/sn" << std::endl;
-}
-
-template<class T>
-static
-T abs(const T& x) {
-    if (x > 0) {
-        return x;
-    }
-    return 0 - x;
 }
 
 template<class T>
@@ -96,9 +87,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
 
     if (args.get("grid", value)) {
         ASSERT(value.size() == 2);
-        util::BoundingBox globe(90, 0, -90, 360 - value[0]);
-        util::Increments increments(value[0], value[1]);
-        repres::latlon::RegularLL ll(globe, increments);
+        repres::latlon::RegularLL ll(util::Increments(value[0], value[1]));
         repres::Representation& r = ll;
         iterator.reset(r.iterator());
     }
@@ -137,10 +126,6 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     std::cout << "west " << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' <<  w.dbelow_ << std::endl;
     std::cout << "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_ << std::endl;
     std::cout << "east " << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' <<  e.dbelow_ << std::endl;
-
-
-
-
 }
 
 

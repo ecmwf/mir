@@ -16,12 +16,12 @@
 #include "eckit/option/VectorOption.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/Representation.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
-#include "mir/repres/latlon/RegularLL.h"
-#include "mir/namedgrids/NamedGrid.h"
 
 
 using namespace mir;
@@ -197,7 +197,6 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
         ASSERT(value.size() == 2);
 
         repres::RepresentationHandle rep(new repres::latlon::RegularLL(
-                                             util::BoundingBox(),
                                              util::Increments(value[0], value[1]) ));
         countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
         return;

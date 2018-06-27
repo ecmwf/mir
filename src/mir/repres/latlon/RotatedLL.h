@@ -34,7 +34,7 @@ public:
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation&);
-    RotatedLL(const util::BoundingBox&, const util::Increments&, const util::Rotation&);
+    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 

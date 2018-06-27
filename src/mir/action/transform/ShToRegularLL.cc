@@ -79,7 +79,7 @@ const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() co
     util::BoundingBox bbox;
     increments_.globaliseBoundingBox(bbox);
 
-    return new repres::latlon::RegularLL(bbox, increments_);
+    return new repres::latlon::RegularLL(increments_, bbox);
 }
 
 

@@ -84,7 +84,7 @@ const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentati
     util::BoundingBox bbox;
     increments_.globaliseBoundingBox(bbox);
 
-    return new repres::latlon::RotatedLL(bbox, increments_, rotation_);
+    return new repres::latlon::RotatedLL(increments_, rotation_, bbox);
 }
 
 

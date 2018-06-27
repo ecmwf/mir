@@ -128,10 +128,10 @@ const mir::repres::Representation* output_representation(const mir::param::MIRPa
             ASSERT(rot.size() == 2);
             mir::util::Rotation rotation(rot[0], rot[1]);
 
-            return new mir::repres::latlon::RotatedLL(boundingBox, *increments, rotation);
+            return new mir::repres::latlon::RotatedLL(*increments, rotation, boundingBox);
         }
 
-        return new mir::repres::latlon::RegularLL(boundingBox, *increments);
+        return new mir::repres::latlon::RegularLL(*increments, boundingBox);
     }
 
     std::string griddef;

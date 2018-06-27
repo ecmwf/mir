@@ -53,7 +53,7 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
 }
 
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    return new repres::latlon::RotatedLL(bbox_, increments_, rotation_);
+    return new repres::latlon::RotatedLL(increments_, rotation_, bbox_);
 }
 
 const char* Gridded2RotatedLL::name() const {
