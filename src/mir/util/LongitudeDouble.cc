@@ -15,24 +15,19 @@
 
 #include "mir/util/LongitudeDouble.h"
 
+
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/serialisation/Stream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/Grib.h"
-
 namespace mir {
 
-
-LongitudeDouble LongitudeDouble::GLOBE(360); // 360
-LongitudeDouble LongitudeDouble::DATE_LINE(180); // 180
-LongitudeDouble LongitudeDouble::MINUS_DATE_LINE(-180); // -180
-LongitudeDouble LongitudeDouble::GREENWICH(0); // 0
+LongitudeDouble LongitudeDouble::GLOBE(360);
+LongitudeDouble LongitudeDouble::DATE_LINE(180);
+LongitudeDouble LongitudeDouble::MINUS_DATE_LINE(-180);
+LongitudeDouble LongitudeDouble::GREENWICH(0);
 
 void LongitudeDouble::print(std::ostream& out) const {
     out << value_;

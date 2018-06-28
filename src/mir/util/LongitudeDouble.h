@@ -44,39 +44,41 @@ public:
 
     // -- Operators
 
-    bool operator==(double other) const;
-    bool operator!=(double other) const;
+    bool operator==(double) const;
+    bool operator!=(double) const;
 
-    bool operator>(double other) const;
-    bool operator<(double other) const;
+    bool operator>(double) const;
+    bool operator<(double) const;
 
-    bool operator>=(double other) const;
-    bool operator<=(double other) const;
+    bool operator>=(double) const;
+    bool operator<=(double) const;
+
+    //======================================
 
     LongitudeDouble& operator+=(double value) {
         value_ += value;
         return *this;
     }
 
-    LongitudeDouble& operator-=(double value){
+    LongitudeDouble& operator-=(double value) {
         value_ -= value;
         return *this;
     }
 
     LongitudeDouble operator+(double value) const {
-        return LongitudeDouble(value_ + value);
+        return {value_ + value};
     }
 
     LongitudeDouble operator-(double value) const {
-        return LongitudeDouble(value_ - value);
+        return {value_ - value};
     }
 
     LongitudeDouble operator/(double value) const {
-        return LongitudeDouble(value_ / value);
+        return {value_ / value};
     }
 
     LongitudeDouble operator*(double value) const {
-        return LongitudeDouble(value_ * value);
+        return {value_ * value};
     }
 
     //======================================
@@ -86,20 +88,20 @@ public:
         return *this;
     }
 
-    LongitudeDouble& operator-=(const eckit::Fraction& value){
+    LongitudeDouble& operator-=(const eckit::Fraction& value) {
         value_ -= double(value);
         return *this;
     }
 
     LongitudeDouble operator+(const eckit::Fraction& value) const {
-        return LongitudeDouble(value_ + double(value));
+        return {value_ + double(value)};
     }
 
     LongitudeDouble operator-(const eckit::Fraction& value) const {
-        return LongitudeDouble(value_ - double(value));
+        return {value_ - double(value)};
     }
-    //========================================
-    //========================================
+
+    //======================================
 
     LongitudeDouble& operator+=(const LongitudeDouble& other) {
         value_ += other.value_;
@@ -112,34 +114,34 @@ public:
     }
 
     LongitudeDouble operator+(const LongitudeDouble& other) const {
-        return LongitudeDouble(value_ + other.value_);
+        return {value_ + other.value_};
     }
 
-    LongitudeDouble operator-(const LongitudeDouble& other) const{
-        return LongitudeDouble(value_ - other.value_);
+    LongitudeDouble operator-(const LongitudeDouble& other) const {
+        return {value_ - other.value_};
     }
 
     bool operator==(const LongitudeDouble& other) const {
         return (*this) == other.value_;
     }
 
-    bool operator!=(const LongitudeDouble& other) const{
+    bool operator!=(const LongitudeDouble& other) const {
         return (*this) != other.value_;
     }
 
     bool operator>(const LongitudeDouble& other) const {
-     return (*this) > other.value_;
+        return (*this) > other.value_;
     }
 
-    bool operator<(const LongitudeDouble& other) const  {
+    bool operator<(const LongitudeDouble& other) const {
         return (*this) < other.value_;
     }
 
-    bool operator>=(const LongitudeDouble& other) const{
+    bool operator>=(const LongitudeDouble& other) const {
         return (*this) >= other.value_;
     }
 
-    bool operator<=(const LongitudeDouble& other) const{
+    bool operator<=(const LongitudeDouble& other) const {
         return (*this) <= other.value_;
     }
 
@@ -159,9 +161,9 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
-    void encode(eckit::Stream& out) const;
-    void decode(eckit::Stream& out);
+    void print(std::ostream&) const;
+    void encode(eckit::Stream&) const;
+    void decode(eckit::Stream&);
 
 private:
 
@@ -180,8 +182,8 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const LongitudeDouble& p) {
-        p.print(s);
+    friend std::ostream& operator<<(std::ostream& s, const LongitudeDouble& x) {
+        x.print(s);
         return s;
     }
 
@@ -195,27 +197,25 @@ private:
         return s;
     }
 
-    friend bool operator==(double, const LongitudeDouble& other);
-    friend bool operator!=(double, const LongitudeDouble& other);
+    friend bool operator==(double, const LongitudeDouble&);
+    friend bool operator!=(double, const LongitudeDouble&);
 
-    friend bool operator>(double, const LongitudeDouble& other);
-    friend bool operator<(double, const LongitudeDouble& other);
+    friend bool operator>(double, const LongitudeDouble&);
+    friend bool operator<(double, const LongitudeDouble&);
 
-    friend bool operator>=(double, const LongitudeDouble& other);
-    friend bool operator<=(double, const LongitudeDouble& other);
+    friend bool operator>=(double, const LongitudeDouble&);
 
-    friend LongitudeDouble operator+(double, const LongitudeDouble& other);
+    friend bool operator<=(double, const LongitudeDouble&);
 
-    friend LongitudeDouble operator-(double value, const LongitudeDouble& l) {
-        return LongitudeDouble(value - l.value_);
+    friend LongitudeDouble operator+(double, const LongitudeDouble&);
+
+    friend LongitudeDouble operator-(double value, const LongitudeDouble& x) {
+        return {value - x.value_};
     }
 
 };
 
-
-
 }  // namespace mir
-
 
 #endif
 

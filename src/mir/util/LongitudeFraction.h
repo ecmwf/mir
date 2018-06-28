@@ -24,9 +24,7 @@ class MD5;
 class Stream;
 }
 
-
 namespace mir {
-
 
 class LongitudeFraction {
 public:
@@ -46,23 +44,25 @@ public:
 
     // -- Operators
 
-    bool operator==(double other) const;
-    bool operator!=(double other) const;
+    bool operator==(double) const;
+    bool operator!=(double) const;
 
-    bool operator>(double other) const;
-    bool operator<(double other) const;
+    bool operator>(double) const;
+    bool operator<(double) const;
 
-    bool operator>=(double other) const;
-    bool operator<=(double other) const;
+    bool operator>=(double) const;
+    bool operator<=(double) const;
 
-    bool operator==(const eckit::Fraction& other) const;
-    bool operator!=(const eckit::Fraction& other) const;
+    //======================================
 
-    bool operator>(const eckit::Fraction& other) const;
-    bool operator<(const eckit::Fraction& other) const;
+    bool operator==(const eckit::Fraction&) const;
+    bool operator!=(const eckit::Fraction&) const;
 
-    bool operator>=(const eckit::Fraction& other) const;
-    bool operator<=(const eckit::Fraction& other) const;
+    bool operator>(const eckit::Fraction&) const;
+    bool operator<(const eckit::Fraction&) const;
+
+    bool operator>=(const eckit::Fraction&) const;
+    bool operator<=(const eckit::Fraction&) const;
 
     //======================================
 
@@ -71,25 +71,25 @@ public:
         return *this;
     }
 
-    LongitudeFraction& operator-=(double value){
+    LongitudeFraction& operator-=(double value) {
         value_ -= value;
         return *this;
     }
 
     LongitudeFraction operator+(double value) const {
-        return LongitudeFraction(value_ + value);
+        return {value_ + value};
     }
 
     LongitudeFraction operator-(double value) const {
-        return LongitudeFraction(value_ - value);
+        return {value_ - value};
     }
 
     LongitudeFraction operator/(double value) const {
-        return LongitudeFraction(value_ / value);
+        return {value_ / value};
     }
 
     LongitudeFraction operator*(double value) const {
-        return LongitudeFraction(value_ * value);
+        return {value_ * value};
     }
 
     //======================================
@@ -99,28 +99,28 @@ public:
         return *this;
     }
 
-    LongitudeFraction& operator-=(const eckit::Fraction& value){
+    LongitudeFraction& operator-=(const eckit::Fraction& value) {
         value_ -= value;
         return *this;
     }
 
     LongitudeFraction operator+(const eckit::Fraction& value) const {
-        return LongitudeFraction(value_ + value);
+        return {value_ + value};
     }
 
     LongitudeFraction operator-(const eckit::Fraction& value) const {
-        return LongitudeFraction(value_ - value);
+        return {value_ - value};
     }
 
     LongitudeFraction operator/(const eckit::Fraction& value) const {
-        return LongitudeFraction(value_ / value);
+        return {value_ / value};
     }
 
     LongitudeFraction operator*(const eckit::Fraction& value) const {
-        return LongitudeFraction(value_ * value);
+        return {value_ * value};
     }
 
-    //========================================
+    //======================================
 
     LongitudeFraction& operator+=(const LongitudeFraction& other) {
         value_ += other.value_;
@@ -133,24 +133,23 @@ public:
     }
 
     LongitudeFraction operator+(const LongitudeFraction& other) const {
-        return LongitudeFraction(value_ + other.value_);
+        return {value_ + other.value_};
     }
 
-    LongitudeFraction operator-(const LongitudeFraction& other) const{
-        return LongitudeFraction(value_ - other.value_);
+    LongitudeFraction operator-(const LongitudeFraction& other) const {
+        return {value_ - other.value_};
     }
 
-    bool operator==(const LongitudeFraction& other) const;
+    //======================================
 
-    bool operator!=(const LongitudeFraction& other) const;
+    bool operator==(const LongitudeFraction&) const;
+    bool operator!=(const LongitudeFraction&) const;
 
-    bool operator>(const LongitudeFraction& other) const;
+    bool operator>(const LongitudeFraction&) const;
+    bool operator<(const LongitudeFraction&) const;
 
-    bool operator<(const LongitudeFraction& other) const;
-
-    bool operator>=(const LongitudeFraction& other) const;
-
-    bool operator<=(const LongitudeFraction& other) const;
+    bool operator>=(const LongitudeFraction&) const;
+    bool operator<=(const LongitudeFraction&) const;
 
     // -- Methods
 
@@ -168,9 +167,9 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
-    void encode(eckit::Stream& out) const;
-    void decode(eckit::Stream& out);
+    void print(std::ostream&) const;
+    void encode(eckit::Stream&) const;
+    void decode(eckit::Stream&);
 
 private:
 
@@ -189,8 +188,8 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const LongitudeFraction& p) {
-        p.print(s);
+    friend std::ostream& operator<<(std::ostream& s, const LongitudeFraction& x) {
+        x.print(s);
         return s;
     }
 
@@ -204,29 +203,27 @@ private:
         return s;
     }
 
-    friend bool operator==(double, const LongitudeFraction& other);
-    friend bool operator!=(double, const LongitudeFraction& other);
+    friend bool operator==(double, const LongitudeFraction&);
+    friend bool operator!=(double, const LongitudeFraction&);
 
-    friend bool operator>(double, const LongitudeFraction& other);
-    friend bool operator<(double, const LongitudeFraction& other);
+    friend bool operator>(double, const LongitudeFraction&);
+    friend bool operator<(double, const LongitudeFraction&);
 
-    friend bool operator>=(double, const LongitudeFraction& other);
+    friend bool operator>=(double, const LongitudeFraction&);
 
-    friend bool operator<=(double value, const LongitudeFraction& other) {
-        return value <= other.value();
+    friend bool operator<=(double value, const LongitudeFraction& x) {
+        return value <= x.value();
     }
 
-    friend LongitudeFraction operator+(double, const LongitudeFraction& other);
+    friend LongitudeFraction operator+(double, const LongitudeFraction&);
 
-    friend LongitudeFraction operator-(double value, const LongitudeFraction& l) {
-        return LongitudeFraction(value - l.value_);
+    friend LongitudeFraction operator-(double value, const LongitudeFraction& x) {
+        return {value - x.value_};
     }
 
 };
 
-
 }  // namespace mir
-
 
 #endif
 

@@ -17,23 +17,16 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/serialisation/Stream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/MIRJob.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/Grib.h"
-
 namespace mir {
-
 
 Latitude Latitude::GLOBE(180);
 Latitude Latitude::NORTH_POLE(90);
 Latitude Latitude::SOUTH_POLE(-90);
 Latitude Latitude::EQUATOR(0);
-
 
 void Latitude::print(std::ostream& out) const {
     out << value_;

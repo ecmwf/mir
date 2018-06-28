@@ -29,12 +29,10 @@ namespace mir {
 class Latitude {
 public:
 
-
     static Latitude GLOBE; // 180
     static Latitude NORTH_POLE; // 90
     static Latitude SOUTH_POLE; // -90
     static Latitude EQUATOR; // 0
-
 
     // -- Exceptions
     // None
@@ -46,15 +44,16 @@ public:
     double value() const { return value_; }
     eckit::Fraction fraction() const { return eckit::Fraction(value_); }
 
-    //========================================
-    bool operator==(double other) const;
-    bool operator!=(double other) const;
+    // -- Operators
 
-    bool operator>(double other) const;
-    bool operator<(double other) const;
+    bool operator==(double) const;
+    bool operator!=(double) const;
 
-    bool operator>=(double other) const;
-    bool operator<=(double other) const;
+    bool operator>(double) const;
+    bool operator<(double) const;
+
+    bool operator>=(double) const;
+    bool operator<=(double) const;
 
     //======================================
 
@@ -69,18 +68,18 @@ public:
     }
 
     Latitude operator+(double value) const {
-        return Latitude(value_ + value);
+        return {value_ + value};
     }
 
     Latitude operator-(double value) const {
-        return Latitude(value_ - value);
+        return {value_ - value};
     }
 
     Latitude operator/(double value) const {
-        return Latitude(value_ / value);
+        return {value_ / value};
     }
 
- //======================================
+    //======================================
 
     Latitude& operator+=(const eckit::Fraction& value) {
         value_ += double(value);
@@ -93,13 +92,14 @@ public:
     }
 
     Latitude operator+(const eckit::Fraction& value) const {
-        return Latitude(value_ + double(value));
+        return {value_ + double(value)};
     }
 
     Latitude operator-(const eckit::Fraction& value) const {
-        return Latitude(value_ - double(value));
+        return {value_ - double(value)};
     }
-    //========================================
+
+    //======================================
 
     Latitude& operator+=(const Latitude& other) {
         value_ += other.value_;
@@ -112,11 +112,11 @@ public:
     }
 
     Latitude operator+(const Latitude& other) const {
-        return Latitude(value_ + other.value_);
+        return {value_ + other.value_};
     }
 
     Latitude operator-(const Latitude& other) const{
-        return Latitude(value_ - other.value_);
+        return {value_ - other.value_};
     }
 
     bool operator==(const Latitude& other) const {
@@ -128,7 +128,7 @@ public:
     }
 
     bool operator>(const Latitude& other) const {
-     return (*this) > other.value_;
+        return (*this) > other.value_;
     }
 
     bool operator<(const Latitude& other) const  {
@@ -153,9 +153,9 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
-    void encode(eckit::Stream& out) const;
-    void decode(eckit::Stream& out);
+    void print(std::ostream&) const;
+    void encode(eckit::Stream&) const;
+    void decode(eckit::Stream&);
 
 private:
 
@@ -174,8 +174,8 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const Latitude& p) {
-        p.print(s);
+    friend std::ostream& operator<<(std::ostream& s, const Latitude& x) {
+        x.print(s);
         return s;
     }
 
@@ -189,32 +189,28 @@ private:
         return s;
     }
 
-    friend bool operator==(double, const Latitude& other);
-    friend bool operator!=(double, const Latitude& other);
+    friend bool operator==(double, const Latitude&);
+    friend bool operator!=(double, const Latitude&);
 
-    friend bool operator>(double, const Latitude& other);
-    friend bool operator<(double value, const Latitude& other) {
-        return value < other.value();
+    friend bool operator>(double, const Latitude&);
+    friend bool operator<(double value, const Latitude& x) {
+        return value < x.value();
     }
 
-    friend bool operator>=(double, const Latitude& other);
-    friend bool operator<=(double, const Latitude& other);
+    friend bool operator>=(double, const Latitude&);
+    friend bool operator<=(double, const Latitude&);
 
-    friend Latitude operator+(double value, const Latitude& l) {
-        return Latitude(value + l.value_);
+    friend Latitude operator+(double value, const Latitude& x) {
+        return {value + x.value_};
     }
 
-    friend Latitude operator-(double value, const Latitude& l) {
-        return Latitude(value - l.value_);
+    friend Latitude operator-(double value, const Latitude& x) {
+        return {value - x.value_};
     }
-
 
 };
 
-
-
 }  // namespace mir
-
 
 #endif
 
