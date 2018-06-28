@@ -57,15 +57,6 @@ void MIRGetData::usage(const std::string &tool) const {
 }
 
 
-double longitude_diff(double lon1, double lon2) {
-    double a = std::abs(lon1 - lon2);
-    while (a > 180.) {
-        a = std::abs(a - 360.);
-    }
-    return a;
-};
-
-
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     using mir::repres::Iterator;
     using minmax_t = mir::stats::detail::ScalarMinMaxFn<double>;
@@ -105,8 +96,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
                     ASSERT(it->next());
                     const Iterator::point_2d_t& P(**it);
-                    stats[0](std::abs(P[0] - p.lat()));
-                    stats[1](longitude_diff(P[1], p.lon()));
+                    stats[0](mir::Latitude(P[0]).distance(p.lat()).value());
+                    stats[1](mir::LongitudeDouble(P[1]).distance(p.lon()).value());
                     ++v;
                 }
                 ASSERT(v == field.values(0).end());
@@ -162,8 +153,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
                     ASSERT(it->next());
                     const Iterator::point_2d_t& P(**it);
-                    stats[0](std::abs(P[0] - lat));
-                    stats[1](longitude_diff(P[1], lon));
+                    stats[0](mir::Latitude(P[0]).distance(lat).value());
+                    stats[1](mir::LongitudeDouble(P[1]).distance(lon).value());
                     ++v;
                 }
                 ASSERT(v == field.values(0).end());

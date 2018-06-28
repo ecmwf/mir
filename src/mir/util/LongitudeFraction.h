@@ -162,6 +162,8 @@ public:
 
     LongitudeFraction normalise(const LongitudeFraction& minimum) const;
 
+    LongitudeFraction distance(const LongitudeFraction& meridian) const;
+
 protected:
 
     // -- Methods

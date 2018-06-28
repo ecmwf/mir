@@ -153,6 +153,8 @@ public:
 
     LongitudeDouble normalise(const LongitudeDouble& minimum) const;
 
+    LongitudeDouble distance(const LongitudeDouble& meridian) const;
+
 protected:
 
     // -- Methods

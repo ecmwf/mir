@@ -67,6 +67,10 @@ void Latitude::hash(eckit::MD5& md5) const {
     md5 << value_;
 }
 
+Latitude Latitude::distance(const Latitude& parallel) {
+    return parallel < (*this) ? value_ - parallel : parallel - value_;
+}
+
 void Latitude::encode(eckit::Stream& s) const {
     s << value_;
 }

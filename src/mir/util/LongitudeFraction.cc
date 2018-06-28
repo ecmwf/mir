@@ -111,6 +111,13 @@ LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum)
     return lon;
 }
 
+LongitudeFraction LongitudeFraction::distance(const LongitudeFraction& meridian) const {
+    LongitudeFraction d = (meridian < (*this) ? value_ - meridian.fraction() : meridian.fraction() - value_);
+    while (d > LongitudeFraction::DATE_LINE) {
+        d -= LongitudeFraction::DATE_LINE;
+    }
+    return d;
+}
 
 }  // namespace mir
 

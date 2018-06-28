@@ -85,6 +85,13 @@ LongitudeDouble LongitudeDouble::normalise(const LongitudeDouble& minimum) const
     return lon;
 }
 
+LongitudeDouble LongitudeDouble::distance(const LongitudeDouble& meridian) const {
+    LongitudeDouble d = (meridian < (*this) ? value_ - meridian : meridian - value_);
+    while (d > LongitudeDouble::DATE_LINE) {
+        d -= LongitudeDouble::DATE_LINE;
+    }
+    return d;
+}
 
 }  // namespace mir
 

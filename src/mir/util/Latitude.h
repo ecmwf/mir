@@ -143,8 +143,11 @@ public:
         return (*this) <= other.value_;
     }
 
+    // -- Methods
+
     void hash(eckit::MD5&) const;
-    // None
+
+    Latitude distance(const Latitude& parallel);
 
 protected:
 
