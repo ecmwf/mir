@@ -28,8 +28,7 @@ static const std::string PARAM_ID("paramId");
 static const std::string KLASS("@class");
 
 
-Rules::Rules() {
-}
+Rules::Rules() = default;
 
 
 Rules::~Rules() {
@@ -68,9 +67,9 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
             static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", true);
             if (abortIfUnknownParameterClass) {
                 throw eckit::SeriousBug(msg);
-            } else {
-                eckit::Log::warning() << msg << std::endl;
             }
+
+            eckit::Log::warning() << msg << std::endl;
         }
 
         noted_.insert(ruleValue);
