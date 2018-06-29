@@ -93,15 +93,17 @@ void Rules::print(std::ostream& s) const {
 
 void Rules::readConfigurationFiles() {
 
+    static const std::string keyClass = "@class";
+
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
     eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
     for (const auto& i : parameterClass) {
 
         // class
-        const std::string& klassName = i.first;
-        const auto& config = classes.find(klassName);
+        const std::string& klass = i.first;
+        const auto& config = classes.find(klass);
         if (config == classes.end()) {
-            throw eckit::SeriousBug("Rules: unkown class '" + klassName + "'");
+            throw eckit::SeriousBug("Rules: unkown class '" + klass + "'");
         }
         const eckit::ValueMap klassConfig = config->second;
 
@@ -113,14 +115,21 @@ void Rules::readConfigurationFiles() {
             for (const auto& j : klassConfig) {
                 const std::string& keyName = j.first;
                 const std::string& keyValue = j.second;
+                ASSERT(keyName != keyClass);
 
                 if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
-                    throw eckit::SeriousBug("Rules: parameter " + std::to_string(paramId)
-                                            + " already has key '" + keyName
-                                            + "' when setting class '"
-                                            + klassName + "'");
+                    std::string klasses;
+                    pidConfig.get(keyClass, klasses);
+
+                    throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
+                                           + " has ambigous key '" + keyName + "'"
+                                             " from classes " + klasses);
                 }
                 pidConfig.set(keyName, keyValue);
+
+                std::string klasses;
+                klasses = klass + (pidConfig.get(keyClass, klasses) ? ", " + klasses : "");
+                pidConfig.set(keyClass, klasses);
             }
         }
     }
