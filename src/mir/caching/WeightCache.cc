@@ -18,14 +18,11 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace caching {
-
-using namespace mir::caching::matrix;
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 static std::string extract_loader(const param::MIRParametrisation& param) {
@@ -85,11 +82,12 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     W.save(path);
 }
 
+
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    value_type tmp( MatrixLoaderFactory::build(manager.loader(), path) );
+    value_type tmp( matrix::MatrixLoaderFactory::build(manager.loader(), path) );
     w.swap(tmp);
 
     static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
@@ -98,7 +96,6 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
     }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir

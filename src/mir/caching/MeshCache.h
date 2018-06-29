@@ -11,38 +11,37 @@
 /// @author Tiago Quintino
 /// @date   May 2016
 
-#ifndef atlas_MeshCache_h
-#define atlas_MeshCache_h
+#ifndef mir_caching_MeshCache_h
+#define mir_caching_MeshCache_h
 
 #include "eckit/container/CacheManager.h"
+
 
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 struct MeshCacheTraits {
+
+    using value_type = int;  // dummy
+
     static const char* name();
     static int version();
     static const char* extension();
 
-    // Below are dummy types and functions
-    typedef int value_type;
+    static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
+    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
 
-    static void save(const eckit::CacheManagerBase&, value_type&, const eckit::PathName& path);
-    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName& path);
 };
 
 class MeshCache : public eckit::CacheManager<MeshCacheTraits> {
 public:  // methods
-
     explicit MeshCache();
-
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace caching
 } // namespace mir
+
 
 #endif

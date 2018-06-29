@@ -16,16 +16,18 @@
 #ifndef mir_caching_WeightCache_h
 #define mir_caching_WeightCache_h
 
-
 #include "eckit/container/CacheManager.h"
-#include "mir/param/MIRParametrisation.h"
-#include "eckit/os/Semaphore.h"
+
 
 namespace mir {
 namespace method {
 class WeightMatrix;
 }
+namespace param {
+class MIRParametrisation;
 }
+}
+
 
 namespace mir {
 namespace caching {
@@ -33,27 +35,23 @@ namespace caching {
 
 struct WeightCacheTraits {
 
-    typedef eckit::CacheManagerFileFlock  Locker;
-    typedef method::WeightMatrix value_type;
+    using value_type = method::WeightMatrix;
+    using Locker = eckit::CacheManagerFileFlock;
 
     static const char* name();
     static int version();
     static const char* extension();
 
-    static void save(const eckit::CacheManagerBase& manager, const value_type& W, const eckit::PathName& path);
-    static void load(const eckit::CacheManagerBase& manager, value_type& W, const eckit::PathName& path);
+    static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
+    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
 
 };
 
 
 class WeightCache : public eckit::CacheManager<WeightCacheTraits> {
-
 public:  // methods
-
-    explicit WeightCache(const param::MIRParametrisation& parametrisation);
-
+    explicit WeightCache(const param::MIRParametrisation&);
 private: // members
-
     friend WeightCacheTraits;
 };
 

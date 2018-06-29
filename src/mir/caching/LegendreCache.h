@@ -27,23 +27,20 @@ namespace caching {
 
 struct LegendreCacheTraits {
 
-    typedef eckit::CacheManagerFileFlock Locker;
+    using value_type = int;  // dummy
+    using Locker = eckit::CacheManagerFileFlock;
 
     static const char* name();
     static int version();
     static const char* extension();
 
-    // Below are dummy types and functions
-    typedef int value_type;
-
-
-    static void save(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
+    static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
     static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
+
 };
 
 class LegendreCache : public eckit::CacheManager<LegendreCacheTraits> {
 public:  // methods
-
     LegendreCache();
 };
 

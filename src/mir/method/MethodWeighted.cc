@@ -35,11 +35,12 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/Cropping.h"
+#include "mir/method/MatrixCacheCreator.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
-#include "mir/method/MatrixCacheCreator.h"
-#include "mir/method/Cropping.h"
 
 namespace mir {
 namespace method {

@@ -13,9 +13,8 @@
 /// @author Pedro Maciel
 /// @date May 2015
 
-
-#ifndef mir_method_WeightCache_h
-#define mir_method_WeightCache_h
+#ifndef mir_caching_CroppingCache_h
+#define mir_caching_CroppingCache_h
 
 #include "eckit/container/CacheManager.h"
 #include "mir/util/BoundingBox.h"
@@ -24,7 +23,6 @@
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 struct CroppingCacheEntry {
 
@@ -49,18 +47,19 @@ struct CroppingCacheEntry {
 
 };
 
+
 struct CroppingCacheTraits {
 
-    typedef CroppingCacheEntry value_type;
-    typedef eckit::CacheManagerFileFlock Locker;
+    using value_type = CroppingCacheEntry;
+    using Locker = eckit::CacheManagerFileFlock;
 
     static const char* name();
     static int version();
     static const char* extension();
 
-    static void save(const eckit::CacheManagerBase&, const value_type& c, const eckit::PathName&);
+    static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
+    static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
 
-    static void load(const eckit::CacheManagerBase&, value_type& c, const eckit::PathName&);
 };
 
 
@@ -69,9 +68,9 @@ public:  // methods
     explicit CroppingCache();
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir
+
 
 #endif

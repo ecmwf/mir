@@ -23,6 +23,7 @@
 #include "eckit/utils/MD5.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"

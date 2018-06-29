@@ -44,7 +44,7 @@ const char *LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-void LegendreCacheTraits::save(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&, const eckit::PathName&) {
+void LegendreCacheTraits::save(const eckit::CacheManagerBase&, const LegendreCacheTraits::value_type&, const eckit::PathName&) {
 }
 
 void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type &, const eckit::PathName&) {

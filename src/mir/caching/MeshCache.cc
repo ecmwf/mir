@@ -45,7 +45,7 @@ const char *MeshCacheTraits::extension() {
     return ".mesh";
 }
 
-void MeshCacheTraits::save(const CacheManagerBase&, value_type&, const eckit::PathName&) {
+void MeshCacheTraits::save(const CacheManagerBase&, const value_type&, const eckit::PathName&) {
     NOTIMP;
 }
 
