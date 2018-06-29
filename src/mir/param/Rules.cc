@@ -110,6 +110,10 @@ void Rules::readConfigurationFiles() {
         for (long paramId : paramIds) {
             SimpleParametrisation& pidConfig = lookup(paramId);
 
+            std::string klasses;
+            klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
+            pidConfig.set(KLASS, klasses);
+
             for (const auto& j : klassConfig) {
                 const std::string& keyName = j.first;
                 const std::string& keyValue = j.second;
@@ -124,10 +128,6 @@ void Rules::readConfigurationFiles() {
                                              " from classes " + klasses);
                 }
                 pidConfig.set(keyName, keyValue);
-
-                std::string klasses;
-                klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
-                pidConfig.set(KLASS, klasses);
             }
         }
     }
