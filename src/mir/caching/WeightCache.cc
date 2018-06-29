@@ -40,10 +40,11 @@ static std::string extract_loader(const param::MIRParametrisation& param) {
 
 
 WeightCache::WeightCache(const param::MIRParametrisation& param):
-    CacheManager(extract_loader(param),
-                 LibMir::cacheDir(),
-                 eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false), 
-                 eckit::Resource<size_t>("$MIR_MATRIX_CACHE_SIZE", 0)) {
+    eckit::CacheManager<WeightCacheTraits>(
+        extract_loader(param),
+        LibMir::cacheDir(),
+        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+        eckit::Resource<size_t>("$MIR_MATRIX_CACHE_SIZE", 0)) {
 }
 
 
