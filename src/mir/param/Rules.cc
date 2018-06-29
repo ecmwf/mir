@@ -24,7 +24,8 @@ namespace mir {
 namespace param {
 
 
-static std::string PARAM_ID("paramId");
+static const std::string PARAM_ID("paramId");
+static const std::string KLASS("@class");
 
 
 Rules::Rules() {
@@ -59,12 +60,12 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
 
     MIRParametrisation& s = lookup(ruleValue);
 
-    if (!s.has("class")) {
+    if (!s.has(KLASS)) {
         if (noted_.find(ruleValue) == noted_.end()) {
 
             const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
 
-            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
+            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", true);
             if (abortIfUnknownParameterClass) {
                 throw eckit::SeriousBug(msg);
             } else {
@@ -93,8 +94,6 @@ void Rules::print(std::ostream& s) const {
 
 void Rules::readConfigurationFiles() {
 
-    static const std::string keyClass = "@class";
-
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
     eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
     for (const auto& i : parameterClass) {
@@ -115,11 +114,11 @@ void Rules::readConfigurationFiles() {
             for (const auto& j : klassConfig) {
                 const std::string& keyName = j.first;
                 const std::string& keyValue = j.second;
-                ASSERT(keyName != keyClass);
+                ASSERT(keyName != KLASS);
 
                 if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
                     std::string klasses;
-                    pidConfig.get(keyClass, klasses);
+                    pidConfig.get(KLASS, klasses);
 
                     throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
                                            + " has ambigous key '" + keyName + "'"
@@ -128,8 +127,8 @@ void Rules::readConfigurationFiles() {
                 pidConfig.set(keyName, keyValue);
 
                 std::string klasses;
-                klasses = klass + (pidConfig.get(keyClass, klasses) ? ", " + klasses : "");
-                pidConfig.set(keyClass, klasses);
+                klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
+                pidConfig.set(KLASS, klasses);
             }
         }
     }
