@@ -120,9 +120,6 @@ void Rules::readConfigurationFiles() {
                 ASSERT(keyName != KLASS);
 
                 if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
-                    std::string klasses;
-                    pidConfig.get(KLASS, klasses);
-
                     throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
                                            + " has ambigous key '" + keyName + "'"
                                              " from classes " + klasses);
