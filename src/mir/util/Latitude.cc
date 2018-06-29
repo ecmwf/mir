@@ -60,7 +60,7 @@ void Latitude::hash(eckit::MD5& md5) const {
     md5 << value_;
 }
 
-Latitude Latitude::distance(const Latitude& parallel) {
+Latitude Latitude::distance(const Latitude& parallel) const {
     return parallel < (*this) ? value_ - parallel : parallel - value_;
 }
 

@@ -147,7 +147,7 @@ public:
 
     void hash(eckit::MD5&) const;
 
-    Latitude distance(const Latitude& parallel);
+    Latitude distance(const Latitude& parallel) const;
 
 protected:
 

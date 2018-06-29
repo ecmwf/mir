@@ -64,29 +64,6 @@ void MIRCount::usage(const std::string &tool) const {
 
 
 template<class T>
-static
-T abs(const T& x) {
-    if (x > 0) {
-        return x;
-    }
-    return 0 - x;
-}
-
-
-template<class T>
-static void put(const T& q) {
-    size_t i = 0;
-
-    for(auto e: q) {
-        eckit::Log::info() << ' ' << e.first << " (" << e.second << ")";
-        if (++i >= 2) {
-            break;
-        }
-    }
-}
-
-
-template<class T>
 std::ostream& operator<<(std::ostream& s, const std::set< std::pair< T, T > >& x) {
     size_t i = 0;
     for (auto e: x) {
@@ -99,8 +76,8 @@ std::ostream& operator<<(std::ostream& s, const std::set< std::pair< T, T > >& x
 }
 
 
-typedef std::pair<Latitude, Latitude> DistanceLat;
-typedef std::pair<Longitude, Longitude> DistanceLon;
+using DistanceLat = std::pair<Latitude, Latitude>;
+using DistanceLon = std::pair<Longitude, Longitude>;
 
 
 size_t countRepresentationInBoundingBox(
@@ -126,11 +103,11 @@ size_t countRepresentationInBoundingBox(
 
         values++;
 
-        nn.insert(DistanceLat(abs(bbox.north() - point.lat), point.lat));
-        ss.insert(DistanceLat(abs(bbox.south() - point.lat), point.lat));
+        nn.insert(DistanceLat(bbox.north().distance(point.lat), point.lat));
+        ss.insert(DistanceLat(bbox.south().distance(point.lat), point.lat));
 
-        ee.insert(DistanceLon(abs(bbox.east() - point.lon), point.lon));
-        ww.insert(DistanceLon(abs(bbox.west() - point.lon), point.lon));
+        ee.insert(DistanceLon(bbox.east().distance(point.lon), point.lon));
+        ww.insert(DistanceLon(bbox.west().distance(point.lon), point.lon));
 
         // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
