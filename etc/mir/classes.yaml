@@ -120,11 +120,11 @@ stress: {}
 stress.accumulated: {}
 
 unknown.experimental:
-  FIXME: issue warning?
+  interpolation: fail
 
 unknown.missing:
-  FIXME: issue warning?
+  interpolation: fail
 
 unknown.reserved:
-  FIXME: issue warning?
+  interpolation: fail
 
