@@ -18,6 +18,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/types/Fraction.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
@@ -62,10 +63,32 @@ BoundingBox::BoundingBox(const Latitude& north,
 
 
 BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
-    ASSERT(parametrisation.get("north", north_));
-    ASSERT(parametrisation.get("west",  west_ ));
-    ASSERT(parametrisation.get("south", south_));
-    ASSERT(parametrisation.get("east",  east_ ));
+
+    double angularPrecision = 0.;
+    parametrisation.get("angularPrecision", angularPrecision);
+
+    if (angularPrecision > 0.) {
+
+        double box[4];
+        ASSERT(parametrisation.get("north", box[0]));
+        ASSERT(parametrisation.get("west",  box[1]));
+        ASSERT(parametrisation.get("south", box[2]));
+        ASSERT(parametrisation.get("east",  box[3]));
+
+        const eckit::Fraction precision(angularPrecision);
+        north_ = eckit::Fraction(box[0], precision);
+        west_  = eckit::Fraction(box[1], precision);
+        south_ = eckit::Fraction(box[2], precision);
+        east_  = eckit::Fraction(box[3], precision);
+
+    } else {
+
+        ASSERT(parametrisation.get("north", north_));
+        ASSERT(parametrisation.get("west",  west_ ));
+        ASSERT(parametrisation.get("south", south_));
+        ASSERT(parametrisation.get("east",  east_ ));
+
+    }
 
     normalise();
     check(*this);

@@ -14,7 +14,10 @@
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/data/MIRField.h"
+#include "mir/input/GribMemoryInput.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
@@ -25,6 +28,7 @@ namespace tests {
 namespace unit {
 
 
+using input::MIRInput;
 using repres::RepresentationHandle;
 using util::BoundingBox;
 
@@ -40,6 +44,8 @@ class EncodeTest {
     RepresentationHandle representation_;
     grib_handle* grib1Handle_;
     grib_handle* grib2Handle_;
+    MIRInput* grib1Input_;
+    MIRInput* grib2Input_;
 
     virtual std::string gribSample(long edition) const = 0;
 
@@ -106,12 +112,33 @@ protected:
         return handle;
     }
 
+    const MIRInput& gribInput(long edition) {
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+        ASSERT(edition == 1 || edition == 2);
+        MIRInput*& input(edition == 1 ? grib1Input_ : grib2Input_);
+
+        if (input == nullptr) {
+
+            const void* message;
+            size_t length;
+            GRIB_CALL(grib_get_message(gribHandle(edition), &message, &length));
+
+            input = new input::GribMemoryInput(message, length);
+        }
+
+        ASSERT(input != nullptr);
+        return *input;
+    }
+
 public:
 
     EncodeTest(const repres::Representation* rep) :
         representation_(rep),
         grib1Handle_(nullptr),
-        grib2Handle_(nullptr) {
+        grib2Handle_(nullptr),
+        grib1Input_(nullptr),
+        grib2Input_(nullptr) {
     }
 
     virtual ~EncodeTest() {
@@ -123,6 +150,9 @@ public:
         if (grib2Handle_) {
             grib_handle_delete(grib2Handle_);
         }
+
+        delete grib1Input_;
+        delete grib2Input_;
     }
 
     virtual size_t numberOfValues() const = 0;
@@ -157,6 +187,13 @@ public:
         return size_t(n);
     }
 
+    size_t numberOfValuesFromGribInput(long edition) {
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+        RepresentationHandle rep = gribInput(edition).field().representation();
+        return rep->numberOfPoints();
+    }
+
     BoundingBox boundingBoxEncodedInGrib(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -170,6 +207,13 @@ public:
         grib_get_double(handle, "longitudeOfLastGridPointInDegrees",  &box[3]);
 
         return BoundingBox(box[0], box[1], box[2], box[3]);
+    }
+
+    BoundingBox boundingBoxFromGribInput(long edition) {
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+        RepresentationHandle rep = gribInput(edition).field().representation();
+        return rep->boundingBox();
     }
 };
 
@@ -293,14 +337,18 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
          test_t{ "O1280", { -10,        -85,      -39,       -56.1    }, 124143 },
 
          // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
-//         test_t{ "O1280", {  37.6025,  -114.891,   27.7626, -105.188  },  12369 },
-//         test_t{ "O1280", {  27.9,      253,       27.8,     254      },     19 },
-//         test_t{ "O1280", {  37.5747,   245.109,   27.8032,  254.812  },  12274 },
-//         test_t{ "O1280", {  37.575,   -114.892,   27.803,  -105.187  },  12373 },
-//         test_t{ "O1280", {  37.6025,  -114.8915,  27.7626, -105.1875 },  12373 },
+         test_t{ "O1280", {  37.6025,  -114.891,   27.7626, -105.188  },  12369 },
+         test_t{ "O1280", {  27.9,      253,       27.8,     254      },     19 },
+         test_t{ "O1280", {  37.5747,   245.109,   27.8032,  254.812  },  12274 },
+         test_t{ "O1280", {  37.575,   -114.892,   27.803,  -105.187  },  12373 },
+         test_t{ "O1280", {  37.6025,  -114.8915,  27.7626, -105.1875 },  12373 },
 
          // "almost global"
-         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646},
+         // NOTE: this cannot be supported because:
+         // * Lo2=359929 is encoded for GRIB1 O1280 global fields
+         // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
+         // so GRIB1 O1280 fields are actually not correctly encoded
+//         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
 
          }) {
 
@@ -337,7 +385,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValuesIt << " (iterator)" << std::endl;
             EXPECT(numberOfValuesIt == n);
 
-            const BoundingBox bbox = encode.boundingBoxEncodedInGrib(edition);
+            const BoundingBox bbox = encode.boundingBoxFromGribInput(edition);
             log << "\tGRIB" << edition << ": " << bbox << std::endl;
             EXPECT(bbox.contains(small));
         }
@@ -407,7 +455,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
             log << "\tGRIB" << edition << ": Nj = " << Nj << " (key)" << std::endl;
             EXPECT(Nj == test.Nj);
 
-            const BoundingBox bbox = encode.boundingBoxEncodedInGrib(edition);
+            const BoundingBox bbox = encode.boundingBoxFromGribInput(edition);
             log << "\tGRIB" << edition << ": " << bbox << std::endl;
             EXPECT(bbox.contains(small));
         }
@@ -473,7 +521,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
             log << "\tGRIB" << edition << ": Nj = " << Nj << " (key)" << std::endl;
             EXPECT(Nj == test.Nj);
 
-            const BoundingBox bbox = encode.boundingBoxEncodedInGrib(edition);
+            const BoundingBox bbox = encode.boundingBoxFromGribInput(edition);
             log << "\tGRIB" << edition << ": " << bbox << std::endl;
             EXPECT(bbox.contains(small));
         }
