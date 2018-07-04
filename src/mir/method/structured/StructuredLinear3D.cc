@@ -16,6 +16,7 @@
 #include <vector>
 #include "eckit/log/Log.h"
 #include "eckit/log/ProgressTimer.h"
+#include "eckit/types/FloatCompare.h"
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "atlas/util/Earth.h"

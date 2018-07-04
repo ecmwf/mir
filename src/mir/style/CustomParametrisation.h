@@ -16,8 +16,9 @@
 #ifndef mir_param_CustomParametrisation_h
 #define mir_param_CustomParametrisation_h
 
-#include "mir/param/MIRParametrisation.h"
+#include <map>
 #include <vector>
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
