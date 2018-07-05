@@ -33,7 +33,13 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation &parametr
     ShToGridded(parametrisation) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("grid", value));
+
+    if (parametrisation.userParametrisation().get("area", value)) {
+        ASSERT(value.size() == 4);
+        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    }
+
+    ASSERT(parametrisation.userParametrisation().get("grid", value));
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 }
@@ -56,7 +62,8 @@ void ShToRegularLL<Invtrans>::print(std::ostream& out) const {
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",increments=" << increments_
+    out <<  "bbox=" << bbox_
+        << ",increments=" << increments_
         << "]";
 }
 
@@ -76,7 +83,7 @@ const char* ShToRegularLL<Invtrans>::name() const {
 template<class Invtrans>
 const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() const {
 
-    util::BoundingBox bbox;
+    util::BoundingBox bbox(bbox_);
     increments_.globaliseBoundingBox(bbox);
 
     return new repres::latlon::RegularLL(increments_, bbox);

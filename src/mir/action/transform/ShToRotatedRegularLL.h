@@ -63,6 +63,7 @@ private:
 
     // -- Members
 
+    util::BoundingBox bbox_;
     util::Increments increments_;
     util::Rotation rotation_;
 

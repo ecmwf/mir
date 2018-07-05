@@ -31,13 +31,19 @@ namespace transform {
 template<class Invtrans>
 ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation &parametrisation):
     ShToGridded(parametrisation) {
+
     std::vector<double> value;
 
-    ASSERT(parametrisation_.userParametrisation().get("grid", value));
+    if (parametrisation.userParametrisation().get("area", value)) {
+        ASSERT(value.size() == 4);
+        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    }
+
+    ASSERT(parametrisation.userParametrisation().get("grid", value));
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
+    ASSERT(parametrisation.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
     rotation_ = util::Rotation(value[0], value[1]);
 }
@@ -60,7 +66,8 @@ void ShToRotatedRegularLL<Invtrans>::print(std::ostream& out) const {
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",increments=" << increments_
+    out <<  "bbox=" << bbox_
+        << ",increments=" << increments_
         << ",rotation=" << rotation_
         << "]";
 }
@@ -81,7 +88,7 @@ const char* ShToRotatedRegularLL<Invtrans>::name() const {
 template<class Invtrans>
 const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentation() const {
 
-    util::BoundingBox bbox;
+    util::BoundingBox bbox(bbox_);
     increments_.globaliseBoundingBox(bbox);
 
     return new repres::latlon::RotatedLL(increments_, rotation_, bbox);

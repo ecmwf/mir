@@ -17,6 +17,7 @@
 #define mir_action_transform_ShToRegularLL_h
 
 #include "mir/action/transform/ShToGridded.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
 
@@ -62,6 +63,7 @@ private:
 
     // -- Members
 
+    util::BoundingBox bbox_;
     util::Increments increments_;
 
     // -- Methods
