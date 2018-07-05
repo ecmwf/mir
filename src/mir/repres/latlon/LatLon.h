@@ -127,7 +127,7 @@ private:
 
     // -- Methods
 
-    void correctBoundingBox();
+    static util::BoundingBox correctBoundingBox(const util::BoundingBox&, const util::Increments&);
 
     // -- Overridden methods
 
