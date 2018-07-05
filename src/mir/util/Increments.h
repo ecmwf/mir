@@ -49,25 +49,26 @@ public:
 
     // -- Contructors
 
+    Increments();
     Increments(const param::MIRParametrisation&);
     Increments(const Increments&);
-
-    // NOTE: maybe to be substituded by (Longitude&, Latitude&), and no defaults
-    explicit Increments(double west_east = 0, double south_north = 0);
-    explicit Increments(const LongitudeIncrement& west_east, const LatitudeIncrement& south_north);
+    explicit Increments(double westEastIncrement, double southNorthIncrement);
+    explicit Increments(const LongitudeIncrement&, const LatitudeIncrement&);
 
     // -- Destructor
 
-    ~Increments(); // Change to virtual if base class
+    ~Increments();
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    bool operator==(const Increments& other) const;
+    bool operator==(const Increments&) const;
 
-    bool operator!=(const Increments& other) const;
+    bool operator!=(const Increments&) const;
+
+    Increments& operator=(const Increments&);
 
     // -- Methods
 
@@ -93,7 +94,7 @@ public:
 
     void fill(api::MIRJob&) const;
 
-    void makeName(std::ostream& out) const;
+    void makeName(std::ostream&) const;
 
     bool isLatitudeShifted(const BoundingBox&) const;
 
@@ -115,7 +116,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

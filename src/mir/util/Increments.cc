@@ -47,20 +47,7 @@ static size_t computeN(const T& first, const T& last, const T& inc) {
     eckit::Fraction i = inc.fraction();
     eckit::Fraction r = (l - f) / i;
 
-//    std::cout << "\t" << last
-//              << "\t" << first
-//              << "\t" << inc
-//              << "\t" << l
-//              << "\t" << f
-//              << "\t" << i
-//              << "\t" << double(l)
-//              << "\t" << double(f)
-//              << "\t" << double(i)
-//              << std::endl;
-
-//    eckit::Fraction::value_type n = r.integralPart();
-    long long n = ((l - f) / i).integralPart();
-
+    auto n = r.integralPart();
     return size_t(n + 1);
 }
 
@@ -84,6 +71,9 @@ static T adjust(bool up, const T& target, const T& inc) {
 }  // (anonymous namespace)
 
 
+Increments::Increments() = default;
+
+
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
     Latitude lat;
     ASSERT(parametrisation.get("south_north_increment", lat));
@@ -104,9 +94,9 @@ Increments::Increments(const Increments& other) :
 }
 
 
-Increments::Increments(double west_east, double south_north) :
-    west_east_(west_east),
-    south_north_(south_north) {
+Increments::Increments(double westEastIncrement, double southNorthIncrement) :
+    west_east_(westEastIncrement),
+    south_north_(southNorthIncrement) {
     check(*this);
 }
 
@@ -131,6 +121,9 @@ bool Increments::operator!=(const Increments& other) const {
     return  (west_east_.longitude() != other.west_east_.longitude()) ||
             (south_north_.latitude() != other.south_north_.latitude());
 }
+
+
+Increments& Increments::operator=(const Increments&) = default;
 
 
 bool Increments::isPeriodic() const {
