@@ -112,17 +112,6 @@ foreach(_t ${_test_reqs})
 endforeach()
 
 
-## Unit tests: other
-#foreach(_t "" "")
-#  ecbuild_add_test(
-#      TARGET   ${_t}
-#      SOURCES "${_t}.cc"
-#      LIBS    mir
-#      ENVIRONMENT
-#        "MIR_DEBUG=1"
-#        "MIR_HOME=${CMAKE_BINARY_DIR}"  )
-#endforeach()
-
 add_subdirectory(assertions)
 add_subdirectory(plans)
 add_subdirectory(unit)

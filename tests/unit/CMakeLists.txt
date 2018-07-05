@@ -5,12 +5,12 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 
 foreach( _t
-        test_grib_encoding
-        test_increments
-        test_spectral_order
+        grib_encoding
+        increments
+        spectral_order
         )
   ecbuild_add_test(
-      TARGET  ${_t}
+      TARGET  mir_tests_unit_${_t}
       SOURCES ${_t}.cc
       LIBS    mir
       ENVIRONMENT
