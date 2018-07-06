@@ -62,7 +62,7 @@ void ShToRegularLL<Invtrans>::print(std::ostream& out) const {
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out <<  "bbox=" << bbox_
+    out << ",bbox=" << bbox_
         << ",increments=" << increments_
         << "]";
 }
