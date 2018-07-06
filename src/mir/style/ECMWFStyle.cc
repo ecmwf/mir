@@ -202,7 +202,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
             // If user and field parametrisation have the same target_ key, and
             // its value is the same (and rotation, optionally) there's nothing to do
             if (!kt->sameKey(user, field) || !kt->sameValue(user, field)) {
-                return kt->target();
+                return (user.has("rotation") ? "rotated-" : "") + kt->target();
             }
 
             if (checkRotation && !south_pole.sameValue(user, field)) {
@@ -301,25 +301,16 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         } else if (resol.resultIsSpectral()) {
 
             plan.add(transform + target);
-            if (rotation) {
-                plan.add(interpolate + "rotated-" + target);
-            }
 
         } else {
 
             resol.prepare(plan);
 
-            if (rotation) {
-                plan.add(interpolate + "rotated-" + target);
-            } else {
-
-                // if the intermediate grid is the same as the target grid, the interpolation to the
-                // intermediate grid  is not followed by an additional interpolation
-                std::string gridname;
-                if (!parametrisation_.userParametrisation().get("gridname", gridname) || gridname != resol.gridname()) {
-                    plan.add(interpolate + target);
-                }
-
+            // if the intermediate grid is the same as the target grid, the interpolation to the
+            // intermediate grid  is not followed by an additional interpolation
+            std::string gridname;
+            if (rotation || !parametrisation_.userParametrisation().get("gridname", gridname) || gridname != resol.gridname()) {
+                plan.add(interpolate + target);
             }
 
         }
@@ -411,7 +402,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     const std::string target = target_gridded_from_parametrisation(parametrisation_, rotation);
 
     if (!target.empty()) {
-        plan.add(interpolate + (rotation ? "rotated-":"") + target);
+        plan.add(interpolate + target);
 
         if (rotation && (wind || vod2uv)) {
             plan.add("filter.adjust-winds-directions");
