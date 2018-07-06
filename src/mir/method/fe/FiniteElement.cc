@@ -320,7 +320,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
             ASSERT(ip < nbOutputPoints);
             ++progress;
 
-            if (inDomain.contains(it->pointUnrotated())) {
+            if (inDomain.contains(it->pointRotated())) {
 
                 // 3D point to lookup
                 repres::Iterator::point_3d_t p(it->point3D());
