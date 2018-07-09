@@ -47,8 +47,9 @@ static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 struct KnownKey {
 
-    KnownKey(const char* _key, const char* _target="") : key_(_key), target_(_target) {}
-    virtual ~KnownKey() {}
+    KnownKey(const char* _key, const char* _target="", const bool supportsRotation=true) : key_(_key), target_(_target), supportsRotation_(supportsRotation) {}
+    KnownKey(const KnownKey&) = delete;
+    virtual ~KnownKey() = default;
 
     virtual bool sameKey(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
@@ -63,15 +64,20 @@ struct KnownKey {
         return target_;
     }
 
+    bool supportsRotation() const {
+        return supportsRotation_;
+    }
+
 protected:
     const std::string key_;
     const std::string target_;
+    const bool supportsRotation_;
 };
 
 
 template< typename T >
 struct KnownKeyT : KnownKey {
-    KnownKeyT(const char* key, const char* target="") : KnownKey(key, target) {}
+    KnownKeyT(const char* key, const char* target="", const bool supportsRotation=true) : KnownKey(key, target, supportsRotation) {}
     bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
         return p1.has(key_) == p2.has(key_);
     }
@@ -123,8 +129,8 @@ bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation
 template< typename T >
 struct KnownMultiKeyT : KnownKey {
 
-    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target="") :
-        KnownKey(key, target),
+    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target="", const bool supportsRotation=true) :
+        KnownKey(key, target, supportsRotation),
         fieldKey1_(fieldKey1),
         fieldKey2_(fieldKey2) {
     }
@@ -153,7 +159,7 @@ bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametris
 
     if(!p1.get(key_, value1)) {
         std::ostringstream oss;
-        oss << "KnownKeyT<std::vector<double>> cannot get key=" << key_;
+        oss << "KnownMultiKeyT<std::vector<double>> cannot get key=" << key_;
         throw eckit::SeriousBug(oss.str());
     }
 
@@ -187,8 +193,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         new KnownKeyT< size_t >            ("octahedral", "octahedral-gg"),
         new KnownKeyT< std::vector<long> > ("pl",         "reduced-gg-pl-given"),
         new KnownKeyT< std::string >       ("gridname",   "namedgrid"),
-        new KnownKeyT< std::string >       ("griddef",    "griddef"),
-        new KnownKeyT< bool >              ("points",     "points")
+        new KnownKeyT< std::string >       ("griddef", "griddef", false),
+        new KnownKeyT< bool >              ("points",  "points",  false)
     };
 
     static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
@@ -202,6 +208,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
             // If user and field parametrisation have the same target_ key, and
             // its value is the same (and rotation, optionally) there's nothing to do
             if (!kt->sameKey(user, field) || !kt->sameValue(user, field)) {
+                if (user.has("rotation") && !kt->supportsRotation()) {
+                    throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with '" + kt->target() + "'");
+                }
                 return (user.has("rotation") ? "rotated-" : "") + kt->target();
             }
 
@@ -282,17 +291,12 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     const std::string interpolate = "interpolate.grid2";
     const std::string target = target_gridded_from_parametrisation(parametrisation_);
 
-    bool rotation_not_supported = (target == "griddef" || target == "points");
-    if (rotation && rotation_not_supported) {
-        throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef' and 'points'");
-    }
-
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
     }
 
     if (!target.empty()) {
-        if (rotation_not_supported) {
+        if (target == "griddef" || target == "points") {
 
             // TODO: this is temporary
             plan.add(transform + "octahedral-gg", "octahedral", 64L);
@@ -387,14 +391,6 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-
-    bool rotation_not_supported =
-            parametrisation_.userParametrisation().has("griddef") ||
-            parametrisation_.userParametrisation().has("points");
-
-    if (rotation && rotation_not_supported) {
-        throw eckit::UserError("'rotation' is incompatible with options 'griddef' and 'points'");
     }
 
     // completed later
