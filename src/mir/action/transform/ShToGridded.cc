@@ -185,24 +185,28 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
-        bool caching = true;
-        parametrisation_.get("caching", caching);
 
-        if (!caching) {
+        if (!creator.supported()) {
             eckit::Timer time("ShToGridded: Legendre precomputations", eckit::Log::debug<LibMir>());
 
-            if (!creator.supported()) {
-                eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
-                                      << "\n  representation: " << representation
-                                      << "\n  grid: " << grid.spec()
-                                      << "\n  options: " << options_
-                                      << std::endl
-                                      << "ShToGridded: continuing with hindered performance"
-                                      << std::endl;
+            eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
+                                  << "\n  representation: " << representation
+                                  << "\n  grid: " << grid.spec()
+                                  << "\n  options: " << options_
+                                  << std::endl
+                                  << "ShToGridded: continuing with hindered performance"
+                                  << std::endl;
 
-                trans = atlas_trans_t(grid, domain, truncation, options_);
+            trans = atlas_trans_t(grid, domain, truncation, options_);
 
-            } else {
+        } else {
+            eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
+
+            bool caching = true;
+            parametrisation_.get("caching", caching);
+
+            if (!caching) {
+
                 auto j = trans_cache.find(key);
                 if (j == trans_cache.end()) {
 
@@ -216,31 +220,17 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
                     trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
 
                 }
+            } else {
+
+                ASSERT(creator.supported());
+                atlas::trans::Cache transCache = getTransCache(
+                            creator,
+                            key,
+                            parametrisation_,
+                            ctx);
+                ASSERT(transCache);
+                trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
             }
-
-        } else {
-            eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
-
-            if (!creator.supported()) {
-                std::string type;
-                ASSERT(options_.get("type", type));
-
-                std::ostringstream msg;
-                msg << "ShToGridded: LegendreCacheCreator is not supported for:"
-                    << "\n  representation: " << representation
-                    << "\n  grid: " << grid.spec()
-                    << "\n  options: " << options_;
-                    eckit::Log::error() << msg.str() << std::endl;
-                throw eckit::UserError(msg.str());
-            }
-
-            atlas::trans::Cache transCache = getTransCache(
-                        creator,
-                        key,
-                        parametrisation_,
-                        ctx);
-            ASSERT(transCache);
-            trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
         }
 
     } catch (std::exception& e) {
