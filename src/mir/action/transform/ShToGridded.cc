@@ -185,9 +185,18 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
+        eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
 
-        if (!creator.supported()) {
-            eckit::Timer time("ShToGridded: Legendre precomputations", eckit::Log::debug<LibMir>());
+        bool caching = true;
+        parametrisation_.get("caching", caching);
+
+        auto j = trans_cache.find(key);
+        if (j != trans_cache.end()) {
+
+            ASSERT(j->transCache_);
+            trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
+
+        } else if (!creator.supported()) {
 
             eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
                                   << "\n  representation: " << representation
@@ -199,38 +208,23 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             trans = atlas_trans_t(grid, domain, truncation, options_);
 
+        } else if (!caching) {
+
+            auto& entry(trans_cache[key] = creator.create());
+            ASSERT(entry.transCache_);
+            trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
+
         } else {
-            eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
 
-            bool caching = true;
-            parametrisation_.get("caching", caching);
+            ASSERT(creator.supported());
+            atlas::trans::Cache transCache = getTransCache(
+                        creator,
+                        key,
+                        parametrisation_,
+                        ctx);
+            ASSERT(transCache);
+            trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
 
-            if (!caching) {
-
-                auto j = trans_cache.find(key);
-                if (j == trans_cache.end()) {
-
-                    auto& entry(trans_cache[key] = creator.create());
-                    ASSERT(entry.transCache_);
-                    trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
-
-                } else {
-
-                    ASSERT(j->transCache_);
-                    trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
-
-                }
-            } else {
-
-                ASSERT(creator.supported());
-                atlas::trans::Cache transCache = getTransCache(
-                            creator,
-                            key,
-                            parametrisation_,
-                            ctx);
-                ASSERT(transCache);
-                trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
-            }
         }
 
     } catch (std::exception& e) {
