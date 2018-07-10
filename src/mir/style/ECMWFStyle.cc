@@ -185,7 +185,7 @@ bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametris
 }
 
 
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation = false) {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation) {
     static const std::vector< KnownKey* > keys_targets = {
         new KnownMultiKeyT< std::vector<double> > ("grid", "west_east_increment", "south_north_increment", "regular-ll"),
         new KnownKeyT< size_t >            ("reduced",    "reduced-gg"),
@@ -289,7 +289,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(parametrisation_);
+    const std::string target = target_gridded_from_parametrisation(parametrisation_, false);
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
