@@ -340,7 +340,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
-    const param::MIRParametrisation& user = parametrisation_.userParametrisation();
 
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("intgrid", "none");
@@ -353,16 +352,16 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     resol.prepare(plan);
 
     std::string formula;
-    if (user.get("formula.spectral", formula)) {
+    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
         std::string metadata;
         // paramId for the results of formulas
-        user.get("formula.spectral.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     bool vod2uv = false;
-    user.get("vod2uv", vod2uv);
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
@@ -437,7 +436,7 @@ void ECMWFStyle::print(std::ostream& out) const {
 
 bool ECMWFStyle::isWindComponent() const {
     long id = 0;
-    parametrisation_.get("paramId", id);
+    parametrisation_.fieldParametrisation().get("paramId", id);
 
     if (id == 0) {
         return false;
