@@ -293,13 +293,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     }
 
     if (!target.empty()) {
-        if (target == "griddef" || target == "points") {
-
-            // TODO: this is temporary
-            plan.add(transform + "octahedral-gg", "octahedral", 64L);
-            plan.add(interpolate + target);
-
-        } else if (resol.resultIsSpectral()) {
+        if (resol.resultIsSpectral()) {
 
             plan.add(transform + target);
 
