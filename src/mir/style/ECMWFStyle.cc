@@ -283,9 +283,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
@@ -320,11 +317,11 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
     }
 
-    if (rotation && (wind || vod2uv)) {
+    if (rotation && windOutput()) {
         plan.add("filter.adjust-winds-directions");
     }
 
-    if (isWindComponent()) {
+    if (windInput()) {
         plan.add("filter.adjust-winds-scale-cos-latitude");
     }
 
@@ -375,12 +372,6 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     bool rotation = parametrisation_.userParametrisation().has("rotation");
 
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
             parametrisation_.userParametrisation().get("formula.raw", formula)) {
@@ -399,11 +390,12 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if (rotation && (wind || vod2uv)) {
+        if (rotation && windOutput()) {
             plan.add("filter.adjust-winds-directions");
-            selectWindComponents(plan);
         }
     }
+
+    selectWindComponents(plan);
 }
 
 
@@ -434,7 +426,7 @@ void ECMWFStyle::print(std::ostream& out) const {
 }
 
 
-bool ECMWFStyle::isWindComponent() const {
+bool ECMWFStyle::windInput() const {
     long id = 0;
     parametrisation_.fieldParametrisation().get("paramId", id);
 
@@ -450,13 +442,37 @@ bool ECMWFStyle::isWindComponent() const {
 }
 
 
+bool ECMWFStyle::windOutput() const {
+    if (windInput()) {
+        return true;
+    }
+
+    bool vod2uv = false;
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
+    return vod2uv || wind;
+}
+
+
 void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+    if (!windOutput()) {
+        return;
+    }
+
     bool u_only = false;
-    if (parametrisation_.userParametrisation().get("u-only", u_only) && u_only) {
+    parametrisation_.userParametrisation().get("u-only", u_only);
+
+    bool v_only = false;
+    parametrisation_.userParametrisation().get("v-only", v_only);
+
+    if (u_only) {
+        ASSERT(!v_only);
         plan.add("select.field", "which", long(0));
     }
-    bool v_only = false;
-    if (parametrisation_.userParametrisation().get("v-only", v_only) && v_only) {
+    if (v_only) {
         ASSERT(!u_only);
         plan.add("select.field", "which", long(1));
     }
