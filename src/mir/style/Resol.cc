@@ -150,7 +150,7 @@ long Resol::getTargetGaussianNumber() const {
         parametrisation_.userParametrisation().has("points")) {
 
         // hardcoded
-        N = 32;
+        N = 64;
         eckit::Log::debug<LibMir>() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
 
     }
