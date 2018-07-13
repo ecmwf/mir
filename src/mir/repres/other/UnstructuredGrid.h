@@ -45,7 +45,7 @@ public:
 
     // -- Destructor
 
-    ~UnstructuredGrid(); // Change to virtual if base class
+    ~UnstructuredGrid();
 
     // -- Convertors
     // None
@@ -54,8 +54,7 @@ public:
     // None
 
     // -- Methods
-
-    double increment() const;
+    // None
 
     // -- Overridden methods
     // None
@@ -73,7 +72,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -107,8 +106,6 @@ private:
     virtual Iterator* iterator() const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
-
-    util::BoundingBox extendedBoundingBox(const util::BoundingBox&, double radius) const;
 
     // Domain operations
     virtual bool isPeriodicWestEast() const;

@@ -94,7 +94,6 @@ private:
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None

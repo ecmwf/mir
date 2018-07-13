@@ -91,7 +91,6 @@ protected:
     virtual bool getLongestElementDiagonal(double&) const;
 
     virtual Representation* globalise(data::MIRField&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
 
