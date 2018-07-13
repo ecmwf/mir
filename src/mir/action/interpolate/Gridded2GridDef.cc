@@ -12,10 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2GridDef.h"
 
 #include <iostream>
-
 #include "eckit/filesystem/PathName.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
@@ -23,10 +23,11 @@
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
 }
 
@@ -49,7 +50,7 @@ void Gridded2GridDef::custom(std::ostream& out) const {
 void Gridded2GridDef::print(std::ostream& out) const {
     out << "Gridded2GridDef["
         << "griddef=" << griddef_ << ",";
-    Gridded2GriddedInterpolation::print(out);
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -67,6 +68,7 @@ static ActionBuilder< Gridded2GridDef > grid2grid("interpolate.grid2griddef");
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

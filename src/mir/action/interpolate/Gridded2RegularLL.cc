@@ -16,19 +16,40 @@
 #include "mir/action/interpolate/Gridded2RegularLL.h"
 
 #include <iostream>
+#include <vector>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/Fraction.h"
-#include "mir/repres/latlon/RegularLL.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/latlon/RegularLL.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation):
-    Gridded2LatLon(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
 
+    std::vector<double> value;
+    ASSERT(parametrisation_.userParametrisation().get("grid", value));
+
+    ASSERT(value.size() == 2);
+    increments_ = util::Increments(value[0], value[1]);
+
+    if (parametrisation_.userParametrisation().get("area", value)) {
+        ASSERT(value.size() == 4);
+        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    }
+
+    increments_.globaliseBoundingBox(bbox_);
+
+    eckit::Log::debug<LibMir>()
+            << "Gridded2RotatedLL: globalise:"
+            << "\n\t" << bbox_
+            << "\n\t" << increments_
+            << "\n\t" "Shifted? " << (increments_.isShifted(bbox_) ? "yes" : "no")
+            << std::endl;
 }
 
 
@@ -37,13 +58,15 @@ Gridded2RegularLL::~Gridded2RegularLL() = default;
 
 bool Gridded2RegularLL::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RegularLL*>(&other);
-    return o && Gridded2LatLon::sameAs(*o);
+    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2GriddedInterpolation::sameAs(*o);
 }
 
 
 void Gridded2RegularLL::print(std::ostream& out) const {
-    out << "Gridded2RegularLL[";
-    Gridded2LatLon::print(out);
+    out << "Gridded2RegularLL["
+           "increments=" << increments_ << ","
+           "bbox=" << bbox_ << ",";
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -62,6 +85,7 @@ static ActionBuilder< Gridded2RegularLL > grid2grid("interpolate.grid2regular-ll
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

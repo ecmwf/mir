@@ -12,19 +12,20 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2ReducedLL.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2ReducedLL::Gridded2ReducedLL(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
 }
 
 
@@ -37,7 +38,7 @@ bool Gridded2ReducedLL::sameAs(const Action& other) const {
 
 void Gridded2ReducedLL::print(std::ostream& out) const {
     out << "Gridded2ReducedLL[";
-    Gridded2GriddedInterpolation::print(out);
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -57,6 +58,7 @@ static ActionBuilder< Gridded2ReducedLL > grid2grid("interpolate.grid2reduced-ll
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

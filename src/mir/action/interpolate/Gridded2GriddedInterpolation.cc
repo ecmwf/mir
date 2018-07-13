@@ -15,23 +15,21 @@
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/Cropping.h"
-#include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
 
-
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation &parametrisation):
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
 
     ASSERT(parametrisation_.get("interpolation", interpolation_));
@@ -41,6 +39,12 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
 
 
 Gridded2GriddedInterpolation::~Gridded2GriddedInterpolation() = default;
+
+
+const method::Method& Gridded2GriddedInterpolation::method() const {
+    ASSERT(method_);
+    return *method_;
+}
 
 
 bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
@@ -57,20 +61,10 @@ bool Gridded2GriddedInterpolation::canCrop() const {
 }
 
 
-const util::BoundingBox& Gridded2GriddedInterpolation::croppingBoundingBox() const {
-    repres::RepresentationHandle out(outputRepresentation());
-
-    return method_->hasCropping() ? method_->getCropping()
-                                  : out->boundingBox();
-}
-
-
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
     data::MIRField& field = ctx.field();
-
-    eckit::Log::debug<LibMir>() << "Method is " << *method_ << std::endl;
 
     repres::RepresentationHandle in(field.representation());
     repres::RepresentationHandle out(method_->adjustOutputRepresentation(ctx, outputRepresentation()));
@@ -96,6 +90,7 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

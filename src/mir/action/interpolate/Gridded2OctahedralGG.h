@@ -13,11 +13,10 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
-#define mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
+#ifndef mir_action_interpolate_Gridded2OctahedralGG_h
+#define mir_action_interpolate_Gridded2OctahedralGG_h
 
-#include <vector>
-#include "mir/action/interpolate/Gridded2RotatedGrid.h"
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
 
 namespace mir {
@@ -25,7 +24,7 @@ namespace action {
 namespace interpolate {
 
 
-class Gridded2RotatedReducedGGPLGiven : public Gridded2RotatedGrid {
+class Gridded2OctahedralGG : public Gridded2UnrotatedGrid {
 public:
 
     // -- Exceptions
@@ -33,11 +32,11 @@ public:
 
     // -- Contructors
 
-    Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation&);
+    Gridded2OctahedralGG(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedReducedGGPLGiven();
+    virtual ~Gridded2OctahedralGG();
 
     // -- Convertors
     // None
@@ -68,10 +67,8 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual void print(std::ostream&) const;
-
-    // From Gridded2RotatedGrid
     virtual bool sameAs(const Action&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -83,7 +80,7 @@ private:
 
     // -- Members
 
-    std::vector<long> pl_;
+    size_t N_;
 
     // -- Methods
     // None

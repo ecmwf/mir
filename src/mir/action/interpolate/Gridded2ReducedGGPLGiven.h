@@ -13,103 +13,103 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2ReducedGGPLGiven_H
-#define Gridded2ReducedGGPLGiven_H
+#ifndef mir_action_interpolate_Gridded2ReducedGGPLGiven_h
+#define mir_action_interpolate_Gridded2ReducedGGPLGiven_h
 
 #include <vector>
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2ReducedGGPLGiven : public Gridded2GriddedInterpolation {
-  public:
+class Gridded2ReducedGGPLGiven : public Gridded2UnrotatedGrid {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2ReducedGGPLGiven(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Gridded2ReducedGGPLGiven(); // Change to virtual if base class
+    virtual ~Gridded2ReducedGGPLGiven();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
+
+    // From Gridded2GriddedInterpolation
+    virtual bool sameAs(const Action&) const;
+    virtual void print(std::ostream&) const;
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
-    Gridded2ReducedGGPLGiven(const Gridded2ReducedGGPLGiven&);
-    Gridded2ReducedGGPLGiven& operator=(const Gridded2ReducedGGPLGiven&);
-
-// -- Members
+    // -- Members
 
     std::vector<long> pl_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    // From Action
     virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2ReducedGGPLGiven& p)
-    //	{ p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

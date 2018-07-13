@@ -8,16 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_action_interpolate_Gridded2UnrotatedGrid_h
+#define mir_action_interpolate_Gridded2UnrotatedGrid_h
 
-#ifndef mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
-#define mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
-
-#include <vector>
-#include "mir/action/interpolate/Gridded2RotatedGrid.h"
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 
 namespace mir {
@@ -25,7 +20,7 @@ namespace action {
 namespace interpolate {
 
 
-class Gridded2RotatedReducedGGPLGiven : public Gridded2RotatedGrid {
+class Gridded2UnrotatedGrid : public Gridded2GriddedInterpolation {
 public:
 
     // -- Exceptions
@@ -33,11 +28,11 @@ public:
 
     // -- Contructors
 
-    Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation&);
+    using Gridded2GriddedInterpolation::Gridded2GriddedInterpolation;
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedReducedGGPLGiven();
+    virtual ~Gridded2UnrotatedGrid();
 
     // -- Convertors
     // None
@@ -67,11 +62,7 @@ protected:
 
     // -- Overridden methods
 
-    // From Gridded2GriddedInterpolation
-    virtual void print(std::ostream&) const;
-
-    // From Gridded2RotatedGrid
-    virtual bool sameAs(const Action&) const;
+    virtual const util::BoundingBox& croppingBoundingBox() const;
 
     // -- Class members
     // None
@@ -82,19 +73,13 @@ protected:
 private:
 
     // -- Members
-
-    std::vector<long> pl_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    // From Action
-    virtual const char* name() const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    // None
 
     // -- Class members
     // None

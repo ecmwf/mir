@@ -177,52 +177,6 @@ void BoundingBox::makeName(std::ostream& out) const {
 }
 
 
-BoundingBox BoundingBox::rotate(const Rotation& rotation) const {
-    using eckit::geometry::Point2;
-
-    // rotate bounding box corners and find (min, max)
-    const atlas::PointLonLat southPole(
-                rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                rotation.south_pole_latitude().value() );
-
-    const atlas::util::Rotation r(southPole);
-    const atlas::PointLonLat p[] {
-        r.rotate({west_.value(), north_.value()}),
-        r.rotate({east_.value(), north_.value()}),
-        r.rotate({east_.value(), south_.value()}),
-        r.rotate({west_.value(), south_.value()})
-    };
-
-    Point2 min(p[0]);
-    Point2 max(p[0]);
-    for (size_t i = 1; i < 4; ++i) {
-        min = Point2::componentsMin(min, p[i]);
-        max = Point2::componentsMax(max, p[i]);
-    }
-
-
-    // extend by 'angle' latitude- and longitude-wise
-    constexpr double angle = 0.; //0.001 ??
-    ASSERT(angle >= 0);
-
-    Latitude n = max[1] + angle > Latitude::NORTH_POLE.value() ? Latitude::NORTH_POLE : max[1] + angle;
-    Latitude s = min[1] - angle < Latitude::SOUTH_POLE.value() ? Latitude::SOUTH_POLE : min[1] - angle;
-
-    Longitude w = min[0];
-    Longitude e = max[0];
-
-    if ((Longitude::GLOBE + w - e).value() < 2. * angle) {
-        e = Longitude::GLOBE + w;
-    } else {
-        w = min[0] - angle;
-        e = max[0] + angle > (w + Longitude::GLOBE).value() ?
-                    w + Longitude::GLOBE : Longitude(max[0] + angle);
-    }
-
-    return BoundingBox(n, w, s, e);
-}
-
-
 }  // namespace util
 }  // namespace mir
 

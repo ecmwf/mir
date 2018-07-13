@@ -13,20 +13,18 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_interpolate_Gridded2LatLon_h
-#define mir_action_interpolate_Gridded2LatLon_h
+#ifndef mir_action_interpolate_Gridded2RotatedRegularGG_h
+#define mir_action_interpolate_Gridded2RotatedRegularGG_h
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
-
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
+#include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2LatLon : public Gridded2GriddedInterpolation {
+class Gridded2RotatedRegularGG : public Gridded2RotatedGrid {
 public:
 
     // -- Exceptions
@@ -34,11 +32,11 @@ public:
 
     // -- Contructors
 
-    Gridded2LatLon(const param::MIRParametrisation&);
+    Gridded2RotatedRegularGG(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Gridded2LatLon();
+    virtual ~Gridded2RotatedRegularGG();
 
     // -- Convertors
     // None
@@ -61,19 +59,18 @@ public:
 protected:
 
     // -- Members
-
-    util::Increments increments_;
-    util::BoundingBox bbox_;
-
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    // From Gridded2GriddedInterpolation
+    virtual void print(std::ostream&) const;
 
+    // From Gridded2RotatedGrid
+    virtual bool sameAs(const Action&) const;
 
     // -- Class members
     // None
@@ -84,13 +81,19 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    // From Action
+    virtual const char* name() const;
+
+    // From Gridded2GriddedInterpolation
+    virtual const repres::Representation* outputRepresentation() const;
 
     // -- Class members
     // None
@@ -99,13 +102,12 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2LatLon& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

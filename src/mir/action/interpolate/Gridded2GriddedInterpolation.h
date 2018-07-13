@@ -13,12 +13,13 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2GriddedInterpolation_H
-#define Gridded2GriddedInterpolation_H
+#ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
+#define mir_action_interpolate_Gridded2GriddedInterpolation_h
 
+#include "eckit/memory/ScopedPtr.h"
 #include "mir/action/plan/Action.h"
 #include "mir/method/Method.h"
-#include "eckit/memory/ScopedPtr.h"
+
 
 namespace mir {
 namespace repres {
@@ -29,6 +30,7 @@ class Representation;
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 class Gridded2GriddedInterpolation : public Action {
@@ -70,12 +72,13 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    const method::Method& method() const;
+    virtual const repres::Representation* outputRepresentation() const = 0;
 
     // -- Overridden methods
-    // None
 
     virtual bool sameAs(const Action&) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Class members
     // None
@@ -91,15 +94,14 @@ private:
     eckit::ScopedPtr<method::Method> method_;
 
     // -- Methods
-
-    virtual const repres::Representation* outputRepresentation() const = 0;
+    // None
 
     // -- Overridden methods
 
     virtual void execute(context::Context&) const;
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
-    virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual const util::BoundingBox& croppingBoundingBox() const = 0;
 
     // -- Class members
     // None
@@ -108,13 +110,12 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2GriddedInterpolation& p)
-    //  { p.print(s); return s; }
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

@@ -40,12 +40,10 @@ list(
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
     action/interpolate/Gridded2GriddedInterpolation.h
-    action/interpolate/Gridded2LatLon.cc
-    action/interpolate/Gridded2LatLon.h
     action/interpolate/Gridded2NamedGrid.cc
     action/interpolate/Gridded2NamedGrid.h
-    action/interpolate/Gridded2Octahedral.cc
-    action/interpolate/Gridded2Octahedral.h
+    action/interpolate/Gridded2OctahedralGG.cc
+    action/interpolate/Gridded2OctahedralGG.h
     action/interpolate/Gridded2Points.cc
     action/interpolate/Gridded2Points.h
     action/interpolate/Gridded2PolarStereographic.cc
@@ -62,18 +60,22 @@ list(
     action/interpolate/Gridded2RegularGG.h
     action/interpolate/Gridded2RegularLL.cc
     action/interpolate/Gridded2RegularLL.h
+    action/interpolate/Gridded2RotatedGrid.cc
+    action/interpolate/Gridded2RotatedGrid.h
     action/interpolate/Gridded2RotatedLL.cc
     action/interpolate/Gridded2RotatedLL.h
     action/interpolate/Gridded2RotatedNamedGrid.cc
     action/interpolate/Gridded2RotatedNamedGrid.h
-    action/interpolate/Gridded2RotatedOctahedral.cc
-    action/interpolate/Gridded2RotatedOctahedral.h
-    action/interpolate/Gridded2RotatedReduced.cc
-    action/interpolate/Gridded2RotatedReduced.h
+    action/interpolate/Gridded2RotatedOctahedralGG.cc
+    action/interpolate/Gridded2RotatedOctahedralGG.h
+    action/interpolate/Gridded2RotatedReducedGG.cc
+    action/interpolate/Gridded2RotatedReducedGG.h
     action/interpolate/Gridded2RotatedReducedGGPLGiven.cc
     action/interpolate/Gridded2RotatedReducedGGPLGiven.h
-    action/interpolate/Gridded2RotatedRegular.cc
-    action/interpolate/Gridded2RotatedRegular.h
+    action/interpolate/Gridded2RotatedRegularGG.cc
+    action/interpolate/Gridded2RotatedRegularGG.h
+    action/interpolate/Gridded2UnrotatedGrid.cc
+    action/interpolate/Gridded2UnrotatedGrid.h
     action/io/Copy.cc
     action/io/Copy.h
     action/io/Save.cc

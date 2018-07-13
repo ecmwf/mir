@@ -12,54 +12,58 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include "mir/action/interpolate/Gridded2Octahedral.h"
+
+#include "mir/action/interpolate/Gridded2OctahedralGG.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/param/MIRParametrisation.h"
 
+
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-Gridded2Octahedral::Gridded2Octahedral(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& parametrisation):
+    Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
 }
 
 
-Gridded2Octahedral::~Gridded2Octahedral() = default;
+Gridded2OctahedralGG::~Gridded2OctahedralGG() = default;
 
 
-bool Gridded2Octahedral::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2Octahedral*>(&other);
+bool Gridded2OctahedralGG::sameAs(const Action& other) const {
+    auto o = dynamic_cast<const Gridded2OctahedralGG*>(&other);
     return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
-void Gridded2Octahedral::print(std::ostream& out) const {
-    out << "Gridded2Octahedral[N=" << N_ << ",";
-    Gridded2GriddedInterpolation::print(out);
+void Gridded2OctahedralGG::print(std::ostream& out) const {
+    out << "Gridded2OctahedralGG["
+           "N=" << N_ << ",";
+    Gridded2UnrotatedGrid::print(out);
     out  << "]";
 }
 
 
-const repres::Representation* Gridded2Octahedral::outputRepresentation() const {
+const repres::Representation* Gridded2OctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
-const char* Gridded2Octahedral::name() const {
-    return "Gridded2Octahedral";
+const char* Gridded2OctahedralGG::name() const {
+    return "Gridded2OctahedralGG";
 }
 
 
 namespace {
-static ActionBuilder< Gridded2Octahedral > grid2grid("interpolate.grid2octahedral-gg");
+static ActionBuilder< Gridded2OctahedralGG > grid2grid("interpolate.grid2octahedral-gg");
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

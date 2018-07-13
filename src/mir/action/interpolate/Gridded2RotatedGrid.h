@@ -8,16 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_action_interpolate_Gridded2RotatedGrid_h
+#define mir_action_interpolate_Gridded2RotatedGrid_h
 
-#ifndef mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
-#define mir_action_interpolate_Gridded2RotatedReducedGGPLGiven_h
+#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
-#include <vector>
-#include "mir/action/interpolate/Gridded2RotatedGrid.h"
+#include "mir/util/Rotation.h"
 
 
 namespace mir {
@@ -25,7 +22,7 @@ namespace action {
 namespace interpolate {
 
 
-class Gridded2RotatedReducedGGPLGiven : public Gridded2RotatedGrid {
+class Gridded2RotatedGrid : public Gridded2GriddedInterpolation {
 public:
 
     // -- Exceptions
@@ -33,11 +30,11 @@ public:
 
     // -- Contructors
 
-    Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation&);
+    Gridded2RotatedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedReducedGGPLGiven();
+    virtual ~Gridded2RotatedGrid();
 
     // -- Convertors
     // None
@@ -63,14 +60,13 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    const util::Rotation& rotation() const;
 
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual void print(std::ostream&) const;
-
-    // From Gridded2RotatedGrid
+    virtual const util::BoundingBox& croppingBoundingBox() const;
     virtual bool sameAs(const Action&) const;
 
     // -- Class members
@@ -83,18 +79,13 @@ private:
 
     // -- Members
 
-    std::vector<long> pl_;
+    util::Rotation rotation_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    // From Action
-    virtual const char* name() const;
-
-    // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    // None
 
     // -- Class members
     // None

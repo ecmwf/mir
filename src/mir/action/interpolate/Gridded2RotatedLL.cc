@@ -16,24 +16,40 @@
 #include "mir/action/interpolate/Gridded2RotatedLL.h"
 
 #include <iostream>
+#include <vector>
 #include "eckit/exception/Exceptions.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation &parametrisation):
-    Gridded2LatLon(parametrisation) {
+Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametrisation) :
+    Gridded2RotatedGrid(parametrisation) {
 
     std::vector<double> value;
+    ASSERT(parametrisation_.userParametrisation().get("grid", value));
 
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
     ASSERT(value.size() == 2);
+    increments_ = util::Increments(value[0], value[1]);
 
-    rotation_ = util::Rotation(value[0], value[1]);
+    if (parametrisation_.userParametrisation().get("area", value)) {
+        ASSERT(value.size() == 4);
+        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+    }
+
+    increments_.globaliseBoundingBox(bbox_);
+
+    eckit::Log::debug<LibMir>()
+            << "Gridded2RotatedLL: globalise:"
+            << "\n\t" << bbox_
+            << "\n\t" << increments_
+            << "\n\t" "Shifted? " << (increments_.isShifted(bbox_) ? "yes" : "no")
+            << std::endl;
 }
 
 
@@ -42,29 +58,36 @@ Gridded2RotatedLL::~Gridded2RotatedLL() = default;
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedLL*>(&other);
-    return o && Gridded2LatLon::sameAs(*o) && (rotation_ == o->rotation_);
+    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2RotatedGrid::sameAs(*o);
 }
 
 
 void Gridded2RotatedLL::print(std::ostream &out) const {
-    out << "Gridded2RotatedLL[rotation=" << rotation_ << ",";
-    Gridded2LatLon::print(out);
+    out << "Gridded2RotatedLL["
+           "increments=" << increments_ << ","
+           "bbox=" << bbox_ << ","
+           "rotation=" << rotation() << ",";
+    Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
+
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    return new repres::latlon::RotatedLL(increments_, rotation_, bbox_);
+    return new repres::latlon::RotatedLL(increments_, rotation(), bbox_);
 }
+
 
 const char* Gridded2RotatedLL::name() const {
     return "Gridded2RotatedLL";
 }
+
 
 namespace {
 static ActionBuilder< Gridded2RotatedLL > grid2grid("interpolate.grid2rotated-regular-ll");
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

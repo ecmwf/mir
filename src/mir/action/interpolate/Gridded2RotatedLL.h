@@ -13,18 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RotatedLL_H
-#define Gridded2RotatedLL_H
+#ifndef mir_action_interpolate_Gridded2RotatedLL_h
+#define mir_action_interpolate_Gridded2RotatedLL_h
 
-#include "mir/action/interpolate/Gridded2LatLon.h"
-#include "mir/util/Rotation.h"
+#include "mir/action/interpolate/Gridded2RotatedGrid.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2RotatedLL : public Gridded2LatLon {
+class Gridded2RotatedLL : public Gridded2RotatedGrid {
 public:
 
     // -- Exceptions
@@ -36,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedLL(); // Change to virtual if base class
+    virtual ~Gridded2RotatedLL();
 
     // -- Convertors
     // None
@@ -62,11 +64,15 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    // From Gridded2GriddedInterpolation
+    virtual void print(std::ostream&) const;
+
+    // From Gridded2RotatedGrid
+    virtual bool sameAs(const Action&) const;
 
     // -- Class members
     // None
@@ -76,22 +82,17 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    Gridded2RotatedLL(const Gridded2RotatedLL&);
-    Gridded2RotatedLL& operator=(const Gridded2RotatedLL&);
-
     // -- Members
 
-
-    util::Rotation rotation_;
+    util::Increments increments_;
+    util::BoundingBox bbox_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    // From Action
     virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
@@ -104,13 +105,12 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2RotatedLL& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

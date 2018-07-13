@@ -24,14 +24,9 @@ namespace interpolate {
 
 
 Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2RotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
-
-    std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
-    ASSERT(value.size() == 2);
-
-    rotation_ = util::Rotation(value[0], value[1]);
+    ASSERT(!pl_.empty());
 }
 
 
@@ -40,25 +35,24 @@ Gridded2RotatedReducedGGPLGiven::~Gridded2RotatedReducedGGPLGiven() = default;
 
 bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_) && (rotation_ == o->rotation_);
+    return o && (pl_ == o->pl_) && Gridded2RotatedGrid::sameAs(other);
 }
 
 
 void Gridded2RotatedReducedGGPLGiven::print(std::ostream& out) const {
     out << "Gridded2RotatedReducedGGPLGiven["
-        "pl=" << pl_.size()
-        << ",rotation="
-        << rotation_
-        << ",";
-    Gridded2GriddedInterpolation::print(out);
+        "pl=" << pl_.size() << ","
+        "rotation=" << rotation() << ",";
+    Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
 
 const repres::Representation* Gridded2RotatedReducedGGPLGiven::outputRepresentation() const {
     size_t N = pl_.size() / 2;
-    return new repres::gauss::reduced::RotatedFromPL(N, pl_, rotation_);
+    return new repres::gauss::reduced::RotatedFromPL(N, pl_, rotation());
 }
+
 
 const char* Gridded2RotatedReducedGGPLGiven::name() const {
     return "Gridded2RotatedReducedGGPLGiven";

@@ -116,8 +116,6 @@ public:
 
     void makeName(std::ostream&) const;
 
-    BoundingBox rotate(const Rotation&) const;
-
     // -- Overridden methods
     // None
 

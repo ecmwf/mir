@@ -13,102 +13,102 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2NamedGrid_H
-#define Gridded2NamedGrid_H
+#ifndef mir_action_interpolate_Gridded2NamedGrid_h
+#define mir_action_interpolate_Gridded2NamedGrid_h
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2NamedGrid : public Gridded2GriddedInterpolation {
-  public:
+class Gridded2NamedGrid : public Gridded2UnrotatedGrid {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2NamedGrid(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Gridded2NamedGrid(); // Change to virtual if base class
+    virtual ~Gridded2NamedGrid();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
+
+    // From Gridded2GriddedInterpolation
+    virtual bool sameAs(const Action&) const;
+    virtual void print(std::ostream&) const;
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
-
-    Gridded2NamedGrid(const Gridded2NamedGrid&);
-    Gridded2NamedGrid& operator=(const Gridded2NamedGrid&);
-
-// -- Members
+    // -- Members
 
     std::string gridname_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    // From Action
     virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2NamedGrid& p)
-    //	{ p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

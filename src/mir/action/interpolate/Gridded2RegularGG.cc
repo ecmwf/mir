@@ -12,10 +12,10 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2RegularGG.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/param/MIRParametrisation.h"
@@ -23,10 +23,11 @@
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2RegularGG::Gridded2RegularGG(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("regular", N_));
 }
 
@@ -40,8 +41,9 @@ bool Gridded2RegularGG::sameAs(const Action& other) const {
 }
 
 void Gridded2RegularGG::print(std::ostream& out) const {
-    out << "Gridded2RegularGG[N=" << N_ << ",";
-    Gridded2GriddedInterpolation::print(out);
+    out << "Gridded2RegularGG["
+           "N=" << N_ << ",";
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -59,6 +61,7 @@ static ActionBuilder< Gridded2RegularGG > grid2grid("interpolate.grid2regular-gg
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

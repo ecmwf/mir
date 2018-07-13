@@ -13,104 +13,104 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RotatedNamedGrid_H
-#define Gridded2RotatedNamedGrid_H
+#ifndef mir_action_interpolate_Gridded2RotatedNamedGrid_h
+#define mir_action_interpolate_Gridded2RotatedNamedGrid_h
 
-#include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
-#include "mir/util/Rotation.h"
+#include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2RotatedNamedGrid : public Gridded2GriddedInterpolation {
-  public:
+class Gridded2RotatedNamedGrid : public Gridded2RotatedGrid {
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     Gridded2RotatedNamedGrid(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~Gridded2RotatedNamedGrid(); // Change to virtual if base class
+    virtual ~Gridded2RotatedNamedGrid();
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
+
+    // From Gridded2GriddedInterpolation
+    virtual void print(std::ostream&) const;
+
+    // From Gridded2RotatedGrid
+    virtual bool sameAs(const Action&) const;
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // -- Members
 
-    Gridded2RotatedNamedGrid(const Gridded2RotatedNamedGrid&);
-    Gridded2RotatedNamedGrid& operator=(const Gridded2RotatedNamedGrid&);
-
-// -- Members
     std::string gridname_;
-    util::Rotation rotation_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    // From Action
     virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
     virtual const repres::Representation* outputRepresentation() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2RotatedNamedGrid& p)
-    //	{ p.print(s); return s; }
+    // -- Friends
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

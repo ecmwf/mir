@@ -13,17 +13,20 @@
 /// @date Apr 2015
 
 
-#ifndef Gridded2RegularLL_H
-#define Gridded2RegularLL_H
+#ifndef mir_action_interpolate_Gridded2RegularLL_h
+#define mir_action_interpolate_Gridded2RegularLL_h
 
-#include "mir/action/interpolate/Gridded2LatLon.h"
+#include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
-class Gridded2RegularLL : public Gridded2LatLon {
+class Gridded2RegularLL : public Gridded2UnrotatedGrid {
 public:
 
     // -- Exceptions
@@ -35,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RegularLL(); // Change to virtual if base class
+    virtual ~Gridded2RegularLL();
 
     // -- Convertors
     // None
@@ -61,11 +64,13 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    // From Gridded2GriddedInterpolation
+    virtual bool sameAs(const Action&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -75,19 +80,17 @@ protected:
 
 private:
 
-    // No copy allowed
-
-    Gridded2RegularLL(const Gridded2RegularLL&);
-    Gridded2RegularLL& operator=(const Gridded2RegularLL&);
-
     // -- Members
+
+    util::Increments increments_;
+    util::BoundingBox bbox_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    // From Action
     virtual const char* name() const;
 
     // From Gridded2GriddedInterpolation
@@ -100,13 +103,12 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const Gridded2RegularLL& p)
-    //	{ p.print(s); return s; }
+    // None
 
 };
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

@@ -12,23 +12,22 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2PolarStereographic.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
-
 #include "mir/repres/unsupported/PolarStereographic.h"
 #include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2PolarStereographic::Gridded2PolarStereographic(const param::MIRParametrisation &parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
     // std::vector<double> value;
 
     // ASSERT(parametrisation_.user().get("grid", value));
@@ -47,7 +46,7 @@ bool Gridded2PolarStereographic::sameAs(const Action& other) const {
 
 void Gridded2PolarStereographic::print(std::ostream &out) const {
     out << "Gridded2PolarStereographic[";
-    Gridded2GriddedInterpolation::print(out);
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -65,6 +64,7 @@ static ActionBuilder< Gridded2PolarStereographic > grid2grid("interpolate.grid2p
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

@@ -12,20 +12,22 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/interpolate/Gridded2ReducedGGPLGiven.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 #include "mir/param/MIRParametrisation.h"
 
+
 namespace mir {
 namespace action {
+namespace interpolate {
 
 
 Gridded2ReducedGGPLGiven::Gridded2ReducedGGPLGiven(const param::MIRParametrisation& parametrisation):
-    Gridded2GriddedInterpolation(parametrisation) {
+    Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
 }
 
@@ -39,8 +41,9 @@ bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
 }
 
 void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {
-    out << "Gridded2ReducedGGPLGiven[pl=" << pl_.size() << ",";
-    Gridded2GriddedInterpolation::print(out);
+    out << "Gridded2ReducedGGPLGiven["
+           "pl=" << pl_.size() << ",";
+    Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
@@ -59,6 +62,7 @@ static ActionBuilder< Gridded2ReducedGGPLGiven > grid2grid("interpolate.grid2red
 }
 
 
+}  // namespace interpolate
 }  // namespace action
 }  // namespace mir
 

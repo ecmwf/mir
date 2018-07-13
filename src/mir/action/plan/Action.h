@@ -32,7 +32,6 @@ class MIRParametrisation;
 }
 namespace util {
 class BoundingBox;
-class MIRStatistics;
 }
 }
 
@@ -49,11 +48,11 @@ public:
 
     // -- Contructors
 
-    Action(const param::MIRParametrisation &parametrisation);
+    Action(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Action(); // Change to virtual if base class
+    virtual ~Action();
 
     // -- Convertors
     // None
@@ -63,15 +62,15 @@ public:
 
     // -- Methods
 
-    void perform(context::Context & ctx) const;
+    void perform(context::Context&) const;
 
 
-    virtual bool sameAs(const Action& other) const = 0;
-    virtual void custom(std::ostream &) const; // Change to virtual if base class
+    virtual bool sameAs(const Action&) const = 0;
+    virtual void custom(std::ostream&) const;
     virtual const char* name() const = 0;
 
     // For optimising plans
-    virtual bool mergeWithNext(const Action& other);
+    virtual bool mergeWithNext(const Action&);
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
     virtual const util::BoundingBox& croppingBoundingBox() const;
@@ -93,7 +92,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -125,7 +124,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Action &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Action& p) {
         p.print(s);
         return s;
     }
@@ -137,17 +136,17 @@ class ActionFactory {
 
     std::string name_;
 
-    virtual Action *make(const param::MIRParametrisation &) = 0;
+    virtual Action* make(const param::MIRParametrisation&) = 0;
 
 protected:
 
-    ActionFactory(const std::string &);
+    ActionFactory(const std::string&);
 
     virtual ~ActionFactory();
 
 public:
 
-    static Action *build(const std::string&, const param::MIRParametrisation&, bool exact = true);
+    static Action* build(const std::string&, const param::MIRParametrisation&, bool exact = true);
 
     static void list(std::ostream&);
 
@@ -156,11 +155,11 @@ public:
 
 template<class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action *make(const param::MIRParametrisation &param) {
+    virtual Action* make(const param::MIRParametrisation& param) {
         return new T(param);
     }
 public:
-    ActionBuilder(const std::string &name) : ActionFactory(name) {}
+    ActionBuilder(const std::string& name) : ActionFactory(name) {}
 };
 
 
