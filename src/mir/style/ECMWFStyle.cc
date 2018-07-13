@@ -309,14 +309,14 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             }
 
         }
-    }
 
-    if (rotation && windOutput()) {
-        plan.add("filter.adjust-winds-directions");
-    }
+        if (windInput()) {
+            plan.add("filter.adjust-winds-scale-cos-latitude");
+        }
 
-    if (windInput()) {
-        plan.add("filter.adjust-winds-scale-cos-latitude");
+        if (rotation && windOutput()) {
+            plan.add("filter.adjust-winds-directions");
+        }
     }
 
     selectWindComponents(plan);
