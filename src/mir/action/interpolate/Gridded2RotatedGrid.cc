@@ -15,6 +15,7 @@
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -42,10 +43,74 @@ const util::Rotation& Gridded2RotatedGrid::rotation() const {
 
 
 const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
-    repres::RepresentationHandle out(outputRepresentation());
+    using eckit::geometry::Point2;
 
-    return method().hasCropping() ? method().getCropping()
-                                  : out->boundingBox();
+    repres::RepresentationHandle out(outputRepresentation());
+    auto& bbox(method().hasCropping() ? method().getCropping()
+                                      : out->boundingBox());
+
+    Latitude n = bbox.north();
+    Latitude s = bbox.south();
+    Longitude w = bbox.west();
+    Longitude e = bbox.east();
+
+    // rotate bounding box corners and find (min, max)
+    const atlas::PointLonLat southPole(
+                rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
+                rotation_.south_pole_latitude().value() );
+
+    const atlas::util::Rotation r(southPole);
+    const atlas::PointLonLat p[] {
+        r.rotate({w.value(), n.value()}),
+        r.rotate({e.value(), n.value()}),
+        r.rotate({e.value(), s.value()}),
+        r.rotate({w.value(), s.value()})
+    };
+
+
+    // construct polygon with rotated bounding box points, as seen from (either) pole
+    // Pole checks in 3D for (0, 0, <flattened>)
+    std::vector<atlas::PointLonLat> proj;
+    atlas::PointXYZ pxyz;
+    for (size_t i = 0; i < 4; ++i) {
+        atlas::util::Earth::convertSphericalToCartesian(p[i], pxyz);
+        proj.emplace_back(Point2{ pxyz[0], pxyz[1] });
+    }
+    proj.push_back(proj.front());
+
+    const atlas::util::LonLatPolygon poly(proj);
+    if (poly.contains({0, 0})) {
+        // TODO intelligent things
+    }
+
+
+    Point2 min(p[0]);
+    Point2 max(p[0]);
+    for (size_t i = 1; i < 4; ++i) {
+        min = Point2::componentsMin(min, p[i]);
+        max = Point2::componentsMax(max, p[i]);
+    }
+
+
+    // extend by 'angle' latitude- and longitude-wise
+    constexpr double angle = 0.; //0.001 ??
+    ASSERT(angle >= 0);
+
+    n = max[1] + angle > Latitude::NORTH_POLE.value() ? Latitude::NORTH_POLE : max[1] + angle;
+    s = min[1] - angle < Latitude::SOUTH_POLE.value() ? Latitude::SOUTH_POLE : min[1] - angle;
+    w = min[0];
+    e = max[0];
+
+    if ((Longitude::GLOBE + w - e).value() < 2. * angle) {
+        e = Longitude::GLOBE + w;
+    } else {
+        w = min[0] - angle;
+        e = max[0] + angle > (w + Longitude::GLOBE).value() ?
+                    w + Longitude::GLOBE : Longitude(max[0] + angle);
+    }
+
+    bbox_ = util::BoundingBox(n, w, s, e);
+    return bbox_;
 }
 
 

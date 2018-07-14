@@ -33,6 +33,8 @@
 #include "atlas/util/Config.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
+#include "atlas/util/LonLatPolygon.h"
+#include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 
 #else

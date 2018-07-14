@@ -17,8 +17,8 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/MD5.h"
 #include "eckit/types/Fraction.h"
+#include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
@@ -113,7 +113,7 @@ void BoundingBox::print(std::ostream& out) const {
 }
 
 
-void BoundingBox::fill(grib_info &info) const  {
+void BoundingBox::fill(grib_info& info) const  {
     // Warning: scanning mode not considered
     info.grid.latitudeOfFirstGridPointInDegrees  = north_.value();
     info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
@@ -127,7 +127,7 @@ void BoundingBox::fill(grib_info &info) const  {
 }
 
 
-void BoundingBox::hash(eckit::MD5 &md5) const {
+void BoundingBox::hash(eckit::MD5& md5) const {
     md5.add(north_);
     md5.add(west_);
     md5.add(south_);
@@ -135,7 +135,7 @@ void BoundingBox::hash(eckit::MD5 &md5) const {
 }
 
 
-void BoundingBox::fill(api::MIRJob &job) const  {
+void BoundingBox::fill(api::MIRJob& job) const  {
     job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
 }
 

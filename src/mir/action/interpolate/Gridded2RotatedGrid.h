@@ -14,6 +14,7 @@
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
+#include "mir/util/BoundingBox.h"
 #include "mir/util/Rotation.h"
 
 
@@ -80,6 +81,7 @@ private:
     // -- Members
 
     util::Rotation rotation_;
+    mutable util::BoundingBox bbox_;
 
     // -- Methods
     // None

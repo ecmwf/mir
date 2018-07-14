@@ -18,7 +18,6 @@
 
 #include <iosfwd>
 #include "mir/repres/Iterator.h"
-#include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
 
 
