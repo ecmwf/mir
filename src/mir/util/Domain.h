@@ -37,14 +37,8 @@ public:
 
     // -- Methods
 
-    /// Contains point
-    bool contains(const repres::Iterator::point_ll_t& p) const;
-
-    /// Contains point
-    bool contains(const repres::Iterator::point_2d_t& p) const;
-
-    /// Contains point
-    bool contains(const Latitude&, const Longitude&) const;
+    /// Contains point/bounding box
+    using BoundingBox::contains;
 
     using BoundingBox::north;
     using BoundingBox::west;

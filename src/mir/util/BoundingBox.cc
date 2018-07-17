@@ -100,6 +100,9 @@ BoundingBox::BoundingBox(const BoundingBox& other) {
 }
 
 
+BoundingBox& BoundingBox::operator=(const BoundingBox& other) = default;
+
+
 BoundingBox::~BoundingBox() = default;
 
 
@@ -154,9 +157,20 @@ void BoundingBox::normalise() {
 }
 
 
+bool BoundingBox::contains(const repres::Iterator::point_ll_t& p) const {
+    return contains(p.lat, p.lon);
+}
+
+
+bool BoundingBox::contains(const repres::Iterator::point_2d_t& p) const {
+    // notice the order
+    return contains(p[0], p[1]);
+}
+
+
 bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
     return (lat <= north_) &&
-           (lat >= south_) &&
+            (lat >= south_) &&
             (lon.normalise(west_) <= east_);
 }
 

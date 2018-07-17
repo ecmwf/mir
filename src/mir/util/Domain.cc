@@ -19,22 +19,6 @@ namespace mir {
 namespace util {
 
 
-bool Domain::contains(const repres::Iterator::point_ll_t& p) const {
-    return BoundingBox::contains(p.lat, p.lon);
-}
-
-
-bool Domain::contains(const repres::Iterator::point_2d_t& p) const {
-    // notice the order
-    return BoundingBox::contains(p[0], p[1]);
-}
-
-
-bool Domain::contains(const Latitude& lat, const Longitude& lon) const {
-    return BoundingBox::contains(lat, lon);
-}
-
-
 bool Domain::includesPoleNorth() const {
     return north() == Latitude::NORTH_POLE;
 }

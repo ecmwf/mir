@@ -60,20 +60,14 @@ public:
 
     // -- Destructor
 
-    ~BoundingBox(); // Change to virtual if base class
+    virtual ~BoundingBox();
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    BoundingBox& operator=(const BoundingBox& other) {
-        north_ = other.north_;
-        west_  = other.west_;
-        south_ = other.south_;
-        east_  = other.east_;
-        return *this;
-    }
+    BoundingBox& operator=(const BoundingBox& other);
 
     bool operator==(const BoundingBox& other) const {
         return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
@@ -103,8 +97,16 @@ public:
         return east_;
     }
 
+    /// Contains point
+    bool contains(const repres::Iterator::point_ll_t&) const;
+
+    /// Contains point
+    bool contains(const repres::Iterator::point_2d_t&) const;
+
+    /// Contains point
     bool contains(const Latitude&, const Longitude&) const;
 
+    /// Contains bounding box
     bool contains(const BoundingBox&) const;
 
     void fill(grib_info&) const;
@@ -131,7 +133,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

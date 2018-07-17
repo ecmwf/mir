@@ -26,9 +26,6 @@ namespace mir {
 namespace repres {
 
 
-Gridded::Gridded() {}
-
-
 Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
     bbox_(parametrisation) {
 }
@@ -40,6 +37,9 @@ Gridded::Gridded(const util::BoundingBox& bbox) :
 
 
 Gridded::~Gridded() = default;
+
+
+Gridded::Gridded() = default;
 
 
 void Gridded::setComplexPacking(grib_info& info) const {
@@ -54,16 +54,6 @@ void Gridded::setSimplePacking(grib_info& info) const {
 
 void Gridded::setGivenPacking(grib_info&) const {
     // The packing_type is set by the caller
-}
-
-
-void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
-    // only crop if not global
-    if (!isGlobal()) {
-        eckit::Log::debug<LibMir>() << "+++++++++++ " << *this << " is not global" << std::endl;
-        action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(ctx);
-    }
 }
 
 

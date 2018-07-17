@@ -75,8 +75,6 @@ protected:
 
     virtual void fill(api::MIRJob&) const;
 
-    virtual void shape(size_t& ni, size_t& nj) const;
-
     virtual void print(std::ostream&) const;
 
     virtual void makeName(std::ostream&) const;
