@@ -57,6 +57,16 @@ void Gridded::setGivenPacking(grib_info&) const {
 }
 
 
+void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
+    // only crop if not global
+    if (!isGlobal()) {
+        eckit::Log::debug<LibMir>() << "+++++++++++ " << *this << " is not global" << std::endl;
+        action::AreaCropper cropper(parametrisation, bbox_);
+        cropper.execute(ctx);
+    }
+}
+
+
 util::Domain Gridded::domain() const {
 
     const Latitude& n = includesNorthPole()? Latitude::NORTH_POLE : bbox_.north();

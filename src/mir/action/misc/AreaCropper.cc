@@ -70,6 +70,15 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation):
 }
 
 
+AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox):
+    Action(parametrisation),
+    bbox_(bbox),
+    caching_(true) {
+
+    parametrisation_.get("caching", caching_);
+}
+
+
 void AreaCropper::crop(
         const repres::Representation& repres,
         util::BoundingBox& bbox,
