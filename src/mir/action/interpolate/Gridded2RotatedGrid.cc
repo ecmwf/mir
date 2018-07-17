@@ -12,6 +12,7 @@
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 #include <vector>
+#include "eckit/types/FloatCompare.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -54,6 +55,7 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
     Longitude w = bbox.west();
     Longitude e = bbox.east();
 
+
     // rotate bounding box corners and find (min, max)
     const atlas::PointLonLat southPole(
                 rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
@@ -67,23 +69,6 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
         r.rotate({w.value(), s.value()})
     };
 
-
-    // construct polygon with rotated bounding box points, as seen from (either) pole
-    // Pole checks in 3D for (0, 0, <flattened>)
-    std::vector<atlas::PointLonLat> proj;
-    atlas::PointXYZ pxyz;
-    for (size_t i = 0; i < 4; ++i) {
-        atlas::util::Earth::convertSphericalToCartesian(p[i], pxyz);
-        proj.emplace_back(Point2{ pxyz[0], pxyz[1] });
-    }
-    proj.push_back(proj.front());
-
-    const atlas::util::LonLatPolygon poly(proj);
-    if (poly.contains({0, 0})) {
-        // TODO intelligent things
-    }
-
-
     Point2 min(p[0]);
     Point2 max(p[0]);
     for (size_t i = 1; i < 4; ++i) {
@@ -91,23 +76,29 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
         max = Point2::componentsMax(max, p[i]);
     }
 
+    //// extend by 'angle' latitude- and longitude-wise
+    //constexpr double angle = 0.; //0.001 ??
+    //min = Point2::add(min, Point2{ -angle, -angle });
+    //max = Point2::add(max, Point2{  angle,  angle });
 
-    // extend by 'angle' latitude- and longitude-wise
-    constexpr double angle = 0.; //0.001 ??
-    ASSERT(angle >= 0);
 
-    n = max[1] + angle > Latitude::NORTH_POLE.value() ? Latitude::NORTH_POLE : max[1] + angle;
-    s = min[1] - angle < Latitude::SOUTH_POLE.value() ? Latitude::SOUTH_POLE : min[1] - angle;
-    w = min[0];
-    e = max[0];
+    // check bbox including poles (in the unrotated frame)
+    atlas::PointLonLat NP{ r.unrotate({0., Latitude::NORTH_POLE.value()}) };
+    atlas::PointLonLat SP{ r.unrotate({0., Latitude::SOUTH_POLE.value()}) };
 
-    if ((Longitude::GLOBE + w - e).value() < 2. * angle) {
-        e = Longitude::GLOBE + w;
-    } else {
-        w = min[0] - angle;
-        e = max[0] + angle > (w + Longitude::GLOBE).value() ?
-                    w + Longitude::GLOBE : Longitude(max[0] + angle);
-    }
+    bool includesNorthPole = bbox.contains(NP.lat(), NP.lon())
+            || eckit::types::is_approximately_lesser_or_equal(Latitude::NORTH_POLE.value(), max[1]);
+
+    bool includesSouthPole = bbox.contains(SP.lat(), SP.lon())
+            || eckit::types::is_approximately_greater_or_equal(Latitude::SOUTH_POLE.value(), min[1]);
+
+    bool isPeriodicWestEast = includesNorthPole || includesSouthPole
+            || eckit::types::is_approximately_lesser_or_equal(Longitude::GLOBE.value(), max[0] - min[0]);
+
+    n = includesNorthPole ? Latitude::NORTH_POLE : max[1];
+    s = includesSouthPole ? Latitude::SOUTH_POLE : min[1];
+    w = isPeriodicWestEast ? 0 : min[0];
+    e = isPeriodicWestEast ? Longitude::GLOBE : max[0];
 
     bbox_ = util::BoundingBox(n, w, s, e);
     return bbox_;

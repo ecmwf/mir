@@ -7,6 +7,7 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 foreach( _t
         grib_encoding
         increments
+        rotations
         spectral_order
         )
   ecbuild_add_test(
