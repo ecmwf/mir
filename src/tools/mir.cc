@@ -14,6 +14,7 @@
 
 
 #include <iostream>
+#include <fenv.h>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
@@ -300,6 +301,12 @@ void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input
 
 
 int main(int argc, char **argv) {
+
+    feenableexcept(FE_ALL_EXCEPT & ~(FE_INEXACT | FE_UNDERFLOW));
+//    feenableexcept(FE_ALL_EXCEPT & ~FE_DIVBYZERO);
+//    feenableexcept(FE_ALL_EXCEPT & ~FE_INVALID  );
+//    feenableexcept(FE_ALL_EXCEPT & ~FE_OVERFLOW );
+
     MIRToolConcrete tool(argc, argv);
     return tool.start();
 }
