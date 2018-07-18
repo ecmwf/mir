@@ -4,4 +4,4 @@ gridType=regular_gg,gridName=F80,shortName=msl,global=0.002.grib1
 --grid=1/1
 # grib_get assertions
 Ni=360
-Nj=167
+Nj=168
