@@ -15,9 +15,6 @@
 
 #include "mir/repres/Gridded.h"
 
-#include "eckit/log/Log.h"
-#include "mir/action/misc/AreaCropper.h"
-#include "mir/config/LibMir.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
@@ -54,16 +51,6 @@ void Gridded::setSimplePacking(grib_info& info) const {
 
 void Gridded::setGivenPacking(grib_info&) const {
     // The packing_type is set by the caller
-}
-
-
-void Gridded::crop(const param::MIRParametrisation& parametrisation, context::Context& ctx) const {
-    // only crop if not global
-    if (!isGlobal()) {
-        eckit::Log::debug<LibMir>() << "+++++++++++ " << *this << " is not global" << std::endl;
-        action::AreaCropper cropper(parametrisation, bbox_);
-        cropper.execute(ctx);
-    }
 }
 
 

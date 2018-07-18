@@ -63,6 +63,7 @@ protected:
     // -- Overridden methods
 
     virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual void cropToInput(context::Context&, const repres::Representation& in) const;
 
     // -- Class members
     // None

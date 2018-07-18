@@ -14,10 +14,11 @@
 #include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+#include "mir/action/misc/AreaCropper.h"
+#include "mir/api/Atlas.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -41,6 +42,12 @@ Gridded2RotatedGrid::~Gridded2RotatedGrid() = default;
 
 const util::Rotation& Gridded2RotatedGrid::rotation() const {
     return rotation_;
+}
+
+
+bool Gridded2RotatedGrid::sameAs(const Action& other) const {
+    auto o = dynamic_cast<const Gridded2RotatedGrid*>(&other);
+    return o && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
@@ -111,9 +118,16 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
 }
 
 
-bool Gridded2RotatedGrid::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const Gridded2RotatedGrid*>(&other);
-    return o && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
+void Gridded2RotatedGrid::cropToInput(mir::context::Context& ctx, const mir::repres::Representation& in) const {
+
+    // FIXME MIR-270: correct this!
+
+    // * only crop if input is not global
+    // * output representation comes from Context
+    if (!in.isGlobal()) {
+        AreaCropper cropper(parametrisation_, in.boundingBox());
+        cropper.execute(ctx);
+    }
 }
 
 

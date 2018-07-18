@@ -100,12 +100,8 @@ private:
     // -- Overridden methods
 
     virtual void setComplexPacking(grib_info&) const;
-
     virtual void setSimplePacking(grib_info&) const;
-
     virtual void setGivenPacking(grib_info&) const;
-
-    virtual void crop(const param::MIRParametrisation&, context::Context&) const;
 
     // -- Class members
     // None

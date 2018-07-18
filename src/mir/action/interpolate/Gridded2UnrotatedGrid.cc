@@ -11,7 +11,7 @@
 
 #include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
-#include "mir/method/Method.h"
+#include "mir/action/misc/AreaCropper.h"
 #include "mir/repres/Representation.h"
 
 
@@ -28,6 +28,17 @@ const util::BoundingBox& Gridded2UnrotatedGrid::croppingBoundingBox() const {
 
     return method().hasCropping() ? method().getCropping()
                                   : out->boundingBox();
+}
+
+
+void Gridded2UnrotatedGrid::cropToInput(context::Context& ctx, const repres::Representation& in) const {
+
+    // * only crop if input is not global
+    // * output representation comes from Context
+    if (!in.isGlobal()) {
+        AreaCropper cropper(parametrisation_, in.boundingBox());
+        cropper.execute(ctx);
+    }
 }
 
 

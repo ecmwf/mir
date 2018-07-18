@@ -15,10 +15,8 @@
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/method/Cropping.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
@@ -74,8 +72,9 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     field.representation(out);
 
     // Make sure results are cropped to the input
-    in->crop(parametrisation_, ctx);
+    cropToInput(ctx, *in);
 }
+
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
@@ -84,8 +83,8 @@ bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
 
 
 void Gridded2GriddedInterpolation::print(std::ostream& out) const {
-    out << "interpolation=" << interpolation_;
-    out << ",method=" << *method_;
+    out << "interpolation=" << interpolation_
+        << ",method=" << *method_;
 }
 
 

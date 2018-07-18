@@ -102,6 +102,7 @@ private:
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
     virtual const util::BoundingBox& croppingBoundingBox() const = 0;
+    virtual void cropToInput(context::Context&, const repres::Representation& in) const = 0;
 
     // -- Class members
     // None
