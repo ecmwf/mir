@@ -25,7 +25,7 @@ namespace mir {
 namespace util {
 
 
-class Domain : protected BoundingBox {
+class Domain : public BoundingBox {
 public:
 
     // -- Exceptions
@@ -35,18 +35,15 @@ public:
 
     using BoundingBox::BoundingBox;
 
-    // -- Methods
+    // -- Convertors
 
-    /// Contains point/bounding box
-    using BoundingBox::contains;
-
-    using BoundingBox::north;
-    using BoundingBox::west;
-    using BoundingBox::south;
-    using BoundingBox::east;
-
-    // Converter to atlas::RectangularDomain
     operator atlas::RectangularDomain() const;
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
 
     /// Check if grid includes the North pole
     bool includesPoleNorth() const;

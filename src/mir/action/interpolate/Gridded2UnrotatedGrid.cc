@@ -13,6 +13,7 @@
 
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -35,8 +36,9 @@ void Gridded2UnrotatedGrid::cropToInput(context::Context& ctx, const repres::Rep
 
     // * only crop if input is not global
     // * output representation comes from Context
-    if (!in.isGlobal()) {
-        AreaCropper cropper(parametrisation_, in.boundingBox());
+    util::Domain domain = in.domain();
+    if (!domain.isGlobal()) {
+        AreaCropper cropper(parametrisation_, domain);
         cropper.execute(ctx);
     }
 }

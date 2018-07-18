@@ -19,6 +19,7 @@
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -124,8 +125,9 @@ void Gridded2RotatedGrid::cropToInput(mir::context::Context& ctx, const mir::rep
 
     // * only crop if input is not global
     // * output representation comes from Context
-    if (!in.isGlobal()) {
-        AreaCropper cropper(parametrisation_, in.boundingBox());
+    util::Domain domain = in.domain();
+    if (!domain.isGlobal()) {
+        AreaCropper cropper(parametrisation_, domain);
         cropper.execute(ctx);
     }
 }
