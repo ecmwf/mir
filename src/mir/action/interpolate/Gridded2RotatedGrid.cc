@@ -14,8 +14,10 @@
 #include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
+#include "mir/action/context/Context.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/api/Atlas.h"
+#include "mir/data/MIRField.h"
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -121,14 +123,20 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
 
 void Gridded2RotatedGrid::cropToInput(mir::context::Context& ctx, const mir::repres::Representation& in) const {
 
-    // FIXME MIR-270: correct this!
+    // Check if all resulting interpolation points are in the input domain
+    // NOT: this is slow, all code validated it isn't necessary
 
-    // * only crop if input is not global
-    // * output representation comes from Context
+    // Assumptions:
+    // * a local (unrotated) intermediate grid is supporting a local rotated
+    //   lat/lon grid (croppingBoundingBox, above)
+    // * the user-specified --area/--rotation is contained by the input grid
     util::Domain domain = in.domain();
     if (!domain.isGlobal()) {
-        AreaCropper cropper(parametrisation_, domain);
-        cropper.execute(ctx);
+        repres::RepresentationHandle representation(ctx.field().representation());
+        for (eckit::ScopedPtr<repres::Iterator> iter(representation->iterator()); iter->next();) {
+            auto& pr = iter->pointRotated();
+            ASSERT(domain.contains(pr[0], pr[1]));
+        }
     }
 }
 
