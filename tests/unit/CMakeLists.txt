@@ -3,13 +3,17 @@
 set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
+set(tests
+    grib_encoding
+    increments
+    rotations
+    spectral_order
+    )
+if(HAVE_ATLAS)
+    list(APPEND tests atlas)
+endif()
 
-foreach( _t
-        grib_encoding
-        increments
-        rotations
-        spectral_order
-        )
+foreach( _t ${tests})
   ecbuild_add_test(
       TARGET  mir_tests_unit_${_t}
       SOURCES ${_t}.cc
