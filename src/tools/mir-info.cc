@@ -31,11 +31,6 @@ void MIRInfo::execute(const eckit::option::CmdArgs&) {
         const Library& lib = Library::lookup(lib_name);
         eckit::Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << std::endl;
     }
-
-#ifdef ATLAS_HAVE_TRANS
-//    eckit::Log::info() << "transi " << transi_version() << " git-sha1:" << transi_git_sha1_abbrev(8) << std::endl;
-//    eckit::Log::info() << "trans " << trans_version() << " git-sha1:" << trans_git_sha1_abbrev(8) << std::endl;
-#endif
 }
 
 

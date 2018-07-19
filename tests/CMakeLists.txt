@@ -6,19 +6,14 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 # Set list of input data files
 set(TEST_INPUT_FILES
-        "2t_O640.grib"
-        "msl_N640.grib"
-        "msl_regular_ll_1-1.grib"
-        "msl_regular_ll_2-2.grib"
-        "msl_regular_ll_3-3.grib"
-        "q_F640.grib" )
-
-# Add input data with spherical harmonic if possible
-if(ATLAS_HAVE_TRANS)
-    list(APPEND TEST_INPUT_FILES
-        "vo-d_sh.grib"
-        "z_sh.grib" )
-endif(ATLAS_HAVE_TRANS)
+    "2t_O640.grib"
+    "msl_N640.grib"
+    "msl_regular_ll_1-1.grib"
+    "msl_regular_ll_2-2.grib"
+    "msl_regular_ll_3-3.grib"
+    "q_F640.grib"
+    "vo-d_sh.grib"
+    "z_sh.grib")
 
 if(HAVE_NETCDF AND ATLAS_HAVE_TESSELATION)
    list(APPEND TEST_INPUT_FILES "nemo.nc")

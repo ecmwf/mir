@@ -740,51 +740,48 @@ list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 if(HAVE_ATLAS)
     set(libatlas atlas)
-    if(ATLAS_HAVE_TRANS)
-        list( APPEND libatlas transi)
-        list( APPEND mir_srcs
-            action/transform/InvtransScalar.cc
-            action/transform/InvtransScalar.h
-            action/transform/InvtransVodTouv.cc
-            action/transform/InvtransVodTouv.h
-            action/transform/ShToGridDef.cc
-            action/transform/ShToGridDef.h
-            action/transform/ShToGridded.cc
-            action/transform/ShToGridded.h
-            action/transform/ShToNamedGrid.cc
-            action/transform/ShToNamedGrid.h
-            action/transform/ShToOctahedralGG.cc
-            action/transform/ShToOctahedralGG.h
-            action/transform/ShToPoints.cc
-            action/transform/ShToPoints.h
-            action/transform/ShToReducedGG.cc
-            action/transform/ShToReducedGG.h
-            action/transform/ShToReducedGGPLGiven.cc
-            action/transform/ShToReducedGGPLGiven.h
-            action/transform/ShToRegularGG.cc
-            action/transform/ShToRegularGG.h
-            action/transform/ShToRegularLL.cc
-            action/transform/ShToRegularLL.h
-            action/transform/ShToRotatedNamedGrid.cc
-            action/transform/ShToRotatedNamedGrid.h
-            action/transform/ShToRotatedOctahedralGG.cc
-            action/transform/ShToRotatedOctahedralGG.h
-            action/transform/ShToRotatedReducedGG.cc
-            action/transform/ShToRotatedReducedGG.h
-            action/transform/ShToRotatedReducedGGPLGiven.cc
-            action/transform/ShToRotatedReducedGGPLGiven.h
-            action/transform/ShToRotatedRegularGG.cc
-            action/transform/ShToRotatedRegularGG.h
-            action/transform/ShToRotatedRegularLL.cc
-            action/transform/ShToRotatedRegularLL.h
-            action/transform/ShTruncate.cc
-            action/transform/ShTruncate.h
-            action/transform/ShVodToUV.cc
-            action/transform/ShVodToUV.h
-            action/transform/TransCache.cc
-            action/transform/TransCache.h
-            )
-       endif()
+    list(APPEND mir_srcs
+        action/transform/InvtransScalar.cc
+        action/transform/InvtransScalar.h
+        action/transform/InvtransVodTouv.cc
+        action/transform/InvtransVodTouv.h
+        action/transform/ShToGridDef.cc
+        action/transform/ShToGridDef.h
+        action/transform/ShToGridded.cc
+        action/transform/ShToGridded.h
+        action/transform/ShToNamedGrid.cc
+        action/transform/ShToNamedGrid.h
+        action/transform/ShToOctahedralGG.cc
+        action/transform/ShToOctahedralGG.h
+        action/transform/ShToPoints.cc
+        action/transform/ShToPoints.h
+        action/transform/ShToReducedGG.cc
+        action/transform/ShToReducedGG.h
+        action/transform/ShToReducedGGPLGiven.cc
+        action/transform/ShToReducedGGPLGiven.h
+        action/transform/ShToRegularGG.cc
+        action/transform/ShToRegularGG.h
+        action/transform/ShToRegularLL.cc
+        action/transform/ShToRegularLL.h
+        action/transform/ShToRotatedNamedGrid.cc
+        action/transform/ShToRotatedNamedGrid.h
+        action/transform/ShToRotatedOctahedralGG.cc
+        action/transform/ShToRotatedOctahedralGG.h
+        action/transform/ShToRotatedReducedGG.cc
+        action/transform/ShToRotatedReducedGG.h
+        action/transform/ShToRotatedReducedGGPLGiven.cc
+        action/transform/ShToRotatedReducedGGPLGiven.h
+        action/transform/ShToRotatedRegularGG.cc
+        action/transform/ShToRotatedRegularGG.h
+        action/transform/ShToRotatedRegularLL.cc
+        action/transform/ShToRotatedRegularLL.h
+        action/transform/ShTruncate.cc
+        action/transform/ShTruncate.h
+        action/transform/ShVodToUV.cc
+        action/transform/ShVodToUV.h
+        action/transform/TransCache.cc
+        action/transform/TransCache.h
+        )
 endif()
 
 
@@ -796,7 +793,7 @@ ecbuild_add_library(
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
   PRIVATE_INCLUDES   ${ATLAS_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${GRIB_API_INCLUDE_DIRS}
-  LIBS               ${libatlas} eckit_linalg  eckit_geometry eckit_option ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
+  LIBS               ${libatlas} eckit_linalg eckit_geometry eckit_option ${GRIB_API_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
   )
 
 
