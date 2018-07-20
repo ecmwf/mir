@@ -4,6 +4,7 @@ ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/mir )
 
 configure_file( api/mir_config.h.in   api/mir_config.h  )
 configure_file( api/mir_version.h.in  api/mir_version.h )
+configure_file( api/mir_version.cc.in  api/mir_version.cc )
 
 install(
   FILES
@@ -14,14 +15,10 @@ install(
   )
 
 
-### mir sources
-
-configure_file( api/mir_version.cc.in  api/mir_version.cc )
-
 list( APPEND mir_srcs api/mir_version.cc )
 
-list(
-    APPEND mir_srcs
+
+list(APPEND mir_srcs
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -562,184 +559,7 @@ list(
   )
 
 
-if(HAVE_ATLAS)
-list(
-    APPEND mir_srcs
-    method/fe/Conservative.cc
-    method/fe/Conservative.h
-    method/fe/FEBilinear.cc
-    method/fe/FEBilinear.h
-    method/fe/FELinear.cc
-    method/fe/FELinear.h
-    method/fe/FiniteElement.cc
-    method/fe/FiniteElement.h
-    method/fe/Tessellation.cc
-    method/fe/Tessellation.h
-    method/structured/StructuredBilinearLatLon.cc
-    method/structured/StructuredBilinearLatLon.h
-    method/structured/StructuredLinear3D.cc
-    method/structured/StructuredLinear3D.h
-    method/structured/StructuredMethod.cc
-    method/structured/StructuredMethod.h
-    util/MIRGrid.cc
-    util/MIRGrid.h
-    util/MeshGeneratorParameters.cc
-    util/MeshGeneratorParameters.h
-)
-endif()
-
-
-if (HAVE_NETCDF)
-list(
-    APPEND mir_srcs
-    input/NetcdfFileInput.cc
-    input/NetcdfFileInput.h
-)
-endif()
-
-
-if ( HAVE_NETCDF )
-
-  list( APPEND mir_srcs
-    netcdf/Attribute.cc
-    netcdf/Attribute.h
-    netcdf/CellMethodInputVariable.cc
-    netcdf/CellMethodInputVariable.h
-    netcdf/CellMethodOutputVariable.cc
-    netcdf/CellMethodOutputVariable.h
-    netcdf/Codec.cc
-    netcdf/Codec.h
-    netcdf/CoordinateInputVariable.cc
-    netcdf/CoordinateInputVariable.h
-    netcdf/CoordinateOutputVariable.cc
-    netcdf/CoordinateOutputVariable.h
-    netcdf/DataInputVariable.cc
-    netcdf/DataInputVariable.h
-    netcdf/DataOutputVariable.cc
-    netcdf/DataOutputVariable.h
-    netcdf/Dimension.cc
-    netcdf/Dimension.h
-    netcdf/DummyInputVariable.cc
-    netcdf/DummyInputVariable.h
-    netcdf/DummyMatrix.cc
-    netcdf/DummyMatrix.h
-    netcdf/DummyVariable.h
-    netcdf/Endowed.cc
-    netcdf/Endowed.h
-    netcdf/Exceptions.cc
-    netcdf/Exceptions.h
-    netcdf/Dataset.cc
-    netcdf/Dataset.h
-    netcdf/GregorianCalendar.cc
-    netcdf/GregorianCalendar.h
-    netcdf/JulianCalendar.cc
-    netcdf/JulianCalendar.h
-    netcdf/AllLeapCalendar.cc
-    netcdf/AllLeapCalendar.h
-    netcdf/NoLeapCalendar.cc
-    netcdf/NoLeapCalendar.h
-    netcdf/NoneCalendar.cc
-    netcdf/NoneCalendar.h
-    netcdf/ProlepticCalendar.cc
-    netcdf/ProlepticCalendar.h
-    netcdf/ThreeSixtyCalendar.cc
-    netcdf/ThreeSixtyCalendar.h
-    netcdf/Calendar.cc
-    netcdf/Calendar.h
-    netcdf/PackingCodec.cc
-    netcdf/PackingCodec.h
-    netcdf/HyperCube.cc
-    netcdf/HyperCube.h
-    netcdf/InputAttribute.cc
-    netcdf/InputAttribute.h
-    netcdf/InputDimension.cc
-    netcdf/InputDimension.h
-    netcdf/InputDataset.cc
-    netcdf/InputDataset.h
-    netcdf/InputMatrix.cc
-    netcdf/InputMatrix.h
-    netcdf/InputVariable.cc
-    netcdf/InputVariable.h
-    netcdf/Mapper.h
-    netcdf/Matrix.cc
-    netcdf/Matrix.h
-    netcdf/MergeCoordinateMatrix.cc
-    netcdf/MergeCoordinateMatrix.h
-    netcdf/MergeCoordinateStep.cc
-    netcdf/MergeCoordinateStep.h
-    netcdf/MergeDataMatrix.cc
-    netcdf/MergeDataMatrix.h
-    netcdf/MergeDataStep.cc
-    netcdf/MergeDataStep.h
-    netcdf/MergePlan.cc
-    netcdf/MergePlan.h
-    netcdf/NCFile.cc
-    netcdf/NCFile.h
-    netcdf/NCFileCache.cc
-    netcdf/NCFileCache.h
-    netcdf/OutputAttribute.cc
-    netcdf/OutputAttribute.h
-    netcdf/OutputDimension.cc
-    netcdf/OutputDimension.h
-    netcdf/OutputDataset.cc
-    netcdf/OutputDataset.h
-    netcdf/OutputVariable.cc
-    netcdf/OutputVariable.h
-    netcdf/Remapping.cc
-    netcdf/Remapping.h
-    netcdf/Reshape.cc
-    netcdf/Reshape.h
-    netcdf/GridSpec.h
-    netcdf/GridSpec.cc
-    netcdf/RegularLL.h
-    netcdf/RegularLL.cc
-    netcdf/Rectilinear.h
-    netcdf/Rectilinear.cc
-    netcdf/Curvilinear.h
-    netcdf/Curvilinear.cc
-    netcdf/Field.h
-    netcdf/Field.cc
-    netcdf/ReshapeVariableStep.cc
-    netcdf/ReshapeVariableStep.h
-    netcdf/ScalarCoordinateInputVariable.cc
-    netcdf/ScalarCoordinateInputVariable.h
-    netcdf/ScalarCoordinateOutputVariable.cc
-    netcdf/ScalarCoordinateOutputVariable.h
-    netcdf/SimpleInputVariable.cc
-    netcdf/SimpleInputVariable.h
-    netcdf/SimpleOutputVariable.cc
-    netcdf/SimpleOutputVariable.h
-    netcdf/Step.cc
-    netcdf/Step.h
-    netcdf/Type.cc
-    netcdf/Type.h
-    netcdf/Curvilinear.cc
-    netcdf/Curvilinear.h
-    netcdf/UnstructuredGrid.cc
-    netcdf/UnstructuredGrid.h
-    netcdf/UpdateCoordinateStep.cc
-    netcdf/UpdateCoordinateStep.h
-    netcdf/Value.cc
-    netcdf/Value.h
-    netcdf/ValueT.cc
-    netcdf/ValueT.h
-    netcdf/Variable.cc
-    netcdf/Variable.h
-    netcdf/VirtualInputDimension.cc
-    netcdf/VirtualInputDimension.h
-    netcdf/VirtualOutputDimension.cc
-    netcdf/VirtualOutputDimension.h
-  )
-
-  list( APPEND netcdflibs ${NETCDF_LIBRARIES} )
-
-endif()
-
-
-list(APPEND mir_tmpls caching/InMemoryCache.cc)
-
-if(HAVE_ATLAS)
-    set(libatlas atlas)
+if (HAVE_ATLAS)
     list(APPEND mir_srcs
         action/transform/InvtransScalar.cc
         action/transform/InvtransScalar.h
@@ -781,8 +601,169 @@ if(HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
+        method/fe/Conservative.cc
+        method/fe/Conservative.h
+        method/fe/FEBilinear.cc
+        method/fe/FEBilinear.h
+        method/fe/FELinear.cc
+        method/fe/FELinear.h
+        method/fe/FiniteElement.cc
+        method/fe/FiniteElement.h
+        method/fe/Tessellation.cc
+        method/fe/Tessellation.h
+        method/structured/StructuredBilinearLatLon.cc
+        method/structured/StructuredBilinearLatLon.h
+        method/structured/StructuredLinear3D.cc
+        method/structured/StructuredLinear3D.h
+        method/structured/StructuredMethod.cc
+        method/structured/StructuredMethod.h
+        util/MIRGrid.cc
+        util/MIRGrid.h
+        util/MeshGeneratorParameters.cc
+        util/MeshGeneratorParameters.h
         )
+    set(libatlas atlas)
 endif()
+
+
+if (HAVE_NETCDF)
+    list(APPEND mir_srcs
+        input/NetcdfFileInput.cc
+        input/NetcdfFileInput.h
+        netcdf/Attribute.cc
+        netcdf/Attribute.h
+        netcdf/CellMethodInputVariable.cc
+        netcdf/CellMethodInputVariable.h
+        netcdf/CellMethodOutputVariable.cc
+        netcdf/CellMethodOutputVariable.h
+        netcdf/Codec.cc
+        netcdf/Codec.h
+        netcdf/CoordinateInputVariable.cc
+        netcdf/CoordinateInputVariable.h
+        netcdf/CoordinateOutputVariable.cc
+        netcdf/CoordinateOutputVariable.h
+        netcdf/DataInputVariable.cc
+        netcdf/DataInputVariable.h
+        netcdf/DataOutputVariable.cc
+        netcdf/DataOutputVariable.h
+        netcdf/Dimension.cc
+        netcdf/Dimension.h
+        netcdf/DummyInputVariable.cc
+        netcdf/DummyInputVariable.h
+        netcdf/DummyMatrix.cc
+        netcdf/DummyMatrix.h
+        netcdf/DummyVariable.h
+        netcdf/Endowed.cc
+        netcdf/Endowed.h
+        netcdf/Exceptions.cc
+        netcdf/Exceptions.h
+        netcdf/Dataset.cc
+        netcdf/Dataset.h
+        netcdf/GregorianCalendar.cc
+        netcdf/GregorianCalendar.h
+        netcdf/JulianCalendar.cc
+        netcdf/JulianCalendar.h
+        netcdf/AllLeapCalendar.cc
+        netcdf/AllLeapCalendar.h
+        netcdf/NoLeapCalendar.cc
+        netcdf/NoLeapCalendar.h
+        netcdf/NoneCalendar.cc
+        netcdf/NoneCalendar.h
+        netcdf/ProlepticCalendar.cc
+        netcdf/ProlepticCalendar.h
+        netcdf/ThreeSixtyCalendar.cc
+        netcdf/ThreeSixtyCalendar.h
+        netcdf/Calendar.cc
+        netcdf/Calendar.h
+        netcdf/PackingCodec.cc
+        netcdf/PackingCodec.h
+        netcdf/HyperCube.cc
+        netcdf/HyperCube.h
+        netcdf/InputAttribute.cc
+        netcdf/InputAttribute.h
+        netcdf/InputDimension.cc
+        netcdf/InputDimension.h
+        netcdf/InputDataset.cc
+        netcdf/InputDataset.h
+        netcdf/InputMatrix.cc
+        netcdf/InputMatrix.h
+        netcdf/InputVariable.cc
+        netcdf/InputVariable.h
+        netcdf/Mapper.h
+        netcdf/Matrix.cc
+        netcdf/Matrix.h
+        netcdf/MergeCoordinateMatrix.cc
+        netcdf/MergeCoordinateMatrix.h
+        netcdf/MergeCoordinateStep.cc
+        netcdf/MergeCoordinateStep.h
+        netcdf/MergeDataMatrix.cc
+        netcdf/MergeDataMatrix.h
+        netcdf/MergeDataStep.cc
+        netcdf/MergeDataStep.h
+        netcdf/MergePlan.cc
+        netcdf/MergePlan.h
+        netcdf/NCFile.cc
+        netcdf/NCFile.h
+        netcdf/NCFileCache.cc
+        netcdf/NCFileCache.h
+        netcdf/OutputAttribute.cc
+        netcdf/OutputAttribute.h
+        netcdf/OutputDimension.cc
+        netcdf/OutputDimension.h
+        netcdf/OutputDataset.cc
+        netcdf/OutputDataset.h
+        netcdf/OutputVariable.cc
+        netcdf/OutputVariable.h
+        netcdf/Remapping.cc
+        netcdf/Remapping.h
+        netcdf/Reshape.cc
+        netcdf/Reshape.h
+        netcdf/GridSpec.h
+        netcdf/GridSpec.cc
+        netcdf/RegularLL.h
+        netcdf/RegularLL.cc
+        netcdf/Rectilinear.h
+        netcdf/Rectilinear.cc
+        netcdf/Curvilinear.h
+        netcdf/Curvilinear.cc
+        netcdf/Field.h
+        netcdf/Field.cc
+        netcdf/ReshapeVariableStep.cc
+        netcdf/ReshapeVariableStep.h
+        netcdf/ScalarCoordinateInputVariable.cc
+        netcdf/ScalarCoordinateInputVariable.h
+        netcdf/ScalarCoordinateOutputVariable.cc
+        netcdf/ScalarCoordinateOutputVariable.h
+        netcdf/SimpleInputVariable.cc
+        netcdf/SimpleInputVariable.h
+        netcdf/SimpleOutputVariable.cc
+        netcdf/SimpleOutputVariable.h
+        netcdf/Step.cc
+        netcdf/Step.h
+        netcdf/Type.cc
+        netcdf/Type.h
+        netcdf/Curvilinear.cc
+        netcdf/Curvilinear.h
+        netcdf/UnstructuredGrid.cc
+        netcdf/UnstructuredGrid.h
+        netcdf/UpdateCoordinateStep.cc
+        netcdf/UpdateCoordinateStep.h
+        netcdf/Value.cc
+        netcdf/Value.h
+        netcdf/ValueT.cc
+        netcdf/ValueT.h
+        netcdf/Variable.cc
+        netcdf/Variable.h
+        netcdf/VirtualInputDimension.cc
+        netcdf/VirtualInputDimension.h
+        netcdf/VirtualOutputDimension.cc
+        netcdf/VirtualOutputDimension.h
+        )
+  list(APPEND netcdflibs ${NETCDF_LIBRARIES})
+endif()
+
+
+list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 
 ecbuild_add_library(
