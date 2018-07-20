@@ -34,6 +34,12 @@ eckit::PathName LibMir::cacheDir()
     return mirCachePath;
 }
 
+bool LibMir::caching()
+{
+    static bool mirCaching = LibResource<bool, LibMir>("mir-caching;$MIR_CACHING", true);
+    return mirCaching;
+}
+
 const LibMir& LibMir::instance()
 {
     static LibMir libmir;
