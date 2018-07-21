@@ -28,6 +28,7 @@ public:
     LibMir();
 
     static eckit::PathName cacheDir();
+    static bool caching();
 
     static const LibMir& instance();
 

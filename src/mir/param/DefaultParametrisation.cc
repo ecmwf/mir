@@ -11,6 +11,7 @@
 /// @author Baudouin Raoult
 /// @date Jul 2016
 
+#include "mir/config/LibMir.h"
 
 #include "mir/param/DefaultParametrisation.h"
 
@@ -26,8 +27,10 @@ DefaultParametrisation::DefaultParametrisation() {
     set("interpolation", "linear"); // The word 'method' is used in grib
     set("dimension", "1d.linear");
 
-    set("caching", true);
-    set("kd-trees.caching", true);
+    bool caching = LibMir::caching();
+
+    set("caching", caching);
+    set("kd-trees.caching", caching);
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);
