@@ -69,6 +69,29 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     return false;
 }
 
+bool MIRParametrisation::get(const std::string &name, long long &value) const {
+    long v;
+    if (get(name, v)) {
+        ASSERT(v >= 0);
+        value = v;
+        return true;
+    }
+    return false;
+}
+
+
+bool MIRParametrisation::get(const std::string &name, std::vector<long long> &value) const {
+    std::vector<long> v;
+    if (get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const long& l : v) {
+            value.push_back(l);
+        }
+        return true;
+    }
+    return false;
+}
 
 bool MIRParametrisation::get(const std::string& name, Latitude& value) const {
     double v;
