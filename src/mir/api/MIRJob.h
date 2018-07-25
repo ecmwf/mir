@@ -73,11 +73,13 @@ public:
     MIRJob& set(const std::string &name, double value);
     MIRJob& set(const std::string &name, int value);
     MIRJob& set(const std::string &name, long value);
+    MIRJob& set(const std::string &name, long long value);
     MIRJob& set(const std::string &name, bool value);
     MIRJob& set(const std::string& name, size_t value);
 
     MIRJob& set(const std::string& name, const std::vector<int>& value);
     MIRJob& set(const std::string& name, const std::vector<long>& value);
+    MIRJob& set(const std::string& name, const std::vector<long long>& value);
     MIRJob& set(const std::string& name, const std::vector<size_t>& value);
     MIRJob& set(const std::string& name, const std::vector<float>& value);
     MIRJob& set(const std::string& name, const std::vector<double>& value);

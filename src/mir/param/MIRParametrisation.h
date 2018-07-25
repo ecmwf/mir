@@ -68,12 +68,12 @@ public:
     virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const = 0;
 
-    bool get(const std::string& name, size_t& value) const;
-    bool get(const std::string& name, std::vector<size_t>& value) const;
-
-    bool get(const std::string& name, eckit::Fraction& value) const;
-    bool get(const std::string& name, Latitude& value) const;
-    bool get(const std::string& name, Longitude& value) const;
+    // Pure virtual functions from eckit::Parametrisation, implemented here to
+    // piggy-back on get(name,long) and get(name,vector<long>)
+    virtual bool get(const std::string& name, size_t& value) const;
+    virtual bool get(const std::string& name, std::vector<size_t>& value) const;
+    virtual bool get(const std::string& name, long long& value) const;
+    virtual bool get(const std::string& name, std::vector<long long>& value) const;
 
     // -- Class members
     // None
