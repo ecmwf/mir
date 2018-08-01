@@ -65,7 +65,9 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    repres::RepresentationHandle out(method_->adjustOutputRepresentation(ctx, outputRepresentation()));
+    repres::RepresentationHandle out(method_->hasCropping() ?
+                                         outputRepresentation()->croppedRepresentation(method_->getCropping())
+                                       : outputRepresentation());
 
     method_->execute(ctx, *in, *out);
 

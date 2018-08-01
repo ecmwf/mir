@@ -548,22 +548,6 @@ bool MethodWeighted::canIntroduceMissingValues() const {
 }
 
 
-const repres::Representation* MethodWeighted::adjustOutputRepresentation(context::Context& ctx, const repres::Representation* representation) {
-
-    if (cropping_) {
-        eckit::TraceResourceUsage<LibMir> usage("MethodWeighted::adjustOutputRepresentation");
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
-
-        // bounding box needs adjustment because it can come from the user
-        const util::BoundingBox& bbox = cropping_.boundingBox();
-        return representation->croppedRepresentation(bbox);
-    }
-
-
-    return representation;
-}
-
-
 }  // namespace method
 }  // namespace mir
 
