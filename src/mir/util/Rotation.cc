@@ -16,6 +16,7 @@
 #include "mir/util/Rotation.h"
 
 #include <iostream>
+#include <vector>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "mir/api/Atlas.h"
@@ -120,7 +121,7 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
     using eckit::geometry::Point2;
 
     // rotate bounding box corners and find (min, max)
-    // include edges mid-points as they curve in the rotated frame
+    // the latitude is bounded by the rotation of bounding box parallels at Greenwich (if included)
     const atlas::PointLonLat southPole(
                 south_pole_longitude().normalise(Longitude::GREENWICH).value(),
                 south_pole_latitude().value() );
@@ -133,17 +134,21 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
         const double s = bbox.south().value();
         const double w = bbox.west().value();
         const double e = bbox.east().value();
-        const atlas::PointLonLat p[] {
-            R.rotate({w, n}), R.rotate({(w + e) / 2., n}),
-            R.rotate({e, n}), R.rotate({e, (s + n) / 2.}),
-            R.rotate({e, s}), R.rotate({(w + e) / 2., s}),
-            R.rotate({w, s}), R.rotate({w, (s + n) / 2.}),
+        std::vector<atlas::PointLonLat> points {
+            R.rotate({w, n}),
+            R.rotate({e, n}),
+            R.rotate({e, s}),
+            R.rotate({w, s}),
         };
+        if (w * e <= 0.) {
+            points.emplace_back(R.rotate({0, n}));
+            points.emplace_back(R.rotate({0, s}));
+        }
 
-        min = max = p[0];
-        for (size_t i = 1; i < 8; ++i) {
-            min = Point2::componentsMin(min, p[i]);
-            max = Point2::componentsMax(max, p[i]);
+        min = max = points[0];
+        for (auto& r : points) {
+            min = Point2::componentsMin(min, r);
+            max = Point2::componentsMax(max, r);
         }
     }
     ASSERT(min[0] < max[0]);
