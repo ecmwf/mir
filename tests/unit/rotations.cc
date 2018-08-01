@@ -71,8 +71,11 @@ CASE("MIR-282") {
         test_t(Increments(1., 1.),     Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
         test_t(Increments(1., 1.),     Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
 
-        test_t(Increments(0.2, 0.2),   Rotation(-40.,  10.), BoundingBox(22.7, -13.6, -5.9, 21.8)),
-
+        test_t(Increments(0.2,   0.2  ),   Rotation(-40., 10), BoundingBox(22.7, -13.6, -5.9, 21.8)),
+        test_t(Increments(0.1,   0.1  ),   Rotation(-43,  10), BoundingBox( 3.4, -6.8, -4.4, 4.8)),
+        test_t(Increments(0.1,   0.1  ),   Rotation(-30,   0), BoundingBox(18.1, -37.6, -31, 39.9)),
+        test_t(Increments(0.5,   0.5  ),   Rotation(-76,  14), BoundingBox(72, -32, 20, 42)),
+        test_t(Increments(0.125, 0.125),   Rotation(-30,  -5), BoundingBox( 9.875, -15, -20, 14.875)),
     };
 
 
