@@ -16,15 +16,12 @@
 #include "mir/util/Rotation.h"
 
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-
+#include "eckit/types/FloatCompare.h"
+#include "mir/api/Atlas.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
-#include "mir/api/mir_config.h"
-
-#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -45,6 +42,8 @@ Rotation::Rotation(const Latitude& south_pole_latitude,
 Rotation::Rotation(const param::MIRParametrisation& parametrisation) {
     ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude_));
     ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude_));
+
+    south_pole_rotation_angle_ = 0.;
     ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));
 
     normalize();
@@ -78,11 +77,11 @@ void Rotation::fill(grib_info& info) const  {
 
     // This is missing from the grib_spec
     // Remove that when supported
-    if (south_pole_rotation_angle_) {
+    if (!eckit::types::is_approximately_equal<double>(south_pole_rotation_angle_, 0.)) {
         long j = info.packing.extra_settings_count++;
         info.packing.extra_settings[j].name = "angleOfRotationInDegrees";
         info.packing.extra_settings[j].type = GRIB_TYPE_DOUBLE;
-        info.packing.extra_settings[j].long_value = south_pole_rotation_angle_;
+        info.packing.extra_settings[j].double_value = south_pole_rotation_angle_;
     }
 }
 

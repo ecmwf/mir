@@ -26,11 +26,11 @@ namespace atlas {
 class Grid;
 }
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}
 namespace api {
 class MIRJob;
+}
+namespace param {
+class MIRParametrisation;
 }
 }
 
