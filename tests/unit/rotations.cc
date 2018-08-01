@@ -17,6 +17,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "mir/api/Atlas.h"
+#include "mir/repres/latlon/RotatedLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Rotation.h"
@@ -99,6 +100,43 @@ CASE("MIR-282") {
             EXPECT(includesSouthPole == test.includesSouthPole_);
 
         }
+    }
+
+
+    SECTION("rotated_ll contained by cropping") {
+        auto& log = eckit::Log::info();
+        auto old = log.precision(16);
+
+        test_t test(Increments(0.2, 0.2), Rotation(-40., 10.), BoundingBox(22.7, -13.6, -5.9, 21.8));
+
+        repres::RepresentationHandle repres(new repres::latlon::RotatedLL(
+                                                test.increments_,
+                                                test.rotation_,
+                                                test.bbox_) );
+
+        util::BoundingBox crop(test.rotation_.rotate(test.bbox_));
+
+        log << "check:"
+            << "\n\t" "   " << *repres
+            << "\n\t" "contained by"
+            << "\n\t" "   " << test.bbox_
+            << "\n\t" " + " << test.rotation_
+            << "\n\t" " = " << crop
+            << std::endl;
+
+        bool contains = true;
+        for (eckit::ScopedPtr<repres::Iterator> iter(repres->iterator()); iter->next();) {
+            auto& pr = iter->pointRotated();
+            if (!crop.contains(pr[0], pr[1])) {
+                log << "!crop.contains:"
+                    << "\t" << iter->pointRotated()
+                    << "\t" << iter->pointUnrotated()
+                    << std::endl;
+                contains = false;
+            }
+        }
+        EXPECT(contains);
+        log.precision(old);
     }
 }
 
