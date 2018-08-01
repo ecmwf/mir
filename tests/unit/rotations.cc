@@ -57,46 +57,48 @@ struct test_t {
 };
 
 
-CASE( "test_increments" ) {
+CASE("MIR-282") {
     using eckit::geometry::Point2;
-
     using util::Increments;
     using util::Rotation;
     using util::BoundingBox;
 
-    for (auto& test : {
-            test_t(Increments(0.25, 0.25), Rotation(-35.,   0.), BoundingBox(12, -14.5, -17.25,  16.25)),
-            test_t(Increments(1., 1.),     Rotation(-90.,   0.), BoundingBox(), true, true),
-            test_t(Increments(1., 1.),     Rotation(-75.,  15.), BoundingBox(75., -35.,  20.,    45.), true, false),
-            test_t(Increments(1., 1.),     Rotation(-35.,  15.), BoundingBox(40., -55., -45.,    55.), true, false),
-            test_t(Increments(1., 1.),     Rotation(-30., -15.), BoundingBox(35., -40., -40.,    50.), true, false),
-            test_t(Increments(1., 1.),     Rotation(-25.,   0.), BoundingBox(40., -50., -40.,    50.), true, false),
-            test_t(Increments(1., 1.),     Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
-            test_t(Increments(1., 1.),     Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
-    }) {
-        eckit::Log::info() << test << std::endl;
 
-        const atlas::PointLonLat southPole(
-                    test.rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                    test.rotation_.south_pole_latitude().value() );
+    SECTION("rotated_ll covering North/South poles") {
+        for (auto& test : {
+             test_t(Increments(0.25, 0.25), Rotation(-35.,   0.), BoundingBox(12, -14.5, -17.25,  16.25)),
+             test_t(Increments(1., 1.),     Rotation(-90.,   0.), BoundingBox(), true, true),
+             test_t(Increments(1., 1.),     Rotation(-75.,  15.), BoundingBox(75., -35.,  20.,    45.), true, false),
+             test_t(Increments(1., 1.),     Rotation(-35.,  15.), BoundingBox(40., -55., -45.,    55.), true, false),
+             test_t(Increments(1., 1.),     Rotation(-30., -15.), BoundingBox(35., -40., -40.,    50.), true, false),
+             test_t(Increments(1., 1.),     Rotation(-25.,   0.), BoundingBox(40., -50., -40.,    50.), true, false),
+             test_t(Increments(1., 1.),     Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
+             test_t(Increments(1., 1.),     Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
+            }) {
+            eckit::Log::info() << test << std::endl;
 
-        const atlas::util::Rotation r(southPole);
+            const atlas::PointLonLat southPole(
+                        test.rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
+                        test.rotation_.south_pole_latitude().value() );
 
-        // check bbox including poles (in the unrotated frame)
-        atlas::PointLonLat NP{ r.unrotate({0., Latitude::NORTH_POLE.value()}) };
-        atlas::PointLonLat SP{ r.unrotate({0., Latitude::SOUTH_POLE.value()}) };
+            const atlas::util::Rotation r(southPole);
 
-        bool includesNorthPole = test.bbox_.contains(NP.lat(), NP.lon());
-        bool includesSouthPole = test.bbox_.contains(SP.lat(), SP.lon());
+            // check bbox including poles (in the unrotated frame)
+            atlas::PointLonLat NP{ r.unrotate({0., Latitude::NORTH_POLE.value()}) };
+            atlas::PointLonLat SP{ r.unrotate({0., Latitude::SOUTH_POLE.value()}) };
 
-        eckit::Log::info() << "check:"
-            << "\n\t" << "includesNorthPole? " << includesNorthPole
-            << "\n\t" << "includesSouthPole? " << includesSouthPole
-            << std::endl;
+            bool includesNorthPole = test.bbox_.contains(NP.lat(), NP.lon());
+            bool includesSouthPole = test.bbox_.contains(SP.lat(), SP.lon());
 
-        EXPECT(includesNorthPole == test.includesNorthPole_);
-        EXPECT(includesSouthPole == test.includesSouthPole_);
+            eckit::Log::info() << "check:"
+                               << "\n\t" << "includesNorthPole? " << includesNorthPole
+                               << "\n\t" << "includesSouthPole? " << includesSouthPole
+                               << std::endl;
 
+            EXPECT(includesNorthPole == test.includesNorthPole_);
+            EXPECT(includesSouthPole == test.includesSouthPole_);
+
+        }
     }
 }
 
