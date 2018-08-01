@@ -46,55 +46,64 @@ struct test_t {
     const util::BoundingBox bbox_;
     const bool includesNorthPole_;
     const bool includesSouthPole_;
-
-    friend std::ostream& operator<<(std::ostream& out, const test_t& t) {
-        return (out << "test:"
-                << "\n\t" << t.increments_
-                << "\n\t" << t.rotation_
-                << "\n\t" << t.bbox_
-                << "\n\t" << "includesNorthPole? " << t.includesNorthPole_
-                << "\n\t" << "includesSouthPole? " << t.includesSouthPole_);
-    }
 };
 
 
 CASE("MIR-282") {
     using eckit::geometry::Point2;
+    using atlas::PointLonLat;
     using util::Increments;
     using util::Rotation;
     using util::BoundingBox;
 
 
-    SECTION("rotated_ll covering North/South poles") {
-        for (auto& test : {
-             test_t(Increments(0.25, 0.25), Rotation(-35.,   0.), BoundingBox(12, -14.5, -17.25,  16.25)),
-             test_t(Increments(1., 1.),     Rotation(-90.,   0.), BoundingBox(), true, true),
-             test_t(Increments(1., 1.),     Rotation(-75.,  15.), BoundingBox(75., -35.,  20.,    45.), true, false),
-             test_t(Increments(1., 1.),     Rotation(-35.,  15.), BoundingBox(40., -55., -45.,    55.), true, false),
-             test_t(Increments(1., 1.),     Rotation(-30., -15.), BoundingBox(35., -40., -40.,    50.), true, false),
-             test_t(Increments(1., 1.),     Rotation(-25.,   0.), BoundingBox(40., -50., -40.,    50.), true, false),
-             test_t(Increments(1., 1.),     Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
-             test_t(Increments(1., 1.),     Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
-            }) {
-            eckit::Log::info() << test << std::endl;
+    auto& log = eckit::Log::info();
+    auto old = log.precision(16);
 
-            const atlas::PointLonLat southPole(
+
+    std::vector<test_t> tests {
+        test_t(Increments(0.25, 0.25), Rotation(-35.,   0.), BoundingBox(12, -14.5, -17.25,  16.25)),
+        test_t(Increments(1., 1.),     Rotation(-90.,   0.), BoundingBox(), true, true),
+        test_t(Increments(1., 1.),     Rotation(-75.,  15.), BoundingBox(75., -35.,  20.,    45.), true, false),
+        test_t(Increments(1., 1.),     Rotation(-35.,  15.), BoundingBox(40., -55., -45.,    55.), true, false),
+        test_t(Increments(1., 1.),     Rotation(-30., -15.), BoundingBox(35., -40., -40.,    50.), true, false),
+        test_t(Increments(1., 1.),     Rotation(-25.,   0.), BoundingBox(40., -50., -40.,    50.), true, false),
+        test_t(Increments(1., 1.),     Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
+        test_t(Increments(1., 1.),     Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
+
+        test_t(Increments(0.2, 0.2),   Rotation(-40.,  10.), BoundingBox(22.7, -13.6, -5.9, 21.8)),
+
+    };
+
+
+    SECTION("rotated_ll covering North/South poles") {
+        for (auto& test : tests) {
+
+            log << "check:"
+                << "\n\t" << test.increments_
+                << "\n\t" << test.rotation_
+                << "\n\t" << test.bbox_
+                << "\n\t" << "includesNorthPole? " << test.includesNorthPole_
+                << "\n\t" << "includesSouthPole? " << test.includesSouthPole_
+                << std::endl;
+
+            const PointLonLat southPole(
                         test.rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
                         test.rotation_.south_pole_latitude().value() );
 
             const atlas::util::Rotation r(southPole);
 
             // check bbox including poles (in the unrotated frame)
-            atlas::PointLonLat NP{ r.unrotate({0., Latitude::NORTH_POLE.value()}) };
-            atlas::PointLonLat SP{ r.unrotate({0., Latitude::SOUTH_POLE.value()}) };
+            PointLonLat NP{ r.unrotate({0., Latitude::NORTH_POLE.value()}) };
+            PointLonLat SP{ r.unrotate({0., Latitude::SOUTH_POLE.value()}) };
 
             bool includesNorthPole = test.bbox_.contains(NP.lat(), NP.lon());
             bool includesSouthPole = test.bbox_.contains(SP.lat(), SP.lon());
 
-            eckit::Log::info() << "check:"
-                               << "\n\t" << "includesNorthPole? " << includesNorthPole
-                               << "\n\t" << "includesSouthPole? " << includesSouthPole
-                               << std::endl;
+            log << "check:"
+                << "\n\t" << "includesNorthPole? " << includesNorthPole
+                << "\n\t" << "includesSouthPole? " << includesSouthPole
+                << std::endl;
 
             EXPECT(includesNorthPole == test.includesNorthPole_);
             EXPECT(includesSouthPole == test.includesSouthPole_);
@@ -104,40 +113,40 @@ CASE("MIR-282") {
 
 
     SECTION("rotated_ll contained by cropping") {
-        auto& log = eckit::Log::info();
-        auto old = log.precision(16);
+        for (auto& test : tests) {
 
-        test_t test(Increments(0.2, 0.2), Rotation(-40., 10.), BoundingBox(22.7, -13.6, -5.9, 21.8));
+            repres::RepresentationHandle repres(new repres::latlon::RotatedLL(
+                                                    test.increments_,
+                                                    test.rotation_,
+                                                    test.bbox_) );
 
-        repres::RepresentationHandle repres(new repres::latlon::RotatedLL(
-                                                test.increments_,
-                                                test.rotation_,
-                                                test.bbox_) );
+            util::BoundingBox crop(test.rotation_.rotate(test.bbox_));
 
-        util::BoundingBox crop(test.rotation_.rotate(test.bbox_));
+            log << "check:"
+                << "\n\t" "   " << *repres
+                << "\n\t" "contained by"
+                << "\n\t" "   " << test.bbox_
+                << "\n\t" " + " << test.rotation_
+                << "\n\t" " = " << crop
+                << std::endl;
 
-        log << "check:"
-            << "\n\t" "   " << *repres
-            << "\n\t" "contained by"
-            << "\n\t" "   " << test.bbox_
-            << "\n\t" " + " << test.rotation_
-            << "\n\t" " = " << crop
-            << std::endl;
-
-        bool contains = true;
-        for (eckit::ScopedPtr<repres::Iterator> iter(repres->iterator()); iter->next();) {
-            auto& pr = iter->pointRotated();
-            if (!crop.contains(pr[0], pr[1])) {
-                log << "!crop.contains:"
-                    << "\t" << iter->pointRotated()
-                    << "\t" << iter->pointUnrotated()
-                    << std::endl;
-                contains = false;
+            bool contains = true;
+            for (eckit::ScopedPtr<repres::Iterator> iter(repres->iterator()); iter->next();) {
+                auto& pr = iter->pointRotated();
+                if (!crop.contains(pr[0], pr[1])) {
+                    log << "!crop.contains:"
+                        << "\t" << iter->pointRotated()
+                        << "\t" << iter->pointUnrotated()
+                        << std::endl;
+                    contains = false;
+                }
             }
+            EXPECT(contains);
         }
-        EXPECT(contains);
-        log.precision(old);
     }
+
+
+    log.precision(old);
 }
 
 

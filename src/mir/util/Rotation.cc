@@ -119,6 +119,7 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
 BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
     using eckit::geometry::Point2;
+    using atlas::PointLonLat;
 
     // rotate bounding box corners and find (min, max)
     // the latitude is bounded by the rotation of bounding box parallels at Greenwich (if included)
@@ -128,29 +129,28 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
     const atlas::util::Rotation R(southPole, south_pole_rotation_angle_);
 
 
+    bool first = true;
     Point2 min, max;
     {
         const double n = bbox.north().value();
         const double s = bbox.south().value();
         const double w = bbox.west().value();
         const double e = bbox.east().value();
-        std::vector<atlas::PointLonLat> points {
-            R.rotate({w, n}),
-            R.rotate({e, n}),
-            R.rotate({e, s}),
-            R.rotate({w, s}),
-        };
-        if (w * e <= 0.) {
-            points.emplace_back(R.rotate({0, n}));
-            points.emplace_back(R.rotate({0, s}));
+
+        std::vector<PointLonLat> points {{w, n}, {e, n}, {e, s}, {w, s}};
+        if (w * e <= 0) {
+            points.emplace_back(PointLonLat{0, n});
+            points.emplace_back(PointLonLat{0, s});
         }
 
-        min = max = points[0];
-        for (auto& r : points) {
-            min = Point2::componentsMin(min, r);
-            max = Point2::componentsMax(max, r);
+        for (auto& p : points) {
+            PointLonLat r(R.rotate(p));
+            min = first ? r : Point2::componentsMin(min, r);
+            max = first ? r : Point2::componentsMax(max, r);
+            first = false;
         }
     }
+    ASSERT(!first);
     ASSERT(min[0] < max[0]);
     ASSERT(min[1] < max[1]);
 
@@ -162,8 +162,8 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
 
 
     // check bbox including poles (in the unrotated frame)
-    atlas::PointLonLat NP{ R.unrotate({0., Latitude::NORTH_POLE.value()}) };
-    atlas::PointLonLat SP{ R.unrotate({0., Latitude::SOUTH_POLE.value()}) };
+    PointLonLat NP{ R.unrotate({0., Latitude::NORTH_POLE.value()}) };
+    PointLonLat SP{ R.unrotate({0., Latitude::SOUTH_POLE.value()}) };
 
     bool includesNorthPole = bbox.contains(NP.lat(), NP.lon())
             || eckit::types::is_approximately_lesser_or_equal(Latitude::NORTH_POLE.value(), max[1]);
