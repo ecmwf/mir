@@ -32,6 +32,9 @@ class MIRJob;
 namespace param {
 class MIRParametrisation;
 }
+namespace util {
+class BoundingBox;
+}
 }
 
 
@@ -89,6 +92,7 @@ public:
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
+    util::BoundingBox rotate(const util::BoundingBox&) const;
 
     const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
