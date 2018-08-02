@@ -145,7 +145,8 @@ const std::string& GribField::format() const {
 // }
 
 
-void GribField::compareAreas(std::ostream& out, const GribField& other) const {
+void GribField::compareAreas(std::ostream& out, const FieldBase& o) const {
+    const GribField& other = dynamic_cast<const GribField&>(o);
 
     if (!area_ || !other.area_) {
         return;
@@ -353,7 +354,8 @@ bool GribField::sameRotation(const GribField& other) const {
     return true;
 }
 
-bool GribField::operator<(const GribField & other) const {
+bool GribField::less_than(const FieldBase & o) const {
+    const GribField & other = dynamic_cast<const GribField &>(o);
 
     if (param_ < other.param_) {
         return true;
@@ -712,7 +714,9 @@ bool GribField::sameField(const GribField & other) const {
 }
 
 
-bool GribField::match(const GribField & other) const {
+bool GribField::match(const FieldBase & o) const {
+    const GribField& other = dynamic_cast<const GribField&>(o);
+
     return sameParam(other) && sameField(other);
     // &&
     // (sameGrid(other)  || sameResol(other) || sameGridname(other))   ;
@@ -724,7 +728,9 @@ bool GribField::match(const GribField & other) const {
 }
 
 
-bool GribField::same(const GribField & other) const {
+bool GribField::same(const FieldBase & o) const {
+    const GribField& other = dynamic_cast<const GribField&>(o);
+
     return sameParam(other) &&
            sameField(other) &&
            sameNumberOfPoints(other) &&
@@ -739,7 +745,10 @@ bool GribField::same(const GribField & other) const {
            sameArea(other);
 }
 
-size_t GribField::differences(const GribField & other) const {
+size_t GribField::differences(const FieldBase & o) const {
+
+    const GribField& other = dynamic_cast<const GribField&>(o);
+
     size_t result = 0;
     if (!sameParam(other)) result += 100;
     if (!sameField(other)) result++;
@@ -816,7 +825,8 @@ void GribField::whiteListEntries(std::ostream& out) const {
 }
 
 
-std::ostream& GribField::printDifference(std::ostream & out, const GribField & other) const {
+std::ostream& GribField::printDifference(std::ostream & out, const FieldBase & o) const {
+    const GribField& other = dynamic_cast<const GribField&>(o);
 
     out << "[param=";
     pdiff(out, param_, other.param_);
@@ -1276,7 +1286,7 @@ Field GribField::field(const char* buffer, size_t size,
 
 
 
- void GribField::setArea(GribField& field, grib_handle *h) {
+void GribField::setArea(GribField& field, grib_handle *h) {
     double n = -99999, w = -99999, s = -99999, e = -99999;
     GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
     GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));

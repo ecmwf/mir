@@ -103,24 +103,28 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 
 
 bool Field::same(const Field& other) const {
-    NOTIMP;
+    ASSERT(field_ && other.field_);
+    return field_->same(*other.field_);
 }
 
 bool Field::match(const Field& other) const {
-    NOTIMP;
+    ASSERT(field_ && other.field_);
+    return field_->match(*other.field_);
 }
 
-
-void Field::whiteListEntries(std::ostream&) const {
-    NOTIMP;
+void Field::whiteListEntries(std::ostream& out) const {
+    ASSERT(field_);
+    field_->whiteListEntries(out);
 }
 
 size_t Field::differences(const Field& other) const {
-    NOTIMP;
+    ASSERT(field_ && other.field_);
+    return field_->differences(*other.field_);
 }
 
-void Field::printDifference(std::ostream&, const Field& other) const {
-    NOTIMP;
+void Field::printDifference(std::ostream& out, const Field& other) const {
+    ASSERT(field_ && other.field_);
+    field_->printDifference(out, *other.field_);
 }
 
 Field::operator bool() const {
@@ -128,15 +132,18 @@ Field::operator bool() const {
 }
 
 bool Field::operator<(const Field& other) const {
-    NOTIMP;
+    ASSERT(field_ && other.field_);
+    return field_->less_than(*other.field_);
 }
 
 bool Field::wrapped() const {
-    NOTIMP;
+    ASSERT(field_);
+    return field_->wrapped();
 }
 
-void Field::compareAreas(std::ostream&, const Field& other) const {
-    NOTIMP;
+void Field::compareAreas(std::ostream& out, const Field& other) const {
+    ASSERT(field_ && other.field_);
+    field_->compareAreas(out, *other.field_);
 }
 
 off_t Field::offset() const {
@@ -153,7 +160,6 @@ const std::string& Field::path() const {
     ASSERT(field_);
     return field_->path();
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 

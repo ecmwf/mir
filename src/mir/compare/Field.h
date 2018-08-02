@@ -51,6 +51,16 @@ public:
     size_t length() const;
     const std::string& path() const;
 
+
+    virtual bool wrapped() const = 0;
+    virtual bool less_than(const FieldBase& other) const = 0;
+    virtual void whiteListEntries(std::ostream&) const = 0;
+    virtual size_t differences(const FieldBase& other) const = 0;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const = 0;
+    virtual void compareAreas(std::ostream&, const FieldBase& other) const = 0;
+    virtual bool same(const FieldBase& other) const = 0;
+    virtual bool match(const FieldBase& other) const = 0;
+
 private:
 
     FieldInfo info_;

@@ -42,9 +42,9 @@ void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 
 
 BufrField::BufrField(const std::string& path, off_t offset, size_t length):
-    FieldBase(path, offset, length){
+    FieldBase(path, offset, length) {
 
-    }
+}
 
 
 Field BufrField::field(const char* buffer, size_t size,
@@ -59,6 +59,47 @@ Field BufrField::field(const char* buffer, size_t size,
 void BufrField::print(std::ostream &out) const {
     out << "BufrField[]";
 }
+
+
+bool BufrField::wrapped() const {
+    return false;
+}
+
+bool BufrField::less_than(const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    return false;
+}
+
+void BufrField::whiteListEntries(std::ostream&) const {
+    NOTIMP;
+}
+
+size_t BufrField::differences(const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+
+    NOTIMP;
+}
+
+std::ostream& BufrField::printDifference(std::ostream&, const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    NOTIMP;
+}
+
+void BufrField::compareAreas(std::ostream&, const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    NOTIMP;
+}
+
+bool BufrField::same(const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    NOTIMP;
+}
+
+bool BufrField::match(const FieldBase& o) const {
+    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    NOTIMP;
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -65,7 +65,6 @@ private:
     void decimalScaleFactor(long n);
     void packing(const std::string& packing);
 
-    bool operator<(const GribField& other) const;
 
     void missingValuesPresent(bool on);
 
@@ -74,14 +73,6 @@ private:
     std::map<std::string, std::string>::const_iterator end() const;
 
     std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
-
-    std::vector<Field> bestMatches(const FieldSet& fields) const;
-    size_t differences(const GribField& other) const;
-
-    void compareAreas(std::ostream& out, const GribField& other) const;
-
-    bool same(const GribField& other) const;
-    bool match(const GribField& other) const;
 
 
     bool sameArea(const GribField& other) const;
@@ -100,20 +91,9 @@ private:
 
     bool match(const std::string&, const std::string&) const;
 
-    bool wrapped() const;
-
-    off_t offset() const ;
-
-    size_t length() const ;
-
     size_t numberOfPoints() const;
 
     const std::string& format() const ;
-
-    const std::string& path() const ;
-    void whiteListEntries(std::ostream& out) const;
-
-    std::ostream& printDifference(std::ostream& out, const GribField & other) const;
 
     std::ostream& printGrid(std::ostream &out) const;
 
@@ -124,8 +104,15 @@ public:
 
 private:
 
-    bool operator==(const GribField& other) const;
-
+    // virtual bool equal_to(const GribField& other) const;
+    virtual bool wrapped() const;
+    virtual bool less_than(const FieldBase& other) const;
+    virtual void whiteListEntries(std::ostream&) const;
+    virtual size_t differences(const FieldBase& other) const;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
+    virtual void compareAreas(std::ostream&, const FieldBase& other) const ;
+    virtual bool same(const FieldBase& other) const;
+    virtual bool match(const FieldBase& other) const;
 
     std::map<std::string, std::string> values_;
 

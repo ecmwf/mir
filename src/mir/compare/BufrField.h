@@ -55,9 +55,15 @@ private:
 
 private:
 
-
-
-    void print(std::ostream &out) const;
+    virtual void print(std::ostream &out) const;
+    virtual bool wrapped() const;
+    virtual bool less_than(const FieldBase& other) const;
+    virtual void whiteListEntries(std::ostream&) const;
+    virtual size_t differences(const FieldBase& other) const;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
+    virtual void compareAreas(std::ostream&, const FieldBase& other) const ;
+    virtual bool same(const FieldBase& other) const;
+    virtual bool match(const FieldBase& other) const;
 
     friend std::ostream &operator<<(std::ostream &s, const BufrField &x) {
         x.print(s);
