@@ -9,32 +9,16 @@
  */
 
 
-#include <iostream>
-#include <cmath>
 
 #include "mir/compare/BufrField.h"
-#include "mir/compare/FieldSet.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Colour.h"
-
-#include "eckit/option/CmdArgs.h"
-#include "eckit/option/SimpleOption.h"
 
 
 namespace mir {
 namespace compare {
 
-
-
-
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
-
-
 }
-
-
-
 
 void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 
@@ -44,6 +28,13 @@ void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 BufrField::BufrField(const std::string& path, off_t offset, size_t length):
     FieldBase(path, offset, length) {
 
+    data_ = new char[length];
+
+
+}
+
+BufrField::~BufrField() {
+    delete[] data_;
 }
 
 
@@ -51,7 +42,10 @@ Field BufrField::field(const char* buffer, size_t size,
                        const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
 
+
     BufrField* field = new BufrField(path, offset, size);
+    memcpy(field->data_, buffer, size);
+
     Field result(field);
     return result;
 }
@@ -67,37 +61,52 @@ bool BufrField::wrapped() const {
 
 bool BufrField::less_than(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    return false;
+    if (info_.length() != other.info_.length()) {
+        return info_.length() < other.info_.length();
+    }
+    return memcmp(data_, other.data_, info_.length()) < 0;
 }
 
-void BufrField::whiteListEntries(std::ostream&) const {
-    NOTIMP;
+void BufrField::whiteListEntries(std::ostream& out) const {
+    out << "bufr(white)";
 }
 
 size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-
-    NOTIMP;
+    size_t n = 0;
+    for (size_t i = 0; i < std::min(info_.length() ,other.info_.length()); ++i) {
+        if(data_[i] != other.data_[i]) {
+            n++;
+        }
+    }
+    return n;
 }
 
-std::ostream& BufrField::printDifference(std::ostream&, const FieldBase& o) const {
+std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    NOTIMP;
+    out << "bufr(diff)";
+    return out;
 }
 
-void BufrField::compareAreas(std::ostream&, const FieldBase& o) const {
+void BufrField::compareAreas(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    NOTIMP;
+    out << "bufr(area)";
 }
 
 bool BufrField::same(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    NOTIMP;
+    if (info_.length() != other.info_.length()) {
+        return false;
+    }
+    return memcmp(data_, other.data_, info_.length()) == 0;
 }
 
 bool BufrField::match(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    NOTIMP;
+    if (info_.length() != other.info_.length()) {
+        return false;
+    }
+    return memcmp(data_, other.data_, info_.length()) == 0;
 }
 
 

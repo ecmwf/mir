@@ -8,21 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
+#include "mir/compare/GribField.h"
 
-#include <iostream>
 #include <cmath>
 
-#include "mir/compare/GribField.h"
-#include "mir/compare/FieldSet.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Colour.h"
-
+#include "eckit/config/Resource.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "mir/util/Grib.h"
-#include "eckit/config/Resource.h"
-
 #include "eckit/serialisation/MemoryStream.h"
+
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace compare {

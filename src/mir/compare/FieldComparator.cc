@@ -12,37 +12,32 @@
 #include "mir/compare/FieldComparator.h"
 
 #include <cmath>
-#include <map>
 
-#include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/io/AutoCloser.h"
-#include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/serialisation/MemoryStream.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/caching/InMemoryCache.h"
+#include "mir/compare/BufrField.h"
 #include "mir/compare/Comparator.h"
+#include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
+#include "mir/compare/GribField.h"
 #include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
-#include "mir/compare/GribField.h"
-#include "mir/compare/BufrField.h"
 
 using eckit::PathName;
 using eckit::AutoStdFile;
@@ -538,7 +533,7 @@ void FieldComparator::compareFieldValues(
     const FieldComparator::MultiFile& multi2,
     const Field& field1,
     const Field& field2) {
-    using namespace param;
+    // using namespace param;
 
     // TODO
 
@@ -553,8 +548,8 @@ void FieldComparator::compareFieldValues(
     input::MIRInput& input2 = grib2;
 
 
-    const MIRParametrisation &metadata1 = input1.parametrisation();
-    const MIRParametrisation &metadata2 = input2.parametrisation();
+    const param::MIRParametrisation &metadata1 = input1.parametrisation();
+    const param::MIRParametrisation &metadata2 = input2.parametrisation();
 
 
     std::string comparison1;
@@ -571,10 +566,10 @@ void FieldComparator::compareFieldValues(
 
 
     // get input and parameter-specific parametrisations
-    const ConfigurationWrapper args_wrap(args_);
-    static DefaultParametrisation defaults;
-    CombinedParametrisation combined1(args_wrap, metadata1, defaults);
-    CombinedParametrisation combined2(args_wrap, metadata2, defaults);
+    const param::ConfigurationWrapper args_wrap(args_);
+    static param::DefaultParametrisation defaults;
+    param::CombinedParametrisation combined1(args_wrap, metadata1, defaults);
+    param::CombinedParametrisation combined2(args_wrap, metadata2, defaults);
 
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {

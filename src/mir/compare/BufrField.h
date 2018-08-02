@@ -42,18 +42,19 @@ public:
 public:
 
 
-
-
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);
 
 private:
     BufrField(const std::string& path, off_t offset, size_t length);
+    ~BufrField();
 
     bool operator==(const BufrField& other) const;
 
 
 private:
+
+    char* data_;
 
     virtual void print(std::ostream &out) const;
     virtual bool wrapped() const;

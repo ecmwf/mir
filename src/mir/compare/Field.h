@@ -61,7 +61,7 @@ public:
     virtual bool same(const FieldBase& other) const = 0;
     virtual bool match(const FieldBase& other) const = 0;
 
-private:
+protected:
 
     FieldInfo info_;
 
