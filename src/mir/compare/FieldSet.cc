@@ -17,6 +17,9 @@
 #include <algorithm>
 
 
+#include "mir/compare/BufrField.h"
+#include "mir/compare/GribField.h"
+
 namespace mir {
 namespace compare {
 
@@ -46,7 +49,7 @@ std::set<Field>::const_iterator FieldSet::same(const Field& field) const {
     }
 
     for (j = fields_.begin(); j != fields_.end(); ++j) {
-        if (field.same(*j)) {
+        if (field.asGribField().same((*j).asGribField())) {
             // eckit::Log::warning() << "Returning approximate match: " << field << std::endl;
             // eckit::Log::warning() << "                             " << *j << std::endl;
             return j;

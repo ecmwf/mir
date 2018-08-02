@@ -43,18 +43,18 @@ namespace compare {
 
 class WhiteLister {
 public:
-    virtual bool whiteListed(const MultiFile& name, const Field&) const = 0;
-    virtual bool ignoreError(const MultiFile& name, const Field&) const = 0;
+  virtual bool whiteListed(const MultiFile& name, const Field&) const = 0;
+  virtual bool ignoreError(const MultiFile& name, const Field&) const = 0;
 
 };
 
 class DefaultWhiteLister : public WhiteLister {
 
-    virtual bool whiteListed(const MultiFile& name, const Field&) const { return false; }
-    virtual bool ignoreError(const MultiFile& name, const Field&) const { return false; }
+  virtual bool whiteListed(const MultiFile& name, const Field&) const { return false; }
+  virtual bool ignoreError(const MultiFile& name, const Field&) const { return false; }
 
 public:
-    static const WhiteLister& instance();
+  static const WhiteLister& instance();
 };
 
 
@@ -100,6 +100,22 @@ protected: // members
                 off_t offset,
                 size_t size,
                 bool fail);
+
+  void getGribField(const MultiFile& multi,
+                    eckit::Buffer& buffer,
+                    FieldSet& fields,
+                    const std::string& path,
+                    off_t offset,
+                    size_t size,
+                    bool fail);
+
+  void getBufrField(const MultiFile& multi,
+                    eckit::Buffer& buffer,
+                    FieldSet& fields,
+                    const std::string& path,
+                    off_t offset,
+                    size_t size,
+                    bool fail);
 
   void compareFields(const MultiFile& multi1,
                      const MultiFile& multi2,

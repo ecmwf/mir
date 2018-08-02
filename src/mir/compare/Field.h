@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "mir/compare/FieldInfo.h"
+#include "eckit/memory/Counted.h"
 
 
 namespace eckit {
@@ -35,132 +36,63 @@ namespace mir {
 namespace compare {
 
 class FieldSet;
+class GribField;
+class BufrField;
 
 //----------------------------------------------------------------------------------------------------------------------
 //
 
-class Field {
+class FieldBase : public eckit::Counted {
 public:
 
-    Field(const std::string& path, off_t offset, size_t length);
+    FieldBase(const std::string& path, off_t offset, size_t length);
 
-    void insert(const std::string& key, const std::string& value);
-    void insert(const std::string& key, long value);
-
-    void erase(const std::string& key);
-
-    void area(double n, double w, double s, double e);
-    void grid(double ns, double we);
-    void rotation(double lat, double lon);
-    void format(const std::string&);
-
-    void gridtype(const std::string&);
-    void gridname(const std::string&);
-
-    void resol(size_t resol);
-    void numberOfPoints(long n);
-
-    void param(long n);
-    void accuracy(long n);
-    void decimalScaleFactor(long n);
-    void packing(const std::string& packing);
-
-    bool operator<(const Field& other) const;
-
-    void missingValuesPresent(bool on);
-
-    std::map<std::string, std::string>::const_iterator begin() const;
-
-    std::map<std::string, std::string>::const_iterator end() const;
-
-    std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
-
-    std::vector<Field> bestMatches(const FieldSet& fields) const;
-    size_t differences(const Field& other) const;
-
-    void compareAreas(std::ostream& out, const Field& other) const;
-
-    bool same(const Field& other) const;
-    bool match(const Field& other) const;
-
-
-    bool sameArea(const Field& other) const;
-    bool samePacking(const Field& other) const;
-    bool sameAccuracy(const Field& other) const;
-    bool sameBitmap(const Field& other) const;
-    bool sameFormat(const Field& other) const;
-    bool sameField(const Field& other) const;
-    bool sameGrid(const Field& other) const;
-    bool sameRotation(const Field& other) const;
-    bool sameResol(const Field& other) const;
-    bool sameGridname(const Field& other) const;
-    bool sameGridtype(const Field& other) const;
-    bool sameParam(const Field& other) const;
-    bool sameNumberOfPoints(const Field& other) const;
-
-    bool match(const std::string&, const std::string&) const;
-
-    bool wrapped() const;
-
-    off_t offset() const ;
-
-    size_t length() const ;
-
-    size_t numberOfPoints() const;
-
-    const std::string& format() const ;
-
-    const std::string& path() const ;
-    void whiteListEntries(std::ostream& out) const;
-
-    std::ostream& printDifference(std::ostream& out, const Field & other) const;
-
-    std::ostream& printGrid(std::ostream &out) const;
-
-
-    static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs &args);
+    off_t offset() const;
+    size_t length() const;
+    const std::string& path() const;
 
 private:
-
-    bool operator==(const Field& other) const;
 
     FieldInfo info_;
 
-    std::map<std::string, std::string> values_;
+    virtual void print(std::ostream &out) const = 0;
 
-    long param_;
+    friend std::ostream &operator<<(std::ostream &s, const FieldBase &x) {
+        x.print(s);
+        return s;
+    }
 
-    bool area_;
-    double north_;
-    double west_;
-    double south_;
-    double east_;
+};
 
-    long accuracy_;
-    long decimalScaleFactor_;
+class Field {
+public:
 
-    bool grid_;
-    double west_east_;
-    double north_south_;
+    Field(FieldBase* field);
+    Field(const Field& other);
 
-    bool rotation_;
-    double rotation_latitude_;
-    double rotation_longitude_;
+    ~Field();
 
-    std::string packing_;
+    Field& operator=(const Field& other);
 
-    bool hasMissing_;
-    long resol_;
-    std::string gridname_;
-    std::string gridtype_;
-    std::string format_;
 
-    long numberOfPoints_;
+    bool operator<(const Field& other) const;
+    static void addOptions(std::vector<eckit::option::Option*>& options);
+    static void setOptions(const eckit::option::CmdArgs &args);
+
+    const GribField& asGribField() const;
+    const BufrField& asBufrField() const;
+
+    GribField& asGribField(); 
+    BufrField& asBufrField() ;
+
+    off_t offset() const;
+    size_t length() const;
+    const std::string& path() const;
+
 
 private:
 
-
+    FieldBase* field_;
 
     void print(std::ostream &out) const;
 
@@ -168,7 +100,6 @@ private:
         x.print(s);
         return s;
     }
-
 };
 
 

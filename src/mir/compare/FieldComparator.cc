@@ -41,6 +41,9 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
+#include "mir/compare/GribField.h"
+#include "mir/compare/BufrField.h"
+
 using eckit::PathName;
 using eckit::AutoStdFile;
 
@@ -252,7 +255,7 @@ public:
 };
 
 
-static void setArea(Field& field, grib_handle *h) {
+static void setArea(GribField& field, grib_handle *h) {
     double n = -99999, w = -99999, s = -99999, e = -99999;
     GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
     GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
@@ -284,7 +287,7 @@ static void setArea(Field& field, grib_handle *h) {
     field.area(n, w, s, e);
 }
 
-static void setGrid(Field& field, grib_handle *h) {
+static void setGrid(GribField& field, grib_handle *h) {
 
 
     double we = -99999, ns = -99999;
@@ -301,12 +304,64 @@ void FieldComparator::getField(const MultiFile& multi,
                                size_t size,
                                bool fail) {
 
-    Field field(path, offset, size);
 
+    const char *q = ((const char*)buffer);
     const char *p = ((const char*)buffer) + size - 4;
 
     if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7')
         throw eckit::SeriousBug("No 7777 found");
+
+
+    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[4] == 'B') {
+        getGribField(multi,
+                     buffer,
+                     fields,
+                     path,
+                     offset,
+                     size,
+                     fail);
+        return;
+    }
+
+    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[4] == 'R') {
+getBufrField(multi,
+                     buffer,
+                     fields,
+                     path,
+                     offset,
+                     size,
+                     fail);
+        return;
+    }
+
+    NOTIMP;
+
+}
+
+void FieldComparator::getBufrField(const MultiFile& multi,
+                                   eckit::Buffer& buffer,
+                                   FieldSet& fields,
+                                   const std::string& path,
+                                   off_t offset,
+                                   size_t size,
+                                   bool fail) {
+    Field f(new BufrField(path, offset, size));
+    BufrField& field = f.asBufrField();
+    fields.insert(f);
+}
+
+
+void FieldComparator::getGribField(const MultiFile& multi,
+                                   eckit::Buffer& buffer,
+                                   FieldSet& fields,
+                                   const std::string& path,
+                                   off_t offset,
+                                   size_t size,
+                                   bool fail) {
+
+    Field f(new GribField(path, offset, size));
+    GribField& field = f.asGribField();
+
 
     grib_handle *h = grib_handle_new_from_message(0, buffer, size);
     ASSERT(h);
@@ -552,15 +607,15 @@ void FieldComparator::getField(const MultiFile& multi,
         field.erase(*j);
     }
 
-    if (fields.duplicate(field) != fields.end()) {
-        const auto& other = *fields.duplicate(field);
+    if (fields.duplicate(f) != fields.end()) {
+        const auto& other = *fields.duplicate(f);
         eckit::Log::info() << "Duplicate field in "
                            << multi
                            << std::endl
                            << "  ==> "
                            << field << std::endl
                            << "  ==> ";
-        other.printDifference(eckit::Log::info(), field);
+        other.asGribField().printDifference(eckit::Log::info(), field);
         eckit::Log::info() << std::endl;
         // << "  ==> "
         // << field.compare(other)
@@ -570,12 +625,12 @@ void FieldComparator::getField(const MultiFile& multi,
         }
     }
 
-    if (whiteLister_.whiteListed(multi, field)) {
+    if (whiteLister_.whiteListed(multi, f)) {
         eckit::Log::info() << "Field white listed " << field << std::endl;
         return;
     }
 
-    fields.insert(field);
+    fields.insert(f);
 
 }
 
@@ -862,20 +917,20 @@ void FieldComparator::compareFieldValues(
 void FieldComparator::whiteListEntries(const Field & field, const MultiFile & multi) const {
     multi.whiteListEntries(eckit::Log::info());
     eckit::Log::info() << ' ';
-    field.whiteListEntries(eckit::Log::info());
+    field.asGribField().whiteListEntries(eckit::Log::info());
     eckit::Log::info() << std::endl;
 }
 
 
 namespace {
 struct Compare {
-	const Field & field_;
-	Compare(const Field & field) : field_(field) {}
-        bool operator()(const Field &a, const Field & b) {
-		size_t da = field_.differences(a);
-		size_t db = field_.differences(b);
-                return da < db;
-}
+    const Field & field_;
+    Compare(const Field & field) : field_(field) {}
+    bool operator()(const Field &a, const Field & b) {
+        size_t da = field_.asGribField().differences(a.asGribField());
+        size_t db = field_.asGribField().differences(b.asGribField());
+        return da < db;
+    }
 };
 
 }
@@ -889,17 +944,17 @@ void FieldComparator::missingField(const MultiFile & multi1,
 
     if (ignoreWrappingAreas_) {
 
-        if (field.wrapped()) {
+        if (field.asGribField().wrapped()) {
             eckit::Log::info()  << "Ignoring wrapped field " << field << std::endl;
             return;
         }
 
-        std::vector<Field> matches = field.bestMatches(fields);
+        std::vector<Field> matches = field.asGribField().bestMatches(fields);
         std::sort(matches.begin(), matches.end(), Compare(field));
         if (matches.size() > 0) {
             for (auto m = matches.begin(); m != matches.end(); ++m) {
                 const auto& other = (*m);
-                if (other.wrapped()) {
+                if (other.asGribField().wrapped()) {
                     eckit::Log::info()  << "Ignoring field " << field << " that matches wrapped " << other << std::endl;
                     return;
                 }
@@ -907,7 +962,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
     }
 
-    if(whiteLister_.ignoreError(multi1, field)) {
+    if (whiteLister_.ignoreError(multi1, field)) {
         return;
     }
 
@@ -923,7 +978,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
     }
     // Find the best mismaches
 
-    std::vector<Field> matches = field.bestMatches(fields);
+    std::vector<Field> matches = field.asGribField().bestMatches(fields);
     if (matches.size() == 0) {
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
@@ -933,11 +988,11 @@ void FieldComparator::missingField(const MultiFile & multi1,
 
 
             const auto& other = (*m);
-            if (other.match(field)) {
+            if (other.asGribField().match(field.asGribField())) {
                 eckit::Log::info() << " @ ";
-                other.printDifference(eckit::Log::info(), field);
+                other.asGribField().printDifference(eckit::Log::info(), field.asGribField());
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.asGribField().compareAreas(eckit::Log::info(), field.asGribField());
                 eckit::Log::info() << ")" << std::endl;
 
                 if (whiteListEntries_) {
@@ -950,9 +1005,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
             for (auto m = fields.begin(); m != fields.end(); ++m) {
                 const auto& other = (*m);
                 eckit::Log::info() << " # ";
-                other.printDifference(eckit::Log::info(), field);
+                other.asGribField().printDifference(eckit::Log::info(), field.asGribField());
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.asGribField().compareAreas(eckit::Log::info(), field.asGribField());
                 eckit::Log::info() << ")" << std::endl;
                 if (whiteListEntries_) {
                     whiteListEntries(other, multi2);
@@ -966,9 +1021,9 @@ void FieldComparator::missingField(const MultiFile & multi1,
         for (auto m = matches.begin(); m != matches.end(); ++m) {
             const auto& other = (*m);
             eckit::Log::info() << " ? ";
-            other.printDifference(eckit::Log::info(), field);
+            other.asGribField().printDifference(eckit::Log::info(), field.asGribField());
             eckit::Log::info() << " (" ;
-            other.compareAreas(eckit::Log::info(), field);
+            other.asGribField().compareAreas(eckit::Log::info(), field.asGribField());
             eckit::Log::info() << ")" << std::endl;
             if (whiteListEntries_) {
                 whiteListEntries(other, multi2);
