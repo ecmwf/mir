@@ -138,38 +138,101 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
 
 
     // 2. determine box from rotated corners and by rotating each edge
-    {
-        std::vector<PointLonLat> points {
+    if (!includesNorthPole || !includesSouthPole) {
+
+        std::vector<PointLonLat> corners {
             {bbox.west().value(), bbox.north().value()},
             {bbox.east().value(), bbox.north().value()},
             {bbox.east().value(), bbox.south().value()},
             {bbox.west().value(), bbox.south().value()}
         };
 
-        // if bounding box includes Greenwich and/or Equator
-        if (Longitude::GREENWICH.normalise(bbox.west()) < bbox.east()) {
-            points.emplace_back(PointLonLat{0, bbox.north().value()});
-            points.emplace_back(PointLonLat{0, bbox.south().value()});
-        }
-        if (bbox.south() < Latitude::EQUATOR && Latitude::EQUATOR < bbox.north()) {
-            points.emplace_back(PointLonLat{bbox.west().value(), 0});
-            points.emplace_back(PointLonLat{bbox.east().value(), 0});
-        }
-
         bool first = true;
-        for (auto& p : points) {
+        for (auto& p : corners) {
             PointLonLat r(R.rotate(p));
             min = first ? r : Point2::componentsMin(min, r);
             max = first ? r : Point2::componentsMax(max, r);
             first = false;
         }
+
+        // locate edge extrema not at the corners, refining iteratively
+        for (size_t i = 0; i < corners.size(); ++i) {
+            const PointLonLat A = corners[i];
+            const PointLonLat B = corners[(i + 1) % corners.size()];
+
+            // finite difference vector derivative (H is the perturbation vector)
+            constexpr double h = 0.001;
+            const PointLonLat H{ Point2::mul(Point2::normalize(Point2::sub(B, A)), h) };
+
+            auto derivate = [&R, &H](PointLonLat P) -> PointLonLat {
+                PointLonLat F = R.rotate(P);
+                PointLonLat Fh = R.rotate(PointLonLat::add(P, H));
+                return PointLonLat::div(PointLonLat::sub(Fh, F),
+                                        PointLonLat::norm(H));
+            };
+
+            const PointLonLat derivativeAtA = derivate(A);
+            const PointLonLat derivativeAtB = derivate(B);
+
+            // latitude extrema
+            if (!eckit::types::is_strictly_greater(derivativeAtA.lat() * derivativeAtB.lat(), 0.)) {
+                PointLonLat C = A;
+                PointLonLat D = B;
+                double derivativeAtC = derivativeAtA.lat();
+                double derivativeAtD = derivativeAtB.lat();
+
+                for (size_t cnt = 0; cnt < 100; ++cnt) {
+                    PointLonLat M = PointLonLat::middle(C, D);
+                    double derivativeAtM = derivate(M).lat();
+                    if (eckit::types::is_strictly_greater(derivativeAtC * derivativeAtM, 0.)) {
+                        C = M;
+                        derivativeAtC = derivativeAtM;
+                    } else if (eckit::types::is_strictly_greater(derivativeAtD * derivativeAtM, 0.)) {
+                        D = M;
+                        derivativeAtD = derivativeAtM;
+                    } else {
+                        break;
+                    }
+                }
+
+                PointLonLat r(R.rotate(PointLonLat::middle(C, D)));
+                min = Point2::componentsMin(min, r);
+                max = Point2::componentsMax(max, r);
+            }
+
+            // longitude extrema
+            if (!eckit::types::is_strictly_greater(derivativeAtA.lon() * derivativeAtB.lon(), 0.)) {
+                PointLonLat C = A;
+                PointLonLat D = B;
+                double derivativeAtC = derivativeAtA.lon();
+                double derivativeAtD = derivativeAtB.lon();
+
+                for (size_t cnt = 0; cnt < 100; ++cnt) {
+                    PointLonLat M = PointLonLat::middle(C, D);
+                    double derivativeAtM = derivate(M).lon();
+                    if (eckit::types::is_strictly_greater(derivativeAtC * derivativeAtM, 0.)) {
+                        C = M;
+                        derivativeAtC = derivativeAtM;
+                    } else if (eckit::types::is_strictly_greater(derivativeAtD * derivativeAtM, 0.)) {
+                        D = M;
+                        derivativeAtD = derivativeAtM;
+                    } else {
+                        break;
+                    }
+                }
+
+                PointLonLat r(R.rotate(PointLonLat::middle(C, D)));
+                min = Point2::componentsMin(min, r);
+                max = Point2::componentsMax(max, r);
+            }
+        }
     }
 
 
-    //// 4. extend by 'angle' latitude- and longitude-wise
-    //constexpr double angle = 0.001;  // (arbitrary choice)
-    //min = Point2::add(min, Point2{ -angle, -angle });
-    //max = Point2::add(max, Point2{  angle,  angle });
+    // 4. extend by 'angle' latitude- and longitude-wise
+    constexpr double angle = 0.001;  // (arbitrary choice)
+    min = Point2::sub(min, Point2{ angle, angle });
+    max = Point2::add(max, Point2{ angle, angle });
 
 
     // 5. set bounding box
