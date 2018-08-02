@@ -74,8 +74,8 @@ void BufrField::whiteListEntries(std::ostream& out) const {
 size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
     size_t n = 0;
-    for (size_t i = 0; i < std::min(info_.length() ,other.info_.length()); ++i) {
-        if(data_[i] != other.data_[i]) {
+    for (size_t i = 0; i < std::min(info_.length() , other.info_.length()); ++i) {
+        if (data_[i] != other.data_[i]) {
             n++;
         }
     }
@@ -109,6 +109,23 @@ bool BufrField::match(const FieldBase& o) const {
     return memcmp(data_, other.data_, info_.length()) == 0;
 }
 
+std::ostream& BufrField::printGrid(std::ostream& out) const {
+    out << "bufr(grid)";
+    return out;
+}
+
+bool BufrField::match(const std::string&, const std::string&) const {
+    return false;
+}
+
+size_t BufrField::numberOfPoints() const {
+    return 0;
+}
+
+const std::string& BufrField::format() const {
+    static std::string bufr = "bufr";
+    return bufr;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

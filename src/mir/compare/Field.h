@@ -60,6 +60,10 @@ public:
     virtual void compareAreas(std::ostream&, const FieldBase& other) const = 0;
     virtual bool same(const FieldBase& other) const = 0;
     virtual bool match(const FieldBase& other) const = 0;
+    virtual std::ostream& printGrid(std::ostream&) const = 0;
+    virtual bool match(const std::string&, const std::string&) const = 0;
+    virtual size_t numberOfPoints() const = 0;
+    virtual const std::string& format() const = 0;
 
 protected:
 
@@ -107,7 +111,12 @@ public:
 
     void whiteListEntries(std::ostream&) const;
     size_t differences(const Field& other) const;
-    void printDifference(std::ostream&, const Field& other) const;
+    std::ostream& printDifference(std::ostream&, const Field& other) const;
+
+    std::ostream& printGrid(std::ostream&) const;
+    bool match(const std::string&, const std::string&) const;
+    size_t numberOfPoints() const;
+    const std::string& format() const;
 
     bool wrapped() const;
     void compareAreas(std::ostream&, const Field& other) const;

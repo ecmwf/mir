@@ -65,6 +65,10 @@ private:
     virtual void compareAreas(std::ostream&, const FieldBase& other) const ;
     virtual bool same(const FieldBase& other) const;
     virtual bool match(const FieldBase& other) const;
+    virtual std::ostream& printGrid(std::ostream&) const;
+    virtual bool match(const std::string&, const std::string&) const;
+    virtual size_t numberOfPoints() const;
+    virtual const std::string& format() const;
 
     friend std::ostream &operator<<(std::ostream &s, const BufrField &x) {
         x.print(s);

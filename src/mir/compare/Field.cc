@@ -122,9 +122,14 @@ size_t Field::differences(const Field& other) const {
     return field_->differences(*other.field_);
 }
 
-void Field::printDifference(std::ostream& out, const Field& other) const {
+std::ostream& Field::printDifference(std::ostream& out, const Field& other) const {
     ASSERT(field_ && other.field_);
-    field_->printDifference(out, *other.field_);
+    return field_->printDifference(out, *other.field_);
+}
+
+std::ostream& Field::printGrid(std::ostream& out) const {
+    ASSERT(field_);
+    return field_->printGrid(out);
 }
 
 Field::operator bool() const {
