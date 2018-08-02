@@ -22,6 +22,7 @@
 #include "mir/api/Atlas.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
 
@@ -119,32 +120,38 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
 BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
     using eckit::geometry::Point2;
-    using atlas::PointLonLat;
+    using point_ll_t = repres::Iterator::point_ll_t;
 
     // rotate bounding box corners and find (min, max)
-    // the latitude is bounded by the rotation of bounding box parallels at Greenwich (if included)
-    const atlas::PointLonLat southPole(
-                south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                south_pole_latitude().value() );
-    const atlas::util::Rotation R(southPole, south_pole_rotation_angle_);
+    // the latitude is bounded by the rotation of bounding box parallels/great circles,
+    // if they cross Greenwich and/or Equator
+    const atlas::util::Rotation R({ south_pole_longitude_.normalise(Longitude::GREENWICH).value(),
+                                    south_pole_latitude_.value() },
+                                  south_pole_rotation_angle_);
 
 
     bool first = true;
     Point2 min, max;
     {
-        const double n = bbox.north().value();
-        const double s = bbox.south().value();
-        const double w = bbox.west().value();
-        const double e = bbox.east().value();
+        const Latitude n = bbox.north();
+        const Latitude s = bbox.south();
+        const Longitude w = bbox.west();
+        const Longitude e = bbox.east();
 
-        std::vector<PointLonLat> points {{w, n}, {e, n}, {e, s}, {w, s}};
-        if (w * e <= 0) {
-            points.emplace_back(PointLonLat{0, n});
-            points.emplace_back(PointLonLat{0, s});
+        std::vector<point_ll_t> points {{n, w} , {n, e}, {s, e}, {s, w}};
+
+        // if bounding box includes Greenwich and/or Equator
+        if (Longitude::GREENWICH.normalise(w) < e) {
+            points.emplace_back(point_ll_t{n, 0});
+            points.emplace_back(point_ll_t{s, 0});
+        }
+        if (s < Latitude::EQUATOR && Latitude::EQUATOR < n) {
+            points.emplace_back(point_ll_t{0, w});
+            points.emplace_back(point_ll_t{0, e});
         }
 
         for (auto& p : points) {
-            PointLonLat r(R.rotate(p));
+            atlas::PointLonLat r(R.rotate({p.lon.value(), p.lat.value()}));
             min = first ? r : Point2::componentsMin(min, r);
             max = first ? r : Point2::componentsMax(max, r);
             first = false;
@@ -162,8 +169,8 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
 
 
     // check bbox including poles (in the unrotated frame)
-    PointLonLat NP{ R.unrotate({0., Latitude::NORTH_POLE.value()}) };
-    PointLonLat SP{ R.unrotate({0., Latitude::SOUTH_POLE.value()}) };
+    atlas::PointLonLat NP{ R.unrotate({0., Latitude::NORTH_POLE.value()}) };
+    atlas::PointLonLat SP{ R.unrotate({0., Latitude::SOUTH_POLE.value()}) };
 
     bool includesNorthPole = bbox.contains(NP.lat(), NP.lon())
             || eckit::types::is_approximately_lesser_or_equal(Latitude::NORTH_POLE.value(), max[1]);
