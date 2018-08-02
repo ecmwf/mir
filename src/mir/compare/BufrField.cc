@@ -37,14 +37,28 @@ void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
 
 
 void BufrField::setOptions(const eckit::option::CmdArgs &args) {
- 
+
 }
 
 
 BufrField::BufrField(const std::string& path, off_t offset, size_t length):
-    FieldBase(path, offset, length)
-    {}
+    FieldBase(path, offset, length){
 
+    }
+
+
+Field BufrField::field(const char* buffer, size_t size,
+                       const std::string& path, off_t offset,
+                       const std::vector<std::string>& ignore) {
+
+    BufrField* field = new BufrField(path, offset, size);
+    Field result(field);
+    return result;
+}
+
+void BufrField::print(std::ostream &out) const {
+    out << "BufrField[]";
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -60,6 +60,31 @@ Field::~Field() {
 }
 
 
+Field& Field::operator=(const Field& other)
+{
+    if (field_ != other.field_) {
+        if (field_) {
+            field_->attach();
+        }
+        field_ = other.field_;
+        if (field_) {
+            field_->attach();
+        }
+    }
+
+    return *this;
+}
+
+void Field::print(std::ostream& out) const {
+    if (field_) {
+        out << *field_;
+    }
+    else {
+        out << "(null)";
+    }
+}
+
+
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     std::vector<Field> matches;
 
@@ -75,6 +100,61 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     return matches;
 
 }
+
+
+bool Field::same(const Field& other) const {
+    NOTIMP;
+}
+
+bool Field::match(const Field& other) const {
+    NOTIMP;
+}
+
+
+void Field::whiteListEntries(std::ostream&) const {
+    NOTIMP;
+}
+
+size_t Field::differences(const Field& other) const {
+    NOTIMP;
+}
+
+void Field::printDifference(std::ostream&, const Field& other) const {
+    NOTIMP;
+}
+
+Field::operator bool() const {
+    return field_ != 0;
+}
+
+bool Field::operator<(const Field& other) const {
+    NOTIMP;
+}
+
+bool Field::wrapped() const {
+    NOTIMP;
+}
+
+void Field::compareAreas(std::ostream&, const Field& other) const {
+    NOTIMP;
+}
+
+off_t Field::offset() const {
+    ASSERT(field_);
+    return field_->offset();
+}
+
+size_t Field::length() const {
+    ASSERT(field_);
+    return field_->length();
+}
+
+const std::string& Field::path() const {
+    ASSERT(field_);
+    return field_->path();
+}
+
+
 //----------------------------------------------------------------------------------------------------------------------
 
 

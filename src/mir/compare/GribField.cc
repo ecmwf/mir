@@ -89,16 +89,6 @@ static double normalize(double longitude) {
 }
 
 
-void GribField::setGrid(GribField& field, grib_handle *h) {
-
-
-    double we = -99999, ns = -99999;
-    GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
-    GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
-    field.grid(ns, we);
-}
-
-
 void GribField::setOptions(const eckit::option::CmdArgs &args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("ignore-accuracy", ignoreAccuracy_);
@@ -1317,6 +1307,18 @@ Field GribField::field(const char* buffer, size_t size,
 
     field.area(n, w, s, e);
 }
+
+
+
+void GribField::setGrid(GribField& field, grib_handle *h) {
+
+
+    double we = -99999, ns = -99999;
+    GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
+    GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
+    field.grid(ns, we);
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 }  // namespace compare
