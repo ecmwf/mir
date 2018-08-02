@@ -51,7 +51,7 @@ Field BufrField::field(const char* buffer, size_t size,
 }
 
 void BufrField::print(std::ostream &out) const {
-    out << "BufrField[]";
+    out << "BufrField[" << info_.length() << "]";
 }
 
 
@@ -84,7 +84,7 @@ size_t BufrField::differences(const FieldBase& o) const {
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    out << "bufr(diff)";
+    out << "bufr(diff," << info_.length() << "," <<other.info_.length() << ")";
     return out;
 }
 
