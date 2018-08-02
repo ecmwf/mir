@@ -127,11 +127,6 @@ std::ostream& Field::printDifference(std::ostream& out, const Field& other) cons
     return field_->printDifference(out, *other.field_);
 }
 
-std::ostream& Field::printGrid(std::ostream& out) const {
-    ASSERT(field_);
-    return field_->printGrid(out);
-}
-
 Field::operator bool() const {
     return field_ != 0;
 }
@@ -165,6 +160,27 @@ const std::string& Field::path() const {
     ASSERT(field_);
     return field_->path();
 }
+
+std::ostream& Field::printGrid(std::ostream& out)  const {
+    ASSERT(field_);
+    return field_->printGrid(out);
+}
+
+bool Field::match(const std::string&a, const std::string&b)  const {
+    ASSERT(field_);
+    return field_->match(a, b);
+}
+
+size_t Field::numberOfPoints()  const {
+    ASSERT(field_);
+    return field_->numberOfPoints();
+}
+
+const std::string& Field::format()  const {
+    ASSERT(field_);
+    return field_->format();
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
