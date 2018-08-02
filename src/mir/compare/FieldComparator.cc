@@ -260,11 +260,11 @@ void FieldComparator::getField(const MultiFile& multi,
 
 
     Field field;
-    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[4] == 'B') {
+    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[3] == 'B') {
         field  = GribField::field(buffer, size, path, offset, ignore_);
     }
 
-    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[4] == 'R') {
+    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[3] == 'R') {
         field  = BufrField::field(buffer, size, path, offset, ignore_);
     }
 
