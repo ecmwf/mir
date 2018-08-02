@@ -341,6 +341,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
          test_t{ "N256",  {  90,          0,      -90,       359.9    },   348528 },
          test_t{ "N640",  {  90,          0,      -90,       359.9    },  2140702 },
          test_t{ "N640",  {  90,          0,      -90,       359.99   },  2140702 },
+         test_t{ "N640",  {  90,       -180,      -90,       179.99   },  2140702 },
          test_t{ "O640",  {  90,          0,      -90,       359.999  },  1661440 },
 
          // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
