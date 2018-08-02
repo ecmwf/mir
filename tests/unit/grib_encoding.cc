@@ -336,6 +336,13 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
          test_t{ "O1280", { -10.0176,   275,      -38.9807,  304      }, 124209 },
          test_t{ "O1280", { -10,        -85,      -39,       -56.1    }, 124143 },
 
+         // ECC-576
+         test_t{ "N256",  {  90,          0,      -90,       359.6489 },   348528 },
+         test_t{ "N256",  {  90,          0,      -90,       359.9    },   348528 },
+         test_t{ "N640",  {  90,          0,      -90,       359.9    },  2140702 },
+         test_t{ "N640",  {  90,          0,      -90,       359.99   },  2140702 },
+         test_t{ "O640",  {  90,          0,      -90,       359.999  },  1661440 },
+
          // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
          test_t{ "O1280", {  37.6025,  -114.891,   27.7626, -105.188  },  12369 },
          test_t{ "O1280", {  27.9,      253,       27.8,     254      },     19 },
@@ -365,7 +372,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
         size_t n = mapping.size();
         ASSERT(0 < n);
-        log << "\tnumberOfPoints =\t" << n << " (crop)" << std::endl;
+        log << "\tnumberOfPoints = " << n << " (crop)" << std::endl;
 
         EXPECT(test.count == n);
         EXPECT(test.bbox.contains(small));

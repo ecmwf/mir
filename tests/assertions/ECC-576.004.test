@@ -1,0 +1,6 @@
+# MARS request
+param=2t,levtype=sfc,grid=N640
+# MIR options
+--area=90/0/-90/359.99
+# grib_get assertions
+numberOfValues=2140702
