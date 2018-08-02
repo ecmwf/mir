@@ -19,7 +19,10 @@
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "mir/util/Grib.h"
+#include "eckit/config/Resource.h"
 
+#include "eckit/serialisation/MemoryStream.h"
 
 namespace mir {
 namespace compare {
@@ -83,6 +86,16 @@ static double normalize(double longitude) {
         longitude -= 360;
     }
     return longitude;
+}
+
+
+void GribField::setGrid(GribField& field, grib_handle *h) {
+
+
+    double we = -99999, ns = -99999;
+    GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
+    GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
+    field.grid(ns, we);
 }
 
 
@@ -669,7 +682,7 @@ std::ostream & GribField::printGrid(std::ostream & out) const {
     bool comma = false;
 
     if (!gridname_.empty()) {
-        if(comma) {
+        if (comma) {
             out << ',';
         }
         comma = true;
@@ -677,7 +690,7 @@ std::ostream & GribField::printGrid(std::ostream & out) const {
     }
 
     if (resol_ >= 0) {
-        if(comma) {
+        if (comma) {
             out << ',';
         }
         comma = true;
@@ -685,7 +698,7 @@ std::ostream & GribField::printGrid(std::ostream & out) const {
     }
 
     if (grid_) {
-        if(comma) {
+        if (comma) {
             out << ',';
         }
         comma = true;
@@ -693,7 +706,7 @@ std::ostream & GribField::printGrid(std::ostream & out) const {
     }
 
     if (area_) {
-        if(comma) {
+        if (comma) {
             out << ',';
         }
         comma = true;
@@ -753,21 +766,6 @@ size_t GribField::differences(const GribField & other) const {
     return result;
 }
 
-std::vector<Field> GribField::bestMatches(const FieldSet & fields) const {
-    std::vector<Field> matches;
-
-    for (auto k = fields.begin(); k != fields.end(); ++k) {
-        const auto& other = *k;
-
-        if (match(other.asGribField())) {
-            matches.push_back(other);
-        }
-
-    }
-
-    return matches;
-
-}
 
 template<class T>
 static void pdiff(std::ostream & out, const T& v1, const T& v2) {
@@ -1032,6 +1030,293 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+Field GribField::field(const char* buffer, size_t size,
+                       const std::string& path, off_t offset,
+                       const std::vector<std::string>& ignore) {
+
+    GribField* field = new GribField(path, offset, size);
+    Field result(field);
+
+    grib_handle *h = grib_handle_new_from_message(0, buffer, size);
+    ASSERT(h);
+    HandleDeleter del(h);
+
+    static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
+
+    grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    ASSERT(ks);
+
+    /// @todo this code should be factored out into mir
+
+    // bool sfc = false;
+
+    std::map<std::string, std::string> req;
+
+    while (grib_keys_iterator_next(ks)) {
+        const char *name = grib_keys_iterator_get_name(ks);
+        ASSERT(name);
+
+        if (name[0] == '_') continue;
+        if (::strcmp(name, "param") == 0) continue;
+
+        char val[1024];
+        size_t len = sizeof(val);
+
+        GRIB_CALL( grib_keys_iterator_get_string(ks, val, &len) );
+
+        field->insert(name, val);
+
+        // if (::strcmp(val, "sfc") == 0) {
+        //     sfc = true;
+        // }
+
+        req[name] = val;
+    }
+
+    grib_keys_iterator_delete(ks);
+
+
+    long paramId;
+    GRIB_CALL (grib_get_long(h, "paramId", &paramId));
+
+    field->param(paramId);
+
+    long numberOfDataPoints;
+    GRIB_CALL (grib_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
+    field->numberOfPoints(numberOfDataPoints);
+
+    // Look for request embbeded in GRIB message
+    long local;
+
+    if (grib_get_long(h, "localDefinitionNumber", &local) ==  0 && local == 191) {
+        size_t size;
+        /* TODO: Not grib2 compatible, but speed-up process */
+        if (grib_get_size(h, "freeFormData", &size) ==  0 && size != 0) {
+            unsigned char buffer[size];
+            GRIB_CALL(grib_get_bytes(h, "freeFormData", buffer, &size) );
+
+            eckit::MemoryStream s(buffer, size);
+
+            int count;
+            s >> count; // Number of requests
+            ASSERT(count == 1);
+            std::string tmp;
+            s >> tmp; // verb
+            s >> count;
+            for (int i = 0; i < count; i++) {
+                std::string keyword, value;
+                int n;
+                s >> keyword;
+                std::transform(keyword.begin(), keyword.end(), keyword.begin(), tolower);
+                s >> n; // Number of values
+                ASSERT(n == 1);
+                s >> value;
+                std::transform(value.begin(), value.end(), value.begin(), tolower);
+                field->insert(keyword, value);
+                req[keyword] = value;
+            }
+        }
+    }
+
+    static eckit::Translator<long, std::string> l2s;
+
+
+    {
+        char value[1024];
+        size_t len = sizeof(value);
+        if (grib_get_string(h, "gridType", value, &len) == 0) {
+            field->gridtype(value);
+
+
+            if (strcmp(value, "regular_ll") == 0) {
+                setGrid(*field, h);
+                setArea(*field, h);
+            } else  if (strcmp(value, "rotated_ll") == 0) {
+                setGrid(*field, h);
+                setArea(*field, h);
+                {
+                    double lat, lon;
+                    GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
+                    GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon) );
+                    field->rotation(lat, lon);
+                }
+            }
+            else if (strcmp(value, "sh") == 0) {
+
+                // double d;
+                {
+                    long n = -1;
+                    GRIB_CALL(grib_get_long(h, "pentagonalResolutionParameterJ", &n) );
+                    field->resol(n);
+                }
+            }
+            else if (strcmp(value, "reduced_gg") == 0) {
+                {
+                    long n = 0;
+                    std::ostringstream oss;
+
+
+                    GRIB_CALL(grib_get_long(h, "isOctahedral", &n) );
+
+                    if (n) {
+                        oss << "O";
+                    }
+                    else {
+
+                        // Don't trust eccodes
+                        size_t pl_size = 0;
+                        GRIB_CALL(grib_get_size(h, "pl", &pl_size) );
+                        long pl[pl_size];
+
+                        GRIB_CALL(grib_get_long_array(h, "pl", pl, &pl_size) );
+
+                        bool isOctahedral = true;
+                        for (size_t i = 1 ; i < pl_size; i++) {
+                            long diff = std::abs(pl[i] - pl[i - 1]);
+                            if (diff != 4 && diff != 0) {
+                                isOctahedral = false;
+                                break;
+                            }
+                        }
+
+                        if (isOctahedral) {
+                            oss << "O";
+                        }
+                        else {
+                            oss << "N";
+                        }
+                    }
+
+                    GRIB_CALL(grib_get_long(h, "N", &n) );
+                    oss << n;
+
+
+
+                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                    // oss << '/' << rounded(d);
+                    field->gridname(oss.str());
+                }
+
+                setArea(*field, h);
+            } else if (strcmp(value, "regular_gg") == 0) {
+                long n;
+                {
+                    std::ostringstream oss;
+
+
+                    GRIB_CALL(grib_get_long(h, "N", &n) );
+                    oss << "F" << n;
+
+                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                    // oss << '/' << rounded(d);
+                    field->gridname(oss.str());
+                }
+                setArea(*field, h);
+            }
+            else if (strcmp(value, "polar_stereographic") == 0) {
+                eckit::Log::warning() << "Ignoring polar_stereographic in " << path << std::endl;
+                return result;
+            }
+            else {
+                std::ostringstream oss;
+                oss << path << ": Unknown grid [" << value << "]";
+                throw eckit::SeriousBug(oss.str());
+            }
+        }
+    }
+
+
+
+    // long scanningMode = 0;
+    // if (grib_get_long(h, "scanningMode", &scanningMode) == 0) {
+    //     field->insert("scanningMode", scanningMode);
+    // }
+
+    // long decimalScaleFactor = 0;
+    // if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+    //     field->insert("decimalScaleFactor", decimalScaleFactor);
+    // }
+
+
+    long edition;
+    if (grib_get_long(h, "edition", &edition) == 0) {
+        field->format("grib" + l2s(edition));
+    }
+
+    long missingValuesPresent;
+    if (grib_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
+        if (missingValuesPresent) {
+            field->missingValuesPresent(true);
+        }
+    }
+
+    long bitsPerValue;
+    if (grib_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
+        field->accuracy(bitsPerValue);
+    }
+
+    long decimalScaleFactor;
+    if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+        field->decimalScaleFactor(decimalScaleFactor);
+    }
+
+
+    {
+        char value[1024];
+        size_t len = sizeof(value);
+        if (grib_get_string(h, "packingType", value, &len) == 0) {
+            field->packing(value);
+        }
+    }
+
+    {
+        char value[1024];
+        size_t len = sizeof(value);
+        if (grib_get_string(h, "packing", value, &len) == 0) {
+            field->packing(value);
+        }
+    }
+
+    for (auto j = ignore.begin(); j != ignore.end(); ++j) {
+        field->erase(*j);
+    }
+
+    return result;
+}
+
+
+
+ void GribField::setArea(GribField& field, grib_handle *h) {
+    double n = -99999, w = -99999, s = -99999, e = -99999;
+    GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
+    GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
+    GRIB_CALL(grib_get_double(h, "latitudeOfLastGridPointInDegrees", &s));
+    GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &e));
+
+    long scanningMode = 0;
+    GRIB_CALL(grib_get_long(h, "scanningMode", &scanningMode));
+
+    switch (scanningMode) {
+
+
+    case 0:
+        break;
+
+    case 64:
+        std::swap(n, s);
+        break;
+
+    default: {
+        std::ostringstream oss;
+        oss << "Invalid scanning mode " << scanningMode;
+        throw eckit::SeriousBug(oss.str());
+    }
+    break;
+    }
+
+
+    field.area(n, w, s, e);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 }  // namespace compare

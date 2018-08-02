@@ -67,7 +67,7 @@ private:
 class Field {
 public:
 
-    Field(FieldBase* field);
+    Field(FieldBase* field = 0);
     Field(const Field& other);
 
     ~Field();
@@ -76,18 +76,34 @@ public:
 
 
     bool operator<(const Field& other) const;
-    static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs &args);
+    operator bool() const;
 
-    const GribField& asGribField() const;
-    const BufrField& asBufrField() const;
 
-    GribField& asGribField(); 
-    BufrField& asBufrField() ;
+    // const GribField& asGribField() const;
+    // const BufrField& asBufrField() const;
+
+    // GribField& asGribField();
+    // BufrField& asBufrField();
 
     off_t offset() const;
     size_t length() const;
     const std::string& path() const;
+
+
+    bool same(const Field& other) const;
+    bool match(const Field& other) const;
+    std::vector<Field> bestMatches(const FieldSet & fields) const;
+
+
+    void whiteListEntries(std::ostream&) const;
+    size_t differences(const Field& other) const;
+    void printDifference(std::ostream&, const Field& other) const;
+
+    bool wrapped() const;
+    void compareAreas(std::ostream&, const Field& other) const;
+
+    static void addOptions(std::vector<eckit::option::Option*>& options);
+    static void setOptions(const eckit::option::CmdArgs &args);
 
 
 private:

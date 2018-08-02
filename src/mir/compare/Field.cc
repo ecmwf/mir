@@ -39,11 +39,42 @@ void Field::setOptions(const eckit::option::CmdArgs &args) {
 Field::Field(FieldBase* field):
     field_(field)
 {
-    ASSERT(field_);
-    field_->attach();
+    if (field_) {
+        field_->attach();
+    }
 }
 
 
+Field::Field(const Field& other):
+    field_(other.field_)
+{
+    if (field_) {
+        field_->attach();
+    }
+}
+
+Field::~Field() {
+    if (field_) {
+        field_->detach();
+    }
+}
+
+
+std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
+    std::vector<Field> matches;
+
+    for (auto k = fields.begin(); k != fields.end(); ++k) {
+        const auto& other = *k;
+
+        if (match(other)) {
+            matches.push_back(other);
+        }
+
+    }
+
+    return matches;
+
+}
 //----------------------------------------------------------------------------------------------------------------------
 
 

@@ -36,7 +36,11 @@ class FieldSet;
 class BufrField : public FieldBase {
 public:
 
-    BufrField(const std::string& path, off_t offset, size_t length);
+    static Field field(const char* buffer, size_t size,
+                       const std::string& path, off_t offset,
+                       const std::vector<std::string>& ignore);
+public:
+
 
 
 
@@ -44,6 +48,7 @@ public:
     static void setOptions(const eckit::option::CmdArgs &args);
 
 private:
+    BufrField(const std::string& path, off_t offset, size_t length);
 
     bool operator==(const BufrField& other) const;
 

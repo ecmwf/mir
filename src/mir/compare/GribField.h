@@ -24,7 +24,7 @@
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldInfo.h"
 
-
+struct grib_handle;
 
 namespace mir {
 namespace compare {
@@ -35,6 +35,12 @@ namespace compare {
 
 class GribField : public FieldBase {
 public:
+
+    static Field field(const char* buffer, size_t size,
+                       const std::string& path, off_t offset,
+                       const std::vector<std::string>& ignore);
+
+private:
 
     GribField(const std::string& path, off_t offset, size_t length);
 
@@ -111,6 +117,7 @@ public:
 
     std::ostream& printGrid(std::ostream &out) const;
 
+public:
 
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);
@@ -156,6 +163,9 @@ private:
 
     void print(std::ostream &out) const;
 
+
+    static void setGrid(GribField& field, grib_handle *h);
+    static void setArea(GribField& field, grib_handle *h);
 
 };
 

@@ -49,7 +49,7 @@ std::set<Field>::const_iterator FieldSet::same(const Field& field) const {
     }
 
     for (j = fields_.begin(); j != fields_.end(); ++j) {
-        if (field.asGribField().same((*j).asGribField())) {
+        if (field.same(*j)) {
             // eckit::Log::warning() << "Returning approximate match: " << field << std::endl;
             // eckit::Log::warning() << "                             " << *j << std::endl;
             return j;
