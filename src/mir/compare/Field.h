@@ -90,6 +90,8 @@ public:
 
 
     bool operator<(const Field& other) const;
+    bool operator==(const Field& other) const;
+
     operator bool() const;
 
 

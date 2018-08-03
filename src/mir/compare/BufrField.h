@@ -23,7 +23,6 @@
 
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldInfo.h"
-#include "eckit/value/Value.h"
 
 
 namespace mir {
@@ -36,10 +35,20 @@ class FieldSet;
 
 class BufrEntry {
     std::string name_;
-    eckit::Value value_;
+
+    long l_;
+    double d_;
+    std::string s_;
+
     int type_;
+
 public:
-    BufrEntry(const std::string& name, const eckit::Value& value, int type);
+
+    BufrEntry(const std::string& name,
+              long l,
+              double d,
+              const std::string& s,
+              int type);
 
     void print(std::ostream &out) const;
 

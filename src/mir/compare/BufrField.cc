@@ -26,19 +26,67 @@ void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 
 }
 
-BufrEntry::BufrEntry(const std::string& name, const eckit::Value& value, int type):
+BufrEntry::BufrEntry(const std::string& name,
+                     long l,
+                     double d,
+                     const std::string& s,
+                     int type):
     name_(name),
-    value_(value),
+    l_(l),
+    d_(d),
+    s_(s),
     type_(type) {
+
+    switch (type_) {
+
+    case GRIB_TYPE_LONG:
+        s_.clear();
+        d_ = 0;
+        break;
+
+    case GRIB_TYPE_DOUBLE:
+        s_.clear();
+        l_ = 0;
+
+        break;
+
+    case GRIB_TYPE_STRING:
+        d_ = 0;
+        l_ = 0;
+        break;
+
+    default:
+        NOTIMP;
+        break;
+    }
 
 }
 
 void BufrEntry::print(std::ostream &out) const {
-    out << name_ << '=' << value_;
+    out << name_ << '=';
+    switch (type_) {
+
+    case GRIB_TYPE_LONG:
+        out << l_;
+        break;
+
+    case GRIB_TYPE_DOUBLE:
+        out << d_;
+        break;
+
+    case GRIB_TYPE_STRING:
+        out << s_;
+        break;
+    }
+
 }
 
 bool BufrEntry::operator==(const BufrEntry &other) const {
-    return name_ == other.name_ && type_ == other.type_ && value_ == other.value_;
+    return name_ == other.name_
+           && type_ == other.type_
+           && l_ == other.l_
+           && d_ == other.d_
+           && s_ == other.s_;
 }
 
 bool BufrEntry::operator!=(const BufrEntry &other) const {
@@ -47,15 +95,27 @@ bool BufrEntry::operator!=(const BufrEntry &other) const {
 
 bool BufrEntry::operator<(const BufrEntry &other) const {
 
-    if (name_ == other.name_) {
+    if (name_ != other.name_) {
         return name_ < other.name_;
     }
 
-    if (type_ == other.type_) {
+    if (type_ != other.type_) {
         return type_ < other.type_;
     }
 
-    return  value_ < other.value_;
+    switch (type_) {
+
+    case GRIB_TYPE_LONG:
+        return  l_ < other.l_;
+
+    case GRIB_TYPE_DOUBLE:
+        return  d_ < other.d_;
+
+    case GRIB_TYPE_STRING:
+        return  s_ < other.s_;
+    }
+
+    NOTIMP;
 }
 
 BufrField::BufrField(const char* buffer, size_t size,
@@ -112,23 +172,22 @@ BufrField::BufrField(const char* buffer, size_t size,
 
         case GRIB_TYPE_LONG:
             GRIB_CALL(grib_get_long(h, name, &l));
-            entries_.push_back(BufrEntry(name, l, t));
             break;
 
         case GRIB_TYPE_DOUBLE:
             GRIB_CALL(grib_get_double(h, name, &d));
-            entries_.push_back(BufrEntry(name, d, t));
 
             break;
 
         case GRIB_TYPE_STRING:
             GRIB_CALL(grib_get_string(h, name, s, &len));
-            entries_.push_back(BufrEntry(name, d, t));
             break;
 
         default:
             throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
         }
+
+        entries_.push_back(BufrEntry(name, l, d, s, t));
 
         entriesByName_[name] = &entries_.back();
 
@@ -176,23 +235,7 @@ bool BufrField::wrapped() const {
 
 bool BufrField::less_than(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-
-    size_t n = std::min(entries_.size(), other.entries_.size());
-    for (size_t i = 0; i < n; ++i) {
-        if (entries_[i] < other.entries_[i]) {
-            return true;
-        }
-    }
-
-    if (n > entries_.size()) {
-        return false;
-    }
-
-    if (n > other.entries_.size()) {
-        return true;
-    }
-
-    return false;
+    return entries_ < other.entries_;
 }
 
 void BufrField::whiteListEntries(std::ostream& out) const {
@@ -215,6 +258,19 @@ size_t BufrField::differences(const FieldBase& o) const {
 
     return count;
 }
+
+
+// template<class T>
+// static void pdiff(std::ostream & out, const T& v1, const T& v2) {
+//     if (v1 != v2) {
+//         // out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
+//         out << "**" << v1 << "**";
+//     }
+//     else {
+//         out << v1;
+//     }
+// }
+
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
@@ -243,21 +299,12 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
 
 void BufrField::compareAreas(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    out << "bufr(area)";
+    // out << "bufr(area)";
 }
 
 bool BufrField::same(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-
-    size_t n = std::min(entries_.size(), other.entries_.size());
-    for (size_t i = 0; i < n; ++i) {
-        if (entries_[i] != other.entries_[i]) {
-            return false;
-        }
-    }
-
-    return entries_.size() == other.entries_.size();
-
+    return entries_ == other.entries_;
 }
 
 bool BufrField::match(const FieldBase& o) const {
@@ -266,7 +313,7 @@ bool BufrField::match(const FieldBase& o) const {
 }
 
 std::ostream& BufrField::printGrid(std::ostream& out) const {
-    out << "bufr(grid)";
+    // out << "bufr(grid)";
     return out;
 }
 
