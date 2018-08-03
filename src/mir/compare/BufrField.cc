@@ -45,6 +45,19 @@ bool BufrEntry::operator!=(const BufrEntry &other) const {
     return !(*this == other);
 }
 
+bool BufrEntry::operator<(const BufrEntry &other) const {
+
+    if (name_ == other.name_) {
+        return name_ < other.name_;
+    }
+
+    if (type_ == other.type_) {
+        return type_ < other.type_;
+    }
+
+    return  value_ < other.value_;
+}
+
 BufrField::BufrField(const char* buffer, size_t size,
                      const std::string& path, off_t offset,
                      const std::vector<std::string>& ignore):
@@ -163,9 +176,22 @@ bool BufrField::wrapped() const {
 
 bool BufrField::less_than(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    if (descriptors_ != other.descriptors_) {
-        return descriptors_ < other.descriptors_;
+
+    size_t n = std::min(entries_.size(), other.entries_.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (entries_[i] < other.entries_[i]) {
+            return true;
+        }
     }
+
+    if (n > entries_.size()) {
+        return false;
+    }
+
+    if (n > other.entries_.size()) {
+        return true;
+    }
+
     return false;
 }
 
@@ -175,9 +201,19 @@ void BufrField::whiteListEntries(std::ostream& out) const {
 
 size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    size_t n = 0;
+    size_t count = 0;
 
-    return n;
+    size_t n = std::min(entries_.size(), other.entries_.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (entries_[i] != other.entries_[i]) {
+            count++;
+        }
+    }
+
+    count += std::max(n, entries_.size());
+    count += std::max(n, other.entries_.size());
+
+    return count;
 }
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
@@ -190,7 +226,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
     for (size_t i = 0; i < n; ++i) {
         if (entries_[i] != other.entries_[i]) {
             out << sep;
-            if(++count > 5) {
+            if (++count > 5) {
                 out << "...";
                 break;
             }
@@ -212,26 +248,21 @@ void BufrField::compareAreas(std::ostream& out, const FieldBase& o) const {
 
 bool BufrField::same(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    if (descriptors_ != other.descriptors_) {
-        return false;
+
+    size_t n = std::min(entries_.size(), other.entries_.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (entries_[i] != other.entries_[i]) {
+            return false;
+        }
     }
-    return false;
+
+    return entries_.size() == other.entries_.size();
+
 }
 
 bool BufrField::match(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-
-    if (descriptors_.size() != other.descriptors_.size()) {
-        return false;
-    }
-
-    //  loop = 100000 + 1000 * elements + repeats
-
-    for (auto j : descriptors_) {
-
-    }
-
-    return false;
+    return descriptors_ == other.descriptors_;
 }
 
 std::ostream& BufrField::printGrid(std::ostream& out) const {

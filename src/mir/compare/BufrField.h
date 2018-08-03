@@ -54,6 +54,7 @@ public:
 
     bool operator==(const BufrEntry &other) const;
     bool operator!=(const BufrEntry &other) const;
+    bool operator<(const BufrEntry &other) const;
 
 };
 
