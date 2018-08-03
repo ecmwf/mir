@@ -15,15 +15,24 @@
 #include "eckit/types/Types.h"
 
 
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+
 namespace mir {
 namespace compare {
 
+
+static double bufrRelativeError_ = 0.;
+
+
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
+    options.push_back(new SimpleOption<double>("bufr-relative-error",
+                      "Relative when comparing BUFR floating pooint values"));
 }
 
 void BufrField::setOptions(const eckit::option::CmdArgs &args) {
-
+    args.get("bufr-relative-error", bufrRelativeError_);
 }
 
 BufrEntry::BufrEntry(const std::string& name,
@@ -64,6 +73,13 @@ BufrEntry::BufrEntry(const std::string& name,
 
 void BufrEntry::print(std::ostream &out) const {
     out << name_ << '=';
+    printValue(out);
+}
+
+
+
+void BufrEntry::printValue(std::ostream &out) const {
+
     switch (type_) {
 
     case GRIB_TYPE_LONG:
@@ -81,11 +97,23 @@ void BufrEntry::print(std::ostream &out) const {
 
 }
 
+
+inline bool sameValue(double a, double b, double e) {
+    double m = std::max(::fabs(a), ::fabs(b));
+    if (m > 0) {
+        return ::fabs(a - b) / m <= e;
+    }
+    else {
+        return ::fabs(a - b) <= e;
+    }
+}
+
+
 bool BufrEntry::operator==(const BufrEntry &other) const {
     return name_ == other.name_
            && type_ == other.type_
            && l_ == other.l_
-           && d_ == other.d_
+           && sameValue(d_, other.d_, bufrRelativeError_)
            && s_ == other.s_;
 }
 
@@ -109,7 +137,7 @@ bool BufrEntry::operator<(const BufrEntry &other) const {
         return  l_ < other.l_;
 
     case GRIB_TYPE_DOUBLE:
-        return  d_ < other.d_;
+        return  d_ < other.d_ && !sameValue(d_, other.d_, bufrRelativeError_);
 
     case GRIB_TYPE_STRING:
         return  s_ < other.s_;
@@ -187,9 +215,9 @@ BufrField::BufrField(const char* buffer, size_t size,
             throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
         }
 
+        ASSERT(entriesByName_.find(name) == entriesByName_.end());
+        entriesByName_[name] = entries_.size();
         entries_.push_back(BufrEntry(name, l, d, s, t));
-
-        entriesByName_[name] = &entries_.back();
 
     }
 
@@ -275,23 +303,94 @@ size_t BufrField::differences(const FieldBase& o) const {
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
 
-    const char* sep = "";
+    const std::vector<BufrEntry>& ei = entries_;
+    const std::vector<BufrEntry>& ej = other.entries_;
+
+    const std::map<std::string, size_t>& ni = entriesByName_;
+    const std::map<std::string, size_t>& nj = other.entriesByName_;
 
     size_t count = 0;
-    size_t n = std::min(entries_.size(), other.entries_.size());
-    for (size_t i = 0; i < n; ++i) {
-        if (entries_[i] != other.entries_[i]) {
-            out << sep;
+    size_t n = std::min(ei.size(), ej.size());
+    size_t j = 0;
+    size_t i = 0;
+
+    for (; i < n  && j < n;) {
+        if (ei[i] == ej[j]) {
+            ++i;
+            ++j;
+            continue;
+        }
+
+        if (++count > 5) {
+            out << "...";
+            break;
+        }
+
+        if (ei[i].name() == ej[j].name()) {
+            out << '(' << ei[i].name() << '=';
+            ei[i].printValue(out);
+            out << '|';
+            ej[j].printValue(out);
+            out << ')';
+
+            ++i;
+            ++j;
+
+            continue;
+        }
+
+        auto ki = ni.find(ej[j].name());
+        auto kj = nj.find(ei[i].name());
+
+        if (kj == nj.end()) {
+
             if (++count > 5) {
                 out << "...";
                 break;
             }
-            out << entries_[i];
-            out << " - ";
-            out << other.entries_[i];
-            sep = "; ";
+
+            out << '(' << ei[i].name() << '=';
+            ei[i].printValue(out);
+            out << "|?)";
+
+            ++i;
+        }
+
+        if (ki == ni.end()) {
+
+            if (++count > 5) {
+                out << "...";
+                break;
+            }
+
+            out << '(' << ej[j].name() << "=?|";
+            ej[j].printValue(out);
+            out << ')';
+
+            ++j;
 
         }
+    }
+
+    for (; i < ei.size(); ++i) {
+        if (++count > 5) {
+            out << "...";
+            break;
+        }
+        out << '(' << ei[i].name() << '=';
+        ei[i].printValue(out);
+        out << "|?)";
+    }
+
+    for (; j < ej.size(); ++j) {
+
+        if (++count > 5) {
+            out << "...";
+            break;
+        }
+        out << '(' << ej[j].name() << "=?|";
+        ej[j].printValue(out);
+        out << ')';
     }
 
     return out;
@@ -313,7 +412,7 @@ bool BufrField::match(const FieldBase& o) const {
 }
 
 std::ostream& BufrField::printGrid(std::ostream& out) const {
-    // out << "bufr(grid)";
+    out << "-";
     return out;
 }
 

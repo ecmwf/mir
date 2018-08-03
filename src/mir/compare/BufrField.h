@@ -51,6 +51,7 @@ public:
               int type);
 
     void print(std::ostream &out) const;
+    void printValue(std::ostream &out) const;
 
     friend std::ostream &operator<<(std::ostream &s, const BufrEntry &x) {
         x.print(s);
@@ -93,7 +94,7 @@ private:
     std::vector<long> descriptors_;
 
     std::vector<BufrEntry> entries_;
-    std::map<std::string, BufrEntry*> entriesByName_;
+    std::map<std::string, size_t> entriesByName_;
 
 
     virtual void print(std::ostream &out) const;
