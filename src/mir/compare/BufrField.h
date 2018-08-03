@@ -47,6 +47,14 @@ public:
         x.print(s);
         return s;
     }
+
+    const std::string& name() const {
+        return name_;
+    }
+
+    bool operator==(const BufrEntry &other) const;
+    bool operator!=(const BufrEntry &other) const;
+
 };
 
 class BufrField : public FieldBase {
@@ -75,6 +83,7 @@ private:
     std::vector<long> descriptors_;
 
     std::vector<BufrEntry> entries_;
+    std::map<std::string, BufrEntry*> entriesByName_;
 
 
     virtual void print(std::ostream &out) const;

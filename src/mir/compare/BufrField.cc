@@ -37,7 +37,13 @@ void BufrEntry::print(std::ostream &out) const {
     out << name_ << '=' << value_;
 }
 
+bool BufrEntry::operator==(const BufrEntry &other) const {
+    return name_ == other.name_ && type_ == other.type_ && value_ == other.value_;
+}
 
+bool BufrEntry::operator!=(const BufrEntry &other) const {
+    return !(*this == other);
+}
 
 BufrField::BufrField(const char* buffer, size_t size,
                      const std::string& path, off_t offset,
@@ -111,6 +117,8 @@ BufrField::BufrField(const char* buffer, size_t size,
             throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
         }
 
+        entriesByName_[name] = &entries_.back();
+
     }
 
 }
@@ -136,6 +144,11 @@ void BufrField::print(std::ostream &out) const {
     const char* sep = "";
     for (auto j : entries_) {
         out << sep;
+
+        if (j.name()[0] == '#' && j.name()[1] == '2') {
+            out << "...";
+            break;
+        }
         out << j;
         sep = ",";
     }
@@ -169,7 +182,26 @@ size_t BufrField::differences(const FieldBase& o) const {
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    out << "bufr(diff," << info_.length() << "," << other.info_.length() << ")";
+
+    const char* sep = "";
+
+    size_t count = 0;
+    size_t n = std::min(entries_.size(), other.entries_.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (entries_[i] != other.entries_[i]) {
+            out << sep;
+            if(++count > 5) {
+                out << "...";
+                break;
+            }
+            out << entries_[i];
+            out << " - ";
+            out << other.entries_[i];
+            sep = "; ";
+
+        }
+    }
+
     return out;
 }
 
