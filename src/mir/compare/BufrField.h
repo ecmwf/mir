@@ -23,6 +23,7 @@
 
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldInfo.h"
+#include "eckit/value/Value.h"
 
 
 namespace mir {
@@ -32,6 +33,21 @@ class FieldSet;
 
 //----------------------------------------------------------------------------------------------------------------------
 //
+
+class BufrEntry {
+    std::string name_;
+    eckit::Value value_;
+    int type_;
+public:
+    BufrEntry(const std::string& name, const eckit::Value& value, int type);
+
+    void print(std::ostream &out) const;
+
+    friend std::ostream &operator<<(std::ostream &s, const BufrEntry &x) {
+        x.print(s);
+        return s;
+    }
+};
 
 class BufrField : public FieldBase {
 public:
@@ -46,7 +62,9 @@ public:
     static void setOptions(const eckit::option::CmdArgs &args);
 
 private:
-    BufrField(const std::string& path, off_t offset, size_t length);
+    BufrField(const char* buffer, size_t size,
+              const std::string& path, off_t offset,
+              const std::vector<std::string>& ignore);
     ~BufrField();
 
     bool operator==(const BufrField& other) const;
@@ -54,7 +72,10 @@ private:
 
 private:
 
-    char* data_;
+    std::vector<long> descriptors_;
+
+    std::vector<BufrEntry> entries_;
+
 
     virtual void print(std::ostream &out) const;
     virtual bool wrapped() const;

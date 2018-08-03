@@ -270,7 +270,7 @@ void FieldComparator::getField(const MultiFile& multi,
 
     ASSERT(field);
 
-        if (fields.duplicate(field) != fields.end()) {
+    if (fields.duplicate(field) != fields.end()) {
         const auto& other = *fields.duplicate(field);
         eckit::Log::info() << "Duplicate field in "
                            << multi

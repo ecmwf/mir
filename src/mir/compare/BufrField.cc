@@ -11,6 +11,8 @@
 
 
 #include "mir/compare/BufrField.h"
+#include "mir/util/Grib.h"
+#include "eckit/types/Types.h"
 
 
 namespace mir {
@@ -24,17 +26,108 @@ void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 
 }
 
+BufrEntry::BufrEntry(const std::string& name, const eckit::Value& value, int type):
+    name_(name),
+    value_(value),
+    type_(type) {
 
-BufrField::BufrField(const std::string& path, off_t offset, size_t length):
-    FieldBase(path, offset, length) {
+}
 
-    data_ = new char[length];
+void BufrEntry::print(std::ostream &out) const {
+    out << '[' << name_ << '=' << value_ << ']';
+}
 
+
+
+BufrField::BufrField(const char* buffer, size_t size,
+                     const std::string& path, off_t offset,
+                     const std::vector<std::string>& ignore):
+    FieldBase(path, offset, size) {
+
+    grib_handle *h = grib_handle_new_from_message(0, buffer, size);
+    ASSERT(h);
+    HandleDeleter delh(h);
+
+    size_t count;
+    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &count));
+    ASSERT(count > 0);
+
+    descriptors_.resize(count);
+
+    size_t n = count;
+    GRIB_CALL(grib_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
+    ASSERT(n == count);
+
+
+
+    bufr_keys_iterator *ks = codes_bufr_keys_iterator_new(h, 0);
+    ASSERT(ks);
+    BKeyIteratorDeleter delk(ks);
+
+    /// @todo this code should be factored out into mir
+
+    // bool sfc = false;
+
+    // std::map<std::string, std::string> req;
+
+    codes_set_long(h, "unpack", 1);
+
+    while (codes_bufr_keys_iterator_next(ks)) {
+        const char *name = codes_bufr_keys_iterator_get_name(ks);
+
+
+        ASSERT(name);
+        if (strcmp(name, "unexpandedDescriptors") == 0) {
+            continue;
+        }
+
+        double d = 0;
+        long l = 0;
+        char s[1024];
+        size_t len = sizeof(s);
+
+        int t;
+        GRIB_CALL(grib_get_native_type(h, name, &t));
+
+        switch (t) {
+
+        case GRIB_TYPE_LONG:
+            GRIB_CALL(grib_get_long(h, name, &l));
+            entries_.push_back(BufrEntry(name, l, t));
+            break;
+
+        case GRIB_TYPE_DOUBLE:
+            GRIB_CALL(grib_get_double(h, name, &d));
+            entries_.push_back(BufrEntry(name, d, t));
+
+            break;
+
+        case GRIB_TYPE_STRING:
+            GRIB_CALL(grib_get_string(h, name, s, &len));
+            entries_.push_back(BufrEntry(name, d, t));
+            break;
+
+        default:
+            throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
+        }
+
+
+        // if (name[0] == '_') continue;
+
+        std::cout << entries_.back() << std::endl;
+
+        // field->insert(name, val);
+
+        // if (::strcmp(val, "sfc") == 0) {
+        //     sfc = true;
+        // }
+
+        // req[name] = val;
+    }
 
 }
 
 BufrField::~BufrField() {
-    delete[] data_;
 }
 
 
@@ -43,15 +136,14 @@ Field BufrField::field(const char* buffer, size_t size,
                        const std::vector<std::string>& ignore) {
 
 
-    BufrField* field = new BufrField(path, offset, size);
-    memcpy(field->data_, buffer, size);
+    BufrField* field = new BufrField(buffer, size, path, offset, ignore);
 
     Field result(field);
     return result;
 }
 
 void BufrField::print(std::ostream &out) const {
-    out << "BufrField[" << info_.length() << "]";
+    out << "BufrField[" << descriptors_ << "]";
 }
 
 
@@ -61,10 +153,10 @@ bool BufrField::wrapped() const {
 
 bool BufrField::less_than(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    if (info_.length() != other.info_.length()) {
-        return info_.length() < other.info_.length();
+    if (descriptors_ != other.descriptors_) {
+        return descriptors_ < other.descriptors_;
     }
-    return memcmp(data_, other.data_, info_.length()) < 0;
+    return false;
 }
 
 void BufrField::whiteListEntries(std::ostream& out) const {
@@ -74,17 +166,13 @@ void BufrField::whiteListEntries(std::ostream& out) const {
 size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
     size_t n = 0;
-    for (size_t i = 0; i < std::min(info_.length() , other.info_.length()); ++i) {
-        if (data_[i] != other.data_[i]) {
-            n++;
-        }
-    }
+
     return n;
 }
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    out << "bufr(diff," << info_.length() << "," <<other.info_.length() << ")";
+    out << "bufr(diff," << info_.length() << "," << other.info_.length() << ")";
     return out;
 }
 
@@ -95,18 +183,26 @@ void BufrField::compareAreas(std::ostream& out, const FieldBase& o) const {
 
 bool BufrField::same(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    if (info_.length() != other.info_.length()) {
+    if (descriptors_ != other.descriptors_) {
         return false;
     }
-    return memcmp(data_, other.data_, info_.length()) == 0;
+    return false;
 }
 
 bool BufrField::match(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    if (info_.length() != other.info_.length()) {
+
+    if (descriptors_.size() != other.descriptors_.size()) {
         return false;
     }
-    return memcmp(data_, other.data_, info_.length()) == 0;
+
+    //  loop = 100000 + 1000 * elements + repeats
+
+    for (auto j : descriptors_) {
+
+    }
+
+    return false;
 }
 
 std::ostream& BufrField::printGrid(std::ostream& out) const {
@@ -115,6 +211,7 @@ std::ostream& BufrField::printGrid(std::ostream& out) const {
 }
 
 bool BufrField::match(const std::string&, const std::string&) const {
+    NOTIMP;
     return false;
 }
 

@@ -1035,12 +1035,13 @@ Field GribField::field(const char* buffer, size_t size,
 
     grib_handle *h = grib_handle_new_from_message(0, buffer, size);
     ASSERT(h);
-    HandleDeleter del(h);
+    HandleDeleter delh(h);
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
     grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(ks);
+    GKeyIteratorDeleter delk(ks);
 
     /// @todo this code should be factored out into mir
 
@@ -1068,8 +1069,6 @@ Field GribField::field(const char* buffer, size_t size,
 
         req[name] = val;
     }
-
-    grib_keys_iterator_delete(ks);
 
 
     long paramId;
