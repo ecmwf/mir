@@ -34,7 +34,7 @@ BufrEntry::BufrEntry(const std::string& name, const eckit::Value& value, int typ
 }
 
 void BufrEntry::print(std::ostream &out) const {
-    out << '[' << name_ << '=' << value_ << ']';
+    out << name_ << '=' << value_;
 }
 
 
@@ -111,18 +111,6 @@ BufrField::BufrField(const char* buffer, size_t size,
             throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
         }
 
-
-        // if (name[0] == '_') continue;
-
-        std::cout << entries_.back() << std::endl;
-
-        // field->insert(name, val);
-
-        // if (::strcmp(val, "sfc") == 0) {
-        //     sfc = true;
-        // }
-
-        // req[name] = val;
     }
 
 }
@@ -143,7 +131,16 @@ Field BufrField::field(const char* buffer, size_t size,
 }
 
 void BufrField::print(std::ostream &out) const {
-    out << "BufrField[" << descriptors_ << "]";
+
+    out << '[';
+    const char* sep = "";
+    for (auto j : entries_) {
+        out << sep;
+        out << j;
+        sep = ",";
+    }
+    out << ']';
+
 }
 
 
