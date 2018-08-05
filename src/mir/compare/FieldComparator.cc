@@ -66,6 +66,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("save-fields",
                       "Save fields that do not compare"));
 
+    options.push_back(new SimpleOption<bool>("save-all-fields",
+                      "Save all fields into *.old and *.new files"));
+
     options.push_back(new SimpleOption<bool>("file-names-only",
                       "Only check that the list of files created are the same"));
 
@@ -144,6 +147,10 @@ void FieldComparator::compare(const std::string& name,
     bool saveFields = false;
     args_.get("save-fields", saveFields);
 
+    bool saveAllFields = false;
+    args_.get("save-all-fields", saveAllFields);
+
+
     std::string requirements;
     args_.get("requirements", requirements);
 
@@ -157,6 +164,11 @@ void FieldComparator::compare(const std::string& name,
 
     FieldSet fields1;
     FieldSet fields2;
+
+    if (saveAllFields) {
+        multi1.save();
+        multi2.save();
+    }
 
 
     compareCounts(name, multi1, multi2, fields1, fields2);
@@ -657,7 +669,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
                 eckit::Log::info() << " @ ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.compareExtra(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
 
                 if (whiteListEntries_) {
@@ -672,7 +684,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
                 eckit::Log::info() << " # ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.compareExtra(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
                 if (whiteListEntries_) {
                     whiteListEntries(other, multi2);
@@ -688,7 +700,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
             eckit::Log::info() << " ? ";
             other.printDifference(eckit::Log::info(), field);
             eckit::Log::info() << " (" ;
-            other.compareAreas(eckit::Log::info(), field);
+            other.compareExtra(eckit::Log::info(), field);
             eckit::Log::info() << ")" << std::endl;
             if (whiteListEntries_) {
                 whiteListEntries(other, multi2);

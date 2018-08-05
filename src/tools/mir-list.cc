@@ -35,6 +35,7 @@ public:
 
     MIRList(int argc, char **argv) :
         mir::tools::MIRTool(argc, argv) {
+        mir::compare::FieldComparator::addOptions(options_);
     }
 
 };

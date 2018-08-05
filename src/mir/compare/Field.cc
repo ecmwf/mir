@@ -141,9 +141,9 @@ bool Field::wrapped() const {
     return field_->wrapped();
 }
 
-void Field::compareAreas(std::ostream& out, const Field& other) const {
+void Field::compareExtra(std::ostream& out, const Field& other) const {
     ASSERT(field_ && other.field_);
-    field_->compareAreas(out, *other.field_);
+    field_->compareExtra(out, *other.field_);
 }
 
 off_t Field::offset() const {

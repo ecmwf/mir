@@ -57,7 +57,7 @@ public:
     virtual void whiteListEntries(std::ostream&) const = 0;
     virtual size_t differences(const FieldBase& other) const = 0;
     virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const = 0;
-    virtual void compareAreas(std::ostream&, const FieldBase& other) const = 0;
+    virtual void compareExtra(std::ostream&, const FieldBase& other) const = 0;
     virtual bool same(const FieldBase& other) const = 0;
     virtual bool match(const FieldBase& other) const = 0;
     virtual std::ostream& printGrid(std::ostream&) const = 0;
@@ -121,7 +121,7 @@ public:
     const std::string& format() const;
 
     bool wrapped() const;
-    void compareAreas(std::ostream&, const Field& other) const;
+    void compareExtra(std::ostream&, const Field& other) const;
 
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);

@@ -110,7 +110,7 @@ private:
     virtual void whiteListEntries(std::ostream&) const;
     virtual size_t differences(const FieldBase& other) const;
     virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
-    virtual void compareAreas(std::ostream&, const FieldBase& other) const ;
+    virtual void compareExtra(std::ostream&, const FieldBase& other) const ;
     virtual bool same(const FieldBase& other) const;
     virtual bool match(const FieldBase& other) const;
 

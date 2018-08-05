@@ -137,11 +137,11 @@ const std::string& GribField::format() const {
 }
 
 // double GribField::compare(const GribField& other) const {
-//     return compareAreas(other);
+//     return compareExtra(other);
 // }
 
 
-void GribField::compareAreas(std::ostream& out, const FieldBase& o) const {
+void GribField::compareExtra(std::ostream& out, const FieldBase& o) const {
     const GribField& other = dynamic_cast<const GribField&>(o);
 
     if (!area_ || !other.area_) {
@@ -206,7 +206,7 @@ bool GribField::sameArea(const GribField& other) const {
 
     return true;
 
-    // return compareAreas(other) > areaComparisonThreshold_;
+    // return compareExtra(other) > areaComparisonThreshold_;
 }
 
 
@@ -720,7 +720,7 @@ bool GribField::match(const FieldBase & o) const {
     // sameGridname(other) &&
     // sameGridtype(other) &&
     // sameResol(other) &&
-    // (compareAreas(other) > 0.1);
+    // (compareExtra(other) > 0.1);
 }
 
 

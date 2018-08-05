@@ -23,16 +23,20 @@ namespace compare {
 
 
 static double bufrRelativeError_ = 0.;
+static bool bufrFullLists = false;
 
 
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
+    options.push_back(new SimpleOption<bool>("bufr-print-all-values",
+                      "Print all BUFR values"));
     options.push_back(new SimpleOption<double>("bufr-relative-error",
                       "Relative when comparing BUFR floating pooint values"));
 }
 
 void BufrField::setOptions(const eckit::option::CmdArgs &args) {
     args.get("bufr-relative-error", bufrRelativeError_);
+    args.get("bufr-print-all-values", bufrFullLists);
 }
 
 BufrEntry::BufrEntry(const std::string& name,
@@ -110,11 +114,29 @@ inline bool sameValue(double a, double b, double e) {
 
 
 bool BufrEntry::operator==(const BufrEntry &other) const {
-    return name_ == other.name_
-           && type_ == other.type_
-           && l_ == other.l_
-           && sameValue(d_, other.d_, bufrRelativeError_)
-           && s_ == other.s_;
+    if (name_ != other.name_) {
+        return false;
+    }
+
+    if (type_ != other.type_) {
+        return false;
+
+    }
+
+    switch (type_) {
+
+    case GRIB_TYPE_LONG:
+        return  l_ == other.l_;
+
+    case GRIB_TYPE_DOUBLE:
+        return  sameValue(d_, other.d_, bufrRelativeError_);
+
+    case GRIB_TYPE_STRING:
+        return  s_ == other.s_;
+    }
+
+    NOTIMP;
+
 }
 
 bool BufrEntry::operator!=(const BufrEntry &other) const {
@@ -245,13 +267,17 @@ void BufrField::print(std::ostream &out) const {
     for (auto j : entries_) {
         out << sep;
 
-        if (j.name()[0] == '#' && j.name()[1] == '2') {
-            out << "...";
-            break;
+        if (!bufrFullLists) {
+            if (j.name()[0] == '#' && j.name()[1] == '2') {
+                out << "...";
+                break;
+            }
         }
         out << j;
         sep = ",";
     }
+    out << ';';
+    out << descriptors_;
     out << ']';
 
 }
@@ -396,9 +422,21 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
     return out;
 }
 
-void BufrField::compareAreas(std::ostream& out, const FieldBase& o) const {
+void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
     // out << "bufr(area)";
+    size_t n = std::min(descriptors_.size(), other.descriptors_.size());
+    const char* sep = "";
+    for (size_t i = 0; i < n; ++i) {
+        out << sep;
+        if (descriptors_[i] == other.descriptors_[i]) {
+            out << descriptors_[i];
+        }
+        else {
+            out << '*' << descriptors_[i] << '*';
+        }
+        sep = ",";
+    }
 }
 
 bool BufrField::same(const FieldBase& o) const {
@@ -408,11 +446,21 @@ bool BufrField::same(const FieldBase& o) const {
 
 bool BufrField::match(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    return descriptors_ == other.descriptors_;
+    size_t n = std::min(descriptors_.size(), other.descriptors_.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (descriptors_[i] != other.descriptors_[i]) {
+            bool loop1 = (descriptors_[i] > 100000);
+            bool loop2 = (other.descriptors_[i] > 100000);
+            if (!loop1 || !loop2) {
+                return false;
+            }
+        }
+    }
+    return descriptors_.size() == other.descriptors_.size();
 }
 
 std::ostream& BufrField::printGrid(std::ostream& out) const {
-    out << "-";
+    out << descriptors_;
     return out;
 }
 
