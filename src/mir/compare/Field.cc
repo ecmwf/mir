@@ -141,6 +141,11 @@ bool Field::wrapped() const {
     return field_->wrapped();
 }
 
+void Field::json(eckit::JSON& json) const {
+    ASSERT(field_);
+    json << (*field_);
+}
+
 void Field::compareExtra(std::ostream& out, const Field& other) const {
     ASSERT(field_ && other.field_);
     field_->compareExtra(out, *other.field_);
@@ -200,6 +205,10 @@ size_t FieldBase::length() const {
 
 const std::string& FieldBase::path() const {
     return info_.path();
+}
+
+void FieldBase::json(eckit::JSON& json) const {
+    json << info_;
 }
 
 

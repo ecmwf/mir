@@ -37,6 +37,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "eckit/parser/JSON.h"
 
 
 using eckit::PathName;
@@ -254,16 +255,10 @@ double FieldComparator::normalised(double longitude) const {
 
 
 
-
-void FieldComparator::getField(const MultiFile& multi,
-                               eckit::Buffer& buffer,
-                               FieldSet& fields,
-                               const std::string& path,
-                               off_t offset,
-                               size_t size,
-                               bool fail) {
-
-
+Field FieldComparator::getField(eckit::Buffer& buffer,
+                                const std::string& path,
+                                off_t offset,
+                                size_t size) {
     const char *q = ((const char*)buffer);
     const char *p = ((const char*)buffer) + size - 4;
 
@@ -281,6 +276,20 @@ void FieldComparator::getField(const MultiFile& multi,
     }
 
     ASSERT(field);
+    return field;
+}
+
+
+void FieldComparator::getField(const MultiFile& multi,
+                               eckit::Buffer& buffer,
+                               FieldSet& fields,
+                               const std::string& path,
+                               off_t offset,
+                               size_t size,
+                               bool fail) {
+
+
+    Field field = getField(buffer, path, offset, size);
 
     if (fields.duplicate(field) != fields.end()) {
         const auto& other = *fields.duplicate(field);
@@ -375,6 +384,27 @@ size_t FieldComparator::list(const std::string& path) {
 
     return result;
 }
+
+void FieldComparator::json(eckit::JSON& json, const std::string& path) {
+    MultiFile multi(path, path);
+    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
+
+    int err;
+    size_t size = buffer.size();
+
+    eckit::AutoStdFile f(path);
+    while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
+
+        GRIB_CALL(err);
+        Field field = getField(buffer, path, ftello(f) - size, size);
+
+        json << field;
+
+        size = buffer.size();
+    }
+
+}
+
 
 
 

@@ -17,6 +17,7 @@
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/parser/JSON.h"
 
 namespace mir {
 namespace compare {
@@ -82,6 +83,8 @@ void BufrEntry::print(std::ostream &out) const {
 
 
 
+
+
 void BufrEntry::printValue(std::ostream &out) const {
 
     switch (type_) {
@@ -100,6 +103,31 @@ void BufrEntry::printValue(std::ostream &out) const {
     }
 
 }
+
+
+void BufrEntry::json(eckit::JSON &json) const {
+
+    json << name_;
+
+    switch (type_) {
+
+    case GRIB_TYPE_LONG:
+        json << l_;
+        break;
+
+    case GRIB_TYPE_DOUBLE:
+        json << d_;
+        break;
+
+    case GRIB_TYPE_STRING:
+        json << s_;
+        break;
+    }
+
+}
+
+
+
 
 
 inline bool sameValue(double a, double b, double e) {
@@ -248,6 +276,20 @@ BufrField::BufrField(const char* buffer, size_t size,
 BufrField::~BufrField() {
 }
 
+void BufrField::json(eckit::JSON& json) const {
+    json.startObject();
+    FieldBase::json(json);
+
+
+    for (auto j : entries_) {
+        json << j;
+    }
+
+
+
+
+    json.endObject();
+}
 
 Field BufrField::field(const char* buffer, size_t size,
                        const std::string& path, off_t offset,

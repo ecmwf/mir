@@ -18,6 +18,7 @@
 #include "eckit/serialisation/MemoryStream.h"
 
 #include "mir/util/Grib.h"
+#include "eckit/parser/JSON.h"
 
 
 namespace mir {
@@ -662,6 +663,12 @@ void GribField::print(std::ostream & out) const {
     }
     // out << " - " << info_;
     out << "]";
+}
+
+void GribField::json(eckit::JSON& json) const {
+    json.startObject();
+    FieldBase::json(json);
+    json.endObject();
 }
 
 

@@ -26,6 +26,7 @@
 
 
 namespace eckit {
+class JSON;
 namespace option {
 class Option;
 class CmdArgs;
@@ -70,9 +71,16 @@ protected:
     FieldInfo info_;
 
     virtual void print(std::ostream &out) const = 0;
+    virtual void json(eckit::JSON& json) const = 0;
 
     friend std::ostream &operator<<(std::ostream &s, const FieldBase &x) {
         x.print(s);
+        return s;
+    }
+
+
+    friend eckit::JSON &operator<<(eckit::JSON &s, const FieldBase &x) {
+        x.json(s);
         return s;
     }
 
@@ -123,6 +131,8 @@ public:
     bool wrapped() const;
     void compareExtra(std::ostream&, const Field& other) const;
 
+
+
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);
 
@@ -132,11 +142,18 @@ private:
     FieldBase* field_;
 
     void print(std::ostream &out) const;
+    void json(eckit::JSON& json) const;
 
     friend std::ostream &operator<<(std::ostream &s, const Field &x) {
         x.print(s);
         return s;
     }
+
+    friend eckit::JSON &operator<<(eckit::JSON &s, const Field &x) {
+        x.json(s);
+        return s;
+    }
+
 };
 
 

@@ -52,6 +52,12 @@ public:
 
     void print(std::ostream &out) const;
     void printValue(std::ostream &out) const;
+    void json(eckit::JSON& json) const;
+
+    friend eckit::JSON &operator<<(eckit::JSON &s, const BufrEntry &x) {
+        x.json(s);
+        return s;
+    }
 
     friend std::ostream &operator<<(std::ostream &s, const BufrEntry &x) {
         x.print(s);
@@ -110,11 +116,8 @@ private:
     virtual bool match(const std::string&, const std::string&) const;
     virtual size_t numberOfPoints() const;
     virtual const std::string& format() const;
+    virtual void json(eckit::JSON& json) const;
 
-    friend std::ostream &operator<<(std::ostream &s, const BufrField &x) {
-        x.print(s);
-        return s;
-    }
 
 };
 

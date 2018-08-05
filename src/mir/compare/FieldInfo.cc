@@ -17,6 +17,7 @@
 #include "mir/compare/FieldInfo.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/compare/FieldSet.h"
+#include "eckit/parser/JSON.h"
 
 
 namespace mir {
@@ -30,6 +31,11 @@ FieldInfo::FieldInfo(const std::string& path, off_t offset, size_t length):
 
 void FieldInfo::print(std::ostream &out) const {
     out << "FieldInfo[path=" << path_ << ",offset=" << offset_ << ",length=" << length_ << "]";
+}
+
+
+void FieldInfo::json(eckit::JSON& json) const {
+    json << "path" << path_ << "offset" << offset_ << "length" << length_;
 }
 
 

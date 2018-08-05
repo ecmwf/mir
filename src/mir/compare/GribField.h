@@ -113,6 +113,7 @@ private:
     virtual void compareExtra(std::ostream&, const FieldBase& other) const ;
     virtual bool same(const FieldBase& other) const;
     virtual bool match(const FieldBase& other) const;
+    virtual void json(eckit::JSON& json) const;
 
     std::map<std::string, std::string> values_;
 
