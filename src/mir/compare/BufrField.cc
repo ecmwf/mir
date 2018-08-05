@@ -285,7 +285,12 @@ void BufrField::json(eckit::JSON& json) const {
         json << j;
     }
 
-
+    json << "descriptors";
+    json.startList();
+    for(auto j : descriptors_) {
+        json << j;
+    }
+    json.endList();
 
 
     json.endObject();
