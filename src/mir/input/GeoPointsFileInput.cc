@@ -36,7 +36,11 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     which_(which),
     next_(0),
-    hasMissing_(false) {
+    hasMissing_(false),
+    footprint_(0) {
+
+    // For now, this should give an ovwerestimate of the memory footprint
+    footprint_ = eckit::PathName(path).size();
 
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
@@ -82,7 +86,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
             format = v[0] == "XYV" ?          XYV :
                      v[0] == "XY_VECTOR" ?    XY_VECTOR :
                      v[0] == "POLAR_VECTOR" ? POLAR_VECTOR :
-                                              throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
+                     throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
         if (!data && strncmp(line, "# ", 2) == 0) {
@@ -255,6 +259,11 @@ const std::vector<double>& GeoPointsFileInput::longitudes() const {
 
 const MIRValuesVector& GeoPointsFileInput::values() const {
     return values_;
+}
+
+
+size_t GeoPointsFileInput::footprint() const {
+    return footprint_;
 }
 
 
