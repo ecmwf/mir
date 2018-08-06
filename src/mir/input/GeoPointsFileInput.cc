@@ -141,21 +141,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     // set dimensions
     dimensions_ = size_t(count);
     ASSERT(dimensions_);
-#if 0
 
-    // reset missing values to something acceptable
-    hasMissing_ = resetMissingValue(missingValue_);
-    // globalise, appending missing values if necessary
-    util::GlobaliseUnstructured globalise(parametrisation_);
-    size_t nbExtraValues = globalise.appendGlobalPoints(latitudes_, longitudes_);
-    if (nbExtraValues) {
-        eckit::Log::info() << "GeoPointsFileInput: appending " << eckit::Plural(nbExtraValues, "missing value") << std::endl;
-
-        ASSERT(latitudes_.size() == values_.size() + nbExtraValues);
-        ASSERT(latitudes_.size() == longitudes_.size());
-        values_.insert(values_.end(), nbExtraValues, missingValue_);
-    }
-#endif
 }
 
 

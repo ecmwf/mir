@@ -23,6 +23,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "eckit/serialisation/HandleStream.h"
 
 
 namespace mir {
@@ -32,8 +33,8 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path) :
-    GeoPointsFileOutput(path) {
+GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path, bool binary) :
+    GeoPointsFileOutput(path, binary) {
 }
 
 
@@ -48,8 +49,20 @@ size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::C
 }
 
 
-size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
+                                    context::Context& ctx) {
+
     ASSERT(once());
+    if (binary_) {
+        return saveBinary(param, ctx);
+    }
+    else {
+        return saveText(param, ctx);
+    }
+}
+
+size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
+                                        context::Context& ctx) {
 
     data::MIRField& field = ctx.field();
 
@@ -77,7 +90,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 
 
         out << "#GEO"
-               "\n#FORMAT XYV";
+            "\n#FORMAT XYV";
 
         for (auto& key : keys) {
             std::string v;
@@ -100,6 +113,65 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
         }
 
         out << std::endl;
+    }
+
+    // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
+
+    return handle.position() - position;
+}
+
+
+size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param,
+        context::Context& ctx) {
+
+    data::MIRField& field = ctx.field();
+
+    eckit::DataHandle& handle = dataHandle();
+    eckit::Offset position = handle.position();
+
+    eckit::HandleStream out(handle);
+
+    for (size_t j = 0; j < field.dimensions(); ++j) {
+
+        // ASSERT(field.dimensions() == 1);
+
+        param::RuntimeParametrisation runtime(param);
+        auto md = field.metadata(j);
+        if (md.find("paramId") != md.end()) {
+            std::ostringstream oss;
+            oss << md["paramId"];
+            runtime.set("param", oss.str());
+        }
+
+        const MIRValuesVector& values = field.values(j);
+
+        // eckit::Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
+
+        out << "GEO";
+        out << "XYV";
+        out << size_t(sizeof(keys) / sizeof(keys[0]));
+
+        for (auto& key : keys) {
+            std::string v;
+            if (runtime.get(key, v)) {
+                out << key << v;
+            }
+        }
+
+        auto v = values.cbegin();
+
+        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        while (it->next()) {
+            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+            ASSERT(v != values.cend());
+            out << double(p.lon.value())
+                << double(p.lat.value())
+                << double(*v);
+            ++v;
+        }
+
+        out << "END";
+
     }
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;

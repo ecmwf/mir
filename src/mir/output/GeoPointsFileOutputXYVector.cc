@@ -32,8 +32,9 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path) :
-    GeoPointsFileOutput(path) {
+GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path, 
+    bool binary) :
+    GeoPointsFileOutput(path, binary) {
 }
 
 
@@ -44,6 +45,7 @@ size_t GeoPointsFileOutputXYVector::copy(const param::MIRParametrisation&, conte
 
 size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param, context::Context& ctx) {
     ASSERT(once());
+    ASSERT(!binary_);
 
     data::MIRField& field = ctx.field();
 
