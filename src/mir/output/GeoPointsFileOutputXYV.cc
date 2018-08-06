@@ -150,7 +150,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
 
         out << "GEO";
         out << "XYV";
-        out << size_t(sizeof(keys) / sizeof(keys[0]));
+        out << size_t(sizeof(keys)) / sizeof(keys[0]));
 
         for (auto& key : keys) {
             std::string v;
