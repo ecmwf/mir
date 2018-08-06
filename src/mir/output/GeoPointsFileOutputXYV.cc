@@ -173,9 +173,10 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         }
         ASSERT(v == values.cend());
 
-        out << "END";
-
     }
+    
+    out << "END";
+
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
