@@ -169,7 +169,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
     eckit::IfstreamStream s(in);
     size_t count = 0;
 
-    eckit::Log::info() << "GeoPointsFileInput::readBinary " << path_ << std::endl;
+    // eckit::Log::info() << "GeoPointsFileInput::readBinary " << path_ << std::endl;
 
 
     for (;;) {
@@ -177,7 +177,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         std::string what;
         s >> what;
 
-        eckit::Log::info() << "GeoPointsFileInput::readBinary " << what << std::endl;
+        // eckit::Log::info() << "GeoPointsFileInput::readBinary " << what << std::endl;
 
         if (what == "END") {
             break;
@@ -201,7 +201,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         std::string format;
         s >> format;
         ASSERT(format == "XYV");
-        eckit::Log::info() << "GeoPointsFileInput::readBinary format=" << format << std::endl;
+        // eckit::Log::info() << "GeoPointsFileInput::readBinary format=" << format << std::endl;
 
         size_t n = 0;
         s >> n;
@@ -209,13 +209,13 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         for (size_t i = 0; i < n; ++i) {
             std::string k, v;
             s >> k >> v;
-            eckit::Log::info() << "GeoPointsFileInput::readBinary " << k << "=" << v << std::endl;
+            // eckit::Log::info() << "GeoPointsFileInput::readBinary " << k << "=" << v << std::endl;
 
             fieldParametrisation_.set(k, v);
         }
 
         s >> n;
-        eckit::Log::info() << "GeoPointsFileInput::readBinary " << n << " points " << std::endl;
+        // eckit::Log::info() << "GeoPointsFileInput::readBinary " << n << " points " << std::endl;
         latitudes_.resize(n);
         longitudes_.resize(n);
         values_.resize(n);
@@ -224,7 +224,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
               >> latitudes_[i]
               >> values_[i];
 
-            eckit::Log::info() << "GeoPointsFileInput::readBinary points " << i << std::endl;
+            // eckit::Log::info() << "GeoPointsFileInput::readBinary points " << i << std::endl;
 
         }
 
