@@ -163,6 +163,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         out << values.size();
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        size_t i = 0;
         while (it->next()) {
             const repres::Iterator::point_ll_t& p = it->pointUnrotated();
             ASSERT(v != values.cend());
@@ -170,11 +171,12 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
                 << double(p.lat.value())
                 << double(*v);
             ++v;
+            ++i;
         }
         ASSERT(v == values.cend());
-
+        ASSERT(i == values.size());
     }
-    
+
     out << "END";
 
 

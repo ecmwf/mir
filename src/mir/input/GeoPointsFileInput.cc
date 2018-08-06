@@ -223,6 +223,9 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
             s >> longitudes_[i]
               >> latitudes_[i]
               >> values_[i];
+
+            eckit::Log::info() << "GeoPointsFileInput::readBinary points " << i << std::endl;
+
         }
 
     }
