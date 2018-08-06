@@ -158,7 +158,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
             }
         }
 
-        out << '-';
+        out << "-";
 
         auto v = values.cbegin();
         out << values.size();
