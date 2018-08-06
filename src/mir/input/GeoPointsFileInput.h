@@ -20,6 +20,8 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
 
+#include <fstream>
+#include <iostream>
 
 namespace mir {
 namespace input {
@@ -98,6 +100,9 @@ private:
     // -- Methods
 
     bool resetMissingValue(double& missingValue);
+
+    size_t readText(std::ifstream&);
+    size_t readBinary(std::ifstream&);
 
     // -- Overridden methods
 

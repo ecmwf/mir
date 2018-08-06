@@ -25,6 +25,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/GlobaliseUnstructured.h"
+#include "eckit/serialisation/IfstreamStream.h"
 
 
 namespace mir {
@@ -42,15 +43,54 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     // For now, this should give an ovwerestimate of the memory footprint
     footprint_ = eckit::PathName(path).size();
 
-    eckit::Tokenizer parse(" \t");
-    eckit::Translator<std::string, double> s2d;
 
     std::ifstream in(path_.c_str());
     if (!in) {
         throw eckit::CantOpenFile(path_);
     }
 
+    char magic = in.peek();
+    size_t count = 0;
+
+    if (magic == '#') {
+        count = readText(in);
+    }
+    else {
+        count = readBinary(in);
+    }
+
+    if (count == 0) {
+        std::ostringstream oss;
+        oss << path_ << " is not a valid geopoints file";
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if (which_ == -1 && count > 1) {
+        std::ostringstream oss;
+        oss << path_ << " is a multi-field geopoints file with " << count << " fields, please select which";
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    if (which_ >= count) {
+        std::ostringstream oss;
+        oss << path_ << " contains " << count << " fields, requested index is " << which_;
+        throw eckit::SeriousBug(oss.str());
+    }
+
+    // set dimensions
+    dimensions_ = size_t(count);
+    ASSERT(dimensions_);
+
+}
+
+GeoPointsFileInput::~GeoPointsFileInput() = default;
+
+
+size_t GeoPointsFileInput::readText(std::ifstream& in) {
+
     eckit::Tokenizer parse2("=");
+    eckit::Tokenizer parse(" \t");
+    eckit::Translator<std::string, double> s2d;
 
     char line[10240];
     bool data = false;
@@ -63,7 +103,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         if (strncmp(line, "#GEO", 4) == 0) {
             count++;
 
-            if (which >= 0 && count  > which + 1) {
+            if (which_ >= 0 && count  > which_ + 1) {
                 break;
             }
 
@@ -100,11 +140,11 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         }
 
         if (!data && strncmp(line, "#DATA", 5) == 0) {
-            if (which < 0) {
+            if (which_ < 0) {
                 data = true;
             }
             else {
-                data = (count == which + 1);
+                data = (count == which_ + 1);
             }
             continue;
         }
@@ -120,32 +160,63 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         }
     }
 
-    if (count == 0) {
-        std::ostringstream oss;
-        oss << path_ << " is not a valid geopoints file";
-        throw eckit::SeriousBug(oss.str());
+    return count;
+}
+
+
+size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
+
+    eckit::IfstreamStream s(in);
+    size_t count = 0;
+
+    std::string t;
+    s >> t;
+    while (t == "GEO") {
+        count++;
+        if (which_ >= 0 && count  > which_ + 1) {
+            break;
+        }
+
+        fieldParametrisation_.reset();
+        fieldParametrisation_.set("gridType", "unstructured_grid");
+        fieldParametrisation_.set("gridded", true);
+
+        latitudes_.clear();
+        longitudes_.clear();
+        values_.clear();
+
+        std::string format;
+        s >> format;
+        ASSERT(format == "XYV");
+
+        size_t n = 0;
+        s >> n;
+
+        for (size_t i = 0; i < n; ++i) {
+            std::string k, v;
+            s >> k >> v;
+            fieldParametrisation_.set(k, v);
+        }
+
+        s >> n;
+        latitudes_.resize(n);
+        longitudes_.resize(n);
+        values_.resize(n);
+        for (size_t i = 0; i < n; ++i) {
+            s >> longitudes_[i]
+              >> latitudes_[i]
+              >> values_[i];
+        }
     }
 
-    if (which == -1 && count > 1) {
-        std::ostringstream oss;
-        oss << path_ << " is a multi-field geopoints file with " << count << " fields, please select which";
-        throw eckit::SeriousBug(oss.str());
-    }
+    ASSERT(t == "END" || t == "GEO");
 
-    if (which >= count) {
-        std::ostringstream oss;
-        oss << path_ << " contains " << count << " fields, requested index is " << which;
-        throw eckit::SeriousBug(oss.str());
-    }
+        return count;
 
-    // set dimensions
-    dimensions_ = size_t(count);
-    ASSERT(dimensions_);
 
 }
 
 
-GeoPointsFileInput::~GeoPointsFileInput() = default;
 
 
 bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
