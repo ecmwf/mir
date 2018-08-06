@@ -203,17 +203,19 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         ASSERT(format == "XYV");
         // eckit::Log::info() << "GeoPointsFileInput::readBinary format=" << format << std::endl;
 
-        size_t n = 0;
-        s >> n;
-
-        for (size_t i = 0; i < n; ++i) {
+        for (;;) {
             std::string k, v;
-            s >> k >> v;
+            s >> k;
+            if(k == "-") {
+                break;
+            }
+            s >> v;
             // eckit::Log::info() << "GeoPointsFileInput::readBinary " << k << "=" << v << std::endl;
 
             fieldParametrisation_.set(k, v);
         }
 
+        size_t n;
         s >> n;
         // eckit::Log::info() << "GeoPointsFileInput::readBinary " << n << " points " << std::endl;
         latitudes_.resize(n);
