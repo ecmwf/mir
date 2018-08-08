@@ -20,6 +20,8 @@
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
 
+#include <iomanip>
+
 namespace mir {
 namespace compare {
 
@@ -120,7 +122,7 @@ void BufrEntry::printValue(std::ostream &out) const {
         break;
 
     case GRIB_TYPE_DOUBLE:
-        out << d_;
+        out <<  std::setprecision(9) << d_;
         break;
 
     case GRIB_TYPE_STRING:
