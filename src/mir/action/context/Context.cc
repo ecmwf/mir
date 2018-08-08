@@ -161,7 +161,7 @@ public:
 class ExtensionContent : public Content {
 
     eckit::ScopedPtr<Extension> extension_;
-   
+
     virtual void print(std::ostream& out) const {
         out << "ExtensionContent[" << *extension_ << "]";
     }
@@ -176,7 +176,7 @@ class ExtensionContent : public Content {
     }
 
     virtual Content* clone() const  {
-        new ExtensionContent(extension_->clone());
+        return new ExtensionContent(extension_->clone());
     }
 
 public:
