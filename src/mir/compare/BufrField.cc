@@ -18,6 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
+#include "eckit/parser/Tokenizer.h"
 
 namespace mir {
 namespace compare {
@@ -25,6 +26,7 @@ namespace compare {
 
 static double bufrRelativeError_ = 0.;
 static bool bufrFullLists = false;
+static std::set<std::string> ignoreBufrKeys;
 
 
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
@@ -33,23 +35,47 @@ void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
                       "Print all BUFR values"));
     options.push_back(new SimpleOption<double>("bufr-relative-error",
                       "Relative when comparing BUFR floating pooint values"));
+
+    options.push_back(new SimpleOption<std::string>("ignore-bufr-keys",
+                      "Keys to ignore when comparing"));
 }
 
 void BufrField::setOptions(const eckit::option::CmdArgs &args) {
     args.get("bufr-relative-error", bufrRelativeError_);
     args.get("bufr-print-all-values", bufrFullLists);
+
+    std::string s;
+    args.get("ignore-bufr-keys", s);
+
+
+    eckit::Tokenizer parse("/");
+    std::vector<std::string> v;
+    parse(s, v);
+
+    ignoreBufrKeys = std::set<std::string>(v.begin(), v.end());
+
 }
 
-BufrEntry::BufrEntry(const std::string& name,
+BufrEntry::BufrEntry(const std::string& full,
                      long l,
                      double d,
                      const std::string& s,
                      int type):
-    name_(name),
+    full_(full),
     l_(l),
     d_(d),
     s_(s),
     type_(type) {
+
+    static eckit::Tokenizer parse("#");
+    std::vector<std::string> v;
+    parse(full_, v);
+
+    ASSERT(v.size());
+    name_ = v.back();
+
+    ignore_ = ignoreBufrKeys.find(name_) !=  ignoreBufrKeys.end();
+
 
     switch (type_) {
 
@@ -77,7 +103,7 @@ BufrEntry::BufrEntry(const std::string& name,
 }
 
 void BufrEntry::print(std::ostream &out) const {
-    out << name_ << '=';
+    out << full_ << '=';
     printValue(out);
 }
 
@@ -107,7 +133,7 @@ void BufrEntry::printValue(std::ostream &out) const {
 
 void BufrEntry::json(eckit::JSON &json) const {
 
-    json << name_;
+    json << full_;
 
     switch (type_) {
 
@@ -142,14 +168,15 @@ inline bool sameValue(double a, double b, double e) {
 
 
 bool BufrEntry::operator==(const BufrEntry &other) const {
-    if (name_ != other.name_) {
+
+    if (full_ != other.full_) {
         return false;
     }
 
     if (type_ != other.type_) {
         return false;
-
     }
+
 
     switch (type_) {
 
@@ -173,8 +200,8 @@ bool BufrEntry::operator!=(const BufrEntry &other) const {
 
 bool BufrEntry::operator<(const BufrEntry &other) const {
 
-    if (name_ != other.name_) {
-        return name_ < other.name_;
+    if (full_ != other.full_) {
+        return full_ < other.full_;
     }
 
     if (type_ != other.type_) {
@@ -266,8 +293,15 @@ BufrField::BufrField(const char* buffer, size_t size,
         }
 
         ASSERT(entriesByName_.find(name) == entriesByName_.end());
-        entriesByName_[name] = entries_.size();
-        entries_.push_back(BufrEntry(name, l, d, s, t));
+        entriesByName_[name] = allEntries_.size();
+
+        allEntries_.push_back(BufrEntry(name, l, d, s, t));
+        if (allEntries_.back().ignore()) {
+            ignored_.insert(allEntries_.back().name());
+        }
+        else {
+            activeEntries_.push_back(allEntries_.back());
+        }
 
     }
 
@@ -281,16 +315,20 @@ void BufrField::json(eckit::JSON& json) const {
     FieldBase::json(json);
 
 
-    for (auto j : entries_) {
+    for (auto j : activeEntries_) {
         json << j;
     }
 
     json << "descriptors";
     json.startList();
-    for(auto j : descriptors_) {
+    for (auto j : descriptors_) {
         json << j;
     }
     json.endList();
+
+    if (ignored_.size()) {
+        json << "ignored" << ignored_;
+    }
 
 
     json.endObject();
@@ -311,11 +349,11 @@ void BufrField::print(std::ostream &out) const {
 
     out << '[';
     const char* sep = "";
-    for (auto j : entries_) {
+    for (auto j : activeEntries_) {
         out << sep;
 
         if (!bufrFullLists) {
-            if (j.name()[0] == '#' && j.name()[1] == '2') {
+            if (j.full()[0] == '#' && j.full()[1] == '2') {
                 out << "...";
                 break;
             }
@@ -325,6 +363,8 @@ void BufrField::print(std::ostream &out) const {
     }
     out << ';';
     out << descriptors_;
+    out << ";ignored=";
+    out << ignored_;
     out << ']';
 
 }
@@ -336,7 +376,10 @@ bool BufrField::wrapped() const {
 
 bool BufrField::less_than(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    return entries_ < other.entries_;
+    if (ignored_ == other.ignored_) {
+        return activeEntries_ < other.activeEntries_;
+    }
+    return ignored_ < other.ignored_;
 }
 
 void BufrField::whiteListEntries(std::ostream& out) const {
@@ -347,37 +390,26 @@ size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
     size_t count = 0;
 
-    size_t n = std::min(entries_.size(), other.entries_.size());
+    size_t n = std::min(activeEntries_.size(), other.activeEntries_.size());
     for (size_t i = 0; i < n; ++i) {
-        if (entries_[i] != other.entries_[i]) {
+        if (activeEntries_[i] != other.activeEntries_[i]) {
             count++;
         }
     }
 
-    count += std::max(n, entries_.size());
-    count += std::max(n, other.entries_.size());
+    count += std::max(n, activeEntries_.size());
+    count += std::max(n, other.activeEntries_.size());
 
     return count;
 }
 
 
-// template<class T>
-// static void pdiff(std::ostream & out, const T& v1, const T& v2) {
-//     if (v1 != v2) {
-//         // out << eckit::Colour::red << eckit::Colour::bold << v1 << eckit::Colour::reset;
-//         out << "**" << v1 << "**";
-//     }
-//     else {
-//         out << v1;
-//     }
-// }
-
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
 
-    const std::vector<BufrEntry>& ei = entries_;
-    const std::vector<BufrEntry>& ej = other.entries_;
+    const std::vector<BufrEntry>& ei = activeEntries_;
+    const std::vector<BufrEntry>& ej = other.activeEntries_;
 
     const std::map<std::string, size_t>& ni = entriesByName_;
     const std::map<std::string, size_t>& nj = other.entriesByName_;
@@ -399,8 +431,8 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
             break;
         }
 
-        if (ei[i].name() == ej[j].name()) {
-            out << '(' << ei[i].name() << '=';
+        if (ei[i].full() == ej[j].full()) {
+            out << '(' << ei[i].full() << '=';
             ei[i].printValue(out);
             out << '|';
             ej[j].printValue(out);
@@ -412,8 +444,8 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
             continue;
         }
 
-        auto ki = ni.find(ej[j].name());
-        auto kj = nj.find(ei[i].name());
+        auto ki = ni.find(ej[j].full());
+        auto kj = nj.find(ei[i].full());
 
         if (kj == nj.end()) {
 
@@ -422,7 +454,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
                 break;
             }
 
-            out << '(' << ei[i].name() << '=';
+            out << '(' << ei[i].full() << '=';
             ei[i].printValue(out);
             out << "|?)";
 
@@ -436,7 +468,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
                 break;
             }
 
-            out << '(' << ej[j].name() << "=?|";
+            out << '(' << ej[j].full() << "=?|";
             ej[j].printValue(out);
             out << ')';
 
@@ -450,7 +482,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
             out << "...";
             break;
         }
-        out << '(' << ei[i].name() << '=';
+        out << '(' << ei[i].full() << '=';
         ei[i].printValue(out);
         out << "|?)";
     }
@@ -461,7 +493,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
             out << "...";
             break;
         }
-        out << '(' << ej[j].name() << "=?|";
+        out << '(' << ej[j].full() << "=?|";
         ej[j].printValue(out);
         out << ')';
     }
@@ -488,7 +520,7 @@ void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
 
 bool BufrField::same(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
-    return entries_ == other.entries_;
+    return (activeEntries_ == other.activeEntries_) && (ignored_ == other.ignored_);
 }
 
 bool BufrField::match(const FieldBase& o) const {

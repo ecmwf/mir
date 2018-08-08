@@ -34,6 +34,8 @@ class FieldSet;
 //
 
 class BufrEntry {
+
+    std::string full_;
     std::string name_;
 
     long l_;
@@ -41,10 +43,11 @@ class BufrEntry {
     std::string s_;
 
     int type_;
+    bool ignore_;
 
 public:
 
-    BufrEntry(const std::string& name,
+    BufrEntry(const std::string& full,
               long l,
               double d,
               const std::string& s,
@@ -64,8 +67,16 @@ public:
         return s;
     }
 
+    const std::string& full() const {
+        return full_;
+    }
+
     const std::string& name() const {
         return name_;
+    }
+
+    bool ignore() const {
+        return ignore_;
     }
 
     bool operator==(const BufrEntry &other) const;
@@ -99,8 +110,11 @@ private:
 
     std::vector<long> descriptors_;
 
-    std::vector<BufrEntry> entries_;
+    std::vector<BufrEntry> activeEntries_;
+    std::vector<BufrEntry> allEntries_;
+
     std::map<std::string, size_t> entriesByName_;
+    std::set<std::string> ignored_;
 
 
     virtual void print(std::ostream &out) const;
