@@ -60,7 +60,11 @@ public:
     // None
 
     // -- Class members
-    // None
+
+    static void save(const eckit::PathName&,
+                     const std::vector<double>& latitudes,
+                     const std::vector<double>& longitudes,
+                     bool binary);
 
     // -- Class methods
     // None
