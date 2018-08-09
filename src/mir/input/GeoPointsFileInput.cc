@@ -26,6 +26,7 @@
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/GlobaliseUnstructured.h"
 #include "eckit/serialisation/IfstreamStream.h"
+#include "mir/repres/other/UnstructuredGrid.h"
 
 
 namespace mir {
@@ -80,6 +81,12 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     // set dimensions
     dimensions_ = size_t(count);
     ASSERT(dimensions_);
+
+
+    repres::other::UnstructuredGrid::check(std::string("GeoPointsFileInput from ") + path,
+                                           latitudes_,
+                                           longitudes_);
+
 
 }
 
@@ -206,7 +213,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         for (;;) {
             std::string k, v;
             s >> k;
-            if(k == "-") {
+            if (k == "-") {
                 break;
             }
             s >> v;
@@ -231,6 +238,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         }
 
     }
+
 
     return count;
 }
