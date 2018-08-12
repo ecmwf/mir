@@ -84,6 +84,17 @@ void Field::print(std::ostream& out) const {
     }
 }
 
+namespace {
+class Differences {
+    const Field& field_;
+public:
+    Differences(const Field& field): field_(field) {}
+    bool operator() (const Field& a, const Field& b) const {
+        return field_.differences(a) < field_.differences(b);
+    }
+
+};
+}
 
 std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
     std::vector<Field> matches;
@@ -97,8 +108,17 @@ std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
 
     }
 
+    std::sort(matches.begin(), matches.end(), Differences(*this));
+
     return matches;
 
+}
+
+
+std::vector<Field> Field::sortByDifference(const FieldSet & fields) const {
+    std::vector<Field> sorted(fields.begin(), fields.end());
+    std::sort(sorted.begin(), sorted.end(), Differences(*this));
+    return sorted;
 }
 
 

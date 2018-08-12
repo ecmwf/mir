@@ -116,7 +116,10 @@ public:
 
     bool same(const Field& other) const;
     bool match(const Field& other) const;
+
     std::vector<Field> bestMatches(const FieldSet & fields) const;
+    std::vector<Field> sortByDifference(const FieldSet & fields) const;
+
 
 
     void whiteListEntries(std::ostream&) const;

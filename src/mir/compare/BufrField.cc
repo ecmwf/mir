@@ -19,7 +19,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
-
+#include "eckit/log/Colour.h"
 #include <iomanip>
 
 namespace mir {
@@ -158,7 +158,23 @@ void BufrEntry::json(eckit::JSON &json) const {
 
 
 
-inline bool sameValue(double a, double b, double e) {
+inline bool sameValue(const std::string& name, double a, double b, double e) {
+// TODO: configure me
+
+    if(name == "longitude") {
+        while(a < 0) {
+            a += 360;
+        }
+        while(b < 0) {
+            b += 360;
+        }
+    }
+
+    if (name == "latitude" || name == "longitude") {
+        return a == b;
+    }
+
+
     double m = std::max(::fabs(a), ::fabs(b));
     if (m > 0) {
         return ::fabs(a - b) / m <= e;
@@ -183,10 +199,10 @@ bool BufrEntry::operator==(const BufrEntry &other) const {
     switch (type_) {
 
     case GRIB_TYPE_LONG:
-        return  l_ == other.l_;
+        return  sameValue(name_, l_, other.l_, bufrRelativeError_);
 
     case GRIB_TYPE_DOUBLE:
-        return  sameValue(d_, other.d_, bufrRelativeError_);
+        return  sameValue(name_, d_, other.d_, bufrRelativeError_);
 
     case GRIB_TYPE_STRING:
         return  s_ == other.s_;
@@ -216,7 +232,7 @@ bool BufrEntry::operator<(const BufrEntry &other) const {
         return  l_ < other.l_;
 
     case GRIB_TYPE_DOUBLE:
-        return  d_ < other.d_ && !sameValue(d_, other.d_, bufrRelativeError_);
+        return  d_ < other.d_ && !sameValue(name_, d_, other.d_, bufrRelativeError_);
 
     case GRIB_TYPE_STRING:
         return  s_ < other.s_;
@@ -392,10 +408,12 @@ size_t BufrField::differences(const FieldBase& o) const {
     const BufrField& other = dynamic_cast<const BufrField&>(o);
     size_t count = 0;
 
+
     size_t n = std::min(activeEntries_.size(), other.activeEntries_.size());
+
     for (size_t i = 0; i < n; ++i) {
         if (activeEntries_[i] != other.activeEntries_[i]) {
-            count++;
+            count += n; // More weight at the begining
         }
     }
 
@@ -435,7 +453,9 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
 
         if (ei[i].full() == ej[j].full()) {
             out << '(' << ei[i].full() << '=';
+            out << eckit::Colour::red << eckit::Colour::bold;
             ei[i].printValue(out);
+            out << eckit::Colour::reset;
             out << '|';
             ej[j].printValue(out);
             out << ')';
@@ -514,7 +534,9 @@ void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
             out << descriptors_[i];
         }
         else {
-            out << '*' << descriptors_[i] << '*';
+            out << eckit::Colour::red << eckit::Colour::bold;
+            out << descriptors_[i];
+            out << eckit::Colour::reset;
         }
         sep = ",";
     }

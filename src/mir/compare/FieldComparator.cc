@@ -690,12 +690,21 @@ void FieldComparator::missingField(const MultiFile & multi1,
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
 
+        auto flds = field.sortByDifference(fields);
 
-        for (auto m = fields.begin(); m != fields.end(); ++m) {
+
+        for (auto m = flds.begin(); m != flds.end(); ++m) {
 
 
             const auto& other = (*m);
             if (other.match(field)) {
+
+                if (cnt >= 5) {
+                    eckit::Log::info() << " # ..." << std::endl;
+                    break;
+                }
+
+
                 eckit::Log::info() << " @ ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
@@ -709,7 +718,14 @@ void FieldComparator::missingField(const MultiFile & multi1,
             }
         }
         if (!cnt) {
-            for (auto m = fields.begin(); m != fields.end(); ++m) {
+            for (auto m = flds.begin(); m != flds.end(); ++m) {
+
+                if (cnt >= 5) {
+                    eckit::Log::info() << " # ..." << std::endl;
+                    break;
+                }
+
+
                 const auto& other = (*m);
                 eckit::Log::info() << " # ";
                 other.printDifference(eckit::Log::info(), field);
@@ -724,8 +740,17 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
     } else {
 
+        eckit::Log::info() << " + " << "Possible matched in " << multi2 <<  std::endl;
 
+        size_t cnt = 0;
         for (auto m = matches.begin(); m != matches.end(); ++m) {
+
+            if (cnt++ >= 5) {
+                eckit::Log::info() << " # ..." << std::endl;
+                break;
+            }
+
+
             const auto& other = (*m);
             eckit::Log::info() << " ? ";
             other.printDifference(eckit::Log::info(), field);
