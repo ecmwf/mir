@@ -164,7 +164,7 @@ inline bool sameValue(const std::string& name, double a, double b, double e) {
     }
 
     if (name == "latitude" || name == "longitude") {
-        return ::fabs(a - b) <= 0.0001;
+        return ::fabs(a - b) <= 0.0001 || sameValue("-", ::fabs(a - b), 0.0001, 1e-7);
     }
 
 
