@@ -158,13 +158,13 @@ void BufrEntry::json(eckit::JSON &json) const {
 inline bool sameValue(const std::string& name, double a, double b, double e) {
 // TODO: configure me
 
-    if(name == "longitude") {
+    if (name == "longitude") {
         a = FieldBase::normaliseLongitude(a);
         b = FieldBase::normaliseLongitude(b);
     }
 
     if (name == "latitude" || name == "longitude") {
-        return :fabs(a,b) <= 0.0001;
+        return ::fabs(a - b) <= 0.0001;
     }
 
 
