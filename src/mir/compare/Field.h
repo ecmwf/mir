@@ -66,6 +66,8 @@ public:
     virtual size_t numberOfPoints() const = 0;
     virtual const std::string& format() const = 0;
 
+    static double normaliseLongitude(double longitude);
+
 protected:
 
     FieldInfo info_;
@@ -138,7 +140,6 @@ public:
 
     static void addOptions(std::vector<eckit::option::Option*>& options);
     static void setOptions(const eckit::option::CmdArgs &args);
-
 
 private:
 

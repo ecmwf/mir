@@ -155,19 +155,12 @@ void BufrEntry::json(eckit::JSON &json) const {
 }
 
 
-
-
-
 inline bool sameValue(const std::string& name, double a, double b, double e) {
 // TODO: configure me
 
     if(name == "longitude") {
-        while(a < 0) {
-            a += 360;
-        }
-        while(b < 0) {
-            b += 360;
-        }
+        a = FieldBase::normaliseLongitude(a);
+        b = FieldBase::normaliseLongitude(b);
     }
 
     if (name == "latitude" || name == "longitude") {

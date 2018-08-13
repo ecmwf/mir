@@ -25,7 +25,6 @@ namespace mir {
 namespace compare {
 
 
-static bool normaliseLongitudes_ = false;
 static bool ignoreAccuracy_ = false;
 static bool ignorePacking_ = false;
 static bool whiteListAccuracyPacking_ = false;
@@ -39,9 +38,6 @@ static double areaPrecisionE_ = 0.;
 
 void GribField::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
-
-    options.push_back(new SimpleOption<bool>("normalise-longitudes",
-                      "Normalise longitudes between 0 and 360"));
 
     options.push_back(new SimpleOption<double>("compare-areas-threshold",
                       "Threshold when comparing areas with Jaccard distance"));
@@ -70,24 +66,9 @@ void GribField::addOptions(std::vector<eckit::option::Option*>& options) {
 }
 
 
-static double normalize(double longitude) {
-
-    if (!normaliseLongitudes_) {
-        return longitude;
-    }
-
-    while (longitude < 0) {
-        longitude += 360;
-    }
-    while (longitude >= 360) {
-        longitude -= 360;
-    }
-    return longitude;
-}
 
 
 void GribField::setOptions(const eckit::option::CmdArgs &args) {
-    args.get("normalise-longitudes", normaliseLongitudes_);
     args.get("ignore-accuracy", ignoreAccuracy_);
     args.get("ignore-packing", ignorePacking_);
     args.get("area-precision-north", areaPrecisionN_);
@@ -149,13 +130,13 @@ void GribField::compareExtra(std::ostream& out, const FieldBase& o) const {
         return;
     }
 
-    double w1 = normalize(west_);
-    double e1 = normalize(east_);
+    double w1 = normaliseLongitude(west_);
+    double e1 = normaliseLongitude(east_);
     double n1 = north_;
     double s1 = south_;
 
-    double w2 = normalize(other.west_);
-    double e2 = normalize(other.east_);
+    double w2 = normaliseLongitude(other.west_);
+    double e2 = normaliseLongitude(other.east_);
     double n2 = other.north_;
     double s2 = other.south_;
 
@@ -179,13 +160,13 @@ bool GribField::sameArea(const GribField& other) const {
     if (area_ != other.area_)
         return false;
 
-    double w1 = normalize(west_);
-    double e1 = normalize(east_);
+    double w1 = normaliseLongitude(west_);
+    double e1 = normaliseLongitude(east_);
     double n1 = north_;
     double s1 = south_;
 
-    double w2 = normalize(other.west_);
-    double e2 = normalize(other.east_);
+    double w2 = normaliseLongitude(other.west_);
+    double e2 = normaliseLongitude(other.east_);
     double n2 = other.north_;
     double s2 = other.south_;
 
@@ -345,7 +326,7 @@ bool GribField::sameRotation(const GribField& other) const {
     if (rotation_) {
 
         return (rotation_latitude_ == other.rotation_latitude_) &&
-               (normalize(rotation_longitude_) == normalize(other.rotation_longitude_)) ;
+               (normaliseLongitude(rotation_longitude_) == normaliseLongitude(other.rotation_longitude_)) ;
     }
 
     return true;
@@ -499,11 +480,11 @@ bool GribField::less_than(const FieldBase & o) const {
             return false;
         }
 
-        if (normalize(west_) < normalize(other.west_)) {
+        if (normaliseLongitude(west_) < normaliseLongitude(other.west_)) {
             return true;
         }
 
-        if (normalize(west_) > normalize(other.west_)) {
+        if (normaliseLongitude(west_) > normaliseLongitude(other.west_)) {
             return false;
         }
 
@@ -515,11 +496,11 @@ bool GribField::less_than(const FieldBase & o) const {
             return false;
         }
 
-        if (normalize(east_) < normalize(other.east_)) {
+        if (normaliseLongitude(east_) < normaliseLongitude(other.east_)) {
             return true;
         }
 
-        if (normalize(east_) > normalize(other.east_)) {
+        if (normaliseLongitude(east_) > normaliseLongitude(other.east_)) {
             return false;
         }
     }
@@ -542,11 +523,11 @@ bool GribField::less_than(const FieldBase & o) const {
             return false;
         }
 
-        if (normalize(rotation_longitude_) < normalize(other.rotation_longitude_)) {
+        if (normaliseLongitude(rotation_longitude_) < normaliseLongitude(other.rotation_longitude_)) {
             return true;
         }
 
-        if (normalize(rotation_longitude_) > normalize(other.rotation_longitude_)) {
+        if (normaliseLongitude(rotation_longitude_) > normaliseLongitude(other.rotation_longitude_)) {
             return false;
         }
 
@@ -922,8 +903,8 @@ bool GribField::wrapped() const {
         return false;
     }
 
-    double w = normalize(west_);
-    double e = normalize(east_);
+    double w = normaliseLongitude(west_);
+    double e = normaliseLongitude(east_);
 
     return w == e;
 }

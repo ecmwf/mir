@@ -20,17 +20,33 @@
 #include "mir/compare/BufrField.h"
 #include "mir/compare/GribField.h"
 
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+
 namespace mir {
 namespace compare {
 
+static bool normaliseLongitudes_ = false;
+
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
+    using namespace eckit::option;
+
+    options.push_back(new SimpleOption<bool>("normalise-longitudes",
+                      "Normalise longitudes between 0 and 360"));
+
+
+
     GribField::addOptions(options);
     BufrField::addOptions(options);
 }
 
 
 void Field::setOptions(const eckit::option::CmdArgs &args) {
+
+    args.get("normalise-longitudes", normaliseLongitudes_);
+
+
     GribField::setOptions(args);
     BufrField::setOptions(args);
 }
@@ -231,6 +247,21 @@ void FieldBase::json(eckit::JSON& json) const {
     json << info_;
 }
 
+
+double FieldBase::normaliseLongitude(double longitude) {
+
+    if (!normaliseLongitudes_) {
+        return longitude;
+    }
+
+    while (longitude < 0) {
+        longitude += 360;
+    }
+    while (longitude >= 360) {
+        longitude -= 360;
+    }
+    return longitude;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 }  // namespace compare
