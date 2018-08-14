@@ -74,6 +74,22 @@ void MultiFile::save() const {
     mh.saveInto(*h);
 }
 
+void MultiFile::save(const std::string& path, off_t offset, size_t length, size_t n) const {
+    std::ostringstream oss;
+    oss << name_ << '.' << from_ << '.' << n;
+
+    eckit::PathName in(path);
+
+    eckit::PathName out(oss.str());
+
+    eckit::ScopedPtr<eckit::DataHandle> ih(in.partHandle(offset, length));
+    eckit::ScopedPtr<eckit::DataHandle> oh(out.fileHandle());
+
+    eckit::Log::info() << "Save " << (*ih) << " into " << (*oh) << std::endl;
+    ih->saveInto(*oh);
+}
+
+
 void MultiFile::add(const std::string& path) {
     paths_.push_back(path);
 }
@@ -99,11 +115,11 @@ void MultiFile::print(std::ostream& out)  const {
 void MultiFile::whiteListEntries(std::ostream& out) const {
     out << "# " << from_ << std::endl;
     std::string s(name_);
-    for(size_t i = 3; i < 3 + 16; i++) {
+    for (size_t i = 3; i < 3 + 16; i++) {
         if (i >= s.size()) {
             break;
         }
-        if(s[i] == '_') {
+        if (s[i] == '_') {
             break;
         }
         s[i] = '.';

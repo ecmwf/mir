@@ -173,6 +173,9 @@ private:
 
     const WhiteLister& whiteLister_;
     bool whiteListEntries_;
+    bool saveFirstPossibleMatch_;
+
+    size_t saved_;
 
     void whiteListEntries(const Field & field, const MultiFile & multi) const;
 

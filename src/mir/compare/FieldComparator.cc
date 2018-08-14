@@ -107,6 +107,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("white-list-entries",
                       "Output lines that can be used in white-list files"));
 
+
+    options.push_back(new SimpleOption<bool>("save-first-possible-match",
+                      "Save best match into a file for later analysis"));
 }
 
 
@@ -122,7 +125,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     roundDegrees_(false),
     maximumNumberOfErrors_(5),
     whiteLister_(whiteLister),
-    whiteListEntries_(false) {
+    whiteListEntries_(false),
+    saved_(0) {
 
     Field::setOptions(args);
 
@@ -130,6 +134,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
     args_.get("white-list-entries", whiteListEntries_);
+    args_.get("save-first-possible-match", saveFirstPossibleMatch_);
 
 
     std::string ignore;
@@ -745,13 +750,20 @@ void FieldComparator::missingField(const MultiFile & multi1,
         size_t cnt = 0;
         for (auto m = matches.begin(); m != matches.end(); ++m) {
 
+            const auto& other = (*m);
+
+            if (saveFirstPossibleMatch_ && cnt == 0) {
+                multi1.save(field.path(), field.offset(), field.length(), saved_);
+                multi2.save(other.path(), other.offset(), other.length(), saved_);
+                saved_++;
+            }
+
             if (cnt++ >= 5) {
                 eckit::Log::info() << " # ..." << std::endl;
                 break;
             }
 
 
-            const auto& other = (*m);
             eckit::Log::info() << " ? ";
             other.printDifference(eckit::Log::info(), field);
             eckit::Log::info() << " (" ;
