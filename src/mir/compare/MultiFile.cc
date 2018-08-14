@@ -76,7 +76,12 @@ void MultiFile::save() const {
 
 void MultiFile::save(const std::string& path, off_t offset, size_t length, size_t n) const {
     std::ostringstream oss;
-    oss << name_ << '.' << from_ << '.' << n;
+    if (name_ != from_) {
+        oss << name_ << '.' << from_ << '.' << n;
+    }
+    else {
+        oss << name_ << '.' << n;
+    }
 
     eckit::PathName in(path);
 
