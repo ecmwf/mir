@@ -101,7 +101,8 @@ protected: // members
                   const std::string& path,
                   off_t offset,
                   size_t size,
-                  bool fail);
+                  bool fail,
+                  size_t& duplicates);
 
     Field getField(eckit::Buffer& buffer,
                    const std::string& path,
@@ -174,6 +175,7 @@ private:
     const WhiteLister& whiteLister_;
     bool whiteListEntries_;
     bool saveFirstPossibleMatch_;
+    bool saveDuplicates_;
 
     size_t saved_;
 

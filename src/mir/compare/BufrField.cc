@@ -30,6 +30,37 @@ static double bufrRelativeError_ = 0.;
 static bool bufrFullLists = false;
 static std::set<std::string> ignoreBufrKeys;
 
+static std::set<std::string> headerKeys = {
+    "masterTableNumber",
+    "bufrHeaderSubCentre",
+    "bufrHeaderCentre",
+    "updateSequenceNumber",
+    "dataCategory",
+    "dataSubCategory",
+    "masterTablesVersionNumber",
+    "localTablesVersionNumber",
+    "typicalYearOfCentury",
+    "typicalMonth",
+    "typicalDay",
+    "typicalHour",
+    "typicalMinute",
+    "typicalDate",
+    "typicalTime",
+    "numberOfSubsets",
+    "observedData",
+    "compressedData",
+    "subsetNumber",
+    "dataType",
+    "ensembleMemberNumber",
+    "year",
+    "month",
+    "day",
+    "hour",
+    "latitude",
+    "longitude",
+    "pressure",
+};
+
 
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
@@ -165,6 +196,10 @@ inline bool sameValue(const std::string& name, double a, double b, double e) {
 
     if (name == "latitude" || name == "longitude") {
         return ::fabs(a - b) <= 0.0001 || sameValue("-", ::fabs(a - b), 0.0001, 1e-7);
+    }
+
+    if(headerKeys.find(name) != headerKeys.end()) {
+        return a == b;
     }
 
 

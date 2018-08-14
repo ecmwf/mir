@@ -110,6 +110,10 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("save-first-possible-match",
                       "Save best match into a file for later analysis"));
+
+
+    options.push_back(new SimpleOption<bool>("save-duplicates",
+                      "Save duplicates into a file for later analysis"));
 }
 
 
@@ -126,6 +130,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     maximumNumberOfErrors_(5),
     whiteLister_(whiteLister),
     whiteListEntries_(false),
+    saveFirstPossibleMatch_(false),
+    saveDuplicates_(false),
     saved_(0) {
 
     Field::setOptions(args);
@@ -135,6 +141,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
     args_.get("white-list-entries", whiteListEntries_);
     args_.get("save-first-possible-match", saveFirstPossibleMatch_);
+    args_.get("save-duplicates", saveDuplicates_);
 
 
     std::string ignore;
@@ -291,7 +298,8 @@ void FieldComparator::getField(const MultiFile& multi,
                                const std::string& path,
                                off_t offset,
                                size_t size,
-                               bool fail) {
+                               bool fail,
+                               size_t& duplicates) {
 
 
     Field field = getField(buffer, path, offset, size);
@@ -306,12 +314,32 @@ void FieldComparator::getField(const MultiFile& multi,
                            << "  ==> ";
         other.printDifference(eckit::Log::info(), field);
         eckit::Log::info() << std::endl;
-        // << "  ==> "
+        eckit::Log::info() << "This: "
+                           << field.path()
+                           << ", offset="
+                           << field.offset()
+                           << ", length="
+                           << field.length()
+                           << std::endl;
+        eckit::Log::info() << "Prev: "
+                           << other.path()
+                           << ", offset="
+                           << other.offset()
+                           << ", length="
+                           << other.length()
+                           << std::endl;
+
+        if (saveDuplicates_) {
+            multi.save(field.path(), field.offset(), field.length(), field.offset());
+            multi.save(other.path(), other.offset(), other.length(), other.offset());
+        }
+// << "  ==> "
         // << field.compare(other)
         // << std::endl
         if (fail) {
             error("duplicates");
         }
+        duplicates++;
     }
 
     if (whiteLister_.whiteListed(multi, field)) {
@@ -330,6 +358,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
     fields.clear();
+    size_t duplicates = 0;
 
     for (auto p = multi.paths().begin(); p != multi.paths().end(); ++p) {
 
@@ -342,7 +371,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             try {
                 GRIB_CALL(err);
-                getField(multi, buffer, fields, *p, ftello(f) - size, size, true);
+                getField(multi, buffer, fields, *p, ftello(f) - size, size, true, duplicates);
             } catch (std::exception& e) {
                 eckit::Log::info() << "Error in " << *p << " " << e.what() << std::endl;
                 error("exceptions");
@@ -352,7 +381,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
         }
     }
 
-    return fields.size();
+    return fields.size() - duplicates;
 }
 
 
@@ -365,6 +394,7 @@ size_t FieldComparator::list(const std::string& path) {
 
     int err;
     size_t size = buffer.size();
+    size_t duplicates = 0;
 
     eckit::AutoStdFile f(path);
     while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
@@ -372,7 +402,7 @@ size_t FieldComparator::list(const std::string& path) {
 
         try {
             GRIB_CALL(err);
-            getField(multi, buffer, fields, path, ftello(f) - size, size, false);
+            getField(multi, buffer, fields, path, ftello(f) - size, size, false, duplicates);
         } catch (std::exception& e) {
             eckit::Log::info() << "Error in " << path << " " << e.what() << std::endl;
         }
