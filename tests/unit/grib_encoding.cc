@@ -537,6 +537,98 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 }
 
 
+CASE("GRIB1/GRIB2 deleteLocalDefinition") {
+
+    using repres::latlon::RegularLL;
+    using util::Increments;
+    auto& log = eckit::Log::info();
+
+    RepresentationHandle rep = new RegularLL(Increments(1, 1));
+    log << "Test " << *(rep) << "..." << std::endl;
+
+
+    // GRIB1/GRIB2 encoding
+    for (bool remove : {false, true}) {
+        for (long edition : {1, 2}) {
+            eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+
+            // initialise a new grib handle from samples
+            grib_handle* handle(nullptr);
+
+            grib_info info = {{0,}};
+
+            // paramId "Indicates a missing value"
+            auto j = info.packing.extra_settings_count++;
+            info.packing.extra_settings[j].name = "paramId";
+            info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
+            info.packing.extra_settings[j].long_value = 129255;
+
+            info.packing.editionNumber = edition;
+
+            info.grid.missingValue = 2.;
+
+            // this test!
+            info.packing.deleteLocalDefinition = remove ? 1 : 0;
+
+            rep->fill(info);
+
+            size_t n = rep->numberOfPoints();
+            ASSERT(n);
+            std::vector<double> values(n, 0.);
+            values[0] = 1.;
+
+            // Make sure handles are deleted even in case of exception
+            class HandleFree {
+                grib_handle *h_;
+            public:
+                HandleFree(grib_handle *h): h_(h) {}
+                HandleFree(const HandleFree&) = delete;
+                void operator=(const HandleFree&) = delete;
+                ~HandleFree() {
+                    if (h_) {
+                        grib_handle_delete(h_);
+                    }
+                }
+            };
+
+            grib_handle* sample = grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
+            ASSERT(sample);
+            HandleFree sample_detroy(sample);
+
+            int err = 0;
+            int flags = 0;
+            handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
+            GRIB_CALL(err);
+
+            ASSERT(handle != nullptr);
+
+
+            // initialise a new MIRInput from the grib handle
+
+            const void* message;
+            size_t length;
+            GRIB_CALL(grib_get_message(handle, &message, &length));
+
+            eckit::ScopedPtr<MIRInput> gribInput(new input::GribMemoryInput(message, length));
+
+
+            // test
+            log << "\tGRIB" << edition << ": deleteLocalDefinition = " << info.packing.deleteLocalDefinition << std::endl;
+
+            long remove_result = -1;
+            EXPECT(codes_get_long(handle, "localUsePresent", &remove_result) == GRIB_SUCCESS);
+
+            if (remove) {
+                EXPECT(remove_result == 0);
+            }
+
+            grib_handle_delete(handle);
+        }
+    }
+}
+
+
 }  // namespace unit
 }  // namespace tests
 }  // namespace mir
