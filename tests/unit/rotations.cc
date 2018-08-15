@@ -29,6 +29,8 @@ namespace unit {
 
 
 struct test_t {
+public:
+
     test_t(const util::Increments& increments,
            const util::Rotation& rotation,
            const util::BoundingBox& bbox,
@@ -46,11 +48,21 @@ struct test_t {
     const util::BoundingBox bbox_;
     const bool includesNorthPole_;
     const bool includesSouthPole_;
+
+private:
+
+    friend std::ostream& operator<<(std::ostream& out, const test_t& test) {
+        return (out << "test:"
+                << "\n\t" << "Increments  = " << test.increments_
+                << "\n\t" << "Rotation    = " << test.rotation_
+                << "\n\t" << "BoundingBox = " << test.bbox_
+                << "\n\t" << "includesNorthPole? " << test.includesNorthPole_
+                << "\n\t" << "includesSouthPole? " << test.includesSouthPole_);
+    }
 };
 
 
 CASE("MIR-282") {
-    using eckit::geometry::Point2;
     using atlas::PointLonLat;
     using util::Increments;
     using util::Rotation;
@@ -62,41 +74,36 @@ CASE("MIR-282") {
 
 
     std::vector<test_t> tests {
-        test_t(Increments(0.25, 0.25),   Rotation(-35.,   0.), BoundingBox(12, -14.5, -17.25,  16.25)),
-        test_t(Increments(1., 1.),       Rotation(-90.,   0.), BoundingBox(), true, true),
-        test_t(Increments(1., 1.),       Rotation(-75.,  15.), BoundingBox(75., -35.,  20.,    45.), true, false),
-        test_t(Increments(1., 1.),       Rotation(-35.,  15.), BoundingBox(40., -55., -45.,    55.), true, false),
-        test_t(Increments(1., 1.),       Rotation(-30., -15.), BoundingBox(35., -40., -40.,    50.), true, false),
-        test_t(Increments(1., 1.),       Rotation(-25.,   0.), BoundingBox(40., -50., -40.,    50.), true, false),
-        test_t(Increments(1., 1.),       Rotation(-15.,  45.), BoundingBox(30., -50., -30.,     5.), true, false),
-        test_t(Increments(1., 1.),       Rotation(  0.,  80.), BoundingBox(50., -65., -40.,    30.), true, false),
+        test_t(Increments(0.25, 0.25),   Rotation(-35.,   0.),  BoundingBox(12, -14.5, -17.25,  16.25)),
+        test_t(Increments(1., 1.),       Rotation(-90.,   0.),  BoundingBox(), true, true),
+        test_t(Increments(1., 1.),       Rotation(-75.,  15.),  BoundingBox(75., -35.,  20.,    45.), true),
+        test_t(Increments(1., 1.),       Rotation(-35.,  15.),  BoundingBox(40., -55., -45.,    55.), true),
+        test_t(Increments(1., 1.),       Rotation(-30., -15.),  BoundingBox(35., -40., -40.,    50.), true),
+        test_t(Increments(1., 1.),       Rotation(-25.,   0.),  BoundingBox(40., -50., -40.,    50.), true),
+        test_t(Increments(1., 1.),       Rotation(-15.,  45.),  BoundingBox(30., -50., -30.,     5.), true),
+        test_t(Increments(1., 1.),       Rotation(  0.,  80.),  BoundingBox(50., -65., -40.,    30.), true),
 
-        test_t(Increments(0.2,   0.2  ), Rotation(-40.,  10.), BoundingBox(22.7,   -13.6,  -5.9, 21.8)),
-        test_t(Increments(0.1,   0.1  ), Rotation(-43.,  10.), BoundingBox( 3.4,    -6.8,  -4.4,  4.8)),
-        test_t(Increments(0.1,   0.1  ), Rotation(-30.,   0.), BoundingBox(18.1,   -37.6, -31.,  39.9)),
-        test_t(Increments(0.5,   0.5  ), Rotation(-76.,  14.), BoundingBox(72.,    -32.,   20.,  42.)),
-        test_t(Increments(0.125, 0.125), Rotation(-30.,  -5.), BoundingBox( 9.875, -15.,  -20.,  14.875)),
+        test_t(Increments(0.2,   0.2  ), Rotation(-40.,  10.),  BoundingBox(22.7,   -13.6,  -5.9, 21.8)),
+        test_t(Increments(0.1,   0.1  ), Rotation(-43.,  10.),  BoundingBox( 3.4,    -6.8,  -4.4,  4.8)),
+        test_t(Increments(0.1,   0.1  ), Rotation(-30.,   0.),  BoundingBox(18.1,   -37.6, -31.,  39.9)),
+        test_t(Increments(0.5,   0.5  ), Rotation(-76.,  14.),  BoundingBox(72.,    -32.,   20.,  42.)),
+        test_t(Increments(0.125, 0.125), Rotation(-30.,  -5.),  BoundingBox( 9.875, -15.,  -20.,  14.875)),
 
-        test_t(Increments(0.15,  0.15 ), Rotation(-15.,  45.), BoundingBox(27.5,  -46.5,  -28,       1.5),  true,  false),
-        test_t(Increments(0.3,   0.3  ), Rotation(  0., 130.), BoundingBox(32.75, -86.75, -37.75,  -26.15), false, false),
-        test_t(Increments(0.25,  0.25 ), Rotation(-35.,  15.), BoundingBox(36.,   -51.,   -41.,     51.),   true,  false),
+        test_t(Increments(0.15,  0.15 ), Rotation(-15.,  45.),  BoundingBox(27.5,  -46.5,  -28,       1.5),  true),
+        test_t(Increments(0.3,   0.3  ), Rotation(  0., 130.),  BoundingBox(32.75, -86.75, -37.75,  -26.15), false),
+        test_t(Increments(0.25,  0.25 ), Rotation(-35.,  15.),  BoundingBox(36.,   -51.,   -41.,     51.),   true),
 
-        test_t(Increments(1., 1.), Rotation(-35.,  160.), BoundingBox(80.,   30.,  75.,  200.)),
-        test_t(Increments(1., 1.), Rotation( 30.,  -30.), BoundingBox(70.,  120.,  60.,  200.)),
-        test_t(Increments(1., 1.), Rotation( 45., -120.), BoundingBox(55., -120., -10.,  140.)),
+        test_t(Increments(1., 1.),       Rotation(-35.,  160.), BoundingBox(80.,   30.,  75.,  200.)),
+        test_t(Increments(1., 1.),       Rotation( 30.,  -30.), BoundingBox(70.,  120.,  60.,  200.)),
+        test_t(Increments(1., 1.),       Rotation( 45., -120.), BoundingBox(55., -120., -10.,  140.)),
+
+        test_t(Increments(10., 10.),     Rotation(50.,  100.),  BoundingBox(10.,   70.,  -20.,  100.)),
     };
 
 
     SECTION("rotated_ll covering North/South poles") {
         for (auto& test : tests) {
-
-            log << "check:"
-                << "\n\t" << test.increments_
-                << "\n\t" << test.rotation_
-                << "\n\t" << test.bbox_
-                << "\n\t" << "includesNorthPole? " << test.includesNorthPole_
-                << "\n\t" << "includesSouthPole? " << test.includesSouthPole_
-                << std::endl;
+            log << test << std::endl;
 
             const PointLonLat southPole(
                         test.rotation_.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
@@ -125,17 +132,16 @@ CASE("MIR-282") {
 
     SECTION("rotated_ll contained by cropping") {
         for (auto& test : tests) {
+            log << test << std::endl;
 
             repres::RepresentationHandle repres(new repres::latlon::RotatedLL(
                                                     test.increments_,
                                                     test.rotation_,
                                                     test.bbox_) );
 
-            util::BoundingBox crop(test.rotation_.rotate(test.bbox_));
+            BoundingBox crop(test.rotation_.rotate(test.bbox_));
 
-            log << "check:"
-                << "\n\t" "   " << *repres
-                << "\n\t" "contained by"
+            log << "contained by cropping"
                 << "\n\t" "   " << test.bbox_
                 << "\n\t" " + " << test.rotation_
                 << "\n\t" " = " << crop
