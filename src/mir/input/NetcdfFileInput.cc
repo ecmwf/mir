@@ -12,14 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/input/NetcdfFileInput.h"
 
 #include "eckit/exception/Exceptions.h"
-
-#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/Field.h"
-#include "mir/netcdf/GridSpec.h"
 #include "mir/util/Grib.h"
 
 
@@ -27,33 +25,31 @@ namespace mir {
 namespace input {
 
 
-NetcdfFileInput::NetcdfFileInput(const eckit::PathName &path):
+NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path):
     path_(path),
     cache_(*this),
     dataset_(path, *this),
     fields_(dataset_.fields()),
     current_(-1) {
 
-    for (auto j  = fields_.begin(); j != fields_.end(); ++j ) {
-        std::cout << "NC " << *(*j) << std::endl;
+    for (auto& field : fields_) {
+        std::cout << "NC " << *field << std::endl;
     }
-
 }
 
 
 NetcdfFileInput::~NetcdfFileInput() {
-    for (auto j = fields_.begin(); j != fields_.end(); ++j) {
-        delete (*j);
+    for (auto& field : fields_) {
+        delete field;
     }
 }
 
 
-
 grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
     //ASSERT(which == 0);
-    static grib_handle *handle = 0;
+    static grib_handle *handle = nullptr;
     if (!handle) {
-        handle = grib_handle_new_from_samples(0, "GRIB1");
+        handle = grib_handle_new_from_samples(nullptr, "GRIB1");
         grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
     }
@@ -61,12 +57,12 @@ grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
 }
 
 
-void NetcdfFileInput::print(std::ostream &out) const {
+void NetcdfFileInput::print(std::ostream& out) const {
     out << "NetcdfFileInput[path=" << path_ << "]";
 }
 
 
-const param::MIRParametrisation &NetcdfFileInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& NetcdfFileInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return cache_;
 }
@@ -77,16 +73,12 @@ bool NetcdfFileInput::next() {
 
     current_++;
 
-    if (current_ >= fields_.size()) {
-        return false;
-    }
-
-    return true;
+    return current_ < int(fields_.size());
 }
 
 
 data::MIRField NetcdfFileInput::field() const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
+    ASSERT(current_ >= 0 && (current_ < int(fields_.size())));
 
     auto& ncField = *fields_[current_];
 
@@ -116,20 +108,31 @@ bool NetcdfFileInput::has(const std::string& name) const {
     return FieldParametrisation::has(name);
 }
 
-bool NetcdfFileInput::get(const std::string &name, std::string &value) const {
+bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
     if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
-bool NetcdfFileInput::get(const std::string &name, double &value) const {
+bool NetcdfFileInput::get(const std::string& name, bool& value) const {
+
+    // NOTE: this disables checking for duplicate points for any NetCDF file!!
+    if (name == "check-duplicate-points") {
+        value = false;
+        return true;
+    }
+
+    return false;
+}
+
+bool NetcdfFileInput::get(const std::string& name, double& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
     if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
 }
 
 
-bool NetcdfFileInput::get(const std::string &name, std::vector<double> &value) const {
+bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
     if (fields_[current_]->get(name, value)) {return true;}
     return FieldParametrisation::get(name, value);
