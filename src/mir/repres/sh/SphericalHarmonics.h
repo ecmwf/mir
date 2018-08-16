@@ -46,7 +46,24 @@ class SphericalHarmonics : public Representation {
     // None
 
     // -- Methods
-    // None
+
+    static void truncate(
+            size_t truncation_from,
+            size_t truncation_to,
+            const MIRValuesVector& in,
+            MIRValuesVector& out);
+
+    static size_t number_of_complex_coefficients(size_t truncation) {
+        return (truncation + 1) * (truncation + 2) / 2;
+    }
+
+    static void interlace_spectra(
+            MIRValuesVector& interlaced,
+            const MIRValuesVector& spectra,
+            size_t truncation,
+            size_t numberOfComplexCoefficients,
+            size_t index,
+            size_t indexTotal);
 
     // -- Overridden methods
 
@@ -58,16 +75,7 @@ class SphericalHarmonics : public Representation {
     // None
 
     // -- Class methods
-
-    static void truncate(
-            size_t truncation_from,
-            size_t truncation_to,
-            const MIRValuesVector& in,
-            MIRValuesVector& out);
-
-    static size_t number_of_complex_coefficients(size_t truncation) {
-        return (truncation + 1) * (truncation + 2) / 2;
-    }
+    // None
 
   protected:
 

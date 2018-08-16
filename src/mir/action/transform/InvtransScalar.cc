@@ -18,6 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/repres/sh/SphericalHarmonics.h"
 
 
 namespace mir {
@@ -31,20 +32,67 @@ void InvtransScalar::print(std::ostream& out) const {
 
 
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
-    eckit::Timer timer("InvtransScalar::sh2grid", eckit::Log::debug<LibMir>());
+    auto& log = eckit::Log::debug<LibMir>();
+    eckit::Timer timer("InvtransScalar::sh2grid", log);
 
-    size_t number_of_fields = field.dimensions();
-    ASSERT(number_of_fields == 1);
 
     // set invtrans options
     atlas::util::Config config;
     config.set(atlas::option::global());
 
-    // do inverse transform and set gridded values
-    MIRValuesVector output(trans.grid().size());
-    trans.invtrans(1, field.values(0).data(), output.data(), config);
+    size_t F = field.dimensions();
+    ASSERT(F > 0);
 
-    field.update(output, 0);
+
+    // set input working area (avoid copies for one field only)
+    MIRValuesVector input;
+    if (F > 1) {
+        eckit::Timer timer("InvtransScalar: interlacing spectra", log);
+
+        size_t T = size_t(trans.truncation());
+        ASSERT(T > 0);
+
+        size_t N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+        ASSERT(N > 0);
+
+        input.resize(F * N * 2);
+
+        for (size_t i = 0; i < F; ++i) {
+            repres::sh::SphericalHarmonics::interlace_spectra(input, field.values(i), T, N, i, F);
+        }
+    }
+
+
+    // set output working area
+    const size_t Ngp = trans.grid().size();
+    MIRValuesVector output(F * Ngp);
+
+
+    // inverse transform
+    {
+        eckit::Timer timer("InvtransScalar: invtrans", log);
+        trans.invtrans(
+                    int(F),
+                    F > 1 ? input.data() : field.values(0).data(),
+                    output.data(),
+                    config );
+    }
+
+    
+    // set field values (again, avoid copies for one field only)
+    if (F > 1) {
+        eckit::Timer timer("InvtransScalar: copying grid-point values", log);
+
+        auto here = output.cbegin();
+        for (size_t i = 0; i < F; ++i) {
+            MIRValuesVector output_field(here, here + int(Ngp));
+
+            field.update(output_field, i);
+            here += int(Ngp);
+        }
+    } else {
+        field.update(output, 0);
+    }
 }
 
 
