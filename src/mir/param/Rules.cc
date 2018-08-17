@@ -64,7 +64,7 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
 
             const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
 
-            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", true);
+            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
             if (abortIfUnknownParameterClass) {
                 throw eckit::SeriousBug(msg);
             }
