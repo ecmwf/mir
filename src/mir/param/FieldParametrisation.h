@@ -96,7 +96,7 @@ private:
     // -- Methods
 
     template<class T>
-    bool _get(const std::string& name, T&) const;
+    bool _get(const std::string& name, T& value) const;
 
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
