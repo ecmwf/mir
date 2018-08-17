@@ -58,6 +58,7 @@ private:
     eckit::Mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
+    std::set<long> warning_;
 
     // -- Methods
 

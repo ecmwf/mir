@@ -120,11 +120,11 @@ stress: {}
 stress.accumulated: {}
 
 unknown.experimental:
-  interpolation: fail
+  warning: true
 
 unknown.missing:
-  interpolation: fail
+  warning: true
 
 unknown.reserved:
-  interpolation: fail
+  warning: true
 
