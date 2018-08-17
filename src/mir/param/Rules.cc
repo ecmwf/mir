@@ -74,9 +74,12 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
         }
     }
 
-    if (warning_.find(ruleValue) != warning_.end()) {
-        const std::string msg = "Warning: " + ruleName + "=" + std::to_string(ruleValue);
-        eckit::Log::warning() << msg << std::endl;
+    auto w = warning_.find(ruleValue);
+    if (w != warning_.end()) {
+        warning_.erase(w);
+        eckit::Log::warning() << "Warning: " << ruleName << "=" << ruleValue
+                              << " post-processing defaults might not be appropriate"
+                              << std::endl;
     }
 
     return s;
