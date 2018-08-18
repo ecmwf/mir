@@ -76,6 +76,12 @@ ratio: {}
 # area ratio (typical units: [m**2 m**-2])
 ratio.area: {}
 
+# volumetric ratio (typical units: [m**3 m**-3])
+ratio.volume: {}
+
+# mass mixture ratio (typical units: [kg kg**-1])
+ratio.mass: {}
+
 # ratio representing a box average (typical units: <non-dimensional>, [0, 1], %)
 ratio.cover: {}
 
@@ -92,14 +98,11 @@ ratio.fraction: {}
 # (typical units: [s])
 ratio.fraction.accumulated: {}
 
-# mass mixture ratio (typical units: [kg kg**-1])
-ratio.mass: {}
-
 # (typical units: <non-dimensional>, [0, 1])
 ratio.probability: {}
 
-# volumetric ratio (typical units: [m**3 m**-3])
-ratio.volume: {}
+# (typical units: <non-dimensional>)
+ratio.random: {}
 
 # intensity as a function of discrete wavelengths
 spectrum:
