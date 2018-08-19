@@ -85,8 +85,6 @@ private:
 
     // -- Methods
 
-    bool windInput() const;
-    bool windOutput() const;
     void selectWindComponents(action::ActionPlan&) const;
 
     // -- Overridden methods

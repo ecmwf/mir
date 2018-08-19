@@ -1011,6 +1011,9 @@ intensity:
 - 201203  # snow temperature
 - 201215  # ice surface temperature
 - 201241  # convective available potential energy
+- 210049  # Aerosol precursor optical depth
+- 210050  # Aerosol small mode optical depth
+- 210051  # Aerosol large mode optical depth
 - 210052  # Dust emission potential
 - 210053  # Lifting threshold speed
 - 210064  # Total column Carbon Dioxide
@@ -1042,9 +1045,38 @@ intensity:
 - 210183  # Total column Radon
 - 210184  # Total column Sulphur Hexafluoride
 - 210206  # GEMS Total column ozone
+- 210207  # Total Aerosol Optical Depth at 550nm
+- 210208  # Sea Salt Aerosol Optical Depth at 550nm
+- 210209  # Dust Aerosol Optical Depth at 550nm
+- 210210  # Organic Matter Aerosol Optical Depth at 550nm
+- 210211  # Black Carbon Aerosol Optical Depth at 550nm
+- 210212  # Sulphate Aerosol Optical Depth at 550nm
+- 210213  # Total Aerosol Optical Depth at 469nm
+- 210214  # Total Aerosol Optical Depth at 670nm
+- 210215  # Total Aerosol Optical Depth at 865nm
+- 210216  # Total Aerosol Optical Depth at 1240nm
+- 210217  # Total aerosol optical depth at 340 nm
+- 210218  # Total aerosol optical depth at 355 nm
+- 210219  # Total aerosol optical depth at 380 nm
+- 210220  # Total aerosol optical depth at 400 nm
+- 210221  # Total aerosol optical depth at 440 nm
+- 210222  # Total aerosol optical depth at 500 nm
+- 210223  # Total aerosol optical depth at 532 nm
+- 210224  # Total aerosol optical depth at 645 nm
+- 210225  # Total aerosol optical depth at 800 nm
+- 210226  # Total aerosol optical depth at 858 nm
+- 210227  # Total aerosol optical depth at 1020 nm
+- 210228  # Total aerosol optical depth at 1064 nm
+- 210229  # Total aerosol optical depth at 1640 nm
+- 210230  # Total aerosol optical depth at 2130 nm
 - 210242  # Altitude of plume bottom
+- 210243  # Volcanic sulphate aerosol optical depth at 550 nm
+- 210244  # Volcanic ash optical depth at 550 nm
 - 210245  # Profile of total aerosol dry extinction coefficient
 - 210246  # Profile of total aerosol dry absorption coefficient
+- 211049  # Aerosol precursor optical depth
+- 211050  # Aerosol small mode optical depth
+- 211051  # Aerosol large mode optical depth
 - 211052  # Dust emission potential
 - 211053  # Lifting threshold speed
 - 211064  # Total column Carbon Dioxide
@@ -1073,8 +1105,69 @@ intensity:
 - 211183  # Total column Radon
 - 211184  # Total column Sulphur Hexafluoride
 - 211206  # GEMS Total column ozone
+- 211207  # Total Aerosol Optical Depth at 550nm
+- 211208  # Sea Salt Aerosol Optical Depth at 550nm
+- 211209  # Dust Aerosol Optical Depth at 550nm
+- 211210  # Organic Matter Aerosol Optical Depth at 550nm
+- 211211  # Black Carbon Aerosol Optical Depth at 550nm
+- 211212  # Sulphate Aerosol Optical Depth at 550nm
+- 211213  # Total Aerosol Optical Depth at 469nm
+- 211214  # Total Aerosol Optical Depth at 670nm
+- 211215  # Total Aerosol Optical Depth at 865nm
+- 211216  # Total Aerosol Optical Depth at 1240nm
+- 215022  # Sea salt aerosol (0.03 - 0.5 um) optical depth
+- 215023  # Sea salt aerosol (0.5 - 5 um) optical depth
+- 215024  # Sea salt aerosol (5 - 20 um) optical depth
+- 215046  # Dust aerosol (0.03 - 0.55 um) optical depth
+- 215047  # Dust aerosol (0.55 - 9 um) optical depth
+- 215048  # Dust aerosol (9 - 20 um) optical depth
+- 215063  # Hydrophobic organic matter aerosol optical depth
+- 215064  # Hydrophilic organic matter aerosol optical depth
+- 215079  # Hydrophobic black carbon aerosol optical depth
+- 215080  # Hydrophilic black carbon aerosol optical depth
+- 215088  # Sulphate aerosol optical depth
+- 215089  # Accumulated total aerosol optical depth at 550 nm
 - 215091  # 10 metre wind speed dust emission potential
 - 215092  # 10 metre wind gustiness dust emission potential
+- 215096  # Total absorption aerosol optical depth at 340 nm
+- 215097  # Total absorption aerosol optical depth at 355 nm
+- 215098  # Total absorption aerosol optical depth at 380 nm
+- 215099  # Total absorption aerosol optical depth at 400 nm
+- 215100  # Total absorption aerosol optical depth at 440 nm
+- 215101  # Total absorption aerosol optical depth at 469 nm
+- 215102  # Total absorption aerosol optical depth at 500 nm
+- 215103  # Total absorption aerosol optical depth at 532 nm
+- 215104  # Total absorption aerosol optical depth at 550 nm
+- 215105  # Total absorption aerosol optical depth at 645 nm
+- 215106  # Total absorption aerosol optical depth at 670 nm
+- 215107  # Total absorption aerosol optical depth at 800 nm
+- 215108  # Total absorption aerosol optical depth at 858 nm
+- 215109  # Total absorption aerosol optical depth at 865 nm
+- 215110  # Total absorption aerosol optical depth at 1020 nm
+- 215111  # Total absorption aerosol optical depth at 1064 nm
+- 215112  # Total absorption aerosol optical depth at 1240 nm
+- 215113  # Total absorption aerosol optical depth at 1640 nm
+- 215114  # Total fine mode (r < 0.5 um) aerosol optical depth at 340 nm
+- 215115  # Total fine mode (r < 0.5 um) aerosol optical depth at 355 nm
+- 215116  # Total fine mode (r < 0.5 um) aerosol optical depth at 380 nm
+- 215117  # Total fine mode (r < 0.5 um) aerosol optical depth at 400 nm
+- 215118  # Total fine mode (r < 0.5 um) aerosol optical depth at 440 nm
+- 215119  # Total fine mode (r < 0.5 um) aerosol optical depth at 469 nm
+- 215120  # Total fine mode (r < 0.5 um) aerosol optical depth at 500 nm
+- 215121  # Total fine mode (r < 0.5 um) aerosol optical depth at 532 nm
+- 215122  # Total fine mode (r < 0.5 um) aerosol optical depth at 550 nm
+- 215123  # Total fine mode (r < 0.5 um) aerosol optical depth at 645 nm
+- 215124  # Total fine mode (r < 0.5 um) aerosol optical depth at 670 nm
+- 215125  # Total fine mode (r < 0.5 um) aerosol optical depth at 800 nm
+- 215126  # Total fine mode (r < 0.5 um) aerosol optical depth at 858 nm
+- 215127  # Total fine mode (r < 0.5 um) aerosol optical depth at 865 nm
+- 215128  # Total fine mode (r < 0.5 um) aerosol optical depth at 1020 nm
+- 215129  # Total fine mode (r < 0.5 um) aerosol optical depth at 1064 nm
+- 215130  # Total fine mode (r < 0.5 um) aerosol optical depth at 1240 nm
+- 215131  # Total fine mode (r < 0.5 um) aerosol optical depth at 1640 nm
+- 215175  # Sulphur dioxide optical depth
+- 215176  # Total absorption aerosol optical depth at 2130 nm
+- 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
 - 215180  # Aerosol extinction coefficient at 355 nm
 - 215181  # Aerosol extinction coefficient at 532 nm
 - 215182  # Aerosol extinction coefficient at 1064 nm
@@ -3892,6 +3985,63 @@ ratio.volume:
 - 260213  # Volumetric direct evaporation cease (soil moisture)
 - 260215  # Soil porosity
 - 260216  # Volumetric saturation of soil moisture
+
+ratio.random:
+- 213001  # Random pattern 1 for sppt
+- 213002  # Random pattern 2 for sppt
+- 213003  # Random pattern 3 for sppt
+- 213004  # Random pattern 4 for sppt
+- 213005  # Random pattern 5 for sppt
+- 213101  # Random pattern 1 for SPP scheme
+- 213102  # Random pattern 2 for SPP scheme
+- 213103  # Random pattern 3 for SPP scheme
+- 213104  # Random pattern 4 for SPP scheme
+- 213105  # Random pattern 5 for SPP scheme
+- 213106  # Random pattern 6 for SPP scheme
+- 213107  # Random pattern 7 for SPP scheme
+- 213108  # Random pattern 8 for SPP scheme
+- 213109  # Random pattern 9 for SPP scheme
+- 213110  # Random pattern 10 for SPP scheme
+- 213111  # Random pattern 11 for SPP scheme
+- 213112  # Random pattern 12 for SPP scheme
+- 213113  # Random pattern 13 for SPP scheme
+- 213114  # Random pattern 14 for SPP scheme
+- 213115  # Random pattern 15 for SPP scheme
+- 213116  # Random pattern 16 for SPP scheme
+- 213117  # Random pattern 17 for SPP scheme
+- 213118  # Random pattern 18 for SPP scheme
+- 213119  # Random pattern 19 for SPP scheme
+- 213120  # Random pattern 20 for SPP scheme
+- 213121  # Random pattern 21 for SPP scheme
+- 213122  # Random pattern 22 for SPP scheme
+- 213123  # Random pattern 23 for SPP scheme
+- 213124  # Random pattern 24 for SPP scheme
+- 213125  # Random pattern 25 for SPP scheme
+- 213126  # Random pattern 26 for SPP scheme
+- 213127  # Random pattern 27 for SPP scheme
+- 213128  # Random pattern 28 for SPP scheme
+- 213129  # Random pattern 29 for SPP scheme
+- 213130  # Random pattern 30 for SPP scheme
+- 213131  # Random pattern 31 for SPP scheme
+- 213132  # Random pattern 32 for SPP scheme
+- 213133  # Random pattern 33 for SPP scheme
+- 213134  # Random pattern 34 for SPP scheme
+- 213135  # Random pattern 35 for SPP scheme
+- 213136  # Random pattern 36 for SPP scheme
+- 213137  # Random pattern 37 for SPP scheme
+- 213138  # Random pattern 38 for SPP scheme
+- 213139  # Random pattern 39 for SPP scheme
+- 213140  # Random pattern 40 for SPP scheme
+- 213141  # Random pattern 41 for SPP scheme
+- 213142  # Random pattern 42 for SPP scheme
+- 213143  # Random pattern 43 for SPP scheme
+- 213144  # Random pattern 44 for SPP scheme
+- 213145  # Random pattern 45 for SPP scheme
+- 213146  # Random pattern 46 for SPP scheme
+- 213147  # Random pattern 47 for SPP scheme
+- 213148  # Random pattern 48 for SPP scheme
+- 213149  # Random pattern 49 for SPP scheme
+- 213150  # Random pattern 50 for SPP scheme
 
 spectrum:
 - 3021  # Radar spectra (1)
