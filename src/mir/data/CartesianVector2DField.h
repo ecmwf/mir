@@ -97,7 +97,6 @@ private:
     MIRValuesVector valuesY_;
     double missingValue_;
     const repres::Representation* representation_;
-    bool hasMissing_;
 
     // -- Methods
     // None

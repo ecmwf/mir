@@ -41,8 +41,7 @@ CartesianVector2DField::CartesianVector2DField(
     valuesX_(),
     valuesY_(),
     missingValue_(missingValue),
-    representation_(representation),
-    hasMissing_(hasMissing) {
+    representation_(representation) {
 
     ASSERT(representation_);
     representation_->attach();

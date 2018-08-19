@@ -28,8 +28,9 @@ namespace knn {
 namespace distance {
 
 
-struct DistanceWeighting {
-
+class DistanceWeighting {
+public:
+    
     DistanceWeighting();
 
     virtual ~DistanceWeighting();

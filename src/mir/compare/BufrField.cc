@@ -90,8 +90,8 @@ void BufrField::setOptions(const eckit::option::CmdArgs &args) {
 }
 
 BufrEntry::BufrEntry(const std::string& full,
-                     long l,
-                     double d,
+                     const std::vector<long>& l,
+                     const std::vector<double>& d,
                      const std::string& s,
                      int type):
     full_(full),
@@ -114,18 +114,18 @@ BufrEntry::BufrEntry(const std::string& full,
 
     case GRIB_TYPE_LONG:
         s_.clear();
-        d_ = 0;
+        d_.clear();
         break;
 
     case GRIB_TYPE_DOUBLE:
         s_.clear();
-        l_ = 0;
+        l_.clear();
 
         break;
 
     case GRIB_TYPE_STRING:
-        d_ = 0;
-        l_ = 0;
+        d_.clear();
+        l_.clear();
         break;
 
     default:
@@ -171,11 +171,20 @@ void BufrEntry::json(eckit::JSON &json) const {
     switch (type_) {
 
     case GRIB_TYPE_LONG:
-        json << l_;
+        if (l_.size() == 1) {
+            json << l_[0];
+
+        } else {
+             json << l_;
+        }
         break;
 
     case GRIB_TYPE_DOUBLE:
-        json << d_;
+        if (d_.size() == 1) {
+            json << d_[0];
+        } else {
+            json << d_;
+        }
         break;
 
     case GRIB_TYPE_STRING:
@@ -186,7 +195,7 @@ void BufrEntry::json(eckit::JSON &json) const {
 }
 
 
-inline bool sameValue(const std::string& name, double a, double b, double e) {
+static bool sameValue(const std::string& name, double a, double b, double e) {
 // TODO: configure me
 
     if (name == "longitude") {
@@ -198,7 +207,7 @@ inline bool sameValue(const std::string& name, double a, double b, double e) {
         return ::fabs(a - b) <= 0.0001 || sameValue("-", ::fabs(a - b), 0.0001, 1e-7);
     }
 
-    if(headerKeys.find(name) != headerKeys.end()) {
+    if (headerKeys.find(name) != headerKeys.end()) {
         return a == b;
     }
 
@@ -212,6 +221,27 @@ inline bool sameValue(const std::string& name, double a, double b, double e) {
     }
 }
 
+static bool sameValue(const std::string& name, const std::vector<double>& a, const std::vector<double>& b, double e) {
+    ASSERT(a.size() == b.size());
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (!sameValue(name, a[i], b[i], e)) {
+            return false;
+        }
+    }
+    return true;
+
+}
+
+static bool sameValue(const std::string& name, const std::vector<long>& a, const std::vector<long>& b, double e) {
+    ASSERT(a.size() == b.size());
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (!sameValue(name, double(a[i]), double(b[i]), e)) {
+            return false;
+        }
+    }
+    return true;
+
+}
 
 bool BufrEntry::operator==(const BufrEntry &other) const {
 
@@ -227,13 +257,13 @@ bool BufrEntry::operator==(const BufrEntry &other) const {
     switch (type_) {
 
     case GRIB_TYPE_LONG:
-        return  sameValue(name_, l_, other.l_, bufrRelativeError_);
+        return sameValue(name_, l_, other.l_, bufrRelativeError_);
 
     case GRIB_TYPE_DOUBLE:
-        return  sameValue(name_, d_, other.d_, bufrRelativeError_);
+        return sameValue(name_, d_, other.d_, bufrRelativeError_);
 
     case GRIB_TYPE_STRING:
-        return  s_ == other.s_;
+        return s_ == other.s_;
     }
 
     NOTIMP;
@@ -257,13 +287,13 @@ bool BufrEntry::operator<(const BufrEntry &other) const {
     switch (type_) {
 
     case GRIB_TYPE_LONG:
-        return  l_ < other.l_;
+        return l_ < other.l_;
 
     case GRIB_TYPE_DOUBLE:
-        return  d_ < other.d_ && !sameValue(name_, d_, other.d_, bufrRelativeError_);
+        return d_ < other.d_ && !sameValue(name_, d_, other.d_, bufrRelativeError_);
 
     case GRIB_TYPE_STRING:
-        return  s_ < other.s_;
+        return s_ < other.s_;
     }
 
     NOTIMP;
@@ -311,31 +341,51 @@ BufrField::BufrField(const char* buffer, size_t size,
             continue;
         }
 
-        double d = 0;
-        long l = 0;
+        if (strcmp(name, "subsetNumber") == 0) {
+            continue;
+        }
+
+        std::vector<double> d;
+        std::vector<long> l;
         char s[1024];
         size_t len = sizeof(s);
 
         int t;
         GRIB_CALL(grib_get_native_type(h, name, &t));
 
+        size_t count = 0;
+        GRIB_CALL(grib_get_size(h, name, &count));
+        // ASSERT(count == 1);
+
+
         switch (t) {
 
         case GRIB_TYPE_LONG:
-            GRIB_CALL(grib_get_long(h, name, &l));
+            l.resize(count);
+            GRIB_CALL(grib_get_long_array(h, name, &l[0], &count));
+            ASSERT(l.size() == count);
             break;
 
         case GRIB_TYPE_DOUBLE:
-            GRIB_CALL(grib_get_double(h, name, &d));
-
+            d.resize(count);
+            GRIB_CALL(grib_get_double_array(h, name, &d[0], &count));
+            ASSERT(d.size() == count);
             break;
 
         case GRIB_TYPE_STRING:
+            ASSERT(count == 1);
             GRIB_CALL(grib_get_string(h, name, s, &len));
             break;
 
         default:
             throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
+        }
+
+
+        if (entriesByName_.find(name) != entriesByName_.end()) {
+            std::ostringstream oss;
+            oss << "BufrEntry duplicate name [" << name << "]";
+            throw eckit::SeriousBug(oss.str());
         }
 
         ASSERT(entriesByName_.find(name) == entriesByName_.end());
@@ -348,6 +398,7 @@ BufrField::BufrField(const char* buffer, size_t size,
         else {
             activeEntries_.push_back(allEntries_.back());
         }
+
 
     }
 

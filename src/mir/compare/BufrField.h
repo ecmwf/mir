@@ -38,8 +38,8 @@ class BufrEntry {
     std::string full_;
     std::string name_;
 
-    long l_;
-    double d_;
+    std::vector<long> l_;
+    std::vector<double> d_;
     std::string s_;
 
     int type_;
@@ -48,8 +48,8 @@ class BufrEntry {
 public:
 
     BufrEntry(const std::string& full,
-              long l,
-              double d,
+              const std::vector<long>& l,
+              const std::vector<double>& d,
               const std::string& s,
               int type);
 
