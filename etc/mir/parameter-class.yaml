@@ -1,5 +1,5 @@
 ---
-concentration:
+density.mass:
 - 33  # Snow density
 - 3089  # Density
 - 129033  # Snow density gradient
@@ -23,6 +23,47 @@ concentration:
 - 260495  # Ocean Mixed Layer Potential Density (Reference 2000m)<br
 - 260619  # Mass concentration of condensed water in soil
 - 300089  # Density
+
+density.energy:
+- 162059  # Vertical integral of kinetic energy
+- 162060  # Vertical integral of thermal energy
+- 162061  # Vertical integral of potential+internal energy
+- 162062  # Vertical integral of potential+internal+latent energy
+- 162063  # Vertical integral of total energy
+
+density.volume:
+- 39  # Volumetric soil water layer 1
+- 40  # Volumetric soil water layer 2
+- 41  # Volumetric soil water layer 3
+- 42  # Volumetric soil water layer 4
+- 129039  # Volumetric soil water layer 1 gradient
+- 129040  # Volumetric soil water layer 2 gradient
+- 129041  # Volumetric soil water layer 3 gradient
+- 129042  # Volumetric soil water layer 4 gradient
+- 171039  # Volumetric soil water anomaly layer 1
+- 171040  # Volumetric soil water anomaly layer 2
+- 171041  # Volumetric soil water anomaly layer 3
+- 171042  # Volumetric soil water anomaly layer 4
+- 174039  # Volumetric soil water layer 1
+- 174040  # Volumetric soil water layer 2
+- 174041  # Volumetric soil water layer 3
+- 174042  # Volumetric soil water layer 4
+- 175039  # Volumetric soil water layer 1
+- 175040  # Volumetric soil water layer 2
+- 175041  # Volumetric soil water layer 3
+- 175042  # Volumetric soil water layer 4
+- 200039  # Volumetric soil water layer 1 difference
+- 200040  # Volumetric soil water layer 2 difference
+- 200041  # Volumetric soil water layer 3 difference
+- 200042  # Volumetric soil water layer 4 difference
+- 228093  # Volumetric soil moisture
+- 260185  # Volumetric soil moisture content
+- 260199  # Volumetric soil moisture
+- 260200  # Volumetric wilting point
+- 260210  # Liquid volumetric soil moisture (non-frozen)
+- 260211  # Volumetric transpiration stress-onset (soil moisture)
+- 260213  # Volumetric direct evaporation cease (soil moisture)
+- 260216  # Volumetric saturation of soil moisture
 
 dimension.1d.angle.degree.asymmetric:
 - 3031  # Wind direction
@@ -2294,11 +2335,6 @@ rate.energy-flux.accumulated:
 - 151162  # Heat flux correction
 - 160231  # Instantaneous surface heat flux
 - 160249  # Gravity wave dissipation flux
-- 162059  # Vertical integral of kinetic energy
-- 162060  # Vertical integral of thermal energy
-- 162061  # Vertical integral of potential+internal energy
-- 162062  # Vertical integral of potential+internal+latent energy
-- 162063  # Vertical integral of total energy
 - 170179  # Top net thermal radiation
 - 171047  # Direct solar radiation anomaly
 - 171057  # Downward UV radiation at the surface anomaly
@@ -3950,41 +3986,9 @@ ratio.probability:
 - 300060  # Thunder probability
 
 ratio.volume:
-- 39  # Volumetric soil water layer 1
-- 40  # Volumetric soil water layer 2
-- 41  # Volumetric soil water layer 3
-- 42  # Volumetric soil water layer 4
-- 129039  # Volumetric soil water layer 1 gradient
-- 129040  # Volumetric soil water layer 2 gradient
-- 129041  # Volumetric soil water layer 3 gradient
-- 129042  # Volumetric soil water layer 4 gradient
-- 171039  # Volumetric soil water anomaly layer 1
-- 171040  # Volumetric soil water anomaly layer 2
-- 171041  # Volumetric soil water anomaly layer 3
-- 171042  # Volumetric soil water anomaly layer 4
-- 174039  # Volumetric soil water layer 1
-- 174040  # Volumetric soil water layer 2
-- 174041  # Volumetric soil water layer 3
-- 174042  # Volumetric soil water layer 4
-- 175039  # Volumetric soil water layer 1
-- 175040  # Volumetric soil water layer 2
-- 175041  # Volumetric soil water layer 3
-- 175042  # Volumetric soil water layer 4
 - 190229  # Total soil moisture
-- 200039  # Volumetric soil water layer 1 difference
-- 200040  # Volumetric soil water layer 2 difference
-- 200041  # Volumetric soil water layer 3 difference
-- 200042  # Volumetric soil water layer 4 difference
-- 228093  # Volumetric soil moisture
 - 228253  # ASCAT first soil moisture CDF matching parameter
-- 260185  # Volumetric soil moisture content
-- 260199  # Volumetric soil moisture
-- 260200  # Volumetric wilting point
-- 260210  # Liquid volumetric soil moisture (non-frozen)
-- 260211  # Volumetric transpiration stress-onset (soil moisture)
-- 260213  # Volumetric direct evaporation cease (soil moisture)
 - 260215  # Soil porosity
-- 260216  # Volumetric saturation of soil moisture
 
 ratio.random:
 - 213001  # Random pattern 1 for sppt
