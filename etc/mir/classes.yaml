@@ -55,26 +55,23 @@ index.associated:
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity: {}
 
+# quantity interpreted as accumulated in time (typical units: [<original unit> s])
+numerics.accumulated: {}
+
+# quantity interpreted as the integral over the vertical coordinate (typical units: [<original unit> m])
+numerics.vertical-integral: {}
+
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
 rate: {}
 
 # rate of flow of energy per unit area (typical units: [J m**-2 s**-1], [W m**-2])
 rate.energy-flux: {}
 
-# rate of flow of energy per unit area accumulated in time (typical units: [J m**-2]])
-rate.energy-flux.accumulated: {}
-
 # rate of flow of mass per unit area (typical units: [kg m**-2 s**-1])
 rate.mass-flux: {}
 
-# rate of flow of mass per unit area accumulated in time (typical units: [kg m**-2])
-rate.mass-flux.accumulated: {}
-
 # rate of flow of a volumetric quantity per unit area (typical units [m**3 m**-2 s**-1], [m s**-1])
 rate.volume-flux: {}
-
-# rate of flow of a volumetric quantity per unit area accumulated in time (typical units: [m**3 m**-2], [m])
-rate.volume-flux.accumulated: {}
 
 # quotient of quantities of the same kind (typical units: <non-dimensional>)
 ratio: {}
@@ -101,9 +98,6 @@ ratio.cover.vegetation:
 # (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
 ratio.fraction: {}
 
-# (typical units: [s])
-ratio.fraction.accumulated: {}
-
 # (typical units: <non-dimensional>, [0, 1])
 ratio.probability: {}
 
@@ -124,9 +118,6 @@ spectrum.associated-magnitude:
 
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
-
-# stress accumulated in time (typical units: [Pa s])
-stress.accumulated: {}
 
 unknown.experimental:
   warning: true
