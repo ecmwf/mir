@@ -138,7 +138,7 @@ void Rules::readConfigurationFiles() {
                     continue;
                 }
 
-                if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
+                if (pidConfig.has(keyName)) {
                     throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
                                            + " has ambigous key '" + keyName + "'"
                                              " from classes " + klasses);

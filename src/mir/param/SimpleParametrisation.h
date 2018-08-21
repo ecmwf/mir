@@ -86,6 +86,8 @@ public:
     // -- Overridden methods
 
     // From MIRParametrisation
+    virtual bool has(const std::string& name) const;
+
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
     virtual bool get(const std::string& name, int& value) const;
@@ -114,13 +116,10 @@ protected:
 
     virtual void print(std::ostream&) const;
     void json(eckit::JSON&) const;
-
     size_t size() const;
 
     // -- Overridden methods
-
-    // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
+    // None
 
     // -- Class members
     // None
@@ -132,23 +131,22 @@ private:
 
     // -- Types
 
-    typedef std::map<std::string, Setting*> SettingsMap;
+    using SettingsMap = std::map<std::string, Setting*>;
 
     // -- Members
 
     SettingsMap settings_;
 
     // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
 
     template<class T>
     bool _get(const std::string& name, T& value) const;
 
     template<class T>
     void _set(const std::string& name, const T& value);
+
+    // -- Overridden methods
+    // None
 
     // -- Class members
     // None
