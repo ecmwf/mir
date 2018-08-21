@@ -25,8 +25,8 @@ namespace param {
 
 
 static const std::string PARAM_ID("paramId");
-static const std::string KLASS("@class");
-static const std::string WARNING("warning");
+static const std::string KLASS("_class");
+static const std::string WARNING("_warning");
 
 
 Rules::Rules() = default;
