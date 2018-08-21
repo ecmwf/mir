@@ -69,10 +69,7 @@ public:
     MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
-        options_.push_back(new SimpleOption<std::string>("rule-name", "Display configuration for named rule (default 'paramId')"));
-        options_.push_back(new SimpleOption<long>("rule-value", "Display configuration with named rule value (default -1)"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
-        options_.push_back(new SimpleOption<bool>("file-rules", "Display rules as per configuration files"));
     }
 
 };
@@ -80,75 +77,52 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [--file-rules] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
             "\n" "Examples: "
             "\n" "  % " << tool << ""
             "\n" "  % " << tool << " --param-id=157"
-            "\n" "  % " << tool << " --param-id=167 --key=lsm input1.grib input2.grib"
-            "\n" "  % " << tool << " --rule-name=paramId --rule-value=167 --key=lsm input1.grib"
-            "\n" "  % " << tool << " --file-rules"
+            "\n" "  % " << tool << " --key=lsm input1.grib input2.grib"
             << std::endl;
 }
 
 
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
-    using namespace mir::param;
-
     std::string key;
     args.get("key", key);
 
-    for (size_t i = 0; i < args.count(); i++) {
 
-        // Display configuration for a (specific or not) paramId and metadata from input file(s)
-        mir::input::GribFileInput grib(args(i));
-        while (grib.next()) {
-            mir::input::MIRInput& input = grib;
-            display(input.parametrisation(), key);
-        }
+    // Display configuration for a paramId
+    long paramId = 0;
+    if (args.get("param-id", paramId) || !args.count()) {
 
-    }
-
-    if (!args.count()) {
-
-        if (args.has("file-rules")) {
-
-            // Display configuration files
-            Rules fileRules;
-            fileRules.readConfigurationFiles();
-            eckit::Log::info() << fileRules << std::endl;
-
-        } else  {
-
-            // Display configuration for a paramId
-            std::string ruleName("paramId");
-            long ruleValue = -1;
-            long paramId = 0;
-
-            if (!args.get("param-id", paramId)) {
-                args.get("rule-name", ruleName);
-                args.get("rule-value", ruleValue);
-                if (ruleName == "paramId") {
-                    paramId = ruleValue;
+        class DummyField : public mir::param::FieldParametrisation {
+            long paramId_;
+            virtual void print(std::ostream&) const {}
+            virtual bool get(const std::string& name, long& value) const {
+                if (name == "paramId") {
+                    value = paramId_;
+                    return true;
                 }
+                return mir::param::FieldParametrisation::get(name, value);
             }
 
-            class DummyField : public FieldParametrisation {
-                long paramId_;
-                virtual void print(std::ostream&) const {}
-                virtual bool get(const std::string& name, long& value) const {
-                    if(name == "paramId") {
-                        value = paramId_;
-                        return true;
-                    }
-                    return FieldParametrisation::get(name, value);
-                }
+        public:
+            DummyField(long paramId): paramId_(paramId) {}
+        };
 
-            public:
-                DummyField(long paramId): paramId_(paramId) {}
-            };
+        display(DummyField(paramId), key);
 
-            display(DummyField(paramId), key);
+    } else {
+
+        for (size_t i = 0; i < args.count(); i++) {
+
+            // Display configuration for a (specific or not) paramId and metadata from input file(s)
+            mir::input::GribFileInput grib(args(i));
+            while (grib.next()) {
+                mir::input::MIRInput& input = grib;
+                display(input.parametrisation(), key);
+            }
 
         }
 
