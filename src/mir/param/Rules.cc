@@ -25,8 +25,9 @@ namespace param {
 
 
 static const std::string PARAM_ID("paramId");
-static const std::string KLASS("@class");
-static const std::string WARNING("warning");
+static const std::string KLASS("_class");
+static const std::string WARNING("_warning");
+static const std::string DEFAULT("_default");
 
 
 Rules::Rules() = default;
@@ -138,13 +139,32 @@ void Rules::readConfigurationFiles() {
                     continue;
                 }
 
-                if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
+                if (pidConfig.has(keyName)) {
                     throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
                                            + " has ambigous key '" + keyName + "'"
                                              " from classes " + klasses);
                 }
 
                 pidConfig.set(keyName, keyValue);
+            }
+        }
+    }
+
+
+    const auto defaults = classes.find(DEFAULT);
+    if (defaults != classes.end()) {
+        const eckit::ValueMap defaultConfig = defaults->second;
+        for (auto p : rules_) {
+            ASSERT(p.second);
+            SimpleParametrisation& pidConfig = *(p.second);
+
+            for (const auto& j : defaultConfig) {
+                const std::string& keyName = j.first;
+                const std::string& keyValue = j.second;
+
+                if (!pidConfig.has(keyName)) {
+                    pidConfig.set(keyName, keyValue);
+                }
             }
         }
     }
