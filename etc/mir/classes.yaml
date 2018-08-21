@@ -1,4 +1,9 @@
 ---
+
+# default
+_default:
+    atlas-trans-type: local
+
 # amount of mass per unit volume (typical units: [kg m**-3])
 density.mass: {}
 

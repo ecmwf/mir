@@ -27,6 +27,7 @@ namespace param {
 static const std::string PARAM_ID("paramId");
 static const std::string KLASS("_class");
 static const std::string WARNING("_warning");
+static const std::string DEFAULT("_default");
 
 
 Rules::Rules() = default;
@@ -145,6 +146,25 @@ void Rules::readConfigurationFiles() {
                 }
 
                 pidConfig.set(keyName, keyValue);
+            }
+        }
+    }
+
+
+    const auto defaults = classes.find(DEFAULT);
+    if (defaults != classes.end()) {
+        const eckit::ValueMap defaultConfig = defaults->second;
+        for (auto p : rules_) {
+            ASSERT(p.second);
+            SimpleParametrisation& pidConfig = *(p.second);
+
+            for (const auto& j : defaultConfig) {
+                const std::string& keyName = j.first;
+                const std::string& keyValue = j.second;
+
+                if (!pidConfig.has(keyName)) {
+                    pidConfig.set(keyName, keyValue);
+                }
             }
         }
     }
