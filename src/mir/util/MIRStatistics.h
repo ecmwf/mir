@@ -61,6 +61,7 @@ public:
     eckit::Timing createCoeffTiming_;
     eckit::Timing calcTiming_;
     eckit::Timing saveTiming_;
+    eckit::Timing gribEncodingTiming_;
 
     void report(std::ostream&, const char* indent = "") const;
 

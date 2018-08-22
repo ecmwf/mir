@@ -222,7 +222,11 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
 }
 
 static bool sameValue(const std::string& name, const std::vector<double>& a, const std::vector<double>& b, double e) {
-    ASSERT(a.size() == b.size());
+
+    if(a.size() != b.size()) {
+        return false;
+    }
+
     for (size_t i = 0; i < a.size(); ++i) {
         if (!sameValue(name, a[i], b[i], e)) {
             return false;
@@ -233,7 +237,11 @@ static bool sameValue(const std::string& name, const std::vector<double>& a, con
 }
 
 static bool sameValue(const std::string& name, const std::vector<long>& a, const std::vector<long>& b, double e) {
-    ASSERT(a.size() == b.size());
+
+    if(a.size() != b.size()) {
+        return false;
+    }
+
     for (size_t i = 0; i < a.size(); ++i) {
         if (!sameValue(name, double(a[i]), double(b[i]), e)) {
             return false;

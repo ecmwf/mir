@@ -42,6 +42,7 @@ MIRStatistics::MIRStatistics(eckit::Stream& s):
     s >> createCoeffTiming_;
     s >> calcTiming_;
     s >> saveTiming_;
+    s >> gribEncodingTiming_;
 }
 
 
@@ -65,6 +66,7 @@ void MIRStatistics::encode(eckit::Stream& s) const {
     s << createCoeffTiming_;
     s << calcTiming_;
     s << saveTiming_;
+    s << gribEncodingTiming_;
 }
 
 
@@ -88,6 +90,7 @@ MIRStatistics& MIRStatistics::operator+=(const MIRStatistics& other) {
     createCoeffTiming_ += other.createCoeffTiming_;
     calcTiming_ += other.calcTiming_;
     saveTiming_ += other.saveTiming_;
+    gribEncodingTiming_ += gribEncodingTiming_;
     return *this;
 }
 
@@ -112,6 +115,7 @@ MIRStatistics& MIRStatistics::operator/=(size_t n) {
     createCoeffTiming_ /= n;
     calcTiming_ /= n;
     saveTiming_ /= n;
+    gribEncodingTiming_ /= n;
     return *this;
 }
 
@@ -140,13 +144,15 @@ void MIRStatistics::report(std::ostream& out, const char *indent) const {
     reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
     reportTime(out, "Time loading coefficients", loadCoeffTiming_, indent);
 
+    reportTime(out, "Time in GRIB encoding", gribEncodingTiming_, indent);
+
     reportTime(out, "Time saving", saveTiming_, indent);
 }
 
 
 void MIRStatistics::csvHeader(std::ostream& out) const {
     out << "grid2grid,sh2grid,coefficient,vod2uv,calc,crop,frame,globalise,bitmap,"
-        << "computeMatrix,matrix,createCoeff,loadCoeff,save";
+        << "computeMatrix,matrix,createCoeff,loadCoeff,gribEncoding,save";
 }
 
 
@@ -164,6 +170,7 @@ void MIRStatistics::csvRow(std::ostream& out) const {
         << matrixTiming_ << ","
         << createCoeffTiming_ << ","
         << loadCoeffTiming_ << ","
+        << gribEncodingTiming_ << ","
         << saveTiming_;
 }
 
