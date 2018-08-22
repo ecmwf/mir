@@ -8,6 +8,156 @@ density.mass:
 - 210072  # Particulate matter d < 1 um
 - 210073  # Particulate matter d < 2.5 um
 - 210074  # Particulate matter d < 10 um
+- 218057  # Total column of carbon dioxide (chemistry)
+- 218058  # Total column of nitrous oxide (chemistry)
+- 218059  # Total column of water vapour (chemistry)
+- 218060  # Total column of oxygen
+- 218061  # Total column of singlet oxygen
+- 218062  # Total column of singlet delta oxygen
+- 218063  # Total column of chlorine dioxide
+- 218064  # Total column of chlorine nitrate
+- 218065  # Total column of hypochlorous acid
+- 218066  # Total column of chlorine
+- 218067  # Total column of nitryl chloride
+- 218068  # Total column of hydrogen bromide
+- 218069  # Total column of dichlorine dioxide
+- 218070  # Total column of hypobromous acid
+- 218071  # Total column of trichlorofluoromethane
+- 218072  # Total column of dichlorodifluoromethane
+- 218073  # Total column of trichlorotrifluoroethane
+- 218074  # Total column of dichlorotetrafluoroethane
+- 218075  # Total column of chloropentafluoroethane
+- 218076  # Total column of tetrachloromethane
+- 218077  # Total column of methyl chloroform
+- 218078  # Total column of methyl chloride
+- 218079  # Total column of chlorodifluoromethane
+- 218080  # Total column of methyl bromide
+- 218081  # Total column of dibromodifluoromethane
+- 218082  # Total column of bromochlorodifluoromethane
+- 218083  # Total column of trifluorobromomethane
+- 218084  # Total column of cbrf2cbrf2
+- 218085  # Total column of sulfuric acid
+- 218086  # Total column of nitrous acid
+- 218087  # Total column of alkanes low oh rate
+- 218088  # Total column of alkanes med oh rate
+- 218089  # Total column of alkanes high oh rate
+- 218090  # Total column of terminal alkenes
+- 218091  # Total column of internal alkenes
+- 218092  # Total column of ethylperoxy radical
+- 218093  # Total column of butadiene
+- 218094  # Total column of ethyl hydroperoxide
+- 218095  # Total column of a-pinene cyclic terpenes
+- 218096  # Total column of acetic acid
+- 218097  # Total column of d-limonene cyclic diene
+- 218098  # Total column of acetaldehyde
+- 218099  # Total column of toluene and less reactive aromatics
+- 218100  # Total column of xylene and more reactive aromatics
+- 218101  # Total column of glycolaldehyde
+- 218102  # Total column of cresol
+- 218103  # Total column of acetaldehyde and higher
+- 218104  # Total column of peracetic acid
+- 218105  # Total column of ketones
+- 218106  # Total column of hoch2ch2o2
+- 218107  # Total column of glyoxal
+- 218108  # Total column of hoch2ch2o
+- 218109  # Total column of unsaturated dicarbonyls
+- 218110  # Total column of methacrolein
+- 218111  # Total column of unsaturated hydroxy dicarbonyl
+- 218112  # Total column of isopropyldioxidanyl
+- 218113  # Total column of hydroxy ketone
+- 218114  # Total column of isopropyl hydroperoxide
+- 218115  # Total column of c3h6oho2
+- 218116  # Total column of c3h6ohooh
+- 218117  # Total column of higher organic peroxides
+- 218118  # Total column of hydroxyacetone
+- 218119  # Total column of peroxyacetic acid
+- 218120  # Total column of ch3coch2o2
+- 218121  # Total column of peroxy radical from c2h6
+- 218122  # Total column of peroxy radical from hc3
+- 218123  # Total column of peroxy radical from hc5
+- 218124  # Total column of lumped alkenes
+- 218125  # Total column of peroxy radical from hc8
+- 218126  # Total column of lumped alkanes
+- 218127  # Total column of peroxy radical from c2h4
+- 218128  # Total column of c4h8o
+- 218129  # Total column of peroxy radical from terminal alkenes
+- 218130  # Total column of c4h9o3
+- 218131  # Total column of peroxy radical from internal alkenes
+- 218132  # Total column of ch3coch(oo)ch3
+- 218133  # Total column of peroxy radical from c5h8
+- 218134  # Total column of ch3coch(ooh)ch3
+- 218135  # Total column of peroxy radical from a-pinene cyclic terpenes
+- 218136  # Total column of ch2=c(ch3)co3
+- 218137  # Total column of peroxy radical from d-limonene cyclic diene
+- 218138  # Total column of methylvinylketone
+- 218139  # Total column of phenoxy radical
+- 218140  # Total column of peroxy radical from toluene and less reactive aromatics
+- 218141  # Total column of ch3c(o)ch(oo)ch2oh
+- 218142  # Total column of peroxy radical from xylene and more reactive aromatics
+- 218143  # Total column of h3c(o)ch(ooh)ch2oh
+- 218144  # Total column of peroxy radical from cresol
+- 218145  # Total column of unsaturated pans
+- 218146  # Total column of unsaturated acyl peroxy radical
+- 218147  # Total column of peroxy radical from ketones
+- 218148  # Total column of c5h11o2
+- 218149  # Total column of no3-alkenes adduct reacting to form carbonitrates
+- 218150  # Total column of c5h11ooh
+- 218151  # Total column of no3-alkenes adduct reacting via decomposition
+- 218152  # Total column of hoch2c(ch3)=chcho
+- 218153  # Total column of c5h6o2
+- 218154  # Total column of trop sulfuric acid
+- 218155  # Total column of oxides
+- 218156  # Total column of ch2chc(ch3)(oo)ch2ono2
+- 218157  # Total column of c3 organic nitrate
+- 218158  # Total column of chlorine oxides
+- 218159  # Total column of bromine oxides
+- 218160  # Total column of hoch2c(ooh)(ch3)chchoh
+- 218161  # Total column of hoch2c(ooh)(ch3)ch=ch2
+- 218162  # Total column of lumped aromatics
+- 218163  # Total column of dimethyl sulfoxyde
+- 218164  # Total column of c7h9o5
+- 218165  # Total column of c7h10o5
+- 218166  # Total column of hydrogensulfide
+- 218167  # Total column of c7h10o6
+- 218168  # Total column of all nitrogen oxides
+- 218169  # Total column of chlorine family
+- 218170  # Total column of c10h16(oh)(oo)
+- 218171  # Total column of bromine family
+- 218172  # Total column of c10h18o3
+- 218173  # Total column of nitrogen atom
+- 218174  # Total column of chlorine monoxide
+- 218175  # Total column of chlorine atom
+- 218176  # Total column of bromine monoxide
+- 218177  # Total column of hydrogen atom
+- 218178  # Total column of methyl group
+- 218179  # Total column of aromatic-ho from toluene and less reactive aromatics
+- 218180  # Total column of aromatic-ho from xylene and more reactive aromatics
+- 218181  # Total column of ammonium nitrate
+- 218182  # Total column of aromatic-ho from csl
+- 218183  # Total column of secondary organic aerosol type 1
+- 218184  # Total column of secondary organic aerosol type 2a
+- 218185  # Total column of secondary organic aerosol type 2b
+- 218186  # Total column of condensable gas type 1
+- 218187  # Total column of condensable gas type 2a
+- 218188  # Total column of condensable gas type 2b
+- 218189  # Total column of sulfur trioxide
+- 218190  # Total column of carbonyl sulfide
+- 218191  # Total column of bromine atom
+- 218192  # Total column of bromine
+- 218193  # Total column of bromine monochloride
+- 218194  # Total column of bromine nitrate
+- 218195  # Total column of dibromomethane
+- 218196  # Total column of methoxy radical
+- 218197  # Total column of tribromomethane
+- 218198  # Total column of asymmetric chlorine dioxide radical
+- 218199  # Total column of hydrogen
+- 218200  # Total column of hydrogen chloride
+- 218201  # Total column of formyl radical
+- 218202  # Total column of hydrogen fluoride
+- 218203  # Total column of oxygen atom
+- 218204  # Total column of excited oxygen atom
+- 218205  # Total column of ground state oxygen atom
+- 218206  # Total column of stratospheric aerosol
 - 228039  # Soil Moisture
 - 228086  # Soil moisture top 20 cm
 - 228087  # Soil moisture top 100 cm
@@ -4362,156 +4512,6 @@ ratio.mass:
 - 217204  # Excited oxygen atom
 - 217205  # Ground state oxygen atom
 - 217206  # Stratospheric aerosol
-- 218057  # Total column of carbon dioxide (chemistry)
-- 218058  # Total column of nitrous oxide (chemistry)
-- 218059  # Total column of water vapour (chemistry)
-- 218060  # Total column of oxygen
-- 218061  # Total column of singlet oxygen
-- 218062  # Total column of singlet delta oxygen
-- 218063  # Total column of chlorine dioxide
-- 218064  # Total column of chlorine nitrate
-- 218065  # Total column of hypochlorous acid
-- 218066  # Total column of chlorine
-- 218067  # Total column of nitryl chloride
-- 218068  # Total column of hydrogen bromide
-- 218069  # Total column of dichlorine dioxide
-- 218070  # Total column of hypobromous acid
-- 218071  # Total column of trichlorofluoromethane
-- 218072  # Total column of dichlorodifluoromethane
-- 218073  # Total column of trichlorotrifluoroethane
-- 218074  # Total column of dichlorotetrafluoroethane
-- 218075  # Total column of chloropentafluoroethane
-- 218076  # Total column of tetrachloromethane
-- 218077  # Total column of methyl chloroform
-- 218078  # Total column of methyl chloride
-- 218079  # Total column of chlorodifluoromethane
-- 218080  # Total column of methyl bromide
-- 218081  # Total column of dibromodifluoromethane
-- 218082  # Total column of bromochlorodifluoromethane
-- 218083  # Total column of trifluorobromomethane
-- 218084  # Total column of cbrf2cbrf2
-- 218085  # Total column of sulfuric acid
-- 218086  # Total column of nitrous acid
-- 218087  # Total column of alkanes low oh rate
-- 218088  # Total column of alkanes med oh rate
-- 218089  # Total column of alkanes high oh rate
-- 218090  # Total column of terminal alkenes
-- 218091  # Total column of internal alkenes
-- 218092  # Total column of ethylperoxy radical
-- 218093  # Total column of butadiene
-- 218094  # Total column of ethyl hydroperoxide
-- 218095  # Total column of a-pinene cyclic terpenes
-- 218096  # Total column of acetic acid
-- 218097  # Total column of d-limonene cyclic diene
-- 218098  # Total column of acetaldehyde
-- 218099  # Total column of toluene and less reactive aromatics
-- 218100  # Total column of xylene and more reactive aromatics
-- 218101  # Total column of glycolaldehyde
-- 218102  # Total column of cresol
-- 218103  # Total column of acetaldehyde and higher
-- 218104  # Total column of peracetic acid
-- 218105  # Total column of ketones
-- 218106  # Total column of hoch2ch2o2
-- 218107  # Total column of glyoxal
-- 218108  # Total column of hoch2ch2o
-- 218109  # Total column of unsaturated dicarbonyls
-- 218110  # Total column of methacrolein
-- 218111  # Total column of unsaturated hydroxy dicarbonyl
-- 218112  # Total column of isopropyldioxidanyl
-- 218113  # Total column of hydroxy ketone
-- 218114  # Total column of isopropyl hydroperoxide
-- 218115  # Total column of c3h6oho2
-- 218116  # Total column of c3h6ohooh
-- 218117  # Total column of higher organic peroxides
-- 218118  # Total column of hydroxyacetone
-- 218119  # Total column of peroxyacetic acid
-- 218120  # Total column of ch3coch2o2
-- 218121  # Total column of peroxy radical from c2h6
-- 218122  # Total column of peroxy radical from hc3
-- 218123  # Total column of peroxy radical from hc5
-- 218124  # Total column of lumped alkenes
-- 218125  # Total column of peroxy radical from hc8
-- 218126  # Total column of lumped alkanes
-- 218127  # Total column of peroxy radical from c2h4
-- 218128  # Total column of c4h8o
-- 218129  # Total column of peroxy radical from terminal alkenes
-- 218130  # Total column of c4h9o3
-- 218131  # Total column of peroxy radical from internal alkenes
-- 218132  # Total column of ch3coch(oo)ch3
-- 218133  # Total column of peroxy radical from c5h8
-- 218134  # Total column of ch3coch(ooh)ch3
-- 218135  # Total column of peroxy radical from a-pinene cyclic terpenes
-- 218136  # Total column of ch2=c(ch3)co3
-- 218137  # Total column of peroxy radical from d-limonene cyclic diene
-- 218138  # Total column of methylvinylketone
-- 218139  # Total column of phenoxy radical
-- 218140  # Total column of peroxy radical from toluene and less reactive aromatics
-- 218141  # Total column of ch3c(o)ch(oo)ch2oh
-- 218142  # Total column of peroxy radical from xylene and more reactive aromatics
-- 218143  # Total column of h3c(o)ch(ooh)ch2oh
-- 218144  # Total column of peroxy radical from cresol
-- 218145  # Total column of unsaturated pans
-- 218146  # Total column of unsaturated acyl peroxy radical
-- 218147  # Total column of peroxy radical from ketones
-- 218148  # Total column of c5h11o2
-- 218149  # Total column of no3-alkenes adduct reacting to form carbonitrates
-- 218150  # Total column of c5h11ooh
-- 218151  # Total column of no3-alkenes adduct reacting via decomposition
-- 218152  # Total column of hoch2c(ch3)=chcho
-- 218153  # Total column of c5h6o2
-- 218154  # Total column of trop sulfuric acid
-- 218155  # Total column of oxides
-- 218156  # Total column of ch2chc(ch3)(oo)ch2ono2
-- 218157  # Total column of c3 organic nitrate
-- 218158  # Total column of chlorine oxides
-- 218159  # Total column of bromine oxides
-- 218160  # Total column of hoch2c(ooh)(ch3)chchoh
-- 218161  # Total column of hoch2c(ooh)(ch3)ch=ch2
-- 218162  # Total column of lumped aromatics
-- 218163  # Total column of dimethyl sulfoxyde
-- 218164  # Total column of c7h9o5
-- 218165  # Total column of c7h10o5
-- 218166  # Total column of hydrogensulfide
-- 218167  # Total column of c7h10o6
-- 218168  # Total column of all nitrogen oxides
-- 218169  # Total column of chlorine family
-- 218170  # Total column of c10h16(oh)(oo)
-- 218171  # Total column of bromine family
-- 218172  # Total column of c10h18o3
-- 218173  # Total column of nitrogen atom
-- 218174  # Total column of chlorine monoxide
-- 218175  # Total column of chlorine atom
-- 218176  # Total column of bromine monoxide
-- 218177  # Total column of hydrogen atom
-- 218178  # Total column of methyl group
-- 218179  # Total column of aromatic-ho from toluene and less reactive aromatics
-- 218180  # Total column of aromatic-ho from xylene and more reactive aromatics
-- 218181  # Total column of ammonium nitrate
-- 218182  # Total column of aromatic-ho from csl
-- 218183  # Total column of secondary organic aerosol type 1
-- 218184  # Total column of secondary organic aerosol type 2a
-- 218185  # Total column of secondary organic aerosol type 2b
-- 218186  # Total column of condensable gas type 1
-- 218187  # Total column of condensable gas type 2a
-- 218188  # Total column of condensable gas type 2b
-- 218189  # Total column of sulfur trioxide
-- 218190  # Total column of carbonyl sulfide
-- 218191  # Total column of bromine atom
-- 218192  # Total column of bromine
-- 218193  # Total column of bromine monochloride
-- 218194  # Total column of bromine nitrate
-- 218195  # Total column of dibromomethane
-- 218196  # Total column of methoxy radical
-- 218197  # Total column of tribromomethane
-- 218198  # Total column of asymmetric chlorine dioxide radical
-- 218199  # Total column of hydrogen
-- 218200  # Total column of hydrogen chloride
-- 218201  # Total column of formyl radical
-- 218202  # Total column of hydrogen fluoride
-- 218203  # Total column of oxygen atom
-- 218204  # Total column of excited oxygen atom
-- 218205  # Total column of ground state oxygen atom
-- 218206  # Total column of stratospheric aerosol
 - 228054  # Unbalanced component of specific humidity
 - 228055  # Unbalanced component of specific cloud liquid water content
 - 228056  # Unbalanced component of specific cloud ice water content
