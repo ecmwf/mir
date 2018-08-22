@@ -1536,7 +1536,6 @@ intensity:
 - 260614  # Gravity wave meridional acceleration
 - 260617  # Moisture storage on canopy
 - 260618  # Moisture storage on ground or cover
-- 260620  # Cloud liquid water
 - 260626  # Zonal momentum flux by long gravity wave
 - 260627  # Meridional momentum flux by long gravity wave
 - 260628  # Meridional momentum flux by short gravity wave
