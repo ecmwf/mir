@@ -65,13 +65,14 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
         if (noted_.insert(ruleValue).second) {
 
             const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
-            eckit::Log::warning() << msg << std::endl;
 
             static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
             if (abortIfUnknownParameterClass) {
-                throw eckit::SeriousBug(msg);
+                eckit::Log::error() << msg << std::endl;
+                throw eckit::UserError(msg);
             }
 
+            eckit::Log::warning() << msg << std::endl;
         }
     }
 
@@ -112,16 +113,18 @@ void Rules::readConfigurationFiles() {
 
         // class
         const std::string& klass = i.first;
+        ASSERT(klass != DEFAULT);
+
         const auto& config = classes.find(klass);
         if (config == classes.end()) {
-            throw eckit::SeriousBug("Rules: unkown class '" + klass + "'");
+            throw eckit::UserError("Rules: unkown class '" + klass + "'");
         }
-        const eckit::ValueMap klassConfig = config->second;
+        const eckit::ValueMap& klassConfig = config->second;
 
         // paramId(s)
-        eckit::ValueList paramIds = i.second;
+        const eckit::ValueList& paramIds = i.second;
         for (long paramId : paramIds) {
-            SimpleParametrisation& pidConfig = lookup(paramId);
+            SimpleParametrisation& pidConfig = Rules::lookup(paramId);
 
             std::string klasses;
             klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
@@ -153,7 +156,7 @@ void Rules::readConfigurationFiles() {
 
     const auto defaults = classes.find(DEFAULT);
     if (defaults != classes.end()) {
-        const eckit::ValueMap defaultConfig = defaults->second;
+        const eckit::ValueMap& defaultConfig = defaults->second;
         for (auto p : rules_) {
             ASSERT(p.second);
             SimpleParametrisation& pidConfig = *(p.second);
@@ -176,11 +179,11 @@ void Rules::readConfigurationFiles() {
         long paramId = translate_to_long(i.first);
         SimpleParametrisation& config = Rules::lookup(paramId);
 
-        eckit::ValueList options = i.second;
+        const eckit::ValueList& options = i.second;
         for (const eckit::ValueMap j : options) {
-            for (auto k : j) {
-                std::string name = k.first;
-                std::string value = k.second;
+            for (const auto& k : j) {
+                const std::string& name = k.first;
+                const std::string& value = k.second;
                 config.set(name, value);
             }
         }
