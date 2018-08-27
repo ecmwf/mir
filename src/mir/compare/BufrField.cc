@@ -175,7 +175,7 @@ void BufrEntry::json(eckit::JSON &json) const {
             json << l_[0];
 
         } else {
-             json << l_;
+            json << l_;
         }
         break;
 
@@ -221,9 +221,23 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
     }
 }
 
-static bool sameValue(const std::string& name, const std::vector<double>& a, const std::vector<double>& b, double e) {
+template<class T>
+static bool sameValue(const std::string& name, const std::vector<T>& a, const std::vector<T>& b, double e) {
 
-    if(a.size() != b.size()) {
+    if (a.size() != b.size()) {
+
+
+        if (a.size() == 1) {
+            std::vector<T> tmp(b.size(), a[0]);
+            return sameValue(name, tmp, b, e);
+        }
+
+        if (b.size() == 1) {
+            std::vector<T> tmp(a.size(), b[0]);
+            return sameValue(name, a, tmp, e);
+        }
+
+
         return false;
     }
 
@@ -236,20 +250,6 @@ static bool sameValue(const std::string& name, const std::vector<double>& a, con
 
 }
 
-static bool sameValue(const std::string& name, const std::vector<long>& a, const std::vector<long>& b, double e) {
-
-    if(a.size() != b.size()) {
-        return false;
-    }
-
-    for (size_t i = 0; i < a.size(); ++i) {
-        if (!sameValue(name, double(a[i]), double(b[i]), e)) {
-            return false;
-        }
-    }
-    return true;
-
-}
 
 bool BufrEntry::operator==(const BufrEntry &other) const {
 
