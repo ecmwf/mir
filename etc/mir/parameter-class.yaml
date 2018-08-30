@@ -373,6 +373,9 @@ dimension.1d.angle.degree.asymmetric:
 - 3107  # Primary wave direction
 - 3109  # Secondary wave direction
 - 140113  # Wave energy flux mean direction
+- 140122  # Mean wave direction of first swell partition
+- 140125  # Mean wave direction of second swell partition
+- 140128  # Mean wave direction of third swell partition
 - 140230  # Mean wave direction
 - 140235  # Mean direction of wind waves
 - 140238  # Mean direction of total swell
