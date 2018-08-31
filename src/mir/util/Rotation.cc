@@ -138,9 +138,14 @@ BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
     constexpr double h = 0.001;
 
     auto derivate = [&R](PointLonLat P, const PointLonLat& H) -> PointLonLat {
-        PointLonLat F = R.rotate(P);
-        PointLonLat Fh = R.rotate(PointLonLat::add(P, H));
-        return PointLonLat::div(PointLonLat::sub(Fh, F), PointLonLat::norm(H));
+        const bool backwards =
+                P.lat() + H.lat() > Latitude::NORTH_POLE.value() ||
+                P.lat() + H.lat() < Latitude::SOUTH_POLE.value();
+        const PointLonLat F[2] = {
+            backwards? R.rotate(PointLonLat::sub(P, H)) : R.rotate(P),
+            backwards? R.rotate(P) : R.rotate(PointLonLat::add(P, H))
+        };
+        return PointLonLat::div(PointLonLat::sub(F[1], F[0]), PointLonLat::norm(H));
     };
 
 
