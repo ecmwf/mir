@@ -79,11 +79,21 @@ public:
         throw eckit::SeriousBug(oss.str());
     }
 
+    virtual Extension& extension() const {
+        std::ostringstream oss;
+        oss << "Cannot get extension from " << *this;
+        throw eckit::SeriousBug(oss.str());
+    }
+
     virtual bool isField() const {
         return false;
     }
 
     virtual bool isScalar() const {
+        return false;
+    }
+
+    virtual bool isExtension() const {
         return false;
     }
 
@@ -148,6 +158,37 @@ public:
 
 };
 
+class ExtensionContent : public Content {
+
+    eckit::ScopedPtr<Extension> extension_;
+
+    virtual void print(std::ostream& out) const {
+        out << "ExtensionContent[" << *extension_ << "]";
+    }
+
+    virtual bool isExtension() const {
+        return true;
+    }
+
+
+    virtual Extension& extension() const {
+        return *extension_;
+    }
+
+    virtual Content* clone() const  {
+        return new ExtensionContent(extension_->clone());
+    }
+
+public:
+
+    ExtensionContent(Extension* extension):
+        extension_(extension) {
+            ASSERT(extension_);
+        }
+
+    ~ExtensionContent()  {}
+};
+
 
 Context::Context() :
     input_(missing),
@@ -206,6 +247,17 @@ bool Context::isScalar() const {
     return content_->isScalar();
 }
 
+bool Context::isExtension() const {
+
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    if (!content_) {
+        return false;
+    }
+    return content_->isExtension();
+}
+
+
 
 input::MIRInput &Context::input() {
     return input_;
@@ -229,6 +281,18 @@ data::MIRField& Context::field() {
         content_.reset(new FieldContent(input_.field()));
     }
     return content_->field();
+}
+
+Extension& Context::extension() {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    ASSERT(isExtension());
+    return content_->extension();
+}
+
+
+void Context::extension(Extension* e) {
+    content_.reset(new ExtensionContent(e));
 }
 
 

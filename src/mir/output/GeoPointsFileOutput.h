@@ -33,7 +33,7 @@ public:
 
     // -- Contructors
 
-    GeoPointsFileOutput(const std::string& path);
+    GeoPointsFileOutput(const std::string& path, bool binary);
 
     // -- Destructor
 
@@ -62,6 +62,8 @@ protected:
     // -- Members
 
     std::string path_;
+    bool binary_;
+    
     mutable eckit::ScopedPtr<eckit::DataHandle> handle_;
 
     // -- Methods

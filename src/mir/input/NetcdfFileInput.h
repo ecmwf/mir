@@ -114,13 +114,14 @@ private:
     virtual size_t dimensions() const;
     virtual grib_handle *gribHandle(size_t which) const;
 
-    // From MIRParametrisation
+    // From FieldParametrisation
     virtual bool has(const std::string& name) const;
 
-    virtual bool get(const std::string&, long&) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string &name, double &value) const;
-    virtual bool get(const std::string &name, std::vector<double> &value) const;
+    virtual bool get(const std::string& name, std::string& value) const;
+    virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
     // -- Class members
     // None

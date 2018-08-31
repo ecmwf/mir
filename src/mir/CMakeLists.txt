@@ -149,6 +149,10 @@ list(APPEND mir_srcs
     compare/Comparator.h
     compare/Field.cc
     compare/Field.h
+    compare/GribField.cc
+    compare/GribField.h
+    compare/BufrField.cc
+    compare/BufrField.h
     compare/FieldComparator.cc
     compare/FieldComparator.h
     compare/FieldInfo.cc

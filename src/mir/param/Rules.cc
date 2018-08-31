@@ -25,7 +25,9 @@ namespace param {
 
 
 static const std::string PARAM_ID("paramId");
-static const std::string KLASS("@class");
+static const std::string KLASS("_class");
+static const std::string WARNING("_warning");
+static const std::string DEFAULT("_default");
 
 
 Rules::Rules() = default;
@@ -60,19 +62,26 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
     MIRParametrisation& s = lookup(ruleValue);
 
     if (!s.has(KLASS)) {
-        if (noted_.find(ruleValue) == noted_.end()) {
+        if (noted_.insert(ruleValue).second) {
 
             const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
 
-            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", true);
+            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
             if (abortIfUnknownParameterClass) {
-                throw eckit::SeriousBug(msg);
+                eckit::Log::error() << msg << std::endl;
+                throw eckit::UserError(msg);
             }
 
             eckit::Log::warning() << msg << std::endl;
         }
+    }
 
-        noted_.insert(ruleValue);
+    auto w = warning_.find(ruleValue);
+    if (w != warning_.end()) {
+        warning_.erase(w);
+        eckit::Log::warning() << "Warning: " << ruleName << "=" << ruleValue
+                              << " post-processing defaults might not be appropriate"
+                              << std::endl;
     }
 
     return s;
@@ -93,22 +102,29 @@ void Rules::print(std::ostream& s) const {
 
 void Rules::readConfigurationFiles() {
 
+    eckit::Translator<std::string, long> translate_to_long;
+    eckit::Translator<std::string, bool> translate_to_bool;
+
+    warning_.clear();
+
     eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
     eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
     for (const auto& i : parameterClass) {
 
         // class
         const std::string& klass = i.first;
+        ASSERT(klass != DEFAULT);
+
         const auto& config = classes.find(klass);
         if (config == classes.end()) {
-            throw eckit::SeriousBug("Rules: unkown class '" + klass + "'");
+            throw eckit::UserError("Rules: unkown class '" + klass + "'");
         }
-        const eckit::ValueMap klassConfig = config->second;
+        const eckit::ValueMap& klassConfig = config->second;
 
         // paramId(s)
-        eckit::ValueList paramIds = i.second;
+        const eckit::ValueList& paramIds = i.second;
         for (long paramId : paramIds) {
-            SimpleParametrisation& pidConfig = lookup(paramId);
+            SimpleParametrisation& pidConfig = Rules::lookup(paramId);
 
             std::string klasses;
             klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
@@ -117,14 +133,41 @@ void Rules::readConfigurationFiles() {
             for (const auto& j : klassConfig) {
                 const std::string& keyName = j.first;
                 const std::string& keyValue = j.second;
-                ASSERT(keyName != KLASS);
 
-                if (static_cast<MIRParametrisation&>(pidConfig).has(keyName)) {
+                ASSERT(keyName != KLASS);
+                if (keyName == WARNING) {
+                    if (translate_to_bool(keyValue)) {
+                        warning_.insert(paramId);
+                    }
+                    continue;
+                }
+
+                if (pidConfig.has(keyName)) {
                     throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
                                            + " has ambigous key '" + keyName + "'"
                                              " from classes " + klasses);
                 }
+
                 pidConfig.set(keyName, keyValue);
+            }
+        }
+    }
+
+
+    const auto defaults = classes.find(DEFAULT);
+    if (defaults != classes.end()) {
+        const eckit::ValueMap& defaultConfig = defaults->second;
+        for (auto p : rules_) {
+            ASSERT(p.second);
+            SimpleParametrisation& pidConfig = *(p.second);
+
+            for (const auto& j : defaultConfig) {
+                const std::string& keyName = j.first;
+                const std::string& keyValue = j.second;
+
+                if (!pidConfig.has(keyName)) {
+                    pidConfig.set(keyName, keyValue);
+                }
             }
         }
     }
@@ -133,14 +176,14 @@ void Rules::readConfigurationFiles() {
     eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
     for (const auto& i : parameters) {
 
-        long paramId = eckit::Translator<std::string, long>()(i.first);
+        long paramId = translate_to_long(i.first);
         SimpleParametrisation& config = Rules::lookup(paramId);
 
-        eckit::ValueList options = i.second;
+        const eckit::ValueList& options = i.second;
         for (const eckit::ValueMap j : options) {
-            for (auto k : j) {
-                std::string name = k.first;
-                std::string value = k.second;
+            for (const auto& k : j) {
+                const std::string& name = k.first;
+                const std::string& value = k.second;
                 config.set(name, value);
             }
         }

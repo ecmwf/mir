@@ -41,6 +41,19 @@ class Content;
 namespace mir {
 namespace context {
 
+class Extension{
+public:
+    
+    virtual ~Extension() {}
+
+    virtual Extension* clone() const = 0;
+    virtual void print(std::ostream&) const = 0;
+
+    friend std::ostream &operator<<(std::ostream &s, const Extension &p) {
+        p.print(s);
+        return s;
+    }
+};
 
 class Context {
 public:
@@ -75,9 +88,13 @@ public:
     util::MIRStatistics& statistics();
     data::MIRField& field();
     input::MIRInput& input();
+    Extension& extension();
 
     // Substitute context's field
     void field(data::MIRField&);
+
+    // Extension
+    void extension(Extension*);
 
     // Select only one field
     void select(size_t which);
@@ -87,6 +104,7 @@ public:
 
     bool isField() const;
     bool isScalar() const;
+    bool isExtension() const;
 
     void lock() const;
     void unlock() const;

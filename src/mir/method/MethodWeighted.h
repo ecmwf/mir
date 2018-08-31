@@ -115,9 +115,6 @@ private:
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in,
                                        const repres::Representation& out) const;
 
-    virtual const repres::Representation* adjustOutputRepresentation(context::Context&, const repres::Representation*);
-
-
     void computeMatrixWeights(context::Context&,
                               const repres::Representation& in,
                               const repres::Representation& out,

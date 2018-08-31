@@ -22,6 +22,9 @@
 #include <vector>
 
 
+namespace eckit {
+class JSON;
+}
 namespace mir {
 namespace compare {
 class FieldSet;
@@ -51,9 +54,15 @@ private:
     size_t length_;
 
     void print(std::ostream &out) const;
+    void json(eckit::JSON& json) const;
 
     friend std::ostream &operator<<(std::ostream &s, const FieldInfo &x) {
         x.print(s);
+        return s;
+    }
+
+     friend eckit::JSON &operator<<(eckit::JSON &s, const FieldInfo &x) {
+        x.json(s);
         return s;
     }
 

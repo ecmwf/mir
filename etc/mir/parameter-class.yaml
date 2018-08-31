@@ -1,13 +1,312 @@
 ---
-concentration:
+density.mass:
 - 33  # Snow density
 - 3089  # Density
 - 129033  # Snow density gradient
 - 171033  # Snow density anomaly
 - 200033  # Snow density difference
+- 210016  # Aerosol type 1 source/gain accumulated
+- 210017  # Aerosol type 2 source/gain accumulated
+- 210018  # Aerosol type 3 source/gain accumulated
+- 210019  # Aerosol type 4 source/gain accumulated
+- 210020  # Aerosol type 5 source/gain accumulated
+- 210021  # Aerosol type 6 source/gain accumulated
+- 210022  # Aerosol type 7 source/gain accumulated
+- 210023  # Aerosol type 8 source/gain accumulated
+- 210024  # Aerosol type 9 source/gain accumulated
+- 210025  # Aerosol type 10 source/gain accumulated
+- 210026  # Aerosol type 11 source/gain accumulated
+- 210027  # Aerosol type 12 source/gain accumulated
+- 210031  # Aerosol type 1 sink/loss accumulated
+- 210032  # Aerosol type 2 sink/loss accumulated
+- 210033  # Aerosol type 3 sink/loss accumulated
+- 210034  # Aerosol type 4 sink/loss accumulated
+- 210035  # Aerosol type 5 sink/loss accumulated
+- 210036  # Aerosol type 6 sink/loss accumulated
+- 210037  # Aerosol type 7 sink/loss accumulated
+- 210038  # Aerosol type 8 sink/loss accumulated
+- 210039  # Aerosol type 9 sink/loss accumulated
+- 210040  # Aerosol type 10 sink/loss accumulated
+- 210041  # Aerosol type 11 sink/loss accumulated
+- 210042  # Aerosol type 12 sink/loss accumulated
+- 210066  # Total column Nitrous oxide
 - 210072  # Particulate matter d < 1 um
 - 210073  # Particulate matter d < 2.5 um
 - 210074  # Particulate matter d < 10 um
+- 210125  # Total column Nitrogen dioxide
+- 210126  # Total column Sulphur dioxide
+- 210127  # Total column Carbon monoxide
+- 210128  # Total column Formaldehyde
+- 210130  # Total Column Nitrogen Oxides
+- 210132  # Total column GRG tracer 1
+- 210134  # Total column GRG tracer 2
+- 210136  # Total column GRG tracer 3
+- 210138  # Total column GRG tracer 4
+- 210140  # Total column GRG tracer 5
+- 210142  # Total column GRG tracer 6
+- 210144  # Total column GRG tracer 7
+- 210146  # Total column GRG tracer 8
+- 210148  # Total column GRG tracer 9
+- 210150  # Total column GRG tracer 10
+- 210183  # Total column Radon
+- 210184  # Total column Sulphur Hexafluoride
+- 210206  # GEMS Total column ozone
+- 211016  # Aerosol type 1 source/gain accumulated
+- 211017  # Aerosol type 2 source/gain accumulated
+- 211018  # Aerosol type 3 source/gain accumulated
+- 211019  # Aerosol type 4 source/gain accumulated
+- 211020  # Aerosol type 5 source/gain accumulated
+- 211021  # Aerosol type 6 source/gain accumulated
+- 211022  # Aerosol type 7 source/gain accumulated
+- 211023  # Aerosol type 8 source/gain accumulated
+- 211024  # Aerosol type 9 source/gain accumulated
+- 211025  # Aerosol type 10 source/gain accumulated
+- 211026  # Aerosol type 11 source/gain accumulated
+- 211027  # Aerosol type 12 source/gain accumulated
+- 211031  # Aerosol type 1 sink/loss accumulated
+- 211032  # Aerosol type 2 sink/loss accumulated
+- 211033  # Aerosol type 3 sink/loss accumulated
+- 211034  # Aerosol type 4 sink/loss accumulated
+- 211035  # Aerosol type 5 sink/loss accumulated
+- 211036  # Aerosol type 6 sink/loss accumulated
+- 211037  # Aerosol type 7 sink/loss accumulated
+- 211038  # Aerosol type 8 sink/loss accumulated
+- 211039  # Aerosol type 9 sink/loss accumulated
+- 211040  # Aerosol type 10 sink/loss accumulated
+- 211041  # Aerosol type 11 sink/loss accumulated
+- 211042  # Aerosol type 12 sink/loss accumulated
+- 211064  # Total column Carbon Dioxide
+- 211065  # Total column Methane
+- 211066  # Total column Nitrous oxide
+- 211125  # Total column Nitrogen dioxide
+- 211126  # Total column Sulphur dioxide
+- 211127  # Total column Carbon monoxide
+- 211128  # Total column Formaldehyde
+- 211130  # Total Column Nitrogen Oxides
+- 211132  # Total column GRG tracer 1
+- 211134  # Total column GRG tracer 2
+- 211136  # Total column GRG tracer 3
+- 211138  # Total column GRG tracer 4
+- 211140  # Total column GRG tracer 5
+- 211142  # Total column GRG tracer 6
+- 211144  # Total column GRG tracer 7
+- 211146  # Total column GRG tracer 8
+- 211148  # Total column GRG tracer 9
+- 211150  # Total column GRG tracer 10
+- 211183  # Total column Radon
+- 211184  # Total column Sulphur Hexafluoride
+- 211206  # GEMS Total column ozone
+- 215019  # Vertically integrated mass of sea salt aerosol (0.03 - 0.5 um)
+- 215020  # Vertically integrated mass of sea salt aerosol (0.5 - 5 um)
+- 215021  # Vertically integrated mass of sea salt aerosol (5 - 20 um)
+- 215043  # Vertically integrated mass of dust aerosol (0.03 - 0.55 um)
+- 215044  # Vertically integrated mass of dust aerosol (0.55 - 9 um)
+- 215045  # Vertically integrated mass of dust aerosol (9 - 20 um)
+- 215061  # Vertically integrated mass of hydrophobic organic matter aerosol
+- 215062  # Vertically integrated mass of hydrophilic organic matter aerosol
+- 215077  # Vertically integrated mass of hydrophobic black carbon aerosol
+- 215078  # Vertically integrated mass of hydrophilic black carbon aerosol
+- 215087  # Vertically integrated mass of sulphate aerosol
+- 215174  # Vertically integrated mass of sulphur dioxide
+- 218003  # Total column hydrogen peroxide
+- 218004  # Total column methane
+- 218006  # Total column nitric acid
+- 218007  # Total column methyl peroxide
+- 218009  # Total column paraffins
+- 218010  # Total column ethene
+- 218011  # Total column olefins
+- 218012  # Total column aldehydes
+- 218013  # Total column peroxyacetyl nitrate
+- 218014  # Total column peroxides
+- 218015  # Total column organic nitrates
+- 218016  # Total column isoprene
+- 218018  # Total column dimethyl sulfide
+- 218019  # Total column ammonia
+- 218020  # Total column sulfate
+- 218021  # Total column ammonium
+- 218022  # Total column methane sulfonic acid
+- 218023  # Total column methyl glyoxal
+- 218024  # Total column stratospheric ozone
+- 218026  # Total column lead
+- 218027  # Total column nitrogen monoxide
+- 218028  # Total column hydroperoxy radical
+- 218029  # Total column methylperoxy radical
+- 218030  # Total column hydroxyl radical
+- 218032  # Total column nitrate radical
+- 218033  # Total column dinitrogen pentoxide
+- 218034  # Total column pernitric acid
+- 218035  # Total column peroxy acetyl radical
+- 218036  # Total column organic ethers
+- 218037  # Total column PAR budget corrector
+- 218038  # Total column NO to NO2 operator
+- 218039  # Total column NO to alkyl nitrate operator
+- 218040  # Total column amine
+- 218041  # Total column polar stratospheric cloud
+- 218042  # Total column methanol
+- 218043  # Total column formic acid
+- 218044  # Total column methacrylic acid
+- 218045  # Total column ethane
+- 218046  # Total column ethanol
+- 218047  # Total column propane
+- 218048  # Total column propene
+- 218049  # Total column terpenes
+- 218050  # Total column methacrolein MVK
+- 218051  # Total column nitrate
+- 218052  # Total column acetone
+- 218053  # Total column acetone product
+- 218054  # Total column IC3H7O2
+- 218055  # Total column HYPROPO2
+- 218056  # Total column nitrogen oxides Transp
+- 218057  # Total column of carbon dioxide (chemistry)
+- 218058  # Total column of nitrous oxide (chemistry)
+- 218059  # Total column of water vapour (chemistry)
+- 218060  # Total column of oxygen
+- 218061  # Total column of singlet oxygen
+- 218062  # Total column of singlet delta oxygen
+- 218063  # Total column of chlorine dioxide
+- 218064  # Total column of chlorine nitrate
+- 218065  # Total column of hypochlorous acid
+- 218066  # Total column of chlorine
+- 218067  # Total column of nitryl chloride
+- 218068  # Total column of hydrogen bromide
+- 218069  # Total column of dichlorine dioxide
+- 218070  # Total column of hypobromous acid
+- 218071  # Total column of trichlorofluoromethane
+- 218072  # Total column of dichlorodifluoromethane
+- 218073  # Total column of trichlorotrifluoroethane
+- 218074  # Total column of dichlorotetrafluoroethane
+- 218075  # Total column of chloropentafluoroethane
+- 218076  # Total column of tetrachloromethane
+- 218077  # Total column of methyl chloroform
+- 218078  # Total column of methyl chloride
+- 218079  # Total column of chlorodifluoromethane
+- 218080  # Total column of methyl bromide
+- 218081  # Total column of dibromodifluoromethane
+- 218082  # Total column of bromochlorodifluoromethane
+- 218083  # Total column of trifluorobromomethane
+- 218084  # Total column of cbrf2cbrf2
+- 218085  # Total column of sulfuric acid
+- 218086  # Total column of nitrous acid
+- 218087  # Total column of alkanes low oh rate
+- 218088  # Total column of alkanes med oh rate
+- 218089  # Total column of alkanes high oh rate
+- 218090  # Total column of terminal alkenes
+- 218091  # Total column of internal alkenes
+- 218092  # Total column of ethylperoxy radical
+- 218093  # Total column of butadiene
+- 218094  # Total column of ethyl hydroperoxide
+- 218095  # Total column of a-pinene cyclic terpenes
+- 218096  # Total column of acetic acid
+- 218097  # Total column of d-limonene cyclic diene
+- 218098  # Total column of acetaldehyde
+- 218099  # Total column of toluene and less reactive aromatics
+- 218100  # Total column of xylene and more reactive aromatics
+- 218101  # Total column of glycolaldehyde
+- 218102  # Total column of cresol
+- 218103  # Total column of acetaldehyde and higher
+- 218104  # Total column of peracetic acid
+- 218105  # Total column of ketones
+- 218106  # Total column of hoch2ch2o2
+- 218107  # Total column of glyoxal
+- 218108  # Total column of hoch2ch2o
+- 218109  # Total column of unsaturated dicarbonyls
+- 218110  # Total column of methacrolein
+- 218111  # Total column of unsaturated hydroxy dicarbonyl
+- 218112  # Total column of isopropyldioxidanyl
+- 218113  # Total column of hydroxy ketone
+- 218114  # Total column of isopropyl hydroperoxide
+- 218115  # Total column of c3h6oho2
+- 218116  # Total column of c3h6ohooh
+- 218117  # Total column of higher organic peroxides
+- 218118  # Total column of hydroxyacetone
+- 218119  # Total column of peroxyacetic acid
+- 218120  # Total column of ch3coch2o2
+- 218121  # Total column of peroxy radical from c2h6
+- 218122  # Total column of peroxy radical from hc3
+- 218123  # Total column of peroxy radical from hc5
+- 218124  # Total column of lumped alkenes
+- 218125  # Total column of peroxy radical from hc8
+- 218126  # Total column of lumped alkanes
+- 218127  # Total column of peroxy radical from c2h4
+- 218128  # Total column of c4h8o
+- 218129  # Total column of peroxy radical from terminal alkenes
+- 218130  # Total column of c4h9o3
+- 218131  # Total column of peroxy radical from internal alkenes
+- 218132  # Total column of ch3coch(oo)ch3
+- 218133  # Total column of peroxy radical from c5h8
+- 218134  # Total column of ch3coch(ooh)ch3
+- 218135  # Total column of peroxy radical from a-pinene cyclic terpenes
+- 218136  # Total column of ch2=c(ch3)co3
+- 218137  # Total column of peroxy radical from d-limonene cyclic diene
+- 218138  # Total column of methylvinylketone
+- 218139  # Total column of phenoxy radical
+- 218140  # Total column of peroxy radical from toluene and less reactive aromatics
+- 218141  # Total column of ch3c(o)ch(oo)ch2oh
+- 218142  # Total column of peroxy radical from xylene and more reactive aromatics
+- 218143  # Total column of h3c(o)ch(ooh)ch2oh
+- 218144  # Total column of peroxy radical from cresol
+- 218145  # Total column of unsaturated pans
+- 218146  # Total column of unsaturated acyl peroxy radical
+- 218147  # Total column of peroxy radical from ketones
+- 218148  # Total column of c5h11o2
+- 218149  # Total column of no3-alkenes adduct reacting to form carbonitrates
+- 218150  # Total column of c5h11ooh
+- 218151  # Total column of no3-alkenes adduct reacting via decomposition
+- 218152  # Total column of hoch2c(ch3)=chcho
+- 218153  # Total column of c5h6o2
+- 218154  # Total column of trop sulfuric acid
+- 218155  # Total column of oxides
+- 218156  # Total column of ch2chc(ch3)(oo)ch2ono2
+- 218157  # Total column of c3 organic nitrate
+- 218158  # Total column of chlorine oxides
+- 218159  # Total column of bromine oxides
+- 218160  # Total column of hoch2c(ooh)(ch3)chchoh
+- 218161  # Total column of hoch2c(ooh)(ch3)ch=ch2
+- 218162  # Total column of lumped aromatics
+- 218163  # Total column of dimethyl sulfoxyde
+- 218164  # Total column of c7h9o5
+- 218165  # Total column of c7h10o5
+- 218166  # Total column of hydrogensulfide
+- 218167  # Total column of c7h10o6
+- 218168  # Total column of all nitrogen oxides
+- 218169  # Total column of chlorine family
+- 218170  # Total column of c10h16(oh)(oo)
+- 218171  # Total column of bromine family
+- 218172  # Total column of c10h18o3
+- 218173  # Total column of nitrogen atom
+- 218174  # Total column of chlorine monoxide
+- 218175  # Total column of chlorine atom
+- 218176  # Total column of bromine monoxide
+- 218177  # Total column of hydrogen atom
+- 218178  # Total column of methyl group
+- 218179  # Total column of aromatic-ho from toluene and less reactive aromatics
+- 218180  # Total column of aromatic-ho from xylene and more reactive aromatics
+- 218181  # Total column of ammonium nitrate
+- 218182  # Total column of aromatic-ho from csl
+- 218183  # Total column of secondary organic aerosol type 1
+- 218184  # Total column of secondary organic aerosol type 2a
+- 218185  # Total column of secondary organic aerosol type 2b
+- 218186  # Total column of condensable gas type 1
+- 218187  # Total column of condensable gas type 2a
+- 218188  # Total column of condensable gas type 2b
+- 218189  # Total column of sulfur trioxide
+- 218190  # Total column of carbonyl sulfide
+- 218191  # Total column of bromine atom
+- 218192  # Total column of bromine
+- 218193  # Total column of bromine monochloride
+- 218194  # Total column of bromine nitrate
+- 218195  # Total column of dibromomethane
+- 218196  # Total column of methoxy radical
+- 218197  # Total column of tribromomethane
+- 218198  # Total column of asymmetric chlorine dioxide radical
+- 218199  # Total column of hydrogen
+- 218200  # Total column of hydrogen chloride
+- 218201  # Total column of formyl radical
+- 218202  # Total column of hydrogen fluoride
+- 218203  # Total column of oxygen atom
+- 218204  # Total column of excited oxygen atom
+- 218205  # Total column of ground state oxygen atom
+- 218206  # Total column of stratospheric aerosol
 - 228039  # Soil Moisture
 - 228086  # Soil moisture top 20 cm
 - 228087  # Soil moisture top 100 cm
@@ -23,6 +322,47 @@ concentration:
 - 260495  # Ocean Mixed Layer Potential Density (Reference 2000m)<br
 - 260619  # Mass concentration of condensed water in soil
 - 300089  # Density
+
+density.energy:
+- 162059  # Vertical integral of kinetic energy
+- 162060  # Vertical integral of thermal energy
+- 162061  # Vertical integral of potential+internal energy
+- 162062  # Vertical integral of potential+internal+latent energy
+- 162063  # Vertical integral of total energy
+
+density.volume:
+- 39  # Volumetric soil water layer 1
+- 40  # Volumetric soil water layer 2
+- 41  # Volumetric soil water layer 3
+- 42  # Volumetric soil water layer 4
+- 129039  # Volumetric soil water layer 1 gradient
+- 129040  # Volumetric soil water layer 2 gradient
+- 129041  # Volumetric soil water layer 3 gradient
+- 129042  # Volumetric soil water layer 4 gradient
+- 171039  # Volumetric soil water anomaly layer 1
+- 171040  # Volumetric soil water anomaly layer 2
+- 171041  # Volumetric soil water anomaly layer 3
+- 171042  # Volumetric soil water anomaly layer 4
+- 174039  # Volumetric soil water layer 1
+- 174040  # Volumetric soil water layer 2
+- 174041  # Volumetric soil water layer 3
+- 174042  # Volumetric soil water layer 4
+- 175039  # Volumetric soil water layer 1
+- 175040  # Volumetric soil water layer 2
+- 175041  # Volumetric soil water layer 3
+- 175042  # Volumetric soil water layer 4
+- 200039  # Volumetric soil water layer 1 difference
+- 200040  # Volumetric soil water layer 2 difference
+- 200041  # Volumetric soil water layer 3 difference
+- 200042  # Volumetric soil water layer 4 difference
+- 228093  # Volumetric soil moisture
+- 260185  # Volumetric soil moisture content
+- 260199  # Volumetric soil moisture
+- 260200  # Volumetric wilting point
+- 260210  # Liquid volumetric soil moisture (non-frozen)
+- 260211  # Volumetric transpiration stress-onset (soil moisture)
+- 260213  # Volumetric direct evaporation cease (soil moisture)
+- 260216  # Volumetric saturation of soil moisture
 
 dimension.1d.angle.degree.asymmetric:
 - 3031  # Wind direction
@@ -620,8 +960,6 @@ intensity:
 - 151173  # Salinity maximum
 - 151174  # Depth of salinity maximum
 - 151175  # Average salinity in the upper 300m
-- 151176  # Layer Thickness at scalar points
-- 151177  # Layer Thickness at vector points
 - 151178  # Potential temperature increment
 - 151179  # Potential temperature analysis error
 - 151180  # Background potential temperature
@@ -1011,278 +1349,121 @@ intensity:
 - 201203  # snow temperature
 - 201215  # ice surface temperature
 - 201241  # convective available potential energy
+- 210049  # Aerosol precursor optical depth
+- 210050  # Aerosol small mode optical depth
+- 210051  # Aerosol large mode optical depth
 - 210052  # Dust emission potential
-- 210053  # Lifting threshold speed
 - 210064  # Total column Carbon Dioxide
 - 210065  # Total column Methane
-- 210066  # Total column Nitrous oxide
 - 210096  # Wildfire Fuel Load: Carbon per unit area
 - 210101  # Wildfire radiative power maximum
 - 210119  # Mean altitude of maximum injection
 - 210120  # Altitude of plume top
-- 210125  # Total column Nitrogen dioxide
-- 210126  # Total column Sulphur dioxide
-- 210127  # Total column Carbon monoxide
-- 210128  # Total column Formaldehyde
-- 210130  # Total Column Nitrogen Oxides
-- 210132  # Total column GRG tracer 1
-- 210134  # Total column GRG tracer 2
-- 210136  # Total column GRG tracer 3
-- 210138  # Total column GRG tracer 4
-- 210140  # Total column GRG tracer 5
-- 210142  # Total column GRG tracer 6
-- 210144  # Total column GRG tracer 7
-- 210146  # Total column GRG tracer 8
-- 210148  # Total column GRG tracer 9
-- 210150  # Total column GRG tracer 10
-- 210167  # Wildfire day-time radiative power
-- 210169  # Wildfire night-time radiative power
 - 210177  # Wildfire day-time inverse variance of radiative power
 - 210179  # Wildfire night-time inverse variance of radiative power
-- 210183  # Total column Radon
-- 210184  # Total column Sulphur Hexafluoride
-- 210206  # GEMS Total column ozone
+- 210207  # Total Aerosol Optical Depth at 550nm
+- 210208  # Sea Salt Aerosol Optical Depth at 550nm
+- 210209  # Dust Aerosol Optical Depth at 550nm
+- 210210  # Organic Matter Aerosol Optical Depth at 550nm
+- 210211  # Black Carbon Aerosol Optical Depth at 550nm
+- 210212  # Sulphate Aerosol Optical Depth at 550nm
+- 210213  # Total Aerosol Optical Depth at 469nm
+- 210214  # Total Aerosol Optical Depth at 670nm
+- 210215  # Total Aerosol Optical Depth at 865nm
+- 210216  # Total Aerosol Optical Depth at 1240nm
+- 210217  # Total aerosol optical depth at 340 nm
+- 210218  # Total aerosol optical depth at 355 nm
+- 210219  # Total aerosol optical depth at 380 nm
+- 210220  # Total aerosol optical depth at 400 nm
+- 210221  # Total aerosol optical depth at 440 nm
+- 210222  # Total aerosol optical depth at 500 nm
+- 210223  # Total aerosol optical depth at 532 nm
+- 210224  # Total aerosol optical depth at 645 nm
+- 210225  # Total aerosol optical depth at 800 nm
+- 210226  # Total aerosol optical depth at 858 nm
+- 210227  # Total aerosol optical depth at 1020 nm
+- 210228  # Total aerosol optical depth at 1064 nm
+- 210229  # Total aerosol optical depth at 1640 nm
+- 210230  # Total aerosol optical depth at 2130 nm
 - 210242  # Altitude of plume bottom
+- 210243  # Volcanic sulphate aerosol optical depth at 550 nm
+- 210244  # Volcanic ash optical depth at 550 nm
 - 210245  # Profile of total aerosol dry extinction coefficient
 - 210246  # Profile of total aerosol dry absorption coefficient
+- 211049  # Aerosol precursor optical depth
+- 211050  # Aerosol small mode optical depth
+- 211051  # Aerosol large mode optical depth
 - 211052  # Dust emission potential
-- 211053  # Lifting threshold speed
-- 211064  # Total column Carbon Dioxide
-- 211065  # Total column Methane
-- 211066  # Total column Nitrous oxide
 - 211096  # Wildfire Fuel Load: Carbon per unit area
 - 211098  # Wildfire observed area
 - 211101  # Wildfire radiative power maximum
 - 211119  # Altitude of emitter
 - 211120  # Altitude of plume top
-- 211125  # Total column Nitrogen dioxide
-- 211126  # Total column Sulphur dioxide
-- 211127  # Total column Carbon monoxide
-- 211128  # Total column Formaldehyde
-- 211130  # Total Column Nitrogen Oxides
-- 211132  # Total column GRG tracer 1
-- 211134  # Total column GRG tracer 2
-- 211136  # Total column GRG tracer 3
-- 211138  # Total column GRG tracer 4
-- 211140  # Total column GRG tracer 5
-- 211142  # Total column GRG tracer 6
-- 211144  # Total column GRG tracer 7
-- 211146  # Total column GRG tracer 8
-- 211148  # Total column GRG tracer 9
-- 211150  # Total column GRG tracer 10
-- 211183  # Total column Radon
-- 211184  # Total column Sulphur Hexafluoride
-- 211206  # GEMS Total column ozone
+- 211207  # Total Aerosol Optical Depth at 550nm
+- 211208  # Sea Salt Aerosol Optical Depth at 550nm
+- 211209  # Dust Aerosol Optical Depth at 550nm
+- 211210  # Organic Matter Aerosol Optical Depth at 550nm
+- 211211  # Black Carbon Aerosol Optical Depth at 550nm
+- 211212  # Sulphate Aerosol Optical Depth at 550nm
+- 211213  # Total Aerosol Optical Depth at 469nm
+- 211214  # Total Aerosol Optical Depth at 670nm
+- 211215  # Total Aerosol Optical Depth at 865nm
+- 211216  # Total Aerosol Optical Depth at 1240nm
+- 215022  # Sea salt aerosol (0.03 - 0.5 um) optical depth
+- 215023  # Sea salt aerosol (0.5 - 5 um) optical depth
+- 215024  # Sea salt aerosol (5 - 20 um) optical depth
+- 215046  # Dust aerosol (0.03 - 0.55 um) optical depth
+- 215047  # Dust aerosol (0.55 - 9 um) optical depth
+- 215048  # Dust aerosol (9 - 20 um) optical depth
+- 215063  # Hydrophobic organic matter aerosol optical depth
+- 215064  # Hydrophilic organic matter aerosol optical depth
+- 215079  # Hydrophobic black carbon aerosol optical depth
+- 215080  # Hydrophilic black carbon aerosol optical depth
+- 215088  # Sulphate aerosol optical depth
 - 215091  # 10 metre wind speed dust emission potential
 - 215092  # 10 metre wind gustiness dust emission potential
-- 215180  # Aerosol extinction coefficient at 355 nm
-- 215181  # Aerosol extinction coefficient at 532 nm
-- 215182  # Aerosol extinction coefficient at 1064 nm
-- 215183  # Aerosol backscatter coefficient at 355 nm (from top of atmosphere)
-- 215184  # Aerosol backscatter coefficient at 532 nm (from top of atmosphere)
-- 215185  # Aerosol backscatter coefficient at 1064 nm (from top of atmosphere)
-- 215186  # Aerosol backscatter coefficient at 355 nm (from ground)
-- 215187  # Aerosol backscatter coefficient at 532 nm (from ground)
-- 215188  # Aerosol backscatter coefficient at 1064 nm (from ground)
-- 218003  # Total column hydrogen peroxide
-- 218004  # Total column methane
-- 218006  # Total column nitric acid
-- 218007  # Total column methyl peroxide
-- 218009  # Total column paraffins
-- 218010  # Total column ethene
-- 218011  # Total column olefins
-- 218012  # Total column aldehydes
-- 218013  # Total column peroxyacetyl nitrate
-- 218014  # Total column peroxides
-- 218015  # Total column organic nitrates
-- 218016  # Total column isoprene
-- 218018  # Total column dimethyl sulfide
-- 218019  # Total column ammonia
-- 218020  # Total column sulfate
-- 218021  # Total column ammonium
-- 218022  # Total column methane sulfonic acid
-- 218023  # Total column methyl glyoxal
-- 218024  # Total column stratospheric ozone
-- 218026  # Total column lead
-- 218027  # Total column nitrogen monoxide
-- 218028  # Total column hydroperoxy radical
-- 218029  # Total column methylperoxy radical
-- 218030  # Total column hydroxyl radical
-- 218032  # Total column nitrate radical
-- 218033  # Total column dinitrogen pentoxide
-- 218034  # Total column pernitric acid
-- 218035  # Total column peroxy acetyl radical
-- 218036  # Total column organic ethers
-- 218037  # Total column PAR budget corrector
-- 218038  # Total column NO to NO2 operator
-- 218039  # Total column NO to alkyl nitrate operator
-- 218040  # Total column amine
-- 218041  # Total column polar stratospheric cloud
-- 218042  # Total column methanol
-- 218043  # Total column formic acid
-- 218044  # Total column methacrylic acid
-- 218045  # Total column ethane
-- 218046  # Total column ethanol
-- 218047  # Total column propane
-- 218048  # Total column propene
-- 218049  # Total column terpenes
-- 218050  # Total column methacrolein MVK
-- 218051  # Total column nitrate
-- 218052  # Total column acetone
-- 218053  # Total column acetone product
-- 218054  # Total column IC3H7O2
-- 218055  # Total column HYPROPO2
-- 218056  # Total column nitrogen oxides Transp
-- 218057  # Total column of carbon dioxide (chemistry)
-- 218058  # Total column of nitrous oxide (chemistry)
-- 218059  # Total column of water vapour (chemistry)
-- 218060  # Total column of oxygen
-- 218061  # Total column of singlet oxygen
-- 218062  # Total column of singlet delta oxygen
-- 218063  # Total column of chlorine dioxide
-- 218064  # Total column of chlorine nitrate
-- 218065  # Total column of hypochlorous acid
-- 218066  # Total column of chlorine
-- 218067  # Total column of nitryl chloride
-- 218068  # Total column of hydrogen bromide
-- 218069  # Total column of dichlorine dioxide
-- 218070  # Total column of hypobromous acid
-- 218071  # Total column of trichlorofluoromethane
-- 218072  # Total column of dichlorodifluoromethane
-- 218073  # Total column of trichlorotrifluoroethane
-- 218074  # Total column of dichlorotetrafluoroethane
-- 218075  # Total column of chloropentafluoroethane
-- 218076  # Total column of tetrachloromethane
-- 218077  # Total column of methyl chloroform
-- 218078  # Total column of methyl chloride
-- 218079  # Total column of chlorodifluoromethane
-- 218080  # Total column of methyl bromide
-- 218081  # Total column of dibromodifluoromethane
-- 218082  # Total column of bromochlorodifluoromethane
-- 218083  # Total column of trifluorobromomethane
-- 218084  # Total column of cbrf2cbrf2
-- 218085  # Total column of sulfuric acid
-- 218086  # Total column of nitrous acid
-- 218087  # Total column of alkanes low oh rate
-- 218088  # Total column of alkanes med oh rate
-- 218089  # Total column of alkanes high oh rate
-- 218090  # Total column of terminal alkenes
-- 218091  # Total column of internal alkenes
-- 218092  # Total column of ethylperoxy radical
-- 218093  # Total column of butadiene
-- 218094  # Total column of ethyl hydroperoxide
-- 218095  # Total column of a-pinene cyclic terpenes
-- 218096  # Total column of acetic acid
-- 218097  # Total column of d-limonene cyclic diene
-- 218098  # Total column of acetaldehyde
-- 218099  # Total column of toluene and less reactive aromatics
-- 218100  # Total column of xylene and more reactive aromatics
-- 218101  # Total column of glycolaldehyde
-- 218102  # Total column of cresol
-- 218103  # Total column of acetaldehyde and higher
-- 218104  # Total column of peracetic acid
-- 218105  # Total column of ketones
-- 218106  # Total column of hoch2ch2o2
-- 218107  # Total column of glyoxal
-- 218108  # Total column of hoch2ch2o
-- 218109  # Total column of unsaturated dicarbonyls
-- 218110  # Total column of methacrolein
-- 218111  # Total column of unsaturated hydroxy dicarbonyl
-- 218112  # Total column of isopropyldioxidanyl
-- 218113  # Total column of hydroxy ketone
-- 218114  # Total column of isopropyl hydroperoxide
-- 218115  # Total column of c3h6oho2
-- 218116  # Total column of c3h6ohooh
-- 218117  # Total column of higher organic peroxides
-- 218118  # Total column of hydroxyacetone
-- 218119  # Total column of peroxyacetic acid
-- 218120  # Total column of ch3coch2o2
-- 218121  # Total column of peroxy radical from c2h6
-- 218122  # Total column of peroxy radical from hc3
-- 218123  # Total column of peroxy radical from hc5
-- 218124  # Total column of lumped alkenes
-- 218125  # Total column of peroxy radical from hc8
-- 218126  # Total column of lumped alkanes
-- 218127  # Total column of peroxy radical from c2h4
-- 218128  # Total column of c4h8o
-- 218129  # Total column of peroxy radical from terminal alkenes
-- 218130  # Total column of c4h9o3
-- 218131  # Total column of peroxy radical from internal alkenes
-- 218132  # Total column of ch3coch(oo)ch3
-- 218133  # Total column of peroxy radical from c5h8
-- 218134  # Total column of ch3coch(ooh)ch3
-- 218135  # Total column of peroxy radical from a-pinene cyclic terpenes
-- 218136  # Total column of ch2=c(ch3)co3
-- 218137  # Total column of peroxy radical from d-limonene cyclic diene
-- 218138  # Total column of methylvinylketone
-- 218139  # Total column of phenoxy radical
-- 218140  # Total column of peroxy radical from toluene and less reactive aromatics
-- 218141  # Total column of ch3c(o)ch(oo)ch2oh
-- 218142  # Total column of peroxy radical from xylene and more reactive aromatics
-- 218143  # Total column of h3c(o)ch(ooh)ch2oh
-- 218144  # Total column of peroxy radical from cresol
-- 218145  # Total column of unsaturated pans
-- 218146  # Total column of unsaturated acyl peroxy radical
-- 218147  # Total column of peroxy radical from ketones
-- 218148  # Total column of c5h11o2
-- 218149  # Total column of no3-alkenes adduct reacting to form carbonitrates
-- 218150  # Total column of c5h11ooh
-- 218151  # Total column of no3-alkenes adduct reacting via decomposition
-- 218152  # Total column of hoch2c(ch3)=chcho
-- 218153  # Total column of c5h6o2
-- 218154  # Total column of trop sulfuric acid
-- 218155  # Total column of oxides
-- 218156  # Total column of ch2chc(ch3)(oo)ch2ono2
-- 218157  # Total column of c3 organic nitrate
-- 218158  # Total column of chlorine oxides
-- 218159  # Total column of bromine oxides
-- 218160  # Total column of hoch2c(ooh)(ch3)chchoh
-- 218161  # Total column of hoch2c(ooh)(ch3)ch=ch2
-- 218162  # Total column of lumped aromatics
-- 218163  # Total column of dimethyl sulfoxyde
-- 218164  # Total column of c7h9o5
-- 218165  # Total column of c7h10o5
-- 218166  # Total column of hydrogensulfide
-- 218167  # Total column of c7h10o6
-- 218168  # Total column of all nitrogen oxides
-- 218169  # Total column of chlorine family
-- 218170  # Total column of c10h16(oh)(oo)
-- 218171  # Total column of bromine family
-- 218172  # Total column of c10h18o3
-- 218173  # Total column of nitrogen atom
-- 218174  # Total column of chlorine monoxide
-- 218175  # Total column of chlorine atom
-- 218176  # Total column of bromine monoxide
-- 218177  # Total column of hydrogen atom
-- 218178  # Total column of methyl group
-- 218179  # Total column of aromatic-ho from toluene and less reactive aromatics
-- 218180  # Total column of aromatic-ho from xylene and more reactive aromatics
-- 218181  # Total column of ammonium nitrate
-- 218182  # Total column of aromatic-ho from csl
-- 218183  # Total column of secondary organic aerosol type 1
-- 218184  # Total column of secondary organic aerosol type 2a
-- 218185  # Total column of secondary organic aerosol type 2b
-- 218186  # Total column of condensable gas type 1
-- 218187  # Total column of condensable gas type 2a
-- 218188  # Total column of condensable gas type 2b
-- 218189  # Total column of sulfur trioxide
-- 218190  # Total column of carbonyl sulfide
-- 218191  # Total column of bromine atom
-- 218192  # Total column of bromine
-- 218193  # Total column of bromine monochloride
-- 218194  # Total column of bromine nitrate
-- 218195  # Total column of dibromomethane
-- 218196  # Total column of methoxy radical
-- 218197  # Total column of tribromomethane
-- 218198  # Total column of asymmetric chlorine dioxide radical
-- 218199  # Total column of hydrogen
-- 218200  # Total column of hydrogen chloride
-- 218201  # Total column of formyl radical
-- 218202  # Total column of hydrogen fluoride
-- 218203  # Total column of oxygen atom
-- 218204  # Total column of excited oxygen atom
-- 218205  # Total column of ground state oxygen atom
-- 218206  # Total column of stratospheric aerosol
+- 215093  # Total aerosol optical thickness at 532 nm
+- 215094  # Natural (sea-salt and dust) aerosol optical thickness at 532 nm
+- 215095  # Antropogenic (black carbon, organic matter, sulphate) aerosol optical thickness at 532 nm
+- 215096  # Total absorption aerosol optical depth at 340 nm
+- 215097  # Total absorption aerosol optical depth at 355 nm
+- 215098  # Total absorption aerosol optical depth at 380 nm
+- 215099  # Total absorption aerosol optical depth at 400 nm
+- 215100  # Total absorption aerosol optical depth at 440 nm
+- 215101  # Total absorption aerosol optical depth at 469 nm
+- 215102  # Total absorption aerosol optical depth at 500 nm
+- 215103  # Total absorption aerosol optical depth at 532 nm
+- 215104  # Total absorption aerosol optical depth at 550 nm
+- 215105  # Total absorption aerosol optical depth at 645 nm
+- 215106  # Total absorption aerosol optical depth at 670 nm
+- 215107  # Total absorption aerosol optical depth at 800 nm
+- 215108  # Total absorption aerosol optical depth at 858 nm
+- 215109  # Total absorption aerosol optical depth at 865 nm
+- 215110  # Total absorption aerosol optical depth at 1020 nm
+- 215111  # Total absorption aerosol optical depth at 1064 nm
+- 215112  # Total absorption aerosol optical depth at 1240 nm
+- 215113  # Total absorption aerosol optical depth at 1640 nm
+- 215114  # Total fine mode (r < 0.5 um) aerosol optical depth at 340 nm
+- 215115  # Total fine mode (r < 0.5 um) aerosol optical depth at 355 nm
+- 215116  # Total fine mode (r < 0.5 um) aerosol optical depth at 380 nm
+- 215117  # Total fine mode (r < 0.5 um) aerosol optical depth at 400 nm
+- 215118  # Total fine mode (r < 0.5 um) aerosol optical depth at 440 nm
+- 215119  # Total fine mode (r < 0.5 um) aerosol optical depth at 469 nm
+- 215120  # Total fine mode (r < 0.5 um) aerosol optical depth at 500 nm
+- 215121  # Total fine mode (r < 0.5 um) aerosol optical depth at 532 nm
+- 215122  # Total fine mode (r < 0.5 um) aerosol optical depth at 550 nm
+- 215123  # Total fine mode (r < 0.5 um) aerosol optical depth at 645 nm
+- 215124  # Total fine mode (r < 0.5 um) aerosol optical depth at 670 nm
+- 215125  # Total fine mode (r < 0.5 um) aerosol optical depth at 800 nm
+- 215126  # Total fine mode (r < 0.5 um) aerosol optical depth at 858 nm
+- 215127  # Total fine mode (r < 0.5 um) aerosol optical depth at 865 nm
+- 215128  # Total fine mode (r < 0.5 um) aerosol optical depth at 1020 nm
+- 215129  # Total fine mode (r < 0.5 um) aerosol optical depth at 1064 nm
+- 215130  # Total fine mode (r < 0.5 um) aerosol optical depth at 1240 nm
+- 215131  # Total fine mode (r < 0.5 um) aerosol optical depth at 1640 nm
+- 215175  # Sulphur dioxide optical depth
+- 215176  # Total absorption aerosol optical depth at 2130 nm
+- 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
 - 228001  # Convective inhibition
 - 228002  # Orography
 - 228003  # Friction velocity
@@ -1552,7 +1733,6 @@ intensity:
 - 260614  # Gravity wave meridional acceleration
 - 260617  # Moisture storage on canopy
 - 260618  # Moisture storage on ground or cover
-- 260620  # Cloud liquid water
 - 260626  # Zonal momentum flux by long gravity wave
 - 260627  # Meridional momentum flux by long gravity wave
 - 260628  # Meridional momentum flux by short gravity wave
@@ -1696,6 +1876,702 @@ intensity:
 - 300254  # Time mean vorticity
 - 300255  # Time mean zonal wind (u)
 
+numerics.accumulated:
+- 8  # Surface runoff
+- 9  # Sub-surface runoff
+- 19  # Clear sky surface UV
+- 20  # Clear sky surface photosynthetically active radiation
+- 44  # Snow evaporation
+- 45  # Snowmelt
+- 47  # Direct solar radiation
+- 48  # Magnitude of turbulent surface stress
+- 50  # Large-scale precipitation fraction
+- 57  # Downward UV radiation at the surface
+- 58  # Photosynthetically active radiation at the surface
+- 142  # Large-scale precipitation
+- 143  # Convective precipitation
+- 144  # Snowfall
+- 145  # Boundary layer dissipation
+- 146  # Surface sensible heat flux
+- 147  # Surface latent heat flux
+- 149  # Surface net radiation
+- 150  # Top net radiation
+- 169  # Surface solar radiation downwards
+- 175  # Surface thermal radiation downwards
+- 176  # Surface net solar radiation
+- 177  # Surface net thermal radiation
+- 178  # Top net solar radiation
+- 179  # Top net thermal radiation
+- 180  # Eastward turbulent surface stress
+- 181  # Northward turbulent surface stress
+- 182  # Evaporation
+- 195  # Eastward gravity wave surface stress
+- 196  # Northward gravity wave surface stress
+- 197  # Gravity wave dissipation
+- 205  # Runoff
+- 208  # Top net solar radiation, clear sky
+- 209  # Top net thermal radiation, clear sky
+- 210  # Surface net solar radiation, clear sky
+- 211  # Surface net thermal radiation, clear sky
+- 212  # TOA incident solar radiation
+- 228  # Total precipitation
+- 239  # Convective snowfall
+- 240  # Large-scale snowfall
+- 3062  # large scale precipitation
+- 3063  # Convective precipitation (water)
+- 3079  # Large scale snow
+- 3099  # Snow melt
+- 129044  # Snow evaporation gradient
+- 129045  # Snowmelt gradient
+- 129047  # Direct solar radiation gradient
+- 129048  # Magnitude of turbulent surface stress gradient
+- 129050  # Large-scale precipitation fraction gradient
+- 129057  # Downward UV radiation at the surface gradient
+- 129058  # Photosynthetically active radiation at the surface gradient
+- 129142  # Stratiform precipitation (Large-scale precipitation) gradient
+- 129143  # Convective precipitation gradient
+- 129144  # Snowfall (convective + stratiform) gradient
+- 129145  # Boundary layer dissipation gradient
+- 129146  # Surface sensible heat flux gradient
+- 129147  # Surface latent heat flux gradient
+- 129149  # Surface net radiation gradient
+- 129169  # Surface solar radiation downwards gradient
+- 129175  # Surface thermal radiation downwards gradient
+- 129176  # Surface net solar radiation gradient
+- 129177  # Surface net thermal radiation gradient
+- 129178  # Top net solar radiation gradient
+- 129179  # Top net thermal radiation gradient
+- 129180  # East-West surface stress gradient
+- 129181  # North-South surface stress gradient
+- 129182  # Evaporation gradient
+- 129195  # Longitudinal component of gravity wave stress gradient
+- 129196  # Meridional component of gravity wave stress gradient
+- 129197  # Gravity wave dissipation gradient
+- 129205  # Runoff gradient
+- 129208  # Top net solar radiation, clear sky gradient
+- 129209  # Top net thermal radiation, clear sky gradient
+- 129210  # Surface net solar radiation, clear sky gradient
+- 129211  # Surface net thermal radiation, clear sky gradient
+- 129212  # TOA incident solar radiation gradient
+- 129228  # Total precipitation gradient
+- 129231  # Instantaneous surface heat flux gradient
+- 129239  # Convective snowfall gradient
+- 129240  # Large scale snowfall gradient
+- 130208  # Top solar radiation upward
+- 130209  # Top thermal radiation upward
+- 130210  # Top solar radiation upward, clear sky
+- 130211  # Top thermal radiation upward, clear sky
+- 150181  # Heat flux correction
+- 150183  # Observed heat flux
+- 151155  # Turbulent kinetic energy input
+- 151156  # Net surface heat flux
+- 151157  # Absorbed solar radiation
+- 151160  # Specified surface heat flux
+- 151162  # Heat flux correction
+- 160141  # Snow depth
+- 160231  # Instantaneous surface heat flux
+- 160249  # Gravity wave dissipation flux
+- 162053  # Vertical integral of mass of atmosphere
+- 162108  # Total precipitation flux
+- 162130  # Liquid Precipitation flux from convection
+- 162131  # Ice Precipitation flux from convection
+- 162136  # Liquid Precip flux from cloud scheme (stratiform)
+- 162137  # Ice Precip flux from cloud scheme (stratiform)
+- 170179  # Top net thermal radiation
+- 171044  # Snow evaporation anomaly
+- 171045  # Snowmelt anomaly
+- 171047  # Direct solar radiation anomaly
+- 171048  # Magnitude of turbulent surface stress anomaly
+- 171050  # Large-scale precipitation fraction anomaly
+- 171057  # Downward UV radiation at the surface anomaly
+- 171058  # Photosynthetically active radiation at the surface anomaly
+- 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
+- 171143  # Convective precipitation anomaly
+- 171144  # Snowfall (convective + stratiform) anomaly
+- 171145  # Boundary layer dissipation anomaly
+- 171146  # Surface sensible heat flux anomaly
+- 171147  # Surface latent heat flux anomaly
+- 171149  # Surface net radiation anomaly
+- 171169  # Surface solar radiation downwards anomaly
+- 171175  # Surface thermal radiation downwards anomaly
+- 171176  # Surface net solar radiation anomaly
+- 171177  # Surface net thermal radiation anomaly
+- 171178  # Top net solar radiation anomaly
+- 171179  # Top net thermal radiation anomaly
+- 171180  # East-West surface stress anomaly
+- 171181  # North-South surface stress anomaly
+- 171182  # Evaporation anomaly
+- 171195  # Longitudinal component of gravity wave stress anomaly
+- 171196  # Meridional component of gravity wave stress anomaly
+- 171197  # Gravity wave dissipation anomaly
+- 171205  # Runoff anomaly
+- 171208  # Top net solar radiation clear sky anomaly
+- 171209  # Top net thermal radiation clear sky anomaly
+- 171210  # Surface net solar radiation clear sky anomaly
+- 171211  # Surface net thermal radiation, clear sky anomaly
+- 171212  # Solar insolation anomaly
+- 171228  # Total precipitation anomaly
+- 171231  # Instantaneous surface heat flux anomaly
+- 171239  # Convective snowfall anomaly
+- 171240  # Large scale snowfall anomaly
+- 172144  # Snowfall (convective + stratiform)
+- 172205  # Runoff
+- 173050  # Large-scale precipitation fraction anomaly
+- 173145  # Boundary layer dissipation anomaly
+- 173146  # Surface sensible heat flux anomaly
+- 173147  # Surface latent heat flux anomaly
+- 173149  # Surface net radiation anomaly
+- 173169  # Surface solar radiation downwards anomaly
+- 173175  # Surface thermal radiation downwards anomaly
+- 173176  # Surface solar radiation anomaly
+- 173177  # Surface thermal radiation anomaly
+- 173178  # Top solar radiation anomaly
+- 173179  # Top thermal radiation anomaly
+- 173197  # Gravity wave dissipation anomaly
+- 173205  # Runoff anomaly
+- 173208  # Top net solar radiation, clear sky anomaly
+- 173209  # Top net thermal radiation, clear sky anomaly
+- 173210  # Surface net solar radiation, clear sky anomaly
+- 173211  # Surface net thermal radiation, clear sky anomaly
+- 174008  # Surface runoff
+- 174009  # Sub-surface runoff
+- 174089  # Top incoming solar radiation
+- 174090  # Top outgoing solar radiation
+- 174116  # Short wave radiation flux at surface
+- 174117  # Short wave radiation flux at top of atmosphere
+- 175089  # Top incoming solar radiation
+- 175090  # Top outgoing solar radiation
+- 180176  # Surface net solar radiation
+- 180177  # Surface net thermal radiation
+- 180178  # Top net solar radiation
+- 180179  # Top net thermal radiation
+- 190141  # Snow depth
+- 200044  # Snow evaporation difference
+- 200045  # Snowmelt difference
+- 200047  # Direct solar radiation difference
+- 200048  # Magnitude of turbulent surface stress difference
+- 200050  # Large-scale precipitation fraction difference
+- 200057  # Downward UV radiation at the surface difference
+- 200058  # Photosynthetically active radiation at the surface difference
+- 200142  # Stratiform precipitation (Large-scale precipitation) difference
+- 200143  # Convective precipitation difference
+- 200144  # Snowfall (convective + stratiform) difference
+- 200145  # Boundary layer dissipation difference
+- 200146  # Surface sensible heat flux difference
+- 200147  # Surface latent heat flux difference
+- 200149  # Surface net radiation difference
+- 200169  # Surface solar radiation downwards difference
+- 200175  # Surface thermal radiation downwards difference
+- 200176  # Surface net solar radiation difference
+- 200177  # Surface net thermal radiation difference
+- 200178  # Top net solar radiation difference
+- 200179  # Top net thermal radiation difference
+- 200180  # East-West surface stress difference
+- 200181  # North-South surface stress difference
+- 200182  # Evaporation difference
+- 200195  # Longitudinal component of gravity wave stress difference
+- 200196  # Meridional component of gravity wave stress difference
+- 200197  # Gravity wave dissipation difference
+- 200205  # Runoff difference
+- 200208  # Top net solar radiation, clear sky difference
+- 200209  # Top net thermal radiation, clear sky difference
+- 200210  # Surface net solar radiation, clear sky difference
+- 200211  # Surface net thermal radiation, clear sky difference
+- 200212  # TOA incident solar radiation difference
+- 200228  # Total precipitation difference
+- 200231  # Instantaneous surface heat flux difference
+- 200239  # Convective snowfall difference
+- 200240  # Large scale snowfall difference
+- 201001  # downward shortwave radiant flux density
+- 201002  # upward shortwave radiant flux density
+- 201003  # downward longwave radiant flux density
+- 201004  # upward longwave radiant flux density
+- 201005  # downwd photosynthetic active radiant flux density
+- 201006  # net shortwave flux
+- 201007  # net longwave flux
+- 201008  # total net radiative flux density
+- 201009  # downw shortw radiant flux density, cloudfree part
+- 201010  # upw shortw radiant flux density, cloudy part
+- 201011  # downw longw radiant flux density, cloudfree part
+- 201012  # upw longw radiant flux density, cloudy part
+- 201015  # total radiative heating rate
+- 201016  # soil heat flux, surface
+- 201017  # soil heat flux, bottom of layer
+- 201102  # surface precipitation amount, rain, grid scale
+- 201113  # surface precipitation amount, rain, convective
+- 215089  # Accumulated total aerosol optical depth at 550 nm
+- 228021  # Total sky direct solar radiation at surface
+- 228022  # Clear-sky direct solar radiation at surface
+- 228100  # Evaporation from the top of canopy
+- 228101  # Evaporation from bare soil
+- 228102  # Evaporation from open water surfaces excluding oceans
+- 228103  # Evaporation from vegetation transpiration
+- 228129  # Surface solar radiation downward clear-sky
+- 228130  # Surface thermal radiation downward clear-sky
+- 228141  # Snow depth water equivalent
+- 228143  # Convective precipitation
+- 228144  # Snow Fall water equivalent
+- 228205  # Water runoff and drainage
+- 228216  # Accumulated freezing rain
+- 228228  # Total Precipitation
+- 228242  # Surface solar radiation diffuse total sky
+- 228243  # Surface solar radiation diffuse clear-sky
+- 228251  # Potential evaporation
+- 230008  # Surface runoff (variable resolution)
+- 230009  # Sub-surface runoff (variable resolution)
+- 230020  # Clear sky surface photosynthetically active radiation (variable resolution)
+- 230021  # Total sky direct solar radiation at surface (variable resolution)
+- 230022  # Clear-sky direct solar radiation at surface (variable resolution)
+- 230044  # Snow evaporation (variable resolution)
+- 230045  # Snowmelt (variable resolution)
+- 230047  # Direct solar radiation (variable resolution)
+- 230050  # Large-scale precipitation fraction (variable resolution)
+- 230057  # Downward UV radiation at the surface (variable resolution)
+- 230058  # Photosynthetically active radiation at the surface (variable resolution)
+- 230129  # Surface solar radiation downward clear-sky (variable resolution)
+- 230130  # Surface thermal radiation downward clear-sky (variable resolution)
+- 230142  # Stratiform precipitation (Large-scale precipitation) (variable resolution)
+- 230143  # Convective precipitation (variable resolution)
+- 230144  # Snowfall (convective + stratiform) (variable resolution)
+- 230145  # Boundary layer dissipation (variable resolution)
+- 230146  # Surface sensible heat flux (variable resolution)
+- 230147  # Surface latent heat flux (variable resolution)
+- 230169  # Surface solar radiation downwards (variable resolution)
+- 230175  # Surface thermal radiation downwards (variable resolution)
+- 230176  # Surface net solar radiation (variable resolution)
+- 230177  # Surface net thermal radiation (variable resolution)
+- 230178  # Top net solar radiation (variable resolution)
+- 230179  # Top net thermal radiation (variable resolution)
+- 230180  # East-West surface stress (variable resolution)
+- 230181  # North-South surface stress (variable resolution)
+- 230182  # Evaporation (variable resolution)
+- 230195  # Longitudinal component of gravity wave stress (variable resolution)
+- 230196  # Meridional component of gravity wave stress (variable resolution)
+- 230197  # Gravity wave dissipation (variable resolution)
+- 230205  # Runoff (variable resolution)
+- 230208  # Top net solar radiation, clear sky (variable resolution)
+- 230209  # Top net thermal radiation, clear sky (variable resolution)
+- 230210  # Surface net solar radiation, clear sky (variable resolution)
+- 230211  # Surface net thermal radiation, clear sky (variable resolution)
+- 230212  # TOA incident solar radiation (variable resolution)
+- 230216  # Accumulated freezing rain (variable resolution)
+- 230228  # Total precipitation (variable resolution)
+- 230239  # Convective snowfall (variable resolution)
+- 230240  # Large-scale snowfall (variable resolution)
+- 230251  # Potential evaporation (variable resolution)
+- 240020  # Depth of water on soil surface
+- 240021  # Upstream accumulated precipitation
+- 240022  # Upstream accumulated snow melt
+- 240026  # Snow depth at elevation bands
+- 260009  # Large scale precipitation (non-convective)
+- 260011  # Convective snow
+- 260012  # Large scale snow
+- 260025  # Total snowfall
+- 260036  # Potential evaporation
+- 260043  # Large scale water precipitation (non-convective)
+- 260044  # Convective water precipitation
+- 260045  # Total water precipitation
+- 260046  # Total snow precipitation
+- 260056  # Water equivalent of accumulated snow depth
+- 260138  # Precipitation
+- 260170  # Flash flood runoff (Encoded as an accumulation over a floating subinterval of time)
+- 260174  # Baseflow-groundwater runoff
+- 260175  # Storm surface runoff
+- 260181  # Water runoff
+- 260218  # Estimated precipitation
+- 260259  # Evaporation
+- 260264  # Time-integrated surface direct short wave radiation flux
+- 260284  # Liquid precipitation (rainfall)
+- 260286  # Total precipitation (nearest grid point)
+- 260287  # Convective precipitation (nearest grid point)
+- 260423  # Accumulated surface downward short-wave radiation flux, clear sky
+- 260427  # Accumulated surface upward short-wave radiation flux, clear sky
+- 260428  # Accumulated surface downward long-wave radiation flux, clear sky
+- 260430  # Percolation
+- 260461  # Water vapor added by precip assimilation
+- 260462  # Water condensate added by precip assimilation
+- 260479  # Land Surface Precipitation Accumulation
+- 300065  # Wat equiv acc snow depth
+- 300177  # Potential sfc evaporation
+
+numerics.vertical-integral:
+- 78  # Total column cloud liquid water
+- 79  # Total column cloud ice water
+- 136  # Total column water
+- 137  # Total column water vapour
+- 206  # Total column ozone
+- 213  # Vertically integrated moisture divergence
+- 129078  # Total column liquid water
+- 129079  # Total column ice water
+- 129136  # Total column water gradient
+- 129137  # Total column water vapour gradient
+- 129206  # Total column ozone gradient
+- 162053  # Vertical integral of mass of atmosphere
+- 162054  # Vertical integral of temperature
+- 162059  # Vertical integral of kinetic energy
+- 162060  # Vertical integral of thermal energy
+- 162061  # Vertical integral of potential+internal energy
+- 162062  # Vertical integral of potential+internal+latent energy
+- 162063  # Vertical integral of total energy
+- 162064  # Vertical integral of energy conversion
+- 162065  # Vertical integral of eastward mass flux
+- 162066  # Vertical integral of northward mass flux
+- 162067  # Vertical integral of eastward kinetic energy flux
+- 162068  # Vertical integral of northward kinetic energy flux
+- 162069  # Vertical integral of eastward heat flux
+- 162070  # Vertical integral of northward heat flux
+- 162071  # Vertical integral of eastward water vapour flux
+- 162072  # Vertical integral of northward water vapour flux
+- 162073  # Vertical integral of eastward geopotential flux
+- 162074  # Vertical integral of northward geopotential flux
+- 162075  # Vertical integral of eastward total energy flux
+- 162076  # Vertical integral of northward total energy flux
+- 162077  # Vertical integral of eastward ozone flux
+- 162078  # Vertical integral of northward ozone flux
+- 162079  # Vertical integral of divergence of cloud liquid water flux
+- 162080  # Vertical integral of divergence of cloud frozen water flux
+- 162081  # Vertical integral of divergence of mass flux
+- 162082  # Vertical integral of divergence of kinetic energy flux
+- 162083  # Vertical integral of divergence of thermal energy flux
+- 162084  # Vertical integral of divergence of moisture flux
+- 162085  # Vertical integral of divergence of geopotential flux
+- 162086  # Vertical integral of divergence of total energy flux
+- 162087  # Vertical integral of divergence of ozone flux
+- 162088  # Vertical integral of eastward cloud liquid water flux
+- 162089  # Vertical integral of northward cloud liquid water flux
+- 162090  # Vertical integral of eastward cloud frozen water flux
+- 162091  # Vertical integral of northward cloud frozen water flux
+- 162092  # Vertical integral of mass tendency
+- 171078  # Total column liquid water anomaly
+- 171079  # Total column ice water anomaly
+- 171136  # Total column water anomaly
+- 171137  # Total column water vapour anomaly
+- 171206  # Total column ozone anomaly
+- 172189  # Vertical integral of northward cloud liquid water flux
+- 174137  # Total column water vapour
+- 200078  # Total column liquid water
+- 200079  # Total column ice water
+- 200136  # Total column water difference
+- 200137  # Total column water vapour difference
+- 200206  # Total column ozone difference
+- 201041  # total column water
+- 210016  # Aerosol type 1 source/gain accumulated
+- 210017  # Aerosol type 2 source/gain accumulated
+- 210018  # Aerosol type 3 source/gain accumulated
+- 210019  # Aerosol type 4 source/gain accumulated
+- 210020  # Aerosol type 5 source/gain accumulated
+- 210021  # Aerosol type 6 source/gain accumulated
+- 210022  # Aerosol type 7 source/gain accumulated
+- 210023  # Aerosol type 8 source/gain accumulated
+- 210024  # Aerosol type 9 source/gain accumulated
+- 210025  # Aerosol type 10 source/gain accumulated
+- 210026  # Aerosol type 11 source/gain accumulated
+- 210027  # Aerosol type 12 source/gain accumulated
+- 210031  # Aerosol type 1 sink/loss accumulated
+- 210032  # Aerosol type 2 sink/loss accumulated
+- 210033  # Aerosol type 3 sink/loss accumulated
+- 210034  # Aerosol type 4 sink/loss accumulated
+- 210035  # Aerosol type 5 sink/loss accumulated
+- 210036  # Aerosol type 6 sink/loss accumulated
+- 210037  # Aerosol type 7 sink/loss accumulated
+- 210038  # Aerosol type 8 sink/loss accumulated
+- 210039  # Aerosol type 9 sink/loss accumulated
+- 210040  # Aerosol type 10 sink/loss accumulated
+- 210041  # Aerosol type 11 sink/loss accumulated
+- 210042  # Aerosol type 12 sink/loss accumulated
+- 210064  # Total column Carbon Dioxide
+- 210065  # Total column Methane
+- 210066  # Total column Nitrous oxide
+- 210125  # Total column Nitrogen dioxide
+- 210126  # Total column Sulphur dioxide
+- 210127  # Total column Carbon monoxide
+- 210128  # Total column Formaldehyde
+- 210130  # Total Column Nitrogen Oxides
+- 210132  # Total column GRG tracer 1
+- 210134  # Total column GRG tracer 2
+- 210136  # Total column GRG tracer 3
+- 210138  # Total column GRG tracer 4
+- 210140  # Total column GRG tracer 5
+- 210142  # Total column GRG tracer 6
+- 210144  # Total column GRG tracer 7
+- 210146  # Total column GRG tracer 8
+- 210148  # Total column GRG tracer 9
+- 210150  # Total column GRG tracer 10
+- 210183  # Total column Radon
+- 210184  # Total column Sulphur Hexafluoride
+- 210206  # GEMS Total column ozone
+- 211016  # Aerosol type 1 source/gain accumulated
+- 211017  # Aerosol type 2 source/gain accumulated
+- 211018  # Aerosol type 3 source/gain accumulated
+- 211019  # Aerosol type 4 source/gain accumulated
+- 211020  # Aerosol type 5 source/gain accumulated
+- 211021  # Aerosol type 6 source/gain accumulated
+- 211022  # Aerosol type 7 source/gain accumulated
+- 211023  # Aerosol type 8 source/gain accumulated
+- 211024  # Aerosol type 9 source/gain accumulated
+- 211025  # Aerosol type 10 source/gain accumulated
+- 211026  # Aerosol type 11 source/gain accumulated
+- 211027  # Aerosol type 12 source/gain accumulated
+- 211031  # Aerosol type 1 sink/loss accumulated
+- 211032  # Aerosol type 2 sink/loss accumulated
+- 211033  # Aerosol type 3 sink/loss accumulated
+- 211034  # Aerosol type 4 sink/loss accumulated
+- 211035  # Aerosol type 5 sink/loss accumulated
+- 211036  # Aerosol type 6 sink/loss accumulated
+- 211037  # Aerosol type 7 sink/loss accumulated
+- 211038  # Aerosol type 8 sink/loss accumulated
+- 211039  # Aerosol type 9 sink/loss accumulated
+- 211040  # Aerosol type 10 sink/loss accumulated
+- 211041  # Aerosol type 11 sink/loss accumulated
+- 211042  # Aerosol type 12 sink/loss accumulated
+- 211064  # Total column Carbon Dioxide
+- 211065  # Total column Methane
+- 211066  # Total column Nitrous oxide
+- 211125  # Total column Nitrogen dioxide
+- 211126  # Total column Sulphur dioxide
+- 211127  # Total column Carbon monoxide
+- 211128  # Total column Formaldehyde
+- 211130  # Total Column Nitrogen Oxides
+- 211132  # Total column GRG tracer 1
+- 211134  # Total column GRG tracer 2
+- 211136  # Total column GRG tracer 3
+- 211138  # Total column GRG tracer 4
+- 211140  # Total column GRG tracer 5
+- 211142  # Total column GRG tracer 6
+- 211144  # Total column GRG tracer 7
+- 211146  # Total column GRG tracer 8
+- 211148  # Total column GRG tracer 9
+- 211150  # Total column GRG tracer 10
+- 211183  # Total column Radon
+- 211184  # Total column Sulphur Hexafluoride
+- 211206  # GEMS Total column ozone
+- 215019  # Vertically integrated mass of sea salt aerosol (0.03 - 0.5 um)
+- 215020  # Vertically integrated mass of sea salt aerosol (0.5 - 5 um)
+- 215021  # Vertically integrated mass of sea salt aerosol (5 - 20 um)
+- 215043  # Vertically integrated mass of dust aerosol (0.03 - 0.55 um)
+- 215044  # Vertically integrated mass of dust aerosol (0.55 - 9 um)
+- 215045  # Vertically integrated mass of dust aerosol (9 - 20 um)
+- 215061  # Vertically integrated mass of hydrophobic organic matter aerosol
+- 215062  # Vertically integrated mass of hydrophilic organic matter aerosol
+- 215077  # Vertically integrated mass of hydrophobic black carbon aerosol
+- 215078  # Vertically integrated mass of hydrophilic black carbon aerosol
+- 215087  # Vertically integrated mass of sulphate aerosol
+- 215174  # Vertically integrated mass of sulphur dioxide
+- 218003  # Total column hydrogen peroxide
+- 218004  # Total column methane
+- 218006  # Total column nitric acid
+- 218007  # Total column methyl peroxide
+- 218009  # Total column paraffins
+- 218010  # Total column ethene
+- 218011  # Total column olefins
+- 218012  # Total column aldehydes
+- 218013  # Total column peroxyacetyl nitrate
+- 218014  # Total column peroxides
+- 218015  # Total column organic nitrates
+- 218016  # Total column isoprene
+- 218018  # Total column dimethyl sulfide
+- 218019  # Total column ammonia
+- 218020  # Total column sulfate
+- 218021  # Total column ammonium
+- 218022  # Total column methane sulfonic acid
+- 218023  # Total column methyl glyoxal
+- 218024  # Total column stratospheric ozone
+- 218026  # Total column lead
+- 218027  # Total column nitrogen monoxide
+- 218028  # Total column hydroperoxy radical
+- 218029  # Total column methylperoxy radical
+- 218030  # Total column hydroxyl radical
+- 218032  # Total column nitrate radical
+- 218033  # Total column dinitrogen pentoxide
+- 218034  # Total column pernitric acid
+- 218035  # Total column peroxy acetyl radical
+- 218036  # Total column organic ethers
+- 218037  # Total column PAR budget corrector
+- 218038  # Total column NO to NO2 operator
+- 218039  # Total column NO to alkyl nitrate operator
+- 218040  # Total column amine
+- 218041  # Total column polar stratospheric cloud
+- 218042  # Total column methanol
+- 218043  # Total column formic acid
+- 218044  # Total column methacrylic acid
+- 218045  # Total column ethane
+- 218046  # Total column ethanol
+- 218047  # Total column propane
+- 218048  # Total column propene
+- 218049  # Total column terpenes
+- 218050  # Total column methacrolein MVK
+- 218051  # Total column nitrate
+- 218052  # Total column acetone
+- 218053  # Total column acetone product
+- 218054  # Total column IC3H7O2
+- 218055  # Total column HYPROPO2
+- 218056  # Total column nitrogen oxides Transp
+- 218057  # Total column of carbon dioxide (chemistry)
+- 218058  # Total column of nitrous oxide (chemistry)
+- 218059  # Total column of water vapour (chemistry)
+- 218060  # Total column of oxygen
+- 218061  # Total column of singlet oxygen
+- 218062  # Total column of singlet delta oxygen
+- 218063  # Total column of chlorine dioxide
+- 218064  # Total column of chlorine nitrate
+- 218065  # Total column of hypochlorous acid
+- 218066  # Total column of chlorine
+- 218067  # Total column of nitryl chloride
+- 218068  # Total column of hydrogen bromide
+- 218069  # Total column of dichlorine dioxide
+- 218070  # Total column of hypobromous acid
+- 218071  # Total column of trichlorofluoromethane
+- 218072  # Total column of dichlorodifluoromethane
+- 218073  # Total column of trichlorotrifluoroethane
+- 218074  # Total column of dichlorotetrafluoroethane
+- 218075  # Total column of chloropentafluoroethane
+- 218076  # Total column of tetrachloromethane
+- 218077  # Total column of methyl chloroform
+- 218078  # Total column of methyl chloride
+- 218079  # Total column of chlorodifluoromethane
+- 218080  # Total column of methyl bromide
+- 218081  # Total column of dibromodifluoromethane
+- 218082  # Total column of bromochlorodifluoromethane
+- 218083  # Total column of trifluorobromomethane
+- 218084  # Total column of cbrf2cbrf2
+- 218085  # Total column of sulfuric acid
+- 218086  # Total column of nitrous acid
+- 218087  # Total column of alkanes low oh rate
+- 218088  # Total column of alkanes med oh rate
+- 218089  # Total column of alkanes high oh rate
+- 218090  # Total column of terminal alkenes
+- 218091  # Total column of internal alkenes
+- 218092  # Total column of ethylperoxy radical
+- 218093  # Total column of butadiene
+- 218094  # Total column of ethyl hydroperoxide
+- 218095  # Total column of a-pinene cyclic terpenes
+- 218096  # Total column of acetic acid
+- 218097  # Total column of d-limonene cyclic diene
+- 218098  # Total column of acetaldehyde
+- 218099  # Total column of toluene and less reactive aromatics
+- 218100  # Total column of xylene and more reactive aromatics
+- 218101  # Total column of glycolaldehyde
+- 218102  # Total column of cresol
+- 218103  # Total column of acetaldehyde and higher
+- 218104  # Total column of peracetic acid
+- 218105  # Total column of ketones
+- 218106  # Total column of hoch2ch2o2
+- 218107  # Total column of glyoxal
+- 218108  # Total column of hoch2ch2o
+- 218109  # Total column of unsaturated dicarbonyls
+- 218110  # Total column of methacrolein
+- 218111  # Total column of unsaturated hydroxy dicarbonyl
+- 218112  # Total column of isopropyldioxidanyl
+- 218113  # Total column of hydroxy ketone
+- 218114  # Total column of isopropyl hydroperoxide
+- 218115  # Total column of c3h6oho2
+- 218116  # Total column of c3h6ohooh
+- 218117  # Total column of higher organic peroxides
+- 218118  # Total column of hydroxyacetone
+- 218119  # Total column of peroxyacetic acid
+- 218120  # Total column of ch3coch2o2
+- 218121  # Total column of peroxy radical from c2h6
+- 218122  # Total column of peroxy radical from hc3
+- 218123  # Total column of peroxy radical from hc5
+- 218124  # Total column of lumped alkenes
+- 218125  # Total column of peroxy radical from hc8
+- 218126  # Total column of lumped alkanes
+- 218127  # Total column of peroxy radical from c2h4
+- 218128  # Total column of c4h8o
+- 218129  # Total column of peroxy radical from terminal alkenes
+- 218130  # Total column of c4h9o3
+- 218131  # Total column of peroxy radical from internal alkenes
+- 218132  # Total column of ch3coch(oo)ch3
+- 218133  # Total column of peroxy radical from c5h8
+- 218134  # Total column of ch3coch(ooh)ch3
+- 218135  # Total column of peroxy radical from a-pinene cyclic terpenes
+- 218136  # Total column of ch2=c(ch3)co3
+- 218137  # Total column of peroxy radical from d-limonene cyclic diene
+- 218138  # Total column of methylvinylketone
+- 218139  # Total column of phenoxy radical
+- 218140  # Total column of peroxy radical from toluene and less reactive aromatics
+- 218141  # Total column of ch3c(o)ch(oo)ch2oh
+- 218142  # Total column of peroxy radical from xylene and more reactive aromatics
+- 218143  # Total column of h3c(o)ch(ooh)ch2oh
+- 218144  # Total column of peroxy radical from cresol
+- 218145  # Total column of unsaturated pans
+- 218146  # Total column of unsaturated acyl peroxy radical
+- 218147  # Total column of peroxy radical from ketones
+- 218148  # Total column of c5h11o2
+- 218149  # Total column of no3-alkenes adduct reacting to form carbonitrates
+- 218150  # Total column of c5h11ooh
+- 218151  # Total column of no3-alkenes adduct reacting via decomposition
+- 218152  # Total column of hoch2c(ch3)=chcho
+- 218153  # Total column of c5h6o2
+- 218154  # Total column of trop sulfuric acid
+- 218155  # Total column of oxides
+- 218156  # Total column of ch2chc(ch3)(oo)ch2ono2
+- 218157  # Total column of c3 organic nitrate
+- 218158  # Total column of chlorine oxides
+- 218159  # Total column of bromine oxides
+- 218160  # Total column of hoch2c(ooh)(ch3)chchoh
+- 218161  # Total column of hoch2c(ooh)(ch3)ch=ch2
+- 218162  # Total column of lumped aromatics
+- 218163  # Total column of dimethyl sulfoxyde
+- 218164  # Total column of c7h9o5
+- 218165  # Total column of c7h10o5
+- 218166  # Total column of hydrogensulfide
+- 218167  # Total column of c7h10o6
+- 218168  # Total column of all nitrogen oxides
+- 218169  # Total column of chlorine family
+- 218170  # Total column of c10h16(oh)(oo)
+- 218171  # Total column of bromine family
+- 218172  # Total column of c10h18o3
+- 218173  # Total column of nitrogen atom
+- 218174  # Total column of chlorine monoxide
+- 218175  # Total column of chlorine atom
+- 218176  # Total column of bromine monoxide
+- 218177  # Total column of hydrogen atom
+- 218178  # Total column of methyl group
+- 218179  # Total column of aromatic-ho from toluene and less reactive aromatics
+- 218180  # Total column of aromatic-ho from xylene and more reactive aromatics
+- 218181  # Total column of ammonium nitrate
+- 218182  # Total column of aromatic-ho from csl
+- 218183  # Total column of secondary organic aerosol type 1
+- 218184  # Total column of secondary organic aerosol type 2a
+- 218185  # Total column of secondary organic aerosol type 2b
+- 218186  # Total column of condensable gas type 1
+- 218187  # Total column of condensable gas type 2a
+- 218188  # Total column of condensable gas type 2b
+- 218189  # Total column of sulfur trioxide
+- 218190  # Total column of carbonyl sulfide
+- 218191  # Total column of bromine atom
+- 218192  # Total column of bromine
+- 218193  # Total column of bromine monochloride
+- 218194  # Total column of bromine nitrate
+- 218195  # Total column of dibromomethane
+- 218196  # Total column of methoxy radical
+- 218197  # Total column of tribromomethane
+- 218198  # Total column of asymmetric chlorine dioxide radical
+- 218199  # Total column of hydrogen
+- 218200  # Total column of hydrogen chloride
+- 218201  # Total column of formyl radical
+- 218202  # Total column of hydrogen fluoride
+- 218203  # Total column of oxygen atom
+- 218204  # Total column of excited oxygen atom
+- 218205  # Total column of ground state oxygen atom
+- 218206  # Total column of stratospheric aerosol
+- 228088  # Total column supercooled liquid water
+- 228089  # Total column rain water
+- 228090  # Total column snow water
+- 235054  # Mean vertically integrated moisture divergence
+- 260041  # Total column integrated rain
+- 260042  # Total column integrated snow
+- 260047  # Total column water (Vertically integrated total water (vapour + cloud water/ice))
+- 260057  # Total column integrated water vapour
+- 260114  # Total column-integrated cloud water
+- 260115  # Total column-integrated cloud ice
+- 260116  # Total column-integrated condensate
+- 260132  # Total column integrated ozone
+- 260197  # Column-integrated soil water
+- 260272  # Total column-integrated supercooled liquid water
+- 260273  # Total column-integrated melting ice
+
 rate:
 - 3019  # Lapse rate
 - 3097  # Ice growth rate
@@ -1714,6 +2590,1013 @@ rate:
 - 200232  # Instantaneous moisture flux difference
 - 201013  # shortwave radiative heating rate
 - 201014  # longwave radiative heating rate
+- 235011  # Mean updraught detrainment rate
+- 235012  # Mean downdraught detrainment rate
+- 240012  # Side flow into river channel
+- 240013  # Discharge from rivers or streams
+- 260022  # Horizontal moisture convergence
+- 260069  # Horizontal momentum flux
+- 260245  # Large Scale Condensate Heating rate
+- 260246  # Deep Convective Heating rate
+- 260251  # Shallow Convective Heating rate
+- 260252  # Vertical Diffusion Heating rate
+- 260276  # Deep Convective Moistening Rate
+- 260277  # Shallow Convective Moistening Rate
+- 260278  # Vertical Diffusion Moistening Rate
+- 260280  # Large scale moistening rate
+- 260332  # Convective updraft mass flux
+- 260333  # Convective downdraft mass flux
+- 260334  # Convective detrainment mass flux
+- 260343  # Solar Radiative Heating Rate
+- 260354  # Long-Wave Radiative Heating Rate
+- 260366  # Convective Cloud Mass Flux
+- 260447  # Rate of water dropping from canopy to ground
+- 260501  # Salt Flux
+- 260616  # Adiabatic heating rate
+- 260623  # Adiabatic moistening rate
+- 260633  # Large scale condensation heating rate
+- 260634  # Convective heating rate
+- 260635  # Convective moistening rate
+- 260636  # Vertical diffusion heating rate
+- 260639  # Vertical diffusion moistening rate
+- 260640  # Solar radiative heating rate
+- 260641  # Long wave radiative heating rate
+- 260642  # Large scale moistening rate
+- 300019  # Lapse rate
+- 300168  # Horiz. moisture flux conv.
+
+rate.energy-flux:
+- 19  # Clear sky surface UV
+- 20  # Clear sky surface photosynthetically active radiation
+- 47  # Direct solar radiation
+- 57  # Downward UV radiation at the surface
+- 58  # Photosynthetically active radiation at the surface
+- 72  # Instantaneous surface solar radiation downwards
+- 73  # Instantaneous surface thermal radiation downwards
+- 145  # Boundary layer dissipation
+- 146  # Surface sensible heat flux
+- 147  # Surface latent heat flux
+- 149  # Surface net radiation
+- 150  # Top net radiation
+- 169  # Surface solar radiation downwards
+- 175  # Surface thermal radiation downwards
+- 176  # Surface net solar radiation
+- 177  # Surface net thermal radiation
+- 178  # Top net solar radiation
+- 179  # Top net thermal radiation
+- 197  # Gravity wave dissipation
+- 208  # Top net solar radiation, clear sky
+- 209  # Top net thermal radiation, clear sky
+- 210  # Surface net solar radiation, clear sky
+- 211  # Surface net thermal radiation, clear sky
+- 212  # TOA incident solar radiation
+- 231  # Instantaneous surface sensible heat flux
+- 3111  # Net short-wave radiation flux (surface)
+- 3112  # Net long-wave radiation flux (surface)
+- 3113  # Net short-wave radiation flux(atmosph.top)
+- 3114  # Net long-wave radiation flux(atmosph.top)
+- 3115  # Long wave radiation flux
+- 3116  # Short wave radiation flux
+- 3117  # Global radiation flux
+- 3121  # Latent heat flux
+- 3122  # Sensible heat flux
+- 3123  # Boundary layer dissipation
+- 129047  # Direct solar radiation gradient
+- 129057  # Downward UV radiation at the surface gradient
+- 129058  # Photosynthetically active radiation at the surface gradient
+- 129145  # Boundary layer dissipation gradient
+- 129146  # Surface sensible heat flux gradient
+- 129147  # Surface latent heat flux gradient
+- 129149  # Surface net radiation gradient
+- 129169  # Surface solar radiation downwards gradient
+- 129175  # Surface thermal radiation downwards gradient
+- 129176  # Surface net solar radiation gradient
+- 129177  # Surface net thermal radiation gradient
+- 129178  # Top net solar radiation gradient
+- 129179  # Top net thermal radiation gradient
+- 129197  # Gravity wave dissipation gradient
+- 129208  # Top net solar radiation, clear sky gradient
+- 129209  # Top net thermal radiation, clear sky gradient
+- 129210  # Surface net solar radiation, clear sky gradient
+- 129211  # Surface net thermal radiation, clear sky gradient
+- 129212  # TOA incident solar radiation gradient
+- 129231  # Instantaneous surface heat flux gradient
+- 130208  # Top solar radiation upward
+- 130209  # Top thermal radiation upward
+- 130210  # Top solar radiation upward, clear sky
+- 130211  # Top thermal radiation upward, clear sky
+- 150181  # Heat flux correction
+- 150183  # Observed heat flux
+- 151155  # Turbulent kinetic energy input
+- 151156  # Net surface heat flux
+- 151157  # Absorbed solar radiation
+- 151160  # Specified surface heat flux
+- 151162  # Heat flux correction
+- 160231  # Instantaneous surface heat flux
+- 160249  # Gravity wave dissipation flux
+- 162067  # Vertical integral of eastward kinetic energy flux
+- 162068  # Vertical integral of northward kinetic energy flux
+- 162069  # Vertical integral of eastward heat flux
+- 162070  # Vertical integral of northward heat flux
+- 162073  # Vertical integral of eastward geopotential flux
+- 162074  # Vertical integral of northward geopotential flux
+- 162075  # Vertical integral of eastward total energy flux
+- 162076  # Vertical integral of northward total energy flux
+- 170179  # Top net thermal radiation
+- 171047  # Direct solar radiation anomaly
+- 171057  # Downward UV radiation at the surface anomaly
+- 171058  # Photosynthetically active radiation at the surface anomaly
+- 171145  # Boundary layer dissipation anomaly
+- 171146  # Surface sensible heat flux anomaly
+- 171147  # Surface latent heat flux anomaly
+- 171149  # Surface net radiation anomaly
+- 171169  # Surface solar radiation downwards anomaly
+- 171175  # Surface thermal radiation downwards anomaly
+- 171176  # Surface net solar radiation anomaly
+- 171177  # Surface net thermal radiation anomaly
+- 171178  # Top net solar radiation anomaly
+- 171179  # Top net thermal radiation anomaly
+- 171197  # Gravity wave dissipation anomaly
+- 171208  # Top net solar radiation clear sky anomaly
+- 171209  # Top net thermal radiation clear sky anomaly
+- 171210  # Surface net solar radiation clear sky anomaly
+- 171211  # Surface net thermal radiation, clear sky anomaly
+- 171212  # Solar insolation anomaly
+- 171231  # Instantaneous surface heat flux anomaly
+- 172145  # Boundary layer dissipation
+- 172146  # Surface sensible heat flux
+- 172147  # Surface latent heat flux
+- 172149  # Surface net radiation
+- 172169  # Surface solar radiation downwards
+- 172175  # Surface thermal radiation downwards
+- 172176  # Surface solar radiation
+- 172177  # Surface thermal radiation
+- 172178  # Top solar radiation
+- 172179  # Top thermal radiation
+- 172197  # Gravity wave dissipation
+- 172208  # Top net solar radiation, clear sky
+- 172209  # Top net thermal radiation, clear sky
+- 172210  # Surface net solar radiation, clear sky
+- 172211  # Surface net thermal radiation, clear sky
+- 172212  # Solar insolation
+- 173145  # Boundary layer dissipation anomaly
+- 173146  # Surface sensible heat flux anomaly
+- 173147  # Surface latent heat flux anomaly
+- 173149  # Surface net radiation anomaly
+- 173169  # Surface solar radiation downwards anomaly
+- 173175  # Surface thermal radiation downwards anomaly
+- 173176  # Surface solar radiation anomaly
+- 173177  # Surface thermal radiation anomaly
+- 173178  # Top solar radiation anomaly
+- 173179  # Top thermal radiation anomaly
+- 173197  # Gravity wave dissipation anomaly
+- 173208  # Top net solar radiation, clear sky anomaly
+- 173209  # Top net thermal radiation, clear sky anomaly
+- 173210  # Surface net solar radiation, clear sky anomaly
+- 173211  # Surface net thermal radiation, clear sky anomaly
+- 174010  # Clear-sky (II) down surface sw flux
+- 174013  # Clear-sky (II) up surface sw flux
+- 174089  # Top incoming solar radiation
+- 174090  # Top outgoing solar radiation
+- 174116  # Short wave radiation flux at surface
+- 174117  # Short wave radiation flux at top of atmosphere
+- 175089  # Top incoming solar radiation
+- 175090  # Top outgoing solar radiation
+- 180176  # Surface net solar radiation
+- 180177  # Surface net thermal radiation
+- 180178  # Top net solar radiation
+- 180179  # Top net thermal radiation
+- 200047  # Direct solar radiation difference
+- 200057  # Downward UV radiation at the surface difference
+- 200058  # Photosynthetically active radiation at the surface difference
+- 200145  # Boundary layer dissipation difference
+- 200146  # Surface sensible heat flux difference
+- 200147  # Surface latent heat flux difference
+- 200149  # Surface net radiation difference
+- 200169  # Surface solar radiation downwards difference
+- 200175  # Surface thermal radiation downwards difference
+- 200176  # Surface net solar radiation difference
+- 200177  # Surface net thermal radiation difference
+- 200178  # Top net solar radiation difference
+- 200179  # Top net thermal radiation difference
+- 200197  # Gravity wave dissipation difference
+- 200208  # Top net solar radiation, clear sky difference
+- 200209  # Top net thermal radiation, clear sky difference
+- 200210  # Surface net solar radiation, clear sky difference
+- 200211  # Surface net thermal radiation, clear sky difference
+- 200212  # TOA incident solar radiation difference
+- 200231  # Instantaneous surface heat flux difference
+- 201001  # downward shortwave radiant flux density
+- 201002  # upward shortwave radiant flux density
+- 201003  # downward longwave radiant flux density
+- 201004  # upward longwave radiant flux density
+- 201005  # downwd photosynthetic active radiant flux density
+- 201006  # net shortwave flux
+- 201007  # net longwave flux
+- 201008  # total net radiative flux density
+- 201009  # downw shortw radiant flux density, cloudfree part
+- 201010  # upw shortw radiant flux density, cloudy part
+- 201011  # downw longw radiant flux density, cloudfree part
+- 201012  # upw longw radiant flux density, cloudy part
+- 201015  # total radiative heating rate
+- 201016  # soil heat flux, surface
+- 201017  # soil heat flux, bottom of layer
+- 210099  # Wildfire radiative power
+- 210167  # Wildfire day-time radiative power
+- 210169  # Wildfire night-time radiative power
+- 211099  # Wildfire radiative power
+- 214004  # Total surface UV spectral flux (280-285 nm)
+- 214005  # Total surface UV spectral flux (285-290 nm)
+- 214006  # Total surface UV spectral flux (290-295 nm)
+- 214007  # Total surface UV spectral flux (295-300 nm)
+- 214008  # Total surface UV spectral flux (300-305 nm)
+- 214009  # Total surface UV spectral flux (305-310 nm)
+- 214010  # Total surface UV spectral flux (310-315 nm)
+- 214011  # Total surface UV spectral flux (315-320 nm)
+- 214012  # Total surface UV spectral flux (320-325 nm)
+- 214013  # Total surface UV spectral flux (325-330 nm)
+- 214014  # Total surface UV spectral flux (330-335 nm)
+- 214015  # Total surface UV spectral flux (335-340 nm)
+- 214016  # Total surface UV spectral flux (340-345 nm)
+- 214017  # Total surface UV spectral flux (345-350 nm)
+- 214018  # Total surface UV spectral flux (350-355 nm)
+- 214019  # Total surface UV spectral flux (355-360 nm)
+- 214020  # Total surface UV spectral flux (360-365 nm)
+- 214021  # Total surface UV spectral flux (365-370 nm)
+- 214022  # Total surface UV spectral flux (370-375 nm)
+- 214023  # Total surface UV spectral flux (375-380 nm)
+- 214024  # Total surface UV spectral flux (380-385 nm)
+- 214025  # Total surface UV spectral flux (385-390 nm)
+- 214026  # Total surface UV spectral flux (390-395 nm)
+- 214027  # Total surface UV spectral flux (395-400 nm)
+- 214028  # Clear-sky surface UV spectral flux (280-285 nm)
+- 214029  # Clear-sky surface UV spectral flux (285-290 nm)
+- 214030  # Clear-sky surface UV spectral flux (290-295 nm)
+- 214031  # Clear-sky surface UV spectral flux (295-300 nm)
+- 214032  # Clear-sky surface UV spectral flux (300-305 nm)
+- 214033  # Clear-sky surface UV spectral flux (305-310 nm)
+- 214034  # Clear-sky surface UV spectral flux (310-315 nm)
+- 214035  # Clear-sky surface UV spectral flux (315-320 nm)
+- 214036  # Clear-sky surface UV spectral flux (320-325 nm)
+- 214037  # Clear-sky surface UV spectral flux (325-330 nm)
+- 214038  # Clear-sky surface UV spectral flux (330-335 nm)
+- 214039  # Clear-sky surface UV spectral flux (335-340 nm)
+- 214040  # Clear-sky surface UV spectral flux (340-345 nm)
+- 214041  # Clear-sky surface UV spectral flux (345-350 nm)
+- 214042  # Clear-sky surface UV spectral flux (350-355 nm)
+- 214043  # Clear-sky surface UV spectral flux (355-360 nm)
+- 214044  # Clear-sky surface UV spectral flux (360-365 nm)
+- 214045  # Clear-sky surface UV spectral flux (365-370 nm)
+- 214046  # Clear-sky surface UV spectral flux (370-375 nm)
+- 214047  # Clear-sky surface UV spectral flux (375-380 nm)
+- 214048  # Clear-sky surface UV spectral flux (380-385 nm)
+- 214049  # Clear-sky surface UV spectral flux (385-390 nm)
+- 214050  # Clear-sky surface UV spectral flux (390-395 nm)
+- 214051  # Clear-sky surface UV spectral flux (395-400 nm)
+- 228021  # Total sky direct solar radiation at surface
+- 228022  # Clear-sky direct solar radiation at surface
+- 228129  # Surface solar radiation downward clear-sky
+- 228130  # Surface thermal radiation downward clear-sky
+- 228242  # Surface solar radiation diffuse total sky
+- 228243  # Surface solar radiation diffuse clear-sky
+- 230020  # Clear sky surface photosynthetically active radiation (variable resolution)
+- 230021  # Total sky direct solar radiation at surface (variable resolution)
+- 230022  # Clear-sky direct solar radiation at surface (variable resolution)
+- 230047  # Direct solar radiation (variable resolution)
+- 230057  # Downward UV radiation at the surface (variable resolution)
+- 230058  # Photosynthetically active radiation at the surface (variable resolution)
+- 230129  # Surface solar radiation downward clear-sky (variable resolution)
+- 230130  # Surface thermal radiation downward clear-sky (variable resolution)
+- 230145  # Boundary layer dissipation (variable resolution)
+- 230146  # Surface sensible heat flux (variable resolution)
+- 230147  # Surface latent heat flux (variable resolution)
+- 230169  # Surface solar radiation downwards (variable resolution)
+- 230175  # Surface thermal radiation downwards (variable resolution)
+- 230176  # Surface net solar radiation (variable resolution)
+- 230177  # Surface net thermal radiation (variable resolution)
+- 230178  # Top net solar radiation (variable resolution)
+- 230179  # Top net thermal radiation (variable resolution)
+- 230197  # Gravity wave dissipation (variable resolution)
+- 230208  # Top net solar radiation, clear sky (variable resolution)
+- 230209  # Top net thermal radiation, clear sky (variable resolution)
+- 230210  # Surface net solar radiation, clear sky (variable resolution)
+- 230211  # Surface net thermal radiation, clear sky (variable resolution)
+- 230212  # TOA incident solar radiation (variable resolution)
+- 235022  # Mean surface photosynthetically active radiation flux, clear sky
+- 235027  # Mean surface downward UV radiation flux
+- 235028  # Mean surface photosynthetically active radiation flux
+- 235032  # Mean boundary layer dissipation
+- 235033  # Mean surface sensible heat flux
+- 235034  # Mean surface latent heat flux
+- 235035  # Mean surface downward short-wave radiation flux
+- 235036  # Mean surface downward long-wave radiation flux
+- 235037  # Mean surface net short-wave radiation flux
+- 235038  # Mean surface net long-wave radiation flux
+- 235039  # Mean top net short-wave radiation flux
+- 235040  # Mean top net long-wave radiation flux
+- 235047  # Mean gravity wave dissipation
+- 235049  # Mean top net short-wave radiation flux, clear sky
+- 235050  # Mean top net long-wave radiation flux, clear sky
+- 235051  # Mean surface net short-wave radiation flux, clear sky
+- 235052  # Mean surface net long-wave radiation flux, clear sky
+- 235053  # Mean top downward short-wave radiation flux
+- 235058  # Mean surface direct short-wave radiation flux
+- 235059  # Mean surface direct short-wave radiation flux, clear sky
+- 235060  # Mean surface diffuse short-wave radiation flux
+- 235061  # Mean surface diffuse short-wave radiation flux, clear sky
+- 235068  # Mean surface downward short-wave radiation flux, clear sky
+- 235069  # Mean surface downward long-wave radiation flux, clear sky
+- 260002  # Latent heat net flux
+- 260003  # Sensible heat net flux
+- 260007  # Snow phase change heat flux
+- 260037  # Potential evaporation rate
+- 260086  # Net short-wave radiation flux (top of atmosphere)
+- 260087  # Downward short-wave radiation flux
+- 260088  # Upward short-wave radiation flux
+- 260089  # Net short wave radiation flux
+- 260090  # Photosynthetically active radiation
+- 260091  # Net short-wave radiation flux, clear sky
+- 260092  # Downward UV radiation
+- 260095  # Net long wave radiation flux (surface)
+- 260096  # Net long wave radiation flux (top of atmosphere)
+- 260097  # Downward long-wave radiation flux
+- 260098  # Upward long-wave radiation flux
+- 260099  # Net long wave radiation flux
+- 260100  # Net long-wave radiation flux, clear sky
+- 260186  # Ground heat flux
+- 260198  # Heat flux
+- 260247  # Total Downward Heat Flux at Surface
+- 260262  # Direct short wave radiation flux
+- 260263  # Diffuse short wave radiation flux
+- 260264  # Time-integrated surface direct short wave radiation flux
+- 260275  # Sublimation (evaporation from snow)
+- 260340  # UV-B downward solar flux
+- 260341  # Clear sky UV-B downward solar flux
+- 260342  # Clear Sky Downward Solar Flux
+- 260344  # Clear Sky Upward Solar Flux
+- 260345  # Cloud Forcing Net Solar Flux
+- 260346  # Visible Beam Downward Solar Flux
+- 260347  # Visible Diffuse Downward Solar Flux
+- 260348  # Near IR Beam Downward Solar Flux
+- 260349  # Near IR Diffuse Downward Solar Flux
+- 260350  # Downward Total radiation Flux
+- 260351  # Upward Total radiation Flux
+- 260355  # Clear Sky Upward Long Wave Flux
+- 260356  # Clear Sky Downward Long Wave Flux
+- 260357  # Cloud Forcing Net Long Wave Flux
+- 260361  # Downward short-wave radiation flux, clear sky
+- 260362  # Upward short-wave radiation flux, clear sky
+- 260363  # Downward long-wave radiation flux, clear sky
+- 260364  # Soil heat flux
+- 260423  # Accumulated surface downward short-wave radiation flux, clear sky
+- 260427  # Accumulated surface upward short-wave radiation flux, clear sky
+- 260428  # Accumulated surface downward long-wave radiation flux, clear sky
+- 260454  # Open water evaporation (standing water)
+- 260470  # Canopy water evaporation
+- 260471  # Transpiration
+- 260478  # Direct evaporation from bare soil
+- 260496  # Net Air-Ocean Heat Flux
+- 260497  # Assimilative Heat Flux
+- 260615  # Evapotranspiration
+- 300111  # Short wave absorbed at ground
+- 300112  # Net long wave at bottom
+- 300113  # Net short-wav rad(top)
+- 300114  # Outgoing long wave at top
+- 300115  # Long-wav rad
+- 300116  # Short wave absorbed by earth/atmosphere
+- 300117  # Global radiation
+- 300121  # Latent heat flux from surface
+- 300122  # Sensible heat flux from surface
+- 300123  # Bound layer dissipation
+- 300179  # Interception loss
+- 300196  # Surface momentum flux
+- 300197  # Incident short wave flux
+- 300198  # Time ave ground ht flx
+- 300200  # Net long wave at bottom (clear)
+- 300201  # Outgoing long wave at top (clear)
+- 300202  # Short wv absrbd by earth/atmos (clear)
+- 300203  # Short wave absorbed at ground (clear)
+- 300207  # Downward long wave at bottom
+- 300208  # Downward long wave at bottom (clear)
+- 300209  # Downward short wave at ground
+- 300210  # Downward short wave at ground (clear)
+- 300211  # Upward long wave at bottom
+- 300212  # Upward short wave at ground
+- 300213  # Upward short wave at ground (clear)
+- 300214  # Upward short wave at top
+- 300215  # Upward short wave at top (clear)
+
+rate.mass-flux:
+- 232  # Instantaneous moisture flux
+- 3062  # large scale precipitation
+- 3063  # Convective precipitation (water)
+- 3064  # Snow fall rate water equivalent
+- 3079  # Large scale snow
+- 3099  # Snow melt
+- 129044  # Snow evaporation gradient
+- 129045  # Snowmelt gradient
+- 129182  # Evaporation gradient
+- 160141  # Snow depth
+- 160142  # Large-scale precipitation
+- 160143  # Convective precipitation
+- 160144  # Snowfall
+- 160182  # Evaporation
+- 160205  # Runoff
+- 160239  # Convective snowfall
+- 160240  # Large scale snowfall
+- 162053  # Vertical integral of mass of atmosphere
+- 162065  # Vertical integral of eastward mass flux
+- 162066  # Vertical integral of northward mass flux
+- 162071  # Vertical integral of eastward water vapour flux
+- 162072  # Vertical integral of northward water vapour flux
+- 162077  # Vertical integral of eastward ozone flux
+- 162078  # Vertical integral of northward ozone flux
+- 162088  # Vertical integral of eastward cloud liquid water flux
+- 162089  # Vertical integral of northward cloud liquid water flux
+- 162090  # Vertical integral of eastward cloud frozen water flux
+- 162091  # Vertical integral of northward cloud frozen water flux
+- 162092  # Vertical integral of mass tendency
+- 162108  # Total precipitation flux
+- 162130  # Liquid Precipitation flux from convection
+- 162131  # Ice Precipitation flux from convection
+- 162136  # Liquid Precip flux from cloud scheme (stratiform)
+- 162137  # Ice Precip flux from cloud scheme (stratiform)
+- 171044  # Snow evaporation anomaly
+- 171045  # Snowmelt anomaly
+- 171182  # Evaporation anomaly
+- 174008  # Surface runoff
+- 174009  # Sub-surface runoff
+- 174142  # Large scale rainfall rate
+- 174143  # Convective rainfall rate
+- 174239  # Convective snowfall rate
+- 174240  # Large scale snowfall rate
+- 190141  # Snow depth
+- 200044  # Snow evaporation difference
+- 200045  # Snowmelt difference
+- 200182  # Evaporation difference
+- 201065  # convective mass flux
+- 201100  # surface precipitation rate, rain, grid scale
+- 201101  # surface precipitation rate, snow, grid scale
+- 201102  # surface precipitation amount, rain, grid scale
+- 201111  # surface precipitation rate, rain, convective
+- 201112  # surface precipitation rate, snow, convective
+- 201113  # surface precipitation amount, rain, convective
+- 210043  # DMS surface emission
+- 210067  # Ocean flux of Carbon Dioxide
+- 210068  # Natural biosphere flux of Carbon Dioxide
+- 210069  # Anthropogenic emissions of Carbon Dioxide
+- 210070  # Methane Surface Fluxes
+- 210080  # Wildfire flux of Carbon Dioxide
+- 210081  # Wildfire flux of Carbon Monoxide
+- 210082  # Wildfire flux of Methane
+- 210083  # Wildfire flux of Non-Methane Hydro-Carbons
+- 210084  # Wildfire flux of Hydrogen
+- 210085  # Wildfire flux of Nitrogen Oxides NOx
+- 210086  # Wildfire flux of Nitrous Oxide
+- 210087  # Wildfire flux of Particulate Matter PM2.5
+- 210088  # Wildfire flux of Total Particulate Matter
+- 210089  # Wildfire flux of Total Carbon in Aerosols
+- 210090  # Wildfire flux of Organic Carbon
+- 210091  # Wildfire flux of Black Carbon
+- 210092  # Wildfire overall flux of burnt Carbon
+- 210100  # Wildfire combustion rate
+- 210102  # Wildfire flux of Sulfur Dioxide
+- 210103  # Wildfire Flux of Methanol (CH3OH)
+- 210104  # Wildfire Flux of Ethanol (C2H5OH)
+- 210105  # Wildfire Flux of Propane (C3H8)
+- 210106  # Wildfire Flux of Ethene (C2H4)
+- 210107  # Wildfire Flux of Propene (C3H6)
+- 210108  # Wildfire Flux of Isoprene (C5H8)
+- 210109  # Wildfire Flux of Terpenes (C5H8)n
+- 210110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
+- 210111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
+- 210112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
+- 210113  # Wildfire Flux of Formaldehyde (CH2O)
+- 210114  # Wildfire Flux of Acetaldehyde (C2H4O)
+- 210115  # Wildfire Flux of Acetone (C3H6O)
+- 210116  # Wildfire Flux of Ammonia (NH3)
+- 210117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
+- 210118  # Wildfire Flux of Ethane (C2H6)
+- 210151  # Surface flux Nitrogen oxides
+- 210152  # Surface flux Nitrogen dioxide
+- 210153  # Surface flux Sulphur dioxide
+- 210154  # Surface flux Carbon monoxide
+- 210155  # Surface flux Formaldehyde
+- 210156  # Surface flux GEMS Ozone
+- 210157  # Surface flux reactive tracer 1
+- 210158  # Surface flux reactive tracer 2
+- 210159  # Surface flux reactive tracer 3
+- 210160  # Surface flux reactive tracer 4
+- 210161  # Surface flux reactive tracer 5
+- 210162  # Surface flux reactive tracer 6
+- 210163  # Surface flux reactive tracer 7
+- 210164  # Surface flux reactive tracer 8
+- 210165  # Surface flux reactive tracer 9
+- 210166  # Surface flux reactive tracer 10
+- 210185  # Anthropogenic Emissions of Sulphur Hexafluoride
+- 210231  # Wildfire Flux of Toluene (C7H8)
+- 210232  # Wildfire Flux of Benzene (C6H6)
+- 210233  # Wildfire Flux of Xylene (C8H10)
+- 210234  # Wildfire Flux of Butenes (C4H8)
+- 210235  # Wildfire Flux of Pentenes (C5H10)
+- 210236  # Wildfire Flux of Hexene (C6H12)
+- 210237  # Wildfire Flux of Octene (C8H16)
+- 210238  # Wildfire Flux of Butanes (C4H10)
+- 210239  # Wildfire Flux of Pentanes (C5H12)
+- 210240  # Wildfire Flux of Hexanes (C6H14)
+- 210241  # Wildfire Flux of Heptane (C7H16)
+- 211043  # DMS surface emission
+- 211067  # Ocean flux of Carbon Dioxide
+- 211068  # Natural biosphere flux of Carbon Dioxide
+- 211069  # Anthropogenic emissions of Carbon Dioxide
+- 211070  # Methane Surface Fluxes
+- 211080  # Wildfire flux of Carbon Dioxide
+- 211081  # Wildfire flux of Carbon Monoxide
+- 211082  # Wildfire flux of Methane
+- 211083  # Wildfire flux of Non-Methane Hydro-Carbons
+- 211084  # Wildfire flux of Hydrogen
+- 211085  # Wildfire flux of Nitrogen Oxides NOx
+- 211086  # Wildfire flux of Nitrous Oxide
+- 211087  # Wildfire flux of Particulate Matter PM2.5
+- 211088  # Wildfire flux of Total Particulate Matter
+- 211089  # Wildfire flux of Total Carbon in Aerosols
+- 211090  # Wildfire flux of Organic Carbon
+- 211091  # Wildfire flux of Black Carbon
+- 211092  # Wildfire overall flux of burnt Carbon
+- 211100  # Wildfire combustion rate
+- 211102  # Wildfire flux of Sulfur Dioxide
+- 211103  # Wildfire Flux of Methanol (CH3OH)
+- 211104  # Wildfire Flux of Ethanol (C2H5OH)
+- 211105  # Wildfire Flux of Propane (C3H8)
+- 211106  # Wildfire Flux of Ethene (C2H4)
+- 211107  # Wildfire Flux of Propene (C3H6)
+- 211108  # Wildfire Flux of Isoprene (C5H8)
+- 211109  # Wildfire Flux of Terpenes (C5H8)n
+- 211110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
+- 211111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
+- 211112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
+- 211113  # Wildfire Flux of Formaldehyde (CH2O)
+- 211114  # Wildfire Flux of Acetaldehyde (C2H4O)
+- 211115  # Wildfire Flux of Acetone (C3H6O)
+- 211116  # Wildfire Flux of Ammonia (NH3)
+- 211117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
+- 211118  # Wildfire Flux of Ethane (C2H6)
+- 211151  # Surface flux Nitrogen oxides
+- 211152  # Surface flux Nitrogen dioxide
+- 211153  # Surface flux Sulphur dioxide
+- 211154  # Surface flux Carbon monoxide
+- 211155  # Surface flux Formaldehyde
+- 211156  # Surface flux GEMS Ozone
+- 211157  # Surface flux reactive tracer 1
+- 211158  # Surface flux reactive tracer 2
+- 211159  # Surface flux reactive tracer 3
+- 211160  # Surface flux reactive tracer 4
+- 211161  # Surface flux reactive tracer 5
+- 211162  # Surface flux reactive tracer 6
+- 211163  # Surface flux reactive tracer 7
+- 211164  # Surface flux reactive tracer 8
+- 211165  # Surface flux reactive tracer 9
+- 211166  # Surface flux reactive tracer 10
+- 211185  # Anthropogenic Emissions of Sulphur Hexafluoride
+- 215001  # Source/gain of sea salt aerosol (0.03 - 0.5 um)
+- 215002  # Source/gain of sea salt aerosol (0.5 - 5 um)
+- 215003  # Source/gain of sea salt aerosol (5 - 20 um)
+- 215004  # Dry deposition of sea salt aerosol (0.03 - 0.5 um)
+- 215005  # Dry deposition of sea salt aerosol (0.5 - 5 um)
+- 215006  # Dry deposition of sea salt aerosol (5 - 20 um)
+- 215007  # Sedimentation of sea salt aerosol (0.03 - 0.5 um)
+- 215008  # Sedimentation of sea salt aerosol (0.5 - 5 um)
+- 215009  # Sedimentation of sea salt aerosol (5 - 20 um)
+- 215010  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by large-scale precipitation
+- 215011  # Wet deposition of sea salt aerosol (0.5 - 5 um) by large-scale precipitation
+- 215012  # Wet deposition of sea salt aerosol (5 - 20 um) by large-scale precipitation
+- 215013  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by convective precipitation
+- 215014  # Wet deposition of sea salt aerosol (0.5 - 5 um) by convective precipitation
+- 215015  # Wet deposition of sea salt aerosol (5 - 20 um) by convective precipitation
+- 215016  # Negative fixer of sea salt aerosol (0.03 - 0.5 um)
+- 215017  # Negative fixer of sea salt aerosol (0.5 - 5 um)
+- 215018  # Negative fixer of sea salt aerosol (5 - 20 um)
+- 215025  # Source/gain of dust aerosol (0.03 - 0.55 um)
+- 215026  # Source/gain of dust aerosol (0.55 - 9 um)
+- 215027  # Source/gain of dust aerosol (9 - 20 um)
+- 215028  # Dry deposition of dust aerosol (0.03 - 0.55 um)
+- 215029  # Dry deposition of dust aerosol (0.55 - 9 um)
+- 215030  # Dry deposition of dust aerosol (9 - 20 um)
+- 215031  # Sedimentation of dust aerosol (0.03 - 0.55 um)
+- 215032  # Sedimentation of dust aerosol (0.55 - 9 um)
+- 215033  # Sedimentation of dust aerosol (9 - 20 um)
+- 215034  # Wet deposition of dust aerosol (0.03 - 0.55 um) by large-scale precipitation
+- 215035  # Wet deposition of dust aerosol (0.55 - 9 um) by large-scale precipitation
+- 215036  # Wet deposition of dust aerosol (9 - 20 um) by large-scale precipitation
+- 215037  # Wet deposition of dust aerosol (0.03 - 0.55 um) by convective precipitation
+- 215038  # Wet deposition of dust aerosol (0.55 - 9 um) by convective precipitation
+- 215039  # Wet deposition of dust aerosol (9 - 20 um) by convective precipitation
+- 215040  # Negative fixer of dust aerosol (0.03 - 0.55 um)
+- 215041  # Negative fixer of dust aerosol (0.55 - 9 um)
+- 215042  # Negative fixer of dust aerosol (9 - 20 um)
+- 215049  # Source/gain of hydrophobic organic matter aerosol
+- 215050  # Source/gain of hydrophilic organic matter aerosol
+- 215051  # Dry deposition of hydrophobic organic matter aerosol
+- 215052  # Dry deposition of hydrophilic organic matter aerosol
+- 215053  # Sedimentation of hydrophobic organic matter aerosol
+- 215054  # Sedimentation of hydrophilic organic matter aerosol
+- 215055  # Wet deposition of hydrophobic organic matter aerosol by large-scale precipitation
+- 215056  # Wet deposition of hydrophilic organic matter aerosol by large-scale precipitation
+- 215057  # Wet deposition of hydrophobic organic matter aerosol by convective precipitation
+- 215058  # Wet deposition of hydrophilic organic matter aerosol by convective precipitation
+- 215059  # Negative fixer of hydrophobic organic matter aerosol
+- 215060  # Negative fixer of hydrophilic organic matter aerosol
+- 215065  # Source/gain of hydrophobic black carbon aerosol
+- 215066  # Source/gain of hydrophilic black carbon aerosol
+- 215067  # Dry deposition of hydrophobic black carbon aerosol
+- 215068  # Dry deposition of hydrophilic black carbon aerosol
+- 215069  # Sedimentation of hydrophobic black carbon aerosol
+- 215070  # Sedimentation of hydrophilic black carbon aerosol
+- 215071  # Wet deposition of hydrophobic black carbon aerosol by large-scale precipitation
+- 215072  # Wet deposition of hydrophilic black carbon aerosol by large-scale precipitation
+- 215073  # Wet deposition of hydrophobic black carbon aerosol by convective precipitation
+- 215074  # Wet deposition of hydrophilic black carbon aerosol by convective precipitation
+- 215075  # Negative fixer of hydrophobic black carbon aerosol
+- 215076  # Negative fixer of hydrophilic black carbon aerosol
+- 215081  # Source/gain of sulphate aerosol
+- 215082  # Dry deposition of sulphate aerosol
+- 215083  # Sedimentation of sulphate aerosol
+- 215084  # Wet deposition of sulphate aerosol by large-scale precipitation
+- 215085  # Wet deposition of sulphate aerosol by convective precipitation
+- 215086  # Negative fixer of sulphate aerosol
+- 215168  # Source/gain of sulphur dioxide
+- 215169  # Dry deposition of sulphur dioxide
+- 215170  # Sedimentation of sulphur dioxide
+- 215171  # Wet deposition of sulphur dioxide by large-scale precipitation
+- 215172  # Wet deposition of sulphur dioxide by convective precipitation
+- 215173  # Negative fixer of sulphur dioxide
+- 219001  # Ozone emissions
+- 219002  # Nitrogen oxides emissions
+- 219003  # Hydrogen peroxide emissions
+- 219004  # Methane emissions
+- 219005  # Carbon monoxide emissions
+- 219006  # Nitric acid emissions
+- 219007  # Methyl peroxide emissions
+- 219008  # Formaldehyde emissions
+- 219009  # Paraffins emissions
+- 219010  # Ethene emissions
+- 219011  # Olefins emissions
+- 219012  # Aldehydes emissions
+- 219013  # Peroxyacetyl nitrate emissions
+- 219014  # Peroxides emissions
+- 219015  # Organic nitrates emissions
+- 219016  # Isoprene emissions
+- 219017  # Sulfur dioxide emissions
+- 219018  # Dimethyl sulfide emissions
+- 219019  # Ammonia emissions
+- 219020  # Sulfate emissions
+- 219021  # Ammonium emissions
+- 219022  # Methane sulfonic acid emissions
+- 219023  # Methyl glyoxal emissions
+- 219024  # Stratospheric ozone emissions
+- 219025  # Radon emissions
+- 219026  # Lead emissions
+- 219027  # Nitrogen monoxide emissions
+- 219028  # Hydroperoxy radical emissions
+- 219029  # Methylperoxy radical emissions
+- 219030  # Hydroxyl radical emissions
+- 219031  # Nitrogen dioxide emissions
+- 219032  # Nitrate radical emissions
+- 219033  # Dinitrogen pentoxide emissions
+- 219034  # Pernitric acid emissions
+- 219035  # Peroxy acetyl radical emissions
+- 219036  # Organic ethers emissions
+- 219037  # PAR budget corrector emissions
+- 219038  # NO to NO2 operator emissions
+- 219039  # NO to alkyl nitrate operator emissions
+- 219040  # Amine emissions
+- 219041  # Polar stratospheric cloud emissions
+- 219042  # Methanol emissions
+- 219043  # Formic acid emissions
+- 219044  # Methacrylic acid emissions
+- 219045  # Ethane emissions
+- 219046  # Ethanol emissions
+- 219047  # Propane emissions
+- 219048  # Propene emissions
+- 219049  # Terpenes emissions
+- 219050  # Methacrolein MVK emissions
+- 219051  # Nitrate emissions
+- 219052  # Acetone emissions
+- 219053  # Acetone product emissions
+- 219054  # IC3H7O2 emissions
+- 219055  # HYPROPO2 emissions
+- 219056  # Nitrogen oxides Transp emissions
+- 219057  # Emissions of carbon dioxide (chemistry)
+- 219058  # Emissions of nitrous oxide (chemistry)
+- 219059  # Emissions of water vapour (chemistry)
+- 219060  # Emissions of oxygen
+- 219061  # Emissions of singlet oxygen
+- 219062  # Emissions of singlet delta oxygen
+- 219063  # Emissions of chlorine dioxide
+- 219064  # Emissions of chlorine nitrate
+- 219065  # Emissions of hypochlorous acid
+- 219066  # Emissions of chlorine
+- 219067  # Emissions of nitryl chloride
+- 219068  # Emissions of hydrogen bromide
+- 219069  # Emissions of dichlorine dioxide
+- 219070  # Emissions of hypobromous acid
+- 219071  # Emissions of trichlorofluoromethane
+- 219072  # Emissions of dichlorodifluoromethane
+- 219073  # Emissions of trichlorotrifluoroethane
+- 219074  # Emissions of dichlorotetrafluoroethane
+- 219075  # Emissions of chloropentafluoroethane
+- 219076  # Emissions of tetrachloromethane
+- 219077  # Emissions of methyl chloroform
+- 219078  # Emissions of methyl chloride
+- 219079  # Emissions of chlorodifluoromethane
+- 219080  # Emissions of methyl bromide
+- 219081  # Emissions of dibromodifluoromethane
+- 219082  # Emissions of bromochlorodifluoromethane
+- 219083  # Emissions of trifluorobromomethane
+- 219084  # Emissions of cbrf2cbrf2
+- 219085  # Emissions of sulfuric acid
+- 219086  # Emissions of nitrous acid
+- 219087  # Emissions of alkanes low oh rate
+- 219088  # Emissions of alkanes med oh rate
+- 219089  # Emissions of alkanes high oh rate
+- 219090  # Emissions of terminal alkenes
+- 219091  # Emissions of internal alkenes
+- 219092  # Emissions of ethylperoxy radical
+- 219093  # Emissions of butadiene
+- 219094  # Emissions of ethyl hydroperoxide
+- 219095  # Emissions of a-pinene cyclic terpenes
+- 219096  # Emissions of acetic acid
+- 219097  # Emissions of d-limonene cyclic diene
+- 219098  # Emissions of acetaldehyde
+- 219099  # Emissions of toluene and less reactive aromatics
+- 219100  # Emissions of xylene and more reactive aromatics
+- 219101  # Emissions of glycolaldehyde
+- 219102  # Emissions of cresol
+- 219103  # Emissions of acetaldehyde and higher
+- 219104  # Emissions of peracetic acid
+- 219105  # Emissions of ketones
+- 219106  # Emissions of hoch2ch2o2
+- 219107  # Emissions of glyoxal
+- 219108  # Emissions of hoch2ch2o
+- 219109  # Emissions of unsaturated dicarbonyls
+- 219110  # Emissions of methacrolein
+- 219111  # Emissions of unsaturated hydroxy dicarbonyl
+- 219112  # Emissions of isopropyldioxidanyl
+- 219113  # Emissions of hydroxy ketone
+- 219114  # Emissions of isopropyl hydroperoxide
+- 219115  # Emissions of c3h6oho2
+- 219116  # Emissions of c3h6ohooh
+- 219117  # Emissions of higher organic peroxides
+- 219118  # Emissions of hydroxyacetone
+- 219119  # Emissions of peroxyacetic acid
+- 219120  # Emissions of ch3coch2o2
+- 219121  # Emissions of peroxy radical from c2h6
+- 219122  # Emissions of peroxy radical from hc3
+- 219123  # Emissions of peroxy radical from hc5
+- 219124  # Emissions of lumped alkenes
+- 219125  # Emissions of peroxy radical from hc8
+- 219126  # Emissions of lumped alkanes
+- 219127  # Emissions of peroxy radical from c2h4
+- 219128  # Emissions of c4h8o
+- 219129  # Emissions of peroxy radical from terminal alkenes
+- 219130  # Emissions of c4h9o3
+- 219131  # Emissions of peroxy radical from internal alkenes
+- 219132  # Emissions of ch3coch(oo)ch3
+- 219133  # Emissions of peroxy radical from c5h8
+- 219134  # Emissions of ch3coch(ooh)ch3
+- 219135  # Emissions of peroxy radical from a-pinene cyclic terpenes
+- 219136  # Emissions of ch2=c(ch3)co3
+- 219137  # Emissions of peroxy radical from d-limonene cyclic diene
+- 219138  # Emissions of methylvinylketone
+- 219139  # Emissions of phenoxy radical
+- 219140  # Emissions of peroxy radical from toluene and less reactive aromatics
+- 219141  # Emissions of ch3c(o)ch(oo)ch2oh
+- 219142  # Emissions of peroxy radical from xylene and more reactive aromatics
+- 219143  # Emissions of h3c(o)ch(ooh)ch2oh
+- 219144  # Emissions of peroxy radical from cresol
+- 219145  # Emissions of unsaturated pans
+- 219146  # Emissions of unsaturated acyl peroxy radical
+- 219147  # Emissions of peroxy radical from ketones
+- 219148  # Emissions of c5h11o2
+- 219149  # Emissions of no3-alkenes adduct reacting to form carbonitrates
+- 219150  # Emissions of c5h11ooh
+- 219151  # Emissions of no3-alkenes adduct reacting via decomposition
+- 219152  # Emissions of hoch2c(ch3)=chcho
+- 219153  # Emissions of c5h6o2
+- 219154  # Emissions of trop sulfuric acid
+- 219155  # Emissions of oxides
+- 219156  # Emissions of ch2chc(ch3)(oo)ch2ono2
+- 219157  # Emissions of c3 organic nitrate
+- 219158  # Emissions of chlorine oxides
+- 219159  # Emissions of bromine oxides
+- 219160  # Emissions of hoch2c(ooh)(ch3)chchoh
+- 219161  # Emissions of hoch2c(ooh)(ch3)ch=ch2
+- 219162  # Emissions of lumped aromatics
+- 219163  # Emissions of dimethyl sulfoxyde
+- 219164  # Emissions of c7h9o5
+- 219165  # Emissions of c7h10o5
+- 219166  # Emissions of hydrogensulfide
+- 219167  # Emissions of c7h10o6
+- 219168  # Emissions of all nitrogen oxides
+- 219169  # Emissions of chlorine family
+- 219170  # Emissions of c10h16(oh)(oo)
+- 219171  # Emissions of bromine family
+- 219172  # Emissions of c10h18o3
+- 219173  # Emissions of nitrogen atom
+- 219174  # Emissions of chlorine monoxide
+- 219175  # Emissions of chlorine atom
+- 219176  # Emissions of bromine monoxide
+- 219177  # Emissions of hydrogen atom
+- 219178  # Emissions of methyl group
+- 219179  # Emissions of aromatic-ho from toluene and less reactive aromatics
+- 219180  # Emissions of aromatic-ho from xylene and more reactive aromatics
+- 219181  # Emissions of ammonium nitrate
+- 219182  # Emissions of aromatic-ho from csl
+- 219183  # Emissions of secondary organic aerosol type 1
+- 219184  # Emissions of secondary organic aerosol type 2a
+- 219185  # Emissions of secondary organic aerosol type 2b
+- 219186  # Emissions of condensable gas type 1
+- 219187  # Emissions of condensable gas type 2a
+- 219188  # Emissions of condensable gas type 2b
+- 219189  # Emissions of sulfur trioxide
+- 219190  # Emissions of carbonyl sulfide
+- 219191  # Emissions of bromine atom
+- 219192  # Emissions of bromine
+- 219193  # Emissions of bromine monochloride
+- 219194  # Emissions of bromine nitrate
+- 219195  # Emissions of dibromomethane
+- 219196  # Emissions of methoxy radical
+- 219197  # Emissions of tribromomethane
+- 219198  # Emissions of asymmetric chlorine dioxide radical
+- 219199  # Emissions of hydrogen
+- 219200  # Emissions of hydrogen chloride
+- 219201  # Emissions of formyl radical
+- 219202  # Emissions of hydrogen fluoride
+- 219203  # Emissions of oxygen atom
+- 219204  # Emissions of excited oxygen atom
+- 219205  # Emissions of ground state oxygen atom
+- 219206  # Emissions of stratospheric aerosol
+- 219207  # Wildfire flux of paraffins
+- 219208  # Wildfire flux of olefines
+- 219209  # Wildfire flux of aldehydes
+- 219210  # Wildfire flux of ketones
+- 219211  # Wildfire flux of f a-pinene cyclic terpenes
+- 219212  # Wildfire flux of toluene less reactive aromatics
+- 219213  # Wildfire flux of xylene more reactive aromatics
+- 219214  # Wildfire flux of d-limonene cyclic diene
+- 219215  # Wildfire flux of terminal alkenes
+- 219216  # Wildfire flux of alkanes low oh rate
+- 219217  # Wildfire flux of alkanes med oh rate
+- 219218  # Wildfire flux of alkanes high oh rate
+- 219219  # Wildfire flux of hydrogen cyanide
+- 219220  # Wildfire flux of acetonitrile
+- 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
+- 228084  # Flux of Carbon Dioxide Gross Primary Production
+- 228085  # Flux of Carbon Dioxide Ecosystem Respiration
+- 228100  # Evaporation from the top of canopy
+- 228101  # Evaporation from bare soil
+- 228102  # Evaporation from open water surfaces excluding oceans
+- 228103  # Evaporation from vegetation transpiration
+- 228141  # Snow depth water equivalent
+- 228143  # Convective precipitation
+- 228144  # Snow Fall water equivalent
+- 228205  # Water runoff and drainage
+- 228228  # Total Precipitation
+- 230044  # Snow evaporation (variable resolution)
+- 230045  # Snowmelt (variable resolution)
+- 230182  # Evaporation (variable resolution)
+- 235009  # Mean updraught mass flux
+- 235010  # Mean downdraught mass flux
+- 235013  # Mean total precipitation flux
+- 235020  # Mean surface runoff rate
+- 235021  # Mean sub-surface runoff rate
+- 235023  # Mean snow evaporation rate
+- 235024  # Mean snowmelt rate
+- 235029  # Mean large-scale precipitation rate
+- 235030  # Mean convective precipitation rate
+- 235031  # Mean snowfall rate
+- 235043  # Mean evaporation rate
+- 235048  # Mean runoff rate
+- 235054  # Mean vertically integrated moisture divergence
+- 235055  # Mean total precipitation rate
+- 235056  # Mean convective snowfall rate
+- 235057  # Mean large-scale snowfall rate
+- 235062  # Mean carbon dioxide net ecosystem exchange flux
+- 235063  # Mean carbon dioxide gross primary production flux
+- 235064  # Mean carbon dioxide ecosystem respiration flux
+- 235065  # Mean rain rate
+- 235066  # Mean convective rain rate
+- 235067  # Mean large-scale rain rate
+- 235070  # Mean potential evaporation rate
+- 240020  # Depth of water on soil surface
+- 240021  # Upstream accumulated precipitation
+- 240022  # Upstream accumulated snow melt
+- 240026  # Snow depth at elevation bands
+- 260009  # Large scale precipitation (non-convective)
+- 260010  # Snowfall rate water equivalent
+- 260011  # Convective snow
+- 260012  # Large scale snow
+- 260033  # Convective precipitation rate
+- 260036  # Potential evaporation
+- 260043  # Large scale water precipitation (non-convective)
+- 260044  # Convective water precipitation
+- 260045  # Total water precipitation
+- 260046  # Total snow precipitation
+- 260048  # Total precipitation rate
+- 260049  # Total snowfall rate water equivalent
+- 260050  # Large scale precipitation rate
+- 260051  # Convective snowfall rate water equivalent
+- 260052  # Large scale snowfall rate water equivalent
+- 260056  # Water equivalent of accumulated snow depth
+- 260058  # Rain precipitation rate
+- 260059  # Snow precipitation rate
+- 260060  # Freezing rain precipitation rate
+- 260061  # Ice pellets precipitation rate
+- 260138  # Precipitation
+- 260170  # Flash flood runoff (Encoded as an accumulation over a floating subinterval of time)
+- 260174  # Baseflow-groundwater runoff
+- 260175  # Storm surface runoff
+- 260181  # Water runoff
+- 260188  # Exchange coefficient
+- 260218  # Estimated precipitation
+- 260219  # Instantaneous rain rate
+- 260258  # Evaporation rate
+- 260259  # Evaporation
+- 260284  # Liquid precipitation (rainfall)
+- 260286  # Total precipitation (nearest grid point)
+- 260287  # Convective precipitation (nearest grid point)
+- 260365  # Percolation rate
+- 260430  # Percolation
+- 260461  # Water vapor added by precip assimilation
+- 260462  # Water condensate added by precip assimilation
+- 260479  # Land Surface Precipitation Accumulation
+- 260621  # Upward mass flux at cloud base
+- 260622  # Upward mass flux
+- 300057  # Evaporation
+- 300059  # Precipitation rate
+- 300061  # Total precipitation
+- 300062  # Large scale precipitation
+- 300063  # Convective precipitation
+- 300064  # Snowfall
+- 300065  # Wat equiv acc snow depth
+- 300169  # Vert. integrated moisture flux conv.
+- 300178  # Runoff
+
+rate.volume-flux:
+- 8  # Surface runoff
+- 9  # Sub-surface runoff
+- 44  # Snow evaporation
+- 45  # Snowmelt
+- 142  # Large-scale precipitation
+- 143  # Convective precipitation
+- 144  # Snowfall
+- 182  # Evaporation
+- 205  # Runoff
+- 228  # Total precipitation
+- 239  # Convective snowfall
+- 240  # Large-scale snowfall
+- 129142  # Stratiform precipitation (Large-scale precipitation) gradient
+- 129143  # Convective precipitation gradient
+- 129144  # Snowfall (convective + stratiform) gradient
+- 129205  # Runoff gradient
+- 129228  # Total precipitation gradient
+- 129239  # Convective snowfall gradient
+- 129240  # Large scale snowfall gradient
+- 151158  # Precipitation - evaporation
+- 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
+- 171143  # Convective precipitation anomaly
+- 171144  # Snowfall (convective + stratiform) anomaly
+- 171205  # Runoff anomaly
+- 171228  # Total precipitation anomaly
+- 171239  # Convective snowfall anomaly
+- 171240  # Large scale snowfall anomaly
+- 172044  # Snow evaporation
+- 172045  # Snowmelt
+- 172142  # Stratiform precipitation (Large-scale precipitation)
+- 172143  # Convective precipitation
+- 172144  # Snowfall (convective + stratiform)
+- 172182  # Evaporation
+- 172205  # Runoff
+- 172228  # Total precipitation
+- 172239  # Convective snowfall
+- 172240  # Large scale snowfall
+- 173044  # Snow evaporation anomaly
+- 173045  # Snowmelt anomaly
+- 173142  # Stratiform precipitation (Large-scale precipitation) anomaly
+- 173143  # Convective precipitation anomaly
+- 173144  # Snowfall (convective + stratiform) anomalous rate of accumulation
+- 173182  # Evaporation anomaly
+- 173205  # Runoff anomaly
+- 173228  # Total precipitation anomalous rate of accumulation
+- 173239  # Convective snowfall anomaly
+- 173240  # Large scale snowfall anomaly
+- 200142  # Stratiform precipitation (Large-scale precipitation) difference
+- 200143  # Convective precipitation difference
+- 200144  # Snowfall (convective + stratiform) difference
+- 200205  # Runoff difference
+- 200228  # Total precipitation difference
+- 200239  # Convective snowfall difference
+- 200240  # Large scale snowfall difference
 - 221001  # Ozone deposition velocity
 - 221002  # Nitrogen oxides deposition velocity
 - 221003  # Hydrogen peroxide deposition velocity
@@ -1920,1080 +3803,6 @@ rate:
 - 221204  # Dry deposition velocity of excited oxygen atom
 - 221205  # Dry deposition velocity of ground state oxygen atom
 - 221206  # Dry deposition velocity of stratospheric aerosol
-- 235011  # Mean updraught detrainment rate
-- 235012  # Mean downdraught detrainment rate
-- 240012  # Side flow into river channel
-- 240013  # Discharge from rivers or streams
-- 260022  # Horizontal moisture convergence
-- 260069  # Horizontal momentum flux
-- 260245  # Large Scale Condensate Heating rate
-- 260246  # Deep Convective Heating rate
-- 260251  # Shallow Convective Heating rate
-- 260252  # Vertical Diffusion Heating rate
-- 260276  # Deep Convective Moistening Rate
-- 260277  # Shallow Convective Moistening Rate
-- 260278  # Vertical Diffusion Moistening Rate
-- 260280  # Large scale moistening rate
-- 260332  # Convective updraft mass flux
-- 260333  # Convective downdraft mass flux
-- 260334  # Convective detrainment mass flux
-- 260343  # Solar Radiative Heating Rate
-- 260354  # Long-Wave Radiative Heating Rate
-- 260366  # Convective Cloud Mass Flux
-- 260447  # Rate of water dropping from canopy to ground
-- 260501  # Salt Flux
-- 260616  # Adiabatic heating rate
-- 260623  # Adiabatic moistening rate
-- 260633  # Large scale condensation heating rate
-- 260634  # Convective heating rate
-- 260635  # Convective moistening rate
-- 260636  # Vertical diffusion heating rate
-- 260639  # Vertical diffusion moistening rate
-- 260640  # Solar radiative heating rate
-- 260641  # Long wave radiative heating rate
-- 260642  # Large scale moistening rate
-- 300019  # Lapse rate
-- 300168  # Horiz. moisture flux conv.
-
-rate.energy-flux:
-- 72  # Instantaneous surface solar radiation downwards
-- 73  # Instantaneous surface thermal radiation downwards
-- 231  # Instantaneous surface sensible heat flux
-- 3111  # Net short-wave radiation flux (surface)
-- 3112  # Net long-wave radiation flux (surface)
-- 3113  # Net short-wave radiation flux(atmosph.top)
-- 3114  # Net long-wave radiation flux(atmosph.top)
-- 3115  # Long wave radiation flux
-- 3116  # Short wave radiation flux
-- 3117  # Global radiation flux
-- 3121  # Latent heat flux
-- 3122  # Sensible heat flux
-- 3123  # Boundary layer dissipation
-- 162067  # Vertical integral of eastward kinetic energy flux
-- 162068  # Vertical integral of northward kinetic energy flux
-- 162069  # Vertical integral of eastward heat flux
-- 162070  # Vertical integral of northward heat flux
-- 162073  # Vertical integral of eastward geopotential flux
-- 162074  # Vertical integral of northward geopotential flux
-- 162075  # Vertical integral of eastward total energy flux
-- 162076  # Vertical integral of northward total energy flux
-- 172145  # Boundary layer dissipation
-- 172146  # Surface sensible heat flux
-- 172147  # Surface latent heat flux
-- 172149  # Surface net radiation
-- 172169  # Surface solar radiation downwards
-- 172175  # Surface thermal radiation downwards
-- 172176  # Surface solar radiation
-- 172177  # Surface thermal radiation
-- 172178  # Top solar radiation
-- 172179  # Top thermal radiation
-- 172197  # Gravity wave dissipation
-- 172208  # Top net solar radiation, clear sky
-- 172209  # Top net thermal radiation, clear sky
-- 172210  # Surface net solar radiation, clear sky
-- 172211  # Surface net thermal radiation, clear sky
-- 172212  # Solar insolation
-- 174010  # Clear-sky (II) down surface sw flux
-- 174013  # Clear-sky (II) up surface sw flux
-- 210099  # Wildfire radiative power
-- 211099  # Wildfire radiative power
-- 214004  # Total surface UV spectral flux (280-285 nm)
-- 214005  # Total surface UV spectral flux (285-290 nm)
-- 214006  # Total surface UV spectral flux (290-295 nm)
-- 214007  # Total surface UV spectral flux (295-300 nm)
-- 214008  # Total surface UV spectral flux (300-305 nm)
-- 214009  # Total surface UV spectral flux (305-310 nm)
-- 214010  # Total surface UV spectral flux (310-315 nm)
-- 214011  # Total surface UV spectral flux (315-320 nm)
-- 214012  # Total surface UV spectral flux (320-325 nm)
-- 214013  # Total surface UV spectral flux (325-330 nm)
-- 214014  # Total surface UV spectral flux (330-335 nm)
-- 214015  # Total surface UV spectral flux (335-340 nm)
-- 214016  # Total surface UV spectral flux (340-345 nm)
-- 214017  # Total surface UV spectral flux (345-350 nm)
-- 214018  # Total surface UV spectral flux (350-355 nm)
-- 214019  # Total surface UV spectral flux (355-360 nm)
-- 214020  # Total surface UV spectral flux (360-365 nm)
-- 214021  # Total surface UV spectral flux (365-370 nm)
-- 214022  # Total surface UV spectral flux (370-375 nm)
-- 214023  # Total surface UV spectral flux (375-380 nm)
-- 214024  # Total surface UV spectral flux (380-385 nm)
-- 214025  # Total surface UV spectral flux (385-390 nm)
-- 214026  # Total surface UV spectral flux (390-395 nm)
-- 214027  # Total surface UV spectral flux (395-400 nm)
-- 214028  # Clear-sky surface UV spectral flux (280-285 nm)
-- 214029  # Clear-sky surface UV spectral flux (285-290 nm)
-- 214030  # Clear-sky surface UV spectral flux (290-295 nm)
-- 214031  # Clear-sky surface UV spectral flux (295-300 nm)
-- 214032  # Clear-sky surface UV spectral flux (300-305 nm)
-- 214033  # Clear-sky surface UV spectral flux (305-310 nm)
-- 214034  # Clear-sky surface UV spectral flux (310-315 nm)
-- 214035  # Clear-sky surface UV spectral flux (315-320 nm)
-- 214036  # Clear-sky surface UV spectral flux (320-325 nm)
-- 214037  # Clear-sky surface UV spectral flux (325-330 nm)
-- 214038  # Clear-sky surface UV spectral flux (330-335 nm)
-- 214039  # Clear-sky surface UV spectral flux (335-340 nm)
-- 214040  # Clear-sky surface UV spectral flux (340-345 nm)
-- 214041  # Clear-sky surface UV spectral flux (345-350 nm)
-- 214042  # Clear-sky surface UV spectral flux (350-355 nm)
-- 214043  # Clear-sky surface UV spectral flux (355-360 nm)
-- 214044  # Clear-sky surface UV spectral flux (360-365 nm)
-- 214045  # Clear-sky surface UV spectral flux (365-370 nm)
-- 214046  # Clear-sky surface UV spectral flux (370-375 nm)
-- 214047  # Clear-sky surface UV spectral flux (375-380 nm)
-- 214048  # Clear-sky surface UV spectral flux (380-385 nm)
-- 214049  # Clear-sky surface UV spectral flux (385-390 nm)
-- 214050  # Clear-sky surface UV spectral flux (390-395 nm)
-- 214051  # Clear-sky surface UV spectral flux (395-400 nm)
-- 235022  # Mean surface photosynthetically active radiation flux, clear sky
-- 235027  # Mean surface downward UV radiation flux
-- 235028  # Mean surface photosynthetically active radiation flux
-- 235032  # Mean boundary layer dissipation
-- 235033  # Mean surface sensible heat flux
-- 235034  # Mean surface latent heat flux
-- 235035  # Mean surface downward short-wave radiation flux
-- 235036  # Mean surface downward long-wave radiation flux
-- 235037  # Mean surface net short-wave radiation flux
-- 235038  # Mean surface net long-wave radiation flux
-- 235039  # Mean top net short-wave radiation flux
-- 235040  # Mean top net long-wave radiation flux
-- 235047  # Mean gravity wave dissipation
-- 235049  # Mean top net short-wave radiation flux, clear sky
-- 235050  # Mean top net long-wave radiation flux, clear sky
-- 235051  # Mean surface net short-wave radiation flux, clear sky
-- 235052  # Mean surface net long-wave radiation flux, clear sky
-- 235053  # Mean top downward short-wave radiation flux
-- 235058  # Mean surface direct short-wave radiation flux
-- 235059  # Mean surface direct short-wave radiation flux, clear sky
-- 235060  # Mean surface diffuse short-wave radiation flux
-- 235061  # Mean surface diffuse short-wave radiation flux, clear sky
-- 235068  # Mean surface downward short-wave radiation flux, clear sky
-- 235069  # Mean surface downward long-wave radiation flux, clear sky
-- 260002  # Latent heat net flux
-- 260003  # Sensible heat net flux
-- 260007  # Snow phase change heat flux
-- 260037  # Potential evaporation rate
-- 260086  # Net short-wave radiation flux (top of atmosphere)
-- 260087  # Downward short-wave radiation flux
-- 260088  # Upward short-wave radiation flux
-- 260089  # Net short wave radiation flux
-- 260090  # Photosynthetically active radiation
-- 260091  # Net short-wave radiation flux, clear sky
-- 260092  # Downward UV radiation
-- 260095  # Net long wave radiation flux (surface)
-- 260096  # Net long wave radiation flux (top of atmosphere)
-- 260097  # Downward long-wave radiation flux
-- 260098  # Upward long-wave radiation flux
-- 260099  # Net long wave radiation flux
-- 260100  # Net long-wave radiation flux, clear sky
-- 260186  # Ground heat flux
-- 260198  # Heat flux
-- 260247  # Total Downward Heat Flux at Surface
-- 260262  # Direct short wave radiation flux
-- 260263  # Diffuse short wave radiation flux
-- 260275  # Sublimation (evaporation from snow)
-- 260340  # UV-B downward solar flux
-- 260341  # Clear sky UV-B downward solar flux
-- 260342  # Clear Sky Downward Solar Flux
-- 260344  # Clear Sky Upward Solar Flux
-- 260345  # Cloud Forcing Net Solar Flux
-- 260346  # Visible Beam Downward Solar Flux
-- 260347  # Visible Diffuse Downward Solar Flux
-- 260348  # Near IR Beam Downward Solar Flux
-- 260349  # Near IR Diffuse Downward Solar Flux
-- 260350  # Downward Total radiation Flux
-- 260351  # Upward Total radiation Flux
-- 260355  # Clear Sky Upward Long Wave Flux
-- 260356  # Clear Sky Downward Long Wave Flux
-- 260357  # Cloud Forcing Net Long Wave Flux
-- 260361  # Downward short-wave radiation flux, clear sky
-- 260362  # Upward short-wave radiation flux, clear sky
-- 260363  # Downward long-wave radiation flux, clear sky
-- 260364  # Soil heat flux
-- 260454  # Open water evaporation (standing water)
-- 260470  # Canopy water evaporation
-- 260471  # Transpiration
-- 260478  # Direct evaporation from bare soil
-- 260496  # Net Air-Ocean Heat Flux
-- 260497  # Assimilative Heat Flux
-- 260615  # Evapotranspiration
-- 300111  # Short wave absorbed at ground
-- 300112  # Net long wave at bottom
-- 300113  # Net short-wav rad(top)
-- 300114  # Outgoing long wave at top
-- 300115  # Long-wav rad
-- 300116  # Short wave absorbed by earth/atmosphere
-- 300117  # Global radiation
-- 300121  # Latent heat flux from surface
-- 300122  # Sensible heat flux from surface
-- 300123  # Bound layer dissipation
-- 300179  # Interception loss
-- 300196  # Surface momentum flux
-- 300197  # Incident short wave flux
-- 300198  # Time ave ground ht flx
-- 300200  # Net long wave at bottom (clear)
-- 300201  # Outgoing long wave at top (clear)
-- 300202  # Short wv absrbd by earth/atmos (clear)
-- 300203  # Short wave absorbed at ground (clear)
-- 300207  # Downward long wave at bottom
-- 300208  # Downward long wave at bottom (clear)
-- 300209  # Downward short wave at ground
-- 300210  # Downward short wave at ground (clear)
-- 300211  # Upward long wave at bottom
-- 300212  # Upward short wave at ground
-- 300213  # Upward short wave at ground (clear)
-- 300214  # Upward short wave at top
-- 300215  # Upward short wave at top (clear)
-
-rate.energy-flux.accumulated:
-- 19  # Clear sky surface UV
-- 20  # Clear sky surface photosynthetically active radiation
-- 47  # Direct solar radiation
-- 57  # Downward UV radiation at the surface
-- 58  # Photosynthetically active radiation at the surface
-- 145  # Boundary layer dissipation
-- 146  # Surface sensible heat flux
-- 147  # Surface latent heat flux
-- 149  # Surface net radiation
-- 150  # Top net radiation
-- 169  # Surface solar radiation downwards
-- 175  # Surface thermal radiation downwards
-- 176  # Surface net solar radiation
-- 177  # Surface net thermal radiation
-- 178  # Top net solar radiation
-- 179  # Top net thermal radiation
-- 197  # Gravity wave dissipation
-- 208  # Top net solar radiation, clear sky
-- 209  # Top net thermal radiation, clear sky
-- 210  # Surface net solar radiation, clear sky
-- 211  # Surface net thermal radiation, clear sky
-- 212  # TOA incident solar radiation
-- 129047  # Direct solar radiation gradient
-- 129057  # Downward UV radiation at the surface gradient
-- 129058  # Photosynthetically active radiation at the surface gradient
-- 129145  # Boundary layer dissipation gradient
-- 129146  # Surface sensible heat flux gradient
-- 129147  # Surface latent heat flux gradient
-- 129149  # Surface net radiation gradient
-- 129169  # Surface solar radiation downwards gradient
-- 129175  # Surface thermal radiation downwards gradient
-- 129176  # Surface net solar radiation gradient
-- 129177  # Surface net thermal radiation gradient
-- 129178  # Top net solar radiation gradient
-- 129179  # Top net thermal radiation gradient
-- 129197  # Gravity wave dissipation gradient
-- 129208  # Top net solar radiation, clear sky gradient
-- 129209  # Top net thermal radiation, clear sky gradient
-- 129210  # Surface net solar radiation, clear sky gradient
-- 129211  # Surface net thermal radiation, clear sky gradient
-- 129212  # TOA incident solar radiation gradient
-- 129231  # Instantaneous surface heat flux gradient
-- 130208  # Top solar radiation upward
-- 130209  # Top thermal radiation upward
-- 130210  # Top solar radiation upward, clear sky
-- 130211  # Top thermal radiation upward, clear sky
-- 150181  # Heat flux correction
-- 150183  # Observed heat flux
-- 151155  # Turbulent kinetic energy input
-- 151156  # Net surface heat flux
-- 151157  # Absorbed solar radiation
-- 151160  # Specified surface heat flux
-- 151162  # Heat flux correction
-- 160231  # Instantaneous surface heat flux
-- 160249  # Gravity wave dissipation flux
-- 162059  # Vertical integral of kinetic energy
-- 162060  # Vertical integral of thermal energy
-- 162061  # Vertical integral of potential+internal energy
-- 162062  # Vertical integral of potential+internal+latent energy
-- 162063  # Vertical integral of total energy
-- 170179  # Top net thermal radiation
-- 171047  # Direct solar radiation anomaly
-- 171057  # Downward UV radiation at the surface anomaly
-- 171058  # Photosynthetically active radiation at the surface anomaly
-- 171145  # Boundary layer dissipation anomaly
-- 171146  # Surface sensible heat flux anomaly
-- 171147  # Surface latent heat flux anomaly
-- 171149  # Surface net radiation anomaly
-- 171169  # Surface solar radiation downwards anomaly
-- 171175  # Surface thermal radiation downwards anomaly
-- 171176  # Surface net solar radiation anomaly
-- 171177  # Surface net thermal radiation anomaly
-- 171178  # Top net solar radiation anomaly
-- 171179  # Top net thermal radiation anomaly
-- 171197  # Gravity wave dissipation anomaly
-- 171208  # Top net solar radiation clear sky anomaly
-- 171209  # Top net thermal radiation clear sky anomaly
-- 171210  # Surface net solar radiation clear sky anomaly
-- 171211  # Surface net thermal radiation, clear sky anomaly
-- 171212  # Solar insolation anomaly
-- 171231  # Instantaneous surface heat flux anomaly
-- 173145  # Boundary layer dissipation anomaly
-- 173146  # Surface sensible heat flux anomaly
-- 173147  # Surface latent heat flux anomaly
-- 173149  # Surface net radiation anomaly
-- 173169  # Surface solar radiation downwards anomaly
-- 173175  # Surface thermal radiation downwards anomaly
-- 173176  # Surface solar radiation anomaly
-- 173177  # Surface thermal radiation anomaly
-- 173178  # Top solar radiation anomaly
-- 173179  # Top thermal radiation anomaly
-- 173197  # Gravity wave dissipation anomaly
-- 173208  # Top net solar radiation, clear sky anomaly
-- 173209  # Top net thermal radiation, clear sky anomaly
-- 173210  # Surface net solar radiation, clear sky anomaly
-- 173211  # Surface net thermal radiation, clear sky anomaly
-- 174089  # Top incoming solar radiation
-- 174090  # Top outgoing solar radiation
-- 174116  # Short wave radiation flux at surface
-- 174117  # Short wave radiation flux at top of atmosphere
-- 175089  # Top incoming solar radiation
-- 175090  # Top outgoing solar radiation
-- 180176  # Surface net solar radiation
-- 180177  # Surface net thermal radiation
-- 180178  # Top net solar radiation
-- 180179  # Top net thermal radiation
-- 200047  # Direct solar radiation difference
-- 200057  # Downward UV radiation at the surface difference
-- 200058  # Photosynthetically active radiation at the surface difference
-- 200145  # Boundary layer dissipation difference
-- 200146  # Surface sensible heat flux difference
-- 200147  # Surface latent heat flux difference
-- 200149  # Surface net radiation difference
-- 200169  # Surface solar radiation downwards difference
-- 200175  # Surface thermal radiation downwards difference
-- 200176  # Surface net solar radiation difference
-- 200177  # Surface net thermal radiation difference
-- 200178  # Top net solar radiation difference
-- 200179  # Top net thermal radiation difference
-- 200197  # Gravity wave dissipation difference
-- 200208  # Top net solar radiation, clear sky difference
-- 200209  # Top net thermal radiation, clear sky difference
-- 200210  # Surface net solar radiation, clear sky difference
-- 200211  # Surface net thermal radiation, clear sky difference
-- 200212  # TOA incident solar radiation difference
-- 200231  # Instantaneous surface heat flux difference
-- 201001  # downward shortwave radiant flux density
-- 201002  # upward shortwave radiant flux density
-- 201003  # downward longwave radiant flux density
-- 201004  # upward longwave radiant flux density
-- 201005  # downwd photosynthetic active radiant flux density
-- 201006  # net shortwave flux
-- 201007  # net longwave flux
-- 201008  # total net radiative flux density
-- 201009  # downw shortw radiant flux density, cloudfree part
-- 201010  # upw shortw radiant flux density, cloudy part
-- 201011  # downw longw radiant flux density, cloudfree part
-- 201012  # upw longw radiant flux density, cloudy part
-- 201015  # total radiative heating rate
-- 201016  # soil heat flux, surface
-- 201017  # soil heat flux, bottom of layer
-- 228021  # Total sky direct solar radiation at surface
-- 228022  # Clear-sky direct solar radiation at surface
-- 228129  # Surface solar radiation downward clear-sky
-- 228130  # Surface thermal radiation downward clear-sky
-- 228242  # Surface solar radiation diffuse total sky
-- 228243  # Surface solar radiation diffuse clear-sky
-- 230020  # Clear sky surface photosynthetically active radiation (variable resolution)
-- 230021  # Total sky direct solar radiation at surface (variable resolution)
-- 230022  # Clear-sky direct solar radiation at surface (variable resolution)
-- 230047  # Direct solar radiation (variable resolution)
-- 230057  # Downward UV radiation at the surface (variable resolution)
-- 230058  # Photosynthetically active radiation at the surface (variable resolution)
-- 230129  # Surface solar radiation downward clear-sky (variable resolution)
-- 230130  # Surface thermal radiation downward clear-sky (variable resolution)
-- 230145  # Boundary layer dissipation (variable resolution)
-- 230146  # Surface sensible heat flux (variable resolution)
-- 230147  # Surface latent heat flux (variable resolution)
-- 230169  # Surface solar radiation downwards (variable resolution)
-- 230175  # Surface thermal radiation downwards (variable resolution)
-- 230176  # Surface net solar radiation (variable resolution)
-- 230177  # Surface net thermal radiation (variable resolution)
-- 230178  # Top net solar radiation (variable resolution)
-- 230179  # Top net thermal radiation (variable resolution)
-- 230197  # Gravity wave dissipation (variable resolution)
-- 230208  # Top net solar radiation, clear sky (variable resolution)
-- 230209  # Top net thermal radiation, clear sky (variable resolution)
-- 230210  # Surface net solar radiation, clear sky (variable resolution)
-- 230211  # Surface net thermal radiation, clear sky (variable resolution)
-- 230212  # TOA incident solar radiation (variable resolution)
-- 260264  # Time-integrated surface direct short wave radiation flux
-- 260423  # Accumulated surface downward short-wave radiation flux, clear sky
-- 260427  # Accumulated surface upward short-wave radiation flux, clear sky
-- 260428  # Accumulated surface downward long-wave radiation flux, clear sky
-
-rate.mass-flux:
-- 232  # Instantaneous moisture flux
-- 3064  # Snow fall rate water equivalent
-- 160142  # Large-scale precipitation
-- 160143  # Convective precipitation
-- 160144  # Snowfall
-- 160182  # Evaporation
-- 160205  # Runoff
-- 160239  # Convective snowfall
-- 160240  # Large scale snowfall
-- 162065  # Vertical integral of eastward mass flux
-- 162066  # Vertical integral of northward mass flux
-- 162071  # Vertical integral of eastward water vapour flux
-- 162072  # Vertical integral of northward water vapour flux
-- 162077  # Vertical integral of eastward ozone flux
-- 162078  # Vertical integral of northward ozone flux
-- 162088  # Vertical integral of eastward cloud liquid water flux
-- 162089  # Vertical integral of northward cloud liquid water flux
-- 162090  # Vertical integral of eastward cloud frozen water flux
-- 162091  # Vertical integral of northward cloud frozen water flux
-- 162092  # Vertical integral of mass tendency
-- 174142  # Large scale rainfall rate
-- 174143  # Convective rainfall rate
-- 174239  # Convective snowfall rate
-- 174240  # Large scale snowfall rate
-- 201065  # convective mass flux
-- 201100  # surface precipitation rate, rain, grid scale
-- 201101  # surface precipitation rate, snow, grid scale
-- 201111  # surface precipitation rate, rain, convective
-- 201112  # surface precipitation rate, snow, convective
-- 210043  # DMS surface emission
-- 210067  # Ocean flux of Carbon Dioxide
-- 210068  # Natural biosphere flux of Carbon Dioxide
-- 210069  # Anthropogenic emissions of Carbon Dioxide
-- 210070  # Methane Surface Fluxes
-- 210080  # Wildfire flux of Carbon Dioxide
-- 210081  # Wildfire flux of Carbon Monoxide
-- 210082  # Wildfire flux of Methane
-- 210083  # Wildfire flux of Non-Methane Hydro-Carbons
-- 210084  # Wildfire flux of Hydrogen
-- 210085  # Wildfire flux of Nitrogen Oxides NOx
-- 210086  # Wildfire flux of Nitrous Oxide
-- 210087  # Wildfire flux of Particulate Matter PM2.5
-- 210088  # Wildfire flux of Total Particulate Matter
-- 210089  # Wildfire flux of Total Carbon in Aerosols
-- 210090  # Wildfire flux of Organic Carbon
-- 210091  # Wildfire flux of Black Carbon
-- 210092  # Wildfire overall flux of burnt Carbon
-- 210100  # Wildfire combustion rate
-- 210102  # Wildfire flux of Sulfur Dioxide
-- 210103  # Wildfire Flux of Methanol (CH3OH)
-- 210104  # Wildfire Flux of Ethanol (C2H5OH)
-- 210105  # Wildfire Flux of Propane (C3H8)
-- 210106  # Wildfire Flux of Ethene (C2H4)
-- 210107  # Wildfire Flux of Propene (C3H6)
-- 210108  # Wildfire Flux of Isoprene (C5H8)
-- 210109  # Wildfire Flux of Terpenes (C5H8)n
-- 210110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
-- 210111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
-- 210112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
-- 210113  # Wildfire Flux of Formaldehyde (CH2O)
-- 210114  # Wildfire Flux of Acetaldehyde (C2H4O)
-- 210115  # Wildfire Flux of Acetone (C3H6O)
-- 210116  # Wildfire Flux of Ammonia (NH3)
-- 210117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
-- 210118  # Wildfire Flux of Ethane (C2H6)
-- 210151  # Surface flux Nitrogen oxides
-- 210152  # Surface flux Nitrogen dioxide
-- 210153  # Surface flux Sulphur dioxide
-- 210154  # Surface flux Carbon monoxide
-- 210155  # Surface flux Formaldehyde
-- 210156  # Surface flux GEMS Ozone
-- 210157  # Surface flux reactive tracer 1
-- 210158  # Surface flux reactive tracer 2
-- 210159  # Surface flux reactive tracer 3
-- 210160  # Surface flux reactive tracer 4
-- 210161  # Surface flux reactive tracer 5
-- 210162  # Surface flux reactive tracer 6
-- 210163  # Surface flux reactive tracer 7
-- 210164  # Surface flux reactive tracer 8
-- 210165  # Surface flux reactive tracer 9
-- 210166  # Surface flux reactive tracer 10
-- 210185  # Anthropogenic Emissions of Sulphur Hexafluoride
-- 210231  # Wildfire Flux of Toluene (C7H8)
-- 210232  # Wildfire Flux of Benzene (C6H6)
-- 210233  # Wildfire Flux of Xylene (C8H10)
-- 210234  # Wildfire Flux of Butenes (C4H8)
-- 210235  # Wildfire Flux of Pentenes (C5H10)
-- 210236  # Wildfire Flux of Hexene (C6H12)
-- 210237  # Wildfire Flux of Octene (C8H16)
-- 210238  # Wildfire Flux of Butanes (C4H10)
-- 210239  # Wildfire Flux of Pentanes (C5H12)
-- 210240  # Wildfire Flux of Hexanes (C6H14)
-- 210241  # Wildfire Flux of Heptane (C7H16)
-- 211043  # DMS surface emission
-- 211067  # Ocean flux of Carbon Dioxide
-- 211068  # Natural biosphere flux of Carbon Dioxide
-- 211069  # Anthropogenic emissions of Carbon Dioxide
-- 211070  # Methane Surface Fluxes
-- 211080  # Wildfire flux of Carbon Dioxide
-- 211081  # Wildfire flux of Carbon Monoxide
-- 211082  # Wildfire flux of Methane
-- 211083  # Wildfire flux of Non-Methane Hydro-Carbons
-- 211084  # Wildfire flux of Hydrogen
-- 211085  # Wildfire flux of Nitrogen Oxides NOx
-- 211086  # Wildfire flux of Nitrous Oxide
-- 211087  # Wildfire flux of Particulate Matter PM2.5
-- 211088  # Wildfire flux of Total Particulate Matter
-- 211089  # Wildfire flux of Total Carbon in Aerosols
-- 211090  # Wildfire flux of Organic Carbon
-- 211091  # Wildfire flux of Black Carbon
-- 211092  # Wildfire overall flux of burnt Carbon
-- 211100  # Wildfire combustion rate
-- 211102  # Wildfire flux of Sulfur Dioxide
-- 211103  # Wildfire Flux of Methanol (CH3OH)
-- 211104  # Wildfire Flux of Ethanol (C2H5OH)
-- 211105  # Wildfire Flux of Propane (C3H8)
-- 211106  # Wildfire Flux of Ethene (C2H4)
-- 211107  # Wildfire Flux of Propene (C3H6)
-- 211108  # Wildfire Flux of Isoprene (C5H8)
-- 211109  # Wildfire Flux of Terpenes (C5H8)n
-- 211110  # Wildfire Flux of Toluene_lump (C7H8+ C6H6 + C8H10)
-- 211111  # Wildfire Flux of Higher Alkenes (CnH2n, C>=4)
-- 211112  # Wildfire Flux of Higher Alkanes (CnH2n+2, C>=4)
-- 211113  # Wildfire Flux of Formaldehyde (CH2O)
-- 211114  # Wildfire Flux of Acetaldehyde (C2H4O)
-- 211115  # Wildfire Flux of Acetone (C3H6O)
-- 211116  # Wildfire Flux of Ammonia (NH3)
-- 211117  # Wildfire Flux of Dimethyl Sulfide (DMS) (C2H6S)
-- 211118  # Wildfire Flux of Ethane (C2H6)
-- 211151  # Surface flux Nitrogen oxides
-- 211152  # Surface flux Nitrogen dioxide
-- 211153  # Surface flux Sulphur dioxide
-- 211154  # Surface flux Carbon monoxide
-- 211155  # Surface flux Formaldehyde
-- 211156  # Surface flux GEMS Ozone
-- 211157  # Surface flux reactive tracer 1
-- 211158  # Surface flux reactive tracer 2
-- 211159  # Surface flux reactive tracer 3
-- 211160  # Surface flux reactive tracer 4
-- 211161  # Surface flux reactive tracer 5
-- 211162  # Surface flux reactive tracer 6
-- 211163  # Surface flux reactive tracer 7
-- 211164  # Surface flux reactive tracer 8
-- 211165  # Surface flux reactive tracer 9
-- 211166  # Surface flux reactive tracer 10
-- 211185  # Anthropogenic Emissions of Sulphur Hexafluoride
-- 215001  # Source/gain of sea salt aerosol (0.03 - 0.5 um)
-- 215002  # Source/gain of sea salt aerosol (0.5 - 5 um)
-- 215003  # Source/gain of sea salt aerosol (5 - 20 um)
-- 215004  # Dry deposition of sea salt aerosol (0.03 - 0.5 um)
-- 215005  # Dry deposition of sea salt aerosol (0.5 - 5 um)
-- 215006  # Dry deposition of sea salt aerosol (5 - 20 um)
-- 215007  # Sedimentation of sea salt aerosol (0.03 - 0.5 um)
-- 215008  # Sedimentation of sea salt aerosol (0.5 - 5 um)
-- 215009  # Sedimentation of sea salt aerosol (5 - 20 um)
-- 215010  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by large-scale precipitation
-- 215011  # Wet deposition of sea salt aerosol (0.5 - 5 um) by large-scale precipitation
-- 215012  # Wet deposition of sea salt aerosol (5 - 20 um) by large-scale precipitation
-- 215013  # Wet deposition of sea salt aerosol (0.03 - 0.5 um) by convective precipitation
-- 215014  # Wet deposition of sea salt aerosol (0.5 - 5 um) by convective precipitation
-- 215015  # Wet deposition of sea salt aerosol (5 - 20 um) by convective precipitation
-- 215016  # Negative fixer of sea salt aerosol (0.03 - 0.5 um)
-- 215017  # Negative fixer of sea salt aerosol (0.5 - 5 um)
-- 215018  # Negative fixer of sea salt aerosol (5 - 20 um)
-- 215025  # Source/gain of dust aerosol (0.03 - 0.55 um)
-- 215026  # Source/gain of dust aerosol (0.55 - 9 um)
-- 215027  # Source/gain of dust aerosol (9 - 20 um)
-- 215028  # Dry deposition of dust aerosol (0.03 - 0.55 um)
-- 215029  # Dry deposition of dust aerosol (0.55 - 9 um)
-- 215030  # Dry deposition of dust aerosol (9 - 20 um)
-- 215031  # Sedimentation of dust aerosol (0.03 - 0.55 um)
-- 215032  # Sedimentation of dust aerosol (0.55 - 9 um)
-- 215033  # Sedimentation of dust aerosol (9 - 20 um)
-- 215034  # Wet deposition of dust aerosol (0.03 - 0.55 um) by large-scale precipitation
-- 215035  # Wet deposition of dust aerosol (0.55 - 9 um) by large-scale precipitation
-- 215036  # Wet deposition of dust aerosol (9 - 20 um) by large-scale precipitation
-- 215037  # Wet deposition of dust aerosol (0.03 - 0.55 um) by convective precipitation
-- 215038  # Wet deposition of dust aerosol (0.55 - 9 um) by convective precipitation
-- 215039  # Wet deposition of dust aerosol (9 - 20 um) by convective precipitation
-- 215040  # Negative fixer of dust aerosol (0.03 - 0.55 um)
-- 215041  # Negative fixer of dust aerosol (0.55 - 9 um)
-- 215042  # Negative fixer of dust aerosol (9 - 20 um)
-- 215049  # Source/gain of hydrophobic organic matter aerosol
-- 215050  # Source/gain of hydrophilic organic matter aerosol
-- 215051  # Dry deposition of hydrophobic organic matter aerosol
-- 215052  # Dry deposition of hydrophilic organic matter aerosol
-- 215053  # Sedimentation of hydrophobic organic matter aerosol
-- 215054  # Sedimentation of hydrophilic organic matter aerosol
-- 215055  # Wet deposition of hydrophobic organic matter aerosol by large-scale precipitation
-- 215056  # Wet deposition of hydrophilic organic matter aerosol by large-scale precipitation
-- 215057  # Wet deposition of hydrophobic organic matter aerosol by convective precipitation
-- 215058  # Wet deposition of hydrophilic organic matter aerosol by convective precipitation
-- 215059  # Negative fixer of hydrophobic organic matter aerosol
-- 215060  # Negative fixer of hydrophilic organic matter aerosol
-- 215065  # Source/gain of hydrophobic black carbon aerosol
-- 215066  # Source/gain of hydrophilic black carbon aerosol
-- 215067  # Dry deposition of hydrophobic black carbon aerosol
-- 215068  # Dry deposition of hydrophilic black carbon aerosol
-- 215069  # Sedimentation of hydrophobic black carbon aerosol
-- 215070  # Sedimentation of hydrophilic black carbon aerosol
-- 215071  # Wet deposition of hydrophobic black carbon aerosol by large-scale precipitation
-- 215072  # Wet deposition of hydrophilic black carbon aerosol by large-scale precipitation
-- 215073  # Wet deposition of hydrophobic black carbon aerosol by convective precipitation
-- 215074  # Wet deposition of hydrophilic black carbon aerosol by convective precipitation
-- 215075  # Negative fixer of hydrophobic black carbon aerosol
-- 215076  # Negative fixer of hydrophilic black carbon aerosol
-- 215081  # Source/gain of sulphate aerosol
-- 215082  # Dry deposition of sulphate aerosol
-- 215083  # Sedimentation of sulphate aerosol
-- 215084  # Wet deposition of sulphate aerosol by large-scale precipitation
-- 215085  # Wet deposition of sulphate aerosol by convective precipitation
-- 215086  # Negative fixer of sulphate aerosol
-- 215168  # Source/gain of sulphur dioxide
-- 215169  # Dry deposition of sulphur dioxide
-- 215170  # Sedimentation of sulphur dioxide
-- 215171  # Wet deposition of sulphur dioxide by large-scale precipitation
-- 215172  # Wet deposition of sulphur dioxide by convective precipitation
-- 215173  # Negative fixer of sulphur dioxide
-- 219057  # Emissions of carbon dioxide (chemistry)
-- 219058  # Emissions of nitrous oxide (chemistry)
-- 219059  # Emissions of water vapour (chemistry)
-- 219060  # Emissions of oxygen
-- 219061  # Emissions of singlet oxygen
-- 219062  # Emissions of singlet delta oxygen
-- 219063  # Emissions of chlorine dioxide
-- 219064  # Emissions of chlorine nitrate
-- 219065  # Emissions of hypochlorous acid
-- 219066  # Emissions of chlorine
-- 219067  # Emissions of nitryl chloride
-- 219068  # Emissions of hydrogen bromide
-- 219069  # Emissions of dichlorine dioxide
-- 219070  # Emissions of hypobromous acid
-- 219071  # Emissions of trichlorofluoromethane
-- 219072  # Emissions of dichlorodifluoromethane
-- 219073  # Emissions of trichlorotrifluoroethane
-- 219074  # Emissions of dichlorotetrafluoroethane
-- 219075  # Emissions of chloropentafluoroethane
-- 219076  # Emissions of tetrachloromethane
-- 219077  # Emissions of methyl chloroform
-- 219078  # Emissions of methyl chloride
-- 219079  # Emissions of chlorodifluoromethane
-- 219080  # Emissions of methyl bromide
-- 219081  # Emissions of dibromodifluoromethane
-- 219082  # Emissions of bromochlorodifluoromethane
-- 219083  # Emissions of trifluorobromomethane
-- 219084  # Emissions of cbrf2cbrf2
-- 219085  # Emissions of sulfuric acid
-- 219086  # Emissions of nitrous acid
-- 219087  # Emissions of alkanes low oh rate
-- 219088  # Emissions of alkanes med oh rate
-- 219089  # Emissions of alkanes high oh rate
-- 219090  # Emissions of terminal alkenes
-- 219091  # Emissions of internal alkenes
-- 219092  # Emissions of ethylperoxy radical
-- 219093  # Emissions of butadiene
-- 219094  # Emissions of ethyl hydroperoxide
-- 219095  # Emissions of a-pinene cyclic terpenes
-- 219096  # Emissions of acetic acid
-- 219097  # Emissions of d-limonene cyclic diene
-- 219098  # Emissions of acetaldehyde
-- 219099  # Emissions of toluene and less reactive aromatics
-- 219100  # Emissions of xylene and more reactive aromatics
-- 219101  # Emissions of glycolaldehyde
-- 219102  # Emissions of cresol
-- 219103  # Emissions of acetaldehyde and higher
-- 219104  # Emissions of peracetic acid
-- 219105  # Emissions of ketones
-- 219106  # Emissions of hoch2ch2o2
-- 219107  # Emissions of glyoxal
-- 219108  # Emissions of hoch2ch2o
-- 219109  # Emissions of unsaturated dicarbonyls
-- 219110  # Emissions of methacrolein
-- 219111  # Emissions of unsaturated hydroxy dicarbonyl
-- 219112  # Emissions of isopropyldioxidanyl
-- 219113  # Emissions of hydroxy ketone
-- 219114  # Emissions of isopropyl hydroperoxide
-- 219115  # Emissions of c3h6oho2
-- 219116  # Emissions of c3h6ohooh
-- 219117  # Emissions of higher organic peroxides
-- 219118  # Emissions of hydroxyacetone
-- 219119  # Emissions of peroxyacetic acid
-- 219120  # Emissions of ch3coch2o2
-- 219121  # Emissions of peroxy radical from c2h6
-- 219122  # Emissions of peroxy radical from hc3
-- 219123  # Emissions of peroxy radical from hc5
-- 219124  # Emissions of lumped alkenes
-- 219125  # Emissions of peroxy radical from hc8
-- 219126  # Emissions of lumped alkanes
-- 219127  # Emissions of peroxy radical from c2h4
-- 219128  # Emissions of c4h8o
-- 219129  # Emissions of peroxy radical from terminal alkenes
-- 219130  # Emissions of c4h9o3
-- 219131  # Emissions of peroxy radical from internal alkenes
-- 219132  # Emissions of ch3coch(oo)ch3
-- 219133  # Emissions of peroxy radical from c5h8
-- 219134  # Emissions of ch3coch(ooh)ch3
-- 219135  # Emissions of peroxy radical from a-pinene cyclic terpenes
-- 219136  # Emissions of ch2=c(ch3)co3
-- 219137  # Emissions of peroxy radical from d-limonene cyclic diene
-- 219138  # Emissions of methylvinylketone
-- 219139  # Emissions of phenoxy radical
-- 219140  # Emissions of peroxy radical from toluene and less reactive aromatics
-- 219141  # Emissions of ch3c(o)ch(oo)ch2oh
-- 219142  # Emissions of peroxy radical from xylene and more reactive aromatics
-- 219143  # Emissions of h3c(o)ch(ooh)ch2oh
-- 219144  # Emissions of peroxy radical from cresol
-- 219145  # Emissions of unsaturated pans
-- 219146  # Emissions of unsaturated acyl peroxy radical
-- 219147  # Emissions of peroxy radical from ketones
-- 219148  # Emissions of c5h11o2
-- 219149  # Emissions of no3-alkenes adduct reacting to form carbonitrates
-- 219150  # Emissions of c5h11ooh
-- 219151  # Emissions of no3-alkenes adduct reacting via decomposition
-- 219152  # Emissions of hoch2c(ch3)=chcho
-- 219153  # Emissions of c5h6o2
-- 219154  # Emissions of trop sulfuric acid
-- 219155  # Emissions of oxides
-- 219156  # Emissions of ch2chc(ch3)(oo)ch2ono2
-- 219157  # Emissions of c3 organic nitrate
-- 219158  # Emissions of chlorine oxides
-- 219159  # Emissions of bromine oxides
-- 219160  # Emissions of hoch2c(ooh)(ch3)chchoh
-- 219161  # Emissions of hoch2c(ooh)(ch3)ch=ch2
-- 219162  # Emissions of lumped aromatics
-- 219163  # Emissions of dimethyl sulfoxyde
-- 219164  # Emissions of c7h9o5
-- 219165  # Emissions of c7h10o5
-- 219166  # Emissions of hydrogensulfide
-- 219167  # Emissions of c7h10o6
-- 219168  # Emissions of all nitrogen oxides
-- 219169  # Emissions of chlorine family
-- 219170  # Emissions of c10h16(oh)(oo)
-- 219171  # Emissions of bromine family
-- 219172  # Emissions of c10h18o3
-- 219173  # Emissions of nitrogen atom
-- 219174  # Emissions of chlorine monoxide
-- 219175  # Emissions of chlorine atom
-- 219176  # Emissions of bromine monoxide
-- 219177  # Emissions of hydrogen atom
-- 219178  # Emissions of methyl group
-- 219179  # Emissions of aromatic-ho from toluene and less reactive aromatics
-- 219180  # Emissions of aromatic-ho from xylene and more reactive aromatics
-- 219181  # Emissions of ammonium nitrate
-- 219182  # Emissions of aromatic-ho from csl
-- 219183  # Emissions of secondary organic aerosol type 1
-- 219184  # Emissions of secondary organic aerosol type 2a
-- 219185  # Emissions of secondary organic aerosol type 2b
-- 219186  # Emissions of condensable gas type 1
-- 219187  # Emissions of condensable gas type 2a
-- 219188  # Emissions of condensable gas type 2b
-- 219189  # Emissions of sulfur trioxide
-- 219190  # Emissions of carbonyl sulfide
-- 219191  # Emissions of bromine atom
-- 219192  # Emissions of bromine
-- 219193  # Emissions of bromine monochloride
-- 219194  # Emissions of bromine nitrate
-- 219195  # Emissions of dibromomethane
-- 219196  # Emissions of methoxy radical
-- 219197  # Emissions of tribromomethane
-- 219198  # Emissions of asymmetric chlorine dioxide radical
-- 219199  # Emissions of hydrogen
-- 219200  # Emissions of hydrogen chloride
-- 219201  # Emissions of formyl radical
-- 219202  # Emissions of hydrogen fluoride
-- 219203  # Emissions of oxygen atom
-- 219204  # Emissions of excited oxygen atom
-- 219205  # Emissions of ground state oxygen atom
-- 219206  # Emissions of stratospheric aerosol
-- 219207  # Wildfire flux of paraffins
-- 219208  # Wildfire flux of olefines
-- 219209  # Wildfire flux of aldehydes
-- 219210  # Wildfire flux of ketones
-- 219211  # Wildfire flux of f a-pinene cyclic terpenes
-- 219212  # Wildfire flux of toluene less reactive aromatics
-- 219213  # Wildfire flux of xylene more reactive aromatics
-- 219214  # Wildfire flux of d-limonene cyclic diene
-- 219215  # Wildfire flux of terminal alkenes
-- 219216  # Wildfire flux of alkanes low oh rate
-- 219217  # Wildfire flux of alkanes med oh rate
-- 219218  # Wildfire flux of alkanes high oh rate
-- 219219  # Wildfire flux of hydrogen cyanide
-- 219220  # Wildfire flux of acetonitrile
-- 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
-- 228084  # Flux of Carbon Dioxide Gross Primary Production
-- 228085  # Flux of Carbon Dioxide Ecosystem Respiration
-- 235009  # Mean updraught mass flux
-- 235010  # Mean downdraught mass flux
-- 235013  # Mean total precipitation flux
-- 235020  # Mean surface runoff rate
-- 235021  # Mean sub-surface runoff rate
-- 235023  # Mean snow evaporation rate
-- 235024  # Mean snowmelt rate
-- 235029  # Mean large-scale precipitation rate
-- 235030  # Mean convective precipitation rate
-- 235031  # Mean snowfall rate
-- 235043  # Mean evaporation rate
-- 235048  # Mean runoff rate
-- 235054  # Mean vertically integrated moisture divergence
-- 235055  # Mean total precipitation rate
-- 235056  # Mean convective snowfall rate
-- 235057  # Mean large-scale snowfall rate
-- 235062  # Mean carbon dioxide net ecosystem exchange flux
-- 235063  # Mean carbon dioxide gross primary production flux
-- 235064  # Mean carbon dioxide ecosystem respiration flux
-- 235065  # Mean rain rate
-- 235066  # Mean convective rain rate
-- 235067  # Mean large-scale rain rate
-- 235070  # Mean potential evaporation rate
-- 260010  # Snowfall rate water equivalent
-- 260033  # Convective precipitation rate
-- 260048  # Total precipitation rate
-- 260049  # Total snowfall rate water equivalent
-- 260050  # Large scale precipitation rate
-- 260051  # Convective snowfall rate water equivalent
-- 260052  # Large scale snowfall rate water equivalent
-- 260058  # Rain precipitation rate
-- 260059  # Snow precipitation rate
-- 260060  # Freezing rain precipitation rate
-- 260061  # Ice pellets precipitation rate
-- 260188  # Exchange coefficient
-- 260219  # Instantaneous rain rate
-- 260258  # Evaporation rate
-- 260365  # Percolation rate
-- 260621  # Upward mass flux at cloud base
-- 260622  # Upward mass flux
-- 300057  # Evaporation
-- 300059  # Precipitation rate
-- 300061  # Total precipitation
-- 300062  # Large scale precipitation
-- 300063  # Convective precipitation
-- 300064  # Snowfall
-- 300169  # Vert. integrated moisture flux conv.
-- 300178  # Runoff
-
-rate.mass-flux.accumulated:
-- 3062  # large scale precipitation
-- 3063  # Convective precipitation (water)
-- 3079  # Large scale snow
-- 3099  # Snow melt
-- 129044  # Snow evaporation gradient
-- 129045  # Snowmelt gradient
-- 129182  # Evaporation gradient
-- 160141  # Snow depth
-- 162053  # Vertical integral of mass of atmosphere
-- 162108  # Total precipitation flux
-- 162130  # Liquid Precipitation flux from convection
-- 162131  # Ice Precipitation flux from convection
-- 162136  # Liquid Precip flux from cloud scheme (stratiform)
-- 162137  # Ice Precip flux from cloud scheme (stratiform)
-- 171044  # Snow evaporation anomaly
-- 171045  # Snowmelt anomaly
-- 171182  # Evaporation anomaly
-- 174008  # Surface runoff
-- 174009  # Sub-surface runoff
-- 190141  # Snow depth
-- 200044  # Snow evaporation difference
-- 200045  # Snowmelt difference
-- 200182  # Evaporation difference
-- 201102  # surface precipitation amount, rain, grid scale
-- 201113  # surface precipitation amount, rain, convective
-- 210016  # Aerosol type 1 source/gain accumulated
-- 210017  # Aerosol type 2 source/gain accumulated
-- 210018  # Aerosol type 3 source/gain accumulated
-- 210019  # Aerosol type 4 source/gain accumulated
-- 210020  # Aerosol type 5 source/gain accumulated
-- 210021  # Aerosol type 6 source/gain accumulated
-- 210022  # Aerosol type 7 source/gain accumulated
-- 210023  # Aerosol type 8 source/gain accumulated
-- 210024  # Aerosol type 9 source/gain accumulated
-- 210025  # Aerosol type 10 source/gain accumulated
-- 210026  # Aerosol type 11 source/gain accumulated
-- 210027  # Aerosol type 12 source/gain accumulated
-- 210031  # Aerosol type 1 sink/loss accumulated
-- 210032  # Aerosol type 2 sink/loss accumulated
-- 210033  # Aerosol type 3 sink/loss accumulated
-- 210034  # Aerosol type 4 sink/loss accumulated
-- 210035  # Aerosol type 5 sink/loss accumulated
-- 210036  # Aerosol type 6 sink/loss accumulated
-- 210037  # Aerosol type 7 sink/loss accumulated
-- 210038  # Aerosol type 8 sink/loss accumulated
-- 210039  # Aerosol type 9 sink/loss accumulated
-- 210040  # Aerosol type 10 sink/loss accumulated
-- 210041  # Aerosol type 11 sink/loss accumulated
-- 210042  # Aerosol type 12 sink/loss accumulated
-- 211016  # Aerosol type 1 source/gain accumulated
-- 211017  # Aerosol type 2 source/gain accumulated
-- 211018  # Aerosol type 3 source/gain accumulated
-- 211019  # Aerosol type 4 source/gain accumulated
-- 211020  # Aerosol type 5 source/gain accumulated
-- 211021  # Aerosol type 6 source/gain accumulated
-- 211022  # Aerosol type 7 source/gain accumulated
-- 211023  # Aerosol type 8 source/gain accumulated
-- 211024  # Aerosol type 9 source/gain accumulated
-- 211025  # Aerosol type 10 source/gain accumulated
-- 211026  # Aerosol type 11 source/gain accumulated
-- 211027  # Aerosol type 12 source/gain accumulated
-- 211031  # Aerosol type 1 sink/loss accumulated
-- 211032  # Aerosol type 2 sink/loss accumulated
-- 211033  # Aerosol type 3 sink/loss accumulated
-- 211034  # Aerosol type 4 sink/loss accumulated
-- 211035  # Aerosol type 5 sink/loss accumulated
-- 211036  # Aerosol type 6 sink/loss accumulated
-- 211037  # Aerosol type 7 sink/loss accumulated
-- 211038  # Aerosol type 8 sink/loss accumulated
-- 211039  # Aerosol type 9 sink/loss accumulated
-- 211040  # Aerosol type 10 sink/loss accumulated
-- 211041  # Aerosol type 11 sink/loss accumulated
-- 211042  # Aerosol type 12 sink/loss accumulated
-- 219001  # Ozone emissions
-- 219002  # Nitrogen oxides emissions
-- 219003  # Hydrogen peroxide emissions
-- 219004  # Methane emissions
-- 219005  # Carbon monoxide emissions
-- 219006  # Nitric acid emissions
-- 219007  # Methyl peroxide emissions
-- 219008  # Formaldehyde emissions
-- 219009  # Paraffins emissions
-- 219010  # Ethene emissions
-- 219011  # Olefins emissions
-- 219012  # Aldehydes emissions
-- 219013  # Peroxyacetyl nitrate emissions
-- 219014  # Peroxides emissions
-- 219015  # Organic nitrates emissions
-- 219016  # Isoprene emissions
-- 219017  # Sulfur dioxide emissions
-- 219018  # Dimethyl sulfide emissions
-- 219019  # Ammonia emissions
-- 219020  # Sulfate emissions
-- 219021  # Ammonium emissions
-- 219022  # Methane sulfonic acid emissions
-- 219023  # Methyl glyoxal emissions
-- 219024  # Stratospheric ozone emissions
-- 219025  # Radon emissions
-- 219026  # Lead emissions
-- 219027  # Nitrogen monoxide emissions
-- 219028  # Hydroperoxy radical emissions
-- 219029  # Methylperoxy radical emissions
-- 219030  # Hydroxyl radical emissions
-- 219031  # Nitrogen dioxide emissions
-- 219032  # Nitrate radical emissions
-- 219033  # Dinitrogen pentoxide emissions
-- 219034  # Pernitric acid emissions
-- 219035  # Peroxy acetyl radical emissions
-- 219036  # Organic ethers emissions
-- 219037  # PAR budget corrector emissions
-- 219038  # NO to NO2 operator emissions
-- 219039  # NO to alkyl nitrate operator emissions
-- 219040  # Amine emissions
-- 219041  # Polar stratospheric cloud emissions
-- 219042  # Methanol emissions
-- 219043  # Formic acid emissions
-- 219044  # Methacrylic acid emissions
-- 219045  # Ethane emissions
-- 219046  # Ethanol emissions
-- 219047  # Propane emissions
-- 219048  # Propene emissions
-- 219049  # Terpenes emissions
-- 219050  # Methacrolein MVK emissions
-- 219051  # Nitrate emissions
-- 219052  # Acetone emissions
-- 219053  # Acetone product emissions
-- 219054  # IC3H7O2 emissions
-- 219055  # HYPROPO2 emissions
-- 219056  # Nitrogen oxides Transp emissions
-- 228100  # Evaporation from the top of canopy
-- 228101  # Evaporation from bare soil
-- 228102  # Evaporation from open water surfaces excluding oceans
-- 228103  # Evaporation from vegetation transpiration
-- 228141  # Snow depth water equivalent
-- 228143  # Convective precipitation
-- 228144  # Snow Fall water equivalent
-- 228205  # Water runoff and drainage
-- 228228  # Total Precipitation
-- 230044  # Snow evaporation (variable resolution)
-- 230045  # Snowmelt (variable resolution)
-- 230182  # Evaporation (variable resolution)
-- 240020  # Depth of water on soil surface
-- 240021  # Upstream accumulated precipitation
-- 240022  # Upstream accumulated snow melt
-- 240026  # Snow depth at elevation bands
-- 260009  # Large scale precipitation (non-convective)
-- 260011  # Convective snow
-- 260012  # Large scale snow
-- 260036  # Potential evaporation
-- 260043  # Large scale water precipitation (non-convective)
-- 260044  # Convective water precipitation
-- 260045  # Total water precipitation
-- 260046  # Total snow precipitation
-- 260056  # Water equivalent of accumulated snow depth
-- 260138  # Precipitation
-- 260170  # Flash flood runoff (Encoded as an accumulation over a floating subinterval of time)
-- 260174  # Baseflow-groundwater runoff
-- 260175  # Storm surface runoff
-- 260181  # Water runoff
-- 260218  # Estimated precipitation
-- 260259  # Evaporation
-- 260284  # Liquid precipitation (rainfall)
-- 260286  # Total precipitation (nearest grid point)
-- 260287  # Convective precipitation (nearest grid point)
-- 260430  # Percolation
-- 260461  # Water vapor added by precip assimilation
-- 260462  # Water condensate added by precip assimilation
-- 260479  # Land Surface Precipitation Accumulation
-- 300065  # Wat equiv acc snow depth
-
-rate.volume-flux:
-- 151158  # Precipitation - evaporation
-- 172044  # Snow evaporation
-- 172045  # Snowmelt
-- 172142  # Stratiform precipitation (Large-scale precipitation)
-- 172143  # Convective precipitation
-- 172182  # Evaporation
-- 172228  # Total precipitation
-- 172239  # Convective snowfall
-- 172240  # Large scale snowfall
-- 173044  # Snow evaporation anomaly
-- 173045  # Snowmelt anomaly
-- 173142  # Stratiform precipitation (Large-scale precipitation) anomaly
-- 173143  # Convective precipitation anomaly
-- 173144  # Snowfall (convective + stratiform) anomalous rate of accumulation
-- 173182  # Evaporation anomaly
-- 173228  # Total precipitation anomalous rate of accumulation
-- 173239  # Convective snowfall anomaly
-- 173240  # Large scale snowfall anomaly
-- 260053  # Total snowfall rate
-- 260054  # Convective snowfall rate
-- 260055  # Large scale snowfall rate
-- 260274  # Evaporation - Precipitation
-- 260600  # Evaporation
-- 260601  # Total precipitation
-- 260602  # Large scale precipitation
-- 260603  # Convective precipitation
-- 260604  # Snowfall rate water equivalent
-- 260605  # Water run-off
-
-rate.volume-flux.accumulated:
-- 8  # Surface runoff
-- 9  # Sub-surface runoff
-- 44  # Snow evaporation
-- 45  # Snowmelt
-- 142  # Large-scale precipitation
-- 143  # Convective precipitation
-- 144  # Snowfall
-- 182  # Evaporation
-- 205  # Runoff
-- 228  # Total precipitation
-- 239  # Convective snowfall
-- 240  # Large-scale snowfall
-- 129142  # Stratiform precipitation (Large-scale precipitation) gradient
-- 129143  # Convective precipitation gradient
-- 129144  # Snowfall (convective + stratiform) gradient
-- 129205  # Runoff gradient
-- 129228  # Total precipitation gradient
-- 129239  # Convective snowfall gradient
-- 129240  # Large scale snowfall gradient
-- 171142  # Stratiform precipitation (Large-scale precipitation) anomaly
-- 171143  # Convective precipitation anomaly
-- 171144  # Snowfall (convective + stratiform) anomaly
-- 171205  # Runoff anomaly
-- 171228  # Total precipitation anomaly
-- 171239  # Convective snowfall anomaly
-- 171240  # Large scale snowfall anomaly
-- 172144  # Snowfall (convective + stratiform)
-- 172205  # Runoff
-- 173205  # Runoff anomaly
-- 200142  # Stratiform precipitation (Large-scale precipitation) difference
-- 200143  # Convective precipitation difference
-- 200144  # Snowfall (convective + stratiform) difference
-- 200205  # Runoff difference
-- 200228  # Total precipitation difference
-- 200239  # Convective snowfall difference
-- 200240  # Large scale snowfall difference
 - 228216  # Accumulated freezing rain
 - 228251  # Potential evaporation
 - 230008  # Surface runoff (variable resolution)
@@ -3008,6 +3817,16 @@ rate.volume-flux.accumulated:
 - 230240  # Large-scale snowfall (variable resolution)
 - 230251  # Potential evaporation (variable resolution)
 - 260025  # Total snowfall
+- 260053  # Total snowfall rate
+- 260054  # Convective snowfall rate
+- 260055  # Large scale snowfall rate
+- 260274  # Evaporation - Precipitation
+- 260600  # Evaporation
+- 260601  # Total precipitation
+- 260602  # Large scale precipitation
+- 260603  # Convective precipitation
+- 260604  # Snowfall rate water equivalent
+- 260605  # Water run-off
 - 300177  # Potential sfc evaporation
 
 ratio:
@@ -3157,6 +3976,7 @@ ratio.fraction:
 - 17  # Near IR albedo for direct radiation
 - 18  # Near IR albedo for diffuse radiation
 - 32  # Snow albedo
+- 50  # Large-scale precipitation fraction
 - 172  # Land-sea mask
 - 174  # Albedo
 - 199  # Vegetation fraction
@@ -3166,6 +3986,7 @@ ratio.fraction:
 - 248  # Fraction of cloud cover
 - 249  # Accumulated ice water tendency
 - 129032  # Snow albedo gradient
+- 129050  # Large-scale precipitation fraction gradient
 - 129172  # Land-sea mask gradient
 - 129174  # Albedo gradient
 - 129199  # Vegetation fraction gradient
@@ -3186,6 +4007,7 @@ ratio.fraction:
 - 132228  # Total precipitation index
 - 160243  # Forecast albedo
 - 171032  # Snow albedo anomaly
+- 171050  # Large-scale precipitation fraction anomaly
 - 171174  # Albedo anomaly
 - 171199  # Vegetation fraction anomaly
 - 171241  # Accumulated cloud fraction tendency anomaly
@@ -3193,12 +4015,14 @@ ratio.fraction:
 - 171243  # Forecast albedo anomaly
 - 171249  # Accumulated ice water tendency anomaly
 - 172050  # Large-scale precipitation fraction
+- 173050  # Large-scale precipitation fraction anomaly
 - 174031  # Fraction of sea-ice in sea
 - 174110  # Ocean ice concentration
 - 175031  # Fraction of sea-ice in sea
 - 175110  # Ocean ice concentration
 - 190170  # Field capacity
 - 200032  # Snow albedo difference
+- 200050  # Large-scale precipitation fraction difference
 - 200172  # Land-sea mask difference
 - 200174  # Albedo difference
 - 200199  # Vegetation fraction difference
@@ -3258,6 +4082,7 @@ ratio.fraction:
 - 228248  # Surface short wave-effective total cloudiness
 - 228250  # Irrigation fraction
 - 228255  # Surface long wave-effective total cloudiness
+- 230050  # Large-scale precipitation fraction (variable resolution)
 - 230174  # Albedo (variable resolution)
 - 235026  # Mean large-scale precipitation fraction
 - 235044  # Sunshine duration fraction
@@ -3288,14 +4113,6 @@ ratio.fraction:
 - 300182  # Soil wetness of surface
 - 300183  # Soil wetness of root zone
 - 300184  # Soil wetness of drainage zone
-
-ratio.fraction.accumulated:
-- 50  # Large-scale precipitation fraction
-- 129050  # Large-scale precipitation fraction gradient
-- 171050  # Large-scale precipitation fraction anomaly
-- 173050  # Large-scale precipitation fraction anomaly
-- 200050  # Large-scale precipitation fraction difference
-- 230050  # Large-scale precipitation fraction (variable resolution)
 
 ratio.mass:
 - 75  # Specific rain water content
@@ -3857,41 +4674,66 @@ ratio.probability:
 - 300060  # Thunder probability
 
 ratio.volume:
-- 39  # Volumetric soil water layer 1
-- 40  # Volumetric soil water layer 2
-- 41  # Volumetric soil water layer 3
-- 42  # Volumetric soil water layer 4
-- 129039  # Volumetric soil water layer 1 gradient
-- 129040  # Volumetric soil water layer 2 gradient
-- 129041  # Volumetric soil water layer 3 gradient
-- 129042  # Volumetric soil water layer 4 gradient
-- 171039  # Volumetric soil water anomaly layer 1
-- 171040  # Volumetric soil water anomaly layer 2
-- 171041  # Volumetric soil water anomaly layer 3
-- 171042  # Volumetric soil water anomaly layer 4
-- 174039  # Volumetric soil water layer 1
-- 174040  # Volumetric soil water layer 2
-- 174041  # Volumetric soil water layer 3
-- 174042  # Volumetric soil water layer 4
-- 175039  # Volumetric soil water layer 1
-- 175040  # Volumetric soil water layer 2
-- 175041  # Volumetric soil water layer 3
-- 175042  # Volumetric soil water layer 4
 - 190229  # Total soil moisture
-- 200039  # Volumetric soil water layer 1 difference
-- 200040  # Volumetric soil water layer 2 difference
-- 200041  # Volumetric soil water layer 3 difference
-- 200042  # Volumetric soil water layer 4 difference
-- 228093  # Volumetric soil moisture
 - 228253  # ASCAT first soil moisture CDF matching parameter
-- 260185  # Volumetric soil moisture content
-- 260199  # Volumetric soil moisture
-- 260200  # Volumetric wilting point
-- 260210  # Liquid volumetric soil moisture (non-frozen)
-- 260211  # Volumetric transpiration stress-onset (soil moisture)
-- 260213  # Volumetric direct evaporation cease (soil moisture)
 - 260215  # Soil porosity
-- 260216  # Volumetric saturation of soil moisture
+
+ratio.random:
+- 213001  # Random pattern 1 for sppt
+- 213002  # Random pattern 2 for sppt
+- 213003  # Random pattern 3 for sppt
+- 213004  # Random pattern 4 for sppt
+- 213005  # Random pattern 5 for sppt
+- 213101  # Random pattern 1 for SPP scheme
+- 213102  # Random pattern 2 for SPP scheme
+- 213103  # Random pattern 3 for SPP scheme
+- 213104  # Random pattern 4 for SPP scheme
+- 213105  # Random pattern 5 for SPP scheme
+- 213106  # Random pattern 6 for SPP scheme
+- 213107  # Random pattern 7 for SPP scheme
+- 213108  # Random pattern 8 for SPP scheme
+- 213109  # Random pattern 9 for SPP scheme
+- 213110  # Random pattern 10 for SPP scheme
+- 213111  # Random pattern 11 for SPP scheme
+- 213112  # Random pattern 12 for SPP scheme
+- 213113  # Random pattern 13 for SPP scheme
+- 213114  # Random pattern 14 for SPP scheme
+- 213115  # Random pattern 15 for SPP scheme
+- 213116  # Random pattern 16 for SPP scheme
+- 213117  # Random pattern 17 for SPP scheme
+- 213118  # Random pattern 18 for SPP scheme
+- 213119  # Random pattern 19 for SPP scheme
+- 213120  # Random pattern 20 for SPP scheme
+- 213121  # Random pattern 21 for SPP scheme
+- 213122  # Random pattern 22 for SPP scheme
+- 213123  # Random pattern 23 for SPP scheme
+- 213124  # Random pattern 24 for SPP scheme
+- 213125  # Random pattern 25 for SPP scheme
+- 213126  # Random pattern 26 for SPP scheme
+- 213127  # Random pattern 27 for SPP scheme
+- 213128  # Random pattern 28 for SPP scheme
+- 213129  # Random pattern 29 for SPP scheme
+- 213130  # Random pattern 30 for SPP scheme
+- 213131  # Random pattern 31 for SPP scheme
+- 213132  # Random pattern 32 for SPP scheme
+- 213133  # Random pattern 33 for SPP scheme
+- 213134  # Random pattern 34 for SPP scheme
+- 213135  # Random pattern 35 for SPP scheme
+- 213136  # Random pattern 36 for SPP scheme
+- 213137  # Random pattern 37 for SPP scheme
+- 213138  # Random pattern 38 for SPP scheme
+- 213139  # Random pattern 39 for SPP scheme
+- 213140  # Random pattern 40 for SPP scheme
+- 213141  # Random pattern 41 for SPP scheme
+- 213142  # Random pattern 42 for SPP scheme
+- 213143  # Random pattern 43 for SPP scheme
+- 213144  # Random pattern 44 for SPP scheme
+- 213145  # Random pattern 45 for SPP scheme
+- 213146  # Random pattern 46 for SPP scheme
+- 213147  # Random pattern 47 for SPP scheme
+- 213148  # Random pattern 48 for SPP scheme
+- 213149  # Random pattern 49 for SPP scheme
+- 213150  # Random pattern 50 for SPP scheme
 
 spectrum:
 - 3021  # Radar spectra (1)
@@ -3937,14 +4779,29 @@ spectrum.associated-magnitude:
 - 140248  # Altimeter range relative correction
 
 stress:
+- 48  # Magnitude of turbulent surface stress
+- 180  # Eastward turbulent surface stress
+- 181  # Northward turbulent surface stress
+- 195  # Eastward gravity wave surface stress
+- 196  # Northward gravity wave surface stress
 - 229  # Instantaneous eastward turbulent surface stress
 - 230  # Instantaneous northward turbulent surface stress
+- 129048  # Magnitude of turbulent surface stress gradient
+- 129180  # East-West surface stress gradient
+- 129181  # North-South surface stress gradient
+- 129195  # Longitudinal component of gravity wave stress gradient
+- 129196  # Meridional component of gravity wave stress gradient
 - 129229  # Instantaneous X surface stress gradient
 - 129230  # Instantaneous Y surface stress gradient
 - 150168  # U stress
 - 150169  # V stress
 - 151153  # U stress
 - 151154  # V stress
+- 171048  # Magnitude of turbulent surface stress anomaly
+- 171180  # East-West surface stress anomaly
+- 171181  # North-South surface stress anomaly
+- 171195  # Longitudinal component of gravity wave stress anomaly
+- 171196  # Meridional component of gravity wave stress anomaly
 - 171229  # Instantaneous X surface stress anomaly
 - 171230  # Instantaneous Y surface stress anomaly
 - 172048  # Magnitude of turbulent surface stress
@@ -3957,8 +4814,17 @@ stress:
 - 173181  # North-South surface stress anomaly
 - 173195  # Longitudinal component of gravity wave stress anomaly
 - 173196  # Meridional component of gravity wave stress anomaly
+- 200048  # Magnitude of turbulent surface stress difference
+- 200180  # East-West surface stress difference
+- 200181  # North-South surface stress difference
+- 200195  # Longitudinal component of gravity wave stress difference
+- 200196  # Meridional component of gravity wave stress difference
 - 200229  # Instantaneous X surface stress difference
 - 200230  # Instantaneous Y surface stress difference
+- 230180  # East-West surface stress (variable resolution)
+- 230181  # North-South surface stress (variable resolution)
+- 230195  # Longitudinal component of gravity wave stress (variable resolution)
+- 230196  # Meridional component of gravity wave stress (variable resolution)
 - 235025  # Mean magnitude of turbulent surface stress
 - 235041  # Mean eastward turbulent surface stress
 - 235042  # Mean northward turbulent surface stress
@@ -3966,32 +4832,6 @@ stress:
 - 235046  # Mean northward gravity wave surface stress
 - 300193  # Surface zonal wind stress
 - 300195  # Surface meridional wind stress
-
-stress.accumulated:
-- 48  # Magnitude of turbulent surface stress
-- 180  # Eastward turbulent surface stress
-- 181  # Northward turbulent surface stress
-- 195  # Eastward gravity wave surface stress
-- 196  # Northward gravity wave surface stress
-- 129048  # Magnitude of turbulent surface stress gradient
-- 129180  # East-West surface stress gradient
-- 129181  # North-South surface stress gradient
-- 129195  # Longitudinal component of gravity wave stress gradient
-- 129196  # Meridional component of gravity wave stress gradient
-- 171048  # Magnitude of turbulent surface stress anomaly
-- 171180  # East-West surface stress anomaly
-- 171181  # North-South surface stress anomaly
-- 171195  # Longitudinal component of gravity wave stress anomaly
-- 171196  # Meridional component of gravity wave stress anomaly
-- 200048  # Magnitude of turbulent surface stress difference
-- 200180  # East-West surface stress difference
-- 200181  # North-South surface stress difference
-- 200195  # Longitudinal component of gravity wave stress difference
-- 200196  # Meridional component of gravity wave stress difference
-- 230180  # East-West surface stress (variable resolution)
-- 230181  # North-South surface stress (variable resolution)
-- 230195  # Longitudinal component of gravity wave stress (variable resolution)
-- 230196  # Meridional component of gravity wave stress (variable resolution)
 
 unknown.experimental:
 - 80  # Experimental product

@@ -12,34 +12,33 @@
 #include "mir/compare/FieldComparator.h"
 
 #include <cmath>
-#include <map>
 
-#include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/io/AutoCloser.h"
-#include "eckit/log/Plural.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/serialisation/MemoryStream.h"
-#include "eckit/utils/Translator.h"
 
 #include "mir/caching/InMemoryCache.h"
+#include "mir/compare/BufrField.h"
 #include "mir/compare/Comparator.h"
+#include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
+#include "mir/compare/GribField.h"
 #include "mir/compare/MultiFile.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "eckit/parser/JSON.h"
+
 
 using eckit::PathName;
 using eckit::AutoStdFile;
@@ -67,6 +66,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 
     options.push_back(new SimpleOption<bool>("save-fields",
                       "Save fields that do not compare"));
+
+    options.push_back(new SimpleOption<bool>("save-all-fields",
+                      "Save all fields into *.old and *.new files"));
 
     options.push_back(new SimpleOption<bool>("file-names-only",
                       "Only check that the list of files created are the same"));
@@ -105,6 +107,13 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("white-list-entries",
                       "Output lines that can be used in white-list files"));
 
+
+    options.push_back(new SimpleOption<bool>("save-first-possible-match",
+                      "Save best match into a file for later analysis"));
+
+
+    options.push_back(new SimpleOption<bool>("save-duplicates",
+                      "Save duplicates into a file for later analysis"));
 }
 
 
@@ -120,7 +129,10 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     roundDegrees_(false),
     maximumNumberOfErrors_(5),
     whiteLister_(whiteLister),
-    whiteListEntries_(false) {
+    whiteListEntries_(false),
+    saveFirstPossibleMatch_(false),
+    saveDuplicates_(false),
+    saved_(0) {
 
     Field::setOptions(args);
 
@@ -128,6 +140,8 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     args_.get("maximum-number-of-errors", maximumNumberOfErrors_);
     args_.get("ignore-wrapping-areas", ignoreWrappingAreas_);
     args_.get("white-list-entries", whiteListEntries_);
+    args_.get("save-first-possible-match", saveFirstPossibleMatch_);
+    args_.get("save-duplicates", saveDuplicates_);
 
 
     std::string ignore;
@@ -146,6 +160,10 @@ void FieldComparator::compare(const std::string& name,
     bool saveFields = false;
     args_.get("save-fields", saveFields);
 
+    bool saveAllFields = false;
+    args_.get("save-all-fields", saveAllFields);
+
+
     std::string requirements;
     args_.get("requirements", requirements);
 
@@ -159,6 +177,11 @@ void FieldComparator::compare(const std::string& name,
 
     FieldSet fields1;
     FieldSet fields2;
+
+    if (saveAllFields) {
+        multi1.save();
+        multi2.save();
+    }
 
 
     compareCounts(name, multi1, multi2, fields1, fields2);
@@ -242,56 +265,32 @@ double FieldComparator::normalised(double longitude) const {
     return longitude;
 }
 
-class HandleDeleter {
-    grib_handle *h_;
-public:
-    HandleDeleter(grib_handle *h) : h_(h) {}
-    ~HandleDeleter() {
-        grib_handle_delete(h_);
-    }
-};
 
 
-static void setArea(Field& field, grib_handle *h) {
-    double n = -99999, w = -99999, s = -99999, e = -99999;
-    GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
-    GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
-    GRIB_CALL(grib_get_double(h, "latitudeOfLastGridPointInDegrees", &s));
-    GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &e));
+Field FieldComparator::getField(eckit::Buffer& buffer,
+                                const std::string& path,
+                                off_t offset,
+                                size_t size) {
+    const char *q = ((const char*)buffer);
+    const char *p = ((const char*)buffer) + size - 4;
 
-    long scanningMode = 0;
-    GRIB_CALL(grib_get_long(h, "scanningMode", &scanningMode));
-
-    switch (scanningMode) {
+    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7')
+        throw eckit::SeriousBug("No 7777 found");
 
 
-    case 0:
-        break;
-
-    case 64:
-        std::swap(n, s);
-        break;
-
-    default: {
-        std::ostringstream oss;
-        oss << "Invalid scanning mode " << scanningMode;
-        throw eckit::SeriousBug(oss.str());
-    }
-    break;
+    Field field;
+    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[3] == 'B') {
+        field  = GribField::field(buffer, size, path, offset, ignore_);
     }
 
+    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[3] == 'R') {
+        field  = BufrField::field(buffer, size, path, offset, ignore_);
+    }
 
-    field.area(n, w, s, e);
+    ASSERT(field);
+    return field;
 }
 
-static void setGrid(Field& field, grib_handle *h) {
-
-
-    double we = -99999, ns = -99999;
-    GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
-    GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
-    field.grid(ns, we);
-}
 
 void FieldComparator::getField(const MultiFile& multi,
                                eckit::Buffer& buffer,
@@ -299,258 +298,11 @@ void FieldComparator::getField(const MultiFile& multi,
                                const std::string& path,
                                off_t offset,
                                size_t size,
-                               bool fail) {
-
-    Field field(path, offset, size);
-
-    const char *p = ((const char*)buffer) + size - 4;
-
-    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7')
-        throw eckit::SeriousBug("No 7777 found");
-
-    grib_handle *h = grib_handle_new_from_message(0, buffer, size);
-    ASSERT(h);
-    HandleDeleter del(h);
-
-    static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
-
-    grib_keys_iterator *ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
-    ASSERT(ks);
-
-    /// @todo this code should be factored out into mir
-
-    // bool sfc = false;
-
-    std::map<std::string, std::string> req;
-
-    while (grib_keys_iterator_next(ks)) {
-        const char *name = grib_keys_iterator_get_name(ks);
-        ASSERT(name);
-
-        if (name[0] == '_') continue;
-        if (::strcmp(name, "param") == 0) continue;
-
-        char val[1024];
-        size_t len = sizeof(val);
-
-        GRIB_CALL( grib_keys_iterator_get_string(ks, val, &len) );
-
-        field.insert(name, val);
-
-        // if (::strcmp(val, "sfc") == 0) {
-        //     sfc = true;
-        // }
-
-        req[name] = val;
-    }
-
-    grib_keys_iterator_delete(ks);
+                               bool fail,
+                               size_t& duplicates) {
 
 
-    long paramId;
-    GRIB_CALL (grib_get_long(h, "paramId", &paramId));
-
-    field.param(paramId);
-
-    long numberOfDataPoints;
-    GRIB_CALL (grib_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
-    field.numberOfPoints(numberOfDataPoints);
-
-    // Look for request embbeded in GRIB message
-    long local;
-
-    if (grib_get_long(h, "localDefinitionNumber", &local) ==  0 && local == 191) {
-        size_t size;
-        /* TODO: Not grib2 compatible, but speed-up process */
-        if (grib_get_size(h, "freeFormData", &size) ==  0 && size != 0) {
-            unsigned char buffer[size];
-            GRIB_CALL(grib_get_bytes(h, "freeFormData", buffer, &size) );
-
-            eckit::MemoryStream s(buffer, size);
-
-            int count;
-            s >> count; // Number of requests
-            ASSERT(count == 1);
-            std::string tmp;
-            s >> tmp; // verb
-            s >> count;
-            for (int i = 0; i < count; i++) {
-                std::string keyword, value;
-                int n;
-                s >> keyword;
-                std::transform(keyword.begin(), keyword.end(), keyword.begin(), tolower);
-                s >> n; // Number of values
-                ASSERT(n == 1);
-                s >> value;
-                std::transform(value.begin(), value.end(), value.begin(), tolower);
-                field.insert(keyword, value);
-                req[keyword] = value;
-            }
-        }
-    }
-
-    static eckit::Translator<long, std::string> l2s;
-
-
-    {
-        char value[1024];
-        size_t len = sizeof(value);
-        if (grib_get_string(h, "gridType", value, &len) == 0) {
-            field.gridtype(value);
-
-
-            if (strcmp(value, "regular_ll") == 0) {
-                setGrid(field, h);
-                setArea(field, h);
-            } else  if (strcmp(value, "rotated_ll") == 0) {
-                setGrid(field, h);
-                setArea(field, h);
-                {
-                    double lat, lon;
-                    GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
-                    GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon) );
-                    field.rotation(lat, lon);
-                }
-            }
-            else if (strcmp(value, "sh") == 0) {
-
-                // double d;
-                {
-                    long n = -1;
-                    GRIB_CALL(grib_get_long(h, "pentagonalResolutionParameterJ", &n) );
-                    field.resol(n);
-                }
-            }
-            else if (strcmp(value, "reduced_gg") == 0) {
-                {
-                    long n = 0;
-                    std::ostringstream oss;
-
-
-                    GRIB_CALL(grib_get_long(h, "isOctahedral", &n) );
-
-                    if (n) {
-                        oss << "O";
-                    }
-                    else {
-
-                        // Don't trust eccodes
-                        size_t pl_size = 0;
-                        GRIB_CALL(grib_get_size(h, "pl", &pl_size) );
-                        long pl[pl_size];
-
-                        GRIB_CALL(grib_get_long_array(h, "pl", pl, &pl_size) );
-
-                        bool isOctahedral = true;
-                        for (size_t i = 1 ; i < pl_size; i++) {
-                            long diff = std::abs(pl[i] - pl[i - 1]);
-                            if (diff != 4 && diff != 0) {
-                                isOctahedral = false;
-                                break;
-                            }
-                        }
-
-                        if (isOctahedral) {
-                            oss << "O";
-                        }
-                        else {
-                            oss << "N";
-                        }
-                    }
-
-                    GRIB_CALL(grib_get_long(h, "N", &n) );
-                    oss << n;
-
-
-
-                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
-                    // oss << '/' << rounded(d);
-                    field.gridname(oss.str());
-                }
-
-                setArea(field, h);
-            } else if (strcmp(value, "regular_gg") == 0) {
-                long n;
-                {
-                    std::ostringstream oss;
-
-
-                    GRIB_CALL(grib_get_long(h, "N", &n) );
-                    oss << "F" << n;
-
-                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
-                    // oss << '/' << rounded(d);
-                    field.gridname(oss.str());
-                }
-                setArea(field, h);
-            }
-            else if (strcmp(value, "polar_stereographic") == 0) {
-                eckit::Log::warning() << "Ignoring polar_stereographic in " << multi << std::endl;
-                return;
-            }
-            else {
-                std::ostringstream oss;
-                oss << multi << ": Unknown grid [" << value << "]";
-                throw eckit::SeriousBug(oss.str());
-            }
-        }
-    }
-
-
-
-    // long scanningMode = 0;
-    // if (grib_get_long(h, "scanningMode", &scanningMode) == 0) {
-    //     field.insert("scanningMode", scanningMode);
-    // }
-
-    // long decimalScaleFactor = 0;
-    // if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
-    //     field.insert("decimalScaleFactor", decimalScaleFactor);
-    // }
-
-
-    long edition;
-    if (grib_get_long(h, "edition", &edition) == 0) {
-        field.format("grib" + l2s(edition));
-    }
-
-    long missingValuesPresent;
-    if (grib_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
-        if (missingValuesPresent) {
-            field.missingValuesPresent(true);
-        }
-    }
-
-    long bitsPerValue;
-    if (grib_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
-        field.accuracy(bitsPerValue);
-    }
-
-    long decimalScaleFactor;
-    if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
-        field.decimalScaleFactor(decimalScaleFactor);
-    }
-
-
-    {
-        char value[1024];
-        size_t len = sizeof(value);
-        if (grib_get_string(h, "packingType", value, &len) == 0) {
-            field.packing(value);
-        }
-    }
-
-    {
-        char value[1024];
-        size_t len = sizeof(value);
-        if (grib_get_string(h, "packing", value, &len) == 0) {
-            field.packing(value);
-        }
-    }
-
-    for (auto j = ignore_.begin(); j != ignore_.end(); ++j) {
-        field.erase(*j);
-    }
+    Field field = getField(buffer, path, offset, size);
 
     if (fields.duplicate(field) != fields.end()) {
         const auto& other = *fields.duplicate(field);
@@ -562,12 +314,32 @@ void FieldComparator::getField(const MultiFile& multi,
                            << "  ==> ";
         other.printDifference(eckit::Log::info(), field);
         eckit::Log::info() << std::endl;
-        // << "  ==> "
+        eckit::Log::info() << "This: "
+                           << field.path()
+                           << ", offset="
+                           << field.offset()
+                           << ", length="
+                           << field.length()
+                           << std::endl;
+        eckit::Log::info() << "Prev: "
+                           << other.path()
+                           << ", offset="
+                           << other.offset()
+                           << ", length="
+                           << other.length()
+                           << std::endl;
+
+        if (saveDuplicates_) {
+            multi.save(field.path(), field.offset(), field.length(), field.offset());
+            multi.save(other.path(), other.offset(), other.length(), other.offset());
+        }
+// << "  ==> "
         // << field.compare(other)
         // << std::endl
         if (fail) {
             error("duplicates");
         }
+        duplicates++;
     }
 
     if (whiteLister_.whiteListed(multi, field)) {
@@ -577,13 +349,16 @@ void FieldComparator::getField(const MultiFile& multi,
 
     fields.insert(field);
 
+
 }
+
 
 size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
     fields.clear();
+    size_t duplicates = 0;
 
     for (auto p = multi.paths().begin(); p != multi.paths().end(); ++p) {
 
@@ -596,7 +371,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             try {
                 GRIB_CALL(err);
-                getField(multi, buffer, fields, *p, ftello(f) - size, size, true);
+                getField(multi, buffer, fields, *p, ftello(f) - size, size, true, duplicates);
             } catch (std::exception& e) {
                 eckit::Log::info() << "Error in " << *p << " " << e.what() << std::endl;
                 error("exceptions");
@@ -606,7 +381,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
         }
     }
 
-    return fields.size();
+    return fields.size() - duplicates;
 }
 
 
@@ -619,6 +394,7 @@ size_t FieldComparator::list(const std::string& path) {
 
     int err;
     size_t size = buffer.size();
+    size_t duplicates = 0;
 
     eckit::AutoStdFile f(path);
     while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
@@ -626,7 +402,7 @@ size_t FieldComparator::list(const std::string& path) {
 
         try {
             GRIB_CALL(err);
-            getField(multi, buffer, fields, path, ftello(f) - size, size, false);
+            getField(multi, buffer, fields, path, ftello(f) - size, size, false, duplicates);
         } catch (std::exception& e) {
             eckit::Log::info() << "Error in " << path << " " << e.what() << std::endl;
         }
@@ -643,6 +419,27 @@ size_t FieldComparator::list(const std::string& path) {
 
     return result;
 }
+
+void FieldComparator::json(eckit::JSON& json, const std::string& path) {
+    MultiFile multi(path, path);
+    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
+
+    int err;
+    size_t size = buffer.size();
+
+    eckit::AutoStdFile f(path);
+    while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
+
+        GRIB_CALL(err);
+        Field field = getField(buffer, path, ftello(f) - size, size);
+
+        json << field;
+
+        size = buffer.size();
+    }
+
+}
+
 
 
 
@@ -813,7 +610,7 @@ void FieldComparator::compareFieldValues(
     const FieldComparator::MultiFile& multi2,
     const Field& field1,
     const Field& field2) {
-    using namespace param;
+    // using namespace param;
 
     // TODO
 
@@ -828,8 +625,8 @@ void FieldComparator::compareFieldValues(
     input::MIRInput& input2 = grib2;
 
 
-    const MIRParametrisation &metadata1 = input1.parametrisation();
-    const MIRParametrisation &metadata2 = input2.parametrisation();
+    const param::MIRParametrisation &metadata1 = input1.parametrisation();
+    const param::MIRParametrisation &metadata2 = input2.parametrisation();
 
 
     std::string comparison1;
@@ -846,10 +643,10 @@ void FieldComparator::compareFieldValues(
 
 
     // get input and parameter-specific parametrisations
-    const ConfigurationWrapper args_wrap(args_);
-    static DefaultParametrisation defaults;
-    CombinedParametrisation combined1(args_wrap, metadata1, defaults);
-    CombinedParametrisation combined2(args_wrap, metadata2, defaults);
+    const param::ConfigurationWrapper args_wrap(args_);
+    static param::DefaultParametrisation defaults;
+    param::CombinedParametrisation combined1(args_wrap, metadata1, defaults);
+    param::CombinedParametrisation combined2(args_wrap, metadata2, defaults);
 
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
@@ -869,13 +666,13 @@ void FieldComparator::whiteListEntries(const Field & field, const MultiFile & mu
 
 namespace {
 struct Compare {
-	const Field & field_;
-	Compare(const Field & field) : field_(field) {}
-        bool operator()(const Field &a, const Field & b) {
-		size_t da = field_.differences(a);
-		size_t db = field_.differences(b);
-                return da < db;
-}
+    const Field & field_;
+    Compare(const Field & field) : field_(field) {}
+    bool operator()(const Field &a, const Field & b) {
+        size_t da = field_.differences(a);
+        size_t db = field_.differences(b);
+        return da < db;
+    }
 };
 
 }
@@ -907,7 +704,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
     }
 
-    if(whiteLister_.ignoreError(multi1, field)) {
+    if (whiteLister_.ignoreError(multi1, field)) {
         return;
     }
 
@@ -928,16 +725,25 @@ void FieldComparator::missingField(const MultiFile & multi1,
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
 
+        auto flds = field.sortByDifference(fields);
 
-        for (auto m = fields.begin(); m != fields.end(); ++m) {
+
+        for (auto m = flds.begin(); m != flds.end(); ++m) {
 
 
             const auto& other = (*m);
             if (other.match(field)) {
+
+                if (cnt >= 5) {
+                    eckit::Log::info() << " # ..." << std::endl;
+                    break;
+                }
+
+
                 eckit::Log::info() << " @ ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.compareExtra(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
 
                 if (whiteListEntries_) {
@@ -947,12 +753,19 @@ void FieldComparator::missingField(const MultiFile & multi1,
             }
         }
         if (!cnt) {
-            for (auto m = fields.begin(); m != fields.end(); ++m) {
+            for (auto m = flds.begin(); m != flds.end(); ++m) {
+
+                if (cnt >= 5) {
+                    eckit::Log::info() << " # ..." << std::endl;
+                    break;
+                }
+
+
                 const auto& other = (*m);
                 eckit::Log::info() << " # ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
-                other.compareAreas(eckit::Log::info(), field);
+                other.compareExtra(eckit::Log::info(), field);
                 eckit::Log::info() << ")" << std::endl;
                 if (whiteListEntries_) {
                     whiteListEntries(other, multi2);
@@ -962,13 +775,29 @@ void FieldComparator::missingField(const MultiFile & multi1,
         }
     } else {
 
+        eckit::Log::info() << " + " << "Possible matched in " << multi2 <<  std::endl;
 
+        size_t cnt = 0;
         for (auto m = matches.begin(); m != matches.end(); ++m) {
+
             const auto& other = (*m);
+
+            if (saveFirstPossibleMatch_ && cnt == 0) {
+                multi1.save(field.path(), field.offset(), field.length(), saved_);
+                multi2.save(other.path(), other.offset(), other.length(), saved_);
+                saved_++;
+            }
+
+            if (cnt++ >= 5) {
+                eckit::Log::info() << " # ..." << std::endl;
+                break;
+            }
+
+
             eckit::Log::info() << " ? ";
             other.printDifference(eckit::Log::info(), field);
             eckit::Log::info() << " (" ;
-            other.compareAreas(eckit::Log::info(), field);
+            other.compareExtra(eckit::Log::info(), field);
             eckit::Log::info() << ")" << std::endl;
             if (whiteListEntries_) {
                 whiteListEntries(other, multi2);

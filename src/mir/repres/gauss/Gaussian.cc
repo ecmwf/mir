@@ -22,6 +22,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+#include "eckit/types/FloatCompare.h"
 #include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -101,6 +102,20 @@ void Gaussian::validate(const MIRValuesVector& values) const {
 }
 
 
+bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
+    return angularPrecision_ > 0 ?
+                eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+              : A == B;
+}
+
+
+bool Gaussian::angleApproximatelyEqual(const Longitude& A, const Longitude& B) const {
+    return angularPrecision_ > 0 ?
+                eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+              : A == B;
+}
+
+
 void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     ASSERT(s <= n);
 
@@ -111,11 +126,11 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     if (n < lats.back()) {
         n = lats.back();
     } else if (in) {
-        auto best = std::lower_bound(lats.begin(), lats.end(), n, [=](Latitude l1, Latitude l2) {
-            if (angularPrecision_ > 0 && eckit::types::is_approximately_equal(l1.value(), l2.value(), angularPrecision_)) {
+        auto best = std::lower_bound(lats.begin(), lats.end(), n, [this](Latitude l1, Latitude l2) {
+            if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
-            return !(l1 <= l2);
+            return !(l1 < l2);
         });
         ASSERT(best != lats.end());
         n = *best;
@@ -131,11 +146,11 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     } else if (s > lats.front()) {
         s = lats.front();
     } else if (in) {
-        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [=](Latitude l1, Latitude l2) {
-            if (angularPrecision_ > 0 && eckit::types::is_approximately_equal(l1.value(), l2.value(), angularPrecision_)) {
+        auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this](Latitude l1, Latitude l2) {
+            if (angleApproximatelyEqual(l1, l2)) {
                 return false;
             }
-            return !(l1 >= l2);
+            return !(l1 > l2);
         });
         ASSERT(best != lats.rend());
         s = *best;

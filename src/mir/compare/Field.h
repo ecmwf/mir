@@ -22,9 +22,11 @@
 #include <vector>
 
 #include "mir/compare/FieldInfo.h"
+#include "eckit/memory/Counted.h"
 
 
 namespace eckit {
+class JSON;
 namespace option {
 class Option;
 class CmdArgs;
@@ -35,87 +37,105 @@ namespace mir {
 namespace compare {
 
 class FieldSet;
+class GribField;
+class BufrField;
 
 //----------------------------------------------------------------------------------------------------------------------
 //
 
+class FieldBase : public eckit::Counted {
+public:
+
+    FieldBase(const std::string& path, off_t offset, size_t length);
+
+    off_t offset() const;
+    size_t length() const;
+    const std::string& path() const;
+
+
+    virtual bool wrapped() const = 0;
+    virtual bool less_than(const FieldBase& other) const = 0;
+    virtual void whiteListEntries(std::ostream&) const = 0;
+    virtual size_t differences(const FieldBase& other) const = 0;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const = 0;
+    virtual void compareExtra(std::ostream&, const FieldBase& other) const = 0;
+    virtual bool same(const FieldBase& other) const = 0;
+    virtual bool match(const FieldBase& other) const = 0;
+    virtual std::ostream& printGrid(std::ostream&) const = 0;
+    virtual bool match(const std::string&, const std::string&) const = 0;
+    virtual size_t numberOfPoints() const = 0;
+    virtual const std::string& format() const = 0;
+
+    static double normaliseLongitude(double longitude);
+
+protected:
+
+    FieldInfo info_;
+
+    virtual void print(std::ostream &out) const = 0;
+    virtual void json(eckit::JSON& json) const = 0;
+
+    friend std::ostream &operator<<(std::ostream &s, const FieldBase &x) {
+        x.print(s);
+        return s;
+    }
+
+
+    friend eckit::JSON &operator<<(eckit::JSON &s, const FieldBase &x) {
+        x.json(s);
+        return s;
+    }
+
+};
+
 class Field {
 public:
 
-    Field(const std::string& path, off_t offset, size_t length);
+    Field(FieldBase* field = 0);
+    Field(const Field& other);
 
-    void insert(const std::string& key, const std::string& value);
-    void insert(const std::string& key, long value);
+    ~Field();
 
-    void erase(const std::string& key);
+    Field& operator=(const Field& other);
 
-    void area(double n, double w, double s, double e);
-    void grid(double ns, double we);
-    void rotation(double lat, double lon);
-    void format(const std::string&);
-
-    void gridtype(const std::string&);
-    void gridname(const std::string&);
-
-    void resol(size_t resol);
-    void numberOfPoints(long n);
-
-    void param(long n);
-    void accuracy(long n);
-    void decimalScaleFactor(long n);
-    void packing(const std::string& packing);
 
     bool operator<(const Field& other) const;
+    bool operator==(const Field& other) const;
 
-    void missingValuesPresent(bool on);
+    operator bool() const;
 
-    std::map<std::string, std::string>::const_iterator begin() const;
 
-    std::map<std::string, std::string>::const_iterator end() const;
+    // const GribField& asGribField() const;
+    // const BufrField& asBufrField() const;
 
-    std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
+    // GribField& asGribField();
+    // BufrField& asBufrField();
 
-    std::vector<Field> bestMatches(const FieldSet& fields) const;
-    size_t differences(const Field& other) const;
+    off_t offset() const;
+    size_t length() const;
+    const std::string& path() const;
 
-    void compareAreas(std::ostream& out, const Field& other) const;
 
     bool same(const Field& other) const;
     bool match(const Field& other) const;
 
+    std::vector<Field> bestMatches(const FieldSet & fields) const;
+    std::vector<Field> sortByDifference(const FieldSet & fields) const;
 
-    bool sameArea(const Field& other) const;
-    bool samePacking(const Field& other) const;
-    bool sameAccuracy(const Field& other) const;
-    bool sameBitmap(const Field& other) const;
-    bool sameFormat(const Field& other) const;
-    bool sameField(const Field& other) const;
-    bool sameGrid(const Field& other) const;
-    bool sameRotation(const Field& other) const;
-    bool sameResol(const Field& other) const;
-    bool sameGridname(const Field& other) const;
-    bool sameGridtype(const Field& other) const;
-    bool sameParam(const Field& other) const;
-    bool sameNumberOfPoints(const Field& other) const;
 
+
+    void whiteListEntries(std::ostream&) const;
+    size_t differences(const Field& other) const;
+    std::ostream& printDifference(std::ostream&, const Field& other) const;
+
+    std::ostream& printGrid(std::ostream&) const;
     bool match(const std::string&, const std::string&) const;
+    size_t numberOfPoints() const;
+    const std::string& format() const;
 
     bool wrapped() const;
+    void compareExtra(std::ostream&, const Field& other) const;
 
-    off_t offset() const ;
-
-    size_t length() const ;
-
-    size_t numberOfPoints() const;
-
-    const std::string& format() const ;
-
-    const std::string& path() const ;
-    void whiteListEntries(std::ostream& out) const;
-
-    std::ostream& printDifference(std::ostream& out, const Field & other) const;
-
-    std::ostream& printGrid(std::ostream &out) const;
 
 
     static void addOptions(std::vector<eckit::option::Option*>& options);
@@ -123,49 +143,18 @@ public:
 
 private:
 
-    bool operator==(const Field& other) const;
-
-    FieldInfo info_;
-
-    std::map<std::string, std::string> values_;
-
-    long param_;
-
-    bool area_;
-    double north_;
-    double west_;
-    double south_;
-    double east_;
-
-    long accuracy_;
-    long decimalScaleFactor_;
-
-    bool grid_;
-    double west_east_;
-    double north_south_;
-
-    bool rotation_;
-    double rotation_latitude_;
-    double rotation_longitude_;
-
-    std::string packing_;
-
-    bool hasMissing_;
-    long resol_;
-    std::string gridname_;
-    std::string gridtype_;
-    std::string format_;
-
-    long numberOfPoints_;
-
-private:
-
-
+    FieldBase* field_;
 
     void print(std::ostream &out) const;
+    void json(eckit::JSON& json) const;
 
     friend std::ostream &operator<<(std::ostream &s, const Field &x) {
         x.print(s);
+        return s;
+    }
+
+    friend eckit::JSON &operator<<(eckit::JSON &s, const Field &x) {
+        x.json(s);
         return s;
     }
 

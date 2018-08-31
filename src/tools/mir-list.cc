@@ -13,8 +13,11 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
+#include "eckit/parser/JSON.h"
 
 
 class MIRList : public mir::tools::MIRTool {
@@ -35,6 +38,9 @@ public:
 
     MIRList(int argc, char **argv) :
         mir::tools::MIRTool(argc, argv) {
+        options_.push_back(new eckit::option::SimpleOption<bool>("json", "JSON output"));
+
+        mir::compare::FieldComparator::addOptions(options_);
     }
 
 };
@@ -51,9 +57,23 @@ void MIRList::execute(const eckit::option::CmdArgs &args) {
 
     mir::compare::FieldComparator comparator(args);
 
-    for (size_t i = 0; i < args.count(); i++) {
-        eckit::Log::info() << args(i) << " ==> " << std::endl;
-        comparator.list(args(i));
+    bool json = false;
+    args.get("json", json);
+
+    if (json) {
+        eckit::JSON json(std::cout);
+        json.startList();
+        for (size_t i = 0; i < args.count(); i++) {
+            comparator.json(json, args(i));
+        }
+        json.endList();
+    }
+    else {
+
+        for (size_t i = 0; i < args.count(); i++) {
+            eckit::Log::info() << args(i) << " ==> " << std::endl;
+            comparator.list(args(i));
+        }
     }
 
 }

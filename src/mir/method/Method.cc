@@ -49,12 +49,6 @@ const util::BoundingBox& Method::getCropping() const {
     NOTIMP;
 }
 
-const repres::Representation* Method::adjustOutputRepresentation(
-        context::Context&,
-        const repres::Representation* representation) {
-    return representation;
-}
-
 //=========================================================================
 
 

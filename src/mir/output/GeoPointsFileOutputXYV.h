@@ -31,7 +31,7 @@ public:
 
     // -- Contructors
 
-    GeoPointsFileOutputXYV(const::std::string& path);
+    GeoPointsFileOutputXYV(const::std::string& path, bool binary=false);
 
     // -- Destructor
     // None
@@ -80,7 +80,8 @@ private:
     // None
 
     // -- Methods
-    // None
+   size_t saveText(const param::MIRParametrisation&, context::Context&);
+   size_t saveBinary(const param::MIRParametrisation&, context::Context&);
 
     // -- Overridden methods
     // None

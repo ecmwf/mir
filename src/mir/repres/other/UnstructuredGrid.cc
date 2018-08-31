@@ -27,11 +27,14 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "eckit/serialisation/IfstreamStream.h"
 
+#include "eckit/serialisation/FileStream.h"
 
 namespace mir {
 namespace repres {
 namespace other {
+
 
 
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
@@ -39,6 +42,15 @@ UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisat
     ASSERT(parametrisation.get("longitudes", longitudes_));
     ASSERT(latitudes_.size() == longitudes_.size());
     ASSERT(longitudes_.size() > 0);
+
+    bool checkDuplicatePoints = true;
+    parametrisation.get("check-duplicate-points", checkDuplicatePoints);
+
+    if (checkDuplicatePoints) {
+        check("UnstructuredGrid from MIRParametrisation",
+              latitudes_,
+              longitudes_);
+    }
 }
 
 
@@ -47,13 +59,75 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
     if (!in) {
         throw eckit::CantOpenFile(path);
     }
-    double lat;
-    double lon;
-    while (in >> lat >> lon) {
-        latitudes_.push_back(lat);
-        longitudes_.push_back(lon);
+
+    if (!::isprint(in.peek())) {
+
+        eckit::Log::info() << "UnstructuredGrid::load  " << path << std::endl;
+
+
+        eckit::IfstreamStream s(in);
+        size_t version;
+        s >> version;
+        ASSERT(version == 1);
+
+        size_t count;
+        s >> count;
+
+        latitudes_.resize(count);
+        longitudes_.resize(count);
+
+        for (size_t i = 0; i < count; ++i) {
+            s >> latitudes_[i];
+            s >> longitudes_[i];
+            eckit::Log::info() << latitudes_[i] << " " << longitudes_[i] << std::endl;
+
+        }
+    }
+    else {
+        double lat;
+        double lon;
+        while (in >> lat >> lon) {
+            latitudes_.push_back(lat);
+            longitudes_.push_back(lon);
+        }
+    }
+
+    check("UnstructuredGrid from " + path.asString(),
+          latitudes_,
+          longitudes_);
+
+}
+
+
+void UnstructuredGrid::save(const eckit::PathName& path,
+                            const std::vector<double>& latitudes,
+                            const std::vector<double>& longitudes,
+                            bool binary) {
+
+    check("UnstructuredGrid save to " + path.asString(), latitudes, longitudes);
+
+    eckit::Log::info() << "UnstructuredGrid::save " << path << std::endl;
+
+    ASSERT(latitudes.size() == longitudes.size());
+    if (binary) {
+        eckit::FileStream s(path, "w");
+        size_t version = 1;
+        size_t count = latitudes.size();
+        s << version;
+        s << count;
+        for (size_t i = 0; i < count; ++i) {
+            s << latitudes[i];
+            s << longitudes[i];
+
+            eckit::Log::info() << latitudes[i] << " " << longitudes[i] << std::endl;
+        }
+        s.close();
+    }
+    else {
+        NOTIMP;
     }
 }
+
 
 
 UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes,
@@ -202,6 +276,30 @@ bool UnstructuredGrid::includesSouthPole() const {
     // TODO:
     return true;
 }
+
+
+
+void UnstructuredGrid::check( const std::string& title,
+                              const std::vector<double>& latitudes,
+                              const std::vector<double>& longitudes) {
+
+    ASSERT(latitudes.size() == longitudes.size());
+    ASSERT(longitudes.size() > 0);
+
+    std::set<std::pair<double, double> > seen;
+    size_t count = latitudes.size();
+
+    for (size_t i = 0; i < count; ++i) {
+        std::pair<double, double> p(latitudes[i], longitudes[i]);
+        if (!seen.insert(p).second) {
+            std::ostringstream oss;
+            oss << title << ": duplicate point lat=" << latitudes[i] << ", lon=" << longitudes[i];
+            throw eckit::UserError(oss.str());
+        }
+    }
+
+}
+
 
 
 namespace {

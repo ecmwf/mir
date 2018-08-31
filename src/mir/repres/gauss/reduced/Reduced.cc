@@ -113,17 +113,13 @@ void Reduced::correctWestEast(Longitude& w, Longitude& e) const {
     const Fraction inc = getSmallestIncrement();
     ASSERT(inc > 0);
 
-    const Longitude we = e - w;
-    if (e != w && e.normalise(w) == w) {
+    if (angleApproximatelyEqual(Longitude::GREENWICH, w) && (
+        angleApproximatelyEqual(Longitude::GLOBE - inc, e - w) ||
+        Longitude::GLOBE - inc < e - w ||
+        (e != w && e.normalise(w) == w))) {
 
-        // if periodic West/East, adjust East only
-        e = w + Longitude::GLOBE - inc;
-
-    } else if (angularPrecision_ > 0 ? eckit::types::is_approximately_greater_or_equal((we + inc).value(), Longitude::GLOBE.value(), angularPrecision_)
-                                     : we + inc >= Longitude::GLOBE) {
-
-        // if periodic West/East, adjust East only
-        e = w + Longitude::GLOBE - inc;
+        w = Longitude::GREENWICH;
+        e = Longitude::GLOBE - inc;
 
     } else {
 
@@ -286,23 +282,6 @@ void Reduced::fill(grib_info& info) const  {
     }
 
     bbox_.fill(info);
-
-    /*
-        Comment in libemos is:
-
-        "grib_api to set global area in full precision for gaussian grid"
-
-        TODO: check and document
-
-    */
-
-    // for GRIB, a global field is also aligned with Greenwich
-    bool westAtGreenwich = bbox_.west() == Longitude::GREENWICH;
-
-    long j = info.packing.extra_settings_count++;
-    info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
-    info.packing.extra_settings[j].name = "global";
-    info.packing.extra_settings[j].long_value = isGlobal() && westAtGreenwich ? 1 : 0;
 }
 
 

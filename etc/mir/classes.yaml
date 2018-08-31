@@ -1,53 +1,70 @@
 ---
-# composition of a mixture (mass, amount, volume, ...) with respect to the volume of the mixture (typical units: [kg m**-3])
-concentration: {}
+
+## default
+#_default:
+#    atlas-trans-type: local
+
+# amount of mass per unit volume (typical units: [kg m**-3])
+density.mass: {}
+
+# amount of energy per unit volume (typical units: [J m**-3])
+density.energy: {}
+
+# amount of volume per unit volume (typical units: [m**3 m**-3])
+density.volume: {}
 
 # Angle starting from 0 (units: degree)
 dimension.1d.angle.degree.asymmetric:
-  dimension: 1d.angle.degree.asymmetric
+    dimension: 1d.angle.degree.asymmetric
 
 # Angle symmetric around 0 (units: degree)
 dimension.1d.angle.degree.symmetric:
-  dimension: 1d.angle.degree.symmetric
+    dimension: 1d.angle.degree.symmetric
 
 # Angle starting from 0 (units: radian)
 dimension.1d.angle.radian.asymmetric:
-  dimension: 1d.angle.radian.asymmetric
+    dimension: 1d.angle.radian.asymmetric
 
 # Angle symmetric around 0 (units: radian)
 dimension.1d.angle.radian.symmetric:
-  dimension: 1d.angle.radian.symmetric
+    dimension: 1d.angle.radian.symmetric
 
 # Vector in 2D Cartesian space, X component
 dimension.2d.vector.u:
-  dimension: 2d.vector.u
+    dimension: 2d.vector.u
 
 # Vector in 2D Cartesian space, Y component
 dimension.2d.vector.v:
-  dimension: 2d.vector.v
+    dimension: 2d.vector.v
 
 # Vector in 3D Cartesian space, X component
 dimension.3d.vector.u:
-  dimension: 3d.vector.u
+    dimension: 3d.vector.u
 
 # Vector in 3D Cartesian space, Y component
 dimension.3d.vector.v:
-  dimension: 3d.vector.v
+    dimension: 3d.vector.v
 
 # Vector in 3D Cartesian space, Z component
 dimension.3d.vector.w:
-  dimension: 3d.vector.w
+    dimension: 3d.vector.w
 
 # associated to a table
 index:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # interpretation associated to an index
 index.associated:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # physical quantity whose magnitude is independent of the extent (size) of the system (typical units: no typical units)
 intensity: {}
+
+# quantity interpreted as accumulated in time (typical units: [<original unit> s])
+numerics.accumulated: {}
+
+# quantity interpreted as the integral over the vertical coordinate (typical units: [<original unit> m])
+numerics.vertical-integral: {}
 
 # ratio between two related quantities (time, mass, length, etc.) (typical units: [... s**-1])
 rate: {}
@@ -55,26 +72,23 @@ rate: {}
 # rate of flow of energy per unit area (typical units: [J m**-2 s**-1], [W m**-2])
 rate.energy-flux: {}
 
-# rate of flow of energy per unit area accumulated in time (typical units: [J m**-2]])
-rate.energy-flux.accumulated: {}
-
 # rate of flow of mass per unit area (typical units: [kg m**-2 s**-1])
 rate.mass-flux: {}
 
-# rate of flow of mass per unit area accumulated in time (typical units: [kg m**-2])
-rate.mass-flux.accumulated: {}
-
 # rate of flow of a volumetric quantity per unit area (typical units [m**3 m**-2 s**-1], [m s**-1])
 rate.volume-flux: {}
-
-# rate of flow of a volumetric quantity per unit area accumulated in time (typical units: [m**3 m**-2], [m])
-rate.volume-flux.accumulated: {}
 
 # quotient of quantities of the same kind (typical units: <non-dimensional>)
 ratio: {}
 
 # area ratio (typical units: [m**2 m**-2])
 ratio.area: {}
+
+# volumetric ratio (typical units: [m**3 m**-3])
+ratio.volume: {}
+
+# mass mixture ratio (typical units: [kg kg**-1])
+ratio.mass: {}
 
 # ratio representing a box average (typical units: <non-dimensional>, [0, 1], %)
 ratio.cover: {}
@@ -84,47 +98,38 @@ ratio.cover.cloud: {}
 
 # specific to vegetation
 ratio.cover.vegetation:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # (typical units: <non-dimensional>, [0, 1], [-1, 1]?, %)
 ratio.fraction: {}
 
-# (typical units: [s])
-ratio.fraction.accumulated: {}
-
-# mass mixture ratio (typical units: [kg kg**-1])
-ratio.mass: {}
-
 # (typical units: <non-dimensional>, [0, 1])
 ratio.probability: {}
 
-# volumetric ratio (typical units: [m**3 m**-3])
-ratio.volume: {}
+# (typical units: <non-dimensional>)
+ratio.random: {}
 
 # intensity as a function of discrete wavelengths
 spectrum:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # intensity as a function of discrete wavelengths
 spectrum.associated-angle:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # intensity as a function of discrete wavelengths
 spectrum.associated-magnitude:
-  interpolation: nearest-neighbour
+    interpolation: nearest-neighbour
 
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
 
-# stress accumulated in time (typical units: [Pa s])
-stress.accumulated: {}
-
 unknown.experimental:
-  interpolation: fail
+    _warning: true
 
 unknown.missing:
-  interpolation: fail
+    _warning: true
 
 unknown.reserved:
-  interpolation: fail
+    _warning: true
 

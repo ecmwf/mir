@@ -20,6 +20,8 @@
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
 
+#include <fstream>
+#include <iostream>
 
 namespace mir {
 namespace input {
@@ -49,6 +51,8 @@ public:
     const std::vector<double>& latitudes() const;
     const std::vector<double>& longitudes() const;
     const MIRValuesVector& values() const;
+
+    size_t footprint() const;
 
     // -- Overridden methods
     // None
@@ -87,6 +91,7 @@ private:
     size_t next_;
     bool hasMissing_;
     double missingValue_;
+    size_t footprint_;
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
@@ -95,6 +100,9 @@ private:
     // -- Methods
 
     bool resetMissingValue(double& missingValue);
+
+    size_t readText(std::ifstream&);
+    size_t readBinary(std::ifstream&);
 
     // -- Overridden methods
 

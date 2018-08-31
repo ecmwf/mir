@@ -172,31 +172,6 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
 }
 
 
-void interlace_spectra(
-        mir::MIRValuesVector& interlacedSpectra,
-        const mir::MIRValuesVector& spectra,
-        size_t truncation,
-        size_t numberOfComplexCoefficients,
-        size_t index,
-        size_t indexTotal ) {
-    ASSERT(0 <= index && index < indexTotal);
-    ASSERT(numberOfComplexCoefficients * 2 * indexTotal == interlacedSpectra.size());
-
-    if (spectra.size() != numberOfComplexCoefficients * 2) {
-        const std::string msg = "MIRSpectralTransform: expected field values size " +
-                std::to_string(numberOfComplexCoefficients * 2) +
-                " (T=" + std::to_string(truncation) + "), " +
-                " got " + std::to_string(spectra.size());
-        eckit::Log::error() << msg << std::endl;
-        throw eckit::UserError(msg);
-    }
-
-    for (size_t j = 0; j < numberOfComplexCoefficients * 2; ++j) {
-        interlacedSpectra[ j * indexTotal + index ] = spectra[j];
-    }
-}
-
-
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
 
@@ -257,13 +232,15 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     mir::util::MIRStatistics statistics;
 
     {
+        auto& log = eckit::Log::info();
+        auto& debug = eckit::Log::debug<mir::LibMir>();
         eckit::Timer timer("Total time");
 
         const std::string what(vod2uv ? "vo/d field pair" : "field");
 
         size_t i = 0;
         while (input->next()) {
-            eckit::Log::info() << "============> " << what << ": " << (++i * multiScalar) << std::endl;
+            log << "============> " << what << ": " << (++i * multiScalar) << std::endl;
 
             // Set representation and grid
             const mir::repres::Representation* outputRepresentation = output_representation(parametrisation);
@@ -290,34 +267,34 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Atlas/Trans configuration type: "
-                                             << transConfig.getString("type", "(default)") << std::endl;
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: Atlas unstructured grid: "
-                                             << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no") << std::endl;
+            debug << "MIRSpectralTransform:"
+                  << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")
+                  << "\n\t" "Atlas unstructured grid: " << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no")
+                  << std::endl;
 
             if (vod2uv) {
                 ASSERT(field.dimensions() == multiScalar * 2);
 
-                size_t F = multiTransform;
+                size_t F;
                 for (size_t numberOfFieldPairsProcessed = 0; numberOfFieldPairsProcessed < multiScalar; numberOfFieldPairsProcessed += F) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
-                    eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    debug << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
                     mir::MIRValuesVector input_vo;
                     mir::MIRValuesVector input_d;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on interlacing spectra", debug);
                         input_vo.resize(F * N * 2);
                         input_d.resize(F * N * 2);
 
                         for (size_t i = 0; i < F; ++i) {
                             const size_t which = (numberOfFieldPairsProcessed + i) * 2;
-                            interlace_spectra(input_vo, field.values(which + 0), T, N, i, F);
-                            interlace_spectra(input_d,  field.values(which + 1), T, N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_vo, field.values(which + 0), T, N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_d,  field.values(which + 1), T, N, i, F);
                         }
                     }
 
@@ -327,7 +304,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on invtrans", debug);
                         const size_t which = numberOfFieldPairsProcessed * 2;
                         trans.invtrans(
                                     int(F),
@@ -340,7 +317,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // set field values, forcing u/v paramId (copies are necessary since fields are paired)
                     // Note: transformed u and v fields are contiguous, we save them in alternate order
                     {
-                        eckit::Timer timer("time on copying grid-point values", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on copying grid-point values", debug);
 
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
@@ -366,22 +343,22 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             } else {
                 ASSERT(field.dimensions() == multiScalar);
 
-                size_t F = multiTransform;
+                size_t F;
                 for (size_t numberOfFieldsProcessed = 0; numberOfFieldsProcessed < multiScalar; numberOfFieldsProcessed += F) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
-                    eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    debug << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
                     mir::MIRValuesVector input;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on interlacing spectra", debug);
                         input.resize(F * N * 2);
 
                         for (size_t i = 0; i < F; ++i) {
-                            interlace_spectra(input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
                         }
                     }
 
@@ -391,7 +368,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on invtrans", debug);
                         trans.invtrans(
                                     int(F),
                                     F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
@@ -401,7 +378,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set field values (again, avoid copies for one field only)
                     if (F > 1) {
-                        eckit::Timer timer("time on copying grid-point values", eckit::Log::debug<mir::LibMir>());
+                        eckit::Timer timer("time on copying grid-point values", debug);
 
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
@@ -420,7 +397,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             // set field representation
             field.representation(outputRepresentation);
             if (validate) {
-                eckit::Timer timer("time on validate", eckit::Log::debug<mir::LibMir>());
+                eckit::Timer timer("time on validate", debug);
                 field.validate();
             }
 
@@ -428,10 +405,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             output->save(parametrisation, ctx);
         }
 
-        statistics.report(eckit::Log::info());
+        statistics.report(log);
 
-        eckit::Log::info() << eckit::Plural(int(i * multiScalar), what) << " in " << eckit::Seconds(timer.elapsed())
-                           << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+        log << eckit::Plural(int(i * multiScalar), what) << " in " << eckit::Seconds(timer.elapsed())
+            << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }
 

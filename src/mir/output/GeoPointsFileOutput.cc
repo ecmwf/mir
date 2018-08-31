@@ -23,8 +23,9 @@ namespace mir {
 namespace output {
 
 
-GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path) :
-    path_(path) {
+GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) :
+    path_(path),
+    binary_(binary) {
 }
 
 
@@ -43,7 +44,7 @@ eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
 
 bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const GeoPointsFileOutput*>(&other);
-    return o && (path_ == o->path_);
+    return o && (path_ == o->path_) && (binary_ == o->binary_);
 }
 
 

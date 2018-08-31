@@ -65,12 +65,14 @@ protected:
     // -- Members
 
     size_t N_;
-    double angularPrecision_;
 
     // -- Methods
 
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
+
+    bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
+    bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
 
     void correctSouthNorth(Latitude& s, Latitude& n, bool in=true) const;
 
@@ -95,7 +97,8 @@ protected:
 private:
 
     // -- Members
-    // None
+
+    double angularPrecision_;
 
     // -- Methods
     // None

@@ -142,7 +142,7 @@ size_t countRepresentationInBoundingBox(
             << "\n" "N " << bbox.north() << ":" << nn
             << "\n" "W " << bbox.west()  << ":" << ww
             << "\n" "S " << bbox.south() << ":" << ss
-            << "\n" "E " << bbox.south() << ":" << ee
+            << "\n" "E " << bbox.east() << ":" << ee
             << std::endl;
 
     return count;

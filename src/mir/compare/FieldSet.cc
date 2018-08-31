@@ -17,6 +17,9 @@
 #include <algorithm>
 
 
+#include "mir/compare/BufrField.h"
+#include "mir/compare/GribField.h"
+
 namespace mir {
 namespace compare {
 

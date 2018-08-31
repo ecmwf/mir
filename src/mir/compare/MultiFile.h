@@ -28,6 +28,8 @@ class Stream;
 namespace mir {
 namespace compare {
 
+class FieldInfo;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,6 +57,8 @@ public:
 
     eckit::Length length() const;
     void whiteListEntries(std::ostream& out) const;
+
+    void save(const std::string& path, off_t offset, size_t length, size_t n) const;
 
 
 private:

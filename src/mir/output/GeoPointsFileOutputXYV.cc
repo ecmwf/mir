@@ -23,7 +23,9 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "eckit/serialisation/HandleStream.h"
 
+#include "mir/repres/other/UnstructuredGrid.h"
 
 namespace mir {
 namespace output {
@@ -32,8 +34,8 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path) :
-    GeoPointsFileOutput(path) {
+GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path, bool binary) :
+    GeoPointsFileOutput(path, binary) {
 }
 
 
@@ -48,8 +50,21 @@ size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::C
 }
 
 
-size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
+                                    context::Context& ctx) {
+
+
     ASSERT(once());
+    if (binary_) {
+        return saveBinary(param, ctx);
+    }
+    else {
+        return saveText(param, ctx);
+    }
+}
+
+size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
+                                        context::Context& ctx) {
 
     data::MIRField& field = ctx.field();
 
@@ -57,6 +72,9 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
     eckit::Offset position = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
+
+    std::vector<double> latitudes;
+    std::vector<double> longitudes;
 
     for (size_t j = 0; j < field.dimensions(); ++j) {
 
@@ -77,7 +95,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 
 
         out << "#GEO"
-               "\n#FORMAT XYV";
+            "\n#FORMAT XYV";
 
         for (auto& key : keys) {
             std::string v;
@@ -91,16 +109,117 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 
         auto v = values.cbegin();
 
+        latitudes.reserve(values.size());
+        longitudes.reserve(values.size());
+
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {
             const repres::Iterator::point_ll_t& p = it->pointUnrotated();
             ASSERT(v != values.cend());
             out << "\n" << p.lon.value() << ' ' << p.lat.value() << ' ' << *v;
             ++v;
+
+            latitudes.push_back(p.lat.value());
+            longitudes.push_back(p.lon.value());
+
         }
+        ASSERT(v == values.cend());
 
         out << std::endl;
     }
+
+    std::ostringstream oss;
+    oss << "GeoPointsFileOutputXYV save " << handle;
+
+    repres::other::UnstructuredGrid::check(oss.str(),
+                                           latitudes,
+                                           longitudes);
+
+
+    // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
+
+    return handle.position() - position;
+}
+
+
+size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param,
+        context::Context& ctx) {
+
+    data::MIRField& field = ctx.field();
+
+    eckit::DataHandle& handle = dataHandle();
+    eckit::Offset position = handle.position();
+
+    eckit::HandleStream out(handle);
+
+
+    std::vector<double> latitudes;
+    std::vector<double> longitudes;
+
+    for (size_t j = 0; j < field.dimensions(); ++j) {
+
+        // ASSERT(field.dimensions() == 1);
+
+        param::RuntimeParametrisation runtime(param);
+        auto md = field.metadata(j);
+        if (md.find("paramId") != md.end()) {
+            std::ostringstream oss;
+            oss << md["paramId"];
+            runtime.set("param", oss.str());
+        }
+
+        const MIRValuesVector& values = field.values(j);
+
+        // eckit::Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
+
+        out << "GEO";
+        out << "XYV";
+
+        for (auto& key : keys) {
+            std::string v;
+            if (runtime.get(key, v)) {
+                out << key << v;
+            }
+        }
+
+        out << "-";
+
+        auto v = values.cbegin();
+        out << values.size();
+
+        latitudes.reserve(values.size());
+        longitudes.reserve(values.size());
+
+        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        size_t i = 0;
+        while (it->next()) {
+            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+            ASSERT(v != values.cend());
+            out << double(p.lon.value())
+                << double(p.lat.value())
+                << double(*v);
+
+            latitudes.push_back(p.lat.value());
+            longitudes.push_back(p.lon.value());
+
+
+            ++v;
+            ++i;
+        }
+        ASSERT(v == values.cend());
+        ASSERT(i == values.size());
+    }
+
+    out << "END";
+
+
+    std::ostringstream oss;
+    oss << "GeoPointsFileOutputXYV save " << handle;
+
+    repres::other::UnstructuredGrid::check(oss.str(),
+                                           latitudes,
+                                           longitudes);
+
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
