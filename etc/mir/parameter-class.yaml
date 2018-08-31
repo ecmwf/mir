@@ -1182,7 +1182,7 @@ intensity:
 - 171251  # Adiabatic tendency of temperature anomaly
 - 171253  # Adiabatic tendency of zonal wind anomaly
 - 171254  # Adiabatic tendency of meridional wind anomaly
-- 172189  # Vertical integral of northward cloud liquid water flux
+- 172189  # Sunshine duration
 - 174006  # Total soil moisture
 - 174025  # Visibility at 1.5m
 - 174034  # Open-sea surface temperature
