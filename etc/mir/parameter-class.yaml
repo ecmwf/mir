@@ -432,6 +432,15 @@ dimension.2d.vector.u:
 - 129253  # Adiabatic tendency of zonal wind gradient
 - 130230  # Adiabatic tendency of zonal wind
 - 140215  # U-component stokes drift
+- 162065  # Vertical integral of eastward mass flux
+- 162067  # Vertical integral of eastward kinetic energy flux
+- 162069  # Vertical integral of eastward heat flux
+- 162071  # Vertical integral of eastward water vapour flux
+- 162073  # Vertical integral of eastward geopotential flux
+- 162075  # Vertical integral of eastward total energy flux
+- 162077  # Vertical integral of eastward ozone flux
+- 162088  # Vertical integral of eastward cloud liquid water flux
+- 162090  # Vertical integral of eastward cloud frozen water flux
 - 171006  # 100 metre U wind component anomaly
 - 171011  # U component of divergent wind anomaly
 - 171013  # U component of rotational wind anomaly
@@ -492,6 +501,15 @@ dimension.2d.vector.v:
 - 129254  # Adiabatic tendency of meridional wind gradient
 - 130231  # Adiabatic tendency of meridional wind
 - 140216  # V-component stokes drift
+- 162066  # Vertical integral of northward mass flux
+- 162068  # Vertical integral of northward kinetic energy flux
+- 162070  # Vertical integral of northward heat flux
+- 162072  # Vertical integral of northward water vapour flux
+- 162074  # Vertical integral of northward geopotential flux
+- 162076  # Vertical integral of northward total energy flux
+- 162078  # Vertical integral of northward ozone flux
+- 162089  # Vertical integral of northward cloud liquid water flux
+- 162091  # Vertical integral of northward cloud frozen water flux
 - 171007  # 100 metre V wind component anomaly
 - 171012  # V component of divergent wind anomaly
 - 171014  # V component of rotational wind anomaly
