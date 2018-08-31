@@ -16,7 +16,7 @@
 #include "mir/method/knn/KNearestNeighbours.h"
 
 #include <algorithm>
-#include "eckit/log/BigNum.h"
+#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/ScopedPtr.h"
@@ -109,7 +109,7 @@ void KNearestNeighbours::assemble(
                 nearest = push_back = 0;
             }
 
-            if (inDomain.contains(it->pointUnrotated())) {
+            if (inDomain.contains(it->pointRotated())) {
 
                 // get the reference output point
                 eckit::geometry::Point3 p(it->point3D());
@@ -139,7 +139,9 @@ void KNearestNeighbours::assemble(
         }
     }
 
-    eckit::Log::debug<LibMir>() << "Located " << eckit::BigNum(nbOutputPoints) << std::endl;
+    if (weights_triplets.empty()) {
+        throw eckit::SeriousBug("KNearestNeighbours: failed to interpolate");
+    }
 
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
