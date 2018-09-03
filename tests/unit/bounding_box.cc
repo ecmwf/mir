@@ -40,6 +40,8 @@ CASE("Representation::extendedBoundingBox") {
                 log << name << " extendedBoundingBox(" << "\n\t" << bbox << " ) = " << std::endl;
                 BoundingBox extended = repres->extendedBoundingBox(bbox);
                 log << "\t" << extended << std::endl;
+
+                EXPECT(extended.contains(bbox));
             }
         }
     }

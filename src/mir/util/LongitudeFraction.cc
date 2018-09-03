@@ -32,21 +32,7 @@ void LongitudeFraction::print(std::ostream& out) const {
     out << double(value_);
 }
 
-bool LongitudeFraction::operator<(double value) const {
-    return value_ < value;
-}
-
-bool LongitudeFraction::operator<=(double value) const {
-    return value_ <= value;
-}
-
-bool LongitudeFraction::operator>(double value) const {
-    return value_ > value;
-}
-
-bool LongitudeFraction::operator>=(double value) const {
-   return value_ >= value;
-}
+//=========
 
 bool LongitudeFraction::operator==(double value) const {
     return value_ == value;
@@ -54,6 +40,48 @@ bool LongitudeFraction::operator==(double value) const {
 
 bool LongitudeFraction::operator!=(double value) const {
     return value_ != value;
+}
+
+bool LongitudeFraction::operator>(double value) const {
+    return value_ > value;
+}
+
+bool LongitudeFraction::operator<(double value) const {
+    return value_ < value;
+}
+
+bool LongitudeFraction::operator>=(double value) const {
+   return value_ >= value;
+}
+
+bool LongitudeFraction::operator<=(double value) const {
+    return value_ <= value;
+}
+
+//=========
+
+bool LongitudeFraction::operator==(const eckit::Fraction& value) const {
+    return value_ == value;
+}
+
+bool LongitudeFraction::operator!=(const eckit::Fraction& value) const {
+    return value_ != value;
+}
+
+bool LongitudeFraction::operator>(const eckit::Fraction& value) const {
+    return value_ > value;
+}
+
+bool LongitudeFraction::operator<(const eckit::Fraction& value) const {
+    return value_ < value;
+}
+
+bool LongitudeFraction::operator>=(const eckit::Fraction& value) const {
+   return value_ >= value;
+}
+
+bool LongitudeFraction::operator<=(const eckit::Fraction& value) const {
+    return value_ <= value;
 }
 
 //=========
