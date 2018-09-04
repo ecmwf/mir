@@ -16,6 +16,7 @@
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/types/Fraction.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
@@ -133,7 +134,12 @@ long Resol::getTargetGaussianNumber() const {
         util::BoundingBox bbox;
         increments.globaliseBoundingBox(bbox);
 
-        N = long(increments.computeNj(bbox) - 1) / 2;
+        eckit::Fraction last = bbox.north().fraction();
+        eckit::Fraction first = bbox.south().fraction();
+        eckit::Fraction inc = increments.south_north().latitude().fraction();
+        eckit::Fraction r = (last - first) / inc;
+
+        N = long(r.integralPart() / 2);
 
     } else if (parametrisation_.userParametrisation().get("reduced", N) ||
         parametrisation_.userParametrisation().get("regular", N) ||

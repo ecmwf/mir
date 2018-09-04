@@ -47,7 +47,15 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    size_t Ni() const {
+        return ni_;
+    }
+
+    size_t Nj() const {
+        return nj_;
+    }
+
 
     // -- Overridden methods
     // None

@@ -38,21 +38,6 @@ static void check(const Increments& inc) {
 
 
 template<class T>
-static size_t computeN(const T& first, const T& last, const T& inc) {
-    ASSERT(first <= last);
-    ASSERT(inc > 0);
-
-    eckit::Fraction l = last.fraction();
-    eckit::Fraction f = first.fraction();
-    eckit::Fraction i = inc.fraction();
-    eckit::Fraction r = (l - f) / i;
-
-    auto n = r.integralPart();
-    return size_t(n + 1);
-}
-
-
-template<class T>
 static T adjust(bool up, const T& target, const T& inc) {
     ASSERT(inc > 0);
 
@@ -196,16 +181,6 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShif
 
     ASSERT(allowLatitudeShift || !isLatitudeShifted(bbox));
     ASSERT(allowLongitudeShift || !isLongitudeShifted(bbox));
-}
-
-
-size_t Increments::computeNi(const BoundingBox& bbox) const {
-    return computeN(bbox.west(), bbox.east(), west_east_.longitude());
-}
-
-
-size_t Increments::computeNj(const BoundingBox& bbox) const {
-    return computeN(bbox.south(), bbox.north(), south_north_.latitude());
 }
 
 

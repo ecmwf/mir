@@ -78,10 +78,6 @@ public:
 
     void globaliseBoundingBox(BoundingBox&, bool allowLongitudeShift=true, bool allowLatitudeShift=true) const;
 
-    size_t computeNi(const BoundingBox&) const;
-
-    size_t computeNj(const BoundingBox&) const;
-
     const LongitudeIncrement& west_east() const {
         return west_east_;
     }
