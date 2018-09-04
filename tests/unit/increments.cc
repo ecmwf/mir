@@ -163,9 +163,19 @@ CASE( "test_increments" ) {
 
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
 
+        { Increments(1, 1),
+          Case("user",   {   0, -350,   0,   8 }, 359,   1),  // user bbox, Ni, Nj
+          Case("global", {  90,    0, -90, 359 }, 360, 181)   // globalised bbox, Ni, Nj
+        },
+
+        { Increments(0.5, 0.5),
+          Case("user",   {   0, -350,   0,   9   }, 719,   1),
+          Case("global", {  90,    0, -90, 359.5 }, 720, 361)
+        },
+
         { Increments(2, 2),
-          Case("user",   {   2,   0,   0,   2   },   2,  2),  // user bbox, Ni, Nj, is lat/lon shifted
-          Case("global", {  90,   0, -90, 358   }, 180, 91)   // globalised bbox ...
+          Case("user",   {   2,   0,   0,   2   },   2,  2),
+          Case("global", {  90,   0, -90, 358   }, 180, 91)
         },
 
         { Increments(2, 2),
