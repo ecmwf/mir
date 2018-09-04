@@ -176,7 +176,14 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 
 
 bool BoundingBox::contains(const BoundingBox& other) const {
-    return contains(other.north(), other.west()) &&
+
+    // check for West/East range (if non-periodic), then other's corners
+    bool isPeriodicWestEast = (east_ - west_ == Longitude::GLOBE);
+    return (isPeriodicWestEast ||
+            other.east().normalise(west_) >
+            other.west().normalise(west_)) &&
+
+            contains(other.north(), other.west()) &&
             contains(other.north(), other.east()) &&
             contains(other.south(), other.west()) &&
             contains(other.south(), other.east());

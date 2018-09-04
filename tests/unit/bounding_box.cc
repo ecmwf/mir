@@ -29,17 +29,27 @@ CASE("Representation::extendedBoundingBox") {
     auto& log = eckit::Log::info();
     auto old = log.precision(16);
 
-    SECTION("Gaussian::extendedBoundingBox") {
+    SECTION("Gaussian") {
 
-        for (const auto& name : {"F16", "O16", "N16"}) {
+        for (const auto& name : {
+             "F16",
+             "O16",
+             "N16",
+             "F21",
+             "O21",
+            }) {
             repres::RepresentationHandle repres = NamedGrid::lookup(name).representation();
 
             for (const auto& bbox : {
                      BoundingBox(90, 10, -10, 9),
+                     BoundingBox(90, -350, -10, 9),
                  }) {
-                log << name << " extendedBoundingBox(" << "\n\t" << bbox << " ) = " << std::endl;
                 BoundingBox extended = repres->extendedBoundingBox(bbox);
-                log << "\t" << extended << std::endl;
+
+                log << name << "\t > " << *repres << " + extendedBoundingBox("
+                    << "\n\t   " << bbox << ")"
+                    << "\n\t = " << extended
+                    << std::endl;
 
                 EXPECT(extended.contains(bbox));
             }
