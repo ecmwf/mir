@@ -61,9 +61,7 @@ protected:
     // None
 
     // -- Overridden methods
-
-    virtual const util::BoundingBox& croppingBoundingBox() const;
-    virtual void cropToInput(context::Context&, const repres::Representation& in) const;
+    // None
 
     // -- Class members
     // None
@@ -80,7 +78,9 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    // From Gridded2GriddedInterpolation
+    virtual const util::BoundingBox& croppingBoundingBox() const;
 
     // -- Class members
     // None

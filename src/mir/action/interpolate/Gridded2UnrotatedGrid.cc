@@ -11,9 +11,7 @@
 
 #include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
-#include "mir/action/misc/AreaCropper.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -29,18 +27,6 @@ const util::BoundingBox& Gridded2UnrotatedGrid::croppingBoundingBox() const {
 
     return method().hasCropping() ? method().getCropping()
                                   : out->boundingBox();
-}
-
-
-void Gridded2UnrotatedGrid::cropToInput(context::Context& ctx, const repres::Representation& in) const {
-
-    // * only crop if input is not global
-    // * output representation comes from Context
-    util::Domain domain = in.domain();
-    if (!domain.isGlobal()) {
-        AreaCropper cropper(parametrisation_, domain);
-        cropper.execute(ctx);
-    }
 }
 
 

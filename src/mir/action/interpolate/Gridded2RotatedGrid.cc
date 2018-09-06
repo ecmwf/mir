@@ -12,12 +12,8 @@
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 #include <vector>
-#include "eckit/exception/Exceptions.h"
-#include "mir/action/context/Context.h"
-#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -58,26 +54,6 @@ const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
 
     bbox_ = rotation_.rotate(bbox);
     return bbox_;
-}
-
-
-void Gridded2RotatedGrid::cropToInput(mir::context::Context& ctx, const mir::repres::Representation& in) const {
-
-    // Check if all resulting interpolation points are in the input domain
-    // NOT: this is slow, all code validated it isn't necessary
-
-    // Assumptions:
-    // * a local (unrotated) intermediate grid is supporting a local rotated
-    //   lat/lon grid (croppingBoundingBox, above)
-    // * the user-specified --area/--rotation is contained by the input grid
-    util::Domain domain = in.domain();
-    if (!domain.isGlobal()) {
-        repres::RepresentationHandle representation(ctx.field().representation());
-        for (eckit::ScopedPtr<repres::Iterator> iter(representation->iterator()); iter->next();) {
-            auto& pr = iter->pointRotated();
-            ASSERT(domain.contains(pr[0], pr[1]));
-        }
-    }
 }
 
 

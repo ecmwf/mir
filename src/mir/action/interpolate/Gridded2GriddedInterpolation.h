@@ -94,15 +94,14 @@ private:
     eckit::ScopedPtr<method::Method> method_;
 
     // -- Methods
-    // None
+
+    virtual const util::BoundingBox& croppingBoundingBox() const = 0;
 
     // -- Overridden methods
 
     virtual void execute(context::Context&) const;
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
-    virtual const util::BoundingBox& croppingBoundingBox() const = 0;
-    virtual void cropToInput(context::Context&, const repres::Representation& in) const = 0;
 
     // -- Class members
     // None

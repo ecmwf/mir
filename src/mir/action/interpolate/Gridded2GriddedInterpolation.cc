@@ -15,10 +15,15 @@
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
+#include <sstream>
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -69,12 +74,21 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
                                          outputRepresentation()->croppedRepresentation(method_->getCropping())
                                        : outputRepresentation());
 
+    const auto& domain = in->domain();
+    if (!domain.isGlobal()) {
+        const auto& box = croppingBoundingBox();
+        if (!domain.contains(box)) {
+            std::ostringstream msg;
+            msg << "Output is not contained by input:"
+                << "\n\t" "Input: " << domain
+                << "\n\t" "Output: " << box;
+            throw eckit::UserError(msg.str());
+        }
+    }
+
     method_->execute(ctx, *in, *out);
 
     field.representation(out);
-
-    // Make sure results are cropped to the input
-    cropToInput(ctx, *in);
 }
 
 
