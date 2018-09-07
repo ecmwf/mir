@@ -2673,6 +2673,7 @@ rate:
 - 173153  # Short-wave heating rate anomaly
 - 173154  # Long-wave heating rate anomaly
 - 173189  # Sunshine duration anomalous rate of accumulation
+- 173212  # Solar insolation anomalous rate of accumulation
 - 174083  # Net primary productivity
 - 175083  # Net primary productivity
 - 200232  # Instantaneous moisture flux difference
