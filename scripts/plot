@@ -71,7 +71,7 @@ if args.legend:
 
 if args.diff or args.error:
     scaling = 'off'
-    import gribapi
+    import eccodes
 
     if args.diff:
         path = args.diff
@@ -82,16 +82,16 @@ if args.diff or args.error:
         proc = error
 
     with open(args.grib[0]) as f:
-        h1 = gribapi.grib_new_from_file(f)
+        h1 = eccodes.codes_grib_new_from_file(f)
 
     with open(path) as f:
-        h2 = gribapi.grib_new_from_file(f)
+        h2 = eccodes.codes_grib_new_from_file(f)
 
-    v1 = gribapi.grib_get_values(h1)
-    v2 = gribapi.grib_get_values(h2)
+    v1 = eccodes.codes_get_values(h1)
+    v2 = eccodes.codes_get_values(h2)
 
-    e1 = gribapi.grib_get(h1, "packingError")
-    e2 = gribapi.grib_get(h2, "packingError")
+    e1 = eccodes.codes_get(h1, "packingError")
+    e2 = eccodes.codes_get(h2, "packingError")
     EPSILON = min(e1, e2)
 
     # Version without numpy
@@ -99,17 +99,17 @@ if args.diff or args.error:
     for i in xrange(len(v1)):
         v1[i] = proc(v1[i], v2[i])
 
-    gribapi.grib_set_values(h1, v1)
+    eccodes.codes_set_values(h1, v1)
 
     print('min:', min(v1), 'max:', max(v1))
 
     # TODO: Use tmpfile
     tmp = "/tmp/plot-diff$$.grib"
     with open(tmp, "w") as f:
-        gribapi.grib_write(h1, f)
+        eccodes.codes_write(h1, f)
 
-    gribapi.grib_release(h1)
-    gribapi.grib_release(h2)
+    eccodes.codes_release(h1)
+    eccodes.codes_release(h2)
 
     args.grib = [tmp]
 
