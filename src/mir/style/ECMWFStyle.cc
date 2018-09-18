@@ -283,9 +283,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
@@ -313,18 +310,16 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         }
 
-        if (wind) {
+        if (windInput()) {
             plan.add("filter.adjust-winds-scale-cos-latitude");
         }
 
-        if ((wind || vod2uv) && rotation) {
+        if (windOutput() && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
     }
 
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
-    }
+    selectWindComponents(plan);
 
     if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
         std::string metadata;
@@ -359,9 +354,6 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
     }
@@ -375,12 +367,6 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     bool rotation = parametrisation_.userParametrisation().has("rotation");
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
 
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
@@ -400,7 +386,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if ((wind || vod2uv) && rotation) {
+        if (windOutput() && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
     }
@@ -438,7 +424,39 @@ void ECMWFStyle::print(std::ostream& out) const {
 }
 
 
+bool ECMWFStyle::windInput() const {
+    long id = 0;
+    parametrisation_.fieldParametrisation().get("paramId", id);
+
+    if (id == 0) {
+        return false;
+    }
+
+    const auto& config = LibMir::instance().configuration();
+    return  id == config.getLong("parameter-id-u") ||
+            id == config.getLong("parameter-id-v");
+}
+
+
+bool ECMWFStyle::windOutput() const {
+    if (windInput()) {
+        return true;
+    }
+
+    bool vod2uv = false;
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
+    return vod2uv || wind;
+}
+
+
 void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+    if (!windOutput()) {
+        return;
+    }
 
     bool u_only = false;
     parametrisation_.userParametrisation().get("u-only", u_only);
