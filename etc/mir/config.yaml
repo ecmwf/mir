@@ -7,5 +7,20 @@
     "legendre-loader": "mapped-memory",
     "matrix-loader": "file-io",
 
-    "mir-cache-path": "/tmp/cache"
+    "mir-cache-path": "/tmp/cache",
+
+    "post-process": [
+        "accuracy",
+        "bitmap",
+        "checkerboard",
+        "griddef",
+        "points",
+        "edition",
+        "formula",
+        "frame",
+        "packing",
+        "pattern",
+        "vod2uv",
+        "compatibility"
+    ]
 }

@@ -15,7 +15,10 @@
 
 #include "mir/action/plan/Job.h"
 
+#include <algorithm>
 #include <iostream>
+#include <vector>
+
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
@@ -34,29 +37,14 @@ namespace action {
 
 
 bool postProcessingRequested(const api::MIRJob& job) {
-    static const char *force[] = {
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "griddef",
-        "points",
-        "edition",
-        "formula",
-        "frame",
-        "packing",
-        "pattern",
-        "vod2uv",
-        "compatibility",
-        nullptr
-    };
+    using keys_t = std::vector<std::string>;
 
-    for (size_t i = 0; force[i]; ++i) {
-        if (job.has(force[i])) {
-            return true;
-        }
-    }
+    auto& config = LibMir::instance().configuration();
+    static const keys_t keys = config.getStringVector("post-process");
 
-    return false;
+    return keys.end() != std::find_if(keys.begin(), keys.end(), [&job](const keys_t::value_type& key) {
+        return job.has(key);
+    });
 }
 
 
