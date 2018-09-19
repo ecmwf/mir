@@ -34,7 +34,7 @@ void LongitudeDouble::print(std::ostream& out) const {
 }
 
 bool LongitudeDouble::operator<(double value) const {
-    return eckit::types::is_strictly_greater(value, value_);
+    return value_ < value;
 }
 
 bool LongitudeDouble::operator<=(double value) const {
@@ -42,7 +42,7 @@ bool LongitudeDouble::operator<=(double value) const {
 }
 
 bool LongitudeDouble::operator>(double value) const {
-    return eckit::types::is_strictly_greater(value_, value);
+    return value_ > value;
 }
 
 bool LongitudeDouble::operator>=(double value) const {
