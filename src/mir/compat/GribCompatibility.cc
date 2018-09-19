@@ -21,6 +21,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "eckit/parser/Tokenizer.h"
 
 namespace mir {
 namespace compat {
@@ -50,7 +51,7 @@ GribCompatibility::~GribCompatibility() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    ASSERT(m->find(name_)!= m->end());
+    ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
 
@@ -70,15 +71,84 @@ void GribCompatibility::list(std::ostream& out) {
     }
 }
 
+class CombinedGribCompatibility : public GribCompatibility {
+
+    std::vector<const GribCompatibility*> list_;
+
+    virtual void execute(const output::MIROutput& output,
+                         const param::MIRParametrisation& parametrisation,
+                         grib_handle* h,
+                         grib_info& info) const {
+        for (auto c : list_) {
+            c->execute(output, parametrisation, h, info);
+        }
+    }
+
+    virtual void printParametrisation(std::ostream& out,
+                                      const param::MIRParametrisation &param) const {
+        for (auto c : list_) {
+            c->printParametrisation(out, param);
+        }
+    }
+
+    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
+                                     const param::MIRParametrisation &param2) const {
+
+        for (auto c : list_) {
+            if (!c->sameParametrisation(param1, param2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    virtual void initialise(const metkit::MarsRequest& request,
+                            std::map<std::string, std::string>& postproc) const {
+        for (auto c : list_) {
+            c->initialise(request, postproc);
+        }
+    }
+
+    virtual void print(std::ostream& out) const {
+        out << "CombinedGribCompatibility[";
+        const char* sep = "";
+        for (auto c : list_) {
+            out << sep << *c;
+            sep = ",";
+        }
+        out << "]";
+    }
+
+
+public:
+    CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names):
+        GribCompatibility(name) {
+        for (auto n : names) {
+            list_.push_back(&GribCompatibility::lookup(n));
+        }
+    }
+
+};
 
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+
     // eckit::Log::debug<LibMir>() << "GribCompatibility: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
+
+        static eckit::Tokenizer parse("/");
+        std::vector<std::string> v;
+        parse(name, v);
+
+        if (v.size() > 1) {
+            return *(new CombinedGribCompatibility(name, v));
+        }
+
         list(eckit::Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
         throw eckit::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
