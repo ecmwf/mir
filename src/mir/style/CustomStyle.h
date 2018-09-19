@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~CustomStyle();
+    virtual ~CustomStyle();
 
     // -- Convertors
     // None
@@ -65,7 +65,7 @@ protected:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -84,8 +84,6 @@ private:
     // -- Overridden methods
 
     void prepare(action::ActionPlan&) const;
-
-    bool postProcessingRequested(const api::MIRJob&) const;
 
     // -- Class members
     // None

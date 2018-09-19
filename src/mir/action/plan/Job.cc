@@ -33,6 +33,33 @@ namespace mir {
 namespace action {
 
 
+bool postProcessingRequested(const api::MIRJob& job) {
+    static const char *force[] = {
+        "accuracy",
+        "bitmap",
+        "checkerboard",
+        "griddef",
+        "points",
+        "edition",
+        "formula",
+        "frame",
+        "packing",
+        "pattern",
+        "vod2uv",
+        "compatibility",
+        nullptr
+    };
+
+    for (size_t i = 0; force[i]; ++i) {
+        if (job.has(force[i])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
     input_(input),
     output_(output)  {
@@ -40,14 +67,12 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
-    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-    if (!style->postProcessingRequested(job)) {
+    if (!postProcessingRequested(job)) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
@@ -61,8 +86,10 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         }
     }
 
-
+    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
+
+    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_);
 
 

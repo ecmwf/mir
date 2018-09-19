@@ -53,12 +53,6 @@ void CustomStyle::prepare(action::ActionPlan& plan) const {
     }
 
     throw eckit::UserError("CustomStyle: no plan specified");
-    // plan.add("interpolate.grid2regular-ll", new CustomParametrisation(parametrisation_));
-}
-
-
-bool CustomStyle::postProcessingRequested(const api::MIRJob&) const {
-    return true;
 }
 
 
@@ -68,6 +62,7 @@ void CustomStyle::print(std::ostream& out) const {
 
 
 static MIRStyleBuilder<CustomStyle> __style("custom");
+
 
 }  // namespace style
 }  // namespace mir

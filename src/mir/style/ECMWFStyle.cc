@@ -563,33 +563,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 }
 
 
-bool ECMWFStyle::postProcessingRequested(const api::MIRJob& job) const {
-    static const char *force[] = {
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "griddef",
-        "points",
-        "edition",
-        "formula",
-        "frame",
-        "packing",
-        "pattern",
-        "vod2uv",
-        "compatibility",
-        0
-    };
-
-    for (size_t i = 0; force[i]; ++i) {
-        if (job.has(force[i])) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
 }  // namespace style
 }  // namespace mir
 

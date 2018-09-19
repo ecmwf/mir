@@ -92,8 +92,6 @@ private:
 
     void prepare(action::ActionPlan&) const;
 
-    bool postProcessingRequested(const api::MIRJob&) const;
-
     // -- Class members
     // None
 
