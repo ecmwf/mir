@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
 #include "mir/api/MIRJob.h"
@@ -178,12 +179,13 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 bool BoundingBox::contains(const BoundingBox& other) const {
 
     // check for West/East range (if non-periodic), then other's corners
-    bool isPeriodicWestEast = (east_ - west_ == Longitude::GLOBE);
-    return (isPeriodicWestEast ||
-            other.east().normalise(west_) >
-            other.west().normalise(west_)) &&
+    if (east_ - west_ < Longitude::GLOBE) {
+        if (other.east().normalise(west_) < other.west().normalise(west_)) {
+            return false;
+        }
+    }
 
-            contains(other.north(), other.west()) &&
+    return  contains(other.north(), other.west()) &&
             contains(other.north(), other.east()) &&
             contains(other.south(), other.west()) &&
             contains(other.south(), other.east());
