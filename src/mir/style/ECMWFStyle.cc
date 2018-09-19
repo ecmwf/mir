@@ -319,8 +319,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
     }
 
-    selectWindComponents(plan);
-
     if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
         std::string metadata;
         // paramId for the results of formulas
@@ -357,8 +355,6 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
     }
-
-    selectWindComponents(plan);
 }
 
 
@@ -388,23 +384,41 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
             plan.add("filter.adjust-winds-directions");
         }
     }
-
-    selectWindComponents(plan);
 }
 
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
+
+    if (windOutput()) {
+
+        bool u_only = false;
+        user.get("u-only", u_only);
+
+        bool v_only = false;
+        user.get("v-only", v_only);
+
+        if (u_only) {
+            ASSERT(!v_only);
+            plan.add("select.field", "which", long(0));
+        }
+
+        if (v_only) {
+            ASSERT(!u_only);
+            plan.add("select.field", "which", long(1));
+        }
+    }
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.epilogue", formula)) {
+    if (user.get("formula.epilogue", formula)) {
         std::string metadata;
         // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.epilogue.metadata", metadata);
+        user.get("formula.epilogue.metadata", metadata);
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     std::string metadata;
-    if (parametrisation_.userParametrisation().get("metadata", metadata)) {
+    if (user.get("metadata", metadata)) {
         plan.add("set.metadata", "metadata", metadata);
     }
 
@@ -446,28 +460,6 @@ bool ECMWFStyle::windOutput() const {
     parametrisation_.userParametrisation().get("wind", wind);
 
     return vod2uv || wind;
-}
-
-
-void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
-    if (!windOutput()) {
-        return;
-    }
-
-    bool u_only = false;
-    parametrisation_.userParametrisation().get("u-only", u_only);
-
-    bool v_only = false;
-    parametrisation_.userParametrisation().get("v-only", v_only);
-
-    if (u_only) {
-        ASSERT(!v_only);
-        plan.add("select.field", "which", long(0));
-    }
-    if (v_only) {
-        ASSERT(!u_only);
-        plan.add("select.field", "which", long(1));
-    }
 }
 
 
