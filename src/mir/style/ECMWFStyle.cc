@@ -358,9 +358,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
         plan.add("transform.sh-vod-to-UV");
     }
 
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
-    }
+    selectWindComponents(plan);
 }
 
 
@@ -391,9 +389,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         }
     }
 
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
-    }
+    selectWindComponents(plan);
 }
 
 
