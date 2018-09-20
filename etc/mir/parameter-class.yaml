@@ -1121,6 +1121,8 @@ intensity:
 - 171014  # V component of rotational wind anomaly
 - 171021  # Unbalanced component of temperature anomaly
 - 171023  # Unbalanced component of divergence anomaly
+- 171024  # Lake mix-layer temperature anomaly
+- 171025  # Lake ice depth anomaly
 - 171034  # Sea surface temperature anomaly
 - 171035  # Ice surface temperature anomaly layer 1
 - 171036  # Ice surface temperature anomaly layer 2
@@ -1921,6 +1923,8 @@ numerics.tendency:
 - 235008  # Mean northward wind tendency due to parametrisations
 
 numerics.mean:
+- 173008  # Mean surface runoff rate anomaly
+- 173009  # Mean sub-surface runoff rate anomaly
 - 235001  # Mean temperature tendency due to short-wave radiation
 - 235002  # Mean temperature tendency due to long-wave radiation
 - 235003  # Mean temperature tendency due to short-wave radiation, clear sky
@@ -3112,6 +3116,8 @@ rate.mass-flux:
 - 171044  # Snow evaporation anomaly
 - 171045  # Snowmelt anomaly
 - 171182  # Evaporation anomaly
+- 173008  # Mean surface runoff rate anomaly
+- 173009  # Mean sub-surface runoff rate anomaly
 - 174008  # Surface runoff
 - 174009  # Sub-surface runoff
 - 174142  # Large scale rainfall rate
