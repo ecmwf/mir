@@ -9,10 +9,14 @@
  */
 
 
+#include <algorithm>
+#include <cmath>
 #include <string>
 #include <vector>
+
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
@@ -187,6 +191,56 @@ public:
         return size_t(n);
     }
 
+    bool compareCoordinates(long edition, double tolerance_lat, double tolerance_lon, eckit::Channel& out) {
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+        eckit::ScopedPtr<repres::Iterator> iter_m(representation_->iterator());
+
+        int err = 0;
+        grib_iterator* iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
+        if (err != GRIB_SUCCESS) {
+            GRIB_CHECK(err, nullptr);
+        }
+
+        size_t Nerrors = 0;
+        long n = 0;
+        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value); ++n) {
+            ASSERT(iter_m->next());
+
+            double lat_m = iter_m->pointRotated()[0];
+            double lon_m = iter_m->pointRotated()[1];
+            while (lon_m - lon >  180.) {
+                lon_m -= 360.;
+            }
+            while (lon_m - lon < -180.) {
+                lon_m += 360.;
+            }
+
+            if (std::abs(lat - lat_m) > tolerance_lat ||
+                std::abs(lon - lon_m) > tolerance_lon) {
+                ++Nerrors;
+                if (Nerrors >= 10) {
+                    if (Nerrors > 10) {} else {
+                    out << "..." << std::endl;
+                    }
+                } else {
+                    out << n
+                        << "\tmir(lat, lon) =\t" << (*(*iter_m))
+                        << "\tecc(lat, lon) =\t" << lat << ",\t" << lon
+                        << std::endl;
+                }
+            }
+        }
+
+        grib_iterator_delete(iter_g);
+
+        ASSERT(!iter_m->next());
+        ASSERT(n > 0);
+
+        out << "\tnumberOfErrors = " << Nerrors << std::endl;
+        return Nerrors == 0;
+    }
+
     size_t numberOfValuesFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -293,7 +347,6 @@ public:
         EncodeRegular(rep, Ni, Nj) {
         ASSERT(gaussianNumber);
     }
-    virtual ~EncodeRegularGaussianGrid() = default;
 };
 
 
@@ -303,7 +356,6 @@ class EncodeRegularLatLonGrid final : public EncodeRegular {
     }
 public:
     using EncodeRegular::EncodeRegular;
-    ~EncodeRegularLatLonGrid() = default;
 };
 
 
@@ -396,6 +448,12 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             const BoundingBox bbox = encode.boundingBoxFromGribInput(edition);
             log << "\tGRIB" << edition << ": " << bbox << std::endl;
             EXPECT(bbox.contains(small));
+
+            // FIXME: compare mir/eccodes iterators coordinates with a better precision
+            double tolerance_lat = 1.e-3;
+            double tolerance_lon = 1.e-3;
+            log << "\tGRIB" << edition << ": |Δ(lat,lon)| <= (" << tolerance_lat << ", " << tolerance_lon << ")" << std::endl;
+            EXPECT(encode.compareCoordinates(edition, tolerance_lat, tolerance_lon, log));
         }
     }
 }
