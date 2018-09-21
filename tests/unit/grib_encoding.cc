@@ -219,10 +219,9 @@ public:
             if (std::abs(lat - lat_m) > tolerance_lat ||
                 std::abs(lon - lon_m) > tolerance_lon) {
                 ++Nerrors;
-                if (Nerrors >= 10) {
-                    if (Nerrors > 10) {} else {
+                if (Nerrors > 10) {
+                } else if (Nerrors == 10) {
                     out << "..." << std::endl;
-                    }
                 } else {
                     out << n
                         << "\tmir(lat, lon) =\t" << (*(*iter_m))
