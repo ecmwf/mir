@@ -133,6 +133,10 @@ LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum)
 }
 
 LongitudeFraction LongitudeFraction::distance(const LongitudeFraction& meridian) const {
+    if (normalise(meridian) == meridian) {
+        return 0;
+    }
+
     LongitudeFraction d = (meridian < (*this) ? value_ - meridian.fraction() : meridian.fraction() - value_);
     while (d > LongitudeFraction::DATE_LINE) {
         d -= LongitudeFraction::DATE_LINE;

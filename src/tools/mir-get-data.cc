@@ -11,6 +11,7 @@
 /// @date Jun 2017
 
 
+#include <limits>
 #include <vector>
 
 #include "eckit/log/Log.h"
@@ -41,6 +42,8 @@ public:
         using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption< bool >("diff-atlas", "compare to Atlas coordinates, default false"));
         options_.push_back(new SimpleOption< bool >("diff-ecc", "compare to ecCodes coordinates, default false"));
+        options_.push_back(new SimpleOption< double >("tolerance-lat", "Latitude tolerance (absolute), default 0."));
+        options_.push_back(new SimpleOption< double >("tolerance-lon", "Longitude tolerance (absolute), default 0."));
     }
 };
 
@@ -57,12 +60,161 @@ void MIRGetData::usage(const std::string &tool) const {
 }
 
 
+using coord_t = std::vector<double>;
+
+
+struct Coordinates {
+    virtual ~Coordinates() = default;
+    virtual const coord_t& latitudes() const = 0;
+    virtual const coord_t& longitudes() const = 0;
+    size_t size() const {
+        ASSERT(latitudes().size() == longitudes().size());
+        return latitudes().size();
+    }
+};
+
+
+struct CoordinatesFromRepresentation : Coordinates {
+    CoordinatesFromRepresentation(const mir::repres::Representation& rep) {
+        eckit::ScopedPtr< mir::repres::Iterator > it(rep.iterator());
+
+        const size_t N(rep.numberOfPoints());
+        lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
+        lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
+
+        size_t n = 0;
+        while (it->next()) {
+            ASSERT(n < N);
+            lats_[n] = (*(*it))[0];
+            lons_[n] = (*(*it))[1];
+            ++n;
+        }
+    }
+    const coord_t& latitudes() const { return lats_; }
+    const coord_t& longitudes() const { return lons_; }
+private:
+    coord_t lats_;
+    coord_t lons_;
+};
+
+
+struct CoordinatesFromGRIB : Coordinates {
+    CoordinatesFromGRIB(grib_handle* h) {
+
+        long Nl = 0;
+        grib_get_long(h, "numberOfValues", &Nl);
+        ASSERT(Nl > 0);
+        const size_t N = size_t(Nl);
+
+        lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
+        lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
+
+        int err = 0;
+        grib_iterator* it = grib_iterator_new(h, 0, &err);
+        if (err != GRIB_SUCCESS) {
+            GRIB_CHECK(err, nullptr);
+        }
+
+        size_t n = 0;
+        for (double lat, lon, value; grib_iterator_next(it, &lat, &lon, &value);) {
+            ASSERT(n < N);
+            lats_[n] = lat;
+            lons_[n] = lon;
+            ++n;
+        }
+
+        grib_iterator_delete(it);
+    }
+    const coord_t& latitudes() const { return lats_; }
+    const coord_t& longitudes() const { return lons_; }
+private:
+    coord_t lats_;
+    coord_t lons_;
+};
+
+
+struct CoordinatesFromAtlas : Coordinates {
+    CoordinatesFromAtlas(const atlas::Grid& grid) {
+
+        const size_t N = grid.size();
+        lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
+        lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
+
+        size_t n = 0;
+        for (const atlas::Grid::PointLonLat p : grid.lonlat()) {
+            ASSERT(n < N);
+            lats_[n] = p.lat();
+            lons_[n] = p.lon();
+            ++n;
+        }
+    }
+    const coord_t& latitudes() const { return lats_; }
+    const coord_t& longitudes() const { return lons_; }
+private:
+    coord_t lats_;
+    coord_t lons_;
+};
+
+
+
+
+size_t diff(eckit::Channel& log,
+          double toleranceLat,
+          double toleranceLon,
+          const std::string& name1, const Coordinates& coord1,
+          const std::string& name2, const Coordinates& coord2) {
+
+    using point_2d_t = mir::repres::Iterator::point_2d_t;
+
+    ASSERT(coord1.size() == coord2.size());
+    size_t N = coord1.size();
+
+    const coord_t
+            &lat1 = coord1.latitudes(),
+            &lon1 = coord1.longitudes(),
+            &lat2 = coord2.latitudes(),
+            &lon2 = coord2.longitudes();
+
+    mir::stats::detail::ScalarMinMaxFn<double> statsLat, statsLon;
+    auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
+        return out << "\n\t@[0]=" << n
+                   << '\t' << point_2d_t(lat1[n], lon1[n])
+                   << '\t' << point_2d_t(lat2[n], lon2[n]);
+    };
+
+    size_t Ndiff = 0;
+    for (size_t n = 0; n < N; ++n) {
+        double dlat = mir::Latitude(lat1[n]).distance(lat2[n]).value();
+        double dlon = mir::LongitudeDouble(lon1[n]).distance(lon2[n]).value();
+
+        statsLat(dlat);
+        statsLon(dlon);
+
+        if (dlat > toleranceLat || dlon > toleranceLon) {
+            ++Ndiff;
+            showPointAt(log, n);
+        }
+    }
+
+    log << "\n|" << name1 << " - " << name2 << "|: Δ# = " << Ndiff << " of " << N;
+
+    if (Ndiff && statsLat.max() > toleranceLat) {
+        showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
+    }
+    if (Ndiff && statsLon.max() > toleranceLon) {
+        showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
+    }
+    log << std::endl;
+
+    return Ndiff;
+}
+
+
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     using mir::repres::Iterator;
-    using minmax_t = mir::stats::detail::ScalarMinMaxFn<double>;
 
     auto& log = eckit::Log::info();
-
+    auto old = log.precision(32);
 
     bool ecc = false;
     args.get("diff-ecc", ecc);
@@ -70,6 +222,16 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
     bool atlas = false;
     args.get("diff-atlas", atlas);
+
+
+    double toleranceLat = 0.;
+    args.get("tolerance-lat", toleranceLat);
+    ASSERT(toleranceLat >= 0.);
+
+
+    double toleranceLon = 0.;
+    args.get("tolerance-lon", toleranceLon);
+    ASSERT(toleranceLon >= 0.);
 
 
     for (size_t i = 0; i < args.count(); ++i) {
@@ -86,127 +248,6 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             mir::repres::RepresentationHandle rep(field.representation());
 
-            if (atlas) {
-                eckit::ScopedPtr< Iterator > it(rep->iterator());
-                minmax_t stats[2];
-
-                atlas::Grid grid(rep->atlasGrid());
-
-                auto v = field.values(0).begin();
-                for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
-                    ASSERT(it->next());
-                    const Iterator::point_2d_t& P(**it);
-                    stats[0](mir::Latitude(P[0]).distance(p.lat()).value());
-                    stats[1](mir::LongitudeDouble(P[1]).distance(p.lon()).value());
-                    ++v;
-                }
-                ASSERT(v == field.values(0).end());
-
-                log << "\nCompare |MIR - Atlas|:"
-                    << "\n\tcount = " << field.values(0).size()
-                    << "\n\tmax(|Δlat|) [°] = " << stats[0].max() << "\tindex [1] = " << stats[0].maxIndex()
-                    << "\n\tmax(|Δlon|) [°] = " << stats[1].max() << "\tindex [1] = " << stats[1].maxIndex()
-                    << std::endl;
-
-                std::vector<size_t> look;
-                for (int i : { int(stats[0].maxIndex()), int(stats[1].maxIndex()) }) {
-                    for (int j : { -3, -2, -1, 0, 1, 2, 3 }) {
-                        auto k = i + j;
-                        if (0 < k && k <= int(field.values(0).size())) {
-                            look.push_back(size_t(k));
-                        }
-                    }
-                }
-                std::sort(look.begin(), look.end());
-                look.erase(std::unique(look.begin(), look.end() ), look.end());
-
-                auto old = log.precision(32);
-                size_t pos = 0;
-                it.reset(rep->iterator());
-                for (const atlas::Grid::PointLonLat p: grid.lonlat()) {
-                    ASSERT(it->next());
-                    if (std::find(look.begin(), look.end(), ++pos) != look.end()) {
-                        const Iterator::point_2d_t& P(**it);
-                        log << "\n\t" << P[0]    << '\t' << P[1]    << '\t' << *v << "\t(index [1] = " << pos << ", MIR)"
-                            << "\n\t" << p.lat() << '\t' << p.lon() << '\t' << *v << "\t(index [1] = " << pos << ", Atlas)";
-                        if (pos == look.back()) {
-                            break;
-                        }
-                    }
-                }
-                log << std::endl;
-                log.precision(old);
-            }
-
-            if (ecc) {
-                eckit::ScopedPtr< Iterator > it(rep->iterator());
-                minmax_t stats[2];
-
-                int err = 0;
-                grib_iterator* iter = grib_iterator_new(input.gribHandle(), 0, &err);
-                if (err != GRIB_SUCCESS) {
-                    GRIB_CHECK(err, nullptr);
-                }
-
-                auto v = field.values(0).begin();
-                long n = 0;
-                for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
-                    ASSERT(it->next());
-                    const Iterator::point_2d_t& P(**it);
-                    stats[0](mir::Latitude(P[0]).distance(lat).value());
-                    stats[1](mir::LongitudeDouble(P[1]).distance(lon).value());
-                    ++v;
-                }
-                ASSERT(v == field.values(0).end());
-
-                grib_iterator_delete(iter);
-
-                log << "\nCompare |MIR - ecCodes|:"
-                    << "\n\tcount = " << field.values(0).size()
-                    << "\n\tmax(|Δlat|) [°] = " << stats[0].max() << "\tindex [1] = " << stats[0].maxIndex()
-                    << "\n\tmax(|Δlon|) [°] = " << stats[1].max() << "\tindex [1] = " << stats[1].maxIndex()
-                    << std::endl;
-
-                std::vector<size_t> look;
-                for (int i : { int(stats[0].maxIndex()), int(stats[1].maxIndex()) }) {
-                    for (int j : { -3, -2, -1, 0, 1, 2, 3 }) {
-                        auto k = i + j;
-                        if (0 < k && k <= int(field.values(0).size())) {
-                            look.push_back(size_t(k));
-                        }
-                    }
-                }
-                std::sort(look.begin(), look.end());
-                look.erase(std::unique(look.begin(), look.end() ), look.end());
-
-                auto old = log.precision(32);
-                size_t pos = 0;
-                it.reset(rep->iterator());
-
-                err = 0;
-                iter = grib_iterator_new(input.gribHandle(), 0, &err);
-                if (err != GRIB_SUCCESS) {
-                    GRIB_CHECK(err, nullptr);
-                }
-
-                for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
-                    ASSERT(it->next());
-                    if (std::find(look.begin(), look.end(), ++pos) != look.end()) {
-                        const Iterator::point_2d_t& P(**it);
-                        log << "\n\t" << P[0] << '\t' << P[1] << '\t' << *v << "\t(index [1] = " << pos << ", MIR)"
-                            << "\n\t" << lat  << '\t' << lon  << '\t' << *v << "\t(index [1] = " << pos << ", ecCodes)";
-                        if (pos == look.back()) {
-                            break;
-                        }
-                    }
-                }
-
-                grib_iterator_delete(iter);
-
-                log << std::endl;
-                log.precision(old);
-            }
-
             if (!atlas && !ecc) {
                 eckit::ScopedPtr< Iterator > it(rep->iterator());
                 for (const double& v: field.values(0)) {
@@ -218,11 +259,29 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 log << std::endl;
                 ASSERT(!it->next());
 
+                continue;
             }
 
+            eckit::ScopedPtr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
+
+            bool err = false;
+            if (atlas) {
+                eckit::ScopedPtr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
+                err = diff(log, toleranceLat, toleranceLon, "mir", *crd, "atlas", *atl);
+            }
+
+            if (ecc) {
+                eckit::ScopedPtr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
+                err = diff(log, toleranceLat, toleranceLon, "mir", *crd, "ecc", *ecc) || err;
+            }
+
+            if (err) {
+                throw eckit::UserError("Comparison failed");
+            }
         }
     }
 
+    log.precision(old);
 }
 
 

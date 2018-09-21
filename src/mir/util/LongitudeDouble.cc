@@ -81,6 +81,13 @@ LongitudeDouble LongitudeDouble::normalise(const LongitudeDouble& minimum) const
 }
 
 LongitudeDouble LongitudeDouble::distance(const LongitudeDouble& meridian) const {
+    auto& a = *this;
+    auto& b = meridian;
+    if (eckit::types::is_approximately_equal(0., std::min((a.normalise(b) - b).value(),
+                                                          (b.normalise(a) - a).value() ))) {
+        return 0.;
+    }
+
     LongitudeDouble d = (meridian < (*this) ? value_ - meridian : meridian - value_);
     while (d > LongitudeDouble::DATE_LINE) {
         d -= LongitudeDouble::DATE_LINE;
