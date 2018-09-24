@@ -179,8 +179,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     static mir::param::DefaultParametrisation defaults;
     const mir::param::ConfigurationWrapper commandLine(args);
 
-    const long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u", 131);
-    const long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v", 132);
+    long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u");
+    long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v");
     ASSERT(paramIdu > 0);
     ASSERT(paramIdv > 0);
 

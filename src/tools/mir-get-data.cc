@@ -196,7 +196,7 @@ size_t diff(eckit::Channel& log,
         }
     }
 
-    log << "\n|" << name1 << " - " << name2 << "|: Δ# = " << Ndiff << " of " << N;
+    log << "\n|" << name1 << " - " << name2 << "|: #Δ = " << Ndiff << " of " << N;
 
     if (Ndiff && statsLat.max() > toleranceLat) {
         showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
