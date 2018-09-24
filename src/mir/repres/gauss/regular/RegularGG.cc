@@ -32,8 +32,8 @@ RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
 }
 
 
-RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox):
-    Regular(N, bbox) {
+RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, double angularPrecision):
+    Regular(N, bbox, angularPrecision) {
 }
 
 
@@ -63,7 +63,7 @@ Iterator* RegularGG::iterator() const {
 
 
 const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new RegularGG(N_, bbox);
+    return new RegularGG(N_, bbox, angularPrecision_);
 }
 
 

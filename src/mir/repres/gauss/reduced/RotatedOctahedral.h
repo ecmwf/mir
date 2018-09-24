@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
+    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

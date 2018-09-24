@@ -29,8 +29,8 @@ ReducedFromPL::ReducedFromPL(const param::MIRParametrisation& parametrisation) :
 }
 
 
-ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox):
-    FromPL(N, pl, bbox) {
+ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox, double angularPrecision):
+    FromPL(N, pl, bbox, angularPrecision) {
 }
 
 
@@ -48,7 +48,7 @@ Iterator* ReducedFromPL::iterator() const {
 
 
 const Gridded* ReducedFromPL::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new ReducedFromPL(N_, pls(), bbox);
+    return new ReducedFromPL(N_, pls(), bbox, angularPrecision_);
 }
 
 

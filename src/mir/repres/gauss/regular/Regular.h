@@ -34,7 +34,7 @@ public:
     // -- Constructors
 
     Regular(const param::MIRParametrisation&);
-    Regular(size_t N, const util::BoundingBox& = util::BoundingBox());
+    Regular(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

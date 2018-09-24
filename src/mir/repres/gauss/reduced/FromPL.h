@@ -35,7 +35,7 @@ public:
     // -- Constructors
 
     FromPL(const param::MIRParametrisation&);
-    FromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox());
+    FromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

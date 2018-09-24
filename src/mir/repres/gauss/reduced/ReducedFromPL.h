@@ -34,7 +34,7 @@ public:
     // -- Constructors
 
     ReducedFromPL(const param::MIRParametrisation&);
-    ReducedFromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox());
+    ReducedFromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

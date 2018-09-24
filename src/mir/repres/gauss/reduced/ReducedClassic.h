@@ -33,7 +33,7 @@ public:
 
     // -- Constructors
 
-    ReducedClassic(size_t, const util::BoundingBox& = util::BoundingBox());
+    ReducedClassic(size_t, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

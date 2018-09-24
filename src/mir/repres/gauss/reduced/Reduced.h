@@ -41,7 +41,7 @@ public:
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 
@@ -69,7 +69,7 @@ protected:
 
     // -- Constructors
 
-    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Members
 

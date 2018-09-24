@@ -45,10 +45,12 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox) :
+Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
     Gridded(bbox),
     N_(N),
-    angularPrecision_(0) {
+    angularPrecision_(angularPrecision) {
+    ASSERT(N_ > 0);
+    ASSERT(angularPrecision >= 0);
 }
 
 
