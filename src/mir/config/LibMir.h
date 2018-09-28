@@ -10,39 +10,34 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   August 2016
+/// @author Pedro Maciel
+/// @date August 2016
 
-#ifndef mir_LibMir_H
-#define mir_LibMir_H
+
+#ifndef mir_config_LibMir_h
+#define mir_config_LibMir_h
 
 #include "eckit/system/Library.h"
-#include "eckit/filesystem/PathName.h"
+
 
 namespace mir {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class LibMir : public eckit::system::Library {
 public:
-
     LibMir();
-
-    static eckit::PathName cacheDir();
+    static std::string cacheDir();
     static bool caching();
-
     static const LibMir& instance();
 
 protected:
-
     const void* addr() const;
-
     virtual std::string version() const;
-
     virtual std::string gitsha1(unsigned int count) const;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace mir
+
 
 #endif
