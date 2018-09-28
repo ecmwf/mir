@@ -290,20 +290,43 @@ protected:
     }
 
 
-    static eckit::PathName treePath(const repres::Representation& r,
-                                    const param::MIRParametrisation& param,
-                                    bool makeUnique) {
+    static eckit::PathName treePath(const repres::Representation& r, bool makeUnique) {
 
         // LocalPathName::unique calls mkdir, make sure it uses umask = 0
         eckit::AutoUmask umask(0);
 
-        eckit::PathName p = T::path(r, param);
-        if (makeUnique && !p.exists()) {
-            p = eckit::PathName::unique(p);
+        static const long VERSION = 1;
+
+        const std::string relative = "mir/trees/"
+                + std::to_string(VERSION)
+                + "/"
+                + r.uniqueName()
+                + ".kdtree";
+
+        auto writable = [](const std::string& path) -> bool {
+            return (::access(path.c_str(), W_OK) == 0);
+        };
+
+        eckit::Tokenizer parse(":");
+        std::vector<std::string> roots;
+        parse(T::roots(), roots);
+
+        for (const auto& root : roots) {
+            if (not writable(root)) {
+                eckit::Log::debug<LibMir>() << "PointSearchTreeMappedFile: path '" << root << "' isn't writable" << std::endl;
+                continue;
+            }
+
+            eckit::PathName p = root + "/" + relative;
+            if (makeUnique && !p.exists()) {
+                p = eckit::PathName::unique(p);
+            }
+
+            eckit::Log::debug<LibMir>() << "PointSearchTreeMappedFile: path '" << p  << "'" << (makeUnique ? " (unique)" : "") << std::endl;
+            return p;
         }
 
-        return p;
-
+        throw eckit::SeriousBug("PointSearchTreeMappedFile: no paths are viable for caching");
     }
 
     static eckit::PathName lockFile(const std::string& path) {
@@ -320,8 +343,8 @@ public:
     PointSearchTreeMappedFile( const repres::Representation& r,
                                const param::MIRParametrisation& param,
                                size_t itemCount) :
-        PointSearchTreeMapped(treePath(r, param, true), itemCount),
-        real_(treePath(r, param, false)),
+        PointSearchTreeMapped(treePath(r, true), itemCount),
+        real_(treePath(r, false)),
         lock_(lockFile(real_))
     {
 
@@ -342,19 +365,8 @@ class PointSearchTreeMappedCacheFile : public PointSearchTreeMappedFile<PointSea
 
 public:
 
-    static eckit::PathName path(const repres::Representation& r,
-                                const param::MIRParametrisation&) {
-
-        std::ostringstream oss;
-        oss  << LibMir::cacheDir()
-             << "/mir/trees/"
-             << VERSION
-             << "/"
-             << r.uniqueName()
-             << ".kdtree";
-
-        return oss.str();
-
+    static std::string roots() {
+        return LibMir::cacheDir();
     }
 
 public:
@@ -376,18 +388,9 @@ class PointSearchTreeMappedTempFile : public PointSearchTreeMappedFile<PointSear
 
 
 public:
-    static eckit::PathName path(const repres::Representation& r,
-                                const param::MIRParametrisation&) {
-
-        std::ostringstream oss;
-        oss  << "/tmp/"
-             << r.uniqueName()
-             << "-"
-             << VERSION
-             << ".kdtree";
-
-        return oss.str();
-
+    static std::string roots() {
+        static eckit::PathName _root = "/tmp";
+        return _root;
     }
 
 
