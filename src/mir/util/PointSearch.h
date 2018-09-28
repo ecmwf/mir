@@ -11,7 +11,8 @@
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-/// @date   Apr 2015
+/// @author Peter Bispham
+/// @date Apr 2015
 
 
 #ifndef mir_method_PointSearch_h
@@ -28,11 +29,9 @@
 
 
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 };
-
 namespace repres {
 class Representation;
 }
@@ -45,9 +44,9 @@ namespace util {
 
 class PointSearchTree {
 public:
-    typedef eckit::geometry::Point3             Point;
-    typedef size_t                              Payload;
-    typedef eckit::SPValue<PointSearchTree>     PointValueType;
+    using Point = eckit::geometry::Point3;
+    using Payload = size_t;
+    using PointValueType = eckit::SPValue<PointSearchTree>;
 
 public:
     virtual ~PointSearchTree();
@@ -81,9 +80,9 @@ public:
 class PointSearch : private eckit::NonCopyable {
 public:
 
-    typedef PointSearchTree::Payload        ValueType;
-    typedef PointSearchTree::Point          PointType;
-    typedef PointSearchTree::PointValueType PointValueType;
+    using ValueType = PointSearchTree::Payload;
+    using PointType = PointSearchTree::Point;
+    using PointValueType = PointSearchTree::PointValueType;
 
 public:
 
@@ -109,10 +108,7 @@ private:
     const param::MIRParametrisation& parametrisation_;
     eckit::ScopedPtr<PointSearchTree> tree_;
 
-
     void build(const repres::Representation& r);
-
-
 };
 
 

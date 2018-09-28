@@ -8,9 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Peter Bispham
+/// @author Baudouin Raoult
 /// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Peter Bispham
 /// @date Apr 2015
 
 
@@ -41,10 +42,8 @@ namespace mir {
 namespace util {
 
 
-//----------------------------------------------------------------------------------------------------------------------
+//=========================================================================
 
-
-const long VERSION = 1;
 
 PointSearchTree::~PointSearchTree() = default;
 
@@ -71,7 +70,6 @@ void PointSearchTree::statsReset() {
     os << "PointSearchTree::statsReset() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
-
 
 PointSearchTree::PointValueType PointSearchTree::nearestNeighbour(const Point&) {
     std::ostringstream os;
@@ -115,13 +113,14 @@ void PointSearchTree::unlock() {
     // Empty
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+
+//=========================================================================
 
 
 class PointSearchTreeMemory: public PointSearchTree {
 
-    typedef PointSearchTree::Point Point;
-    typedef eckit::KDTreeMemory<PointSearchTree> Tree;
+    using Point = PointSearchTree::Point;
+    using Tree = eckit::KDTreeMemory<PointSearchTree>;
 
     Tree tree_;
 
@@ -143,13 +142,13 @@ class PointSearchTreeMemory: public PointSearchTree {
 
     virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
         const auto& nn = tree_.nearestNeighbour(pt).value();
-        return PointValueType(nn.point(), nn.payload());
+        return { nn.point(), nn.payload() };
     }
 
     virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
         std::vector<PointValueType> result;
         for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
-            result.push_back(PointValueType(n.point(), n.payload()));
+            result.emplace_back(PointValueType(n.point(), n.payload()));
         }
         return result;
     }
@@ -157,7 +156,7 @@ class PointSearchTreeMemory: public PointSearchTree {
     virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
         std::vector<PointValueType> result;
         for (const auto& n : tree_.findInSphere(pt, radius)) {
-            result.push_back(PointValueType(n.point(), n.payload()));
+            result.emplace_back(PointValueType(n.point(), n.payload()));
         }
         return result;
     }
@@ -170,26 +169,26 @@ class PointSearchTreeMemory: public PointSearchTree {
     }
 
     virtual void print(std::ostream& out)  const {
-        out << "KDTreeMemory[]";
+        out << "PointSearchTreeMemory[]";
     }
 
 public:
     PointSearchTreeMemory( const repres::Representation&,
                            const param::MIRParametrisation&,
-                           size_t itemCount) {}
+                           size_t ) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMemory> builder1("memory");
 
 
-//----------------------------------------------------------------------------------------------------------------------
+//=========================================================================
 
 
 class PointSearchTreeMapped: public PointSearchTree {
 
 
-    typedef PointSearchTree::Point Point;
-    typedef eckit::KDTreeMapped<PointSearchTree> Tree;
+    using Point = PointSearchTree::Point;
+    using Tree = eckit::KDTreeMapped<PointSearchTree>;
 
 protected:
     eckit::AutoUmask umask_; // Must be first
@@ -216,13 +215,13 @@ public:
 
     virtual PointValueType nearestNeighbour(const PointSearchTree::Point& pt) {
         const auto& nn = tree_.nearestNeighbour(pt).value();
-        return PointValueType(nn.point(), nn.payload());
+        return { nn.point(), nn.payload() };
     }
 
     virtual std::vector<PointValueType> kNearestNeighbours(const Point& pt, size_t k) {
         std::vector<PointValueType> result;
         for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
-            result.push_back(PointValueType(n.point(), n.payload()));
+            result.emplace_back(PointValueType(n.point(), n.payload()));
         }
         return result;
     }
@@ -230,11 +229,10 @@ public:
     virtual std::vector<PointValueType> findInSphere(const Point& pt, double radius) {
         std::vector<PointValueType> result;
         for (const auto& n : tree_.findInSphere(pt, radius)) {
-            result.push_back(PointValueType(n.point(), n.payload()));
+            result.emplace_back(PointValueType(n.point(), n.payload()));
         }
         return result;
     }
-
 
 public:
     PointSearchTreeMapped(const eckit::PathName& path, size_t itemCount):
@@ -246,7 +244,7 @@ public:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
+//=========================================================================
 
 
 template<class T>
@@ -255,6 +253,13 @@ class PointSearchTreeMappedFile : public PointSearchTreeMapped {
 protected:
     eckit::PathName real_;
     eckit::Semaphore lock_; // Must be after real
+
+    virtual void print(std::ostream& out) const  {
+        out << "PointSearchTreeMappedFile["
+               "path=" << path_
+            << "ready?" << ready()
+            << "]";
+    }
 
     virtual bool ready() const  {
         return path_ == real_;
@@ -288,7 +293,6 @@ protected:
         os << std::endl;
         lock_.unlock();
     }
-
 
     static eckit::PathName treePath(const repres::Representation& r, bool makeUnique) {
 
@@ -340,70 +344,54 @@ protected:
 
 public:
 
-    PointSearchTreeMappedFile( const repres::Representation& r,
-                               const param::MIRParametrisation& param,
-                               size_t itemCount) :
+    PointSearchTreeMappedFile(const repres::Representation& r,
+                              const param::MIRParametrisation&,
+                              size_t itemCount) :
         PointSearchTreeMapped(treePath(r, true), itemCount),
         real_(treePath(r, false)),
-        lock_(lockFile(real_))
-    {
+        lock_(lockFile(real_)) {
 
         lockFile(real_).touch();
 
         if (ready()) {
-            eckit::Log::info() << "Loading " << *this << std::endl;
+            eckit::Log::debug<LibMir>() << "Loading " << *this << std::endl;
         }
     }
 };
 
-//===============================================================================================================
+
+//=========================================================================
+
 
 class PointSearchTreeMappedCacheFile : public PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile> {
-    virtual void print(std::ostream& out) const  {
-        out << "PointSearchTreeMappedCacheFile[" << real_ << "]";
-    }
-
+    using P = PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>;
 public:
-
+    using P::P;
     static std::string roots() {
         return LibMir::cacheDir();
-    }
-
-public:
-    PointSearchTreeMappedCacheFile( const repres::Representation& r,
-                                    const param::MIRParametrisation& param,
-                                    size_t itemCount):
-        PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>(r, param, itemCount) {
     }
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMappedCacheFile> builder2("mapped-cache-file");
 
-//===============================================================================================================
+
+//=========================================================================
+
 
 class PointSearchTreeMappedTempFile : public PointSearchTreeMappedFile<PointSearchTreeMappedTempFile> {
-    virtual void print(std::ostream& out) const  {
-        out << "PointSearchTreeMappedTempFile[" << real_ << "]";
-    }
-
-
+    using P = PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>;
 public:
+    using P::P;
     static std::string roots() {
         static eckit::PathName _root = "/tmp";
         return _root;
     }
-
-
-public:
-    PointSearchTreeMappedTempFile( const repres::Representation& r,
-                                   const param::MIRParametrisation& param,
-                                   size_t itemCount):
-        PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>(r, param, itemCount) {}
 };
 
 static PointSearchTreeBuilder<PointSearchTreeMappedTempFile> builder3("mapped-temporary-file");
 
-//===============================================================================================================
+
+//=========================================================================
 
 
 class PointSearchTreeMappedDevZero: public PointSearchTreeMapped {
@@ -431,6 +419,9 @@ public:
 static PointSearchTreeBuilder<PointSearchTreeMappedDevZero> builder4("mapped-anonymous-memory");
 
 
+//=========================================================================
+
+
 PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
                          const repres::Representation& r):
     parametrisation_(parametrisation)
@@ -442,8 +433,7 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation,
 
     eckit::AutoLock<PointSearchTree> lock(*tree_);
 
-
-    eckit::Log::info() << "PointSearch using " << *tree_ << std::endl;
+    eckit::Log::debug<LibMir>() << "PointSearch using " << *tree_ << std::endl;
 
     if (!tree_->ready()) {
         build(r);
@@ -468,7 +458,7 @@ void PointSearch::build(const repres::Representation& r) {
         size_t i = 0;
         while (it->next()) {
             ASSERT(i < npts);
-            points.push_back(PointValueType(it->point3D(), i));
+            points.emplace_back(PointValueType(it->point3D(), i));
             ++i;
         }
 
@@ -524,8 +514,8 @@ void PointSearch::closestWithinRadius(const PointType& pt, double radius, std::v
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = 0;
-static std::map< std::string, PointSearchTreeFactory* >* m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map< std::string, PointSearchTreeFactory* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map<std::string, PointSearchTreeFactory* >();
@@ -555,16 +545,16 @@ PointSearchTreeFactory::~PointSearchTreeFactory() {
 
 
 PointSearchTree *PointSearchTreeFactory::build(
-    const repres::Representation& r,
-    const param::MIRParametrisation& params,
-    size_t itemCount) {
+        const repres::Representation& r,
+        const param::MIRParametrisation& params,
+        size_t itemCount) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name = "mapped-cache-file";
     params.get("point-search-trees", name);
 
-    eckit::Log::info() << "PointSearchTreeFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "PointSearchTreeFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
