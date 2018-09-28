@@ -33,7 +33,7 @@ foreach( _t ${test_files} )
         ARGS        ${_t}
         ENVIRONMENT ${_environment}
     )
-    if (_t MATCHES ".fail$")
+    if (MARS_SCRIPT AND HAVE_TEST_ASSERTIONS AND _t MATCHES ".fail$")
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endif()
 endforeach()
