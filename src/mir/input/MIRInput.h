@@ -32,11 +32,9 @@ namespace mir {
 namespace data {
 class MIRField;
 }
-
 namespace param {
 class MIRParametrisation;
 }
-
 }
 
 
@@ -61,8 +59,6 @@ public:
     // None
 
     // -- Methods
-
-
 
     virtual bool next();
     virtual size_t dimensions() const;
@@ -89,7 +85,7 @@ public:
 protected:
 
     // -- Members
-
+    // None
 
     // -- Methods
 
@@ -116,6 +112,7 @@ private:
     // None
 
     // -- Class members
+    // None
 
     // -- Class methods
     // None

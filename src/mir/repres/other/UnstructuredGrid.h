@@ -54,22 +54,22 @@ public:
     // None
 
     // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
 
     static void save(const eckit::PathName&,
                      const std::vector<double>& latitudes,
                      const std::vector<double>& longitudes,
                      bool binary);
 
-
     static void check( const std::string& title,
                        const std::vector<double>& latitudes,
                        const std::vector<double>& longitudes);
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
     // -- Class methods
     // None
 
