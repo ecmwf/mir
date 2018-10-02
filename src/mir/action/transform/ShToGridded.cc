@@ -163,6 +163,18 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     ASSERT(grid);
 
 
+    atlas::Domain domain = representation.domain();
+    if (cropping_) {
+
+        // bounding box needs adjustment because it can come from the user
+        const util::BoundingBox& bbox = cropping_.boundingBox();
+        repres::RepresentationHandle cropped(representation.croppedRepresentation(bbox));
+
+        domain = cropped->domain();
+    }
+    ASSERT(domain);
+
+
     const int truncation = int(field.representation()->truncation());
     ASSERT(truncation > 0);
 
@@ -175,72 +187,44 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
         eckit::Timer time("ShToGridded::caching", eckit::Log::debug<LibMir>());
 
-        if (!creator.supported()) {
+        bool caching = true;
+        parametrisation_.get("caching", caching);
+
+        auto j = trans_cache.find(key);
+        if (j != trans_cache.end()) {
+
+            ASSERT(j->transCache_);
+            trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
+
+        } else if (!creator.supported()) {
 
             eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
                                   << "\n  representation: " << representation
+                                  << "\n  grid: " << grid.spec()
                                   << "\n  options: " << options_
                                   << std::endl
                                   << "ShToGridded: continuing with hindered performance"
                                   << std::endl;
 
-            if (cropping_) {
+            trans = atlas_trans_t(grid, domain, truncation, options_);
 
-                const util::BoundingBox& bbox = cropping_.boundingBox();
-                repres::RepresentationHandle cropped(representation.croppedRepresentation(bbox));
+        } else if (!caching) {
 
-                atlas::Grid grid = cropped->atlasGrid();
-                ASSERT(grid);
-                trans = atlas_trans_t(grid, truncation, options_);
-
-            } else {
-
-                atlas::Domain domain = representation.domain();
-                ASSERT(domain);
-                trans = atlas_trans_t(grid, domain, truncation, options_);
-
-            }
+            auto& entry(trans_cache[key] = creator.create());
+            ASSERT(entry.transCache_);
+            trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
 
         } else {
 
-            bool caching = true;
-            parametrisation_.get("caching", caching);
+            ASSERT(creator.supported());
+            atlas::trans::Cache transCache = getTransCache(
+                        creator,
+                        key,
+                        parametrisation_,
+                        ctx);
+            ASSERT(transCache);
+            trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
 
-            atlas::Domain domain = representation.domain();
-            if (cropping_) {
-
-                // bounding box needs adjustment because it can come from the user
-                const util::BoundingBox& bbox = cropping_.boundingBox();
-                repres::RepresentationHandle cropped(representation.croppedRepresentation(bbox));
-
-                domain = cropped->domain();
-            }
-            ASSERT(domain);
-
-            auto j = trans_cache.find(key);
-            if (j != trans_cache.end()) {
-
-                ASSERT(j->transCache_);
-                trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
-
-            } else if (!caching) {
-
-                auto& entry(trans_cache[key] = creator.create());
-                ASSERT(entry.transCache_);
-                trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
-
-            } else {
-
-                ASSERT(creator.supported());
-                atlas::trans::Cache transCache = getTransCache(
-                            creator,
-                            key,
-                            parametrisation_,
-                            ctx);
-                ASSERT(transCache);
-                trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
-
-            }
         }
 
     } catch (std::exception& e) {
