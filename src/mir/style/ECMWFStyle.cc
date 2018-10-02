@@ -75,6 +75,17 @@ protected:
 };
 
 
+struct Points : KnownKey {
+    Points(const char* key) : KnownKey(key, "points", false) {}
+    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation&) const {
+        return p1.has(key_);
+    }
+    bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+        return false;
+    }
+};
+
+
 template< typename T >
 struct KnownKeyT : KnownKey {
     KnownKeyT(const char* key, const char* target="", const bool supportsRotation=true) : KnownKey(key, target, supportsRotation) {}
@@ -193,8 +204,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         new KnownKeyT< size_t >            ("octahedral", "octahedral-gg"),
         new KnownKeyT< std::vector<long> > ("pl",         "reduced-gg-pl-given"),
         new KnownKeyT< std::string >       ("gridname",   "namedgrid"),
-        new KnownKeyT< std::string >       ("griddef", "griddef", false),
-        new KnownKeyT< bool >              ("points",  "points",  false)
+        new KnownKeyT< std::string >       ("griddef",    "griddef", false),
+        new Points("latitudes"),
+        new Points("longitudes"),
     };
 
     static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
@@ -498,7 +510,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("points")) {
+    if (parametrisation_.userParametrisation().has("latitudes") ||
+        parametrisation_.userParametrisation().has("longitudes")) {
         user_wants_gridded++;
     }
 

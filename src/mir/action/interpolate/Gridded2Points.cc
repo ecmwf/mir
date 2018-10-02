@@ -28,8 +28,11 @@ namespace interpolate {
 
 Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation):
     Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("latitudes", latitudes_));
-    ASSERT(parametrisation_.userParametrisation().get("longitudes", longitudes_));
+    auto& user = parametrisation_.userParametrisation();
+    auto& field = parametrisation_.fieldParametrisation();
+
+    ASSERT(user.has("latitudes")  && field.get("latitudes",  latitudes_));
+    ASSERT(user.has("longitudes") && field.get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
 }

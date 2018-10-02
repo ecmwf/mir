@@ -11,14 +11,15 @@
         "accuracy",
         "bitmap",
         "checkerboard",
-        "griddef",
-        "points",
+        "compatibility",
         "edition",
         "formula",
         "frame",
+        "griddef",
+        "latitudes",
+        "longitudes",
         "packing",
         "pattern",
-        "vod2uv",
-        "compatibility"
+        "vod2uv"
     ]
 }

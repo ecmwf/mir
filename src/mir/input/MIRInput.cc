@@ -46,6 +46,13 @@ grib_handle *MIRInput::gribHandle(size_t which) const {
 }
 
 
+void MIRInput::setAuxilaryFiles(const std::string&, const std::string&) {
+    std::ostringstream os;
+    os << "MIRInput::setAuxilaryFiles() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
 bool MIRInput::next() {
     std::ostringstream os;
     MIRInput &self = *this;

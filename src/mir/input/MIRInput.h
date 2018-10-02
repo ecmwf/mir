@@ -71,6 +71,7 @@ public:
 
     virtual data::MIRField field() const = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
+    virtual void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
 
     virtual size_t copy(double* values, size_t size) const;
 

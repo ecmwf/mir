@@ -122,6 +122,8 @@ private:
 
     virtual size_t numberOfPoints() const;
 
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
+
     // -- Class members
     // None
 

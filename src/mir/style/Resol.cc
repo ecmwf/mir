@@ -153,7 +153,8 @@ long Resol::getTargetGaussianNumber() const {
         N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
 
     } else if (parametrisation_.userParametrisation().has("griddef") ||
-        parametrisation_.userParametrisation().has("points")) {
+               parametrisation_.userParametrisation().has("latitudes") ||
+               parametrisation_.userParametrisation().has("longitudes")) {
 
         // hardcoded
         N = 64;

@@ -59,7 +59,6 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
 
     job.set("caching", false);
 
-    job.set("points", true);
     job.set("latitudes", latitudes);
     job.set("longitudes", longitudes);
 
