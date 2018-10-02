@@ -200,7 +200,6 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
                                   << "\n  representation: " << representation
-                                  << "\n  grid: " << grid.spec()
                                   << "\n  options: " << options_
                                   << std::endl
                                   << "ShToGridded: continuing with hindered performance"
