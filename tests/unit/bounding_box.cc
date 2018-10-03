@@ -43,6 +43,10 @@ CASE("Representation::extendedBoundingBox") {
             for (const auto& bbox : {
                      BoundingBox(90, 10, -10, 9),
                      BoundingBox(90, -350, -10, 9),
+                     BoundingBox(-70, -10, -90, 10),
+                     BoundingBox(0, -350, 0, 9),
+                     BoundingBox(60, -350, 20, 9),
+                     BoundingBox(90, -10, 70, 10),
                  }) {
                 BoundingBox extended = repres->extendedBoundingBox(bbox);
 

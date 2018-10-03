@@ -5,5 +5,7 @@ param=t,level=1000,resol=20
 # grib_get assertions
 gridType=regular_ll
 Ni=719
+latitudeOfFirstGridPointInDegrees=0
 longitudeOfFirstGridPointInDegrees=-350
+latitudeOfLastGridPointInDegrees=0
 longitudeOfLastGridPointInDegrees=9

@@ -1,12 +1,12 @@
-# Test for intermediate reduced Gaussian grid (not the default behaviour)
+# Test for no intermediate grid (not the default behaviour)
 # Note: also tested in mir_tests_unit_bounding_box
 # MARS request
 param=t,level=1000,resol=20
 # mir
---grid=1/1 --area=90/10/-10/9 --intgrid=N160
+--grid=0.5/0.5 --area=90/-350/-10/9 --intgrid=none
 # grib_get assertions
 gridType=regular_ll
 latitudeOfFirstGridPointInDegrees=90
-longitudeOfFirstGridPointInDegrees=10
+longitudeOfFirstGridPointInDegrees=-350
 latitudeOfLastGridPointInDegrees=-10
-longitudeOfLastGridPointInDegrees=369
+longitudeOfLastGridPointInDegrees=9
