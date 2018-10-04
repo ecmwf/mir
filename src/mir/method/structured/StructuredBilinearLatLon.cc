@@ -61,7 +61,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
     atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
-    const std::vector<long>& pl = gin.nx();
+    const auto& pl = gin.nx();
     ASSERT(pl.size());
     ASSERT(pl.front());
     ASSERT(pl.back());
