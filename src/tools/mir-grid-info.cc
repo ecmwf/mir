@@ -93,30 +93,25 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     }
 
     std::vector<double> value;
+    if (args.get("grid", value)) {
+        ASSERT(value.size() == 2);
+    }
+
+    std::string gridname;
+    repres::RepresentationHandle rep(
+                args.has("grid") ? new repres::latlon::RegularLL(util::Increments(value[0], value[1])) :
+                args.get("gridname", gridname) ? namedgrids::NamedGrid::lookup(gridname).representation() :
+                throw eckit::UserError("'grid' or 'gridname' should be provided") );
+    ASSERT(rep);
+
+    eckit::ScopedPtr<repres::Iterator> iterator(rep->iterator());
+    ASSERT(iterator.get());
+
     util::BoundingBox bbox;
-
-    eckit::ScopedPtr<repres::Iterator> iterator;
-
     if (args.get("area", value)) {
         ASSERT(value.size() == 4);
         bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
-
-
-    if (args.get("grid", value)) {
-        ASSERT(value.size() == 2);
-        repres::latlon::RegularLL ll(util::Increments(value[0], value[1]));
-        repres::Representation& r = ll;
-        iterator.reset(r.iterator());
-    }
-
-    std::string gridname;
-    if (args.get("gridname", gridname)) {
-        auto& grid = namedgrids::NamedGrid::lookup(gridname);
-        iterator.reset(grid.representation()->iterator());
-    }
-
-    ASSERT(iterator.get());
 
     Sorter<Latitude> n(bbox.north());
     Sorter<Latitude> s(bbox.south());
@@ -141,9 +136,9 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_
-        << "west "  << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' << w.dbelow_
-        << "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_
-        << "east "  << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' << e.dbelow_
+        << "\n" "west "  << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' << w.dbelow_
+        << "\n" "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_
+        << "\n" "east "  << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' << e.dbelow_
         << std::endl;
 }
 
