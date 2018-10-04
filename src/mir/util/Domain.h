@@ -33,7 +33,6 @@ public:
 
     // -- Contructors
 
-    Domain(const BoundingBox&);
     using BoundingBox::BoundingBox;
 
     // -- Convertors
