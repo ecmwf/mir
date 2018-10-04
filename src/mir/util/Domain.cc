@@ -19,6 +19,10 @@ namespace mir {
 namespace util {
 
 
+Domain::Domain(const BoundingBox& bbox) : BoundingBox(bbox) {
+}
+
+
 bool Domain::includesPoleNorth() const {
     return north() == Latitude::NORTH_POLE;
 }

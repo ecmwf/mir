@@ -39,9 +39,9 @@ public:
 
     UnstructuredGrid(const eckit::PathName&);
     UnstructuredGrid(const param::MIRParametrisation&);
-
-    // Take ownership of vectors
-    UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes);
+    UnstructuredGrid(const std::vector<double>& latitudes,
+                     const std::vector<double>& longitudes,
+                     const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
