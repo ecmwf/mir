@@ -14,7 +14,7 @@
 
 #include <iosfwd>
 #include "mir/method/WeightMatrix.h"
-#include "mir/util/PointSearch.h"
+#include "mir/search/PointSearch.h"
 
 
 namespace eckit {
@@ -38,7 +38,7 @@ public:
     virtual void operator()(
             size_t ip,
             const eckit::geometry::Point3& point,
-            const std::vector<util::PointSearch::PointValueType>& neighbours,
+            const std::vector<search::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 
     virtual bool sameAs(const DistanceWeighting& other) const = 0;

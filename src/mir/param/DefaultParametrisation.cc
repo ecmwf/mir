@@ -28,9 +28,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("dimension", "1d.linear");
 
     bool caching = LibMir::caching();
-
     set("caching", caching);
-    set("kd-trees.caching", caching);
 
     set("prune-epsilon", 1e-10);
     set("nclosest", 4L);

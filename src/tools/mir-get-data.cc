@@ -28,13 +28,13 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/search/PointSearch.h"
 #include "mir/stats/detail/ScalarMinMaxFn.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Grib.h"
-#include "mir/util/PointSearch.h"
 
 
-using neighbours_t = std::vector<mir::util::PointSearch::PointValueType>;
+using neighbours_t = std::vector<mir::search::PointSearch::PointValueType>;
 using prec_t = decltype(std::cout.precision());
 
 
@@ -239,10 +239,10 @@ const neighbours_t& getNeighbours(const eckit::geometry::Point2& p, size_t n, co
         return cached->second;
     }
 
-    mir::util::PointSearchTree::Point pt;
+    mir::search::PointSearch::PointType pt;
     atlas::util::Earth::convertSphericalToCartesian(p, pt);
 
-    mir::util::PointSearch sptree(param, rep);
+    mir::search::PointSearch sptree(param, rep);
 
     neighbours_t closest;
     sptree.closestNPoints(pt, n, closest);

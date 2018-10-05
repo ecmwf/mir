@@ -47,13 +47,13 @@
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/search/Tree.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/PointSearch.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -110,7 +110,7 @@ public:
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));
+        options_.push_back(new FactoryOption<mir::search::TreeFactory>("point-search", "k-d tree control"));
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));

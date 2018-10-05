@@ -455,6 +455,18 @@ list(APPEND mir_srcs
     repres/unsupported/StretchedSH.h
     repres/unsupported/TransverseMercator.cc
     repres/unsupported/TransverseMercator.h
+    search/PointSearch.cc
+    search/PointSearch.h
+    search/Tree.cc
+    search/Tree.h
+    search/tree/TreeMapped.cc
+    search/tree/TreeMapped.h
+    search/tree/TreeMappedAnonymousMemory.cc
+    search/tree/TreeMappedAnonymousMemory.h
+    search/tree/TreeMappedFile.cc
+    search/tree/TreeMappedFile.h
+    search/tree/TreeMemory.cc
+    search/tree/TreeMemory.h
     stats/CountOutsideRange.cc
     stats/CountOutsideRange.h
     stats/detail/CountMissingValuesFn.h
@@ -555,8 +567,6 @@ list(APPEND mir_srcs
     util/MIRStatistics.h
     util/PlanParser.cc
     util/PlanParser.h
-    util/PointSearch.cc
-    util/PointSearch.h
     util/Rotation.cc
     util/Rotation.h
     util/Types.h

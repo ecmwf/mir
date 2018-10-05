@@ -22,16 +22,12 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
-#include "mir/util/PointSearch.h"
 
 
 namespace mir {
 namespace util {
-
-namespace {
-static param::SimpleParametrisation empty;
-}  // (nonymous namespace)
 
 
 GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& parametrisation) :
@@ -62,7 +58,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
     // setup k-d tree on temporary unstructured grid
     repres::other::UnstructuredGrid unstructuredGrid(latitudes, longitudes);
-    const PointSearch tree(parametrisation_, unstructuredGrid);
+    const search::PointSearch tree(parametrisation_, unstructuredGrid);
 
 
     // setup global grid

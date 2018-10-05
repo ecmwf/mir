@@ -80,7 +80,7 @@ void KNearestNeighbours::assemble(
 
     const size_t nbOutputPoints = out.numberOfPoints();
 
-    const util::PointSearch sptree(parametrisation_, in);
+    const search::PointSearch sptree(parametrisation_, in);
     const util::Domain& inDomain = in.domain();
 
 
@@ -91,7 +91,7 @@ void KNearestNeighbours::assemble(
     std::vector<WeightMatrix::Triplet> weights_triplets;
     weights_triplets.reserve(nbOutputPoints * nClosest_);
 
-    std::vector<util::PointSearch::PointValueType> closest;
+    std::vector<search::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
