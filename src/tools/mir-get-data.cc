@@ -64,18 +64,24 @@ using coord_t = std::vector<double>;
 
 
 struct Coordinates {
+    Coordinates(const std::string&& name) : name_(name) {}
     virtual ~Coordinates() = default;
     virtual const coord_t& latitudes() const = 0;
     virtual const coord_t& longitudes() const = 0;
+    const std::string& name() const {
+        return name_;
+    }
     size_t size() const {
         ASSERT(latitudes().size() == longitudes().size());
         return latitudes().size();
     }
+    const std::string name_;
 };
 
 
 struct CoordinatesFromRepresentation : Coordinates {
-    CoordinatesFromRepresentation(const mir::repres::Representation& rep) {
+    CoordinatesFromRepresentation(const mir::repres::Representation& rep) :
+        Coordinates("mir") {
         eckit::ScopedPtr< mir::repres::Iterator > it(rep.iterator());
 
         const size_t N(rep.numberOfPoints());
@@ -99,7 +105,8 @@ private:
 
 
 struct CoordinatesFromGRIB : Coordinates {
-    CoordinatesFromGRIB(grib_handle* h) {
+    CoordinatesFromGRIB(grib_handle* h) :
+        Coordinates("ecc") {
 
         long Nl = 0;
         grib_get_long(h, "numberOfValues", &Nl);
@@ -134,7 +141,8 @@ private:
 
 
 struct CoordinatesFromAtlas : Coordinates {
-    CoordinatesFromAtlas(const atlas::Grid& grid) {
+    CoordinatesFromAtlas(const atlas::Grid& grid) :
+        Coordinates("atlas") {
 
         const size_t N = grid.size();
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -161,8 +169,8 @@ private:
 size_t diff(eckit::Channel& log,
           double toleranceLat,
           double toleranceLon,
-          const std::string& name1, const Coordinates& coord1,
-          const std::string& name2, const Coordinates& coord2) {
+          const Coordinates& coord1,
+          const Coordinates& coord2) {
 
     using point_2d_t = mir::repres::Iterator::point_2d_t;
 
@@ -196,7 +204,7 @@ size_t diff(eckit::Channel& log,
         }
     }
 
-    log << "\n|" << name1 << " - " << name2 << "|: #Δ = " << Ndiff << " of " << N;
+    log << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
 
     if (Ndiff && statsLat.max() > toleranceLat) {
         showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
@@ -267,12 +275,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             bool err = false;
             if (atlas) {
                 eckit::ScopedPtr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
-                err = diff(log, toleranceLat, toleranceLon, "mir", *crd, "atlas", *atl);
+                err = diff(log, toleranceLat, toleranceLon, *crd, *atl);
             }
 
             if (ecc) {
                 eckit::ScopedPtr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
-                err = diff(log, toleranceLat, toleranceLon, "mir", *crd, "ecc", *ecc) || err;
+                err = diff(log, toleranceLat, toleranceLon, *crd, *ecc) || err;
             }
 
             if (err) {
