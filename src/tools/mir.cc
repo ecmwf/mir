@@ -110,7 +110,7 @@ public:
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new FactoryOption<mir::search::TreeFactory>("point-search", "k-d tree control"));
+        options_.push_back(new FactoryOption<mir::search::TreeFactory>("point-search-trees", "k-d tree control"));
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
