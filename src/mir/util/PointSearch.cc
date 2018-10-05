@@ -311,11 +311,15 @@ protected:
             return (::access(path.c_str(), W_OK) == 0);
         };
 
-        eckit::Tokenizer parse(":");
-        std::vector<std::string> roots;
-        parse(T::roots(), roots);
+        for (const eckit::PathName root : T::roots()) {
 
-        for (const auto& root : roots) {
+            // mkdir if not exists
+            try {
+                root.mkdir();
+            } catch (eckit::FailedSystemCall&) {
+                // ...
+            }
+
             if (not writable(root)) {
                 eckit::Log::debug<LibMir>() << "PointSearchTreeMappedFile: path '" << root << "' isn't writable" << std::endl;
                 continue;
@@ -365,10 +369,20 @@ public:
 
 class PointSearchTreeMappedCacheFile : public PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile> {
     using P = PointSearchTreeMappedFile<PointSearchTreeMappedCacheFile>;
+    static std::vector<std::string> getRoots() {
+        static std::string cacheDir = LibMir::cacheDir();
+
+        std::vector<std::string> roots;
+        eckit::Tokenizer parse(":");
+
+        parse(cacheDir, roots);
+        return roots;
+    }
 public:
     using P::P;
-    static std::string roots() {
-        return LibMir::cacheDir();
+    static std::vector<std::string> roots() {
+        static std::vector<std::string> roots = getRoots();
+        return roots;
     }
 };
 
@@ -382,8 +396,8 @@ class PointSearchTreeMappedTempFile : public PointSearchTreeMappedFile<PointSear
     using P = PointSearchTreeMappedFile<PointSearchTreeMappedTempFile>;
 public:
     using P::P;
-    static std::string roots() {
-        static eckit::PathName _root = "/tmp";
+    static std::vector<std::string> roots() {
+        static std::vector<std::string> _root {"/tmp"};
         return _root;
     }
 };
