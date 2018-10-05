@@ -12,22 +12,30 @@
 
 
 #include <limits>
+#include <map>
 #include <vector>
+#include <utility>
 
 #include "eckit/log/Log.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/option/VectorOption.h"
 
+#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/stats/detail/ScalarMinMaxFn.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Grib.h"
+#include "mir/util/PointSearch.h"
 
-#include "atlas/grid/Grid.h"
+
+using neighbours_t = std::vector<mir::util::PointSearch::PointValueType>;
+using prec_t = decltype(std::cout.precision());
 
 
 class MIRGetData : public mir::tools::MIRTool {
@@ -40,10 +48,14 @@ private:
 public:
     MIRGetData(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
+        using eckit::option::VectorOption;
         options_.push_back(new SimpleOption< bool >("diff-atlas", "compare to Atlas coordinates, default false"));
         options_.push_back(new SimpleOption< bool >("diff-ecc", "compare to ecCodes coordinates, default false"));
         options_.push_back(new SimpleOption< double >("tolerance-lat", "Latitude tolerance (absolute), default 0."));
         options_.push_back(new SimpleOption< double >("tolerance-lon", "Longitude tolerance (absolute), default 0."));
+        options_.push_back(new VectorOption< double >("closest", "Point(s) close to given latitude/longitude", 2));
+        options_.push_back(new SimpleOption< size_t >("nclosest", "Number of points close to given latitude/longitude, default 1"));
+        options_.push_back(new SimpleOption< prec_t >("precision", "Output precision"));
     }
 };
 
@@ -218,11 +230,40 @@ size_t diff(eckit::Channel& log,
 }
 
 
+const neighbours_t& getNeighbours(const eckit::geometry::Point2& p, size_t n, const mir::repres::Representation& rep, const mir::param::MIRParametrisation& param) {
+    static std::map<std::string, neighbours_t> cache;
+
+    auto& key = rep.uniqueName();
+    auto cached = cache.find(key);
+    if (cached != cache.end()) {
+        return cached->second;
+    }
+
+    mir::util::PointSearchTree::Point pt;
+    atlas::util::Earth::convertSphericalToCartesian(p, pt);
+
+    mir::util::PointSearch sptree(param, rep);
+
+    neighbours_t closest;
+    sptree.closestNPoints(pt, n, closest);
+    ASSERT(n == closest.size());
+
+    return (cache[key] = std::move(closest));
+}
+
+
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
+    using eckit::geometry::Point2;
+    using eckit::geometry::Point3;
     using mir::repres::Iterator;
 
     auto& log = eckit::Log::info();
-    auto old = log.precision(32);
+
+    prec_t precision;
+    auto old = args.get("precision", precision) ? log.precision(precision)
+                                                : log.precision();
+
+    const mir::param::ConfigurationWrapper args_wrap(args);
 
     bool ecc = false;
     args.get("diff-ecc", ecc);
@@ -242,6 +283,19 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
     ASSERT(toleranceLon >= 0.);
 
 
+    size_t nclosest = 1;
+    args.get("nclosest", nclosest);
+
+
+    Point2 p;
+    std::vector< double > closest;
+    if (args.get("closest", closest)) {
+        ASSERT(closest.size() == 2);
+        p = Point2(closest[1], closest[0]);
+    } else {
+        nclosest = 0;
+    }
+
     for (size_t i = 0; i < args.count(); ++i) {
         mir::input::GribFileInput grib(args(i));
         const mir::input::MIRInput& input = grib;
@@ -256,7 +310,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             mir::repres::RepresentationHandle rep(field.representation());
 
-            if (!atlas && !ecc) {
+            if (!atlas && !ecc && !nclosest) {
                 eckit::ScopedPtr< Iterator > it(rep->iterator());
                 for (const double& v: field.values(0)) {
                     ASSERT(it->next());
@@ -271,6 +325,21 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             }
 
             eckit::ScopedPtr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
+
+            if (nclosest) {
+                size_t c = 1;
+                for (auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
+                    size_t i = n.payload();
+                    Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
+
+                    log << "- " << c++ << " -"
+                        << " index=" << i
+                        << " latitude=" << q[1]
+                        << " longitude=" << q[0]
+                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (Km)"
+                        << std::endl;
+                }
+            }
 
             bool err = false;
             if (atlas) {
