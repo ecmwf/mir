@@ -301,7 +301,7 @@ protected:
 
         static const long VERSION = 1;
 
-        const std::string relative = "mir/trees/"
+        const std::string relative = "mir/search/"
                 + std::to_string(VERSION)
                 + "/"
                 + r.uniqueName()
