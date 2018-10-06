@@ -13,13 +13,13 @@
 #ifndef mir_util_Domain_h
 #define mir_util_Domain_h
 
-#include <iostream>
-
 #include "mir/util/BoundingBox.h"
+
 
 namespace atlas {
 class RectangularDomain;
 }
+
 
 namespace mir {
 namespace util {
@@ -59,9 +59,6 @@ public:
         return includesPoleNorth() && includesPoleSouth() && isPeriodicEastWest();
     }
 
-    /// Output to stream
-    void print(std::ostream&) const;
-
     // -- Overridden methods
     // None
 
@@ -80,7 +77,9 @@ protected:
     // None
 
     // -- Overridden methods
-    // None
+
+    /// Output to stream
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None

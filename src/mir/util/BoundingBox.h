@@ -109,6 +109,12 @@ public:
     /// Contains bounding box
     bool contains(const BoundingBox&) const;
 
+    /// Intersects bounding box
+    bool intersects(BoundingBox&) const;
+
+    /// Empty
+    bool empty() const;
+
     void fill(grib_info&) const;
 
     void fill(api::MIRJob&) const;
@@ -133,6 +139,7 @@ protected:
 
     // -- Methods
 
+    /// Output to stream
     virtual void print(std::ostream&) const;
 
     // -- Overridden methods
@@ -171,6 +178,7 @@ private:
 
     // -- Friends
 
+    /// Output using stream operator
     friend std::ostream &operator<<(std::ostream &s, const BoundingBox &p) {
         p.print(s);
         return s;

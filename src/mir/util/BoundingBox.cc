@@ -15,6 +15,7 @@
 
 #include "mir/util/BoundingBox.h"
 
+#include <algorithm>
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
@@ -178,6 +179,10 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 
 bool BoundingBox::contains(const BoundingBox& other) const {
 
+    if (other.empty()) {
+        return true;
+    }
+
     // check for West/East range (if non-periodic), then other's corners
     if (east_ - west_ < Longitude::GLOBE) {
         if (other.east().normalise(west_) < other.west().normalise(west_)) {
@@ -189,6 +194,37 @@ bool BoundingBox::contains(const BoundingBox& other) const {
             contains(other.north(), other.east()) &&
             contains(other.south(), other.west()) &&
             contains(other.south(), other.east());
+}
+
+
+bool BoundingBox::intersects(BoundingBox& other) const {
+
+    if (other.empty() || empty()) {
+        other.south_ = other.north_;
+        ASSERT(other.empty());
+        return false;
+    }
+
+    Latitude n = std::min(north_, other.north_);
+    Latitude s = std::max(south_, other.south_);
+
+    Longitude ref = std::min(west_, other.west_);
+    Longitude w = std::max(west_.normalise(ref), other.west_.normalise(ref));
+    Longitude e = std::min(east_.normalise(ref), other.east_.normalise(ref));
+
+    if (n <= s || e <= w) {
+        n = s;
+        e = w;
+    }
+
+    other = { n, w, s, e };
+    return !other.empty();
+}
+
+
+bool BoundingBox::empty() const {
+    return  !eckit::types::is_strictly_greater(north_.value(), south_.value()) ||
+            !eckit::types::is_strictly_greater(east_.value(), west_.value());
 }
 
 

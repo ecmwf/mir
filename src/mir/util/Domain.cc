@@ -12,6 +12,8 @@
 
 #include "mir/util/Domain.h"
 
+#include <iostream>
+
 #include "mir/api/Atlas.h"
 
 
