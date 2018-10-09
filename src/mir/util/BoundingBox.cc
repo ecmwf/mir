@@ -212,14 +212,32 @@ bool BoundingBox::intersects(BoundingBox& other) const {
 
     Latitude n = std::min(north_, other.north_);
     Latitude s = std::max(south_, other.south_);
+    Longitude w = std::min(west_, other.west_);
+    Longitude e = w;
 
-    Longitude ref = std::min(west_, other.west_);
-    Longitude w = std::max(west_.normalise(ref), other.west_.normalise(ref));
-    Longitude e = std::min(east_.normalise(ref), other.east_.normalise(ref));
+    auto intersect = [&w, &e](const BoundingBox& a, const BoundingBox& b) {
+        bool p = a.isPeriodicWestEast();
+        Longitude ref = b.west_.normalise(a.west_);
 
-    if (n <= s || e <= w) {
+        Longitude w_ = p ? b.west_ : std::max(a.west_, ref);
+        Longitude e_ = p ? b.east_ : std::min(a.east_, b.east_.normalise(ref));
+
+        if (w_ < e_) {
+            w = w_;
+            e = e_;
+            return true;
+        }
+        return false;
+    };
+
+    if (n > s) {
+        if (west_ <= other.west_ ?
+            intersect(*this, other) || intersect(other, *this) :
+            intersect(other, *this) || intersect(*this, other)) {
+            ASSERT(w < e);
+        }
+    } else {
         n = s;
-        e = w;
     }
 
     other = { n, w, s, e };

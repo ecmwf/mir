@@ -9,9 +9,9 @@
  */
 
 
+#include <algorithm>
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -26,12 +26,15 @@ CASE("BoundingBox") {
 
     using util::BoundingBox;
 
-    BoundingBox GLOBE;
-
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = eckit::Log::info();
     auto old = log.precision(16);
 
     const std::vector< BoundingBox > boxes {
+        {  90,             0,          -90,           360          },
+        {  90,             0,          -90,           720          },
+        {  90,          -360,          -90,           360          },
+        {  90,          -180,          -90,           180          },
+        {  90,           180,          -90,          -180          },
         {  90,             0,          -90,           356          },
         {  90,             0,          -90,           358          },
         {  90,             0,          -90,           359.5        },
@@ -58,11 +61,11 @@ CASE("BoundingBox") {
         {  43.9281,       91,           21.0152,      143          },
         {  40,            50,          -50,           169.532      },
         {  37.6025,     -114.8915,      27.7626,     -105.188      },
-        {  37.6025,     -114.8907,      27.7626,     -105.1875     },
         {  37.6025,     -114.8915,      27.7626,     -105.1875     },
+        {  37.6025,     -114.8907,      27.7626,     -105.1875     },
+        {  37.6025,     -114.891,       27.7626,     -105.188      },
         {  37.575,      -114.892,       27.803,      -105.187      },
         {  37.5747,      245.109,       27.8032,      254.812      },
-        {  37.6025,     -114.891,       27.7626,     -105.188      },
         {  36.345879,    113.586968,    35.816463,    114.420328   },
         {  36.34501645,  113.58806225,  35.81244723,  114.41866527 },
         {  35.00112,     112.9995593,   33.990671,    114.0092641  },
@@ -82,6 +85,7 @@ CASE("BoundingBox") {
     };
 
     SECTION("intersects") {
+//#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
         for (const auto& A : boxes) {
             for (const auto& B : boxes) {
 
@@ -89,7 +93,8 @@ CASE("BoundingBox") {
                 auto BiA = A;
                 bool commutative = A.intersects(AiB) == B.intersects(BiA);
 
-                log << "Test:" << std::boolalpha
+                static size_t c = 1;
+                log << "Test " << c++ << ":" << std::boolalpha
                     << "\n\t" "A=" << A << " (empty? " << A.empty() << ")"
                     << "\n\t" "B=" << B << " (empty? " << B.empty() << ")"
                     << "\n\t" "A intersects B = (empty? " << AiB.empty() << ") = " << AiB
@@ -98,14 +103,38 @@ CASE("BoundingBox") {
 
                 EXPECT(commutative);
 
-                EXPECT(A.empty() ? AiB.empty() : A.contains(AiB));
-                EXPECT(B.empty() ? AiB.empty() : B.contains(AiB));
+                if (A.empty() || B.empty()) {
+                    EXPECT(AiB.empty());
+                    EXPECT(BiA.empty());
+                } else {
+                    EXPECT(AiB == BiA);
+                    EXPECT(A.contains(AiB));
+                    EXPECT(B.contains(AiB));
+                }
 
-                EXPECT(A.empty() ? BiA.empty() : A.contains(BiA));
-                EXPECT(B.empty() ? BiA.empty() : B.contains(BiA));
+                if (A.isPeriodicWestEast() && B.isPeriodicWestEast()) {
+                    EXPECT(AiB.isPeriodicWestEast());
+                }
 
-                EXPECT(AiB.empty() == BiA.empty());
-                EXPECT(AiB.empty() || (BiA == AiB));
+                if (!AiB.empty()) {
+                    if (A.isPeriodicWestEast() != B.isPeriodicWestEast()) {
+                        BoundingBox Awe = { AiB.north(), A.west(), AiB.south(), A.east() };
+                        BoundingBox Bwe = { AiB.north(), B.west(), AiB.south(), B.east() };
+                        EXPECT(AiB == Awe || AiB == Bwe);
+                    }
+
+                    const std::vector<Longitude> lims {
+                        { A.west() },
+                        { A.east() },
+                        { B.west() },
+                        { B.east() },
+                    };
+                    auto n = std::count_if(lims.begin(), lims.end(), [&AiB](const Longitude& lon) {
+                        return  AiB.contains(AiB.north(), lon) ||
+                                AiB.contains(AiB.south(), lon);
+                    });
+                    EXPECT(n = 2 || n == 4);
+                }
             }
         }
     }
