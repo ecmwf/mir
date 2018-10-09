@@ -20,6 +20,7 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
+#include "mir/method/Cropping.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -32,12 +33,15 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& parametrisation):
-    Action(parametrisation) {
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param):
+    Action(param) {
 
-    ASSERT(parametrisation_.get("interpolation", interpolation_));
-    method_.reset(method::MethodFactory::build(interpolation_, parametrisation_));
+    ASSERT(param.get("interpolation", interpolation_));
+    method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
+
+    inputIntersectWithOutput_ = !param.userParametrisation().has("area") &&
+                                !param.has("rotation");
 }
 
 
@@ -70,21 +74,30 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    repres::RepresentationHandle out(method_->hasCropping() ?
-                                         outputRepresentation()->croppedRepresentation(method_->getCropping())
-                                       : outputRepresentation());
+    method::Cropping crop;
 
-    const auto& domain = in->domain();
-    if (!domain.isGlobal()) {
-        const auto& box = croppingBoundingBox();
-        if (!domain.contains(box)) {
+    auto input = in->domain();
+    if (!input.isGlobal()) {
+
+        const auto output(croppingBoundingBox());
+        auto out(output);
+        if (inputIntersectWithOutput_ ? !input.intersects(out) : !input.contains(out)) {
             std::ostringstream msg;
-            msg << "Output is not contained by input:"
-                << "\n\t" "Input: " << domain
-                << "\n\t" "Output: " << box;
+            msg << "Input does not contain output:"
+                << "\n\t" "Input:  " << input
+                << "\n\t" "Output: " << output;
             throw eckit::UserError(msg.str());
         }
+
+        ASSERT(!out.empty());
+        crop.boundingBox(out);
+
+    } else if (method_->hasCropping()) {
+        crop.boundingBox(method_->getCropping());
     }
+
+    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
+                                          : outputRepresentation());
 
     method_->execute(ctx, *in, *out);
 
