@@ -97,6 +97,9 @@ public:
         return east_;
     }
 
+    /// Check if covers complete range East-West
+    bool isPeriodicWestEast() const;
+
     /// Contains point
     bool contains(const repres::Iterator::point_ll_t&) const;
 

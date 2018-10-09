@@ -145,6 +145,11 @@ void BoundingBox::fill(api::MIRJob& job) const  {
 }
 
 
+bool BoundingBox::isPeriodicWestEast() const {
+    return (west_ != east_) && (west_ == east_.normalise(west_));
+}
+
+
 void BoundingBox::normalise() {
     if (west_ != east_) {
         Longitude eastNormalised = east_.normalise(west_);

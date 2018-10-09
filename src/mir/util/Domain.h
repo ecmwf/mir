@@ -51,12 +51,9 @@ public:
     /// Check if grid includes the South pole
     bool includesPoleSouth() const;
 
-    /// Check if grid spans the complete range East-West (periodic)
-    bool isPeriodicEastWest() const;
-
     /// Check if domain represents the complete globe surface
     bool isGlobal() const {
-        return includesPoleNorth() && includesPoleSouth() && isPeriodicEastWest();
+        return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast();
     }
 
     // -- Overridden methods

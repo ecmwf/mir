@@ -142,7 +142,7 @@ struct UserAndGlobalisedCase {
                 << "\n\t" "Nj=" << maybe_ll.Nj()
                 << "\n\t" "includesPoleNorth?  " << maybe->domain().includesPoleNorth()
                 << "\n\t" "includesPoleSouth?  " << maybe->domain().includesPoleSouth()
-                << "\n\t" "isPeriodicEastWest? " << maybe->domain().isPeriodicEastWest()
+                << "\n\t" "isPeriodicWestEast? " << maybe->domain().isPeriodicWestEast()
                 << std::endl;
 
             return false;

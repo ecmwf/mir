@@ -31,11 +31,6 @@ bool Domain::includesPoleSouth() const {
 }
 
 
-bool Domain::isPeriodicEastWest() const {
-    return east() - west() == Longitude::GLOBE;
-}
-
-
 Domain::operator atlas::RectangularDomain() const {
     return atlas::RectangularDomain(
         {{west().value(),  east().value()} },
