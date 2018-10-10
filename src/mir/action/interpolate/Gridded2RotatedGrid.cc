@@ -14,6 +14,7 @@
 #include <vector>
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -46,11 +47,11 @@ bool Gridded2RotatedGrid::sameAs(const Action& other) const {
 }
 
 
-const util::BoundingBox& Gridded2RotatedGrid::croppingBoundingBox() const {
+util::BoundingBox Gridded2RotatedGrid::croppingBoundingBox() const {
 
     repres::RepresentationHandle out(outputRepresentation());
     auto& bbox(method().hasCropping() ? method().getCropping()
-                                      : out->boundingBox());
+                                      : out->domain());
 
     bbox_ = rotation_.rotate(bbox);
     return bbox_;

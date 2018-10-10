@@ -73,7 +73,7 @@ public:
     virtual bool mergeWithNext(const Action&);
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
-    virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual util::BoundingBox croppingBoundingBox() const;
 
     // -- Overridden methods
     // None

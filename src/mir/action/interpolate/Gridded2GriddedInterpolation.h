@@ -96,7 +96,7 @@ private:
 
     // -- Methods
 
-    virtual const util::BoundingBox& croppingBoundingBox() const = 0;
+    virtual util::BoundingBox croppingBoundingBox() const = 0;
 
     // -- Overridden methods
 

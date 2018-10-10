@@ -12,6 +12,7 @@
 #include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
 #include "mir/repres/Representation.h"
+#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -22,11 +23,11 @@ namespace interpolate {
 Gridded2UnrotatedGrid::~Gridded2UnrotatedGrid() = default;
 
 
-const util::BoundingBox& Gridded2UnrotatedGrid::croppingBoundingBox() const {
+util::BoundingBox Gridded2UnrotatedGrid::croppingBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 
     return method().hasCropping() ? method().getCropping()
-                                  : out->boundingBox();
+                                  : out->domain();
 }
 
 

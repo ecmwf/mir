@@ -64,7 +64,7 @@ bool Action::canCrop() const {
 }
 
 
-const util::BoundingBox& Action::croppingBoundingBox() const {
+util::BoundingBox Action::croppingBoundingBox() const {
     NOTIMP;
 }
 
@@ -74,8 +74,8 @@ const util::BoundingBox& Action::croppingBoundingBox() const {
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, ActionFactory *> *m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map<std::string, ActionFactory *> *m = nullptr;
 static std::map<std::string, std::string> aliases;
 static void init() {
     local_mutex = new eckit::Mutex();

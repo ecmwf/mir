@@ -88,7 +88,7 @@ private:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual const util::BoundingBox& croppingBoundingBox() const;
+    virtual util::BoundingBox croppingBoundingBox() const;
 
     // -- Class members
     // None
