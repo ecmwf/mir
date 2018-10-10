@@ -54,6 +54,11 @@ bool Action::mergeWithNext(const Action&) {
 }
 
 
+bool Action::deleteWithNext(const Action&) {
+    return false;
+}
+
+
 bool Action::isCropAction() const {
     return false;
 }

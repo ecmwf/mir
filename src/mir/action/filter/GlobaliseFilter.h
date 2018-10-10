@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef GlobaliseFilter_H
-#define GlobaliseFilter_H
+#ifndef mir_action_GlobaliseFilter_h
+#define mir_action_GlobaliseFilter_h
 
 #include "mir/action/plan/Action.h"
 
@@ -24,82 +24,83 @@ namespace action {
 
 
 class GlobaliseFilter : public Action {
-  public:
+public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GlobaliseFilter(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
     virtual ~GlobaliseFilter(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
+protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
-
-    void print(std::ostream&) const; // Change to virtual if base class
-
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
+
+    void print(std::ostream&) const;
+    bool deleteWithNext(const Action&);
+
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
+private:
 
-// No copy allowed
+    // No copy allowed
 
     GlobaliseFilter(const GlobaliseFilter&);
     GlobaliseFilter& operator=(const GlobaliseFilter&);
 
-// -- Members
+    // -- Members
 
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void execute(context::Context & ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const GlobaliseFilter& p)
     //	{ p.print(s); return s; }
@@ -109,5 +110,7 @@ class GlobaliseFilter : public Action {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

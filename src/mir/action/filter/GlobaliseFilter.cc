@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/filter/GlobaliseFilter.h"
 
 #include <iostream>
@@ -22,6 +23,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/data/MIRField.h"
+
 
 namespace mir {
 namespace action {
@@ -41,8 +43,14 @@ bool GlobaliseFilter::sameAs(const Action& other) const {
     return o;
 }
 
+
 void GlobaliseFilter::print(std::ostream &out) const {
     out << "GlobaliseFilter[]";
+}
+
+
+bool GlobaliseFilter::deleteWithNext(const Action& next) {
+    return next.isCropAction();
 }
 
 
