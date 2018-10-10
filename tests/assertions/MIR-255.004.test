@@ -5,3 +5,7 @@ gridType=regular_gg,gridName=F80,shortName=msl,global=0.002.grib1
 # grib_get assertions
 Ni=360
 Nj=168
+latitudeOfFirstGridPointInDegrees=90
+longitudeOfFirstGridPointInDegrees=0
+latitudeOfLastGridPointInDegrees=-77
+longitudeOfLastGridPointInDegrees=359
