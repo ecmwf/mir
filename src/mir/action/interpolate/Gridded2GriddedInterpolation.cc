@@ -81,7 +81,11 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
         const auto output(croppingBoundingBox());
         auto out(output);
-        if (inputIntersectWithOutput_ ? !input.intersects(out) : !input.contains(out)) {
+        if (inputIntersectWithOutput_) {
+            input.intersects(out);
+        }
+
+        if (!input.contains(out)) {
             std::ostringstream msg;
             msg << "Input does not contain output:"
                 << "\n\t" "Input:  " << input
@@ -89,7 +93,6 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
             throw eckit::UserError(msg.str());
         }
 
-        ASSERT(!out.empty());
         crop.boundingBox(out);
 
     } else if (method_->hasCropping()) {
