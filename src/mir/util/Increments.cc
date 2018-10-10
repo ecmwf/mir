@@ -191,12 +191,20 @@ void Increments::makeName(std::ostream& out) const {
 
 
 bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
-    return !(bbox.south().fraction() / south_north_.latitude().fraction()).integer();
+    auto& inc = south_north_.latitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(bbox.south().fraction() / inc.fraction()).integer();
 }
 
 
 bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
-    return !(bbox.west().fraction() / west_east_.longitude().fraction()).integer();
+    auto& inc = west_east_.longitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(bbox.west().fraction() / inc.fraction()).integer();
 }
 
 

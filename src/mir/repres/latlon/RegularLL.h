@@ -33,7 +33,10 @@ public:
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation&);
-    RegularLL(const util::Increments&, const util::BoundingBox& = util::BoundingBox());
+    RegularLL(const util::Increments&,
+              const util::BoundingBox& = util::BoundingBox(),
+              bool allowLatitudeShift = true,
+              bool allowLongitudeShift = true);
 
     // -- Destructor
 

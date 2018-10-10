@@ -34,7 +34,10 @@ public:
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox());
+    LatLon(const util::Increments&,
+           const util::BoundingBox& = util::BoundingBox(),
+           bool allowLatitudeShift = true,
+           bool allowLongitudeShift = true);
 
     // -- Destructor
 
@@ -75,7 +78,11 @@ protected:
     size_t nj_;
 
     // -- Methods
-    // None
+
+    static void correctBoundingBox(util::BoundingBox&,
+                                   const util::Increments&,
+                                   bool allowLatitudeShift,
+                                   bool allowLongitudeShift);
 
     // -- Overridden methods
 
@@ -131,8 +138,7 @@ private:
     // None
 
     // -- Methods
-
-    static util::BoundingBox correctBoundingBox(const util::BoundingBox&, const util::Increments&);
+    // None
 
     // -- Overridden methods
 

@@ -94,7 +94,7 @@ CASE("BoundingBox") {
                 bool commutative = A.intersects(AiB) == B.intersects(BiA);
 
                 static size_t c = 1;
-                log << "Test " << c++ << ":" << std::boolalpha
+                log << "Test " << c++ << ":"
                     << "\n\t" "A=" << A << " (empty? " << A.empty() << ")"
                     << "\n\t" "B=" << B << " (empty? " << B.empty() << ")"
                     << "\n\t" "A intersects B = (empty? " << AiB.empty() << ") = " << AiB

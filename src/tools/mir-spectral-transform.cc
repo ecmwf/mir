@@ -101,42 +101,37 @@ public:
 };
 
 
-const mir::repres::Representation* output_representation(const mir::param::MIRParametrisation& parametrisation) {
+const mir::repres::Representation* output_representation(std::ostream& log, const mir::param::MIRParametrisation& parametrisation) {
 
     std::vector<double> grid;
     if (parametrisation.get("grid", grid)) {
+
         ASSERT(grid.size() == 2);
+        mir::util::Increments increments(grid[0], grid[1]);
 
-        eckit::ScopedPtr<mir::util::Increments> increments;
-        increments.reset(new mir::util::Increments(grid[0], grid[1]));
-        ASSERT(increments);
-
-        mir::util::BoundingBox boundingBox;
+        mir::util::BoundingBox bbox;
         std::vector<double> area;
         if (parametrisation.get("area", area)) {
             ASSERT(area.size() == 4);
-            boundingBox = mir::util::BoundingBox(area[0], area[1], area[2], area[3]);
-        } else {
-            eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box globalised" << std::endl;
-            increments->globaliseBoundingBox(boundingBox);
+            bbox = mir::util::BoundingBox(area[0], area[1], area[2], area[3]);
         }
 
-        bool isLatitudeShifted = increments->isLatitudeShifted(boundingBox);
-        bool isLongitudeShifted = increments->isLongitudeShifted(boundingBox);
-        eckit::Log::debug<mir::LibMir>() << "MIRSpectralTransform: bounding box shifted: "
-                                         << "in latitude? " << (isLatitudeShifted ? "yes" : "no") << ", "
-                                         << "in longitude? " << (isLongitudeShifted ? "yes" : "no")
-                                         << std::endl;
+        log << "MIRSpectralTransform:"
+            << "\n\t" << increments
+            << "\n\t" << bbox
+            << "\n\t" "shifted in latitude? " << increments.isLatitudeShifted(bbox)
+            << "\n\t" "shifted in longitude? " << increments.isLongitudeShifted(bbox)
+            << std::endl;
 
         std::vector<double> rot;
         if (parametrisation.get("rotation", rot)) {
             ASSERT(rot.size() == 2);
             mir::util::Rotation rotation(rot[0], rot[1]);
 
-            return new mir::repres::latlon::RotatedLL(*increments, rotation, boundingBox);
+            return new mir::repres::latlon::RotatedLL(increments, rotation, bbox);
         }
 
-        return new mir::repres::latlon::RegularLL(*increments, boundingBox);
+        return new mir::repres::latlon::RegularLL(increments, bbox);
     }
 
     std::string griddef;
@@ -157,7 +152,6 @@ const mir::repres::Representation* output_representation(const mir::param::MIRPa
 
 atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
                         const mir::repres::Representation& representation) {
-    atlas::Grid outputGrid;
 
     if (parametrisation.has("griddef") || parametrisation.has("unstructured")) {
         eckit::ScopedPtr<mir::repres::Iterator> it(representation.iterator());
@@ -239,7 +233,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     {
         auto& log = eckit::Log::info();
-        auto& debug = eckit::Log::debug<mir::LibMir>();
+
         eckit::Timer timer("Total time");
 
         const std::string what(vod2uv ? "vo/d field pair" : "field");
@@ -249,7 +243,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             log << "============> " << what << ": " << (++i * multiScalar) << std::endl;
 
             // Set representation and grid
-            const mir::repres::Representation* outputRepresentation = output_representation(parametrisation);
+            const mir::repres::Representation* outputRepresentation = output_representation(log, parametrisation);
             ASSERT(outputRepresentation);
 
             atlas::Grid outputGrid = output_grid(parametrisation, *outputRepresentation);
@@ -267,7 +261,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             // Cesàro summation filtering
             if (cesaro) {
-                eckit::Timer timer("time on Cesàro summation filtering", debug);
+                eckit::Timer timer("time on Cesàro summation filtering", log);
 
                 std::vector<double> filter(T+1);
                 {
@@ -308,10 +302,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 
 
-            debug << "MIRSpectralTransform:"
-                  << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")
-                  << "\n\t" "Atlas unstructured grid: " << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no")
-                  << std::endl;
+            log << "MIRSpectralTransform:"
+                << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")
+                << "\n\t" "Atlas unstructured grid: " << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no")
+                << std::endl;
 
             if (vod2uv) {
                 ASSERT(field.dimensions() == multiScalar * 2);
@@ -321,14 +315,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
-                    debug << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
                     mir::MIRValuesVector input_vo;
                     mir::MIRValuesVector input_d;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", debug);
+                        eckit::Timer timer("time on interlacing spectra", log);
                         input_vo.resize(F * N * 2);
                         input_d.resize(F * N * 2);
 
@@ -345,7 +339,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", debug);
+                        eckit::Timer timer("time on invtrans", log);
                         const size_t which = numberOfFieldPairsProcessed * 2;
                         trans.invtrans(
                                     int(F),
@@ -358,7 +352,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // set field values, forcing u/v paramId (copies are necessary since fields are paired)
                     // Note: transformed u and v fields are contiguous, we save them in alternate order
                     {
-                        eckit::Timer timer("time on copying grid-point values", debug);
+                        eckit::Timer timer("time on copying grid-point values", log);
 
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
@@ -389,13 +383,13 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
-                    debug << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
                     mir::MIRValuesVector input;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", debug);
+                        eckit::Timer timer("time on interlacing spectra", log);
                         input.resize(F * N * 2);
 
                         for (size_t i = 0; i < F; ++i) {
@@ -409,7 +403,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", debug);
+                        eckit::Timer timer("time on invtrans", log);
                         trans.invtrans(
                                     int(F),
                                     F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
@@ -419,7 +413,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set field values (again, avoid copies for one field only)
                     if (F > 1) {
-                        eckit::Timer timer("time on copying grid-point values", debug);
+                        eckit::Timer timer("time on copying grid-point values", log);
 
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
@@ -438,7 +432,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             // set field representation
             field.representation(outputRepresentation);
             if (validate) {
-                eckit::Timer timer("time on validate", debug);
+                eckit::Timer timer("time on validate", log);
                 field.validate();
             }
 

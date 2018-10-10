@@ -32,7 +32,8 @@ namespace unit {
 using util::BoundingBox;
 using util::Increments;
 
-static auto& log = eckit::Log::debug<LibMir>();
+static auto& log = eckit::Log::info();
+using prec_t = decltype (log.precision());
 
 
 struct Case {
@@ -100,7 +101,7 @@ struct UserAndGlobalisedCase {
         using repres::latlon::RegularLL;
 
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
-        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_);
+        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, true, true);
         auto& user_ll = dynamic_cast<const RegularLL&>(*user);
 
         if (!user_.compare(Case("calculated", user_.boundingBox_, user_ll.Ni(), user_ll.Nj() ))) {
@@ -111,7 +112,7 @@ struct UserAndGlobalisedCase {
         BoundingBox global(user_.boundingBox_);
         increments_.globaliseBoundingBox(global);
 
-        repres::RepresentationHandle globalised = new RegularLL(increments_, global);
+        repres::RepresentationHandle globalised = new RegularLL(increments_, global, true, true);
         auto& globalised_ll = dynamic_cast<const RegularLL&>(*globalised);
 
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
@@ -133,7 +134,7 @@ struct UserAndGlobalisedCase {
 
             BoundingBox maybe_box(n, w, s, e);
 
-            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box);
+            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, true, true);
             auto& maybe_ll = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
 
             log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
@@ -237,6 +238,132 @@ CASE( "test_increments" ) {
     }
 }
 
+
+#if 0
+CASE("MIR-251") {
+    log.precision(16);
+
+    struct test_t {
+        Increments increments_;
+        BoundingBox boundingBox_;
+    };
+
+    for (const auto& test : {
+//         test_t{Increments{ 0.003474259,       0.003496601747573 }, BoundingBox{ 34.6548026,  113.04894614, 34.2911562,  113.747272 }},   // mir::repres::latlon::LatLon:44
+         test_t{Increments{ 0.00352,           0.003558252427184 }, BoundingBox{ 34.657355,   113.04832,    34.29085525, 113.74528 }},    // mir::repres::latlon::LatLon:45
+         test_t{Increments{ 0.006198529411765, 0.005665625 },       BoundingBox{ 36.34501645, 113.58806225, 35.81244723, 114.41866527 }}, // mir::repres::latlon::LatLon:45
+         test_t{Increments{ 0.0097087,         0.010417 },          BoundingBox{ 35.00112,    112.9995593,  33.990671,   114.0092641 }},  // mir::repres::latlon::LatLon:45
+         test_t{Increments{ 0.010417,          0.007353 },          BoundingBox{ 36.345879,   113.586968,   35.816463,   114.420328 }},   // mir::repres::latlon::LatLon:45
+    }) {
+        log << "Test:"
+            << "\n\t" "   " << test.increments_
+            << "\n\t" " + " << test.boundingBox_
+            << std::endl;
+        repres::RepresentationHandle repres(new repres::latlon::RegularLL(test.increments_, test.boundingBox_));
+        log << "\t"   " = " << *repres
+            << std::endl;
+    }
+}
+#endif
+
+
+CASE("MIR-309") {
+
+    auto old(log.precision(16));
+    log << std::boolalpha;
+
+    struct Case {
+        Case(const BoundingBox& bbox_,
+             const Increments& increments_,
+             bool allowLatitudeShift_,
+             bool allowLongitudeShift_,
+             const BoundingBox& correct_) :
+            bbox(bbox_),
+            increments(increments_),
+            corrected(correct_),
+            allowLatitudeShift(allowLatitudeShift_),
+            allowLongitudeShift(allowLongitudeShift_) {}
+        const BoundingBox& bbox;
+        const Increments& increments;
+        const BoundingBox corrected;
+        const bool allowLatitudeShift;
+        const bool allowLongitudeShift;
+    };
+
+    Increments inc00(0, 0);
+    Increments inc11(1, 1);
+    Increments inc22(2, 2);
+    Increments inc33(3, 3);
+
+    BoundingBox box00(-0.2, -0.3, -0.2, -0.3);
+    BoundingBox box11( 0.9, -0.2, -0.1,  0.8);
+    BoundingBox box22(1, -1, -1, 1);
+    BoundingBox box33(2, -1, -1, 2);
+
+    SECTION("LatLon::correctBoundingBox") {
+        for (Case& t : std::vector<Case>{
+
+                { box00, inc00, false, false, box00 },
+                { box00, inc00, false, true , box00 },
+                { box00, inc00, true,  false, box00 },
+                { box00, inc00, true,  true , box00 },
+
+                { box00, inc11, false, false, {  0,            0,            0,             0            } },
+                { box00, inc11, false, true , {  0,            box00.west(), 0,             box00.west() } },
+                { box00, inc11, true,  false, { box00.south(), 0,            box00.south(), 0            } },
+                { box00, inc11, true,  true , box00 },
+
+                { box00, inc22, false, false, {  0,            0,            0,             0            } },
+                { box00, inc22, false, true , {  0,            box00.west(), 0,             box00.west() } },
+                { box00, inc22, true,  false, { box00.south(), 0,            box00.south(), 0            } },
+                { box00, inc22, true,  true , box00 },
+
+                { box11, inc00, false, false, { box11.south(), box11.west(), box11.south(), box11.west() } },
+                { box11, inc00, false, true , { box11.south(), box11.west(), box11.south(), box11.west() } },
+                { box11, inc00, true,  false, { box11.south(), box11.west(), box11.south(), box11.west() } },
+                { box11, inc00, true,  true , { box11.south(), box11.west(), box11.south(), box11.west() } },
+
+                { box11, inc11, false, false, {  0,            0,            0,             0            } },
+                { box11, inc11, false, true , {  0,            box11.west(), 0,             box11.east() } },
+                { box11, inc11, true,  false, { box11.north(), 0,            box11.south(), 0            } },
+                { box11, inc11, true,  true , { box11.north(), box11.west(), box11.south(), box11.east() } },
+
+                { box11, inc22, false, false, {  0,            0,            0,             0            } },
+                { box11, inc22, false, true , {  0,            box11.west(), 0,             box11.west() } },
+                { box11, inc22, true,  false, { box11.south(), 0,            box11.south(), 0            } },
+                { box11, inc22, true,  true , { box11.south(), box11.west(), box11.south(), box11.west() } },
+
+                { box11, inc33, false, false, {  0,            0,            0,             0            } },
+                { box11, inc33, false, true , {  0,            box11.west(), 0,             box11.west() } },
+                { box11, inc33, true,  false, { box11.south(), 0,            box11.south(), 0            } },
+                { box11, inc33, true,  true , { box11.south(), box11.west(), box11.south(), box11.west() } },
+
+                { box22, inc33, false, false, {  0,            0,            0,             0            } },
+                { box22, inc33, false, true , {  0,            box22.west(), 0,             box22.west() } },
+                { box22, inc33, true,  false, { box22.south(), 0,            box22.south(), 0            } },
+                { box22, inc33, true,  true , { box22.south(), box22.west(), box22.south(), box22.west() } },
+            }) {
+            repres::RepresentationHandle rep(new repres::latlon::RegularLL(t.increments, t.bbox, t.allowLatitudeShift, t.allowLongitudeShift));
+            const BoundingBox& corrected = rep->boundingBox();
+
+            static size_t c = 1;
+            log << "Test " << c++ << ":"
+                << "\n\t   " << t.bbox
+                << "\n\t > " << corrected
+                << "\n\t = " << t.corrected
+                << "\n\t = shifted in latitude? " << t.increments.isLatitudeShifted(corrected) << (t.allowLatitudeShift? "" : " (should be false)")
+                << "\n\t = shifted in longitude? " << t.increments.isLongitudeShifted(corrected) << (t.allowLongitudeShift? "" : " (should be false)")
+                << std::endl;
+
+            EXPECT(t.bbox.contains(corrected));
+            EXPECT(t.corrected == corrected);
+            EXPECT(t.allowLatitudeShift || !t.increments.isLatitudeShifted(corrected));
+            EXPECT(t.allowLongitudeShift || !t.increments.isLongitudeShifted(corrected));
+        }
+    }
+
+    log.precision(old);
+}
 
 }  // namespace unit
 }  // namespace tests

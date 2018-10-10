@@ -84,6 +84,7 @@ private:
 
     util::Increments increments_;
     util::BoundingBox bbox_;
+    bool userProvidedArea_;
 
     // -- Methods
     // None

@@ -34,7 +34,11 @@ public:
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation&);
-    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
+    RotatedLL(const util::Increments&,
+              const util::Rotation&,
+              const util::BoundingBox& = util::BoundingBox(),
+              bool allowLatitudeShift = true,
+              bool allowLongitudeShift = true);
 
     // -- Destructor
 

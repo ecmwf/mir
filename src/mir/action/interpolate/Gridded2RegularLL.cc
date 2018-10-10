@@ -37,18 +37,20 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    if (parametrisation_.userParametrisation().get("area", value)) {
+    userProvidedArea_ = parametrisation_.userParametrisation().get("area", value);
+    if (userProvidedArea_) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
-    increments_.globaliseBoundingBox(bbox_);
+    increments_.globaliseBoundingBox(bbox_, userProvidedArea_, userProvidedArea_);
 
     eckit::Log::debug<LibMir>()
-            << "Gridded2RotatedLL: globalise:"
-            << "\n\t" << bbox_
+            << "Gridded2RegularLL: globalise:"
             << "\n\t" << increments_
-            << "\n\t" "Shifted? " << (increments_.isShifted(bbox_) ? "yes" : "no")
+            << "\n\t" << bbox_
+            << "\n\t" "shifted in latitude? " << increments_.isLatitudeShifted(bbox_)
+            << "\n\t" "shifted in longitude? " << increments_.isLongitudeShifted(bbox_)
             << std::endl;
 }
 
@@ -72,7 +74,7 @@ void Gridded2RegularLL::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
-    return new repres::latlon::RegularLL(increments_, bbox_);
+    return new repres::latlon::RegularLL(increments_, bbox_, userProvidedArea_, userProvidedArea_);
 }
 
 const char* Gridded2RegularLL::name() const {
