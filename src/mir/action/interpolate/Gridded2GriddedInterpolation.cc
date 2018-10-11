@@ -40,8 +40,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
 
-    inputIntersectWithOutput_ = !param.userParametrisation().has("area") &&
-                                !param.has("rotation");
+    inputIntersectWithOutput_ = !param.has("rotation");
 }
 
 
@@ -88,7 +87,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
         if (!input.contains(out)) {
             std::ostringstream msg;
             msg << "Input does not contain output:"
-                << "\n\t" "Input:  " << input
+                << "\n\t" "Input: " << input
                 << "\n\t" "Output: " << output;
             throw eckit::UserError(msg.str());
         }
