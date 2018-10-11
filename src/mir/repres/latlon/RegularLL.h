@@ -35,8 +35,7 @@ public:
     RegularLL(const param::MIRParametrisation&);
     RegularLL(const util::Increments&,
               const util::BoundingBox& = util::BoundingBox(),
-              bool allowLatitudeShift = true,
-              bool allowLongitudeShift = true);
+              const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
 

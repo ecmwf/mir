@@ -37,8 +37,7 @@ public:
     RotatedLL(const util::Increments&,
               const util::Rotation&,
               const util::BoundingBox& = util::BoundingBox(),
-              bool allowLatitudeShift = true,
-              bool allowLongitudeShift = true);
+              const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
 

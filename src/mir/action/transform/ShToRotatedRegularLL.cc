@@ -89,9 +89,11 @@ template<class Invtrans>
 const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentation() const {
 
     util::BoundingBox bbox(bbox_);
-    increments_.globaliseBoundingBox(bbox);
+    const PointLatLon ref(bbox_.south(), bbox_.west());
 
-    return new repres::latlon::RotatedLL(increments_, rotation_, bbox);
+    increments_.globaliseBoundingBox(bbox, ref);
+
+    return new repres::latlon::RotatedLL(increments_, rotation_, bbox, ref);
 }
 
 

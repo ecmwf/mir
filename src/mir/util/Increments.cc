@@ -38,18 +38,17 @@ static void check(const Increments& inc) {
 
 
 template<class T>
-static T adjust(bool up, const T& target, const T& inc) {
+static T adjust(bool up, const T& target, const eckit::Fraction& inc) {
     ASSERT(inc > 0);
 
-    eckit::Fraction i = inc.fraction();
-    eckit::Fraction r = target.fraction() / i;
+    auto r = target.fraction() / inc;
+    auto n = r.integralPart();
 
-    eckit::Fraction::value_type n = r.integralPart();
     if (!r.integer() && (r > 0) == up) {
         n += (up ? 1 : -1);
     }
 
-    return T(n * i);
+    return T(n * inc);
 }
 
 
@@ -141,46 +140,108 @@ void Increments::fill(api::MIRJob& job) const  {
 }
 
 
-void Increments::globaliseBoundingBox(BoundingBox& bbox, bool allowLongitudeShift, bool allowLatitudeShift) const {
-    const Latitude& sn = south_north_.latitude();
-    const Longitude& we = west_east_.longitude();
+void Increments::globaliseBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
+    using eckit::Fraction;
+
+    const Fraction sn = south_north_.latitude().fraction();
+    const Fraction we = west_east_.longitude().fraction();
+
+    ASSERT(sn > 0);
+    ASSERT(we > 0);
+    Latitude shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
+    Longitude shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+
 
     // Latitude limits
 
-    ASSERT(sn > 0);
-    LatitudeIncrement shift_sn(0);
-    if (allowLatitudeShift) {
-        shift_sn = (bbox.south().fraction() / sn.fraction()).decimalPart() * sn.fraction();
-    }
-
-    Latitude n = adjust(false, Latitude::NORTH_POLE - shift_sn.latitude(), sn) + shift_sn.latitude();
-    Latitude s = adjust(true,  Latitude::SOUTH_POLE - shift_sn.latitude(), sn) + shift_sn.latitude();
+    Latitude n = adjust(false, Latitude::NORTH_POLE - shift_sn, sn) + shift_sn;
+    Latitude s = adjust(true,  Latitude::SOUTH_POLE - shift_sn, sn) + shift_sn;
 
 
     // Longitude limits
     // - West for non-periodic grids is not corrected!
     // - East for periodic grids is W + 360 - increment
 
-    ASSERT(we > 0);
-    LongitudeIncrement shift_we(0);
-    if (allowLongitudeShift) {
-        shift_we = (bbox.west().fraction() / we.fraction()).decimalPart() *  we.fraction();
-    }
-
     Longitude w = bbox.west();
     if (isPeriodic()) {
-        w = adjust(true, Longitude::GREENWICH - shift_we.longitude(), we) + shift_we.longitude();
+        w = adjust(true, Longitude::GREENWICH - shift_we, we) + shift_we;
     }
 
-    Longitude e = adjust(false, w + Longitude::GLOBE - shift_we.longitude(), we) + shift_we.longitude();
+    Longitude e = adjust(false, w + Longitude::GLOBE - shift_we, we) + shift_we;
     if (e - w == Longitude::GLOBE) {
         e -= we;
     }
 
-    bbox = BoundingBox(n, w, s, e);
 
-    ASSERT(allowLatitudeShift || !isLatitudeShifted(bbox));
-    ASSERT(allowLongitudeShift || !isLongitudeShifted(bbox));
+    // set bounding box
+    bbox = {n, w, s, e};
+}
+
+
+void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
+
+    auto sn = south_north_.latitude().fraction();
+    auto we = west_east_.longitude().fraction();
+    ASSERT(sn >= 0);
+    ASSERT(we >= 0);
+
+
+    // Latitude limits
+    // - North adjusted to N = S + Nj * inc <= 90
+
+    Latitude s = bbox.south();
+    Latitude n = sn == 0 ? s : bbox.north();
+
+    if (sn > 0) {
+        Latitude shift = (reference.lat().fraction() / sn).decimalPart() * sn;
+
+        s = adjust(true,  bbox.south() - shift, sn) + shift;
+        ASSERT(bbox.south() <= s);
+
+        if (bbox.south() == bbox.north()) {
+            n = s;
+        } else {
+            n = adjust(false, bbox.north() - shift, sn) + shift;
+            ASSERT(n <= bbox.north());
+
+            if (n < s) {
+                n = s;
+            }
+        }
+    }
+
+    // Longitude limits
+    // - East adjusted to E = W + Ni * inc < W + 360
+    // (non-periodic grids can have 360 - inc < E - W < 360)
+
+    Longitude w = bbox.west();
+    Longitude e = we == 0 ? w : bbox.east();
+
+    if (we > 0) {
+        Longitude shift = (reference.lon().fraction() / we).decimalPart() * we;
+
+        w = adjust(true,  bbox.west() - shift, we) + shift;
+        ASSERT(bbox.west() <= w);
+
+        if (bbox.west() == bbox.east()) {
+            e = w;
+        } else {
+            e = adjust(false, bbox.east() - shift, we) + shift;
+            ASSERT(e <= bbox.east());
+
+            if (e < w) {
+                e = w;
+            } else if (e - w >= Longitude::GLOBE) {
+                e -= we;
+            }
+        }
+
+    }
+
+    // set bounding box
+    ASSERT(s <= n);
+    ASSERT(w <= e);
+    bbox = {n, w, s, e};
 }
 
 

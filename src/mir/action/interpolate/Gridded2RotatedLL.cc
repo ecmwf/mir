@@ -37,13 +37,14 @@ Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    userProvidedArea_ = parametrisation_.userParametrisation().get("area", value);
-    if (userProvidedArea_) {
+    PointLatLon ref(0, 0);
+    if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+        ref = PointLatLon(bbox_.south(), bbox_.west());
     }
 
-    increments_.globaliseBoundingBox(bbox_, userProvidedArea_, userProvidedArea_);
+    increments_.globaliseBoundingBox(bbox_, ref);
 
     eckit::Log::debug<LibMir>()
             << "Gridded2RotatedLL: globalise:"
@@ -64,7 +65,7 @@ bool Gridded2RotatedLL::sameAs(const Action& other) const {
 }
 
 
-void Gridded2RotatedLL::print(std::ostream &out) const {
+void Gridded2RotatedLL::print(std::ostream& out) const {
     out << "Gridded2RotatedLL["
            "increments=" << increments_ << ","
            "bbox=" << bbox_ << ","
@@ -75,7 +76,8 @@ void Gridded2RotatedLL::print(std::ostream &out) const {
 
 
 const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    return new repres::latlon::RotatedLL(increments_, rotation(), bbox_, userProvidedArea_, userProvidedArea_);
+    const PointLatLon ref(bbox_.south(), bbox_.west());
+    return new repres::latlon::RotatedLL(increments_, rotation(), bbox_, ref);
 }
 
 

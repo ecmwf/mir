@@ -28,7 +28,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation):
+Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
 
     std::vector<double> value;
@@ -37,13 +37,14 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    userProvidedArea_ = parametrisation_.userParametrisation().get("area", value);
-    if (userProvidedArea_) {
+    PointLatLon ref(0, 0);
+    if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+        ref = PointLatLon(bbox_.south(), bbox_.west());
     }
 
-    increments_.globaliseBoundingBox(bbox_, userProvidedArea_, userProvidedArea_);
+    increments_.globaliseBoundingBox(bbox_, ref);
 
     eckit::Log::debug<LibMir>()
             << "Gridded2RegularLL: globalise:"
@@ -74,7 +75,8 @@ void Gridded2RegularLL::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
-    return new repres::latlon::RegularLL(increments_, bbox_, userProvidedArea_, userProvidedArea_);
+    const PointLatLon ref(bbox_.south(), bbox_.west());
+    return new repres::latlon::RegularLL(increments_, bbox_, ref);
 }
 
 const char* Gridded2RegularLL::name() const {

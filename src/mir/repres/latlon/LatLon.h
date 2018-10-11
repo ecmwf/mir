@@ -36,8 +36,7 @@ public:
     LatLon(const param::MIRParametrisation&);
     LatLon(const util::Increments&,
            const util::BoundingBox& = util::BoundingBox(),
-           bool allowLatitudeShift = true,
-           bool allowLongitudeShift = true);
+           const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
 
@@ -78,11 +77,7 @@ protected:
     size_t nj_;
 
     // -- Methods
-
-    static void correctBoundingBox(util::BoundingBox&,
-                                   const util::Increments&,
-                                   bool allowLatitudeShift,
-                                   bool allowLongitudeShift);
+    // None
 
     // -- Overridden methods
 

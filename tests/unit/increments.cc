@@ -36,6 +36,134 @@ static auto& log = eckit::Log::info();
 using prec_t = decltype (log.precision());
 
 
+CASE("Increments::correctBoundingBox") {
+
+    auto old(log.precision(16));
+    log << std::boolalpha;
+
+
+    SECTION("small areas") {
+        Increments inc(3, 3);
+
+        for (auto& box : std::vector<BoundingBox>{
+            { 4, -1, -1,  4},
+            {12, -1, -1, 12},
+        }) {
+
+            for (auto& reference : std::vector<PointLatLon>{
+                    { 0,  0 },
+                    { 0, -1 },
+                    {-1,  0 },
+                    { 1, -1 },
+                    { 0,  1 },
+                    { 1,  0 },
+                    { 1,  1 },
+                }) {
+
+                auto sn = inc.south_north().latitude();
+                auto we = inc.west_east().longitude();
+                bool expectLatitudeShift = !(reference.lat().fraction() / sn.fraction()).integer();
+                bool expectLongitudeShift = !(reference.lon().fraction() / we.fraction()).integer();
+
+                auto corrected(box);
+                inc.correctBoundingBox(corrected, reference);
+
+                auto Ni = 1 + (corrected.east() - corrected.west()).fraction() / we.fraction();
+                auto Nj = 1 + (corrected.north() - corrected.south()).fraction() / sn.fraction();
+
+                static size_t c = 1;
+                log << "Test " << c++ << ":"
+                    << "\n\t   " << inc
+                    << "\n\t + " << box
+                    << "\n\t > " << corrected << " corrected with reference " << reference
+                    << "\n\t > Ni = " << Ni
+                    << "\n\t > Nj = " << Nj
+                    << "\n\t = shifted in latitude? " << inc.isLatitudeShifted(corrected)
+                    << "\n\t = shifted in longitude? " << inc.isLongitudeShifted(corrected)
+                    << std::endl;
+
+                EXPECT(box.contains(corrected));
+                EXPECT(Ni.integer() && Ni >= 1);
+                EXPECT(Nj.integer() && Nj >= 1);
+
+                EXPECT(corrected.west() == reference.lon());
+                EXPECT(corrected.west() + (Ni - 1) * we.fraction() == corrected.east());
+                EXPECT(corrected.west() + Ni * we.fraction() > box.east());
+
+                EXPECT(corrected.south() == reference.lat());
+                EXPECT(corrected.south() + (Nj - 1) * sn.fraction() == corrected.north());
+                EXPECT(corrected.south() + Nj * sn.fraction() > box.north());
+
+                EXPECT(expectLatitudeShift  || !inc.isLatitudeShifted(corrected));
+                EXPECT(expectLongitudeShift || !inc.isLongitudeShifted(corrected));
+            }
+        }
+    }
+
+
+    SECTION("equator") {
+        BoundingBox equator(0, -1, 0, 359);
+
+        for (auto& inc : {
+                Increments{ 3, 3 },
+                Increments{ 7, 0 },
+            }) {
+
+            for (auto& reference : std::vector<PointLatLon>{
+                    { 0,  0 },
+                    { 0, -1 },
+                    {-1,  0 },
+                    { 1, -1 },
+                    { 0,  1 },
+                    { 1,  0 },
+                    { 1,  1 },
+                }) {
+
+                auto sn = inc.south_north().latitude();
+                auto we = inc.west_east().longitude();
+
+                auto corrected = equator;
+                inc.correctBoundingBox(corrected, reference);
+
+                auto Ni = 1 + (corrected.east() - corrected.west()).fraction() / we.fraction();
+
+                static size_t c = 1;
+                log << "Test " << c++ << ":"
+                    << "\n\t   " << inc
+                    << "\n\t + " << equator
+                    << "\n\t > " << corrected << " corrected with reference " << reference
+                    << "\n\t > Ni = " << Ni
+                    << "\n\t = shifted in latitude? " << inc.isLatitudeShifted(corrected)
+                    << "\n\t = shifted in longitude? " << inc.isLongitudeShifted(corrected)
+                    << std::endl;
+
+                EXPECT(equator.contains(corrected));
+                EXPECT(Ni.integer() && Ni >= 1);
+
+                if (sn == 0) {
+                    EXPECT(corrected.south() == equator.south());
+                }
+
+                EXPECT(corrected.south() == corrected.north());
+                EXPECT(corrected.west() == reference.lon());
+
+                if (inc.isPeriodic()) {
+                    EXPECT(Ni * we.fraction() == Longitude::GLOBE.fraction());
+                } else {
+                    auto Nabove = Ni;
+                    auto Nbelow = Nabove - 1;
+                    EXPECT(Nabove * we.fraction() > Longitude::GLOBE.fraction());
+                    EXPECT(Nbelow * we.fraction() < Longitude::GLOBE.fraction());
+                }
+            }
+        }
+    }
+
+
+    log.precision(old);
+}
+
+
 struct Case {
     Case(const std::string&& name, const BoundingBox& boundingBox, size_t Ni, size_t Nj) :
         name_(name),
@@ -101,7 +229,9 @@ struct UserAndGlobalisedCase {
         using repres::latlon::RegularLL;
 
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
-        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, true, true);
+        PointLatLon ref(user_.boundingBox_.south(),
+                        user_.boundingBox_.west());
+        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_, ref);
         auto& user_ll = dynamic_cast<const RegularLL&>(*user);
 
         if (!user_.compare(Case("calculated", user_.boundingBox_, user_ll.Ni(), user_ll.Nj() ))) {
@@ -110,9 +240,9 @@ struct UserAndGlobalisedCase {
 
         // 'globalise' user-provided area, check if allowed shifts are respected
         BoundingBox global(user_.boundingBox_);
-        increments_.globaliseBoundingBox(global);
+        increments_.globaliseBoundingBox(global, ref);
 
-        repres::RepresentationHandle globalised = new RegularLL(increments_, global, true, true);
+        repres::RepresentationHandle globalised = new RegularLL(increments_, global, ref);
         auto& globalised_ll = dynamic_cast<const RegularLL&>(*globalised);
 
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
@@ -134,7 +264,7 @@ struct UserAndGlobalisedCase {
 
             BoundingBox maybe_box(n, w, s, e);
 
-            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, true, true);
+            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box, ref);
             auto& maybe_ll = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
 
             log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
@@ -343,7 +473,11 @@ CASE("MIR-309") {
                 { box22, inc33, true,  false, { box22.south(), 0,            box22.south(), 0            } },
                 { box22, inc33, true,  true , { box22.south(), box22.west(), box22.south(), box22.west() } },
             }) {
-            repres::RepresentationHandle rep(new repres::latlon::RegularLL(t.increments, t.bbox, t.allowLatitudeShift, t.allowLongitudeShift));
+
+            PointLatLon ref(t.allowLatitudeShift? t.bbox.south() : 0.,
+                            t.allowLongitudeShift? t.bbox.west() : 0);
+
+            repres::RepresentationHandle rep(new repres::latlon::RegularLL(t.increments, t.bbox, ref));
             const BoundingBox& corrected = rep->boundingBox();
 
             static size_t c = 1;
@@ -364,6 +498,7 @@ CASE("MIR-309") {
 
     log.precision(old);
 }
+
 
 }  // namespace unit
 }  // namespace tests
