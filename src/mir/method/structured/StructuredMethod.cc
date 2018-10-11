@@ -41,9 +41,9 @@ bool StructuredMethod::sameAs(const Method& other) const {
 
 void StructuredMethod::left_right_lon_indexes(
     const Longitude& in,
-    const std::vector<repres::Iterator::point_ll_t>& coords,
-    const size_t start,
-    const size_t end,
+    const std::vector<PointLatLon>& coords,
+    size_t start,
+    size_t end,
     size_t& left,
     size_t& right ) const {
 
@@ -54,7 +54,7 @@ void StructuredMethod::left_right_lon_indexes(
 //    Longitude left_lon  =   0.;
     for (size_t i = start; i < end; ++i) {
 
-        const Longitude& lon = coords[i].lon;
+        const Longitude& lon = coords[i].lon();
         ASSERT(Longitude::GREENWICH <= lon && lon <= Longitude::GLOBE);
 
         if (lon <= in) {
@@ -70,7 +70,7 @@ void StructuredMethod::left_right_lon_indexes(
     ASSERT(left  >= start);
     ASSERT(right >= start);
     ASSERT(right != left);
-    ASSERT(coords[left].lat == coords[right].lat);
+    ASSERT(coords[left].lat() == coords[right].lat());
 }
 
 
@@ -91,7 +91,7 @@ void StructuredMethod::normalise(triplet_vector_t& triplets) const {
 }
 
 
-void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<repres::Iterator::point_ll_t> &points, Latitude& minimum, Latitude& maximum) const {
+void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<PointLatLon> &points, Latitude& minimum, Latitude& maximum) const {
     const size_t N = r.numberOfPoints();
     points.resize(N);
     minimum = 0;
@@ -102,12 +102,17 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
 
     while (it->next()) {
         ASSERT(i < N);
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+        const auto& p = it->pointUnrotated();
 
-        points[i++] = repres::Iterator::point_ll_t(p.lat, p.lon);
+        points[i++] = PointLatLon(p.lat(), p.lon());
 
-        if (!i || p.lat < minimum) minimum = p.lat;
-        if (!i || p.lat > maximum) maximum = p.lat;
+        if (!i || p.lat() < minimum) {
+            minimum = p.lat();
+        }
+
+        if (!i || p.lat() > maximum) {
+            maximum = p.lat();
+        }
     }
 
     ASSERT(minimum < maximum);
@@ -130,7 +135,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
         for (long i = 0; i < Nj; ++i) {
             ASSERT(it->next());
             if (i == 0) {
-                latitudes.push_back(it->pointUnrotated().lat);
+                latitudes.push_back(it->pointUnrotated().lat());
             }
         }
     }

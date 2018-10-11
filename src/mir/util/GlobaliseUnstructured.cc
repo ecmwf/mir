@@ -69,12 +69,12 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
     // insert global grid points when distant enough from provided grid points
     eckit::ScopedPtr<repres::Iterator> it(globe->iterator());
     while (it->next()) {
-        const eckit::geometry::Point3 p(it->point3D());
-        if (eckit::geometry::Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
+        const Point3 p(it->point3D());
+        if (Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
 
-            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-            latitudes.push_back(p.lat.value());
-            longitudes.push_back(p.lon.value());
+            const auto& p = it->pointUnrotated();
+            latitudes.push_back(p.lat().value());
+            longitudes.push_back(p.lon().value());
             ++nbExtraPoints;
 
         }
@@ -104,11 +104,11 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
     // insert global grid points when outside provided domain
     eckit::ScopedPtr<repres::Iterator> it(globe->iterator());
     while (it->next()) {
-        const repres::Iterator::point_ll_t& p = it->pointUnrotated();
-        if (!domain.contains(p.lat, p.lon)) {
+        const auto& p = it->pointUnrotated();
+        if (!domain.contains(p)) {
 
-            latitudes.push_back(p.lat.value());
-            longitudes.push_back(p.lon.value());
+            latitudes.push_back(p.lat().value());
+            longitudes.push_back(p.lon().value());
             ++nbExtraPoints;
 
         }

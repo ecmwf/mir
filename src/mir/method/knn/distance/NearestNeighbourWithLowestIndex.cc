@@ -27,7 +27,7 @@ NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MI
 
 void NearestNeighbourWithLowestIndex::operator()(
         size_t ip,
-        const eckit::geometry::Point3& point,
+        const Point3& point,
         const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 
@@ -36,10 +36,10 @@ void NearestNeighbourWithLowestIndex::operator()(
 
     // choose closest neighbour point with the lowest index (payload)
     size_t jp = neighbours.front().payload();
-    const double d2 = eckit::geometry::Point3::distance2(point, neighbours.front().point());
+    const double d2 = Point3::distance2(point, neighbours.front().point());
 
     for (size_t j = 1; j < nbPoints; ++j) {
-        if (eckit::types::is_strictly_greater(eckit::geometry::Point3::distance2(point, neighbours[j].point()), d2)) {
+        if (eckit::types::is_strictly_greater(Point3::distance2(point, neighbours[j].point()), d2)) {
             break;
         }
         if (jp > neighbours[j].payload()) {

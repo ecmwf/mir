@@ -45,14 +45,14 @@ public:
 protected:
 
     // Utility types
-    typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
+    using triplet_vector_t = std::vector< WeightMatrix::Triplet >;
 
     // Find nearest West-East bounding i indices
     void left_right_lon_indexes(
         const Longitude& in,
-        const std::vector<repres::Iterator::point_ll_t>& coords,
-        const size_t start,
-        const size_t end,
+        const std::vector<PointLatLon>& coords,
+        size_t start,
+        size_t end,
         size_t& left,
         size_t& right) const;
 
@@ -61,7 +61,7 @@ protected:
     void normalise(triplet_vector_t& triplets) const;
 
     // Get lat/lon point coordinates from representation
-    void getRepresentationPoints(const repres::Representation&, std::vector<repres::Iterator::point_ll_t>&, Latitude& minimum, Latitude& maximum) const;
+    void getRepresentationPoints(const repres::Representation&, std::vector<PointLatLon>&, Latitude& minimum, Latitude& maximum) const;
 
     // Get latitudes list from representation
     void getRepresentationLatitudes(const repres::Representation&, std::vector<Latitude>&) const;

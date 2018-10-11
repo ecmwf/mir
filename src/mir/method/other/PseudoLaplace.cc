@@ -92,7 +92,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         ASSERT(ip < out_npts);
 
         // get the reference output point
-        eckit::geometry::Point3 p(it->point3D());
+        Point3 p(it->point3D());
 
         // find the closest input points to this output
         sptree.closestNPoints(p, nclosest_, closest);
@@ -105,7 +105,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         double Ixx(0), Ixy(0), Ixz(0), Iyy(0), Iyz(0), Izz(0), Rx(0), Ry(0), Rz(0), Lx, Ly, Lz, dx, dy, dz;
 
         for ( size_t j = 0; j < npts; ++j) {
-            eckit::geometry::Point3 np  = closest[j].point();
+            Point3 np  = closest[j].point();
 
             dx = np[XX] - p[XX];
             dy = np[YY] - p[YY];

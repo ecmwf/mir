@@ -51,8 +51,6 @@ bool StructuredLinear3D::sameAs(const Method& other) const {
 
 
 void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
-    typedef repres::Iterator::point_ll_t point_ll_t;
-    typedef repres::Iterator::point_3d_t point_3d_t;
 
     /*
      * get from input grid:
@@ -78,7 +76,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
 
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
-    std::vector<point_ll_t> icoords;
+    std::vector<PointLatLon> icoords;
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
@@ -102,10 +100,10 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             ++progress;
 
             triplet_vector_t trip;
-            const point_ll_t& p = it->pointUnrotated();
+            const auto& p = it->pointUnrotated();
 
-            const bool too_much_north = p.lat > max_lat;
-            const bool too_much_south = p.lat < min_lat;
+            const bool too_much_north = p.lat() > max_lat;
+            const bool too_much_south = p.lat() < min_lat;
 
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
@@ -114,12 +112,12 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
 
                 size_t l[2];
-                boundWestEast(p.lon, Ni, iStart, l[0], l[1]);
+                boundWestEast(p.lon(), Ni, iStart, l[0], l[1]);
 
-                const Longitude& l0 = icoords[l[0]].lon;
-                const Longitude& l1 = icoords[l[1]].lon;
-                trip = { WeightMatrix::Triplet(ip, l[0], (l1 - p.lon).value() ),
-                         WeightMatrix::Triplet(ip, l[1], (p.lon - l0).value() ) };
+                const Longitude& l0 = icoords[l[0]].lon();
+                const Longitude& l1 = icoords[l[1]].lon();
+                trip = { WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value() ),
+                         WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value() ) };
 
             } else {
 
@@ -138,19 +136,19 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 size_t j_north;
                 size_t j_south;
-                boundNorthSouth(p.lat, latitudes, j_north, j_south);
+                boundNorthSouth(p.lat(), latitudes, j_north, j_south);
 
                 size_t q[4];
-                boundWestEast(p.lon, size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
-                boundWestEast(p.lon, size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
+                boundWestEast(p.lon(), size_t(pl[j_north]), pl_sum[j_north], q[0], q[1]);
+                boundWestEast(p.lon(), size_t(pl[j_south]), pl_sum[j_south], q[2], q[3]);
 
                 // convert working longitude/latitude coordinates to 3D
                 atlas::PointXYZ qp[4];
                 for (size_t k = 0; k < 4; ++k) {
-                    const point_ll_t& ll = icoords[q[k]];
+                    const auto& ll = icoords[q[k]];
 
                     // notice the order
-                    atlas::PointLonLat p(ll.lon.value(), ll.lat.value());
+                    atlas::PointLonLat p(ll.lon().value(), ll.lat().value());
                     atlas::util::Earth::convertSphericalToCartesian(p, qp[k]);
                 }
 
@@ -172,8 +170,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 // pick an "edge epsilon" based on a characteristic length (shortest diagonal length)
                 // (this scales linearly so it better compares with linear weights u,v,w)
-                const double dist2_q0_q3 = point_3d_t::distance2(qp[3], qp[0]);
-                const double dist2_q1_q2 = point_3d_t::distance2(qp[2], qp[1]);
+                const double dist2_q0_q3 = Point3::distance2(qp[3], qp[0]);
+                const double dist2_q1_q2 = Point3::distance2(qp[2], qp[1]);
 
                 const double edgeEpsilon = 1.e-11 * std::min(dist2_q0_q3, dist2_q1_q2);
                 ASSERT(edgeEpsilon >= 0);
@@ -183,7 +181,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2)? 0 : 2;
 
 
-                const repres::Iterator::point_3d_t p3d = it->point3D();
+                const Point3 p3d = it->point3D();
                 const atlas::interpolation::method::Ray ray(p3d.data());
                 atlas::interpolation::method::Intersect inter;
 

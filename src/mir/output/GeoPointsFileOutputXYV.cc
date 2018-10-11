@@ -114,13 +114,13 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {
-            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+            const auto& p = it->pointUnrotated();
             ASSERT(v != values.cend());
-            out << "\n" << p.lon.value() << ' ' << p.lat.value() << ' ' << *v;
+            out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << *v;
             ++v;
 
-            latitudes.push_back(p.lat.value());
-            longitudes.push_back(p.lon.value());
+            latitudes.push_back(p.lat().value());
+            longitudes.push_back(p.lon().value());
 
         }
         ASSERT(v == values.cend());
@@ -193,14 +193,14 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         size_t i = 0;
         while (it->next()) {
-            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+            const auto& p = it->pointUnrotated();
             ASSERT(v != values.cend());
-            out << double(p.lon.value())
-                << double(p.lat.value())
+            out << double(p.lon().value())
+                << double(p.lat().value())
                 << double(*v);
 
-            latitudes.push_back(p.lat.value());
-            longitudes.push_back(p.lon.value());
+            latitudes.push_back(p.lat().value());
+            longitudes.push_back(p.lon().value());
 
 
             ++v;

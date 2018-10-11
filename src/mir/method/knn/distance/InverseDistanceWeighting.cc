@@ -28,7 +28,7 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
     parametrisation.get("distance-weighting-shepard-power", power_);
     ASSERT(power_ >= 0.);
 
-    // half power is used to avoid the eckit::geometry::Point3::distance extra srqt
+    // half power is used to avoid the Point3::distance extra srqt
     halfPower_ = power_ * 0.5;
     ASSERT(halfPower_ >= 0.);
 }
@@ -36,7 +36,7 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 
 void InverseDistanceWeighting::operator()(
         size_t ip,
-        const eckit::geometry::Point3& point,
+        const Point3& point,
         const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 
@@ -50,7 +50,7 @@ void InverseDistanceWeighting::operator()(
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = eckit::geometry::Point3::distance2(point, neighbours[j].point());
+        const double d2 = Point3::distance2(point, neighbours[j].point());
         if (eckit::types::is_strictly_greater(d2, 0.)) {
 
             weights[j] = 1. / std::pow(d2, halfPower_);

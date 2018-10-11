@@ -25,14 +25,6 @@ namespace mir {
 namespace repres {
 
 
-void mir::repres::Iterator::point_ll_t::print(std::ostream& s) const {
-    s << "point_ll_t["
-          "lat=" << lat
-      << ",lon=" << lon
-      << "]";
-}
-
-
 Iterator::Iterator(const util::Rotation& rotation) :
     rotation_(atlas::PointLonLat(
                   rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
@@ -44,25 +36,25 @@ Iterator::Iterator(const util::Rotation& rotation) :
 Iterator::~Iterator() = default;
 
 
-const Iterator::point_2d_t& Iterator::pointRotated() const {
+const Point2& Iterator::pointRotated() const {
     ASSERT(valid_);
     return point_;
 }
 
 
-const Iterator::point_ll_t& Iterator::pointUnrotated() const {
+const PointLatLon& Iterator::pointUnrotated() const {
     ASSERT(valid_);
-    return pointUnrotated_;
+    return *this;
 }
 
 
 Iterator& Iterator::next() {
     ASSERT(valid_);
-    valid_ = next(pointUnrotated_.lat, pointUnrotated_.lon);
+    valid_ = next(lat_, lon_);
 
     if (valid_) {
 
-        atlas::PointLonLat p(pointUnrotated_.lon.value(), pointUnrotated_.lat.value());
+        atlas::PointLonLat p(lon_.value(), lat_.value());
         rotation_.rotate(p.data());
 
         // notice the order
@@ -74,7 +66,7 @@ Iterator& Iterator::next() {
 }
 
 
-const Iterator::point_3d_t Iterator::point3D() const {
+const Point3 Iterator::point3D() const {
     ASSERT(valid_);
 
     // notice the order
@@ -90,8 +82,9 @@ const Iterator::point_3d_t Iterator::point3D() const {
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
             "valid?" << valid_
-        << ",pointUnrotated=" << pointUnrotated_
-        << ",point=" << point_
+        << ",PointLatLon=";
+    PointLatLon::print(out);
+    out << ",point=" << point_
         << ",rotated?" << rotation_.rotated()
         << ",rotation=" << rotation_
         << "]";

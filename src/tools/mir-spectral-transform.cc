@@ -160,7 +160,7 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
         coordinates->reserve(representation.count());
 
         while (it->next()) {
-            const mir::repres::Iterator::point_2d_t& p(*(*it));
+            const mir::Point2& p(*(*it));
             coordinates->push_back(atlas::PointXY(p[1], p[0]));
         }
 

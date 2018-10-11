@@ -51,8 +51,6 @@ bool StructuredBilinearLatLon::sameAs(const Method& other) const {
 void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
         const repres::Representation& in,
         const repres::Representation& out) const {
-    typedef repres::Iterator::point_ll_t point_ll_t;
-
 
     // NOTE: use bilinear interpolation assuming quasi-regular grid
     // (this assumes the points are oriented north-south)
@@ -68,7 +66,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 
 
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
-    std::vector<point_ll_t> icoords;
+    std::vector<PointLatLon> icoords;
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
@@ -111,10 +109,10 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
             ASSERT(ip < nbOutputPoints);
             ++progress;
 
-            const point_ll_t& p = it->pointUnrotated();
+            const auto& p = it->pointUnrotated();
 
-            const bool too_much_north = p.lat > max_lat;
-            const bool too_much_south = p.lat < min_lat;
+            const bool too_much_north = p.lat() > max_lat;
+            const bool too_much_south = p.lat() < min_lat;
 
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
@@ -149,14 +147,14 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 
                 ASSERT(pl.size() >= 2); // at least 2 lines of latitude
 
-                if ( eckit::types::is_approximately_equal(max_lat.value(), p.lat.value()) ) {
+                if ( eckit::types::is_approximately_equal(max_lat.value(), p.lat().value()) ) {
 
                     top_n = pl[0];
                     bot_n = pl[1];
                     top_i = 0;
                     bot_i = top_i + top_n;
 
-                } else if ( eckit::types::is_approximately_equal(min_lat.value(), p.lat.value()) ) {
+                } else if ( eckit::types::is_approximately_equal(min_lat.value(), p.lat().value()) ) {
 
                     top_n = pl[ pl.size() - 2 ];
                     bot_n = pl[ pl.size() - 1 ];
@@ -165,11 +163,11 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
 
                 } else {
 
-                    top_lat = icoords[top_i].lat;
-                    bot_lat = icoords[bot_i].lat;
+                    top_lat = icoords[top_i].lat();
+                    bot_lat = icoords[bot_i].lat();
 
                     size_t n = 1;
-                    while ( !( bot_lat < p.lat && ( top_lat > p.lat || eckit::types::is_approximately_equal(top_lat.value(), p.lat.value())))
+                    while ( !( bot_lat < p.lat() && ( top_lat > p.lat() || eckit::types::is_approximately_equal(top_lat.value(), p.lat().value())))
                             && n != pl.size() ) {
 
                         top_n = pl[n - 1];
@@ -178,8 +176,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                         top_i  = bot_i;
                         bot_i += pl[n - 1];
 
-                        top_lat = icoords[top_i].lat;
-                        bot_lat = icoords[bot_i].lat;
+                        top_lat = icoords[top_i].lat();
+                        bot_lat = icoords[bot_i].lat();
 
                         ASSERT(top_lat > bot_lat);
 
@@ -187,8 +185,8 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                     }
                 }
 
-                top_lat = icoords[top_i].lat;
-                bot_lat = icoords[bot_i].lat;
+                top_lat = icoords[top_i].lat();
+                bot_lat = icoords[bot_i].lat();
 
                 ASSERT( top_lat > bot_lat );
 
@@ -199,13 +197,13 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                 size_t top_i_lft = 0;
                 size_t top_i_rgt = 0;
 
-                left_right_lon_indexes(p.lon, icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
+                left_right_lon_indexes(p.lon(), icoords, top_i, top_i + top_n, top_i_lft, top_i_rgt);
 
                 // set left/right point indices, on the lower latitude
                 size_t bot_i_lft = 0;
                 size_t bot_i_rgt = 0;
 
-                left_right_lon_indexes(p.lon, icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
+                left_right_lon_indexes(p.lon(), icoords, bot_i, bot_i + bot_n , bot_i_lft, bot_i_rgt);
 
                 // now we have the indices of the input points around the output point
 
@@ -218,27 +216,27 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W,
                 ASSERT(top_i_rgt < inpts);
                 ASSERT(top_i_lft < inpts);
 
-                Longitude tl_lon  = icoords[top_i_lft].lon;
-                Longitude tr_lon  = icoords[top_i_rgt].lon;
-                Longitude bl_lon  = icoords[bot_i_lft].lon;
-                Longitude br_lon  = icoords[bot_i_rgt].lon;
+                Longitude tl_lon  = icoords[top_i_lft].lon();
+                Longitude tr_lon  = icoords[top_i_rgt].lon();
+                Longitude bl_lon  = icoords[bot_i_lft].lon();
+                Longitude br_lon  = icoords[bot_i_rgt].lon();
 
                 if ( tr_lon < tl_lon ) tr_lon += Longitude::GLOBE.value();
                 if ( br_lon < bl_lon ) br_lon += Longitude::GLOBE.value();
 
                 // calculate the weights
-                Longitude w1 =  p.lon - tl_lon;
-                Longitude w2 =  tr_lon - p.lon;
-                Longitude w3 =  p.lon - bl_lon;
-                Longitude w4 =  br_lon - p.lon;
+                Longitude w1 =  p.lon() - tl_lon;
+                Longitude w2 =  tr_lon - p.lon();
+                Longitude w3 =  p.lon() - bl_lon;
+                Longitude w4 =  br_lon - p.lon();
                 ASSERT(w1 >= 0);
                 ASSERT(w2 >= 0);
                 ASSERT(w3 >= 0);
                 ASSERT(w4 >= 0);
 
                 // top and bottom midpoint weights
-                Latitude wt = p.lat - bot_lat;
-                Latitude wb = top_lat - p.lat;
+                Latitude wt = p.lat() - bot_lat;
+                Latitude wb = top_lat - p.lat();
                 ASSERT(wt >= 0);
                 ASSERT(wb >= 0);
 

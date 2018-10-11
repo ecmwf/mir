@@ -32,7 +32,7 @@ NearestLSM::NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks
 
 void NearestLSM::operator()(
         size_t ip,
-        const eckit::geometry::Point3&,
+        const Point3&,
         const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 

@@ -58,7 +58,7 @@ static const double parametricEpsilon = 1e-15;
 
 typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
 typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
-typedef std::pair< size_t, repres::Iterator::point_ll_t > failed_projection_t;
+typedef std::pair< size_t, PointLatLon > failed_projection_t;
 
 
 static void normalise(triplet_vector_t& triplets) {
@@ -95,7 +95,7 @@ static triplet_vector_t projectPointTo3DElements(
     size_t nbInputPoints,
     const atlas::array::ArrayView<double, 2>& icoords,
     const atlas::mesh::HybridElements::Connectivity& connectivity,
-    const repres::Iterator::point_3d_t& p,
+    const Point3& p,
     size_t ip,
     size_t firstVirtualPoint,
     size_t& nbProjectionAttempts,
@@ -323,7 +323,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
             if (inDomain.contains(it->pointRotated())) {
 
                 // 3D point to lookup
-                repres::Iterator::point_3d_t p(it->point3D());
+                Point3 p(it->point3D());
 
                 // 3D projection, trying elements closest to p first
                 element_tree_t::NodeList closest = eTree->findInSphere(p, R);
@@ -369,7 +369,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         msg << "Failed to project " << eckit::Plural(nbFailures, "point");
         eckit::Log::debug<LibMir>() << msg.str() << ":";
         size_t count = 0;
-        for (const failed_projection_t& f : failures) {
+        for (const auto& f : failures) {
             eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
             if (++count > 10) {
                 eckit::Log::debug<LibMir>() << "\n\t...";

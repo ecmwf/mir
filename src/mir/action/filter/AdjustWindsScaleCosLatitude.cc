@@ -63,10 +63,10 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     std::vector<double> scale(N);
     for (auto& s : scale) {
         ASSERT(iter->next());
-        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        s = (p.lat == Latitude::SOUTH_POLE)? 0.
-          : (p.lat == Latitude::NORTH_POLE)? 0.
-          : 1./std::cos( util::degree_to_radian(p.lat.value()) );
+        const auto& p = iter->pointUnrotated();
+        s = (p.lat() == Latitude::SOUTH_POLE)? 0.
+          : (p.lat() == Latitude::NORTH_POLE)? 0.
+          : 1./std::cos( util::degree_to_radian(p.lat().value()) );
     }
     ASSERT(!(iter->next()));
 

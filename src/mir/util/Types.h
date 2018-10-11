@@ -11,17 +11,32 @@
 /// @date Aug 2016
 
 
-#ifndef mir_util_Types_H
-#define mir_util_Types_H
+#ifndef mir_util_Types_h
+#define mir_util_Types_h
 
 #include "mir/util/Latitude.h"
 #include "mir/util/LongitudeDouble.h"
 #include "mir/util/LongitudeFraction.h"
+#include "mir/util/PointLatLonT.h"
+
+#include "eckit/geometry/Point2.h"
+#include "eckit/geometry/Point3.h"
+
 
 namespace mir {
-// typedef LongitudeDouble Longitude;
-typedef LongitudeFraction Longitude;
-}
+
+
+// using Longitude = LongitudeDouble;
+using Longitude = LongitudeFraction;
+
+
+using PointLatLon = util::PointLatLonT<Latitude, Longitude>;
+using eckit::geometry::Point2;
+using eckit::geometry::Point3;
+
+
+}  // namespace mir
+
 
 #endif
 

@@ -92,14 +92,14 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
 
     eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
-        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        Latitude lat = p.lat;
-        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
+        const auto& p = iter->pointUnrotated();
+        Latitude lat = p.lat();
+        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-        int row = int((Latitude::NORTH_POLE - p.lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
+        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
         ASSERT(row >= 0 && row < int(ROWS));
 
         int col = int(lon.value() * COLS / Longitude::GLOBE.value());

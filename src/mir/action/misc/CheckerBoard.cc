@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/CheckerBoard.h"
 
 #include <iostream>
@@ -37,7 +38,7 @@ CheckerBoard::CheckerBoard(const param::MIRParametrisation &parametrisation):
 CheckerBoard::~CheckerBoard() = default;
 
 
-bool CheckerBoard::sameAs(const Action& other) const {
+bool CheckerBoard::sameAs(const Action&) const {
     return false;
 }
 
@@ -123,10 +124,10 @@ void CheckerBoard::execute(context::Context & ctx) const {
         size_t j = 0;
 
         while (iter->next()) {
-            const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+            const auto& p = iter->pointUnrotated();
 
-            Latitude lat = Latitude::NORTH_POLE - p.lat;
-            Longitude lon = p.lon.normalise(Longitude::GREENWICH);
+            Latitude lat = Latitude::NORTH_POLE - p.lat();
+            Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
             size_t c = size_t(lat.value() / dns);
             size_t r = size_t(lon.value() / dwe);
@@ -141,6 +142,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         ASSERT(j == values.size());
     }
 }
+
 
 const char* CheckerBoard::name() const {
     return "CheckerBoard";

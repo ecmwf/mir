@@ -83,8 +83,9 @@ size_t GaussianIterator::resetToRow(size_t j) {
 
 
 void GaussianIterator::print(std::ostream& out) const {
-    out << "GaussianIterator["
-            "N=" << N_
+    out << "GaussianIterator[";
+    Iterator::print(out);
+    out << ",N=" << N_
         << ",bbox=" << bbox_
         << ",Ni=" << Ni_
         << ",Nj=" << Nj_

@@ -120,18 +120,18 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     Sorter<Longitude> e(bbox.east());
 
     while (iterator->next()) {
-        const repres::Iterator::point_ll_t& point = iterator->pointUnrotated();
+        const auto& point = iterator->pointUnrotated();
 
-        n.push(point.lat);
-        s.push(point.lat);
+        n.push(point.lat());
+        s.push(point.lat());
 
-        w.push(point.lon);
-        w.push(point.lon + 360);
-        w.push(point.lon - 360);
+        w.push(point.lon());
+        w.push(point.lon() + 360);
+        w.push(point.lon() - 360);
 
-        e.push(point.lon);
-        e.push(point.lon + 360);
-        e.push(point.lon - 360);
+        e.push(point.lon());
+        e.push(point.lon() + 360);
+        e.push(point.lon() - 360);
 
     }
 

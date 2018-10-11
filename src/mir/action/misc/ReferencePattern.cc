@@ -12,6 +12,7 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/ReferencePattern.h"
 
 #include <iostream>
@@ -25,6 +26,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/util/Angles.h"
 
+
 namespace mir {
 namespace action {
 
@@ -37,7 +39,7 @@ ReferencePattern::ReferencePattern(const param::MIRParametrisation &parametrisat
 ReferencePattern::~ReferencePattern() = default;
 
 
-bool ReferencePattern::sameAs(const Action& other) const {
+bool ReferencePattern::sameAs(const Action&) const {
     return false;
 }
 
@@ -108,10 +110,13 @@ void ReferencePattern::execute(context::Context & ctx) const {
         size_t j = 0;
 
         while (iter->next()) {
-            const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
+            const auto& p = iter->pointUnrotated();
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range * sin(f1 * util::degree_to_radian(p.lon.value())) * cos(f2 * util::degree_to_radian(p.lat.value())) * 0.5 + median;
+                values[j] = range
+                            * sin(f1 * util::degree_to_radian(p.lon().value()))
+                            * cos(f2 * util::degree_to_radian(p.lat().value()))
+                            * 0.5 + median;
             }
 
             j++;
@@ -121,6 +126,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
 
     }
 }
+
 
 const char* ReferencePattern::name() const {
     return "ReferencePattern";

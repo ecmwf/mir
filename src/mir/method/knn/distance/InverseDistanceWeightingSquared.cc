@@ -26,7 +26,7 @@ InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MI
 
 void InverseDistanceWeightingSquared::operator()(
         size_t ip,
-        const eckit::geometry::Point3& point,
+        const Point3& point,
         const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 
@@ -40,7 +40,7 @@ void InverseDistanceWeightingSquared::operator()(
     std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
-        const double d2 = eckit::geometry::Point3::distance2(point, neighbours[j].point());
+        const double d2 = Point3::distance2(point, neighbours[j].point());
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];

@@ -99,22 +99,22 @@ size_t countRepresentationInBoundingBox(
     eckit::ScopedPtr<repres::Iterator> iter(rep.iterator());
 
     while (iter->next()) {
-        const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
+        const auto& point = iter->pointUnrotated();
 
         values++;
 
-        nn.insert(DistanceLat(bbox.north().distance(point.lat), point.lat));
-        ss.insert(DistanceLat(bbox.south().distance(point.lat), point.lat));
+        nn.insert(DistanceLat(bbox.north().distance(point.lat()), point.lat()));
+        ss.insert(DistanceLat(bbox.south().distance(point.lat()), point.lat()));
 
-        ee.insert(DistanceLon(bbox.east().distance(point.lon), point.lon));
-        ww.insert(DistanceLon(bbox.west().distance(point.lon), point.lon));
+        ee.insert(DistanceLon(bbox.east().distance(point.lon()), point.lon()));
+        ww.insert(DistanceLon(bbox.west().distance(point.lon()), point.lon()));
 
         // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
 
-        if (bbox.contains(point.lat, point.lon)) {
+        if (bbox.contains(point)) {
 
-            const Latitude& lat = point.lat;
-            const Longitude lon = point.lon.normalise(bbox.west());
+            const Latitude& lat = point.lat();
+            const Longitude lon = point.lon().normalise(bbox.west());
 
             if (first) {
                 n = s = lat;

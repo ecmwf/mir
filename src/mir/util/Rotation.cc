@@ -120,7 +120,6 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
 
 
 BoundingBox Rotation::rotate(const BoundingBox& bbox) const {
-    using eckit::geometry::Point2;
     using atlas::PointLonLat;
 
     using eckit::types::is_approximately_lesser_or_equal;

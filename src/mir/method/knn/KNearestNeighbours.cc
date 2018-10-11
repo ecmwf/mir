@@ -112,7 +112,7 @@ void KNearestNeighbours::assemble(
             if (inDomain.contains(it->pointRotated())) {
 
                 // get the reference output point
-                eckit::geometry::Point3 p(it->point3D());
+                Point3 p(it->point3D());
 
                 // 3D point to lookup
                 {

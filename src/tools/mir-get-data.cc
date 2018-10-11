@@ -184,8 +184,6 @@ size_t diff(eckit::Channel& log,
           const Coordinates& coord1,
           const Coordinates& coord2) {
 
-    using point_2d_t = mir::repres::Iterator::point_2d_t;
-
     ASSERT(coord1.size() == coord2.size());
     size_t N = coord1.size();
 
@@ -198,8 +196,8 @@ size_t diff(eckit::Channel& log,
     mir::stats::detail::ScalarMinMaxFn<double> statsLat, statsLon;
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
         return out << "\n\t@[0]=" << n
-                   << '\t' << point_2d_t(lat1[n], lon1[n])
-                   << '\t' << point_2d_t(lat2[n], lon2[n]);
+                   << '\t' << mir::Point2(lat1[n], lon1[n])
+                   << '\t' << mir::Point2(lat2[n], lon2[n]);
     };
 
     size_t Ndiff = 0;
@@ -230,7 +228,7 @@ size_t diff(eckit::Channel& log,
 }
 
 
-const neighbours_t& getNeighbours(const eckit::geometry::Point2& p, size_t n, const mir::repres::Representation& rep, const mir::param::MIRParametrisation& param) {
+const neighbours_t& getNeighbours(const mir::Point2& p, size_t n, const mir::repres::Representation& rep, const mir::param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
     auto& key = rep.uniqueName();
@@ -253,8 +251,8 @@ const neighbours_t& getNeighbours(const eckit::geometry::Point2& p, size_t n, co
 
 
 void MIRGetData::execute(const eckit::option::CmdArgs& args) {
-    using eckit::geometry::Point2;
-    using eckit::geometry::Point3;
+    using mir::Point2;
+    using mir::Point3;
     using mir::repres::Iterator;
 
     auto& log = eckit::Log::info();
@@ -314,8 +312,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 eckit::ScopedPtr< Iterator > it(rep->iterator());
                 for (const double& v: field.values(0)) {
                     ASSERT(it->next());
-                    const Iterator::point_2d_t& P(**it);
-                    log << "\n\t" << P[0] << '\t' << P[1] << '\t' << v;
+                    const Point2& P(**it);
+                    log << "\t" << P[0] << '\t' << P[1] << '\t' << v << std::endl;
                 }
 
                 log << std::endl;

@@ -26,7 +26,7 @@ NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {
 
 void NoDistanceWeighting::operator()(
         size_t ip,
-        const eckit::geometry::Point3&,
+        const Point3&,
         const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 

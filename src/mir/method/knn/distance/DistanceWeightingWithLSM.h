@@ -34,7 +34,7 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
 
     void operator()(
             size_t,
-            const eckit::geometry::Point3&,
+            const Point3&,
             const std::vector<search::PointSearch::PointValueType>&,
             std::vector<WeightMatrix::Triplet>&) const {
         throw eckit::SeriousBug("DistanceWeightingWithLSM: not to be used directly");

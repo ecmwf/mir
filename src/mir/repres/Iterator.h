@@ -18,8 +18,6 @@
 
 #include <iosfwd>
 
-#include "eckit/geometry/Point2.h"
-#include "eckit/geometry/Point3.h"
 #include "eckit/memory/NonCopyable.h"
 
 #include "mir/util/Rotation.h"
@@ -31,24 +29,8 @@ namespace mir {
 namespace repres {
 
 
-class Iterator : private eckit::NonCopyable {
+class Iterator : protected PointLatLon, private eckit::NonCopyable {
 public:
-
-    // -- Types
-
-    struct point_ll_t {
-        point_ll_t(const Latitude& latitude =0, const Longitude& longitude =0) : lat(latitude), lon(longitude) {}
-        Latitude lat;
-        Longitude lon;
-        void print(std::ostream&) const;
-        friend std::ostream& operator<<(std::ostream& s, const point_ll_t& p) {
-            p.print(s);
-            return s;
-        }
-    };
-
-    typedef eckit::geometry::Point2 point_2d_t;
-    typedef eckit::geometry::Point3 point_3d_t;
 
     // -- Exceptions
     // None
@@ -69,15 +51,15 @@ public:
 
     // -- Operators
 
-    inline const point_2d_t& operator*() const {
+    inline const Point2& operator*() const {
         return pointRotated();
     }
 
     // -- Methods
 
-    const point_2d_t& pointRotated() const;
-    const point_ll_t& pointUnrotated() const;
-    const point_3d_t point3D() const;
+    const Point2& pointRotated() const;
+    const PointLatLon& pointUnrotated() const;
+    const Point3 point3D() const;
 
     Iterator& next();
 
@@ -94,9 +76,7 @@ protected:
 
     // -- Members
 
-    point_2d_t point_;
-    point_ll_t pointUnrotated_;
-
+    Point2 point_;
     atlas::util::Rotation rotation_;
     bool valid_;
 

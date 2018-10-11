@@ -100,13 +100,13 @@ void AreaCropper::crop(
     eckit::ScopedPtr<repres::Iterator> iter(repres.iterator());
 
     while (iter->next()) {
-        const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
+        const auto& point = iter->pointUnrotated();
 
         // eckit::Log::debug<LibMir>() << point << " ====> " << bbox.contains(point) << std::endl;
 
         if (bbox.contains(point)) {
-            const Latitude& lat = point.lat;
-            const Longitude lon = point.lon.normalise(bbox.west());
+            const Latitude& lat = point.lat();
+            const Longitude lon = point.lon().normalise(bbox.west());
 
             if (first) {
                 n = s = lat;

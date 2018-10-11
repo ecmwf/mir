@@ -25,7 +25,7 @@ struct NoDistanceWeighting : DistanceWeighting {
     NoDistanceWeighting(const param::MIRParametrisation&);
     void operator()(
             size_t ip,
-            const eckit::geometry::Point3& point,
+            const Point3& point,
             const std::vector<search::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
 private:

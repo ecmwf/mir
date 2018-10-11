@@ -101,10 +101,10 @@ public:
     bool isPeriodicWestEast() const;
 
     /// Contains point
-    bool contains(const repres::Iterator::point_ll_t&) const;
+    bool contains(const PointLatLon&) const;
 
     /// Contains point
-    bool contains(const repres::Iterator::point_2d_t&) const;
+    bool contains(const Point2&) const;
 
     /// Contains point
     bool contains(const Latitude&, const Longitude&) const;

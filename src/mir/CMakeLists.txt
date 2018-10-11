@@ -567,6 +567,7 @@ list(APPEND mir_srcs
     util/MIRStatistics.h
     util/PlanParser.cc
     util/PlanParser.h
+    util/PointLatLonT.h
     util/Rotation.cc
     util/Rotation.h
     util/Types.h

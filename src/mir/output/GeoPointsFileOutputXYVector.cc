@@ -81,10 +81,10 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 
         eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {
-            const repres::Iterator::point_ll_t& p = it->pointUnrotated();
+            const auto& p = it->pointUnrotated();
             ASSERT(u != values_u.cend());
             ASSERT(v != values_v.cend());
-            out << "\n" << p.lat.value() << ' ' << p.lon.value() << extra << ' ' << *u << ' ' << *v;
+            out << "\n" << p.lat().value() << ' ' << p.lon().value() << extra << ' ' << *u << ' ' << *v;
             ++u;
             ++v;
         }

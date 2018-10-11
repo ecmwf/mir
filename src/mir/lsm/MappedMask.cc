@@ -126,9 +126,9 @@ MappedMask::MappedMask(const std::string& name,
 
     eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
-        const repres::Iterator::point_ll_t& p = iter->pointUnrotated();
-        Latitude lat = p.lat;
-        Longitude lon = p.lon.normalise(Longitude::GREENWICH);
+        const auto& p = iter->pointUnrotated();
+        Latitude lat = p.lat();
+        Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         if (lat < Latitude::SOUTH_POLE) {
             std::ostringstream oss;

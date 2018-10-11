@@ -164,12 +164,12 @@ void BoundingBox::normalise() {
 }
 
 
-bool BoundingBox::contains(const repres::Iterator::point_ll_t& p) const {
-    return contains(p.lat, p.lon);
+bool BoundingBox::contains(const PointLatLon& p) const {
+    return contains(p.lat(), p.lon());
 }
 
 
-bool BoundingBox::contains(const repres::Iterator::point_2d_t& p) const {
+bool BoundingBox::contains(const Point2& p) const {
     // notice the order
     return contains(p[0], p[1]);
 }
