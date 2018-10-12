@@ -31,11 +31,11 @@ inline static double utime() {
 
 template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name,
-                                size_t memory,
-                                size_t shared,
+                                size_t memory_capacity,
+                                size_t shared_capacity,
                                 const char* variable, bool cleanupAtExit):
     name_(name),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory_capacity, shared_capacity)) ,
     cleanupAtExit_(cleanupAtExit),
     users_(0) {
 

@@ -14,13 +14,15 @@
 ///
 /// @date Oct 2016
 
-#ifndef mir_caching_MatrixLoader_H
-#define mir_caching_MatrixLoader_H
+
+#ifndef mir_caching_matrix_MatrixLoader_h
+#define mir_caching_matrix_MatrixLoader_h
 
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/linalg/SparseMatrix.h"
+
 
 namespace mir {
 namespace caching {
@@ -31,7 +33,6 @@ class MatrixLoader : public eckit::linalg::SparseMatrix::Allocator {
 
 public:
     MatrixLoader(const std::string&, const eckit::PathName&);
-
     virtual ~MatrixLoader();
 
     virtual const void* address() const = 0;

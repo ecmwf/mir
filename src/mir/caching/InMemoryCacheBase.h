@@ -12,8 +12,9 @@
 /// @author Tiago Quintino
 /// @date   Oct 2016
 
-#ifndef mir_caching_InMemoryCacheBase_H
-#define mir_caching_InMemoryCacheBase_H
+
+#ifndef mir_caching_InMemoryCacheBase_h
+#define mir_caching_InMemoryCacheBase_h
 
 #include <string>
 #include <map>

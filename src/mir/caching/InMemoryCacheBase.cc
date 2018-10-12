@@ -25,8 +25,8 @@ namespace mir {
 namespace caching {
 
 
-static eckit::Mutex *local_mutex = 0;
-static std::set<InMemoryCacheBase *> *m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::set<InMemoryCacheBase *> *m = nullptr;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
@@ -57,8 +57,8 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 
     InMemoryCacheUsage result;
 
-    for (auto j = m->begin(); j != m->end(); ++j) {
-        result += (*j)->footprint();
+    for (auto& j : *m) {
+        result += j->footprint();
     }
 
     return result;
@@ -75,7 +75,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 
-    if (!maximumCapacity && !m->size()) {
+    if (!maximumCapacity && m->empty()) {
         return;
     }
 
@@ -87,8 +87,8 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
         InMemoryCacheUsage totalFootprint;
 
-        for (auto j = m->begin(); j != m->end(); ++j) {
-            totalFootprint += (*j)->footprint();
+        for (auto& j : *m) {
+            totalFootprint += j->footprint();
         }
 
         log() << "CACHE-checkTotalFootprint size "
@@ -102,13 +102,13 @@ void InMemoryCacheBase::checkTotalFootprint() {
             InMemoryCacheUsage p = (totalFootprint - maximumCapacity) / m->size();
 
 
-            for (auto j = m->begin(); j != m->end(); ++j) {
-                InMemoryCacheUsage purged = (*j)->purge(p);
+            for (auto& j : *m) {
+                InMemoryCacheUsage purged = j->purge(p);
                 if (purged) {
                     log() << "CACHE-checkTotalFootprint purged "
                           << purged
                           << " from "
-                          << (*j)->name()
+                          << j->name()
                           << std::endl;
                     more = true;
                 }
