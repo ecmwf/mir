@@ -38,7 +38,7 @@ const char *MeshCacheTraits::name() {
 }
 
 int MeshCacheTraits::version() {
-    return 1;
+    return 2;
 }
 
 const char *MeshCacheTraits::extension() {
