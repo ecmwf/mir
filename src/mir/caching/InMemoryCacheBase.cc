@@ -8,22 +8,27 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "eckit/config/Resource.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
 #include "mir/config/LibMir.h"
 
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/Log.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
+
 
 namespace mir {
 namespace caching {
 
+
 static eckit::Mutex *local_mutex = 0;
 static std::set<InMemoryCacheBase *> *m = 0;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
+
 
 static void init() {
     local_mutex = new eckit::Mutex();
@@ -86,11 +91,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
             totalFootprint += (*j)->footprint();
         }
 
-        eckit::Log::debug<LibMir>() << "CACHE-checkTotalFootprint size "
-                                    << totalFootprint
-                                    << ", max is "
-                                    <<  maximumCapacity
-                                    <<  std::endl;
+        log() << "CACHE-checkTotalFootprint size "
+              << totalFootprint
+              << ", max is "
+              << maximumCapacity
+              << std::endl;
 
         if (totalFootprint > maximumCapacity) {
 
@@ -100,11 +105,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
             for (auto j = m->begin(); j != m->end(); ++j) {
                 InMemoryCacheUsage purged = (*j)->purge(p);
                 if (purged) {
-                    eckit::Log::info() << "CACHE-checkTotalFootprint purged "
-                                       << purged
-                                       << " from "
-                                       << (*j)->name()
-                                       << std::endl;
+                    log() << "CACHE-checkTotalFootprint purged "
+                          << purged
+                          << " from "
+                          << (*j)->name()
+                          << std::endl;
                     more = true;
                 }
             }
@@ -113,6 +118,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
     }
 }
 
+
+eckit::Channel& InMemoryCacheBase::log() {
+    static auto& channel = eckit::Log::info();
+    return channel;
+}
 
 
 }  // namespace caching

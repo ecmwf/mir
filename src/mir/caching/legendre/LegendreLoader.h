@@ -35,8 +35,6 @@ namespace caching {
 namespace legendre {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 class LegendreLoader : public eckit::NonCopyable {
 
 public:
@@ -57,6 +55,8 @@ protected:
     eckit::PathName path_;
 
     virtual void print(std::ostream&) const = 0;
+
+    static eckit::Channel& log();
 
 private:
     friend std::ostream& operator<<(std::ostream& s, const LegendreLoader& p) {
@@ -99,8 +99,6 @@ public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
 };
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace legendre
 }  // namespace caching

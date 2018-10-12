@@ -14,6 +14,7 @@
 ///
 /// @date Apr 2015
 
+
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 
 #include <errno.h>
@@ -28,12 +29,9 @@
 #include <sys/sem.h>
 
 #include "eckit/eckit.h"
-
-#include "eckit/runtime/Main.h"
-#include "eckit/memory/Shmget.h"
 #include "eckit/config/Resource.h"
-#include "eckit/io/StdFile.h"
 #include "eckit/io/AutoCloser.h"
+#include "eckit/io/StdFile.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
@@ -51,9 +49,6 @@ namespace caching {
 namespace legendre {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 namespace {
 
 const int MAGIC  =  1234567890;
@@ -67,9 +62,6 @@ struct info {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 class Unloader {
 
     std::vector<eckit::PathName> paths_;
@@ -81,7 +73,6 @@ public:
         static Unloader unloader;
         return unloader;
     }
-
 
     void add(const eckit::PathName& path) {
         paths_.push_back(path);
@@ -98,8 +89,6 @@ public:
     }
 };
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class GlobalSemaphore {
 public:
@@ -120,13 +109,13 @@ public:
 };
 
 
-SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName &path):
+SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path),
     address_(0),
     size_(path.size()),
     unload_(false) {
 
-    eckit::Log::debug<LibMir>() << "Loading shared memory legendre coefficients from " << path << std::endl;
+    log() << "Loading shared memory legendre coefficients from " << path << std::endl;
 
     std::string name;
 
@@ -134,10 +123,10 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         unload_ = name.substr(0, 4) == "tmp-";
     }
 
-    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from shared memory");
+    eckit::TraceTimer<LibMir> timer("Loading Legendre coefficients from shared memory");
     eckit::PathName real = path.realName();
 
-    eckit::Log::debug<LibMir>() << "Loading legendre coefficients from " << real << std::endl;
+    log() << "Loading Legendre coefficients from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -164,17 +153,17 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::debug<LibMir>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
+    log() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize
-                                << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
-                                << ", page size: " << eckit::Bytes(page_size)
-                                << ", pages: " << eckit::BigNum(shmsize / page_size)
-                                << std::endl;
+    log() << "SharedMemoryLoader: size is " << shmsize
+          << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
+          << ", page size: " << eckit::Bytes(page_size)
+          << ", pages: " << eckit::BigNum(shmsize / page_size)
+          << std::endl;
 
     int shmid;
     if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
@@ -183,7 +172,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
         throw eckit::FailedSystemCall(oss.str());
     }
 
-    eckit::Log::debug<LibMir>() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
+    log() << "SHM LOAD " << eckit::Main::hostname() << " path " << real << " key " << key << " shmid " << shmid << std::endl;
 
     // Make sure memory is unloaded on exit
     if (unload_) {
@@ -193,7 +182,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 #ifdef SHM_PAGESIZE
     {
 
-        // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // log() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
@@ -247,7 +236,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
 
         if (loadfile) {
 
-            eckit::Log::info() << "SharedMemoryLoader: loading " << path_ << std::endl;
+            log() << "SharedMemoryLoader: loading " << path_ << std::endl;
             eckit::Timer("Loading " + path_ + " into shared memory ");
 
             eckit::AutoStdFile file(real);
@@ -258,8 +247,9 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
             nfo->magic = MAGIC;
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
+
         } else {
-            eckit::Log::info() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+            log() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
         if (unload_) {
@@ -275,7 +265,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     // char line[1024];
 
     // while(fgets(line, sizeof(line), f)) {
-    //     eckit::Log::info() << "LOAD IPCS " << line << std::endl;
+    //     log() << "LOAD IPCS " << line << std::endl;
     // }
 }
 
@@ -296,6 +286,8 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
+    log() << "Unloading SharedMemory from " << path << std::endl;
+
     eckit::PathName real = path.realName();
     int shmid = 0;
     key_t key;
@@ -313,18 +305,19 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     }
 
     if (shmid < 0 && errno == ENOENT) {
-        eckit::Log::debug<LibMir>() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+        log() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
     } else {
         if (shmctl(shmid, IPC_RMID, 0) < 0) {
             eckit::Log::warning() << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
         }
-        eckit::Log::debug<LibMir>() << "Succefully unloaded SharedMemory from " << path  << std::endl;
+
+        log() << "Succefully unloaded SharedMemory from " << path  << std::endl;
     }
 
     // eckit::StdPipe f("ipcs", "r");
     // char line[1024];s
     // while(fgets(line, sizeof(line), f)) {
-    //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
+    //     log() << "UNLOAD IPCS " << line << std::endl;
     // }
 }
 
@@ -358,10 +351,6 @@ static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 
 }  // namespace legendre

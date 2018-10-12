@@ -28,19 +28,19 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
-#include "eckit/memory/Shmget.h"
-
-#include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
+#include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
+#include "eckit/memory/Shmget.h"
 #include "eckit/os/SemLocker.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/method/WeightMatrix.h"
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -48,7 +48,6 @@ namespace mir {
 namespace caching {
 namespace matrix {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
 
@@ -63,9 +62,8 @@ struct SHM_Info_ {
 
 }
 
-typedef eckit::Padded<SHM_Info_,1280> SHMInfo; /* aligned to 64 bytes */
 
-//----------------------------------------------------------------------------------------------------------------------
+typedef eckit::Padded<SHM_Info_,1280> SHMInfo; /* aligned to 64 bytes */
 
 
 class Unloader {
@@ -95,7 +93,6 @@ public:
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class GlobalSemaphore {
 public:
@@ -115,20 +112,21 @@ public:
     int semaphore_;
 };
 
+
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path),
     address_(0),
     size_(0),
     unload_(false) {
 
-    eckit::Log::debug<LibMir>() << "Loading shared memory matrix from " << path << std::endl;
+    log() << "Loading shared memory matrix from " << path << std::endl;
 
     unload_ = name.substr(0, 4) == "tmp-";
 
     eckit::TraceTimer<LibMir> timer("Loading interpolation matrix from shared memory");
     eckit::PathName real = path.realName();
 
-    eckit::Log::debug<LibMir>() << "Loading interpolation matrix from " << real << std::endl;
+    log() << "Loading interpolation matrix from " << real << std::endl;
 
     if (real.asString().size() >= INFO_PATH - 1) {
         std::ostringstream os;
@@ -161,18 +159,17 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    eckit::Log::debug<LibMir>() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
+    log() << "Maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024) << std::endl;
 #endif
     // This may return EINVAL is the segment is too large 256MB
     // To find the maximum:
     // Linux:ipcs -l, Mac/bsd: ipcs -M
 
-    eckit::Log::debug<LibMir>() << "SharedMemoryLoader: size is " << shmsize
-                                << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
-                                << ", page size: " << eckit::Bytes(page_size)
-                                << ", pages: " << eckit::BigNum(shmsize / page_size)
-                                << std::endl;
-
+    log() << "SharedMemoryLoader: size is " << shmsize
+          << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
+          << ", page size: " << eckit::Bytes(page_size)
+          << ", pages: " << eckit::BigNum(shmsize / page_size)
+          << std::endl;
 
     int shmid;
     if ((shmid = eckit::Shmget::shmget(key, shmsize , IPC_CREAT | 0600)) < 0) {
@@ -189,7 +186,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 #ifdef SHM_PAGESIZE
     {
 
-        // eckit::Log::debug<LibMir>() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
+        // log() << "SharedMemoryLoader: attempting to use 64K pages"  << std::endl;
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
@@ -213,6 +210,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
         oss << "shmat(" << real << "), id=" << shmid << ", size=" << shmsize;
         throw eckit::FailedSystemCall(oss.str());
     }
+
 
     try {
 
@@ -252,9 +250,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
 
-        }
-        else {
-            eckit::Log::debug<LibMir>() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
+        } else {
+            log() << "SharedMemoryLoader: " << path_ << " already loaded" << std::endl;
         }
 
         if (unload_) {
@@ -270,7 +267,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // char line[1024];
 
     // while(fgets(line, sizeof(line), f)) {
-    //     eckit::Log::info() << "LOAD IPCS " << line << std::endl;
+    //     log() << "LOAD IPCS " << line << std::endl;
     // }
 }
 
@@ -290,7 +287,7 @@ void SharedMemoryLoader::loadSharedMemory(const eckit::PathName& path) {
 
 void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
-    eckit::Log::debug<LibMir>() << "Unloading SharedMemory from " << path << std::endl;
+    log() << "Unloading SharedMemory from " << path << std::endl;
 
     eckit::PathName real = path.realName();
     int shmid = 0;
@@ -304,24 +301,24 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     shmid = eckit::Shmget::shmget(key, 0, 0600);
     if (shmid < 0 && errno != ENOENT) {
         // throw eckit::FailedSystemCall("Cannot get shared memory for " + path);
-        eckit::Log::info() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
+        eckit::Log::warning() << "Cannot get shared memory for " << path << eckit::Log::syserr << std::endl;
         return;
     }
 
     if (shmid < 0 && errno == ENOENT) {
-        // eckit::Log::info() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
+        log() << "SharedMemory from " << path  << " already unloaded" <<std::endl;
     } else {
         if (shmctl(shmid, IPC_RMID, 0) < 0) {
-            eckit::Log::info() << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
+            eckit::Log::warning() << "Cannot delete memory for " << path << eckit::Log::syserr << std::endl;
         }
 
-        eckit::Log::debug<LibMir>() << "Succefully unloaded SharedMemory from " << path << std::endl;
+        log() << "Succefully unloaded SharedMemory from " << path << std::endl;
     }
 
     // eckit::StdPipe f("ipcs", "r");
     // char line[1024];s
     // while(fgets(line, sizeof(line), f)) {
-    //     eckit::Log::info() << "UNLOAD IPCS " << line << std::endl;
+    //     log() << "UNLOAD IPCS " << line << std::endl;
     // }
 }
 
@@ -341,6 +338,7 @@ bool SharedMemoryLoader::inSharedMemory() const {
     return true;
 }
 
+
 namespace {
 
 static MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
@@ -350,8 +348,6 @@ static MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
 
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace matrix
 }  // namespace caching

@@ -26,7 +26,6 @@ namespace mir {
 namespace caching {
 namespace matrix {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class MatrixLoader : public eckit::linalg::SparseMatrix::Allocator {
 
@@ -38,11 +37,13 @@ public:
     virtual const void* address() const = 0;
     virtual size_t size() const = 0;
 
-    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape& shape);
+    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape&);
 
     virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape);
 
 protected:
+
+    static eckit::Channel& log();
 
     eckit::PathName path_;
 
@@ -54,14 +55,14 @@ protected:
 
 class MatrixLoaderFactory {
     std::string name_;
-    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) = 0;
+    virtual MatrixLoader* make(const std::string& name, const eckit::PathName&) = 0;
 
 protected:
     MatrixLoaderFactory(const std::string&);
     virtual ~MatrixLoaderFactory();
 
 public:
-    static MatrixLoader* build(const std::string&, const eckit::PathName& path);
+    static MatrixLoader* build(const std::string&, const eckit::PathName&);
     static void list(std::ostream&);
 };
 
@@ -76,10 +77,9 @@ public:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
+
 
 #endif

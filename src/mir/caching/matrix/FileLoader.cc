@@ -14,6 +14,7 @@
 ///
 /// @date Oct 2016
 
+
 #include "mir/caching/matrix/FileLoader.h"
 
 #include <fcntl.h>
@@ -27,7 +28,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 
-using mir::method::WeightMatrix;
 
 namespace mir {
 namespace caching {
@@ -40,9 +40,9 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
 
     // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
 
-    eckit::Log::debug<LibMir>() << "Loading interpolation matrix from " << path << std::endl;
+    log() << "Loading interpolation matrix from " << path << std::endl;
 
-    WeightMatrix w(path);
+    method::WeightMatrix w(path);
 
     w.dump(buffer_);
 }

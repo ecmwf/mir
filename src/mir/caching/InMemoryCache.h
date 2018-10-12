@@ -12,6 +12,7 @@
 /// @author Tiago Quintino
 /// @date May 2015
 
+
 #ifndef mir_caching_InMemoryCache_H
 #define mir_caching_InMemoryCache_H
 
@@ -21,8 +22,10 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
 
+
 namespace mir {
 namespace caching {
+
 
 template<class T>
 class InMemoryCache : public InMemoryCacheBase {
@@ -110,11 +113,12 @@ public:
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir
 
+
 #include "mir/caching/InMemoryCache.cc"
+
 
 #endif

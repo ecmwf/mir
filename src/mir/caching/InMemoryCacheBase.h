@@ -22,6 +22,11 @@
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
+namespace eckit {
+class Channel;
+}
+
+
 namespace mir {
 namespace caching {
 
@@ -42,6 +47,7 @@ public:  // methods
 protected:
 
     void checkTotalFootprint();
+    static eckit::Channel& log();
 
 private:
 
