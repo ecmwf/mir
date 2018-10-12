@@ -18,39 +18,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ###############################################################################
 # project
 
-ecbuild_add_option( FEATURE ECCODES DESCRIPTION "" DEFAULT ON )
-
-if( HAVE_ECCODES)
-  ecbuild_use_package( PROJECT eccodes VERSION 2.4.1 REQUIRED )
-  set( GRIB_API_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS} )
-  set( GRIB_API_LIBRARIES    ${ECCODES_LIBRARIES} )
-  set( GRIB_API_DEFINITIONS  ${ECCODES_DEFINITIONS} )
-  set( grib_api_BASE_DIR     ${eccodes_BASE_DIR} )
-  set( grib_handling_pkg eccodes )
-else()
-  ecbuild_use_package( PROJECT grib_api VERSION 1.24 REQUIRED )
-  set( grib_handling_pkg grib_api )
-endif()
-
-ecbuild_add_option( FEATURE TEST_ASSERTIONS DESCRIPTION "Enable assertion tests" DEFAULT ON )
+ecbuild_add_option( FEATURE TEST_ASSERTIONS DEFAULT ON )
+ecbuild_add_option( FEATURE OMP             DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
+ecbuild_add_option( FEATURE MPI             DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
+ecbuild_add_option( FEATURE NETCDF          DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 
-### eckit -- version >= 0.16.5 includes new library registration mechanism
-ecbuild_use_package( PROJECT eckit  VERSION  0.18.0  REQUIRED )
+ecbuild_use_package( PROJECT eccodes VERSION 2.4.1 REQUIRED )
+ecbuild_use_package( PROJECT eckit   VERSION 0.18.0 REQUIRED )
+ecbuild_use_package( PROJECT atlas   VERSION 0.11)
+#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 
-ecbuild_use_package( PROJECT atlas  VERSION  0.11)
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
 endif()
 
-#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
-
-###############################################################################
-# some variables/options of this project
-
-ecbuild_add_option( FEATURE OMP    DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
-ecbuild_add_option( FEATURE MPI    DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
-ecbuild_add_option( FEATURE NETCDF DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 # OMP/MPI features handling
 if( ENABLE_OMP )

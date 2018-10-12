@@ -14,24 +14,22 @@ find_program( MARS_SCRIPT NAMES "mars" "false" )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
-set( eccodes_environment
-    ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions
-    ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples )
+set( _environment
+    "MIR_DEBUG=1"
+    "MIR_HOME=${CMAKE_BINARY_DIR}"
+    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
+    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
+    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
 
 ecbuild_info(${test_files})
 
 foreach( _t ${test_files} )
 
   ecbuild_add_test(
-      TARGET ${_t}
-      CONDITION  MARS_SCRIPT AND HAVE_TEST_ASSERTIONS
-      COMMAND    mir-test.sh
-      ARGS       ${_t}
-      ENVIRONMENT
-        "MIR_DEBUG=1"
-        "MIR_HOME=${CMAKE_BINARY_DIR}"
-        "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-        ${eccodes_environment}
-  )
+      TARGET      ${_t}
+      CONDITION   MARS_SCRIPT AND HAVE_TEST_ASSERTIONS
+      COMMAND     mir-test.sh
+      ARGS        ${_t}
+      ENVIRONMENT ${_environment} )
 
 endforeach()

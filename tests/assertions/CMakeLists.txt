@@ -20,8 +20,8 @@ set( _environment
     "MIR_DEBUG=1"
     "MIR_HOME=${CMAKE_BINARY_DIR}"
     "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions"
-    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples" )
+    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
+    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
 
 ecbuild_info(${test_files})
 
