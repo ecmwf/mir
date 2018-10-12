@@ -55,7 +55,7 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
 
 
 eckit::Channel& MatrixLoader::log() {
-    static auto& channel = eckit::Log::info();
+    static auto& channel = eckit::Log::debug<LibMir>();
     return channel;
 }
 

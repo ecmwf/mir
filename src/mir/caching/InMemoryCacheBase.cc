@@ -120,7 +120,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
 
 eckit::Channel& InMemoryCacheBase::log() {
-    static auto& channel = eckit::Log::info();
+    static auto& channel = eckit::Log::debug<LibMir>();
     return channel;
 }
 

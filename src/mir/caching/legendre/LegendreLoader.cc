@@ -40,7 +40,7 @@ LegendreLoader::~LegendreLoader() = default;
 
 
 eckit::Channel& LegendreLoader::log() {
-    static auto& channel = eckit::Log::info();
+    static auto& channel = eckit::Log::debug<LibMir>();
     return channel;
 }
 
