@@ -339,11 +339,11 @@ data::MIRField GribInput::field() const {
 
     ASSERT(grib_);
 
-    long localNumber;
-    GRIB_CALL(grib_get_long(grib_,"localDefinitionNumber",&localNumber));
-
-    if (localNumber == 4) {
-        throw eckit::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
+    long localDefinitionNumber = 0;
+    if (grib_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == GRIB_SUCCESS) {
+        if (localDefinitionNumber == 4) {
+            throw eckit::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
+        }
     }
 
     size_t count;
