@@ -338,8 +338,13 @@ data::MIRField GribInput::field() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    // TODO: this is only here for debugging purposes
-    // GRIB_CALL(grib_set_double(grib_, "missingValue", 1.e15));
+
+    long localNumber;
+    GRIB_CALL(grib_get_long(grib_,"localDefinitionNumber",&localNumber));
+
+    if (localNumber == 4) {
+        throw eckit::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
+    }
 
     size_t count;
     GRIB_CALL(grib_get_size(grib_, "values", &count));
