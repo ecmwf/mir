@@ -47,7 +47,7 @@ bool Gridded2RotatedGrid::sameAs(const Action& other) const {
 }
 
 
-util::BoundingBox Gridded2RotatedGrid::croppingBoundingBox() const {
+util::BoundingBox Gridded2RotatedGrid::unrotatedBoundingBox() const {
 
     repres::RepresentationHandle out(outputRepresentation());
     auto& bbox(method().hasCropping() ? method().getCropping()

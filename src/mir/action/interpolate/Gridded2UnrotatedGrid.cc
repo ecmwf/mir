@@ -23,7 +23,7 @@ namespace interpolate {
 Gridded2UnrotatedGrid::~Gridded2UnrotatedGrid() = default;
 
 
-util::BoundingBox Gridded2UnrotatedGrid::croppingBoundingBox() const {
+util::BoundingBox Gridded2UnrotatedGrid::unrotatedBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 
     return method().hasCropping() ? method().getCropping()

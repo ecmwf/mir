@@ -74,7 +74,7 @@ public:
     virtual bool deleteWithNext(const Action&);
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
-    virtual util::BoundingBox croppingBoundingBox() const;
+    virtual util::BoundingBox unrotatedBoundingBox() const;
 
     // -- Overridden methods
     // None

@@ -69,7 +69,7 @@ bool Action::canCrop() const {
 }
 
 
-util::BoundingBox Action::croppingBoundingBox() const {
+util::BoundingBox Action::unrotatedBoundingBox() const {
     NOTIMP;
 }
 

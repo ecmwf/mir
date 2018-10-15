@@ -100,7 +100,7 @@ private:
     virtual const char* name() const;
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
-    virtual util::BoundingBox croppingBoundingBox() const;
+    virtual util::BoundingBox unrotatedBoundingBox() const;
 
     // -- Class members
     // None

@@ -55,7 +55,7 @@ const method::Method& Gridded2GriddedInterpolation::method() const {
 
 bool Gridded2GriddedInterpolation::mergeWithNext(const Action& next) {
     if (next.canCrop() && method_->canCrop()) {
-        method_->setCropping(next.croppingBoundingBox());
+        method_->setCropping(next.unrotatedBoundingBox());
         return true;
     }
     return false;
@@ -78,7 +78,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     auto input = in->domain();
     if (!input.isGlobal()) {
 
-        const auto output(croppingBoundingBox());
+        const auto output(unrotatedBoundingBox());
         auto out(output);
         if (inputIntersectWithOutput_) {
             input.intersects(out);
