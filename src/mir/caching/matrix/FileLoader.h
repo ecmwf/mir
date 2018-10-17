@@ -14,24 +14,24 @@
 ///
 /// @date Oct 2016
 
-#ifndef mir_caching_FileLoader_H
-#define mir_caching_FileLoader_H
+
+#ifndef mir_caching_matrix_FileLoader_h
+#define mir_caching_matrix_FileLoader_h
 
 #include "eckit/memory/MemoryBuffer.h"
 #include "mir/caching/matrix/MatrixLoader.h"
+
 
 namespace mir {
 namespace caching {
 namespace matrix {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 class FileLoader : public MatrixLoader {
 public:
-    FileLoader(const std::string& name, const eckit::PathName& path);
+    FileLoader(const std::string& name, const eckit::PathName&);
 
-    ~FileLoader();
+    virtual ~FileLoader();
 
     static bool shared();
 
@@ -39,19 +39,17 @@ protected:
     virtual void print(std::ostream&) const;
 
 private:
-    eckit::MemoryBuffer buffer_;
-
     virtual const void* address() const;
     virtual size_t size() const;
     virtual bool inSharedMemory() const;
+
+    eckit::MemoryBuffer buffer_;
 };
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 } // namespace matrix
 } // namespace caching
 } // namespace mir
+
 
 #endif

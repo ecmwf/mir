@@ -9,10 +9,14 @@
  */
 
 
+#include <algorithm>
+#include <cmath>
 #include <string>
 #include <vector>
+
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
@@ -187,6 +191,37 @@ public:
         return size_t(n);
     }
 
+    bool compareCoordinates(long edition, double toleranceLat, double toleranceLon) {
+        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+        eckit::ScopedPtr<repres::Iterator> iter_m(representation_->iterator());
+
+        int err = 0;
+        grib_iterator* iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
+        if (err != GRIB_SUCCESS) {
+            GRIB_CHECK(err, nullptr);
+        }
+
+        long n = 0;
+        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value); ++n) {
+            ASSERT(iter_m->next());
+
+            double dlat = mir::Latitude(iter_m->pointRotated()[0]).distance(lat).value();
+            double dlon = mir::LongitudeDouble(iter_m->pointRotated()[1]).distance(lon).value();
+
+            if (dlat > toleranceLat || dlon > toleranceLon) {
+                return false;
+            }
+        }
+
+        grib_iterator_delete(iter_g);
+
+        ASSERT(!iter_m->next());
+        ASSERT(n > 0);
+
+        return true;
+    }
+
     size_t numberOfValuesFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -293,7 +328,6 @@ public:
         EncodeRegular(rep, Ni, Nj) {
         ASSERT(gaussianNumber);
     }
-    virtual ~EncodeRegularGaussianGrid() = default;
 };
 
 
@@ -303,7 +337,6 @@ class EncodeRegularLatLonGrid final : public EncodeRegular {
     }
 public:
     using EncodeRegular::EncodeRegular;
-    ~EncodeRegularLatLonGrid() = default;
 };
 
 
@@ -333,7 +366,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
          // ECC-445
          test_t{ "O1280", { -10.017,    -85,      -38.981,   -56      }, 124577 },
-         test_t{ "O1280", { -10.0176,   275,      -38.9807,  304      }, 124209 },
+         test_t{ "O1280", { -10.017,    275,      -38.981,   304      }, 124577 },
          test_t{ "O1280", { -10,        -85,      -39,       -56.1    }, 124143 },
 
          // ECC-576
@@ -396,6 +429,13 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             const BoundingBox bbox = encode.boundingBoxFromGribInput(edition);
             log << "\tGRIB" << edition << ": " << bbox << std::endl;
             EXPECT(bbox.contains(small));
+
+#if 0
+            // FIXME: compare mir/eccodes iterators coordinates with a better precision
+            double tol = 1.e-3;
+            log << "\tGRIB" << edition << ": |Δ(lat,lon)| <= (" << tol << ", " << tol << ")" << std::endl;
+            EXPECT(encode.compareCoordinates(edition, tol, tol));
+#endif
         }
     }
 }

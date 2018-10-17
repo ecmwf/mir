@@ -82,10 +82,13 @@ if( NOT eccodes_BASE_DIR )
         ecbuild_critical("Could not guess eccodes_BASE_DIR, nor find grib_compare (in bundle nor in path) as an alternative" )
     endif()
 endif()
-set( eccodes_environment
-    ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/definitions
-    ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/${grib_handling_pkg}/samples )
 
+set( _environment
+    "MIR_DEBUG=1"
+    "MIR_HOME=${CMAKE_BINARY_DIR}"
+    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
+    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
+    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
 
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
@@ -98,11 +101,7 @@ foreach(_t ${_test_reqs})
       COMMAND      $<TARGET_FILE:mir-tool>
       ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
-      ENVIRONMENT
-        "MIR_DEBUG=1"
-        "MIR_HOME=${CMAKE_BINARY_DIR}"
-        "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-        ${eccodes_environment} )
+      ENVIRONMENT  ${_environment} )
 
 endforeach()
 

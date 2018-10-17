@@ -37,7 +37,7 @@ class Grids : public eckit::Tool {
 
 void Grids::grid(const atlas::grid::StructuredGrid& grid) {
 
-    const std::vector<long>& pl = grid.nx();
+    const auto& pl = grid.nx();
     ASSERT(pl.size());
 
     std::vector<int> points_per_latitudes(pl.size());

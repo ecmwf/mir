@@ -24,8 +24,8 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox):
-    Octahedral(N, bbox) {
+ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox, double angularPrecision):
+    Octahedral(N, bbox, angularPrecision) {
 }
 
 
@@ -43,7 +43,7 @@ Iterator *ReducedOctahedral::iterator() const {
 
 
 const Gridded* ReducedOctahedral::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new ReducedOctahedral(N_, bbox);
+    return new ReducedOctahedral(N_, bbox, angularPrecision_);
 }
 
 

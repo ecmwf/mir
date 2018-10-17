@@ -63,6 +63,12 @@ intensity: {}
 # quantity interpreted as accumulated in time (typical units: [<original unit> s])
 numerics.accumulated: {}
 
+# quantity interpreted as temporal mean (typical units: [<original unit> s**-1])
+numerics.mean: {}
+
+# quantity interpreted as temporal rate of change (typical units: [<original unit> s**-1])
+numerics.tendency: {}
+
 # quantity interpreted as the integral over the vertical coordinate (typical units: [<original unit> m])
 numerics.vertical-integral: {}
 

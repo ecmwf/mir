@@ -15,49 +15,41 @@
 ///
 /// @date Oct 2016
 
-#ifndef mir_caching_SharedMemoryLoader_H
-#define mir_caching_SharedMemoryLoader_H
+
+#ifndef mir_caching_matrix_SharedMemoryLoader_h
+#define mir_caching_matrix_SharedMemoryLoader_h
 
 #include "mir/caching/matrix/MatrixLoader.h"
-#include "mir/method/WeightMatrix.h"
+
 
 namespace mir {
 namespace caching {
 namespace matrix {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 class SharedMemoryLoader : public MatrixLoader {
 public:
 
-    SharedMemoryLoader(const std::string& name, const eckit::PathName& path);
+    SharedMemoryLoader(const std::string& name, const eckit::PathName&);
 
     virtual ~SharedMemoryLoader();
 
-    static void loadSharedMemory(const eckit::PathName& path);
-    static void unloadSharedMemory(const eckit::PathName& path);
+    static void loadSharedMemory(const eckit::PathName&);
+    static void unloadSharedMemory(const eckit::PathName&);
 
 protected:
-
     virtual void print(std::ostream&) const;
 
 private:
-
+    virtual const void* address() const;
+    virtual size_t size() const;
+    virtual bool inSharedMemory() const;
 
     void* address_;
     size_t size_;
     bool unload_;
 
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
-
 };
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 } // namespace matrix

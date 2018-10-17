@@ -87,16 +87,16 @@ Reduced::Reduced(const param::MIRParametrisation& parametrisation) :
 }
 
 
-Reduced::Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox) :
-    Gaussian(N, bbox),
+Reduced::Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox, double angularPrecision) :
+    Gaussian(N, bbox, angularPrecision),
     k_(0),
     Nj_(N_ * 2) {
     setNj(pl, bbox.south(), bbox.north());
 }
 
 
-Reduced::Reduced(size_t N, const util::BoundingBox& bbox) :
-    Gaussian(N, bbox),
+Reduced::Reduced(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
+    Gaussian(N, bbox, angularPrecision),
     k_(0),
     Nj_(N * 2) {
     // derived classes must set k_, Nj_ using this constructor
@@ -230,8 +230,8 @@ const std::vector<long>& Reduced::pls() const {
     return pl_;
 }
 
-
-void Reduced::setNj(const std::vector<long>& pl, const Latitude& s, const Latitude& n) {
+template< typename PlVector >
+void Reduced::setNj(const PlVector& pl, const Latitude& s, const Latitude& n) {
     ASSERT(N_ > 0);
     ASSERT(N_ * 2 == pl.size());
 
@@ -258,9 +258,17 @@ void Reduced::setNj(const std::vector<long>& pl, const Latitude& s, const Latitu
         }
     }
 
-    pl_ = pl;
+    pl_ = std::vector<long>( pl.begin(), pl.end() );
     pls();  // check internal assumptions
 }
+
+// Explicit template instantiations of above implemenation for different PlVector types
+
+// PlVector = std::vector<int>
+template void Reduced::setNj(const std::vector<int>& pl, const Latitude& s, const Latitude& n);
+
+// PlVector = std::vector<long>
+template void Reduced::setNj(const std::vector<long>& pl, const Latitude& s, const Latitude& n);
 
 
 void Reduced::fill(grib_info& info) const  {
@@ -396,15 +404,13 @@ bool Reduced::getLongestElementDiagonal(double& d) const {
 
 
 util::BoundingBox Reduced::extendedBoundingBox(const util::BoundingBox& bbox) const {
-    using eckit::Fraction;
-
 
     // adjust West/East to include bbox's West/East
     Longitude w = bbox.west();
     Longitude e = bbox.east();
     {
-        Fraction west = bbox.west().fraction();
-        Fraction east = bbox.east().fraction();
+        const auto west = bbox.west().fraction();
+        const auto east = bbox.east().fraction();
 
         bool first = true;
         std::set<long> NiTried;
@@ -417,33 +423,32 @@ util::BoundingBox Reduced::extendedBoundingBox(const util::BoundingBox& bbox) co
             if (NiTried.insert(Ni).second) {
 
                 ASSERT(Ni >= 2);
-                Fraction inc = Longitude::GLOBE.fraction() / Ni;
+                auto inc = Longitude::GLOBE.fraction() / Ni;
 
-                Fraction::value_type Nw = (bbox.west().fraction() / inc).integralPart();
-                if (Nw * inc > bbox.west().fraction()) {
-                    Nw -= 1;
-                }
+                auto Nw = (west / inc).integralPart() - 1;
+                auto Ne = (east / inc).integralPart() + 1;
 
-                Fraction::value_type Ne = (bbox.east().fraction() / inc).integralPart();
-                if (Ne * inc < bbox.east().fraction() || Ne == Nw) {
-                    if (Ne < (Longitude::GLOBE.fraction() / inc).integralPart()) {
-                        Ne += 1;
-                    }
+                if (w > Nw * inc || first) {
+                    w = Nw * inc;
                 }
-
-                if (west > Nw * inc || first) {
-                    west = Nw * inc;
-                }
-                if (east < Ne * inc || first) {
-                    east = Ne * inc;
+                if (e < Ne * inc || first) {
+                    e = Ne * inc;
                 }
                 first = false;
             }
         }
+
         ASSERT(!first);
 
-        w = west;
-        e = east;
+        long NiMax = *std::max_element(NiTried.begin(), NiTried.end());
+        ASSERT(NiMax > 0);
+        auto inc = Longitude::GLOBE.fraction() / NiMax;
+
+        if (e - w + inc >= Longitude::GLOBE) {
+            w = 0;
+            e = Longitude::GLOBE;
+        }
+
         ASSERT(w < e);
     }
 

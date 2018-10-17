@@ -89,6 +89,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
         options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
+        options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
@@ -179,13 +180,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     static mir::param::DefaultParametrisation defaults;
     const mir::param::ConfigurationWrapper commandLine(args);
 
-    const long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u", 131);
-    const long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v", 132);
+    long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u");
+    long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v");
     ASSERT(paramIdu > 0);
     ASSERT(paramIdv > 0);
 
     const bool vod2uv   = args.getBool("vod2uv", false);
     const bool validate = args.getBool("validate", false);
+    const bool cesaro   = args.getBool("cesaro", false);
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
@@ -266,6 +268,36 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             transConfig.set("type", type);
 
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
+
+            if (cesaro) {
+                eckit::Timer timer("time on Cesàro summation filtering", debug);
+
+                std::vector<double> filter(T);
+                {
+                    double k = 2.;
+                    double f = 1.;
+                    filter[0] = f;
+
+                    for (size_t j = 1; j < T; ++j) {
+                        auto a = double(T - j + 1);
+                        f *= a / (a + k);
+                        filter[j] = f;
+                    }
+                }
+
+                for (size_t d = 0; d < field.dimensions(); ++d) {
+                    auto& values = field.direct(d);
+                    ASSERT(values.size() == N * 2);
+
+                    size_t i = 0;
+                    for (size_t m = 0; m <= T; ++m) {
+                        for (size_t n = m; n <= T; ++n) {
+                            values[i++] *= filter[m];
+                            values[i++] *= filter[m];
+                        }
+                    }
+                }
+            }
 
             debug << "MIRSpectralTransform:"
                   << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")

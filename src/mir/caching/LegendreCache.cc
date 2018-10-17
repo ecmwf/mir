@@ -37,7 +37,7 @@ const char *LegendreCacheTraits::name() {
 }
 
 int LegendreCacheTraits::version() {
-    return 1;
+    return 3;
 }
 
 const char *LegendreCacheTraits::extension() {

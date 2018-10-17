@@ -41,7 +41,7 @@ public:
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 
@@ -69,7 +69,7 @@ protected:
 
     // -- Constructors
 
-    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox());
+    Reduced(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Members
 
@@ -82,7 +82,8 @@ protected:
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
-    void setNj(const std::vector<long>&, const Latitude& s, const Latitude& n);
+    template < typename PlVector >
+    void setNj(const PlVector&, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e) const;
 
     // -- Overridden methods

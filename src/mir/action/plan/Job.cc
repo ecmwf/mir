@@ -15,7 +15,10 @@
 
 #include "mir/action/plan/Job.h"
 
+#include <algorithm>
 #include <iostream>
+#include <vector>
+
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
@@ -33,6 +36,18 @@ namespace mir {
 namespace action {
 
 
+bool postProcessingRequested(const api::MIRJob& job) {
+    using keys_t = std::vector<std::string>;
+
+    auto& config = LibMir::instance().configuration();
+    static const keys_t keys = config.getStringVector("post-process");
+
+    return keys.end() != std::find_if(keys.begin(), keys.end(), [&job](const keys_t::value_type& key) {
+        return job.has(key);
+    });
+}
+
+
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
     input_(input),
     output_(output)  {
@@ -40,14 +55,12 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
     const param::MIRParametrisation& metadata = input.parametrisation();
-    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
 
 
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-    if (!style->postProcessingRequested(job)) {
+    if (!postProcessingRequested(job)) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::Copy(job, output_));
@@ -61,8 +74,10 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         }
     }
 
-
+    combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
+
+    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_);
 
 

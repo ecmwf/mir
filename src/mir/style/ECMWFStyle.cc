@@ -75,6 +75,17 @@ protected:
 };
 
 
+struct Points : KnownKey {
+    Points(const char* key) : KnownKey(key, "points", false) {}
+    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation&) const {
+        return p1.has(key_);
+    }
+    bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
+        return false;
+    }
+};
+
+
 template< typename T >
 struct KnownKeyT : KnownKey {
     KnownKeyT(const char* key, const char* target="", const bool supportsRotation=true) : KnownKey(key, target, supportsRotation) {}
@@ -193,8 +204,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         new KnownKeyT< size_t >            ("octahedral", "octahedral-gg"),
         new KnownKeyT< std::vector<long> > ("pl",         "reduced-gg-pl-given"),
         new KnownKeyT< std::string >       ("gridname",   "namedgrid"),
-        new KnownKeyT< std::string >       ("griddef", "griddef", false),
-        new KnownKeyT< bool >              ("points",  "points",  false)
+        new KnownKeyT< std::string >       ("griddef",    "griddef", false),
+        new Points("latitudes"),
+        new Points("longitudes"),
     };
 
     static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
@@ -283,9 +295,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
@@ -313,17 +322,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         }
 
-        if (wind) {
+        if (windInput()) {
             plan.add("filter.adjust-winds-scale-cos-latitude");
         }
 
-        if ((wind || vod2uv) && rotation) {
+        if (windOutput() && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
-    }
-
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
     }
 
     if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
@@ -359,15 +364,8 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
-    }
-
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
     }
 }
 
@@ -375,12 +373,6 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     bool rotation = parametrisation_.userParametrisation().has("rotation");
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
 
     std::string formula;
     if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
@@ -400,29 +392,45 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if ((wind || vod2uv) && rotation) {
+        if (windOutput() && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
-    }
-
-    if (vod2uv || wind) {
-        selectWindComponents(plan);
     }
 }
 
 
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
+
+    if (windOutput()) {
+
+        bool u_only = false;
+        user.get("u-only", u_only);
+
+        bool v_only = false;
+        user.get("v-only", v_only);
+
+        if (u_only) {
+            ASSERT(!v_only);
+            plan.add("select.field", "which", long(0));
+        }
+
+        if (v_only) {
+            ASSERT(!u_only);
+            plan.add("select.field", "which", long(1));
+        }
+    }
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.epilogue", formula)) {
+    if (user.get("formula.epilogue", formula)) {
         std::string metadata;
         // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.epilogue.metadata", metadata);
+        user.get("formula.epilogue.metadata", metadata);
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
     std::string metadata;
-    if (parametrisation_.userParametrisation().get("metadata", metadata)) {
+    if (user.get("metadata", metadata)) {
         plan.add("set.metadata", "metadata", metadata);
     }
 
@@ -438,22 +446,32 @@ void ECMWFStyle::print(std::ostream& out) const {
 }
 
 
-void ECMWFStyle::selectWindComponents(action::ActionPlan& plan) const {
+bool ECMWFStyle::windInput() const {
+    long id = 0;
+    parametrisation_.fieldParametrisation().get("paramId", id);
 
-    bool u_only = false;
-    parametrisation_.userParametrisation().get("u-only", u_only);
-
-    bool v_only = false;
-    parametrisation_.userParametrisation().get("v-only", v_only);
-
-    if (u_only) {
-        ASSERT(!v_only);
-        plan.add("select.field", "which", long(0));
+    if (id == 0) {
+        return false;
     }
-    if (v_only) {
-        ASSERT(!u_only);
-        plan.add("select.field", "which", long(1));
+
+    const auto& config = LibMir::instance().configuration();
+    return  id == config.getLong("parameter-id-u") ||
+            id == config.getLong("parameter-id-v");
+}
+
+
+bool ECMWFStyle::windOutput() const {
+    if (windInput()) {
+        return true;
     }
+
+    bool vod2uv = false;
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
+    return vod2uv || wind;
 }
 
 
@@ -492,7 +510,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("points")) {
+    if (parametrisation_.userParametrisation().has("latitudes") ||
+        parametrisation_.userParametrisation().has("longitudes")) {
         user_wants_gridded++;
     }
 
@@ -554,33 +573,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
 
     epilogue(plan);
-}
-
-
-bool ECMWFStyle::postProcessingRequested(const api::MIRJob& job) const {
-    static const char *force[] = {
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "griddef",
-        "points",
-        "edition",
-        "formula",
-        "frame",
-        "packing",
-        "pattern",
-        "vod2uv",
-        "compatibility",
-        0
-    };
-
-    for (size_t i = 0; force[i]; ++i) {
-        if (job.has(force[i])) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 

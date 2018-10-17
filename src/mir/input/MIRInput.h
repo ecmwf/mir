@@ -32,11 +32,9 @@ namespace mir {
 namespace data {
 class MIRField;
 }
-
 namespace param {
 class MIRParametrisation;
 }
-
 }
 
 
@@ -62,8 +60,6 @@ public:
 
     // -- Methods
 
-
-
     virtual bool next();
     virtual size_t dimensions() const;
 
@@ -71,6 +67,7 @@ public:
 
     virtual data::MIRField field() const = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
+    virtual void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
 
     virtual size_t copy(double* values, size_t size) const;
 
@@ -88,7 +85,7 @@ public:
 protected:
 
     // -- Members
-
+    // None
 
     // -- Methods
 
@@ -115,6 +112,7 @@ private:
     // None
 
     // -- Class members
+    // None
 
     // -- Class methods
     // None

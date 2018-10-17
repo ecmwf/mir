@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    RotatedClassic(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
+    RotatedClassic(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

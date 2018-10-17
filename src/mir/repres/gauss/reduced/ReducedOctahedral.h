@@ -33,7 +33,7 @@ public:
 
     // -- Constructors
 
-    ReducedOctahedral(size_t, const util::BoundingBox& = util::BoundingBox());
+    ReducedOctahedral(size_t, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

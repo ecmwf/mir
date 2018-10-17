@@ -64,7 +64,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
-    const std::vector<long>& pl = gin.nx();
+    const auto& pl = gin.nx();
     ASSERT(pl.size());
     ASSERT(pl.front());
     ASSERT(pl.back());

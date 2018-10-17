@@ -14,34 +14,35 @@
 /// @author Willem Deconinck
 /// @date Apr 2015
 
-#ifndef mir_caching_LegendreLoader_H
-#define mir_caching_LegendreLoader_H
+
+#ifndef mir_caching_legendre_LegendreLoader_h
+#define mir_caching_legendre_LegendreLoader_h
 
 #include <iosfwd>
+#include <memory>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
+
 #include "mir/api/Atlas.h"
-#include <memory>
 
 
 namespace mir {
-
 namespace param {
 class MIRParametrisation;
 }
+}
 
+
+namespace mir {
 namespace caching {
 namespace legendre {
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class LegendreLoader : public eckit::NonCopyable {
 
 public:
     LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName&);
-
     virtual ~LegendreLoader();
 
     virtual const void* address() const = 0;
@@ -57,6 +58,8 @@ protected:
     eckit::PathName path_;
 
     virtual void print(std::ostream&) const = 0;
+
+    static eckit::Channel& log();
 
 private:
     friend std::ostream& operator<<(std::ostream& s, const LegendreLoader& p) {
@@ -99,8 +102,6 @@ public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
 };
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace legendre
 }  // namespace caching

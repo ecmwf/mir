@@ -12,24 +12,28 @@
 /// @author Tiago Quintino
 /// @date May 2015
 
-#ifndef mir_caching_InMemoryCache_H
-#define mir_caching_InMemoryCache_H
 
-#include "mir/caching/InMemoryCacheBase.h"
-#include "eckit/thread/Mutex.h"
+#ifndef mir_caching_InMemoryCache_h
+#define mir_caching_InMemoryCache_h
+
 #include "eckit/config/Resource.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/thread/Mutex.h"
+
+#include "mir/caching/InMemoryCacheBase.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
+
 
 namespace mir {
 namespace caching {
+
 
 template<class T>
 class InMemoryCache : public InMemoryCacheBase {
 
 public:  // methods
 
-    typedef T* iterator;
+    using iterator = T*;
 
     explicit InMemoryCache(const std::string& name,
                            size_t memory_capacity,
@@ -110,11 +114,12 @@ public:
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir
 
+
 #include "mir/caching/InMemoryCache.cc"
+
 
 #endif

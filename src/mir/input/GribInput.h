@@ -36,8 +36,6 @@ public:
 
     virtual ~GribInput();
 
-    void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
-
     // For debugging only
     void marsRequest(std::ostream&) const;
 
@@ -68,6 +66,7 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
+    virtual void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
 
     /// From MIRParametrisation
     virtual bool has(const std::string& name) const;

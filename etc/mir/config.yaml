@@ -2,10 +2,24 @@
     "parameter-id-u": 131,
     "parameter-id-v": 132,
 
-    "parameter-configuration": "~mir/etc/mir/parameter.yaml",
-
     "legendre-loader": "mapped-memory",
     "matrix-loader": "file-io",
 
-    "mir-cache-path": "/tmp/cache"
+    "mir-cache-path": "/tmp/cache",
+
+    "post-process": [
+        "accuracy",
+        "bitmap",
+        "checkerboard",
+        "compatibility",
+        "edition",
+        "formula",
+        "frame",
+        "griddef",
+        "latitudes",
+        "longitudes",
+        "packing",
+        "pattern",
+        "vod2uv"
+    ]
 }

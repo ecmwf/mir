@@ -85,13 +85,12 @@ private:
 
     // -- Methods
 
-    void selectWindComponents(action::ActionPlan&) const;
+    bool windInput() const;
+    bool windOutput() const;
 
     // -- Overridden methods
 
     void prepare(action::ActionPlan&) const;
-
-    bool postProcessingRequested(const api::MIRJob&) const;
 
     // -- Class members
     // None

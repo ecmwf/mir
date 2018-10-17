@@ -26,7 +26,7 @@ namespace legendre {
 
 class FileLoader : public LegendreLoader {
 public:
-    FileLoader(const param::MIRParametrisation&, const eckit::PathName& path);
+    FileLoader(const param::MIRParametrisation&, const eckit::PathName&);
 
     ~FileLoader(); // Change to virtual if base class
 

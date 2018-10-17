@@ -18,6 +18,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -32,8 +33,7 @@ namespace matrix {
 
 
 MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
-    path_(path.realName())
-{
+    path_(path.realName()) {
 }
 
 
@@ -47,15 +47,25 @@ eckit::linalg::SparseMatrix::Layout MatrixLoader::allocate(eckit::linalg::Sparse
     return layout;
 }
 
+
 void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) {
     // We assume that the MatrixLoader is deleted at the same time as the matrix
     // and release the memory in its destructor
 }
 
 
+eckit::Channel& MatrixLoader::log() {
+    static auto& channel = eckit::Log::debug<LibMir>();
+    return channel;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, MatrixLoaderFactory* >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, MatrixLoaderFactory* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, MatrixLoaderFactory* >();

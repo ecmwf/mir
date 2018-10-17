@@ -24,8 +24,8 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedClassic::ReducedClassic(size_t N, const util::BoundingBox& bbox) :
-    Classic(N, bbox) {
+ReducedClassic::ReducedClassic(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
+    Classic(N, bbox, angularPrecision) {
 }
 
 
@@ -43,7 +43,7 @@ Iterator* ReducedClassic::iterator() const {
 
 
 const Gridded* ReducedClassic::croppedRepresentation(const util::BoundingBox& bbox) const {
-    return new ReducedClassic(N_, bbox);
+    return new ReducedClassic(N_, bbox, angularPrecision_);
 }
 
 

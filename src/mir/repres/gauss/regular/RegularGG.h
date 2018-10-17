@@ -34,7 +34,7 @@ public:
     // -- Constructors
 
     RegularGG(const param::MIRParametrisation&);
-    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox());
+    RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

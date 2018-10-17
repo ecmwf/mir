@@ -18,6 +18,7 @@
 #include <iostream>
 #include <vector>
 
+#include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -92,7 +93,6 @@ void AreaCropper::crop(
     Longitude w = 0;
 
     size_t p = 0;
-    size_t count = 0;
     bool first = true;
 
     // Iterator is "unrotated", because the cropping area
@@ -102,10 +102,9 @@ void AreaCropper::crop(
     while (iter->next()) {
         const repres::Iterator::point_ll_t& point = iter->pointUnrotated();
 
-        // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
+        // eckit::Log::debug<LibMir>() << point << " ====> " << bbox.contains(point) << std::endl;
 
-        if (bbox.contains(point.lat, point.lon)) {
-
+        if (bbox.contains(point)) {
             const Latitude& lat = point.lat;
             const Longitude lon = point.lon.normalise(bbox.west());
 
@@ -120,34 +119,28 @@ void AreaCropper::crop(
                 if (w > lon) { w = lon; }
             }
 
-            // if(m.find(LL(lat, lon)) != m.end()) {
-            //     eckit::Log::debug<LibMir>() << "CROP  duplicate " << lat << ", " << lon << std::endl;
-            // }
-            m.insert(std::make_pair(LL(point.lat, lon), p));
-            count++;
+            // Make sure we don't visit duplicate points
+            ASSERT(m.insert(std::make_pair(LL(lat, lon), p)).second);
 
         }
         p++;
     }
 
-    // Don't support empty results
+    // Set mapping (don't support empty results)
     if (m.empty()) {
         std::ostringstream oss;
         oss << "Cropping " << repres << " to " << bbox << " returns no points";
         throw eckit::UserError(oss.str());
     }
 
-    // Make sure we did not visit duplicate points
-    ASSERT(count == m.size());
-
-    // Set resuling bounding box and mapping
-    bbox = util::BoundingBox(n, w, s, e);
-
     mapping.clear();
     mapping.reserve(m.size());
-    for (std::map<LL, size_t>::const_iterator j = m.begin(); j != m.end(); ++j) {
-        mapping.push_back((*j).second);
+    for (const auto& j : m) {
+        mapping.push_back(j.second);
     }
+
+    // Set resulting bounding box
+    bbox = util::BoundingBox(n, w, s, e);
 }
 
 

@@ -10,47 +10,61 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   August 2016
+/// @author Pedro Maciel
+/// @date August 2016
+
 
 #include "mir/config/LibMir.h"
 
-#include "eckit/config/Resource.h"
-
 #include "mir/api/mir_version.h"
+#include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
 
-using namespace eckit;
 
 namespace mir {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 REGISTER_LIBRARY(LibMir);
 
-LibMir::LibMir() : Library("mir") {}
 
-eckit::PathName LibMir::cacheDir()
-{
-    static eckit::PathName mirCachePath = LibResource<PathName, LibMir>("mir-cache-path;$MIR_CACHE_PATH", "/tmp/cache");
+LibMir::LibMir() : Library("mir") {
+}
+
+
+std::string LibMir::cacheDir() {
+    static std::string mirCachePath = eckit::PathName(
+                eckit::LibResource<eckit::PathName, LibMir>(
+                    "mir-cache-path;"
+                    "$MIR_CACHE_PATH",
+                    "/tmp/cache" ));
     return mirCachePath;
 }
 
-bool LibMir::caching()
-{
-    static bool mirCaching = LibResource<bool, LibMir>("mir-caching;$MIR_CACHING", true);
+
+bool LibMir::caching() {
+    static bool mirCaching = eckit::LibResource<bool, LibMir>(
+                "mir-caching;"
+                "$MIR_CACHING",
+                true );
     return mirCaching;
 }
 
-const LibMir& LibMir::instance()
-{
+
+const LibMir& LibMir::instance() {
     static LibMir libmir;
     return libmir;
 }
 
-const void* LibMir::addr() const { return this; }
+
+const void* LibMir::addr() const {
+    return this;
+}
+
 
 std::string LibMir::version() const {
     return mir_version_str();
 }
+
 
 std::string LibMir::gitsha1(unsigned int count) const {
     std::string sha1(mir_git_sha1());
@@ -61,7 +75,5 @@ std::string LibMir::gitsha1(unsigned int count) const {
     return sha1.substr(0, std::min(count, 40u));
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace mir
-

@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "eckit/serialisation/Stream.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 namespace mir {
@@ -32,21 +31,7 @@ void LongitudeFraction::print(std::ostream& out) const {
     out << double(value_);
 }
 
-bool LongitudeFraction::operator<(double value) const {
-    return value_ < value;
-}
-
-bool LongitudeFraction::operator<=(double value) const {
-    return value_ <= value;
-}
-
-bool LongitudeFraction::operator>(double value) const {
-    return value_ > value;
-}
-
-bool LongitudeFraction::operator>=(double value) const {
-   return value_ >= value;
-}
+//=========
 
 bool LongitudeFraction::operator==(double value) const {
     return value_ == value;
@@ -54,6 +39,48 @@ bool LongitudeFraction::operator==(double value) const {
 
 bool LongitudeFraction::operator!=(double value) const {
     return value_ != value;
+}
+
+bool LongitudeFraction::operator>(double value) const {
+    return value_ > value;
+}
+
+bool LongitudeFraction::operator<(double value) const {
+    return value_ < value;
+}
+
+bool LongitudeFraction::operator>=(double value) const {
+   return value_ >= value;
+}
+
+bool LongitudeFraction::operator<=(double value) const {
+    return value_ <= value;
+}
+
+//=========
+
+bool LongitudeFraction::operator==(const eckit::Fraction& value) const {
+    return value_ == value;
+}
+
+bool LongitudeFraction::operator!=(const eckit::Fraction& value) const {
+    return value_ != value;
+}
+
+bool LongitudeFraction::operator>(const eckit::Fraction& value) const {
+    return value_ > value;
+}
+
+bool LongitudeFraction::operator<(const eckit::Fraction& value) const {
+    return value_ < value;
+}
+
+bool LongitudeFraction::operator>=(const eckit::Fraction& value) const {
+   return value_ >= value;
+}
+
+bool LongitudeFraction::operator<=(const eckit::Fraction& value) const {
+    return value_ <= value;
 }
 
 //=========
@@ -106,6 +133,10 @@ LongitudeFraction LongitudeFraction::normalise(const LongitudeFraction& minimum)
 }
 
 LongitudeFraction LongitudeFraction::distance(const LongitudeFraction& meridian) const {
+    if (normalise(meridian) == meridian) {
+        return 0;
+    }
+
     LongitudeFraction d = (meridian < (*this) ? value_ - meridian.fraction() : meridian.fraction() - value_);
     while (d > LongitudeFraction::DATE_LINE) {
         d -= LongitudeFraction::DATE_LINE;

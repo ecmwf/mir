@@ -1,0 +1,7 @@
+# Support for old ocean grids (unsupported)
+# mars
+mofc_ocean_fc_inst_horizontal.grib1
+# mir
+--grid=3/3
+# grib_get assertions
+gridType=regular_ll

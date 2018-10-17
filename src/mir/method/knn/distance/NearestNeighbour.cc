@@ -27,7 +27,7 @@ NearestNeighbour::NearestNeighbour(const param::MIRParametrisation&) {
 void NearestNeighbour::operator()(
         size_t ip,
         const eckit::geometry::Point3&,
-        const std::vector<util::PointSearch::PointValueType>& neighbours,
+        const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 
     ASSERT(!neighbours.empty());

@@ -18,8 +18,9 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Grib.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Increments.h"
 
 
@@ -31,37 +32,7 @@ namespace unit {
 using util::BoundingBox;
 using util::Increments;
 
-
-struct LatLon {
-
-    static bool includesNorthPole(const Increments& increments, const BoundingBox& bbox) {
-
-        // if latitude range spans the globe, or within one increment from bounding box North
-        const Latitude range = bbox.north() - bbox.south();
-        const Latitude reach = std::min(bbox.north() + increments.south_north().latitude(), Latitude::NORTH_POLE);
-
-        return  same_with_grib1_accuracy(range, Latitude::GLOBE) ||
-                same_with_grib1_accuracy(reach, Latitude::NORTH_POLE);
-    }
-
-    static bool includesSouthPole(const Increments& increments, const BoundingBox& bbox) {
-
-        // if latitude range spans the globe, or within one increment from bounding box South
-        const Latitude range = bbox.north() - bbox.south();
-        const Latitude reach = std::max(bbox.south() - increments.south_north().latitude(), Latitude::SOUTH_POLE);
-
-        return  same_with_grib1_accuracy(range, Latitude::GLOBE) ||
-                same_with_grib1_accuracy(reach, Latitude::SOUTH_POLE);
-    }
-
-    static bool isPeriodicWestEast(const Increments& increments, const BoundingBox& bbox) {
-        const Longitude we = bbox.east() - bbox.west();
-        const Longitude inc = increments.west_east().longitude();
-
-        return  same_with_grib1_accuracy(we + inc, Longitude::GLOBE) ||
-                (we + inc) > Longitude::GLOBE;
-    }
-};
+static auto& log = eckit::Log::debug<LibMir>();
 
 
 struct Case {
@@ -87,9 +58,9 @@ struct Case {
 
     bool compare(const Case& other) const {
         if (boundingBox_ != other.boundingBox_ || Ni_ != other.Ni_ || Nj_ != other.Nj_) {
-            eckit::Log::debug<LibMir>() << "\n\t" "   " << *this
-                                        << "\n\t" "!= " << other
-                                        << std::endl;
+            log << "\n\t" "   " << *this
+                << "\n\t" "!= " << other
+                << std::endl;
             return false;
         }
         return true;
@@ -126,12 +97,13 @@ struct UserAndGlobalisedCase {
     const Case globalised_;
 
     bool check() const {
+        using repres::latlon::RegularLL;
 
         // check if Ni/Nj and shifts are well calculated, for the user-provided area
-        if (!user_.compare(Case("calculated",
-                                user_.boundingBox_,
-                                increments_.computeNi(user_.boundingBox_),
-                                increments_.computeNj(user_.boundingBox_) ))) {
+        repres::RepresentationHandle user = new RegularLL(increments_, user_.boundingBox_);
+        auto& user_ll = dynamic_cast<const RegularLL&>(*user);
+
+        if (!user_.compare(Case("calculated", user_.boundingBox_, user_ll.Ni(), user_ll.Nj() ))) {
             return false;
         }
 
@@ -139,11 +111,11 @@ struct UserAndGlobalisedCase {
         BoundingBox global(user_.boundingBox_);
         increments_.globaliseBoundingBox(global);
 
+        repres::RepresentationHandle globalised = new RegularLL(increments_, global);
+        auto& globalised_ll = dynamic_cast<const RegularLL&>(*globalised);
+
         // check if Ni/Nj and shifts are well calculated, for the 'globalised' area
-        if (!globalised_.compare(Case("calculated",
-                                      global,
-                                      increments_.computeNi(global),
-                                      increments_.computeNj(global) ))) {
+        if (!globalised_.compare(Case("calculated", global, globalised_ll.Ni(), globalised_ll.Nj() ))) {
 
             Latitude s = user_.boundingBox_.south();
             Latitude n = s;
@@ -159,17 +131,19 @@ struct UserAndGlobalisedCase {
             while (e - w >= Longitude::GLOBE)      { e -= we; }
             while (e - w <  Longitude::GLOBE - we) { e += we; }
 
-            BoundingBox maybe(n, w, s, e);
-            std::streamsize p = eckit::Log::debug<LibMir>().precision(15);
-            eckit::Log::debug<LibMir>() << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
-                                        << "\n\t" << maybe
-                                        << "\n\t" "Ni=" << increments_.computeNi(maybe)
-                                        << "\n\t" "Nj=" << increments_.computeNj(maybe)
-                                        << "\n\t" "includesNorthPole?  " << LatLon::includesNorthPole(increments_, maybe)
-                                        << "\n\t" "includesSouthPole?  " << LatLon::includesSouthPole(increments_, maybe)
-                                        << "\n\t" "isPeriodicWestEast? " << LatLon::isPeriodicWestEast(increments_, maybe)
-                                        << std::endl;
-            eckit::Log::debug<LibMir>().precision(p);
+            BoundingBox maybe_box(n, w, s, e);
+
+            repres::RepresentationHandle maybe = new RegularLL(increments_, maybe_box);
+            auto& maybe_ll = dynamic_cast<const repres::latlon::RegularLL&>(*maybe);
+
+            log << "globaliseBoundingBox should maybe result in (CONFIRM FIRST!):"
+                << "\n\t" << maybe_box
+                << "\n\t" "Ni=" << maybe_ll.Ni()
+                << "\n\t" "Nj=" << maybe_ll.Nj()
+                << "\n\t" "includesPoleNorth?  " << maybe->domain().includesPoleNorth()
+                << "\n\t" "includesPoleSouth?  " << maybe->domain().includesPoleSouth()
+                << "\n\t" "isPeriodicEastWest? " << maybe->domain().isPeriodicEastWest()
+                << std::endl;
 
             return false;
         }
@@ -189,9 +163,19 @@ CASE( "test_increments" ) {
 
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
 
+        { Increments(1, 1),
+          Case("user",   {   0, -350,   0,   8 }, 359,   1),  // user bbox, Ni, Nj
+          Case("global", {  90,    0, -90, 359 }, 360, 181)   // globalised bbox, Ni, Nj
+        },
+
+        { Increments(0.5, 0.5),
+          Case("user",   {   0, -350,   0,   9   }, 719,   1),
+          Case("global", {  90,    0, -90, 359.5 }, 720, 361)
+        },
+
         { Increments(2, 2),
-          Case("user",   {   2,   0,   0,   2   },   2,  2),  // user bbox, Ni, Nj, is lat/lon shifted
-          Case("global", {  90,   0, -90, 358   }, 180, 91)   // globalised bbox ...
+          Case("user",   {   2,   0,   0,   2   },   2,  2),
+          Case("global", {  90,   0, -90, 358   }, 180, 91)
         },
 
         { Increments(2, 2),
@@ -248,7 +232,7 @@ CASE( "test_increments" ) {
 #endif
 
         })) {
-        eckit::Log::debug<LibMir>() << "Test increments=" << cases.increments() << " with cases=" << cases << ":" << std::endl;
+        log << "Test increments=" << cases.increments() << " with cases=" << cases << ":" << std::endl;
         EXPECT( cases.check() );
     }
 }

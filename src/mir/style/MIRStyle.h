@@ -52,7 +52,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRStyle(); // Change to virtual if base class
+    virtual ~MIRStyle();
 
     // -- Convertors
     // None
@@ -63,8 +63,6 @@ public:
     // -- Methods
 
     virtual void prepare(action::ActionPlan&) const = 0;
-
-    virtual bool postProcessingRequested(const api::MIRJob&) const = 0;
 
     // -- Overridden methods
     // None

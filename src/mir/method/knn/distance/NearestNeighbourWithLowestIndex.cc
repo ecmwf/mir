@@ -28,7 +28,7 @@ NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MI
 void NearestNeighbourWithLowestIndex::operator()(
         size_t ip,
         const eckit::geometry::Point3& point,
-        const std::vector<util::PointSearch::PointValueType>& neighbours,
+        const std::vector<search::PointSearch::PointValueType>& neighbours,
         std::vector<WeightMatrix::Triplet>& triplets ) const {
 
     const size_t nbPoints = neighbours.size();

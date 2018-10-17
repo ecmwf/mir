@@ -14,19 +14,20 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 
+#include "mir/data/MIRField.h"
+#include "mir/input/MIRInput.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 
 
-using namespace mir;
-
-class MIRGridInfo : public tools::MIRTool {
+class MIRGridInfo : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
 public:
-    MIRGridInfo(int argc, char **argv) : tools::MIRTool(argc, argv) {
+    MIRGridInfo(int argc, char **argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::VectorOption<double>("grid", "West-East & South-North increments", 2));
         options_.push_back(new eckit::option::SimpleOption<std::string>("gridname", "grid name"));
         options_.push_back(new eckit::option::VectorOption<double>("area", "North/West/South/East", 4));
@@ -74,31 +75,43 @@ struct Sorter {
 
 void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
 
+    using namespace mir;
+    auto& log = eckit::Log::info();
+
+    if (args.count()) {
+        const param::ConfigurationWrapper args_wrap(args);
+
+        for (size_t i = 0, j = 0; i < args.count(); ++i) {
+            eckit::ScopedPtr<input::MIRInput> input(input::MIRInputFactory::build(args(i), args_wrap));
+            while (input->next()) {
+                repres::RepresentationHandle repres(input->field().representation());
+                log << "#" << ++j << ": " << *repres << std::endl;
+            }
+        }
+
+        return;
+    }
+
     std::vector<double> value;
+    if (args.get("grid", value)) {
+        ASSERT(value.size() == 2);
+    }
+
+    std::string gridname;
+    repres::RepresentationHandle rep(
+                args.has("grid") ? new repres::latlon::RegularLL(util::Increments(value[0], value[1])) :
+                args.get("gridname", gridname) ? namedgrids::NamedGrid::lookup(gridname).representation() :
+                throw eckit::UserError("'grid' or 'gridname' should be provided") );
+    ASSERT(rep);
+
+    eckit::ScopedPtr<repres::Iterator> iterator(rep->iterator());
+    ASSERT(iterator.get());
+
     util::BoundingBox bbox;
-
-    eckit::ScopedPtr<repres::Iterator> iterator;
-
     if (args.get("area", value)) {
         ASSERT(value.size() == 4);
         bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
-
-
-    if (args.get("grid", value)) {
-        ASSERT(value.size() == 2);
-        repres::latlon::RegularLL ll(util::Increments(value[0], value[1]));
-        repres::Representation& r = ll;
-        iterator.reset(r.iterator());
-    }
-
-    std::string gridname;
-    if (args.get("gridname", gridname)) {
-        auto& grid = namedgrids::NamedGrid::lookup(gridname);
-        iterator.reset(grid.representation()->iterator());
-    }
-
-    ASSERT(iterator.get());
 
     Sorter<Latitude> n(bbox.north());
     Sorter<Latitude> s(bbox.south());
@@ -122,10 +135,11 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
 
     }
 
-    std::cout << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_ << std::endl;
-    std::cout << "west " << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' <<  w.dbelow_ << std::endl;
-    std::cout << "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_ << std::endl;
-    std::cout << "east " << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' <<  e.dbelow_ << std::endl;
+    log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_
+        << "\n" "west "  << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' << w.dbelow_
+        << "\n" "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_
+        << "\n" "east "  << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' << e.dbelow_
+        << std::endl;
 }
 
 

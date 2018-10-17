@@ -31,11 +31,11 @@ inline static double utime() {
 
 template<class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name,
-                                size_t memory,
-                                size_t shared,
+                                size_t memory_capacity,
+                                size_t shared_capacity,
                                 const char* variable, bool cleanupAtExit):
     name_(name),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory, shared)) ,
+    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory_capacity, shared_capacity)) ,
     cleanupAtExit_(cleanupAtExit),
     users_(0) {
 
@@ -53,7 +53,7 @@ InMemoryCache<T>::~InMemoryCache() {
     }
 
     // std::string title = "InMemoryCache(" + name_ + ")";
-    // statistics_.report(title.c_str(), eckit::Log::info());
+    // statistics_.report(title.c_str(), log());
 }
 
 
@@ -79,13 +79,13 @@ template<class T>
 void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsage& usage) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    eckit::Log::info() << "CACHE-FOOTPRINT-"
-                       << name_
-                       << " "
-                       << key
-                       << " => "
-                       << usage
-                       << std::endl;
+    log() << "CACHE-FOOTPRINT-"
+          << name_
+          << " "
+          << key
+          << " => "
+          << usage
+          << std::endl;
 
 
     auto j = cache_.find(key);
@@ -103,13 +103,11 @@ void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsa
 
     statistics_.required_ = result;
 
-    eckit::Log::info() << "CACHE-FOOTPRINT-" << name_
-                       << " total " << footprint()
-                       << " required " << result
-                       << " capacity " << capacity_
-                       << std::endl;
-
-
+    log() << "CACHE-FOOTPRINT-" << name_
+          << " total " << footprint()
+          << " required " << result
+          << " capacity " << capacity_
+          << std::endl;
 }
 
 
@@ -128,18 +126,18 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
     auto u = usage;
     auto p = (f + u) - c;
 
-    eckit::Log::info() << "CACHE-RESERVE-"
-                       << name_
-                       << " "
-                       << " => "
-                       << u
-                       << " footprint: "
-                       << f
-                       << " capacity: "
-                       << c
-                       << " f+u: " <<  f + u
-                       << " f+u-c: " << p
-                       << std::endl;
+    log() << "CACHE-RESERVE-"
+          << name_
+          << " "
+          << " => "
+          << u
+          << " footprint: "
+          << f
+          << " capacity: "
+          << c
+          << " f+u: " <<  f + u
+          << " f+u-c: " << p
+          << std::endl;
 
 
     if (p) {
@@ -181,7 +179,7 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
 
     statistics_.insertions_++;
 
-    // eckit::Log::info() << "Insert in InMemoryCache " << *ptr << std::endl;
+    // log() << "Insert in InMemoryCache " << *ptr << std::endl;
 
     auto k = cache_.find(key);
     if (k != cache_.end()) {
@@ -287,7 +285,7 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         return purged;
     }
 
-    eckit::Log::info() << "CACHE " << name_ << " purging " << amount << std::endl;
+    log() << "CACHE " << name_ << " purging " << amount << std::endl;
 
     while (purged < amount) {
 
@@ -320,11 +318,11 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
 
         purged += (*best).second->footprint_;
 
-        eckit::Log::info() << "CACHE " << name_ << " decache " << (*best).first << std::endl;
+        log() << "CACHE " << name_ << " decache " << (*best).first << std::endl;
         delete (*best).second;
         cache_.erase(best);
 
-        eckit::Log::info() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
+        log() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
 
 
     }

@@ -33,7 +33,7 @@ public:
 
     // -- Constructors
 
-    Gaussian(size_t N, const util::BoundingBox& = util::BoundingBox());
+    Gaussian(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
     Gaussian(const param::MIRParametrisation&);
 
     // -- Destructor
@@ -65,6 +65,7 @@ protected:
     // -- Members
 
     size_t N_;
+    double angularPrecision_;
 
     // -- Methods
 
@@ -97,8 +98,7 @@ protected:
 private:
 
     // -- Members
-
-    double angularPrecision_;
+    // None
 
     // -- Methods
     // None

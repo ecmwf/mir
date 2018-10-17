@@ -3,6 +3,11 @@ density.mass:
 - 33  # Snow density
 - 3089  # Density
 - 129033  # Snow density gradient
+- 162053  # Vertical integral of mass of atmosphere
+- 162055  # Vertical integral of water vapour
+- 162056  # Vertical integral of cloud liquid water
+- 162057  # Vertical integral of cloud frozen water
+- 162058  # Vertical integral of ozone
 - 171033  # Snow density anomaly
 - 200033  # Snow density difference
 - 210016  # Aerosol type 1 source/gain accumulated
@@ -373,6 +378,9 @@ dimension.1d.angle.degree.asymmetric:
 - 3107  # Primary wave direction
 - 3109  # Secondary wave direction
 - 140113  # Wave energy flux mean direction
+- 140122  # Mean wave direction of first swell partition
+- 140125  # Mean wave direction of second swell partition
+- 140128  # Mean wave direction of third swell partition
 - 140230  # Mean wave direction
 - 140235  # Mean direction of wind waves
 - 140238  # Mean direction of total swell
@@ -429,6 +437,15 @@ dimension.2d.vector.u:
 - 129253  # Adiabatic tendency of zonal wind gradient
 - 130230  # Adiabatic tendency of zonal wind
 - 140215  # U-component stokes drift
+- 162065  # Vertical integral of eastward mass flux
+- 162067  # Vertical integral of eastward kinetic energy flux
+- 162069  # Vertical integral of eastward heat flux
+- 162071  # Vertical integral of eastward water vapour flux
+- 162073  # Vertical integral of eastward geopotential flux
+- 162075  # Vertical integral of eastward total energy flux
+- 162077  # Vertical integral of eastward ozone flux
+- 162088  # Vertical integral of eastward cloud liquid water flux
+- 162090  # Vertical integral of eastward cloud frozen water flux
 - 171006  # 100 metre U wind component anomaly
 - 171011  # U component of divergent wind anomaly
 - 171013  # U component of rotational wind anomaly
@@ -489,6 +506,15 @@ dimension.2d.vector.v:
 - 129254  # Adiabatic tendency of meridional wind gradient
 - 130231  # Adiabatic tendency of meridional wind
 - 140216  # V-component stokes drift
+- 162066  # Vertical integral of northward mass flux
+- 162068  # Vertical integral of northward kinetic energy flux
+- 162070  # Vertical integral of northward heat flux
+- 162072  # Vertical integral of northward water vapour flux
+- 162074  # Vertical integral of northward geopotential flux
+- 162076  # Vertical integral of northward total energy flux
+- 162078  # Vertical integral of northward ozone flux
+- 162089  # Vertical integral of northward cloud liquid water flux
+- 162091  # Vertical integral of northward cloud frozen water flux
 - 171007  # 100 metre V wind component anomaly
 - 171012  # V component of divergent wind anomaly
 - 171014  # V component of rotational wind anomaly
@@ -1095,6 +1121,8 @@ intensity:
 - 171014  # V component of rotational wind anomaly
 - 171021  # Unbalanced component of temperature anomaly
 - 171023  # Unbalanced component of divergence anomaly
+- 171024  # Lake mix-layer temperature anomaly
+- 171025  # Lake ice depth anomaly
 - 171034  # Sea surface temperature anomaly
 - 171035  # Ice surface temperature anomaly layer 1
 - 171036  # Ice surface temperature anomaly layer 2
@@ -1179,7 +1207,7 @@ intensity:
 - 171251  # Adiabatic tendency of temperature anomaly
 - 171253  # Adiabatic tendency of zonal wind anomaly
 - 171254  # Adiabatic tendency of meridional wind anomaly
-- 172189  # Vertical integral of northward cloud liquid water flux
+- 172189  # Sunshine duration
 - 174006  # Total soil moisture
 - 174025  # Visibility at 1.5m
 - 174034  # Open-sea surface temperature
@@ -1876,6 +1904,67 @@ intensity:
 - 300254  # Time mean vorticity
 - 300255  # Time mean zonal wind (u)
 
+numerics.tendency:
+- 162100  # Tendency of short wave radiation
+- 162101  # Tendency of long wave radiation
+- 162102  # Tendency of clear sky short wave radiation
+- 162103  # Tendency of clear sky long wave radiation
+- 162110  # Tendency of temperature due to physics
+- 162111  # Tendency of specific humidity due to physics
+- 162112  # Tendency of u component due to physics
+- 162113  # Tendency of v component due to physics
+- 235001  # Mean temperature tendency due to short-wave radiation
+- 235002  # Mean temperature tendency due to long-wave radiation
+- 235003  # Mean temperature tendency due to short-wave radiation, clear sky
+- 235004  # Mean temperature tendency due to long-wave radiation, clear sky
+- 235005  # Mean temperature tendency due to parametrisations
+- 235006  # Mean specific humidity tendency due to parametrisations
+- 235007  # Mean eastward wind tendency due to parametrisations
+- 235008  # Mean northward wind tendency due to parametrisations
+
+numerics.mean:
+- 173008  # Mean surface runoff rate anomaly
+- 173009  # Mean sub-surface runoff rate anomaly
+- 235001  # Mean temperature tendency due to short-wave radiation
+- 235002  # Mean temperature tendency due to long-wave radiation
+- 235003  # Mean temperature tendency due to short-wave radiation, clear sky
+- 235004  # Mean temperature tendency due to long-wave radiation, clear sky
+- 235005  # Mean temperature tendency due to parametrisations
+- 235006  # Mean specific humidity tendency due to parametrisations
+- 235007  # Mean eastward wind tendency due to parametrisations
+- 235008  # Mean northward wind tendency due to parametrisations
+- 235009  # Mean updraught mass flux
+- 235010  # Mean downdraught mass flux
+- 235011  # Mean updraught detrainment rate
+- 235012  # Mean downdraught detrainment rate
+- 235013  # Mean total precipitation flux
+- 235014  # Mean turbulent diffusion coefficient for heat
+- 235020  # Mean surface runoff rate
+- 235021  # Mean sub-surface runoff rate
+- 235022  # Mean surface photosynthetically active radiation flux, clear sky
+- 235023  # Mean snow evaporation rate
+- 235024  # Mean snowmelt rate
+- 235025  # Mean magnitude of turbulent surface stress
+- 235026  # Mean large-scale precipitation fraction
+- 235027  # Mean surface downward UV radiation flux
+- 235028  # Mean surface photosynthetically active radiation flux
+- 235029  # Mean large-scale precipitation rate
+- 235030  # Mean convective precipitation rate
+- 235031  # Mean snowfall rate
+- 235043  # Mean evaporation rate
+- 235048  # Mean runoff rate
+- 235054  # Mean vertically integrated moisture divergence
+- 235055  # Mean total precipitation rate
+- 235056  # Mean convective snowfall rate
+- 235057  # Mean large-scale snowfall rate
+- 235062  # Mean carbon dioxide net ecosystem exchange flux
+- 235063  # Mean carbon dioxide gross primary production flux
+- 235064  # Mean carbon dioxide ecosystem respiration flux
+- 235065  # Mean rain rate
+- 235066  # Mean convective rain rate
+- 235067  # Mean large-scale rain rate
+- 235070  # Mean potential evaporation rate
+
 numerics.accumulated:
 - 8  # Surface runoff
 - 9  # Sub-surface runoff
@@ -1971,7 +2060,6 @@ numerics.accumulated:
 - 160141  # Snow depth
 - 160231  # Instantaneous surface heat flux
 - 160249  # Gravity wave dissipation flux
-- 162053  # Vertical integral of mass of atmosphere
 - 162108  # Total precipitation flux
 - 162130  # Liquid Precipitation flux from convection
 - 162131  # Ice Precipitation flux from convection
@@ -2208,6 +2296,10 @@ numerics.vertical-integral:
 - 129206  # Total column ozone gradient
 - 162053  # Vertical integral of mass of atmosphere
 - 162054  # Vertical integral of temperature
+- 162055  # Vertical integral of water vapour
+- 162056  # Vertical integral of cloud liquid water
+- 162057  # Vertical integral of cloud frozen water
+- 162058  # Vertical integral of ozone
 - 162059  # Vertical integral of kinetic energy
 - 162060  # Vertical integral of thermal energy
 - 162061  # Vertical integral of potential+internal energy
@@ -2585,6 +2677,7 @@ rate:
 - 173153  # Short-wave heating rate anomaly
 - 173154  # Long-wave heating rate anomaly
 - 173189  # Sunshine duration anomalous rate of accumulation
+- 173212  # Solar insolation anomalous rate of accumulation
 - 174083  # Net primary productivity
 - 175083  # Net primary productivity
 - 200232  # Instantaneous moisture flux difference
@@ -3004,7 +3097,6 @@ rate.mass-flux:
 - 160205  # Runoff
 - 160239  # Convective snowfall
 - 160240  # Large scale snowfall
-- 162053  # Vertical integral of mass of atmosphere
 - 162065  # Vertical integral of eastward mass flux
 - 162066  # Vertical integral of northward mass flux
 - 162071  # Vertical integral of eastward water vapour flux
@@ -3024,6 +3116,8 @@ rate.mass-flux:
 - 171044  # Snow evaporation anomaly
 - 171045  # Snowmelt anomaly
 - 171182  # Evaporation anomaly
+- 173008  # Mean surface runoff rate anomaly
+- 173009  # Mean sub-surface runoff rate anomaly
 - 174008  # Surface runoff
 - 174009  # Sub-surface runoff
 - 174142  # Large scale rainfall rate
@@ -3850,7 +3944,6 @@ ratio:
 - 228041  # Soil wetness index in layer 2
 - 228042  # Soil wetness index in layer 3
 - 228043  # Soil wetness index in layer 4
-- 235006  # Mean specific humidity tendency due to parametrisations
 - 260023  # Maximum relative humidity
 - 260034  # Horizontal moisture divergence
 - 260112  # Convective cloud efficiency
@@ -4473,6 +4566,7 @@ ratio.mass:
 - 228054  # Unbalanced component of specific humidity
 - 228055  # Unbalanced component of specific cloud liquid water content
 - 228056  # Unbalanced component of specific cloud ice water content
+- 235006  # Mean specific humidity tendency due to parametrisations
 - 260017  # Condensate
 - 260018  # Cloud mixing ratio
 - 260019  # Ice water mixing ratio

@@ -18,6 +18,7 @@
 #include "mir/caching/legendre/LegendreLoader.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -30,19 +31,27 @@ namespace mir {
 namespace caching {
 namespace legendre {
 
+
 LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
     : parametrisation_(parametrisation), path_(path.realName()) {}
+
 
 LegendreLoader::~LegendreLoader() = default;
 
 
-//=========================================================================
+eckit::Channel& LegendreLoader::log() {
+    static auto& channel = eckit::Log::debug<LibMir>();
+    return channel;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, LegendreLoaderFactory* >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, LegendreLoaderFactory* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, LegendreLoaderFactory* >();

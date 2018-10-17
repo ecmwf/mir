@@ -47,13 +47,13 @@
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/search/Tree.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/PointSearch.h"
 
 
 class MIRToolConcrete : public mir::tools::MIRTool {
@@ -110,7 +110,7 @@ public:
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new FactoryOption<mir::util::PointSearchTreeFactory>("point-search-trees", "Control memory management of k-d trees"));
+        options_.push_back(new FactoryOption<mir::search::TreeFactory>("point-search-trees", "k-d tree control"));
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -242,8 +242,8 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
-    if (wind) {
-        ASSERT(!vod2uv);
+    if (vod2uv || wind) {
+        ASSERT(vod2uv != wind);
         ASSERT(!args.has("latitudes") && !args.has("longitudes"));
 
         mir::input::GribFileInput input1(args(0), 0, 2);
@@ -252,29 +252,17 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         mir::input::VectorInput input(input1, input2);
         process(job, input, *output, "wind");
         return;
-
-    }
-
-    if (vod2uv) {
-        ASSERT(!wind);
-        ASSERT(!args.has("latitudes") && !args.has("longitudes"));
-
-        mir::input::GribFileInput vort_input(args(0), 0, 2);
-        mir::input::GribFileInput div_input(args(0), 1, 2);
-
-        mir::input::VectorInput input(vort_input, div_input);
-        process(job, input, *output, "wind");
-        return;
-
     }
 
     eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0), args_wrap));
 
-    // std::string path_lat, path_lon;
-    // ASSERT(args.has("latitudes") ==  args.has("longitudes"));
-    // if (args.get("latitudes", path_lat) &&  args.get("longitudes", path_lon)) {
-    //     input->setAuxilaryFiles(path_lat, path_lon);
-    // }
+    if (args.has("latitudes") || args.has("longitudes")) {
+        std::string latitudes, longitudes;
+        ASSERT(args.get("latitudes", latitudes));
+        ASSERT(args.get("longitudes", longitudes));
+
+        input->setAuxilaryFiles(latitudes, longitudes);
+    }
 
     process(job, *input, *output, "field");
 }

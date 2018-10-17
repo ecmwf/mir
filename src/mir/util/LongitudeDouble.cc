@@ -34,7 +34,7 @@ void LongitudeDouble::print(std::ostream& out) const {
 }
 
 bool LongitudeDouble::operator<(double value) const {
-    return eckit::types::is_strictly_greater(value, value_);
+    return value_ < value;
 }
 
 bool LongitudeDouble::operator<=(double value) const {
@@ -42,7 +42,7 @@ bool LongitudeDouble::operator<=(double value) const {
 }
 
 bool LongitudeDouble::operator>(double value) const {
-    return eckit::types::is_strictly_greater(value_, value);
+    return value_ > value;
 }
 
 bool LongitudeDouble::operator>=(double value) const {
@@ -81,6 +81,10 @@ LongitudeDouble LongitudeDouble::normalise(const LongitudeDouble& minimum) const
 }
 
 LongitudeDouble LongitudeDouble::distance(const LongitudeDouble& meridian) const {
+    if (eckit::types::is_approximately_equal(normalise(meridian).value(), meridian.value())) {
+        return 0.;
+    }
+
     LongitudeDouble d = (meridian < (*this) ? value_ - meridian : meridian - value_);
     while (d > LongitudeDouble::DATE_LINE) {
         d -= LongitudeDouble::DATE_LINE;

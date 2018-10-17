@@ -35,7 +35,7 @@ public:
     // -- Constructors
 
     RotatedFromPL(const param::MIRParametrisation&);
-    RotatedFromPL(size_t, const std::vector<long>&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox());
+    RotatedFromPL(size_t, const std::vector<long>&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 

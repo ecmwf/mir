@@ -17,9 +17,13 @@
 
 #include <fstream>
 #include <iostream>
+#include <utility>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Plural.h"
+#include "eckit/serialisation/FileStream.h"
+#include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/config/LibMir.h"
@@ -27,21 +31,18 @@
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "eckit/serialisation/IfstreamStream.h"
 
-#include "eckit/serialisation/FileStream.h"
 
 namespace mir {
 namespace repres {
 namespace other {
 
 
-
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
     ASSERT(parametrisation.get("latitudes", latitudes_));
     ASSERT(parametrisation.get("longitudes", longitudes_));
     ASSERT(latitudes_.size() == longitudes_.size());
-    ASSERT(longitudes_.size() > 0);
+    ASSERT(!longitudes_.empty());
 
     bool checkDuplicatePoints = true;
     parametrisation.get("check-duplicate-points", checkDuplicatePoints);
@@ -79,7 +80,7 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
         for (size_t i = 0; i < count; ++i) {
             s >> latitudes_[i];
             s >> longitudes_[i];
-            eckit::Log::info() << latitudes_[i] << " " << longitudes_[i] << std::endl;
+            // eckit::Log::info() << latitudes_[i] << " " << longitudes_[i] << std::endl;
 
         }
     }
@@ -131,7 +132,9 @@ void UnstructuredGrid::save(const eckit::PathName& path,
 
 
 UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes,
-                                   const std::vector<double>& longitudes) :
+                                   const std::vector<double>& longitudes,
+                                   const util::BoundingBox& bbox) :
+    Gridded(bbox),
     latitudes_(latitudes),
     longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
@@ -142,14 +145,14 @@ UnstructuredGrid::~UnstructuredGrid() = default;
 
 
 void UnstructuredGrid::print(std::ostream& out) const {
-    out << "UnstructuredGrid[points=" << latitudes_.size()
+    out << "UnstructuredGrid[points=" << numberOfPoints()
         << "]";
 }
 
 
 void UnstructuredGrid::makeName(std::ostream& out) const {
 
-    out << "unstructured-" << latitudes_.size() << "-";
+    out << "unstructured-" << numberOfPoints() << "-";
 
     eckit::MD5 md5;
     for (const auto& j : latitudes_) {
@@ -184,40 +187,64 @@ void UnstructuredGrid::fill(util::MeshGeneratorParameters& params) const {
 
 
 util::Domain UnstructuredGrid::domain() const {
-    eckit::Log::warning() << "UnstructuredGrid::domain(): assuming global" << std::endl;
-    return util::Domain();
+    return util::Domain(bbox_.north(), bbox_.west(),
+                        bbox_.south(), bbox_.east());
 }
 
 
 atlas::Grid UnstructuredGrid::atlasGrid() const {
-    ASSERT(latitudes_.size() == longitudes_.size());
+    ASSERT(numberOfPoints());
 
-    std::vector<atlas::PointXY>* pts = new std::vector<atlas::PointXY>();
-    pts->reserve(latitudes_.size());
+    std::vector<atlas::PointXY> pts;
+    pts.reserve(numberOfPoints());
 
-    for (size_t i = 0; i < latitudes_.size(); i++) {
-        pts->push_back(atlas::PointXY(longitudes_[i], latitudes_[i]));
-        if (i < 10) {
-            eckit::Log::debug<LibMir>() << "UnstructuredGrid::atlasGrid lon="
-                                        << longitudes_[i]
-                                        << ", lat="
-                                        << latitudes_[i]
-                                        << std::endl;
-        }
+    for (size_t i = 0; i < numberOfPoints(); ++i) {
+        pts.emplace_back(atlas::PointXY(longitudes_[i], latitudes_[i]));
     }
 
-    return atlas::grid::UnstructuredGrid(pts);
+    return atlas::grid::UnstructuredGrid(std::move(pts));
 }
 
 
 void UnstructuredGrid::validate(const MIRValuesVector& values) const {
-    ASSERT(values.size() == latitudes_.size());
-    ASSERT(values.size() == longitudes_.size());
+    ASSERT(values.size() == numberOfPoints());
 }
 
 
 size_t UnstructuredGrid::numberOfPoints() const {
+    ASSERT(latitudes_.size() == longitudes_.size());
     return latitudes_.size();
+}
+
+
+const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& bbox) const {
+
+    std::vector<double> lat;
+    std::vector<double> lon;
+
+    size_t i = 0;
+    size_t j = 0;
+
+    eckit::ScopedPtr<repres::Iterator> iter(iterator());
+    while (iter->next()) {
+        if (bbox.contains(iter->pointUnrotated())) {
+            lat.emplace_back(latitudes_[i]);
+            lon.emplace_back(longitudes_[i]);
+            ++j;
+        }
+        ++i;
+    }
+
+    if (j < i) {
+        eckit::Log::debug<LibMir>() << "UnstructuredGrid::croppedRepresentation: cropped "
+                                    << eckit::BigNum(i) << " to " << eckit::Plural(j, "point")
+                                    << std::endl;
+        ASSERT(j);
+        return new UnstructuredGrid(lat, lon, bbox);
+    }
+
+    eckit::Log::debug<LibMir>() << "UnstructuredGrid::croppedRepresentation: no cropping" << std::endl;
+    return this;
 }
 
 
@@ -261,22 +288,18 @@ Iterator* UnstructuredGrid::iterator() const {
 
 
 bool UnstructuredGrid::isPeriodicWestEast() const {
-    // TODO:
-    return true;
+    return bbox_.east() - bbox_.west() == Longitude::GLOBE;
 }
 
 
 bool UnstructuredGrid::includesNorthPole() const {
-    // TODO:
-    return true;
+    return bbox_.north() == Latitude::NORTH_POLE;
 }
 
 
 bool UnstructuredGrid::includesSouthPole() const {
-    // TODO:
-    return true;
+    return bbox_.south() == Latitude::SOUTH_POLE;
 }
-
 
 
 void UnstructuredGrid::check( const std::string& title,
@@ -284,7 +307,7 @@ void UnstructuredGrid::check( const std::string& title,
                               const std::vector<double>& longitudes) {
 
     ASSERT(latitudes.size() == longitudes.size());
-    ASSERT(longitudes.size() > 0);
+    ASSERT(!longitudes.empty());
 
     std::set<std::pair<double, double> > seen;
     size_t count = latitudes.size();
@@ -299,7 +322,6 @@ void UnstructuredGrid::check( const std::string& title,
     }
 
 }
-
 
 
 namespace {

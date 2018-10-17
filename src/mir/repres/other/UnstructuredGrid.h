@@ -39,9 +39,9 @@ public:
 
     UnstructuredGrid(const eckit::PathName&);
     UnstructuredGrid(const param::MIRParametrisation&);
-
-    // Take ownership of vectors
-    UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes);
+    UnstructuredGrid(const std::vector<double>& latitudes,
+                     const std::vector<double>& longitudes,
+                     const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
 
@@ -54,22 +54,22 @@ public:
     // None
 
     // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
 
     static void save(const eckit::PathName&,
                      const std::vector<double>& latitudes,
                      const std::vector<double>& longitudes,
                      bool binary);
 
-
     static void check( const std::string& title,
                        const std::vector<double>& latitudes,
                        const std::vector<double>& longitudes);
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
     // -- Class methods
     // None
 
@@ -121,6 +121,8 @@ private:
     virtual bool includesSouthPole() const;
 
     virtual size_t numberOfPoints() const;
+
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
 
     // -- Class members
     // None

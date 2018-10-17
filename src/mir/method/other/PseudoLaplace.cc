@@ -25,7 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/PointSearch.h"
+#include "mir/search/PointSearch.h"
 
 
 namespace mir {
@@ -69,7 +69,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
 
 
-    util::PointSearch sptree(parametrisation_, in);
+    search::PointSearch sptree(parametrisation_, in);
 
     const size_t out_npts = out.numberOfPoints();
 
@@ -77,7 +77,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector< WeightMatrix::Triplet > weights_triplets;
     weights_triplets.reserve( out_npts * nclosest_ );
 
-    std::vector<util::PointSearch::PointValueType> closest;
+    std::vector<search::PointSearch::PointValueType> closest;
 
     eckit::linalg::Vector Dx(nclosest_);
     eckit::linalg::Vector Dy(nclosest_);
@@ -140,13 +140,14 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             S += weights[j];
         }
 
-        for ( size_t j = 0; j < npts; ++j )
+        for ( size_t j = 0; j < npts; ++j ) {
             weights[j] /= S;
+        }
 
         // insert the interpolant weights into the global (sparse) interpolant matrix
         for (size_t i = 0; i < npts; ++i) {
             size_t jp = closest[i].payload();
-            weights_triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[i]));
+            weights_triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[i]));
         }
 
         ++ip;
