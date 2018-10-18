@@ -260,6 +260,39 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
             ASSERT(N > 0);
 
+
+            // Cesàro summation filtering
+            if (cesaro) {
+                eckit::Timer timer("time on Cesàro summation filtering", debug);
+
+                std::vector<double> filter(T+1);
+                {
+                    double k = 2.;
+                    double f = 1.;
+
+                    filter[0] = f;
+                    for (size_t n = 1; n <= T; ++n) {
+                        auto a = double(T - n + 1);
+                        f *= a / (a + k);
+                        filter[n] = f;
+                    }
+                }
+
+                for (size_t d = 0; d < field.dimensions(); ++d) {
+                    auto& values = field.direct(d);
+                    ASSERT(values.size() == N * 2);
+
+                    for (size_t m = 0, i0 = 0, i = 0; m <= T; ++m, i0 += 2 * (T - m + 1), i = i0) {
+                        for (size_t n = m; n <= T; ++n) {
+                            ASSERT(i + 1 < N * 2);
+                            values[i++] *= filter[n];
+                            values[i++] *= filter[n];
+                        }
+                    }
+                }
+            }
+
+
             // Set Trans
             std::string type = "local";
             parametrisation.get("atlas-trans-type", type);
@@ -269,35 +302,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 
-            if (cesaro) {
-                eckit::Timer timer("time on Cesàro summation filtering", debug);
-
-                std::vector<double> filter(T);
-                {
-                    double k = 2.;
-                    double f = 1.;
-                    filter[0] = f;
-
-                    for (size_t j = 1; j < T; ++j) {
-                        auto a = double(T - j + 1);
-                        f *= a / (a + k);
-                        filter[j] = f;
-                    }
-                }
-
-                for (size_t d = 0; d < field.dimensions(); ++d) {
-                    auto& values = field.direct(d);
-                    ASSERT(values.size() == N * 2);
-
-                    size_t i = 0;
-                    for (size_t m = 0; m <= T; ++m) {
-                        for (size_t n = m; n <= T; ++n) {
-                            values[i++] *= filter[m];
-                            values[i++] *= filter[m];
-                        }
-                    }
-                }
-            }
 
             debug << "MIRSpectralTransform:"
                   << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")
