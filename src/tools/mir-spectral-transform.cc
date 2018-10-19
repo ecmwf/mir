@@ -282,7 +282,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     auto& values = field.direct(d);
                     ASSERT(values.size() == N * 2);
 
-                    for (size_t m = 0, i0 = 0, i = 0; m <= T; ++m, i0 += 2 * (T - m + 1), i = i0) {
+                    for (size_t m = 0, i = 0; m <= T; ++m) {
                         for (size_t n = m; n <= T; ++n) {
                             ASSERT(i + 1 < N * 2);
                             values[i++] *= filter[n];
