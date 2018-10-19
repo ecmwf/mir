@@ -12,6 +12,8 @@
 /// @author Pedro Maciel
 
 
+#include <algorithm>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Plural.h"
@@ -90,6 +92,8 @@ public:
         options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
         options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
+        options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
+        options_.push_back(new SimpleOption<size_t>("cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
@@ -267,14 +271,15 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                 std::vector<double> filter(T+1);
                 {
-                    double k = 2.;
-                    double f = 1.;
+                    double k = args.getDouble("cesaro-k", 2.);
+                    size_t Tmin = args.getUnsigned("cesaro-truncation", 1);
+                    ASSERT(1 <= Tmin && Tmin < T);
 
-                    filter[0] = f;
-                    for (size_t n = 1; n <= T; ++n) {
+                    std::fill_n(filter.begin(), Tmin, 1.);
+                    for (size_t n = Tmin; n <= T; ++n) {
                         auto a = double(T - n + 1);
-                        f *= a / (a + k);
-                        filter[n] = f;
+                        auto f = filter[n - 1];
+                        filter[n] = f * a / (a + k);
                     }
                 }
 
