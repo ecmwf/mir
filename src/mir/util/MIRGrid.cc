@@ -156,9 +156,11 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         ASSERT(mesh.generated());
 
         // If meshgenerator did not create xyz field already, do it now.
-        eckit::ResourceUsage usage("BuildXYZField", log);
-        eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
-        atlas::mesh::actions::BuildXYZField()(mesh);
+        {
+            eckit::ResourceUsage usage("BuildXYZField", log);
+            eckit::TraceTimer<LibMir> timer("MIRGrid::generateMeshAndCache: BuildXYZField");
+            atlas::mesh::actions::BuildXYZField()(mesh);
+        }
 
         // Generate barycenters of mesh elements
         if (meshGenParams.meshCellCentres_) {
