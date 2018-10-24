@@ -158,7 +158,7 @@ void AreaCropper::print(std::ostream& out) const {
 }
 
 
-util::BoundingBox AreaCropper::unrotatedBoundingBox() const {
+util::BoundingBox AreaCropper::outputBoundingBox() const {
     return bbox_;
 }
 

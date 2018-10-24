@@ -80,7 +80,7 @@ private:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual util::BoundingBox unrotatedBoundingBox() const;
+    virtual util::BoundingBox outputBoundingBox() const;
 
     // -- Class members
     // None

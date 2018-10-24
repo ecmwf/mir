@@ -309,7 +309,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
     bool canMerge = "local" == options_.getString("type", "?");
 
     if (!cropping_ && next.canCrop() && canMerge) {
-        const util::BoundingBox& bbox = next.unrotatedBoundingBox();
+        const util::BoundingBox& bbox = next.outputBoundingBox();
 
         // if directly followed by cropping go straight to the cropped representation
         if (next.isCropAction()) {

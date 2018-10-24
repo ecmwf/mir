@@ -96,7 +96,7 @@ private:
 
     // -- Methods
 
-    virtual util::BoundingBox unrotatedBoundingBox() const = 0;
+    virtual util::BoundingBox outputBoundingBox() const = 0;
 
     // -- Overridden methods
 
