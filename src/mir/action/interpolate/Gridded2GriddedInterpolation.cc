@@ -40,7 +40,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
 
-    inputIntersectWithOutput_ = !param.has("rotation");
+    inputIntersectsOutput_ = !param.fieldParametrisation().has("rotation");
 }
 
 
@@ -73,29 +73,23 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    method::Cropping crop;
-
     auto input = in->domain();
-    if (!input.isGlobal()) {
+    auto output(outputBoundingBox());
 
-        const auto output(outputBoundingBox());
-        auto out(output);
-        if (inputIntersectWithOutput_) {
-            input.intersects(out);
-        }
-
-        if (!input.contains(out)) {
-            std::ostringstream msg;
-            msg << "Input does not contain output:"
-                << "\n\t" "Input: " << input
-                << "\n\t" "Output: " << output;
-            throw eckit::UserError(msg.str());
-        }
-
-        crop.boundingBox(out);
-
-    } else if (method_->hasCropping()) {
+    method::Cropping crop;
+    if (method_->hasCropping()) {
         crop.boundingBox(method_->getCropping());
+    } else if (!input.isGlobal() && inputIntersectsOutput_) {
+        input.intersects(output);
+        crop.boundingBox(output);
+    }
+
+    if (!input.contains(output)) {
+        std::ostringstream msg;
+        msg << "Input does not contain output:"
+            << "\n\t" "Input: " << input
+            << "\n\t" "Output: " << outputBoundingBox();
+        throw eckit::UserError(msg.str());
     }
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
@@ -109,7 +103,9 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
-    return o && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_);
+    return o && (interpolation_ == o->interpolation_)
+            && method_->sameAs(*o->method_)
+            && (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }
 
 

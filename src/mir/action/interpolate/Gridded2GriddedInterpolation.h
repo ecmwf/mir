@@ -92,7 +92,7 @@ private:
 
     std::string interpolation_;
     eckit::ScopedPtr<method::Method> method_;
-    bool inputIntersectWithOutput_;
+    bool inputIntersectsOutput_;
 
     // -- Methods
 

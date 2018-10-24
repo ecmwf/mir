@@ -1,9 +1,8 @@
 # MARS request
-levtype=ml,levelist=137,param=133
+levtype=ml,levelist=1,param=q
 # mir
---area=19.3/-6.3/-2.3/18.3 --grid=.15/.15 --rotation=-40/10 --dont-compress-plan
+--area=19.3/-6.3/-2.3/18.3 --grid=.3/.3
 # grib_get assertions
-#latitudeOfFirstGridPointInDegrees = 90  # wrong assertion
 latitudeOfFirstGridPointInDegrees = 19.3
 longitudeOfFirstGridPointInDegrees = 353.7  # GRIB2 encoding
 latitudeOfLastGridPointInDegrees = -2.3
