@@ -40,7 +40,7 @@ Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParam
     method_.reset(method::MethodFactory::build(interpolation_, param));
     ASSERT(method_);
 
-    inputIntersectsOutput_ = !param.fieldParametrisation().has("rotation");
+    inputIntersectsOutput_ = !param.has("rotation");
 }
 
 
@@ -79,9 +79,16 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     method::Cropping crop;
     if (method_->hasCropping()) {
         crop.boundingBox(method_->getCropping());
-    } else if (!input.isGlobal() && inputIntersectsOutput_) {
-        input.intersects(output);
-        crop.boundingBox(output);
+    }
+
+    if (!input.isGlobal()) {
+        if (inputIntersectsOutput_) {
+            input.intersects(output);
+            if (crop) {
+                crop.boundingBox().intersects(output);
+            }
+            crop.boundingBox(output);
+        }
     }
 
     if (!input.contains(output)) {
