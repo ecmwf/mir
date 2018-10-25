@@ -185,7 +185,7 @@ bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
 bool BoundingBox::contains(const BoundingBox& other) const {
 
     if (other.empty()) {
-        return true;
+        return contains(other.south(), other.west());
     }
 
     // check for West/East range (if non-periodic), then other's corners
@@ -205,7 +205,8 @@ bool BoundingBox::contains(const BoundingBox& other) const {
 bool BoundingBox::intersects(BoundingBox& other) const {
 
     if (other.empty() || empty()) {
-        other.south_ = other.north_;
+        other.north_ = other.south_;
+        other.east_ = other.west_;
         ASSERT(other.empty());
         return false;
     }
