@@ -115,7 +115,8 @@ public:
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Mesh output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in XYZ coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Mesh output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
         }
 
         //==============================================

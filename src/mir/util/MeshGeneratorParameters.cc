@@ -24,6 +24,7 @@ MeshGeneratorParameters::MeshGeneratorParameters() :
     meshGenerator_(""),
     meshCellCentres_(true),
     fileLonLat_(""),
+    fileXY_(""),
     fileXYZ_("") {
     set("three_dimensional", true);
     set("triangulate",       false);
@@ -41,6 +42,7 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-cell-centres", meshCellCentres_);
     user.get(label + "-mesh-generator", meshGenerator_);
     user.get(label + "-mesh-file-ll", fileLonLat_);
+    user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
 }
 
