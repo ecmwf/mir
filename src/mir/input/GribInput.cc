@@ -239,8 +239,11 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
         double value = 0;
         GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &value));
 
-        if (eckit::ScopedPtr<Condition>(is("gridType", "reduced_gg"))->eval(h)) {
-            if (eckit::ScopedPtr<Condition>(is("global", 1L))->eval(h)) {
+        double west = 0;
+        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &west));
+
+        if (eckit::types::is_approximately_equal<double>(west, 0)) {
+            if (eckit::ScopedPtr<Condition>(is("gridType", "reduced_gg"))->eval(h)) {
 
                 size_t valuesSize;
                 GRIB_CALL(grib_get_size(h, "values", &valuesSize));
@@ -253,29 +256,31 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                 size_t plSizeAsRead = plSize;
                 GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &plSizeAsRead));
                 ASSERT(plSize == plSizeAsRead);
-                ASSERT(plSize > 0);
 
-                long plMax = *std::max_element(pl.begin(), pl.end());
-                ASSERT(plMax > 0);
+                size_t plSum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+                if (plSum == valuesSize) {
 
-                long angularPrecision;
-                GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
-                ASSERT(angularPrecision > 0);
+                    long plMax = *std::max_element(pl.begin(), pl.end());
+                    ASSERT(plMax > 0);
 
-                double value_global = eckit::Fraction(360L * (plMax - 1L), plMax);
-                double eps = eckit::Fraction(1L, angularPrecision);
+                    long angularPrecision;
+                    GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
+                    ASSERT(angularPrecision > 0);
 
-                if (!eckit::types::is_approximately_equal<double>(value, value_global, eps)) {
-                    auto& log = eckit::Log::warning();
-                    auto old = log.precision(32);
-                    eckit::Log::warning() << "wrongly encoded GRIB:"
-                                          << "\n" "longitudeOfLastGridPointInDegrees=" << value
-                                          << "\n" "longitudeOfLastGridPointInDegrees=" << value_global << " (expected)"
-                                          << std::endl;
-                    log.precision(old);
+                    double east_global = eckit::Fraction(360L * (plMax - 1L), plMax);
+                    double eps = eckit::Fraction(1L, angularPrecision);
+
+                    if (!eckit::types::is_approximately_equal<double>(value, east_global, eps)) {
+                        auto& log = eckit::Log::warning();
+                        auto old = log.precision(32);
+                        eckit::Log::warning() << "wrongly encoded GRIB:"
+                                              << "\n" "longitudeOfLastGridPointInDegrees=" << value
+                                              << "\n" "longitudeOfLastGridPointInDegrees=" << east_global << " (expected)"
+                                              << std::endl;
+                        log.precision(old);
+                    }
+                    value = east_global;
                 }
-                value = value_global;
-
             }
         }
 
