@@ -43,6 +43,7 @@ namespace {
 
 class Condition {
 public:
+    virtual ~Condition() = default;
     virtual bool eval(grib_handle *) const = 0;
 };
 
@@ -205,7 +206,7 @@ static struct {
     /// TODO: is that a good idea?
     {"param", "paramId"},
 
-    {0, 0},
+    {nullptr, nullptr},
 };
 
 
@@ -304,7 +305,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
     size_t i = 0;
     while (mappings[i].name) {
         if (name == mappings[i].name) {
-            if (mappings[i].condition == 0 || mappings[i].condition->eval(h)) {
+            if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
                 return mappings[i].key;
             }
         }
@@ -339,10 +340,10 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
     size_t new_entries = 0;
 
     // if a zero is found, copy the *following* non-zero value into the range "current entry -> non-zero entry"
-    for (std::vector<long>::iterator p = pl.begin(); p != pl.end(); ++p) {
+    for (auto p = pl.begin(); p != pl.end(); ++p) {
         if (*p == 0) {
 
-            std::vector<long>::iterator nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
+            auto nz = std::find_if(p, pl.end(), [](long x) { return x != 0; });
             if (nz != pl.end()) {
                 new_entries += size_t(*nz) * size_t(std::distance(p, nz));
                 std::fill(p, nz, *nz);
@@ -352,10 +353,10 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
     }
 
     // if a zero is found, copy the *previous* non-zero value into the range "non-zero entry -> current entry"
-    for (std::vector<long>::reverse_iterator p = pl.rbegin(); p != pl.rend(); ++p) {
+    for (auto p = pl.rbegin(); p != pl.rend(); ++p) {
         if (*p == 0) {
 
-            std::vector<long>::reverse_iterator nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
+            auto nz = std::find_if(p, pl.rend(), [](long x) { return x != 0; });
             if (nz != pl.rend()) {
                 new_entries += size_t(*nz) * size_t(std::distance(p, nz));
                 std::fill(p, nz, *nz);
@@ -376,12 +377,12 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
 
 GribInput::GribInput():
     cache_(*this),
-    grib_(0) {
+    grib_(nullptr) {
 }
 
 
 GribInput::~GribInput() {
-    handle(0); // Will delete handle
+    handle(nullptr); // Will delete handle
 }
 
 
@@ -454,7 +455,7 @@ data::MIRField GribInput::field() const {
 
             ASSERT(pl.size() == pl_fixed.size());
             size_t i = 0;
-            for (std::vector<long>::iterator p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
+            for (auto p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
                     size_t Ni = size_t(*p2);
@@ -755,7 +756,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     return true;
 }
 
-bool GribInput::get(const std::string& name, std::vector<std::string>& value) const {
+bool GribInput::get(const std::string&, std::vector<std::string>&) const {
     NOTIMP;
 }
 
@@ -771,7 +772,7 @@ bool GribInput::handle(grib_handle *h) {
         grib_handle_delete(grib_);
     }
     grib_ = h;
-    return h != 0;
+    return h != nullptr;
 }
 
 
@@ -781,13 +782,13 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
     eckit::AutoStdFile f(path);
 
     int e;
-    grib_handle *h = 0;
+    grib_handle *h = nullptr;
 
     // We cannot use GribFileInput to read these files, because lat/lon files are also
     // has grid_type = triangular_grid, and we will create a loop
 
     try {
-        h = grib_handle_new_from_file(0, f, &e);
+        h = grib_handle_new_from_file(nullptr, f, &e);
         grib_call(e, path.c_str());
         size_t count;
         GRIB_CALL(grib_get_size(h, "values", &count));
@@ -803,7 +804,9 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
         grib_handle_delete(h);
     } catch (...) {
-        if (h) grib_handle_delete(h);
+        if (h) {
+            grib_handle_delete(h);
+        }
         throw;
     }
 }
@@ -859,7 +862,7 @@ void GribInput::marsRequest(std::ostream& out) const {
             sep = ",";
         }
         grib_keys_iterator_delete(keys);
-        keys = 0;
+        keys = nullptr;
 
         size_t size = 0;
         int err = grib_get_size(grib_, "freeFormData", &size);
