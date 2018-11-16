@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
@@ -235,19 +236,19 @@ static ProcessingT<double>* inverse(const char *key) {
 }
 
 static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids() {
-    return new ProcessingT<double>([=](grib_handle* h) {
-        double value = 0;
-        GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &value));
+    return new ProcessingT<double>([](grib_handle* h) {
 
-        double west = 0;
-        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &west));
+        double Lon1 = 0;
+        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &Lon1));
 
-        if (eckit::types::is_approximately_equal<double>(west, 0)) {
+        double Lon2 = 0;
+        GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
+
+        if (eckit::types::is_approximately_equal<double>(Lon1, 0.)) {
             if (eckit::ScopedPtr<Condition>(is("gridType", "reduced_gg"))->eval(h)) {
 
-                size_t valuesSize;
-                GRIB_CALL(grib_get_size(h, "values", &valuesSize));
-
+                // get pl array maximum and sum
+                // if sum equals values size the grid must be global
                 size_t plSize = 0;
                 GRIB_CALL(grib_get_size(h, "pl", &plSize));
                 ASSERT(plSize);
@@ -257,38 +258,55 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                 GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &plSizeAsRead));
                 ASSERT(plSize == plSizeAsRead);
 
-                size_t plSum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
-                if (plSum == valuesSize) {
+                long plMax = 0;
+                long plSum = 0;
+                for (auto& p : pl) {
+                    plSum += p;
+                    if (plMax < p) {
+                        plMax = p;
+                    }
+                }
+                ASSERT(plMax > 0);
 
-                    long plMax = *std::max_element(pl.begin(), pl.end());
-                    ASSERT(plMax > 0);
+                size_t valuesSize;
+                GRIB_CALL(grib_get_size(h, "values", &valuesSize));
+
+                if (size_t(plSum) == valuesSize) {
 
                     long angularPrecision;
                     GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
                     ASSERT(angularPrecision > 0);
 
-                    double east_global = eckit::Fraction(360L * (plMax - 1L), plMax);
-                    double eps = eckit::Fraction(1L, angularPrecision);
+                    eckit::Fraction eps(1L, angularPrecision);
+                    eckit::Fraction Lon2_expected(360L * (plMax - 1L), plMax);
 
-                    if (!eckit::types::is_approximately_equal<double>(value, east_global, eps)) {
-                        auto& log = eckit::Log::warning();
-                        auto old = log.precision(32);
-                        eckit::Log::warning() << "wrongly encoded GRIB:"
-                                              << "\n" "longitudeOfLastGridPointInDegrees=" << value
-                                              << "\n" "longitudeOfLastGridPointInDegrees=" << east_global << " (expected)"
-                                              << std::endl;
-                        log.precision(old);
+                    if (!eckit::types::is_approximately_equal<double>(Lon2, Lon2_expected, eps)) {
+
+                        std::ostringstream msgs;
+                        msgs.precision(32);
+                        msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded (reduced_gg):"
+                             << "\n" "encoded:  " << Lon2
+                             << "\n" "expected: " << Lon2_expected
+                             << std::endl;
+                        const std::string msg(msgs.str());
+
+                        static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
+                        if (abortIfWronglyEncodedGRIB) {
+                            eckit::Log::error() << msg << std::endl;
+                            throw eckit::UserError(msg);
+                        }
+
+                        eckit::Log::warning() << msg << std::endl;
+                        Lon2 = Lon2_expected;
                     }
-                    value = east_global;
                 }
+
             }
         }
 
-        return value;
-//        ASSERT(!eckit::types::is_approximately_equal<double>(value, 0));
-//        return 1 / value;
+        return Lon2;
     });
-}
+};
 
 static struct {
     const char *name;
