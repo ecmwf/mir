@@ -591,6 +591,8 @@ void GribField::rotation(double lat, double lon) {
 
 void GribField::print(std::ostream & out) const {
 
+    out << std::setprecision(12);
+
     out << "[param=" << param_ ;
 
     if (numberOfPoints_ >= 0) {
