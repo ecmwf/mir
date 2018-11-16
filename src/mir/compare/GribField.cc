@@ -657,6 +657,8 @@ void GribField::json(eckit::JSON& json) const {
 
 std::ostream & GribField::printGrid(std::ostream & out) const {
 
+    out << std::setprecision(12);
+
     bool comma = false;
 
     if (!gridname_.empty()) {
@@ -765,6 +767,9 @@ static void pdiff(std::ostream & out, const T& v1, const T& v2) {
 
 
 void GribField::whiteListEntries(std::ostream& out) const {
+
+    out << std::setprecision(12);
+
     const char* sep = "";
 
     if (whiteListAccuracyPacking_) {
@@ -812,6 +817,10 @@ void GribField::whiteListEntries(std::ostream& out) const {
 
 
 std::ostream& GribField::printDifference(std::ostream & out, const FieldBase & o) const {
+
+    out << std::setprecision(12);
+
+
     const GribField& other = dynamic_cast<const GribField&>(o);
 
     out << "[param=";
