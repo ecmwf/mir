@@ -23,9 +23,11 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -169,7 +171,7 @@ static struct {
     {"south_north_increment", "jDirectionIncrementInDegrees"},
 
     {"west", "longitudeOfFirstGridPointInDegrees"},
-    {"east", "longitudeOfLastGridPointInDegrees"},
+    {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids"},
 
     {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
     {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
@@ -231,11 +233,68 @@ static ProcessingT<double>* inverse(const char *key) {
     });
 }
 
+static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids() {
+    return new ProcessingT<double>([=](grib_handle* h) {
+        double value = 0;
+        GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &value));
+
+        double west = 0;
+        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &west));
+
+        if (eckit::types::is_approximately_equal<double>(west, 0)) {
+            if (eckit::ScopedPtr<Condition>(is("gridType", "reduced_gg"))->eval(h)) {
+
+                size_t valuesSize;
+                GRIB_CALL(grib_get_size(h, "values", &valuesSize));
+
+                size_t plSize = 0;
+                GRIB_CALL(grib_get_size(h, "pl", &plSize));
+                ASSERT(plSize);
+
+                std::vector<long> pl(plSize, 0);
+                size_t plSizeAsRead = plSize;
+                GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &plSizeAsRead));
+                ASSERT(plSize == plSizeAsRead);
+
+                size_t plSum = size_t(std::accumulate(pl.begin(), pl.end(), 0L));
+                if (plSum == valuesSize) {
+
+                    long plMax = *std::max_element(pl.begin(), pl.end());
+                    ASSERT(plMax > 0);
+
+                    long angularPrecision;
+                    GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
+                    ASSERT(angularPrecision > 0);
+
+                    double east_global = eckit::Fraction(360L * (plMax - 1L), plMax);
+                    double eps = eckit::Fraction(1L, angularPrecision);
+
+                    if (!eckit::types::is_approximately_equal<double>(value, east_global, eps)) {
+                        auto& log = eckit::Log::warning();
+                        auto old = log.precision(32);
+                        eckit::Log::warning() << "wrongly encoded GRIB:"
+                                              << "\n" "longitudeOfLastGridPointInDegrees=" << value
+                                              << "\n" "longitudeOfLastGridPointInDegrees=" << east_global << " (expected)"
+                                              << std::endl;
+                        log.precision(old);
+                    }
+                    value = east_global;
+                }
+            }
+        }
+
+        return value;
+//        ASSERT(!eckit::types::is_approximately_equal<double>(value, 0));
+//        return 1 / value;
+    });
+}
+
 static struct {
     const char *name;
     const Processing *processing;
 } processings[] = {
     {"angularPrecisionInDegrees", inverse("angularPrecision")},
+    {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids()},
     {nullptr, nullptr},
 };
 
