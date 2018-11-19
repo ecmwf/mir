@@ -2,7 +2,7 @@
 # mars
 param=z,stream=oper,levtype=sfc.grid=O400.wrong.grib1
 # mir
-$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=0
+$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB=1
 --grid=9/9
 # assertions
 gridType=regular_ll

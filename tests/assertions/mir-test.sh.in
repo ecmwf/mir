@@ -47,13 +47,19 @@ do
                 $mars_script mars.r.$t || rm data.in.$t
                 cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
             fi
+            env=
             state=mir
             ;;
 
             mir)
             ok=0
+            if [[ $n =~ ^\$.* ]]
+            then
+                env="$env ${n/?}"
+                continue
+            fi
             eval n=\"$n\"
-            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
+            env $env $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
             # For some reasons set -e does not trigger
             [[ $? -eq 0 ]] || exit 1
 
@@ -64,6 +70,7 @@ do
             #    $(dirname $grib_get)/mir-get-data  data.out.$t ; [[ $? -eq 0 ]] || exit 1
             #fi
 
+            unset env
             state=eccodes
             ;;
 
