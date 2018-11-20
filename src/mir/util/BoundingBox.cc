@@ -204,19 +204,16 @@ bool BoundingBox::contains(const BoundingBox& other) const {
 
 bool BoundingBox::intersects(BoundingBox& other) const {
 
-    if (other.empty() || empty()) {
-        other.north_ = other.south_;
-        other.east_ = other.west_;
-        ASSERT(other.empty());
-        return false;
-    }
-
     Latitude n = std::min(north_, other.north_);
     Latitude s = std::max(south_, other.south_);
+    if (n < s) {
+        n = s;
+    }
+
     Longitude w = std::min(west_, other.west_);
     Longitude e = w;
 
-    auto intersect = [&w, &e](const BoundingBox& a, const BoundingBox& b) {
+    auto intersect = [](const BoundingBox& a, const BoundingBox& b, Longitude& w, Longitude& e) {
         bool p = a.isPeriodicWestEast();
         Longitude ref = b.west_.normalise(a.west_);
 
@@ -231,14 +228,10 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         return false;
     };
 
-    if (n > s) {
-        if (west_ <= other.west_ ?
-            intersect(*this, other) || intersect(other, *this) :
-            intersect(other, *this) || intersect(*this, other)) {
-            ASSERT(w < e);
-        }
-    } else {
-        n = s;
+    if (west_ <= other.west_ ?
+        intersect(*this, other, w, e) || intersect(other, *this, w, e) :
+        intersect(other, *this, w, e) || intersect(*this, other, w, e)) {
+        ASSERT(w < e);
     }
 
     other = { n, w, s, e };

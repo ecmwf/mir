@@ -76,8 +76,10 @@ CASE("BoundingBox") {
         {   3,             1,            1,             3          },
         {   2.1,           0,            0,             2.1        },
         {   2,             0,            0,             2          },
+        {   2,             0,           -2,           360          },
         {   0,          -350,            0,             9          },
         {   0,          -350,            0,             8          },
+        {   0,             0,            0,             2          },
         { -10,           -85,          -39,           -56.1        },
         { -10.0176,      275,          -38.9807,      304          },
         { -10.017,       -85,          -38.981,       -56          },
@@ -116,10 +118,18 @@ CASE("BoundingBox") {
 
                 if (A.isPeriodicWestEast()) {
                     EXPECT(B.isPeriodicWestEast() == AiB.isPeriodicWestEast());
+                    if (!B.isPeriodicWestEast()) {
+                        EXPECT(B.east() == AiB.east());
+                        EXPECT(B.west() == AiB.west());
+                    }
                 }
 
                 if (B.isPeriodicWestEast()) {
                     EXPECT(A.isPeriodicWestEast() == AiB.isPeriodicWestEast());
+                    if (!A.isPeriodicWestEast()) {
+                        EXPECT(A.east() == AiB.east());
+                        EXPECT(A.west() == AiB.west());
+                    }
                 }
 
                 if (!AiB.empty()) {
