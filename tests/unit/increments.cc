@@ -137,7 +137,9 @@ CASE("Increments::correctBoundingBox") {
                     << "\n\t = shifted in longitude? " << inc.isLongitudeShifted(corrected)
                     << std::endl;
 
-                EXPECT(equator.contains(corrected));
+                if (reference.lat() == 0) {
+                    EXPECT(equator.contains(corrected));
+                }
                 EXPECT(Ni.integer() && Ni >= 1);
 
                 if (sn == 0) {
@@ -290,6 +292,10 @@ struct UserAndGlobalisedCase {
 
 
 CASE( "test_increments" ) {
+
+    auto old(log.precision(16));
+    log << std::boolalpha;
+
     BoundingBox GLOBE;
 
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
@@ -319,26 +325,20 @@ CASE( "test_increments" ) {
           Case("global", { 89, 1, -89, 359 }, 180, 90),
         },
 
-#if 0
         { Increments(2, 2),
-          Case("user",   { 37.6025,           -114.8907,   27.7626, -105.1875}, 4, 4),
-          Case("global", { 89.7626,           -114.8907,  -88.2374,  243.1093}, 1, 1),
+          Case("user",   { 37.6025, -114.8907,  27.7626, -105.1875 },   5,  5),
+          Case("global", { 89.7626,    1.1093, -88.2374,  359.1093 }, 180, 90),
         },
-#endif
 
-#if 0
         { Increments(2, 2),
-          Case("user",   { 37.6025,           -114.8915,   27.7626, -105.188  },   4,  4),
-          Case("global", { 89.7626,           -114.8915,  -88.2374,  243.1085 }, 179,  4),
+          Case("user",   { 37.6025, -114.8907,  27.7626, -105.188 },   5,   5),
+          Case("global", { 89.7626,    1.1093, -88.2374,  359.1093 }, 180, 90),
         },
-#endif
 
-#if 0
         { Increments(2, 2),
-          Case("user",   { 88,                -178,       -88,       180},      1, 1),
-          Case("global", { 88,                -178,       -88,       180},      1, 1),
+          Case("user",   { 88, -178, -88, 180},    180,  89),
+          Case("global", { 90,    0, -90, 358},    180,  91)
         },
-#endif
 
         { Increments(7, 7),
           Case("user",   {  85,   0, -90, 357   },  52,  26),
@@ -355,23 +355,25 @@ CASE( "test_increments" ) {
           Case("global", {  90,   0, -90, 356   },  90,  46)
         },
 
-#if 0
         { Increments(4, 4),
           Case("user",   GLOBE,                     90,  46),
           Case("global", {  90,   0, -90, 356   },  90,  46)
         },
-#endif
 
         })) {
         log << "Test increments=" << cases.increments() << " with cases=" << cases << ":" << std::endl;
         EXPECT( cases.check() );
     }
+
+    log.precision(old);
 }
 
 
 #if 0
 CASE("MIR-251") {
+
     log.precision(16);
+    log << std::boolalpha;
 
     struct test_t {
         Increments increments_;
@@ -393,6 +395,8 @@ CASE("MIR-251") {
         log << "\t"   " = " << *repres
             << std::endl;
     }
+
+    log.precision(old);
 }
 #endif
 
@@ -472,6 +476,39 @@ CASE("MIR-309") {
                 { box22, inc33, false, true , {  0,            box22.west(), 0,             box22.west() } },
                 { box22, inc33, true,  false, { box22.south(), 0,            box22.south(), 0            } },
                 { box22, inc33, true,  true , { box22.south(), box22.west(), box22.south(), box22.west() } },
+
+                // MIR-313: UKMO shifted regular_ll (TIGGE)
+                { BoundingBox(89.85, 0.225, -89.85, 359.775),
+                  Increments(0.45, 0.3),
+                  true,
+                  true,
+                  BoundingBox(89.85, 0.225, -89.85, 359.775)
+                },
+
+                // MIR-313: UKMO non-shifted regular_ll (TIGGE)
+                { BoundingBox(90, 0, -90, 359.55),
+                  Increments(0.45, 0.3),
+                  false,
+                  false,
+                  BoundingBox(90, 0, -90, 359.55)
+                },
+
+                // MIR-313: UKMO shifted/non-shifted regular_ll (TIGGE)
+                { BoundingBox(90, 0, -90, 358.75),
+                  Increments(1.25, 0.833333),
+                  true,
+                  false,
+                  BoundingBox(89.999928, 0, -90, 358.75)
+                },
+
+                // MIR-313: UKMO shifted regular_ll (TIGGE)
+                { BoundingBox(89.5833, 0.625, -89.5833, 359.375),
+                  Increments(1.25, 0.833333),
+                  true,
+                  true,
+                  BoundingBox(89.583295, 0.625, -89.5833, 359.375)
+                },
+
             }) {
 
             PointLatLon ref(t.allowLatitudeShift? t.bbox.south() : 0.,
@@ -489,7 +526,9 @@ CASE("MIR-309") {
                 << "\n\t = shifted in longitude? " << t.increments.isLongitudeShifted(corrected) << (t.allowLongitudeShift? "" : " (should be false)")
                 << std::endl;
 
-            EXPECT(t.bbox.contains(corrected));
+            if (!t.bbox.empty()) {
+                EXPECT(t.bbox.contains(corrected));
+            }
             EXPECT(t.corrected == corrected);
             EXPECT(t.allowLatitudeShift || !t.increments.isLatitudeShifted(corrected));
             EXPECT(t.allowLongitudeShift || !t.increments.isLongitudeShifted(corrected));
