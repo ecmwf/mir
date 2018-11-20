@@ -196,13 +196,11 @@ void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& refere
         Latitude shift = (reference.lat().fraction() / sn).decimalPart() * sn;
 
         s = adjust(true,  bbox.south() - shift, sn) + shift;
-        ASSERT(bbox.south() <= s);
 
         if (bbox.south() == bbox.north()) {
             n = s;
         } else {
             n = adjust(false, bbox.north() - shift, sn) + shift;
-            ASSERT(n <= bbox.north());
 
             if (n < s) {
                 n = s;
