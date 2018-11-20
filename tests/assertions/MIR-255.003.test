@@ -4,8 +4,8 @@ gridType=regular_gg,gridName=F80,shortName=msl,global=0.001.grib1
 --grid=1/1
 # grib_get assertions
 Ni=119
-Nj=49
+Nj=48
 latitudeOfFirstGridPointInDegrees=68
 longitudeOfFirstGridPointInDegrees=-59
-latitudeOfLastGridPointInDegrees=20
+latitudeOfLastGridPointInDegrees=21
 longitudeOfLastGridPointInDegrees=59
