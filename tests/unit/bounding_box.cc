@@ -108,12 +108,18 @@ CASE("BoundingBox") {
                     EXPECT(BiA.empty());
                 } else {
                     EXPECT(AiB == BiA);
-                    EXPECT(A.contains(AiB));
-                    EXPECT(B.contains(AiB));
+                    if (!AiB.empty()) {
+                        EXPECT(A.contains(AiB));
+                        EXPECT(B.contains(AiB));
+                    }
                 }
 
-                if (A.isPeriodicWestEast() && B.isPeriodicWestEast()) {
-                    EXPECT(AiB.isPeriodicWestEast());
+                if (A.isPeriodicWestEast()) {
+                    EXPECT(B.isPeriodicWestEast() == AiB.isPeriodicWestEast());
+                }
+
+                if (B.isPeriodicWestEast()) {
+                    EXPECT(A.isPeriodicWestEast() == AiB.isPeriodicWestEast());
                 }
 
                 if (!AiB.empty()) {
@@ -133,7 +139,7 @@ CASE("BoundingBox") {
                         return  AiB.contains(AiB.north(), lon) ||
                                 AiB.contains(AiB.south(), lon);
                     });
-                    EXPECT(n = 2 || n == 4);
+                    EXPECT(2 <= n && n <= 4);
                 }
             }
         }
