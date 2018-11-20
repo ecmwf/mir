@@ -37,18 +37,17 @@ static void check(const Increments& inc) {
 }
 
 
-template<class T>
-static T adjust(bool up, const T& target, const eckit::Fraction& inc) {
+static eckit::Fraction adjust(bool up, const eckit::Fraction target, const eckit::Fraction& inc) {
     ASSERT(inc > 0);
 
-    auto r = target.fraction() / inc;
+    auto r = target / inc;
     auto n = r.integralPart();
 
     if (!r.integer() && (r > 0) == up) {
         n += (up ? 1 : -1);
     }
 
-    return T(n * inc);
+    return (n * inc);
 }
 
 
@@ -143,19 +142,19 @@ void Increments::fill(api::MIRJob& job) const  {
 void Increments::globaliseBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
     using eckit::Fraction;
 
-    const Fraction sn = south_north_.latitude().fraction();
-    const Fraction we = west_east_.longitude().fraction();
-
+    Fraction sn = south_north_.latitude().fraction();
+    Fraction we = west_east_.longitude().fraction();
     ASSERT(sn > 0);
     ASSERT(we > 0);
-    Latitude shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Longitude shift_we = (reference.lon().fraction() / we).decimalPart() * we;
+
+    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
+    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
 
 
     // Latitude limits
 
-    Latitude n = adjust(false, Latitude::NORTH_POLE - shift_sn, sn) + shift_sn;
-    Latitude s = adjust(true,  Latitude::SOUTH_POLE - shift_sn, sn) + shift_sn;
+    Latitude n = adjust(false, Latitude::NORTH_POLE.fraction() - shift_sn, sn) + shift_sn;
+    Latitude s = adjust(true,  Latitude::SOUTH_POLE.fraction() - shift_sn, sn) + shift_sn;
 
 
     // Longitude limits
@@ -164,10 +163,10 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, const PointLatLon& refe
 
     Longitude w = bbox.west();
     if (isPeriodic()) {
-        w = adjust(true, Longitude::GREENWICH - shift_we, we) + shift_we;
+        w = adjust(true, Longitude::GREENWICH.fraction() - shift_we, we) + shift_we;
     }
 
-    Longitude e = adjust(false, w + Longitude::GLOBE - shift_we, we) + shift_we;
+    Longitude e = adjust(false, w.fraction() + Longitude::GLOBE.fraction() - shift_we, we) + shift_we;
     if (e - w == Longitude::GLOBE) {
         e -= we;
     }
@@ -179,9 +178,10 @@ void Increments::globaliseBoundingBox(BoundingBox& bbox, const PointLatLon& refe
 
 
 void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
+    using eckit::Fraction;
 
-    auto sn = south_north_.latitude().fraction();
-    auto we = west_east_.longitude().fraction();
+    Fraction sn = south_north_.latitude().fraction();
+    Fraction we = west_east_.longitude().fraction();
     ASSERT(sn >= 0);
     ASSERT(we >= 0);
 
@@ -193,15 +193,14 @@ void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& refere
     Latitude n = sn == 0 ? s : bbox.north();
 
     if (sn > 0) {
-        Latitude shift = (reference.lat().fraction() / sn).decimalPart() * sn;
+        Fraction shift = (reference.lat().fraction() / sn).decimalPart() * sn;
 
-        s = adjust(true,  bbox.south() - shift, sn) + shift;
+        s = adjust(true,  bbox.south().fraction() - shift, sn) + shift;
 
         if (bbox.south() == bbox.north()) {
             n = s;
         } else {
-            n = adjust(false, bbox.north() - shift, sn) + shift;
-
+            n = adjust(false, bbox.north().fraction() - shift, sn) + shift;
             if (n < s) {
                 n = s;
             }
@@ -216,15 +215,15 @@ void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& refere
     Longitude e = we == 0 ? w : bbox.east();
 
     if (we > 0) {
-        Longitude shift = (reference.lon().fraction() / we).decimalPart() * we;
+        Fraction shift = (reference.lon().fraction() / we).decimalPart() * we;
 
-        w = adjust(true,  bbox.west() - shift, we) + shift;
+        w = adjust(true,  bbox.west().fraction() - shift, we) + shift;
         ASSERT(bbox.west() <= w);
 
         if (bbox.west() == bbox.east()) {
             e = w;
         } else {
-            e = adjust(false, bbox.east() - shift, we) + shift;
+            e = adjust(false, bbox.east().fraction() - shift, we) + shift;
             ASSERT(e <= bbox.east());
 
             if (e < w) {
