@@ -70,11 +70,14 @@ public:
     BoundingBox& operator=(const BoundingBox& other);
 
     bool operator==(const BoundingBox& other) const {
-        return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
+        return  (north_ == other.north_) &&
+                (south_ == other.south_) &&
+                (west_ == other.west_.normalise(west_)) &&
+                (east_ - west_ == other.east_ - other.west_);
     }
 
     bool operator!=(const BoundingBox& other) const {
-        return (north_ != other.north_) || (south_ != other.south_) || (west_ != other.west_) || (east_ != other.east_);
+        return !operator==(other);
     }
 
     // -- Methods

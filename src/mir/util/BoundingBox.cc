@@ -189,10 +189,9 @@ bool BoundingBox::contains(const BoundingBox& other) const {
     }
 
     // check for West/East range (if non-periodic), then other's corners
-    if (east_ - west_ < Longitude::GLOBE) {
-        if (other.east().normalise(west_) < other.west().normalise(west_)) {
-            return false;
-        }
+    if (east_ - west_ < other.east() - other.west() ||
+        east_ < other.east().normalise(west_)) {
+        return false;
     }
 
     return  contains(other.north(), other.west()) &&
@@ -214,11 +213,15 @@ bool BoundingBox::intersects(BoundingBox& other) const {
     Longitude e = w;
 
     auto intersect = [](const BoundingBox& a, const BoundingBox& b, Longitude& w, Longitude& e) {
-        bool p = a.isPeriodicWestEast();
-        Longitude ref = b.west_.normalise(a.west_);
+        if (a.isPeriodicWestEast()) {
+            w = b.west_;
+            e = b.east_;
+            return true;
+        }
 
-        Longitude w_ = p ? b.west_ : std::max(a.west_, ref);
-        Longitude e_ = p ? b.east_ : std::min(a.east_, b.east_.normalise(ref));
+        Longitude ref = b.west_.normalise(a.west_);
+        Longitude w_ = std::max(a.west_, ref);
+        Longitude e_ = std::min(a.east_, b.east_.normalise(ref));
 
         if (w_ < e_) {
             w = w_;
@@ -228,14 +231,13 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         return false;
     };
 
-    if (west_ <= other.west_ ?
+    bool intersects = west_ <= other.west_ ?
         intersect(*this, other, w, e) || intersect(other, *this, w, e) :
-        intersect(other, *this, w, e) || intersect(*this, other, w, e)) {
-        ASSERT(w < e);
-    }
+        intersect(other, *this, w, e) || intersect(*this, other, w, e);
 
+    ASSERT(w <= e);
     other = { n, w, s, e };
-    return !other.empty();
+    return intersects;
 }
 
 
