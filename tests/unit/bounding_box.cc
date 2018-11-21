@@ -16,6 +16,8 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 
+//define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+
 
 namespace mir {
 namespace tests {
@@ -32,6 +34,7 @@ CASE("BoundingBox") {
     const std::vector< BoundingBox > boxes {
         {  90,             0,          -90,           360          },
         {  90,             0,          -90,           720          },
+        {  90,           360,          -90,           720          },
         {  90,          -360,          -90,           360          },
         {  90,          -180,          -90,           180          },
         {  90,           180,          -90,          -180          },
@@ -80,6 +83,7 @@ CASE("BoundingBox") {
         {   0,          -350,            0,             9          },
         {   0,          -350,            0,             8          },
         {   0,             0,            0,             2          },
+        {   0,             0,            0,             0          },
         { -10,           -85,          -39,           -56.1        },
         { -10.0176,      275,          -38.9807,      304          },
         { -10.017,       -85,          -38.981,       -56          },
@@ -87,7 +91,6 @@ CASE("BoundingBox") {
     };
 
     SECTION("intersects") {
-//#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
         for (const auto& A : boxes) {
             for (const auto& B : boxes) {
 
@@ -104,16 +107,20 @@ CASE("BoundingBox") {
                     << std::endl;
 
                 EXPECT(commutative);
+                EXPECT(AiB == BiA && AiB.west() == BiA.west());
 
                 if (A.empty() || B.empty()) {
                     EXPECT(AiB.empty());
-                    EXPECT(BiA.empty());
-                } else {
-                    EXPECT(AiB == BiA);
-                    if (!AiB.empty()) {
-                        EXPECT(A.contains(AiB));
-                        EXPECT(B.contains(AiB));
-                    }
+                }
+
+                if (!AiB.empty()) {
+                    EXPECT(A.contains(AiB));
+                    EXPECT(B.contains(AiB));
+                }
+
+                if (A == B) {
+                    EXPECT(A == AiB);
+                    EXPECT(A.contains(B));
                 }
 
                 if (A.isPeriodicWestEast()) {
