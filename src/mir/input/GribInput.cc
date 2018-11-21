@@ -24,7 +24,6 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
@@ -173,7 +172,7 @@ static struct {
     {"south_north_increment", "jDirectionIncrementInDegrees"},
 
     {"west", "longitudeOfFirstGridPointInDegrees"},
-    {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids"},
+    {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids"},
 
     {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
     {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
@@ -235,17 +234,18 @@ static ProcessingT<double>* inverse(const char *key) {
     });
 }
 
-static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids() {
+static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids() {
     return new ProcessingT<double>([](grib_handle* h) {
-
-        double Lon1 = 0;
-        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &Lon1));
 
         double Lon2 = 0;
         GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
 
-        if (eckit::types::is_approximately_equal<double>(Lon1, 0.)) {
-            if (eckit::ScopedPtr<Condition>(is("gridType", "reduced_gg"))->eval(h)) {
+        if (grib_is_defined(h, "pl")) {
+
+            double Lon1 = 0;
+            GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &Lon1));
+
+            if (eckit::types::is_approximately_equal<double>(Lon1, 0)) {
 
                 // get pl array maximum and sum
                 // if sum equals values size the grid must be global
@@ -313,7 +313,7 @@ static struct {
     const Processing *processing;
 } processings[] = {
     {"angularPrecisionInDegrees", inverse("angularPrecision")},
-    {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_Gaussian_grids()},
+    {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids()},
     {nullptr, nullptr},
 };
 
