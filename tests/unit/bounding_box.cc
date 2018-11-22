@@ -90,7 +90,7 @@ CASE("BoundingBox") {
         { -25.0918,      135,          -46.8801,      179          },
     };
 
-    SECTION("intersects") {
+    SECTION("intersects (combinations)") {
         for (const auto& A : boxes) {
             for (const auto& B : boxes) {
 
@@ -157,6 +157,41 @@ CASE("BoundingBox") {
                                 AiB.contains(AiB.south(), lon);
                     });
                     EXPECT(2 <= n && n <= 4);
+                }
+            }
+        }
+    }
+
+    SECTION("intersects (point)") {
+
+        for (const auto& A : boxes) {
+            for (Latitude lat :{-90, -89, -88,  2,  1,  0,  1,  2,  88,  89, 90}) {
+                for (Longitude lon :{ -360, -358,
+                                      -182, -180, -178,
+                                        -2,    0,    2,
+                                       178,  180,  182,
+                                       358,  360,  362,
+                                       718,  720,  722,
+                    }) {
+
+                    const BoundingBox P{lat, lon, lat, lon};
+                    ASSERT(P.empty());
+
+                    auto AiP = P;
+                    bool intersects = A.intersects(AiP);
+
+                    static size_t c = 1;
+                    log << "Test " << c++ << ":"
+                        << "\n\t" "A=" << A << " (empty? " << A.empty() << ")"
+                        << "\n\t" "P=" << P << " (empty? " << P.empty() << ")"
+                        << "\n\t" "A intersects P = (intersects? " << intersects << ", empty? " << AiP.empty() << ") = " << AiP
+                        << std::endl;
+
+                    EXPECT(intersects == A.contains(P));
+                    if (intersects) {
+                        EXPECT(P == AiP);
+                    }
+
                 }
             }
         }

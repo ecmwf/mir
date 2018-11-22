@@ -205,7 +205,9 @@ bool BoundingBox::intersects(BoundingBox& other) const {
 
     Latitude n = std::min(north_, other.north_);
     Latitude s = std::max(south_, other.south_);
-    if (n < s) {
+
+    bool intersectsSN = s <= n;
+    if (!intersectsSN) {
         n = s;
     }
 
@@ -213,9 +215,10 @@ bool BoundingBox::intersects(BoundingBox& other) const {
     Longitude e = w;
 
     auto intersect = [](const BoundingBox& a, const BoundingBox& b, Longitude& w, Longitude& e) {
-        if (a.isPeriodicWestEast()) {
-            w = b.west_;
-            e = b.east_;
+        bool p = a.isPeriodicWestEast();
+        if (p || b.isPeriodicWestEast()) {
+            w = (p ? b : a).west_;
+            e = (p ? b : a).east_;
             return true;
         }
 
@@ -223,7 +226,7 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         Longitude w_ = std::max(a.west_, ref);
         Longitude e_ = std::min(a.east_, b.east_.normalise(ref));
 
-        if (w_ < e_) {
+        if (w_ <= e_) {
             w = w_;
             e = e_;
             return true;
@@ -231,13 +234,14 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         return false;
     };
 
-    bool intersects = west_ <= other.west_ ?
+    bool intersectsWE = west_ <= other.west_ ?
         intersect(*this, other, w, e) || intersect(other, *this, w, e) :
         intersect(other, *this, w, e) || intersect(*this, other, w, e);
 
     ASSERT(w <= e);
     other = { n, w, s, e };
-    return intersects;
+
+    return intersectsSN && intersectsWE;
 }
 
 
