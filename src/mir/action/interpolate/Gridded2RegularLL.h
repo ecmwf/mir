@@ -84,6 +84,7 @@ private:
 
     util::Increments increments_;
     util::BoundingBox bbox_;
+    PointLatLon reference_;
 
     // -- Methods
     // None
