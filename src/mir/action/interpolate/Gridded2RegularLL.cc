@@ -44,7 +44,7 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
         reference_ = PointLatLon(bbox_.south(), bbox_.west());
     }
 
-    increments_.globaliseBoundingBox(bbox_, reference_);
+    repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
     eckit::Log::debug<LibMir>()
             << "Gridded2RegularLL: globalise:"

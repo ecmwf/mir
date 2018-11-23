@@ -21,6 +21,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/latlon/LatLon.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/truncation/Ordinal.h"
 #include "mir/util/BoundingBox.h"
@@ -132,7 +133,7 @@ long Resol::getTargetGaussianNumber() const {
 
         // use (non-shifted) global bounding box
         util::BoundingBox bbox;
-        increments.globaliseBoundingBox(bbox);
+        repres::latlon::LatLon::globaliseBoundingBox(bbox, increments);
 
         eckit::Fraction last = bbox.north().fraction();
         eckit::Fraction first = bbox.south().fraction();

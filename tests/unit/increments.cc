@@ -66,7 +66,7 @@ CASE("Increments::correctBoundingBox") {
                 bool expectLongitudeShift = !(reference.lon().fraction() / we.fraction()).integer();
 
                 auto corrected(box);
-                inc.correctBoundingBox(corrected, reference);
+                repres::latlon::LatLon::correctBoundingBox(corrected, inc, reference);
 
                 auto Ni = 1 + (corrected.east() - corrected.west()).fraction() / we.fraction();
                 auto Nj = 1 + (corrected.north() - corrected.south()).fraction() / sn.fraction();
@@ -123,7 +123,7 @@ CASE("Increments::correctBoundingBox") {
                 auto we = inc.west_east().longitude();
 
                 auto corrected = equator;
-                inc.correctBoundingBox(corrected, reference);
+                repres::latlon::LatLon::correctBoundingBox(corrected, inc, reference);
 
                 auto Ni = 1 + (corrected.east() - corrected.west()).fraction() / we.fraction();
 
@@ -242,7 +242,7 @@ struct UserAndGlobalisedCase {
 
         // 'globalise' user-provided area, check if allowed shifts are respected
         BoundingBox global(user_.boundingBox_);
-        increments_.globaliseBoundingBox(global, ref);
+        repres::latlon::LatLon::globaliseBoundingBox(global, increments_, ref);
 
         repres::RepresentationHandle globalised = new RegularLL(increments_, global, ref);
         auto& globalised_ll = dynamic_cast<const RegularLL&>(*globalised);

@@ -37,20 +37,6 @@ static void check(const Increments& inc) {
 }
 
 
-static eckit::Fraction adjust(bool up, const eckit::Fraction target, const eckit::Fraction& inc) {
-    ASSERT(inc > 0);
-
-    auto r = target / inc;
-    auto n = r.integralPart();
-
-    if (!r.integer() && (r > 0) == up) {
-        n += (up ? 1 : -1);
-    }
-
-    return (n * inc);
-}
-
-
 }  // (anonymous namespace)
 
 
@@ -71,16 +57,12 @@ Increments::Increments(const param::MIRParametrisation& parametrisation) {
 
 
 Increments::Increments(const Increments& other) :
-    west_east_(other.west_east_),
-    south_north_(other.south_north_) {
-    check(*this);
+    Increments(other.west_east_, other.south_north_) {
 }
 
 
 Increments::Increments(double westEastIncrement, double southNorthIncrement) :
-    west_east_(westEastIncrement),
-    south_north_(southNorthIncrement) {
-    check(*this);
+    Increments(LongitudeIncrement(westEastIncrement), LatitudeIncrement(southNorthIncrement)) {
 }
 
 
@@ -136,109 +118,6 @@ void Increments::fill(grib_info& info) const  {
 
 void Increments::fill(api::MIRJob& job) const  {
     job.set("grid", west_east_.longitude().value(), south_north_.latitude().value());
-}
-
-
-void Increments::globaliseBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
-    using eckit::Fraction;
-
-    Fraction sn = south_north_.latitude().fraction();
-    Fraction we = west_east_.longitude().fraction();
-    ASSERT(sn > 0);
-    ASSERT(we > 0);
-
-    Fraction shift_sn = (reference.lat().fraction() / sn).decimalPart() * sn;
-    Fraction shift_we = (reference.lon().fraction() / we).decimalPart() * we;
-
-
-    // Latitude limits
-
-    Latitude n = adjust(false, Latitude::NORTH_POLE.fraction() - shift_sn, sn) + shift_sn;
-    Latitude s = adjust(true,  Latitude::SOUTH_POLE.fraction() - shift_sn, sn) + shift_sn;
-
-
-    // Longitude limits
-    // - West for non-periodic grids is not corrected!
-    // - East for periodic grids is W + 360 - increment
-
-    Longitude w = bbox.west();
-    if (isPeriodic()) {
-        w = adjust(true, Longitude::GREENWICH.fraction() - shift_we, we) + shift_we;
-    }
-
-    Longitude e = adjust(false, w.fraction() + Longitude::GLOBE.fraction() - shift_we, we) + shift_we;
-    if (e - w == Longitude::GLOBE) {
-        e -= we;
-    }
-
-
-    // set bounding box
-    bbox = {n, w, s, e};
-}
-
-
-void Increments::correctBoundingBox(BoundingBox& bbox, const PointLatLon& reference) const {
-    using eckit::Fraction;
-
-    Fraction sn = south_north_.latitude().fraction();
-    Fraction we = west_east_.longitude().fraction();
-    ASSERT(sn >= 0);
-    ASSERT(we >= 0);
-
-
-    // Latitude limits
-    // - North adjusted to N = S + Nj * inc <= 90
-
-    Latitude s = bbox.south();
-    Latitude n = sn == 0 ? s : bbox.north();
-
-    if (sn > 0) {
-        Fraction shift = (reference.lat().fraction() / sn).decimalPart() * sn;
-
-        s = adjust(true,  bbox.south().fraction() - shift, sn) + shift;
-
-        if (bbox.south() == bbox.north()) {
-            n = s;
-        } else {
-            n = adjust(false, bbox.north().fraction() - shift, sn) + shift;
-            if (n < s) {
-                n = s;
-            }
-        }
-    }
-
-    // Longitude limits
-    // - East adjusted to E = W + Ni * inc < W + 360
-    // (non-periodic grids can have 360 - inc < E - W < 360)
-
-    Longitude w = bbox.west();
-    Longitude e = we == 0 ? w : bbox.east();
-
-    if (we > 0) {
-        Fraction shift = (reference.lon().fraction() / we).decimalPart() * we;
-
-        w = adjust(true,  bbox.west().fraction() - shift, we) + shift;
-        ASSERT(bbox.west() <= w);
-
-        if (bbox.west() == bbox.east()) {
-            e = w;
-        } else {
-            e = adjust(false, bbox.east().fraction() - shift, we) + shift;
-            ASSERT(e <= bbox.east());
-
-            if (e < w) {
-                e = w;
-            } else if (e - w >= Longitude::GLOBE) {
-                e -= we;
-            }
-        }
-
-    }
-
-    // set bounding box
-    ASSERT(s <= n);
-    ASSERT(w <= e);
-    bbox = {n, w, s, e};
 }
 
 

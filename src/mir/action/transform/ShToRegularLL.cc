@@ -86,7 +86,7 @@ const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() co
     util::BoundingBox bbox(bbox_);
     const PointLatLon ref(bbox_.south(), bbox_.west());
 
-    increments_.globaliseBoundingBox(bbox, ref);
+    repres::latlon::LatLon::globaliseBoundingBox(bbox, increments_, ref);
 
     return new repres::latlon::RegularLL(increments_, bbox, ref);
 }

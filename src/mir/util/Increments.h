@@ -76,10 +76,6 @@ public:
 
     bool isShifted(const BoundingBox&) const;
 
-    void globaliseBoundingBox(BoundingBox&, const PointLatLon& reference = PointLatLon(0, 0)) const;
-
-    void correctBoundingBox(util::BoundingBox&, const PointLatLon& reference = PointLatLon(0, 0)) const;
-
     const LongitudeIncrement& west_east() const {
         return west_east_;
     }
