@@ -101,7 +101,7 @@ private:
 
     // -- Methods
 
-    virtual void sh2grid(data::MIRField&, const atlas_trans_t&) const = 0;
+    virtual void sh2grid(data::MIRField&, const atlas_trans_t&, const param::MIRParametrisation&) const = 0;
 
     virtual const repres::Representation* outputRepresentation() const = 0;
 
