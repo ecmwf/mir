@@ -236,7 +236,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
     try {
 
         eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
-        sh2grid(field, trans);
+        sh2grid(field, trans, parametrisation_);
 
     } catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: " << e.what() << std::endl;

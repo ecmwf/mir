@@ -15,9 +15,12 @@
 
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -30,7 +33,9 @@ void InvtransVodTouv::print(std::ostream& out) const {
 }
 
 
-void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
+void InvtransVodTouv::sh2grid(data::MIRField& field,
+                              const ShToGridded::atlas_trans_t& trans,
+                              const param::MIRParametrisation& parametrisation) const {
     eckit::Timer timer("InvtransVodTouv::sh2grid", eckit::Log::debug<LibMir>());
 
     size_t number_of_fields = field.dimensions();
@@ -43,11 +48,14 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     atlas::util::Config config;
     config.set(atlas::option::global());
 
-    const eckit::Configuration& lib = LibMir::instance().configuration();
-    const long id_u = lib.getLong("parameter-id-u", 131);
-    const long id_v = lib.getLong("parameter-id-v", 132);
-    ASSERT(id_u > 0);
-    ASSERT(id_v > 0);
+    long id_vo = 0;
+    ASSERT(parametrisation.fieldParametrisation().get("paramId", id_vo));
+    ASSERT(id_vo > 0);
+
+    const long id_u = 131 + id_vo % 1000;
+    const long id_v = 132 + id_vo % 1000;
+
+    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
 
     // do inverse transform and set gridded values
     MIRValuesVector output(size_t(number_of_grid_points) * 2);

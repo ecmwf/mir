@@ -74,8 +74,8 @@ void ShToRotatedRegularLL<Invtrans>::print(std::ostream& out) const {
 
 
 template<class Invtrans>
-void ShToRotatedRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans) const {
-    Invtrans::sh2grid(field, trans);
+void ShToRotatedRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+    Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 

@@ -110,10 +110,14 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
 
     // configure paramIds for U/V
-    const eckit::Configuration& config = LibMir::instance().configuration();
-    const long id_u = config.getLong("parameter-id-u", 131);
-    const long id_v = config.getLong("parameter-id-v", 132);
+    long id_vo = 0;
+    ASSERT(parametrisation_.fieldParametrisation().get("paramId", id_vo));
+    ASSERT(id_vo > 0);
 
+    const long id_u = 131 + id_vo % 1000;
+    const long id_v = 132 + id_vo % 1000;
+
+    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
 
     field.update(result_U, 0);
     field.metadata(0, "paramId", id_u);
