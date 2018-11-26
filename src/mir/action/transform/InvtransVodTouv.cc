@@ -48,14 +48,7 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     atlas::util::Config config;
     config.set(atlas::option::global());
 
-    long id_vo = 0;
-    ASSERT(parametrisation.fieldParametrisation().get("paramId", id_vo));
-    ASSERT(id_vo > 0);
 
-    const long id_u = 131 + id_vo % 1000;
-    const long id_v = 132 + id_vo % 1000;
-
-    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
 
     // do inverse transform and set gridded values
     MIRValuesVector output(size_t(number_of_grid_points) * 2);
@@ -63,6 +56,20 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
 
     // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
     MIRValuesVector output_field;
+
+
+    size_t id_vo = 0;
+    ASSERT(parametrisation.fieldParametrisation().get("paramId", id_vo));
+    ASSERT(id_vo > 0);
+
+    // Assumes the same table for the defaults
+
+    size_t id_u = 131 + id_vo % 1000;
+    size_t id_v = 132 + id_vo % 1000;
+
+    // User input if given
+    parametrisation.userParametrisation().get("paramId.u", id_u);
+    parametrisation.userParametrisation().get("paramId.v", id_v);
 
     auto here = output.cbegin();
     output_field.assign(here, here + number_of_grid_points);
@@ -73,6 +80,9 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     output_field.assign(here, here + number_of_grid_points);
     field.update(output_field, 1);
     field.metadata(1, "paramId", id_v);
+
+        // eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
+
 }
 
 
