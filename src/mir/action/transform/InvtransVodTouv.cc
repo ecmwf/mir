@@ -64,8 +64,12 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
 
     // Assumes the same table for the defaults
 
-    size_t id_u = 131 + id_vo % 1000;
-    size_t id_v = 132 + id_vo % 1000;
+    size_t votable = (id_vo - (id_vo % 1000)) / 1000;
+
+    eckit::Log::debug<LibMir>() << "U/V table = " << votable << std::endl;
+
+    size_t id_u = 131 + votable;
+    size_t id_v = 132 + votable;
 
     // User input if given
     parametrisation.userParametrisation().get("paramId.u", id_u);
@@ -81,8 +85,7 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     field.update(output_field, 1);
     field.metadata(1, "paramId", id_v);
 
-        // eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
-
+     eckit::Log::debug<LibMir>() << "Using paramId U/V = " << id_u << " / " << id_v << std::endl;
 }
 
 

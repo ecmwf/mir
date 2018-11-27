@@ -108,16 +108,21 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
     vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());
 
-
     // configure paramIds for U/V
     long id_vo = 0;
     ASSERT(parametrisation_.fieldParametrisation().get("paramId", id_vo));
     ASSERT(id_vo > 0);
 
-    const long id_u = 131 + id_vo % 1000;
-    const long id_v = 132 + id_vo % 1000;
+    size_t votable = (id_vo - (id_vo % 1000)) / 1000;
 
-    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
+    eckit::Log::debug<LibMir>() << "U/V table = " << votable << std::endl;
+
+    size_t id_u = 131 + votable;
+    size_t id_v = 132 + votable;
+
+    // User input if given
+    parametrisation_.userParametrisation().get("paramId.u", id_u);
+    parametrisation_.userParametrisation().get("paramId.v", id_v);
 
     field.update(result_U, 0);
     field.metadata(0, "paramId", id_u);
@@ -125,6 +130,7 @@ void ShVodToUV::execute(context::Context& ctx) const {
     field.update(result_V, 1);
     field.metadata(1, "paramId", id_v);
 
+    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
 }
 
 const char* ShVodToUV::name() const {
