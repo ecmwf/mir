@@ -113,12 +113,12 @@ void ShVodToUV::execute(context::Context& ctx) const {
     ASSERT(parametrisation_.fieldParametrisation().get("paramId", id_vo));
     ASSERT(id_vo > 0);
 
-    size_t votable = (id_vo - (id_vo % 1000)) / 1000;
+    size_t table = id_vo / 1000;
 
-    eckit::Log::debug<LibMir>() << "U/V table = " << votable << std::endl;
+    eckit::Log::debug<LibMir>() << "U/V table = " << table << std::endl;
 
-    size_t id_u = 131 + votable;
-    size_t id_v = 132 + votable;
+    size_t id_u = 131 + table * 1000;
+    size_t id_v = 132 + table * 1000;
 
     // User input if given
     parametrisation_.userParametrisation().get("paramId.u", id_u);
