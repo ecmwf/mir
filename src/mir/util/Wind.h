@@ -8,34 +8,35 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_util_Wind_h
+#define mir_util_Wind_h
 
-#ifndef mir_style_ECMWFStyle_h
-#define mir_style_ECMWFStyle_h
-
-#include "mir/style/MIRStyle.h"
+#include <cstddef>
 
 
 namespace mir {
-namespace style {
+namespace param {
+class MIRParametrisation;
+}
+}
 
 
-class ECMWFStyle : public MIRStyle {
+namespace mir {
+namespace util {
+
+
+class Wind {
 public:
 
     // -- Exceptions
     // None
 
-    // -- Contructors
-
-    ECMWFStyle(const param::MIRParametrisation&);
+    // -- Constructors
+    // None
 
     // -- Destructor
-
-    virtual ~ECMWFStyle();
+    // None
 
     // -- Convertors
     // None
@@ -44,7 +45,12 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    static void paramIds(const param::MIRParametrisation&, size_t& u, size_t& v);
+
+    static bool isInputWind(const param::MIRParametrisation&);
+
+    static bool isOutputWind(const param::MIRParametrisation&);
 
     // -- Overridden methods
     // None
@@ -61,16 +67,10 @@ protected:
     // None
 
     // -- Methods
-
-    virtual void prologue(action::ActionPlan&) const;
-    virtual void sh2grid(action::ActionPlan&) const;
-    virtual void sh2sh(action::ActionPlan&) const;
-    virtual void grid2grid(action::ActionPlan&) const;
-    virtual void epilogue(action::ActionPlan&) const;
+    // None
 
     // -- Overridden methods
-
-    virtual void print(std::ostream&) const;
+    // None
 
     // -- Class members
     // None
@@ -87,8 +87,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    void prepare(action::ActionPlan&) const;
+    // None
 
     // -- Class members
     // None
@@ -97,14 +96,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend std::ostream& operator<<(std::ostream& s, const ECMWFStyle& p)
-    // { p.print(s); return s; }
+    // None
 
 };
 
 
-}  // namespace style
+}  // namespace util
 }  // namespace mir
 
 

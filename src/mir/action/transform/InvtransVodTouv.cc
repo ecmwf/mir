@@ -18,9 +18,11 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Wind.h"
 
 
 namespace mir {
@@ -54,28 +56,16 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     MIRValuesVector output(size_t(number_of_grid_points) * 2);
     trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), config);
 
-    // set u/v field values and paramId (u/v are contiguous, they are saved as separate vectors)
     MIRValuesVector output_field;
 
 
-    size_t id_vo = 0;
-    ASSERT(parametrisation.fieldParametrisation().get("paramId", id_vo));
-    ASSERT(id_vo > 0);
-
-    // Assumes the same table for the defaults
-
-    size_t table = id_vo / 1000;
-
-    eckit::Log::debug<LibMir>() << "U/V table = " << table << std::endl;
-
-    size_t id_u = 131 + table * 1000;
-    size_t id_v = 132 + table * 1000;
+    // configure paramIds for u/v
+    size_t id_u = 0;
+    size_t id_v = 0;
+    util::Wind::paramIds(parametrisation, id_u, id_v);
 
 
-    // User input if given
-    parametrisation.userParametrisation().get("paramId.u", id_u);
-    parametrisation.userParametrisation().get("paramId.v", id_v);
-
+    // u/v are contiguous, they are saved as separate vectors
     auto here = output.cbegin();
     output_field.assign(here, here + number_of_grid_points);
     field.update(output_field, 0);
@@ -85,8 +75,6 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     output_field.assign(here, here + number_of_grid_points);
     field.update(output_field, 1);
     field.metadata(1, "paramId", id_v);
-
-     eckit::Log::debug<LibMir>() << "Using paramId U/V = " << id_u << " / " << id_v << std::endl;
 }
 
 
