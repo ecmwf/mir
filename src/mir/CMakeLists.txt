@@ -571,6 +571,8 @@ list(APPEND mir_srcs
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
+    util/Wind.cc
+    util/Wind.h
   )
 
 

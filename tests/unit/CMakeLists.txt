@@ -9,6 +9,7 @@ set(tests
     increments
     rotations
     spectral_order
+    wind
     )
 if(HAVE_ATLAS)
     list(APPEND tests atlas)

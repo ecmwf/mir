@@ -28,6 +28,7 @@
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
 #include "mir/util/DeprecatedFunctionality.h"
+#include "mir/util/Wind.h"
 
 
 namespace mir {
@@ -322,11 +323,11 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         }
 
-        if (windInput()) {
+        if (util::Wind::isInputWind(parametrisation_)) {
             plan.add("filter.adjust-winds-scale-cos-latitude");
         }
 
-        if (windOutput() && rotation) {
+        if (util::Wind::isOutputWind(parametrisation_) && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
     }
@@ -392,7 +393,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if (windOutput() && rotation) {
+        if (util::Wind::isOutputWind(parametrisation_) && rotation) {
             plan.add("filter.adjust-winds-directions");
         }
     }
@@ -402,7 +403,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
-    if (windOutput()) {
+    if (util::Wind::isOutputWind(parametrisation_)) {
 
         bool u_only = false;
         user.get("u-only", u_only);
@@ -443,35 +444,6 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::print(std::ostream& out) const {
     out << "ECMWFStyle[]";
-}
-
-
-bool ECMWFStyle::windInput() const {
-    long id = 0;
-    parametrisation_.fieldParametrisation().get("paramId", id);
-
-    if (id == 0) {
-        return false;
-    }
-
-    const auto& config = LibMir::instance().configuration();
-    return  id == config.getLong("parameter-id-u") ||
-            id == config.getLong("parameter-id-v");
-}
-
-
-bool ECMWFStyle::windOutput() const {
-    if (windInput()) {
-        return true;
-    }
-
-    bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
-    return vod2uv || wind;
 }
 
 
