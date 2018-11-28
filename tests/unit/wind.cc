@@ -108,15 +108,24 @@ CASE("MIR-324") {
         FakeInput user(0);
         ASSERT(!Wind::isInputWind(user));
 
-        for (bool vod2uv : {false, true}) {
-            for (bool wind : {false, true}) {
+        bool vod2uv = false;
+        bool wind = false;
+        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
 
-                vod2uv ? user.set("vod2uv", true) : user.clear("vod2uv");
-                wind ? user.set("wind", true) : user.clear("wind");
+        vod2uv = false;
+        wind = true;
+        user.set("wind", true);
+        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
 
-                EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
-            }
-        }
+        vod2uv = true;
+        wind = true;
+        user.set("vod2uv", true);
+        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
+
+        vod2uv = false;
+        wind = true;
+        user.clear("wind");
+        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
     }
 }
 
