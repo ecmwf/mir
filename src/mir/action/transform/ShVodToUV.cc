@@ -23,12 +23,13 @@
 #include "atlas/trans/VorDivToUV.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/api/Atlas.h"
+#include "mir/util/Wind.h"
 
 
 namespace mir {
@@ -108,29 +109,18 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
     vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());
 
+
     // configure paramIds for U/V
-    long id_vo = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("paramId", id_vo));
-    ASSERT(id_vo > 0);
+    size_t id_u = 0;
+    size_t id_v = 0;
+    util::Wind::paramIds(parametrisation_, id_u, id_v);
 
-    size_t table = id_vo / 1000;
-
-    eckit::Log::debug<LibMir>() << "U/V table = " << table << std::endl;
-
-    size_t id_u = 131 + table * 1000;
-    size_t id_v = 132 + table * 1000;
-
-    // User input if given
-    parametrisation_.userParametrisation().get("paramId.u", id_u);
-    parametrisation_.userParametrisation().get("paramId.v", id_v);
 
     field.update(result_U, 0);
     field.metadata(0, "paramId", id_u);
 
     field.update(result_V, 1);
     field.metadata(1, "paramId", id_v);
-
-    eckit::Log::debug<LibMir>() << "paramId U/V = " << id_u << " / " << id_v << std::endl;
 }
 
 const char* ShVodToUV::name() const {

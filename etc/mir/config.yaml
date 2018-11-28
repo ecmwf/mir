@@ -1,7 +1,4 @@
 {
-    "parameter-id-u": 131,
-    "parameter-id-v": 132,
-
     "legendre-loader": "mapped-memory",
     "matrix-loader": "file-io",
 

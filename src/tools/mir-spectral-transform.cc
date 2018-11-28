@@ -55,6 +55,7 @@
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Wind.h"
 
 
 class MIRSpectralTransform : public mir::tools::MIRTool {
@@ -178,10 +179,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     static mir::param::DefaultParametrisation defaults;
     const mir::param::ConfigurationWrapper commandLine(args);
 
-    long paramIdu = mir::LibMir::instance().configuration().getLong("parameter-id-u");
-    long paramIdv = mir::LibMir::instance().configuration().getLong("parameter-id-v");
-    ASSERT(paramIdu > 0);
-    ASSERT(paramIdv > 0);
+    size_t paramIdu = 0;
+    size_t paramIdv = 0;
+    mir::util::Wind::paramIds(commandLine, paramIdu, paramIdv);
 
     const bool vod2uv   = args.getBool("vod2uv", false);
     const bool validate = args.getBool("validate", false);
@@ -334,7 +334,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     }
 
                     // set output working area
-                    const size_t Ngp = outputGrid.size();
+                    const size_t Ngp = size_t(outputGrid.size());
                     std::vector<double> output(F * Ngp * 2);
 
                     // inverse transform
@@ -354,13 +354,16 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     {
                         eckit::Timer timer("time on copying grid-point values", log);
 
+                        long u = long(paramIdu);
+                        long v = long(paramIdv);
+
                         auto here = output.cbegin();
                         for (size_t i = 0; i < F; ++i) {
                             const size_t which = (numberOfFieldPairsProcessed + i) * 2;
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
-                            field.metadata(which, "paramId", paramIdu);
+                            field.metadata(which, "paramId", u);
                             here += int(Ngp);
                         }
 
@@ -369,7 +372,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
-                            field.metadata(which, "paramId", paramIdv);
+                            field.metadata(which, "paramId", v);
                             here += int(Ngp);
                         }
                     }
