@@ -6,7 +6,7 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 set(tests
     bounding_box
     grib_encoding
-    increments
+    #increments
     rotations
     spectral_order
     wind
