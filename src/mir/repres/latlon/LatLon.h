@@ -60,7 +60,7 @@ public:
 
     static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
 
-    static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
+    static void correctBoundingBox(util::BoundingBox&, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Overridden methods
     // None
