@@ -132,13 +132,8 @@ long Resol::getTargetGaussianNumber() const {
         util::Increments increments(grid[0], grid[1]);
 
         // use (non-shifted) global bounding box
-        util::BoundingBox bbox;
-        repres::latlon::LatLon::globaliseBoundingBox(bbox, increments);
 
-        eckit::Fraction last = bbox.north().fraction();
-        eckit::Fraction first = bbox.south().fraction();
-        eckit::Fraction inc = increments.south_north().latitude().fraction();
-        eckit::Fraction r = (last - first) / inc;
+        eckit::Fraction r = Latitude::GLOBE.fraction() / increments.south_north().latitude().fraction();
 
         N = long(r.integralPart() / 2);
 
