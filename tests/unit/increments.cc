@@ -33,13 +33,45 @@ using util::BoundingBox;
 using util::Increments;
 
 static auto& log = eckit::Log::info();
-using prec_t = decltype (log.precision());
 
 
 CASE("Increments::correctBoundingBox") {
 
     auto old(log.precision(16));
     log << std::boolalpha;
+
+
+    SECTION("basic") {
+        auto test = [](bool shiftLon, bool shiftLat, size_t Ni, size_t Nj) {
+            Increments inc { 1, 1 };
+            BoundingBox box;
+            PointLatLon ref { shiftLat ? 0.5 : 0., shiftLon ? 0.5 : 0. };
+
+            repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
+            auto& ll = dynamic_cast<const repres::latlon::RegularLL&>(*repres);
+
+            static size_t c = 1;
+            log << "Test " << c++ << ":"
+                << "\n\t" "   RegularLL(increments=" << inc << ", reference=" << ref << ")"
+                << "\n\t" " = " << ll
+                << std::endl;
+
+            EXPECT(ll.Ni() == Ni);
+            EXPECT(ll.Nj() == Nj);
+
+            auto& bbox = repres->boundingBox();
+            EXPECT(bbox.west() == ref.lon());
+            EXPECT(bbox.east() == bbox.west() + (ll.Ni() - 1));
+            EXPECT(bbox.north() == bbox.south() + (ll.Nj() - 1));
+
+            repres->validate(MIRValuesVector(Ni * Nj));
+        };
+
+        test(false, false, 360, 181);
+        test(true,  false, 360, 181);
+        test(false, true,  360, 180);
+        test(true,  true,  360, 180);
+    }
 
 
     SECTION("small areas") {
@@ -303,6 +335,7 @@ CASE( "test_increments" ) {
 
     BoundingBox GLOBE;
 
+
     for (const auto& cases : std::vector< UserAndGlobalisedCase >({
 
         { Increments(1, 1),
@@ -370,9 +403,9 @@ CASE( "test_increments" ) {
         EXPECT( cases.check() );
     }
 
+
     log.precision(old);
 }
-
 
 
 CASE("MIR-251") {
@@ -409,7 +442,6 @@ CASE("MIR-251") {
 }
 
 
-
 CASE("MIR-309") {
 
     auto old(log.precision(16));
@@ -442,6 +474,7 @@ CASE("MIR-309") {
     BoundingBox box11( 0.9, -0.2, -0.1,  0.8);
     BoundingBox box22(1, -1, -1, 1);
     BoundingBox box33(2, -1, -1, 2);
+
 
     SECTION("LatLon::correctBoundingBox") {
         for (Case& t : std::vector<Case>{
