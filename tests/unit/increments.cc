@@ -408,7 +408,7 @@ CASE( "test_increments" ) {
 }
 
 
-CASE("MIR-251") {
+CASE("RegularLL(Increments, BoundingBox)") {
 
     auto old(log.precision(16));
     log << std::boolalpha;
@@ -419,6 +419,8 @@ CASE("MIR-251") {
     };
 
     for (const auto& test : {
+
+         // MIR-251
          test_t{Increments{ 0.003474259,       0.003496601747573 }, BoundingBox{ 34.6548026,  113.04894614, 34.2911562,  113.7472724 }},
          test_t{Increments{ 0.003474259,       0.003496601747573 }, BoundingBox{ 34.6548026,  113.04894614, 34.2911562,  113.747272 }},
          test_t{Increments{ 0.00352,           0.003558252427184 }, BoundingBox{ 34.657355,   113.04832,    34.29085525, 113.74528 }},
@@ -427,6 +429,15 @@ CASE("MIR-251") {
          test_t{Increments{ 0.010417,          0.007353 },          BoundingBox{ 36.345879,   113.586968,   35.816463,   114.420328 }},
          test_t{Increments{ 0.166667,          0.166667 },          BoundingBox{ 51.166769,    10.833355,   42.500085,    28.166723 }},
          test_t{Increments{ 0.2999999,         0.3 },               BoundingBox{ -5.7,        105.8999647,  -6,          106.1999646 }},
+
+         // MIR-315
+         test_t{Increments{ 0.55469953775,      1.41732283465 },      BoundingBox() },
+         test_t{Increments{ 0.555555555556,     1.41732283465 },      BoundingBox() },
+         test_t{Increments{ 0.55832037325,      1.41732283465 },      BoundingBox() },
+         test_t{Increments{ 0.559875583204,     1.41732283465 },      BoundingBox() },
+         test_t{Increments{ 0.8333333333333334, 0.5555555555555556 }, BoundingBox{ 90,       -359.16666667, 29.44444468, 0.83333189 }},
+         test_t{Increments{ 0.04166666667,      0.04166666667 },      BoundingBox{ 50.000004, 339.95836053, 19.95833493, 350.000028 }},
+
     }) {
         static size_t c = 1;
         log << "Test " << c++ << ":"
