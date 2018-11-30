@@ -11,6 +11,7 @@
 /// @date Jun 2017
 
 
+#include <algorithm>
 #include <limits>
 #include <map>
 #include <vector>
@@ -200,6 +201,12 @@ size_t diff(eckit::Channel& log,
                    << '\t' << mir::Point2(lat2[n], lon2[n]);
     };
 
+    auto showCoordMinMax = [&](std::ostream& out, const std::string& name, const coord_t& c) -> std::ostream& {
+        ASSERT(!c.empty());
+        auto mm = std::minmax_element(c.begin(), c.end());
+        return out << "\n\t" << name << " min/max =\t" << *(mm.first) << " /\t" << *(mm.second);
+    };
+
     size_t Ndiff = 0;
     for (size_t n = 0; n < N; ++n) {
         double dlat = mir::Latitude(lat1[n]).distance(lat2[n]).value();
@@ -218,9 +225,13 @@ size_t diff(eckit::Channel& log,
 
     if (Ndiff && statsLat.max() > toleranceLat) {
         showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
+        showCoordMinMax(log, coord1.name() + " latitude", coord1.latitudes());
+        showCoordMinMax(log, coord2.name() + " latitude", coord2.latitudes());
     }
     if (Ndiff && statsLon.max() > toleranceLon) {
         showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
+        showCoordMinMax(log, coord1.name() + " longitude", coord1.longitudes());
+        showCoordMinMax(log, coord2.name() + " longitude", coord2.longitudes());
     }
     log << std::endl;
 
