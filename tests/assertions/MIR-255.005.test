@@ -9,3 +9,4 @@ latitudeOfFirstGridPointInDegrees=75
 longitudeOfFirstGridPointInDegrees=-64
 latitudeOfLastGridPointInDegrees=16
 longitudeOfLastGridPointInDegrees=64
+min=0
