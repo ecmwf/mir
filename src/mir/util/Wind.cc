@@ -62,35 +62,6 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u,
 }
 
 
-bool Wind::isInputWind(const param::MIRParametrisation& parametrisation) {
-
-    long id = 0;
-    if (!parametrisation.fieldParametrisation().get("paramId", id) || !id) {
-        return false;
-    }
-
-    static const Defaults def;
-
-    return id == def.u || id == def.v;
-}
-
-
-bool Wind::isOutputWind(const param::MIRParametrisation& parametrisation) {
-
-    if (isInputWind(parametrisation)) {
-        return true;
-    }
-
-    bool vod2uv = false;
-    parametrisation.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation.userParametrisation().get("wind", wind);
-
-    return vod2uv || wind;
-}
-
-
 }  // namespace util
 }  // namespace mir
 

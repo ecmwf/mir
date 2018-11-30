@@ -296,6 +296,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool vod2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
@@ -323,12 +326,14 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         }
 
-        if (util::Wind::isInputWind(parametrisation_)) {
+        if (wind) {
             plan.add("filter.adjust-winds-scale-cos-latitude");
         }
 
-        if (util::Wind::isOutputWind(parametrisation_) && rotation) {
-            plan.add("filter.adjust-winds-directions");
+        if (vod2uv || wind) {
+            if (rotation) {
+                plan.add("filter.adjust-winds-directions");
+            }
         }
     }
 
@@ -386,6 +391,12 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
+    bool vod2uv = false;
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
     // completed later
     const std::string interpolate = "interpolate.grid2";
     const std::string target = target_gridded_from_parametrisation(parametrisation_, rotation);
@@ -393,8 +404,10 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if (util::Wind::isOutputWind(parametrisation_) && rotation) {
-            plan.add("filter.adjust-winds-directions");
+        if (vod2uv || wind) {
+            if (rotation) {
+                plan.add("filter.adjust-winds-directions");
+            }
         }
     }
 }
@@ -403,7 +416,13 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
-    if (util::Wind::isOutputWind(parametrisation_)) {
+    bool vod2uv = false;
+    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+
+    bool wind = false;
+    parametrisation_.userParametrisation().get("wind", wind);
+
+    if (vod2uv || wind) {
 
         bool u_only = false;
         user.get("u-only", u_only);

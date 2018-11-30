@@ -48,10 +48,6 @@ public:
 
     static void paramIds(const param::MIRParametrisation&, size_t& u, size_t& v);
 
-    static bool isInputWind(const param::MIRParametrisation&);
-
-    static bool isOutputWind(const param::MIRParametrisation&);
-
     // -- Overridden methods
     // None
 
