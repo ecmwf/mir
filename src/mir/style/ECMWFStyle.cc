@@ -294,10 +294,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool rotation = parametrisation_.userParametrisation().has("rotation");
 
     bool vod2uv = false;
+    bool uv2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
+    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
 
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
@@ -326,11 +325,13 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
         }
 
-        if (wind) {
-            plan.add("filter.adjust-winds-scale-cos-latitude");
-        }
+        if (vod2uv || uv2uv) {
+            ASSERT(vod2uv != uv2uv);
 
-        if (vod2uv || wind) {
+            if (uv2uv) {
+                plan.add("filter.adjust-winds-scale-cos-latitude");
+            }
+
             if (rotation) {
                 plan.add("filter.adjust-winds-directions");
             }
@@ -392,10 +393,9 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     }
 
     bool vod2uv = false;
+    bool uv2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
+    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
@@ -404,7 +404,9 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     if (!target.empty()) {
         plan.add(interpolate + target);
 
-        if (vod2uv || wind) {
+        if (vod2uv || uv2uv) {
+            ASSERT(vod2uv != uv2uv);
+
             if (rotation) {
                 plan.add("filter.adjust-winds-directions");
             }
@@ -417,12 +419,12 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
     bool vod2uv = false;
+    bool uv2uv = false;
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
 
-    bool wind = false;
-    parametrisation_.userParametrisation().get("wind", wind);
-
-    if (vod2uv || wind) {
+    if (vod2uv || uv2uv) {
+        ASSERT(vod2uv != uv2uv);
 
         bool u_only = false;
         user.get("u-only", u_only);

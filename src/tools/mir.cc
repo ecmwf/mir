@@ -95,9 +95,9 @@ public:
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
-        options_.push_back(new SimpleOption<bool>("wind", "Control vector interpolation for wind"));
-        options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific wind component ('wind'/'vod2uv')"));
-        options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific wind component ('wind'/'vod2uv')"));
+        options_.push_back(new SimpleOption<bool>("uv2uv", "Input is vector (gridded u/v or spectral U/V), convert to gridded u/v"));
+        options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
+        options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
 
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
@@ -226,10 +226,10 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
         job.representationFrom(input);
     }
 
-    bool wind = false;
+    bool uv2uv = false;
     bool vod2uv = false;
 
-    args.get("wind", wind);
+    args.get("uv2uv", uv2uv);
     args.get("vod2uv", vod2uv);
 
 
@@ -242,8 +242,8 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
     eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
-    if (vod2uv || wind) {
-        ASSERT(vod2uv != wind);
+    if (vod2uv || uv2uv) {
+        ASSERT(vod2uv != uv2uv);
         ASSERT(!args.has("latitudes") && !args.has("longitudes"));
 
         mir::input::GribFileInput input1(args(0), 0, 2);
