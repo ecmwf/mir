@@ -182,10 +182,6 @@ MIRJob& MIRJob::set(const std::string& name, long value) {
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, long long value) {
-    _setScalar(resolveAliases(name), resolveAliases(name, value));
-    return *this;
-}
 
 MIRJob& MIRJob::set(const std::string& name, size_t value) {
     ASSERT(size_t(long(value)) == value);
@@ -217,10 +213,6 @@ MIRJob& MIRJob::set(const std::string& name, const std::vector<long>& v) {
     return *this;
 }
 
-MIRJob& MIRJob::set(const std::string& name, const std::vector<long long>& v) {
-    _setVector(resolveAliases(name), v);
-    return *this;
-}
 
 MIRJob& MIRJob::set(const std::string& name, const std::vector<size_t>& value) {
     _setVector(resolveAliases(name), resolveAliases(name, value));
