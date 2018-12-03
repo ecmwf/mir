@@ -122,7 +122,7 @@ struct CoordinatesFromGRIB : Coordinates {
         Coordinates("ecc") {
 
         long Nl = 0;
-        grib_get_long(h, "numberOfValues", &Nl);
+        grib_get_long(h, "numberOfDataPoints", &Nl);
         ASSERT(Nl > 0);
         const size_t N = size_t(Nl);
 

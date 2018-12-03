@@ -87,7 +87,7 @@ LongitudeDouble LongitudeDouble::distance(const LongitudeDouble& meridian) const
 
     LongitudeDouble d = (meridian < (*this) ? value_ - meridian : meridian - value_);
     while (d > LongitudeDouble::DATE_LINE) {
-        d -= LongitudeDouble::DATE_LINE;
+        d -= LongitudeDouble::GLOBE;
     }
     return d;
 }
