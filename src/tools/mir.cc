@@ -56,7 +56,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-class MIRToolConcrete : public mir::tools::MIRTool {
+class MIR : public mir::tools::MIRTool {
 private:
 
     void execute(const eckit::option::CmdArgs&);
@@ -71,7 +71,7 @@ private:
 
 public:
 
-    MIRToolConcrete(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIR(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
 
         //==============================================
@@ -195,7 +195,7 @@ public:
 };
 
 
-void MIRToolConcrete::usage(const std::string &tool) const {
+void MIR::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [--key1=value [--key2=value [...]]] input.grib output.grib"
             "\n" "Examples: "
@@ -207,7 +207,7 @@ void MIRToolConcrete::usage(const std::string &tool) const {
 }
 
 
-void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
+void MIR::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("mir");
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
@@ -268,7 +268,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
+void MIR::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
     mir::util::MIRStatistics statistics;
@@ -288,7 +288,7 @@ void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input
 
 
 int main(int argc, char **argv) {
-    MIRToolConcrete tool(argc, argv);
+    MIR tool(argc, argv);
     return tool.start();
 }
 
