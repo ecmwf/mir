@@ -44,8 +44,14 @@ Rotation::Rotation(const Latitude& south_pole_latitude,
 
 
 Rotation::Rotation(const param::MIRParametrisation& parametrisation) {
-    ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude_));
-    ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude_));
+
+    double south_pole_latitude;
+    ASSERT(parametrisation.get("south_pole_latitude", south_pole_latitude));
+    south_pole_latitude_ = south_pole_latitude;
+
+    double south_pole_longitude;
+    ASSERT(parametrisation.get("south_pole_longitude", south_pole_longitude));
+    south_pole_longitude_ = south_pole_longitude;
 
     south_pole_rotation_angle_ = 0.;
     ASSERT(parametrisation.get("south_pole_rotation_angle", south_pole_rotation_angle_));

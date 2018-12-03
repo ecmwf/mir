@@ -66,16 +66,16 @@ BoundingBox::BoundingBox(const Latitude& north,
 
 BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
 
+    double box[4];
+    ASSERT(parametrisation.get("north", box[0]));
+    ASSERT(parametrisation.get("west",  box[1]));
+    ASSERT(parametrisation.get("south", box[2]));
+    ASSERT(parametrisation.get("east",  box[3]));
+
     double angularPrecision = 0.;
     parametrisation.get("angularPrecision", angularPrecision);
 
     if (angularPrecision > 0.) {
-
-        double box[4];
-        ASSERT(parametrisation.get("north", box[0]));
-        ASSERT(parametrisation.get("west",  box[1]));
-        ASSERT(parametrisation.get("south", box[2]));
-        ASSERT(parametrisation.get("east",  box[3]));
 
         const eckit::Fraction precision(angularPrecision);
         north_ = eckit::Fraction(box[0], precision);
@@ -85,10 +85,10 @@ BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
 
     } else {
 
-        ASSERT(parametrisation.get("north", north_));
-        ASSERT(parametrisation.get("west",  west_ ));
-        ASSERT(parametrisation.get("south", south_));
-        ASSERT(parametrisation.get("east",  east_ ));
+        north_ = box[0];
+        west_  = box[1];
+        south_ = box[2];
+        east_  = box[3];
 
     }
 

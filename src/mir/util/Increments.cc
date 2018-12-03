@@ -44,13 +44,13 @@ Increments::Increments() = default;
 
 
 Increments::Increments(const param::MIRParametrisation& parametrisation) {
-    Latitude lat;
-    ASSERT(parametrisation.get("south_north_increment", lat));
-    south_north_ = lat;
+    double south_north;
+    ASSERT(parametrisation.get("south_north_increment", south_north));
+    south_north_ = south_north;
 
-    Longitude lon;
-    ASSERT(parametrisation.get("west_east_increment", lon));
-    west_east_ = lon;
+    double west_east;
+    ASSERT(parametrisation.get("west_east_increment", west_east));
+    west_east_ = west_east;
 
     check(*this);
 }
