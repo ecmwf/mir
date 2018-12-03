@@ -87,46 +87,6 @@ CASE("MIR-324") {
             }
         }
     }
-
-
-    SECTION("Wind::isInputWind") {
-        for (auto paramid : std::vector<long>{ 0, 1, PARAMID_U, PARAMID_V, 999 }) {
-
-            size_t id(paramid);
-            FakeInput input(id);
-
-            bool inputIsWind = (paramid == PARAMID_U || paramid == PARAMID_V);
-
-            EXPECTV(inputIsWind == Wind::isInputWind(input));
-            EXPECTV(inputIsWind == Wind::isOutputWind(input));
-        }
-    }
-
-
-    SECTION("Wind::isOutputWind") {
-
-        FakeInput user(0);
-        ASSERT(!Wind::isInputWind(user));
-
-        bool vod2uv = false;
-        bool wind = false;
-        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
-
-        vod2uv = false;
-        wind = true;
-        user.set("wind", true);
-        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
-
-        vod2uv = true;
-        wind = true;
-        user.set("vod2uv", true);
-        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
-
-        vod2uv = false;
-        wind = true;
-        user.clear("wind");
-        EXPECTV(Wind::isOutputWind(user) == (vod2uv || wind));
-    }
 }
 
 
