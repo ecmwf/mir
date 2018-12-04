@@ -189,6 +189,7 @@ static struct {
     // This will be just called for has()
     {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
     {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
+    {"gridded", "numberOfPointsAlongXAxis", is("gridType", "lambert_azimuthal_equal_area"),},
     {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
 
     {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
@@ -308,11 +309,24 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
     });
 };
 
+static ProcessingT<double>* divide(const char *key, double denominator) {
+    ASSERT(eckit::types::is_strictly_greater<double>(denominator, 0));
+    return new ProcessingT<double>([=](grib_handle* h) {
+        double value = 0;
+        GRIB_CALL(grib_get_double(h, key, &value));
+        return value / denominator;
+    });
+}
+
 static struct {
     const char *name;
     const Processing *processing;
 } processings[] = {
     {"angularPrecisionInDegrees", inverse("angularPrecision")},
+    {"xDirectionGridLengthInMetres", divide("xDirectionGridLengthInMillimetres", 1000.)},
+    {"yDirectionGridLengthInMetres", divide("yDirectionGridLengthInMillimetres", 1000.)},
+    {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.)},
+    {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.)},
     {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids()},
     {nullptr, nullptr},
 };
