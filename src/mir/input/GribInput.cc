@@ -33,6 +33,8 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Wind.h"
+
 
 namespace mir {
 namespace input {
@@ -213,7 +215,8 @@ static struct {
 
 struct Processing : eckit::NonCopyable {
     virtual ~Processing() = default;
-    virtual double eval(grib_handle* h) const = 0;
+    virtual void eval(grib_handle*, double&) const { NOTIMP; }
+    virtual void eval(grib_handle*, long&) const { NOTIMP; }
 };
 
 template<typename T>
@@ -221,10 +224,30 @@ struct ProcessingT : Processing {
     using fun_t = std::function<T(grib_handle*)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
-    T eval(grib_handle* h) const {
-        return fun_(h);
+    void eval(grib_handle* h, T& v) const override {
+        v = fun_(h);
     }
 };
+
+static ProcessingT<long>* is_wind_component_uv() {
+    return new ProcessingT<long>([=](grib_handle* h) {
+        long paramId = 0;
+        GRIB_CALL(grib_get_long(h, "paramId", &paramId));
+        static const util::Wind::Defaults def;
+        long ind = paramId % 1000;
+        return ind == def.u ? 1 : ind == def.v ? 2 : 0;
+    });
+}
+
+static ProcessingT<long>* is_wind_component_vod() {
+    return new ProcessingT<long>([=](grib_handle* h) {
+        long paramId = 0;
+        GRIB_CALL(grib_get_long(h, "paramId", &paramId));
+        static const util::Wind::Defaults def;
+        long ind = paramId % 1000;
+        return ind == def.vo ? 1 : ind == def.d ? 2 : 0;
+    });
+}
 
 static ProcessingT<double>* inverse(const char *key) {
     return new ProcessingT<double>([=](grib_handle* h) {
@@ -328,6 +351,8 @@ static struct {
     {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.)},
     {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.)},
     {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids()},
+    {"is_wind_component_uv", is_wind_component_uv()},
+    {"is_wind_component_vod", is_wind_component_vod()},
     {nullptr, nullptr},
 };
 
@@ -593,6 +618,15 @@ bool GribInput::get(const std::string& name, long& value) const {
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_LONG) {
+
+        for (size_t i = 0; processings[i].name; ++i) {
+            if (std::string(key) == processings[i].name) {
+                ASSERT(processings[i].processing);
+                processings[i].processing->eval(grib_, value);
+                return true;
+            }
+        }
+
         return FieldParametrisation::get(name, value);
     }
 
@@ -628,9 +662,9 @@ bool GribInput::get(const std::string& name, double& value) const {
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_DOUBLE) {
 
         for (size_t i = 0; processings[i].name; ++i) {
-            if (key == processings[i].name) {
+            if (std::string(key) == processings[i].name) {
                 ASSERT(processings[i].processing);
-                value = processings[i].processing->eval(grib_);
+                processings[i].processing->eval(grib_, value);
                 return true;
             }
         }

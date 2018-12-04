@@ -11,6 +11,7 @@
 
 #include "mir/util/Wind.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -20,16 +21,16 @@ namespace mir {
 namespace util {
 
 
-struct Defaults {
-    Defaults() :
-        u(LibMir::instance().configuration().getLong("parameter-id-u", 131)),
-        v(LibMir::instance().configuration().getLong("parameter-id-v", 132)) {
-        ASSERT(0 < u && u < 1000);
-        ASSERT(0 < v && v < 1000);
-    }
-    const long u;
-    const long v;
-};
+Wind::Defaults::Defaults() :
+    u(LibMir::instance().configuration().getLong("parameter-id-u", 131)),
+    v(LibMir::instance().configuration().getLong("parameter-id-v", 132)),
+    vo(LibMir::instance().configuration().getLong("parameter-id-vo", 138)),
+    d(LibMir::instance().configuration().getLong("parameter-id-d", 155)) {
+    ASSERT(0 < u && u < 1000);
+    ASSERT(0 < v && v < 1000);
+    ASSERT(0 < vo && vo < 1000);
+    ASSERT(0 < d && d < 1000);
+}
 
 
 void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u, size_t& v) {
