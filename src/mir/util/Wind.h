@@ -52,7 +52,14 @@ public:
     // None
 
     // -- Class members
-    // None
+
+    struct Defaults {
+        Defaults();
+        const long u;
+        const long v;
+        const long vo;
+        const long d;
+    };
 
     // -- Class methods
     // None
