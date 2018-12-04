@@ -181,7 +181,7 @@ atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshG
         if (!meshGenParams.fileLonLat_.empty()) {
             atlas::output::PathName path(meshGenParams.fileLonLat_);
             log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path).write(mesh);
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "lonlat")).write(mesh);
         }
 
         if (!meshGenParams.fileXYZ_.empty()) {
