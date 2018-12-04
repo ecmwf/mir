@@ -5,6 +5,7 @@ file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 set(tests
     bounding_box
+    gaussian_grid
     grib_encoding
     increments
     rotations
