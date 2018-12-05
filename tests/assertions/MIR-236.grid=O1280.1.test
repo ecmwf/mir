@@ -4,7 +4,7 @@ param=msl,levtype=sfc,grid=O1280
 --area=-25/135/-47/179
 # grib_get assertions
 gridName = O1280
-# FIXME latitudeOfFirstGridPointInDegrees = 
-# FIXME longitudeOfFirstGridPointInDegrees = 
-# FIXME latitudeOfLastGridPointInDegrees = 
-# FIXME longitudeOfLastGridPointInDegrees = 
+latitudeOfFirstGridPointInDegrees = -25.061
+longitudeOfFirstGridPointInDegrees = 135
+latitudeOfLastGridPointInDegrees = -46.995
+longitudeOfLastGridPointInDegrees = 179
