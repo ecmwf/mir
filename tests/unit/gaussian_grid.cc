@@ -34,12 +34,14 @@ CASE("NamedGrid") {
 
     struct test_t {
         const std::string gridname;
-        size_t numberOfGlobalPoints;
-        size_t numberOfLocalPoints;
+        size_t numberOfPoints;
+        size_t numberOfCroppedPoints;
         BoundingBox bbox;
     };
 
     std::vector<test_t> tests {
+        {"F128",    131072,     858, BoundingBox( 80.351,  -150.46875, 79.648,   150.46875)},
+        {"F128",    131072,     429, BoundingBox( 80.350,  -150.46875, 79.648,   150.46875)},
         {"N128",     88838,   88838, BoundingBox( 90,         0,      -90,       359.297)},
         {"F320",    819200,     912, BoundingBox( 56,       -16.5,     50.5,      -3)},
         {"N320",    542080,   13437, BoundingBox(-60,        50,      -90,       180)},
@@ -59,13 +61,16 @@ CASE("NamedGrid") {
         {"O1280",  6599680,  118210, BoundingBox(-25,       135,      -47,       179)},
     };
 
-    SECTION("Area of Gaussian grids numberOfPoints") {
+    SECTION("numberOfPoints") {
         for (const auto& t : tests) {
-            repres::RepresentationHandle global(namedgrids::NamedGrid::lookup(t.gridname).representation());
-            EXPECT(global->numberOfPoints() == t.numberOfGlobalPoints);
 
+            log << "Test " + t.gridname + " (global)" << std::endl;
+            repres::RepresentationHandle global(namedgrids::NamedGrid::lookup(t.gridname).representation());
+            EXPECT(global->numberOfPoints() == t.numberOfPoints);
+
+            log <<  "Test " + t.gridname + " (cropped)" << std::endl;
             repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
-            EXPECT(local->numberOfPoints() == t.numberOfLocalPoints);
+            EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
         }
     }
 
