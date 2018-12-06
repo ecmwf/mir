@@ -155,11 +155,13 @@ static Condition *is(const char *key, const char *value) {
 static Condition *_and(const Condition *left, const Condition *right) {
     return new ConditionAND(left, right);
 }
+*/
 
 static Condition *_or(const Condition *left, const Condition *right) {
     return new ConditionOR(left, right);
 }
 
+/*
 static Condition *_not(const Condition *c) {
     return new ConditionNOT(c);
 }
@@ -214,53 +216,57 @@ static struct {
 
 struct Processing : eckit::NonCopyable {
     virtual ~Processing() = default;
-    virtual void eval(grib_handle*, double&) const { NOTIMP; }
-    virtual void eval(grib_handle*, long&) const { NOTIMP; }
+    virtual bool eval(grib_handle*, long&) const { NOTIMP; }
+    virtual bool eval(grib_handle*, double&) const { NOTIMP; }
+    virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }
 };
 
 template<typename T>
 struct ProcessingT : Processing {
-    using fun_t = std::function<T(grib_handle*)>;
+    using fun_t = std::function<bool(grib_handle*, T&)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
-    void eval(grib_handle* h, T& v) const override {
-        v = fun_(h);
+    bool eval(grib_handle* h, T& v) const override {
+        return fun_(h, v);
     }
 };
 
 static ProcessingT<long>* is_wind_component_uv() {
-    return new ProcessingT<long>([=](grib_handle* h) {
+    return new ProcessingT<long>([=](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
         long ind = paramId % 1000;
-        return ind == def.u ? 1 : ind == def.v ? 2 : 0;
+        value = (ind == def.u ? 1 : ind == def.v ? 2 : 0);
+        return value;
     });
 }
 
 static ProcessingT<long>* is_wind_component_vod() {
-    return new ProcessingT<long>([=](grib_handle* h) {
+    return new ProcessingT<long>([=](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
         long ind = paramId % 1000;
-        return ind == def.vo ? 1 : ind == def.d ? 2 : 0;
+        value = (ind == def.vo ? 1 : ind == def.d ? 2 : 0);
+        return value;
     });
 }
 
 static ProcessingT<double>* inverse(const char *key) {
-    return new ProcessingT<double>([=](grib_handle* h) {
-        double value = 0;
-        GRIB_CALL(grib_get_double(h, key, &value));
-        ASSERT(!eckit::types::is_approximately_equal<double>(value, 0));
-        return 1 / value;
+    return new ProcessingT<double>([=](grib_handle* h, double& value) {
+        double inv = 0;
+        GRIB_CALL(grib_get_double(h, key, &inv));
+        ASSERT(!eckit::types::is_approximately_equal<double>(inv, 0));
+        value = 1. / inv;
+        return true;
     });
 }
 
 static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids() {
-    return new ProcessingT<double>([](grib_handle* h) {
+    return new ProcessingT<double>([](grib_handle* h, double& Lon2) {
 
-        double Lon2 = 0;
+        Lon2 = 0;
         GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
 
         if (grib_is_defined(h, "pl")) {
@@ -327,21 +333,25 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
             }
         }
 
-        return Lon2;
+        return true;
     });
 };
 
-static struct {
-    const char *name;
-    const Processing *processing;
-} processings[] = {
-    {"angularPrecisionInDegrees", inverse("angularPrecision")},
-    {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids()},
-    {"is_wind_component_uv", is_wind_component_uv()},
-    {"is_wind_component_vod", is_wind_component_vod()},
-    {nullptr, nullptr},
-};
+static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<const char*> keys) {
+    return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
+        ASSERT(keys.size());
+        const std::vector<const char*> keys_(keys);
 
+        values.assign(keys_.size(), 0);
+        for (size_t i = 0; i < keys_.size(); ++i) {
+            if (!grib_is_defined(h, keys_[i])) {
+                return false;
+            }
+            GRIB_CALL(grib_get_double(h, keys_[i], &values[i]));
+        }
+        return true;
+    });
+}
 
 static const char *get_key(const std::string &name, grib_handle *h) {
     const char *key = name.c_str();
@@ -357,6 +367,39 @@ static const char *get_key(const std::string &name, grib_handle *h) {
     return key;
 }
 
+template<typename T>
+static bool get_value(const std::string& name, grib_handle* h, T& value) {
+
+    static struct {
+            const char* name;
+            const Processing* processing;
+            const Condition *condition;
+        } processings[] = {
+
+        {"angularPrecisionInDegrees", inverse("angularPrecision"), nullptr},
+        {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
+
+        { "grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
+          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll")) },
+
+        {"is_wind_component_uv", is_wind_component_uv(), nullptr},
+        {"is_wind_component_vod", is_wind_component_vod(), nullptr},
+
+        {nullptr, nullptr, nullptr}
+    };
+
+    size_t i = 0;
+    while (processings[i].name) {
+        if (name == processings[i].name) {
+            if (processings[i].condition == nullptr || processings[i].condition->eval(h)) {
+                return processings[i].processing->eval(h, value);
+            }
+        }
+        i++;
+    }
+
+    return false;
+}
 
 void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
     ASSERT(values.size());
@@ -604,16 +647,7 @@ bool GribInput::get(const std::string& name, long& value) const {
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_LONG) {
-
-        for (size_t i = 0; processings[i].name; ++i) {
-            if (std::string(key) == processings[i].name) {
-                ASSERT(processings[i].processing);
-                processings[i].processing->eval(grib_, value);
-                return true;
-            }
-        }
-
-        return FieldParametrisation::get(name, value);
+        return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
     if (err) {
@@ -646,16 +680,7 @@ bool GribInput::get(const std::string& name, double& value) const {
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_DOUBLE) {
-
-        for (size_t i = 0; processings[i].name; ++i) {
-            if (std::string(key) == processings[i].name) {
-                ASSERT(processings[i].processing);
-                processings[i].processing->eval(grib_, value);
-                return true;
-            }
-        }
-
-        return FieldParametrisation::get(name, value);
+        return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
     if (err) {
@@ -780,6 +805,10 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
+
+    if (get_value(key, grib_, value)) {
+        return true;
+    }
 
     size_t count = 0;
     int err = grib_get_size(grib_, key, &count);
