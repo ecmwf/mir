@@ -167,53 +167,68 @@ static Condition *_not(const Condition *c) {
 }
 */
 
-static struct {
-    const char *name;
-    const char *key;
-    const Condition *condition;
-} mappings[] = {
-    {"west_east_increment", "iDirectionIncrementInDegrees"},
-    {"south_north_increment", "jDirectionIncrementInDegrees"},
+static const char *get_key(const std::string &name, grib_handle *h) {
 
-    {"west", "longitudeOfFirstGridPointInDegrees"},
-    {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids"},
+    static struct {
+        const char *name;
+        const char *key;
+        const Condition *condition;
+    } mappings[] = {
+        {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
+        {"south_north_increment", "jDirectionIncrementInDegrees", nullptr},
 
-    {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
-    {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
+        {"west", "longitudeOfFirstGridPointInDegrees", nullptr},
+        {"east", "longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", is("gridType", "reduced_gg")},
+        {"east", "longitudeOfLastGridPointInDegrees", nullptr},
 
-    {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
-    {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
+        {"north", "latitudeOfFirstGridPointInDegrees", is("scanningMode", 0L)},
+        {"south", "latitudeOfLastGridPointInDegrees", is("scanningMode", 0L)},
 
-    {"truncation", "pentagonalResolutionParameterJ",},  // Assumes triangular truncation
+        {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
+        {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
-    {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
-    {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
-    {"south_pole_rotation_angle", "angleOfRotationInDegrees"},
+        {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
 
-    // This will be just called for has()
-    {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
-    {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
-    {"gridded", "numberOfPointsAlongXAxis", is("gridType", "lambert_azimuthal_equal_area"),},
-    {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
+        {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees", nullptr},
+        {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
+        {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
-    {"gridded", "numberOfPointsAlongAMeridian"},  // Is that always true?
+        // This will be just called for has()
+        {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
+        {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
+        {"gridded", "numberOfPointsAlongXAxis", is("gridType", "lambert_azimuthal_equal_area"),},
+        {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
 
-    {"gridname", "gridName"},
-    {"angularPrecision", "angularPrecisionInDegrees"},
+        {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
 
-    {"spectral", "pentagonalResolutionParameterJ"},
+        {"gridname", "gridName", nullptr},
+        {"angularPrecision", "angularPrecisionInDegrees", nullptr},
 
-    /// FIXME: Find something that does no clash
-    {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator",  is("isOctahedral", 0L)},
-    {"regular", "N", is("gridType", "regular_gg")},
-    {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
+        {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
-    /// TODO: is that a good idea?
-    {"param", "paramId"},
+        /// FIXME: Find something that does no clash
+        {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator",  is("isOctahedral", 0L)},
+        {"regular", "N", is("gridType", "regular_gg")},
+        {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
-    {nullptr, nullptr},
-};
+        /// TODO: is that a good idea?
+        {"param", "paramId", nullptr},
 
+        {nullptr, nullptr, nullptr},
+    };
+
+    const char *key = name.c_str();
+    size_t i = 0;
+    while (mappings[i].name) {
+        if (name == mappings[i].name) {
+            if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
+                return mappings[i].key;
+            }
+        }
+        i++;
+    }
+    return key;
+}
 
 struct Processing : eckit::NonCopyable {
     virtual ~Processing() = default;
@@ -361,20 +376,6 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<con
         }
         return true;
     });
-}
-
-static const char *get_key(const std::string &name, grib_handle *h) {
-    const char *key = name.c_str();
-    size_t i = 0;
-    while (mappings[i].name) {
-        if (name == mappings[i].name) {
-            if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
-                return mappings[i].key;
-            }
-        }
-        i++;
-    }
-    return key;
 }
 
 template<typename T>
@@ -690,8 +691,8 @@ bool GribInput::get(const std::string& name, double& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const std::string key = get_key(name, grib_);
-    int err = grib_get_double(grib_, key.c_str(), &value);
+    const char *key = get_key(name, grib_);
+    int err = grib_get_double(grib_, key, &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
     if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_DOUBLE) {
@@ -700,7 +701,7 @@ bool GribInput::get(const std::string& name, double& value) const {
 
     if (err) {
         // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
-        GRIB_ERROR(err, key.c_str());
+        GRIB_ERROR(err, key);
     }
 
     // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") " << value << std::endl;
