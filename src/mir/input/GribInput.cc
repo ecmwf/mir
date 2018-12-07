@@ -354,8 +354,8 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 };
 
 static ProcessingT<double>* divide(const char *key, double denominator) {
-    ASSERT(eckit::types::is_strictly_greater<double>(denominator, 0));
-    return new ProcessingT<double>([=](grib_handle* h, double value) {
+    ASSERT(!eckit::types::is_approximately_equal<double>(denominator, 0));
+    return new ProcessingT<double>([=](grib_handle* h, double& value) {
         GRIB_CALL(grib_get_double(h, key, &value));
         value /= denominator;
         return true;
@@ -408,6 +408,7 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
     while (processings[i].name) {
         if (name == processings[i].name) {
             if (processings[i].condition == nullptr || processings[i].condition->eval(h)) {
+                ASSERT(processings[i].processing);
                 return processings[i].processing->eval(h, value);
             }
         }
