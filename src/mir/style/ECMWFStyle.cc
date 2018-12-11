@@ -365,6 +365,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
         std::string metadata;
         // paramId for the results of formulas
         parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
+        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
 
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
