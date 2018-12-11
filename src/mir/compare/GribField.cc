@@ -933,6 +933,7 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 
     if (name == "area") {
         std::ostringstream oss;
+        oss << std::setprecision(12);
         if (area_) {
             oss << north_
                 << '/'
