@@ -12,6 +12,7 @@
 /// @author Tiago Quintino
 /// @date   Dec 2016
 
+#include <fstream>
 
 #include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"

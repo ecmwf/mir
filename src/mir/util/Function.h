@@ -17,8 +17,9 @@
 #include <string>
 #include <vector>
 
-#include "mir/util/Formula.h"
 #include "eckit/memory/NonCopyable.h"
+
+#include "mir/util/Formula.h"
 
 namespace mir {
 namespace util {

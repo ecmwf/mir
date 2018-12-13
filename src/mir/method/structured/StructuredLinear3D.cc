@@ -14,13 +14,17 @@
 #include "mir/method/structured/StructuredLinear3D.h"
 
 #include <vector>
+#include <numeric>
+
 #include "eckit/log/Log.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/Point.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"

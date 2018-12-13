@@ -13,12 +13,13 @@
 #ifndef mir_netcdf_ValueT
 #define mir_netcdf_ValueT
 
+#include <string>
+#include <vector>
+#include <sstream>
+
 #include "eckit/utils/Translator.h"
 
 #include "mir/netcdf/Value.h"
-
-#include <string>
-#include <vector>
 
 namespace mir {
 namespace netcdf {

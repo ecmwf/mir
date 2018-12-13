@@ -17,10 +17,13 @@
 #include "mir/util/Function.h"
 
 #include <iostream>
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
 #include "eckit/thread/Mutex.h"
+
 #include "mir/action/context/Context.h"
 
 
@@ -31,8 +34,8 @@ namespace util {
 namespace {
 
 
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, Function *> *m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map<std::string, Function *> *m = nullptr;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 

@@ -16,9 +16,11 @@
 #ifndef FormulaAction_H
 #define FormulaAction_H
 
-#include "mir/action/plan/Action.h"
+#include <map>
+
 #include "eckit/memory/ScopedPtr.h"
 
+#include "mir/action/plan/Action.h"
 
 namespace mir {
 

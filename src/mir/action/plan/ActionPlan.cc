@@ -13,9 +13,12 @@
 /// @date Apr 2015
 
 
-#include "mir/action/plan/ActionPlan.h"
+#include "ActionPlan.h"
+
+#include <fstream>
 
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/plan/Action.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"

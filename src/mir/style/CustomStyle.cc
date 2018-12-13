@@ -13,6 +13,8 @@
 /// @date Apr 2015
 
 
+#include <fstream>
+
 #include "mir/style/CustomStyle.h"
 
 #include "mir/param/MIRParametrisation.h"

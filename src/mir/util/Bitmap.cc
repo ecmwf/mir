@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <fstream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"

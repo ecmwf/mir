@@ -10,6 +10,8 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+#include <numeric>
+
 #include "eckit/types/Types.h"
 
 #include "mir/netcdf/DataInputVariable.h"

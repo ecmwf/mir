@@ -10,6 +10,8 @@
 
 #include "mir/input/MIRInput.h"
 
+#include <iomanip>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/io/AutoCloser.h"
@@ -76,8 +78,8 @@ size_t MIRInput::dimensions() const {
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< unsigned long, MIRInputFactory* >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< unsigned long, MIRInputFactory* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map<unsigned long, MIRInputFactory *>();
