@@ -14,6 +14,7 @@
 
 
 #include <iostream>
+#include <algorithm>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"

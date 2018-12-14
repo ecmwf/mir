@@ -10,6 +10,7 @@
 
 #include "GribField.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 
