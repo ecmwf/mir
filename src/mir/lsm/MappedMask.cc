@@ -25,6 +25,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"

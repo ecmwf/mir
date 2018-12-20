@@ -15,9 +15,12 @@
 
 #include "mir/lsm/LSMSelection.h"
 
+#include <map>
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 
 namespace mir {
@@ -26,8 +29,8 @@ namespace lsm {
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, LSMSelection* >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, LSMSelection* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, LSMSelection* >();

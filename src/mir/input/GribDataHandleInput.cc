@@ -15,6 +15,7 @@
 #include "mir/input/GribDataHandleInput.h"
 
 #include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
 
 namespace mir {
 namespace input {

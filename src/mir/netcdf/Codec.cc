@@ -14,6 +14,7 @@
 #include "mir/netcdf/Codec.h"
 
 #include <iostream>
+#include <map>
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"

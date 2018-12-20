@@ -13,11 +13,14 @@
 /// @date Apr 2015
 
 #include "mir/namedgrids/NamedGrid.h"
-#include "mir/namedgrids/NamedGridPattern.h"
+
+#include <map>
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+
+#include "mir/namedgrids/NamedGridPattern.h"
 #include "mir/config/LibMir.h"
 
 

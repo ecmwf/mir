@@ -14,6 +14,8 @@
 
 #include "mir/packing/Packer.h"
 
+#include <map>
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
@@ -25,8 +27,8 @@ namespace packing {
 namespace {
 
 
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, Packer *> *m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map<std::string, Packer *> *m = nullptr;
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;

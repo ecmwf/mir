@@ -19,6 +19,8 @@
 #include <iostream>
 #include <vector>
 
+#include "eckit/config/Configuration.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"

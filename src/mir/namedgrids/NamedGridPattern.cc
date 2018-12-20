@@ -14,12 +14,15 @@
 
 #include "mir/namedgrids/NamedGridPattern.h"
 
+#include <sstream>
+#include <map>
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 
-#include <sstream>
 
 namespace mir {
 namespace namedgrids {

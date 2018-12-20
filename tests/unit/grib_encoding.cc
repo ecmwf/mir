@@ -16,6 +16,7 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"

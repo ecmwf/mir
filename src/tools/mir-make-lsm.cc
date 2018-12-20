@@ -15,6 +15,8 @@
 
 #include "eckit/io/StdFile.h"
 #include "eckit/io/AutoCloser.h"
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
