@@ -10,8 +10,9 @@
 
 /// @date June 2017
 
-
 #include "mir/method/structured/StructuredMethod.h"
+
+#include <memory>
 
 #include "eckit/log/Log.h"
 
@@ -19,60 +20,46 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 
-
 namespace mir {
 namespace method {
 namespace structured {
 
-
-StructuredMethod::StructuredMethod(const param::MIRParametrisation& param) :
-    MethodWeighted(param) {
-}
-
+StructuredMethod::StructuredMethod(const param::MIRParametrisation& param) : MethodWeighted(param) {}
 
 StructuredMethod::~StructuredMethod() = default;
-
 
 bool StructuredMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod*>(&other);
     return o && MethodWeighted::sameAs(other);
 }
 
-
-void StructuredMethod::left_right_lon_indexes(
-    const Longitude& in,
-    const std::vector<PointLatLon>& coords,
-    size_t start,
-    size_t end,
-    size_t& left,
-    size_t& right ) const {
+void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start,
+                                              size_t end, size_t& left, size_t& right) const {
 
     right = start; // take the first if there's a wrap
-    left  = start;
+    left = start;
 
     Longitude right_lon = Longitude::GLOBE;
-//    Longitude left_lon  =   0.;
+    //    Longitude left_lon  =   0.;
     for (size_t i = start; i < end; ++i) {
 
         const Longitude& lon = coords[i].lon();
         ASSERT(Longitude::GREENWICH <= lon && lon <= Longitude::GLOBE);
 
         if (lon <= in) {
-//            left_lon = val;
-            left     = i;
+            //            left_lon = val;
+            left = i;
         } else if (lon < right_lon) {
             right_lon = lon;
-            right     = i;
+            right = i;
         }
-
     }
 
-    ASSERT(left  >= start);
+    ASSERT(left >= start);
     ASSERT(right >= start);
     ASSERT(right != left);
     ASSERT(coords[left].lat() == coords[right].lat());
 }
-
 
 void StructuredMethod::normalise(triplet_vector_t& triplets) const {
     ASSERT(triplets.size());
@@ -90,8 +77,8 @@ void StructuredMethod::normalise(triplet_vector_t& triplets) const {
     }
 }
 
-
-void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<PointLatLon> &points, Latitude& minimum, Latitude& maximum) const {
+void StructuredMethod::getRepresentationPoints(const repres::Representation& r, std::vector<PointLatLon>& points,
+                                               Latitude& minimum, Latitude& maximum) const {
     const size_t N = r.numberOfPoints();
     points.resize(N);
     minimum = 0;
@@ -118,9 +105,9 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     ASSERT(minimum < maximum);
 }
 
-
-void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r, std::vector<Latitude>& latitudes) const {
-    atlas::grid::StructuredGrid in(r.atlasGrid());
+void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r,
+                                                  std::vector<Latitude>& latitudes) const {
+    atlas::StructuredGrid in(r.atlasGrid());
     ASSERT(in);
 
     const auto& pl = in.nx();
@@ -129,7 +116,7 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     latitudes.clear();
     latitudes.reserve(pl.size());
 
-    eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+    std::unique_ptr<repres::Iterator> it(r.iterator());
     for (long Nj : pl) {
         ASSERT(Nj >= 2);
         for (long i = 0; i < Nj; ++i) {
@@ -143,7 +130,8 @@ void StructuredMethod::getRepresentationLatitudes(const repres::Representation& 
     ASSERT(!it->next());
 }
 
-void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<Latitude>& latitudes, size_t& jNorth, size_t& jSouth) const {
+void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<Latitude>& latitudes, size_t& jNorth,
+                                       size_t& jSouth) const {
     const size_t Nj = latitudes.size();
     ASSERT(Nj > 1);
 
@@ -157,8 +145,8 @@ void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<La
     ASSERT(0 < jSouth && jSouth <= Nj - 1);
 }
 
-
-void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, const size_t& iStart, size_t& iWest, size_t& iEast) const {
+void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, const size_t& iStart, size_t& iWest,
+                                     size_t& iEast) const {
     ASSERT(Ni > 1);
 
     // locate longitude indices just West and East of given longitude (in-row)
@@ -171,12 +159,10 @@ void StructuredMethod::boundWestEast(const Longitude& lon, const size_t& Ni, con
     iEast += iStart;
 }
 
-
-void StructuredMethod::assemble(util::MIRStatistics&,
-                                WeightMatrix& W,
-                                const repres::Representation& in,
+void StructuredMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                 const repres::Representation& out) const {
-    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..." << std::endl;
+    eckit::Log::debug<LibMir>() << "StructuredMethod::assemble (input: " << in << ", output: " << out << ")..."
+                                << std::endl;
 
     // FIXME for the moment
     if (!in.isGlobal()) {
@@ -190,15 +176,12 @@ void StructuredMethod::assemble(util::MIRStatistics&,
     eckit::Log::debug<LibMir>() << "StructuredMethod::assemble." << std::endl;
 }
 
-
 void StructuredMethod::print(std::ostream& out) const {
     out << "StructuredMethod[";
     MethodWeighted::print(out);
     out << "]";
 }
 
-
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
-
+} // namespace structured
+} // namespace method
+} // namespace mir

@@ -10,33 +10,30 @@
 
 /// @date Feb 2017
 
-
 #include "mir/action/transform/InvtransScalar.h"
 
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Timer.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
-
 
 namespace mir {
 namespace action {
 namespace transform {
 
-
 void InvtransScalar::print(std::ostream& out) const {
     out << "invtrans=<scalar>";
 }
 
-
-void InvtransScalar::sh2grid(data::MIRField& field,
-                             const ShToGridded::atlas_trans_t& trans,
+void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
     auto& log = eckit::Log::debug<LibMir>();
     eckit::Timer timer("InvtransScalar::sh2grid", log);
-
 
     // set invtrans options
     atlas::util::Config config;
@@ -44,7 +41,6 @@ void InvtransScalar::sh2grid(data::MIRField& field,
 
     size_t F = field.dimensions();
     ASSERT(F > 0);
-
 
     // set input working area (avoid copies for one field only)
     MIRValuesVector input;
@@ -64,23 +60,16 @@ void InvtransScalar::sh2grid(data::MIRField& field,
         }
     }
 
-
     // set output working area
     const size_t Ngp = trans.grid().size();
     MIRValuesVector output(F * Ngp);
 
-
     // inverse transform
     {
         eckit::Timer timer("InvtransScalar: invtrans", log);
-        trans.invtrans(
-                    int(F),
-                    F > 1 ? input.data() : field.values(0).data(),
-                    output.data(),
-                    config );
+        trans.invtrans(int(F), F > 1 ? input.data() : field.values(0).data(), output.data(), config);
     }
 
-    
     // set field values (again, avoid copies for one field only)
     if (F > 1) {
         eckit::Timer timer("InvtransScalar: copying grid-point values", log);
@@ -97,8 +86,6 @@ void InvtransScalar::sh2grid(data::MIRField& field,
     }
 }
 
-
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
-
+} // namespace transform
+} // namespace action
+} // namespace mir

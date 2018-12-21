@@ -10,13 +10,13 @@
 
 /// @date Feb 2017
 
-
 #include "mir/action/transform/InvtransVodTouv.h"
 
 #include <iostream>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Timer.h"
 
 #include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
@@ -24,19 +24,15 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Wind.h"
 
-
 namespace mir {
 namespace action {
 namespace transform {
-
 
 void InvtransVodTouv::print(std::ostream& out) const {
     out << "invtrans=<vod2uv>";
 }
 
-
-void InvtransVodTouv::sh2grid(data::MIRField& field,
-                              const ShToGridded::atlas_trans_t& trans,
+void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                               const param::MIRParametrisation& parametrisation) const {
     eckit::Timer timer("InvtransVodTouv::sh2grid", eckit::Log::debug<LibMir>());
 
@@ -50,20 +46,16 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     atlas::util::Config config;
     config.set(atlas::option::global());
 
-
-
     // do inverse transform and set gridded values
     MIRValuesVector output(size_t(number_of_grid_points) * 2);
-    trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), config);
+    trans.invtrans(1, field.values(0).data(), field.values(1).data(), output.data(), config);
 
     MIRValuesVector output_field;
-
 
     // configure paramIds for u/v
     size_t id_u = 0;
     size_t id_v = 0;
     util::Wind::paramIds(parametrisation, id_u, id_v);
-
 
     // u/v are contiguous, they are saved as separate vectors
     auto here = output.cbegin();
@@ -77,8 +69,6 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     field.metadata(1, "paramId", id_v);
 }
 
-
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
-
+} // namespace transform
+} // namespace action
+} // namespace mir

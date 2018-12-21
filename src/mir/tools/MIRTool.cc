@@ -10,50 +10,39 @@
 
 /// @date Sep 2016
 
-
 #include "mir/tools/MIRTool.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
-#include "mir/api/Atlas.h"
 
+#include "mir/api/Atlas.h"
 
 namespace mir {
 namespace tools {
 
-
 namespace {
-
 
 static MIRTool* instance_ = nullptr;
 
-
-static void usage(const std::string &tool) {
+static void usage(const std::string& tool) {
     ASSERT(instance_);
     instance_->usage(tool);
 }
 
+} // namespace
 
-}  // (anonymous namespace)
-
-
-MIRTool::MIRTool(int argc, char **argv) :
-    eckit::Tool(argc, argv, "MIR_HOME") {
+MIRTool::MIRTool(int argc, char** argv) : eckit::Tool(argc, argv, "MIR_HOME") {
     ASSERT(instance_ == nullptr);
     instance_ = this;
 }
 
-
 void MIRTool::run() {
-    eckit::option::CmdArgs args(
-                &mir::tools::usage,
-                options_,
-                numberOfPositionalArguments(),
-                minimumPositionalArguments() );
+    eckit::option::CmdArgs args(&mir::tools::usage, options_, numberOfPositionalArguments(),
+                                minimumPositionalArguments());
     init(args);
     execute(args);
     finish(args);
 }
-
 
 void MIRTool::init(const eckit::option::CmdArgs& args) {
 #ifdef HAVE_ATLAS
@@ -61,13 +50,11 @@ void MIRTool::init(const eckit::option::CmdArgs& args) {
 #endif
 }
 
-
 void MIRTool::finish(const eckit::option::CmdArgs&) {
 #ifdef HAVE_ATLAS
     atlas::Library::instance().finalise();
 #endif
 }
 
-
-}  // namespace tools
-}  // namespace mir
+} // namespace tools
+} // namespace mir

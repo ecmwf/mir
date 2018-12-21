@@ -12,39 +12,35 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
-#include "atlas/grid/Grid.h"
 
-
+#include "atlas/grid.h"
 
 class Grids : public eckit::Tool {
 
     virtual void run();
 
-    void usage(const std::string &tool);
-    void grid(const atlas::grid::StructuredGrid&);
+    void usage(const std::string& tool);
+    void grid(const atlas::StructuredGrid&);
 
-  public:
-    Grids(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
-
+public:
+    Grids(int argc, char** argv) : eckit::Tool(argc, argv) {}
 };
 
-
-void Grids::grid(const atlas::grid::StructuredGrid& grid) {
+void Grids::grid(const atlas::StructuredGrid& grid) {
 
     const auto& pl = grid.nx();
     ASSERT(pl.size());
 
     std::vector<int> points_per_latitudes(pl.size());
-    ASSERT(pl.size()==points_per_latitudes.size());
+    ASSERT(pl.size() == points_per_latitudes.size());
 
     size_t half = points_per_latitudes.size() / 2;
-    ASSERT(half>0);
+    ASSERT(half > 0);
 
     std::vector<int> diff;
     diff.reserve(half);
@@ -60,9 +56,8 @@ void Grids::grid(const atlas::grid::StructuredGrid& grid) {
     eckit::Log::info() << std::endl;
 }
 
-
 void Grids::run() {
-    using atlas::grid::ReducedGaussianGrid;
+    using atlas::ReducedGaussianGrid;
 
     grid(ReducedGaussianGrid("N16"));
     grid(ReducedGaussianGrid("N24"));
@@ -113,9 +108,7 @@ void Grids::run() {
     grid(ReducedGaussianGrid("O8000"));
 }
 
-
-int main( int argc, char **argv ) {
+int main(int argc, char** argv) {
     Grids tool(argc, argv);
     return tool.start();
 }
-

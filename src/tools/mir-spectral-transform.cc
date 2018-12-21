@@ -11,7 +11,6 @@
 /// @author Andreas Mueller
 /// @author Pedro Maciel
 
-
 #include <algorithm>
 
 #include "eckit/exception/Exceptions.h"
@@ -57,7 +56,6 @@
 #include "mir/util/Rotation.h"
 #include "mir/util/Wind.h"
 
-
 class MIRSpectralTransform : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
@@ -65,13 +63,24 @@ private:
     int minimumPositionalArguments() const { return 2; }
 
     void usage(const std::string& tool) const {
-        eckit::Log::info() <<
-                "\n" "Usage: " << tool << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value [...]]] input.grib output.grib"
-                "\n" "Examples: "
-                "\n" "  % " << tool << " --grid=1/1 --area=90/-180/-90/179 in out"
-                "\n" "  % " << tool << " --gridname=O32 --validate=false in out"
-                "\n" "  % " << tool << " --griddef=weather-params.pts in out"
-                << std::endl;
+        eckit::Log::info() << "\n"
+                              "Usage: "
+                           << tool
+                           << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value "
+                              "[...]]] input.grib output.grib"
+                              "\n"
+                              "Examples: "
+                              "\n"
+                              "  % "
+                           << tool
+                           << " --grid=1/1 --area=90/-180/-90/179 in out"
+                              "\n"
+                              "  % "
+                           << tool
+                           << " --gridname=O32 --validate=false in out"
+                              "\n"
+                              "  % "
+                           << tool << " --griddef=weather-params.pts in out" << std::endl;
     }
 
 public:
@@ -79,30 +88,41 @@ public:
         using namespace eckit::option;
 
         options_.push_back(new Separator("Output grid (mandatory one option)"));
-        options_.push_back(new VectorOption<double>("grid", "Regular latitude/longitude grid increments (West-East/South-North)", 2));
+        options_.push_back(
+            new VectorOption<double>("grid", "Regular latitude/longitude grid increments (West-East/South-North)", 2));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
-        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to file containing latitude/longitude pairs"));
+        options_.push_back(
+            new SimpleOption<eckit::PathName>("griddef", "Path to file containing latitude/longitude pairs"));
 
         options_.push_back(new Separator("Output regular latitude/longitude grids"));
-        options_.push_back(new VectorOption<double>("area", "Regular latitude/longitude grid bounding box (North/West/South/East)", 4));
-        options_.push_back(new VectorOption<double>("rotation", "Regular latitude/longitude grid rotation by moving the South pole to latitude/longitude", 2));
+        options_.push_back(new VectorOption<double>(
+            "area", "Regular latitude/longitude grid bounding box (North/West/South/East)", 4));
+        options_.push_back(new VectorOption<double>(
+            "rotation", "Regular latitude/longitude grid rotation by moving the South pole to latitude/longitude", 2));
 
         options_.push_back(new Separator("Miscellaneous"));
-        options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
-        options_.push_back(new SimpleOption<size_t>("multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
-        options_.push_back(new SimpleOption<size_t>("multi-transform", "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
-        options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
+        options_.push_back(new SimpleOption<bool>(
+            "vod2uv",
+            "Input is vorticity and divergence (vo/d), convert to u/v components (gridded u/v or spectral U/V)"));
+        options_.push_back(new SimpleOption<size_t>(
+            "multi-scalar", "Number of fields (scalar or vo/d pairs) per Atlas/Trans instance (default 1)"));
+        options_.push_back(new SimpleOption<size_t>(
+            "multi-transform",
+            "Number of fields  (scalar or vo/d pairs) per inverse transform (default is value of 'multi-scalar')"));
+        options_.push_back(new SimpleOption<std::string>("atlas-trans-type",
+                                                         "Atlas/Trans spectral transforms type (default 'local')"));
         options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
         options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
-        options_.push_back(new SimpleOption<size_t>("cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
+        options_.push_back(new SimpleOption<size_t>(
+            "cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Atlas: force unstructured grid (default false)"));
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
     }
 };
 
-
-const mir::repres::Representation* output_representation(std::ostream& log, const mir::param::MIRParametrisation& parametrisation) {
+const mir::repres::Representation* output_representation(std::ostream& log,
+                                                         const mir::param::MIRParametrisation& parametrisation) {
 
     std::vector<double> grid;
     if (parametrisation.get("grid", grid)) {
@@ -118,11 +138,13 @@ const mir::repres::Representation* output_representation(std::ostream& log, cons
         }
 
         log << "MIRSpectralTransform:"
-            << "\n\t" << increments
-            << "\n\t" << bbox
-            << "\n\t" "shifted in latitude? " << increments.isLatitudeShifted(bbox)
-            << "\n\t" "shifted in longitude? " << increments.isLongitudeShifted(bbox)
-            << std::endl;
+            << "\n\t" << increments << "\n\t" << bbox
+            << "\n\t"
+               "shifted in latitude? "
+            << increments.isLatitudeShifted(bbox)
+            << "\n\t"
+               "shifted in longitude? "
+            << increments.isLongitudeShifted(bbox) << std::endl;
 
         std::vector<double> rot;
         if (parametrisation.get("rotation", rot)) {
@@ -150,7 +172,6 @@ const mir::repres::Representation* output_representation(std::ostream& log, cons
     throw eckit::UserError("MIRSpectralTransform: could not create output representation");
 }
 
-
 atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
                         const mir::repres::Representation& representation) {
 
@@ -165,12 +186,11 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
             coordinates->push_back(atlas::PointXY(p[1], p[0]));
         }
 
-        return atlas::grid::UnstructuredGrid(coordinates);
+        return atlas::UnstructuredGrid(coordinates);
     }
 
     return representation.atlasGrid();
 }
-
 
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("MIRSpectralTransform");
@@ -183,9 +203,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     size_t paramIdv = 0;
     mir::util::Wind::paramIds(commandLine, paramIdu, paramIdv);
 
-    const bool vod2uv   = args.getBool("vod2uv", false);
+    const bool vod2uv = args.getBool("vod2uv", false);
     const bool validate = args.getBool("validate", false);
-    const bool cesaro   = args.getBool("cesaro", false);
+    const bool cesaro = args.getBool("cesaro", false);
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
@@ -194,18 +214,17 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
     if (multiTransform < 1 || multiTransform > multiScalar) {
-        throw eckit::UserError("Option 'multi-transform' has to be greater than one, and up to 'multi-scalar' (" + std::to_string(multiScalar) + ")");
+        throw eckit::UserError("Option 'multi-transform' has to be greater than one, and up to 'multi-scalar' (" +
+                               std::to_string(multiScalar) + ")");
     }
 
     if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
         throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
     }
 
-
     // Setup output (file)
     eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), commandLine));
     ASSERT(output);
-
 
     // Setup input (file) and parametrisation
     eckit::ScopedPtr<mir::input::MIRInput> input;
@@ -214,7 +233,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
         for (size_t i = 0; i < multiScalar; ++i) {
             if (vod2uv) {
                 // vo/d field pairs
-                multi->appendScalarInput(new mir::input::GribFileInput(args(0), i * 2,     multiScalar * 2));
+                multi->appendScalarInput(new mir::input::GribFileInput(args(0), i * 2, multiScalar * 2));
                 multi->appendScalarInput(new mir::input::GribFileInput(args(0), i * 2 + 1, multiScalar * 2));
             } else {
                 multi->appendScalarInput(new mir::input::GribFileInput(args(0), i, multiScalar));
@@ -226,7 +245,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     const mir::param::CombinedParametrisation combined(commandLine, input->parametrisation(), defaults);
     auto& parametrisation = dynamic_cast<const mir::param::MIRParametrisation&>(combined);
-
 
     // Preserve statistics
     mir::util::MIRStatistics statistics;
@@ -258,12 +276,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             size_t N = mir::repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
             ASSERT(N > 0);
 
-
             // Cesàro summation filtering
             if (cesaro) {
                 eckit::Timer timer("time on Cesàro summation filtering", log);
 
-                std::vector<double> filter(T+1);
+                std::vector<double> filter(T + 1);
                 {
                     double k = args.getDouble("cesaro-k", 2.);
                     size_t Tmin = args.getUnsigned("cesaro-truncation", 1);
@@ -291,7 +308,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 }
             }
 
-
             // Set Trans
             std::string type = "local";
             parametrisation.get("atlas-trans-type", type);
@@ -301,17 +317,20 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             atlas::trans::Trans trans(outputGrid, int(T), transConfig);
 
-
             log << "MIRSpectralTransform:"
-                << "\n\t" "Atlas/Trans configuration type: " << transConfig.getString("type", "(default)")
-                << "\n\t" "Atlas unstructured grid: " << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no")
-                << std::endl;
+                << "\n\t"
+                   "Atlas/Trans configuration type: "
+                << transConfig.getString("type", "(default)")
+                << "\n\t"
+                   "Atlas unstructured grid: "
+                << (atlas::UnstructuredGrid(outputGrid) ? "yes" : "no") << std::endl;
 
             if (vod2uv) {
                 ASSERT(field.dimensions() == multiScalar * 2);
 
                 size_t F;
-                for (size_t numberOfFieldPairsProcessed = 0; numberOfFieldPairsProcessed < multiScalar; numberOfFieldPairsProcessed += F) {
+                for (size_t numberOfFieldPairsProcessed = 0; numberOfFieldPairsProcessed < multiScalar;
+                     numberOfFieldPairsProcessed += F) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
@@ -328,8 +347,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                         for (size_t i = 0; i < F; ++i) {
                             const size_t which = (numberOfFieldPairsProcessed + i) * 2;
-                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_vo, field.values(which + 0), T, N, i, F);
-                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_d,  field.values(which + 1), T, N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_vo, field.values(which + 0), T,
+                                                                                   N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input_d, field.values(which + 1), T,
+                                                                                   N, i, F);
                         }
                     }
 
@@ -341,12 +362,9 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     {
                         eckit::Timer timer("time on invtrans", log);
                         const size_t which = numberOfFieldPairsProcessed * 2;
-                        trans.invtrans(
-                                    int(F),
-                                    F > 1 ? input_vo.data() : field.values(which + 0).data(),
-                                    F > 1 ? input_d.data()  : field.values(which + 1).data(),
-                                    output.data(),
-                                    atlas::option::global() );
+                        trans.invtrans(int(F), F > 1 ? input_vo.data() : field.values(which + 0).data(),
+                                       F > 1 ? input_d.data() : field.values(which + 1).data(), output.data(),
+                                       atlas::option::global());
                     }
 
                     // set field values, forcing u/v paramId (copies are necessary since fields are paired)
@@ -382,7 +400,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 ASSERT(field.dimensions() == multiScalar);
 
                 size_t F;
-                for (size_t numberOfFieldsProcessed = 0; numberOfFieldsProcessed < multiScalar; numberOfFieldsProcessed += F) {
+                for (size_t numberOfFieldsProcessed = 0; numberOfFieldsProcessed < multiScalar;
+                     numberOfFieldsProcessed += F) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
@@ -396,7 +415,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         input.resize(F * N * 2);
 
                         for (size_t i = 0; i < F; ++i) {
-                            mir::repres::sh::SphericalHarmonics::interlace_spectra(input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
+                            mir::repres::sh::SphericalHarmonics::interlace_spectra(
+                                input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
                         }
                     }
 
@@ -407,11 +427,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // inverse transform
                     {
                         eckit::Timer timer("time on invtrans", log);
-                        trans.invtrans(
-                                    int(F),
-                                    F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
-                                    output.data(),
-                                    atlas::option::global() );
+                        trans.invtrans(int(F), F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
+                                       output.data(), atlas::option::global());
                     }
 
                     // set field values (again, avoid copies for one field only)
@@ -429,7 +446,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         field.update(output, numberOfFieldsProcessed);
                     }
                 }
-
             }
 
             // set field representation
@@ -449,7 +465,6 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }
-
 
 int main(int argc, char** argv) {
     MIRSpectralTransform tool(argc, argv);
