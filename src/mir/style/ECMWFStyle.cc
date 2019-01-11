@@ -360,13 +360,13 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     resol.prepare(plan);
 
     std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula) ||
-            parametrisation_.userParametrisation().get("formula.raw", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
+    std::string metadata;  // paramId for the results of formulas
+    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
         parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
+        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+    }
+    if (parametrisation_.userParametrisation().get("formula.raw", formula)) {
         parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
-
         plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
     }
 
