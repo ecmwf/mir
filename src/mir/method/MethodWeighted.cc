@@ -211,7 +211,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     size_t footprint = w.footprint();
     caching::InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
 
-    eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
+    eckit::Log::debug<LibMir>() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
     matrix_cache.footprint(memory_key, usage);
     return w;
