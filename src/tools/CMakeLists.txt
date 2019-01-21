@@ -1,8 +1,8 @@
 
 ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir)
 
-
-foreach(tool
+unset(_tools)
+list(APPEND _tools
     mir-compare
     mir-config
     mir-count
@@ -17,17 +17,16 @@ foreach(tool
     mir-values-statistics
     mir-weight-matrix
     mir-grid-info)
-    ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
-endforeach()
-
 
 if(HAVE_ATLAS)
-    foreach(tool
+    list(APPEND _tools
         mir-gaussian-fractions
         mir-get-data
         mir-integrate
         mir-spectral-transform)
-        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
-    endforeach()
 endif()
+
+foreach(tool IN LISTS _tools)
+    ecbuild_add_executable(TARGET ${tool} NOINSTALL SOURCES ${tool}.cc LIBS mir)
+endforeach()
 
