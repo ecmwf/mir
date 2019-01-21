@@ -399,6 +399,11 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     parametrisation_.userParametrisation().get("vod2uv", vod2uv);
     parametrisation_.userParametrisation().get("uv2uv", uv2uv);
 
+    if (vod2uv) {
+        eckit::Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
+        ASSERT(!vod2uv);
+    }
+
     // completed later
     const std::string interpolate = "interpolate.grid2";
     const std::string target = target_gridded_from_parametrisation(parametrisation_, rotation);

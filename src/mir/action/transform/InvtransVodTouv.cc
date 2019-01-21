@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 
 #include "mir/api/Atlas.h"
@@ -42,20 +43,34 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     const int number_of_grid_points = int(trans.grid().size());
     ASSERT(number_of_grid_points > 0);
 
+
     // set invtrans options
     atlas::util::Config config;
     config.set(atlas::option::global());
 
+
+    // get vo/d
+    const MIRValuesVector& field_vo = field.values(0);
+    const MIRValuesVector& field_d = field.values(1);
+
+    if (field_vo.size() != field_d.size()) {
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        ASSERT(field_vo.size() == field_d.size());
+    }
+
+
     // do inverse transform and set gridded values
     MIRValuesVector output(size_t(number_of_grid_points) * 2);
-    trans.invtrans(1, field.values(0).data(), field.values(1).data(), output.data(), config);
+    trans.invtrans(1, field_vo.data(), field_d.data(), output.data(), config);
 
     MIRValuesVector output_field;
+
 
     // configure paramIds for u/v
     size_t id_u = 0;
     size_t id_v = 0;
     util::Wind::paramIds(parametrisation, id_u, id_v);
+
 
     // u/v are contiguous, they are saved as separate vectors
     auto here = output.cbegin();

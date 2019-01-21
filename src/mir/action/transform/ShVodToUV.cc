@@ -19,6 +19,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 
 #include "atlas/trans/VorDivToUV.h"
 
@@ -92,8 +93,10 @@ void ShVodToUV::execute(context::Context& ctx) const {
                                 << ", size=" << size
                                 << ", values=" << field_vo.size() << std::endl;
 
-    ASSERT(field_vo.size() == size);
-    ASSERT(field_d.size() == size);
+    if (field_vo.size() != field_d.size()) {
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        ASSERT(field_vo.size() == field_d.size());
+    }
 
     MIRValuesVector result_U(size, 0.);
     MIRValuesVector result_V(size, 0.);
