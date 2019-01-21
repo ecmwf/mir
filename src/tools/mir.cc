@@ -185,17 +185,20 @@ public:
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
 
         //==============================================
-        options_.push_back(new Separator("Debugging"));
-        options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
-        options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
-        options_.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
-        options_.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
-        options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
-        options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
-        options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
-        options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
-        options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-        options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+        // Only show these options if debug channel is active
+        if (eckit::Log::debug<mir::LibMir>()) {
+            options_.push_back(new Separator("Debugging"));
+            options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
+            options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
+            options_.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
+            options_.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
+            options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
+            options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
+            options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
+            options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
+            options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
+            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+        }
 
     }
 
