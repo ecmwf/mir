@@ -80,7 +80,7 @@ GribStreamInput::~GribStreamInput() = default;
 
 bool GribStreamInput::next() {
 
-    handle(0);
+    handle(nullptr);
 
     // Skip a few message if needed
     size_t advance = step_ - 1;
@@ -116,11 +116,13 @@ bool GribStreamInput::next() {
     int e    = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
 
     if (e == GRIB_SUCCESS)  {
-        ASSERT(handle(grib_handle_new_from_message(0, buffer_, len)));
+        ASSERT(handle(grib_handle_new_from_message(nullptr, buffer_, len)));
         return true;
     }
 
-    if (e == GRIB_END_OF_FILE) return false;
+    if (e == GRIB_END_OF_FILE) {
+        return false;
+    }
 
 
     if (e == GRIB_BUFFER_TOO_SMALL) {

@@ -919,6 +919,12 @@ void GribInput::setAuxilaryFiles(const std::string& pathToLatitudes, const std::
 }
 
 
+size_t GribInput::dimensions() const {
+    // This will be one probably for a long time
+    return 1;
+}
+
+
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double>& values) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
