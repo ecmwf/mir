@@ -869,16 +869,18 @@ bool GribInput::handle(grib_handle *h) {
     if (grib_) {
         grib_handle_delete(grib_);
     }
+    grib_ = h;
 
-    // guarantee GRIB message is terminated
-    long value = 0;
-    GRIB_CALL(grib_get_long(h, "7777", &value));
-    if (value != 7777) {
-        throw eckit::SeriousBug("GribInput: grib_handle not terminated with 7777.");
+    if (h != nullptr) {
+        long value = 0;
+        GRIB_CALL(grib_get_long(h, "7777", &value));
+        if (value != 7777) {
+            throw eckit::SeriousBug("GribInput: grib_handle not terminated with 7777.");
+        }
+        return true;
     }
 
-    grib_ = h;
-    return h != nullptr;
+    return false;
 }
 
 
