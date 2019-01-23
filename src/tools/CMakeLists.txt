@@ -26,6 +26,6 @@ if(HAVE_ATLAS)
 endif()
 
 foreach(tool IN LISTS _tools)
-    ecbuild_add_executable(TARGET ${tool} NOINSTALL SOURCES ${tool}.cc LIBS mir)
+    ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
 endforeach()
 
