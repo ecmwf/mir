@@ -55,7 +55,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
      *   - pl_sum.rbegin() (last position) is total number of points sum(j=0; j=Nj, pl[j]),
      *   - pl_sum.rbegin()[1] (before-last position) is sum(j=0; j=Nj-1, pl[j])
      */
-    atlas::StructuredGrid gin(in.atlasGrid());
+    atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
     const auto& pl = gin.nx();

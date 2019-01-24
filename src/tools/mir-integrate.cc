@@ -87,7 +87,7 @@ void MIRIntegrate::execute(const eckit::option::CmdArgs& args) {
         double result = 0;
         double weights = 0;
 
-        const atlas::StructuredGrid structured(rep->atlasGrid());
+        const atlas::grid::StructuredGrid structured(rep->atlasGrid());
         ASSERT(structured);
 
         size_t i = 0;
