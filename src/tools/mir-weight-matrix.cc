@@ -10,6 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   Dec 2016
 
 
@@ -44,6 +45,7 @@ public:
         options_.push_back(new SimpleOption<bool>("unload", "Load file into shared memory. If file is not loaded, does nothing."));
 
         options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("write-csr", "Write matrix as CSR (needs --load, writes nna, nnz, ia, ja, a in 0-based indexing)"));
     }
 
 };
@@ -59,24 +61,23 @@ void MIRWeightMatrix::usage(const std::string &tool) const {
 void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
     using mir::method::WeightMatrix;
 
-    std::string path(args(0));
+    auto& log = eckit::Log::info();
 
-    if (args.has("load") || args.has("dump")) {
+    std::string path(args(0));
+    bool write(args.has("dump") || args.has("write-csr"));
+
+    if (args.has("load") || write) {
 
         mir::caching::matrix::SharedMemoryLoader::loadSharedMemory(path);
 
         WeightMatrix W(new mir::caching::matrix::SharedMemoryLoader("shmem", path));
 
-        eckit::linalg::SparseMatrix& spm = W;
-        eckit::Log::info()
-                << spm
-                << " memory " << W.footprint() << " bytes"
-                << std::endl;
+        log << static_cast<const eckit::linalg::SparseMatrix&>(W)
+            << " memory " << W.footprint() << " bytes"
+            << std::endl;
 
-        if(args.has("dump")) {
-
-            std::string s;
-            args.get("dump", s);
+        std::string s;
+        if (args.get("dump", s)) {
 
             eckit::PathName file(s);
             if (file.exists()) {
@@ -96,6 +97,49 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
             }
         }
 
+        if (args.get("write-csr", s)) {
+
+            eckit::PathName file(s);
+            if (file.exists()) {
+                throw eckit::WriteError("File " + s + " exists");
+            }
+
+            std::ofstream out(file.asString().c_str());
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
+
+            static auto nl = "\n";
+            static auto space = " ";
+
+            const auto nna = W.rows();
+            const auto nnz = W.nonZeros();
+            out << nna << nl << nnz;
+
+            auto ia(W.outer());
+            auto sep = nl;
+            for (WeightMatrix::Size i = 0; i <= nna; ++i, sep = space) {
+                out << sep << *(ia++);
+            }
+
+            auto ja(W.inner());
+            sep = nl;
+            for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
+                out << sep << *(ja++);
+            }
+
+            auto a(W.data());
+            sep = nl;
+            for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
+                out << sep << *(a++);
+            }
+
+            out << nl;
+            out.close();
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
+        }
     }
 
     if (args.has("unload")) {
