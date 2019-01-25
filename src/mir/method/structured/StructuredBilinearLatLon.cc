@@ -46,7 +46,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     // (this assumes the points are oriented north-south)
     // FIXME: proper documentation
 
-    atlas::StructuredGrid gin(in.atlasGrid());
+    atlas::grid::StructuredGrid gin(in.atlasGrid());
     ASSERT(gin);
 
     const auto& pl = gin.nx();
