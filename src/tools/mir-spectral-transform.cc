@@ -209,13 +209,12 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
-        throw eckit::UserError("Option 'multi-scalar' has to be greater than one");
+        throw eckit::UserError("Option 'multi-scalar' has to be greater than or equal to one");
     }
 
     size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
     if (multiTransform < 1 || multiTransform > multiScalar) {
-        throw eckit::UserError("Option 'multi-transform' has to be greater than one, and up to 'multi-scalar' (" +
-                               std::to_string(multiScalar) + ")");
+        throw eckit::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) + "] ('multi-scalar')");
     }
 
     if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
