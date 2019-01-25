@@ -12,20 +12,18 @@
 /// @author Tiago Quintino
 /// @date   Dec 2016
 
+
 #include <fstream>
 
+#include "eckit/io/FileHandle.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/caching/matrix/SharedMemoryLoader.h"
-#include "mir/tools/MIRTool.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/tools/MIRTool.h"
 
-
-using mir::method::WeightMatrix;
 
 class MIRWeightMatrix : public mir::tools::MIRTool {
 
@@ -40,12 +38,12 @@ public:
     // -- Contructors
 
     MIRWeightMatrix(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::SimpleOption;
 
-        options_.push_back(new SimpleOption<bool>("load", "Load file into shared memory. If file already loaded, does nothing."));
-        options_.push_back(new SimpleOption<eckit::PathName>("dump", "Also dump the matrix (needs --load)"));
+        options_.push_back(new SimpleOption<bool>("load", "Load file into shared memory. If file is already loaded, does nothing."));
+        options_.push_back(new SimpleOption<bool>("unload", "Load file into shared memory. If file is not loaded, does nothing."));
 
-        options_.push_back(new SimpleOption<bool>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+        options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
     }
 
 };
@@ -59,6 +57,7 @@ void MIRWeightMatrix::usage(const std::string &tool) const {
 
 
 void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
+    using mir::method::WeightMatrix;
 
     std::string path(args(0));
 
@@ -80,20 +79,23 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
             args.get("dump", s);
 
             eckit::PathName file(s);
-
-            if(file.exists()) {
+            if (file.exists()) {
                 throw eckit::WriteError("File " + s + " exists");
             }
 
             std::ofstream out(file.asString().c_str());
-            if (!out) throw eckit::CantOpenFile(file);
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
 
             W.dump(out);
 
             out.close();
-
-            if (out.bad()) throw eckit::WriteError(file);
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
         }
+
     }
 
     if (args.has("unload")) {
