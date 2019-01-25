@@ -48,8 +48,7 @@ public:
     // None
 
     // -- Overridden methods
-
-    virtual size_t dimensions() const;
+    // None
 
     // -- Class members
     // None

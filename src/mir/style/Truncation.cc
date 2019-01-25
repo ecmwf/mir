@@ -9,15 +9,18 @@
  */
 
 
-#include "mir/style/Truncation.h"
+#include "Truncation.h"
 
 #include <algorithm>
 #include <cctype>  // for ::isdigit
 #include <iostream>
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/truncation/Ordinal.h"

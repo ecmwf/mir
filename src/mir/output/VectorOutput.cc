@@ -12,28 +12,23 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-
 #include "mir/output/VectorOutput.h"
 
 #include <iostream>
+#include <typeinfo> // bad_cast exception
+
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/VectorInput.h"
 
-
 namespace mir {
 namespace output {
 
-
-VectorOutput::VectorOutput(MIROutput &component1, MIROutput &component2):
-    component1_(component1),
-    component2_(component2) {
-}
-
+VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2)
+    : component1_(component1), component2_(component2) {}
 
 VectorOutput::~VectorOutput() = default;
-
 
 size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
 
@@ -51,13 +46,12 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
 
         return size;
 
-    } catch (std::bad_cast &) {
+    } catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::copy() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
     }
 }
-
 
 size_t VectorOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     data::MIRField& field = ctx.field();
@@ -87,37 +81,30 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
 
         return size;
 
-    } catch (std::bad_cast &) {
+    } catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::save() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
     }
 }
 
-
 bool VectorOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const VectorOutput*>(&other);
     return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 
-
-bool VectorOutput::sameParametrisation(const param::MIRParametrisation &param1,
-                                    const param::MIRParametrisation & param2) const {
-    return component1_.sameParametrisation(param1, param2) &&
-           component2_.sameParametrisation(param1, param2);
+bool VectorOutput::sameParametrisation(const param::MIRParametrisation& param1,
+                                       const param::MIRParametrisation& param2) const {
+    return component1_.sameParametrisation(param1, param2) && component2_.sameParametrisation(param1, param2);
 }
 
-
-bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     return component1_.printParametrisation(out, param);
 }
 
-
-void VectorOutput::print(std::ostream &out) const {
+void VectorOutput::print(std::ostream& out) const {
     out << "VectorOutput[" << component1_ << "," << component2_ << "]";
 }
 
-
-}  // namespace output
-}  // namespace mir
-
+} // namespace output
+} // namespace mir

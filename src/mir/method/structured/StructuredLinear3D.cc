@@ -10,47 +10,43 @@
 
 /// @date Sep 2016
 
-
 #include "mir/method/structured/StructuredLinear3D.h"
 
+#include <numeric>
 #include <vector>
+
 #include "eckit/log/Log.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "atlas/interpolation/element/Triag3D.h"
 #include "atlas/interpolation/method/Ray.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/Point.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-
 
 namespace mir {
 namespace method {
 namespace structured {
 
-
 namespace {
-static MethodBuilder< StructuredLinear3D > __method("structured-linear-3d");
+static MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
 }
 
-
-StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) :
-    StructuredMethod(param) {
-}
-
+StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
 StructuredLinear3D::~StructuredLinear3D() = default;
-
 
 bool StructuredLinear3D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredLinear3D*>(&other);
     return o && StructuredMethod::sameAs(other);
 }
 
-
-void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in,
+                                                 const repres::Representation& out) const {
 
     /*
      * get from input grid:
@@ -74,20 +70,18 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     std::partial_sum(pl.begin(), pl.end(), ++pl_sum.begin());
     ASSERT(static_cast<size_t>(pl_sum.back()) == in.numberOfPoints());
 
-
     // get input coordinates, checking min/max latitudes (Gaussian grids exclude the poles)
     std::vector<PointLatLon> icoords;
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
-    eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")" << std::endl;
-
+    eckit::Log::debug<LibMir>() << "StructureLinear::assemble latitude (min,max) = (" << min_lat << ", " << max_lat
+                                << ")" << std::endl;
 
     // fill sparse matrix using triplets (reserve assuming all-triangle interpolations)
     triplet_vector_t triplets;
     size_t nbOutputPoints = out.numberOfPoints();
     triplets.reserve(3 * nbOutputPoints);
-
 
     // interpolate each output point in turn
     {
@@ -108,16 +102,16 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
 
-                const size_t Ni = size_t(too_much_north? pl.front() : pl.back());
-                const size_t iStart = too_much_north? 0 : pl_sum.rbegin()[1];
+                const size_t Ni = size_t(too_much_north ? pl.front() : pl.back());
+                const size_t iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
 
                 size_t l[2];
                 boundWestEast(p.lon(), Ni, iStart, l[0], l[1]);
 
                 const Longitude& l0 = icoords[l[0]].lon();
                 const Longitude& l1 = icoords[l[1]].lon();
-                trip = { WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value() ),
-                         WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value() ) };
+                trip = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
+                        WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value())};
 
             } else {
 
@@ -152,7 +146,6 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                     atlas::util::Earth::convertSphericalToCartesian(p, qp[k]);
                 }
 
-
                 /*
                  * Triangle numbering and splitting reference (only one of the two pairs is chosen)
                  * These triangles were chosen so that the splitting quadrilateral cross-edge is the
@@ -177,9 +170,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 ASSERT(edgeEpsilon >= 0);
 
                 // project on first triangle (0 or 2) depending on split, if that fails try next (1 or 3)
-                const size_t T[4][3] = {{1,0,2}, {2,3,1}, {0,2,3}, {3,1,0}};
-                size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2)? 0 : 2;
-
+                const size_t T[4][3] = {{1, 0, 2}, {2, 3, 1}, {0, 2, 3}, {3, 1, 0}};
+                size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
 
                 const Point3 p3d = it->point3D();
                 const atlas::interpolation::method::Ray ray(p3d.data());
@@ -197,11 +189,9 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
                 ASSERT(inter);
 
                 // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
-                trip = { WeightMatrix::Triplet(ip, q[T[w][0]], 1. - inter.u - inter.v),
-                         WeightMatrix::Triplet(ip, q[T[w][1]], inter.u),
-                         WeightMatrix::Triplet(ip, q[T[w][2]], inter.v) };
+                trip = {WeightMatrix::Triplet(ip, q[T[w][0]], 1. - inter.u - inter.v),
+                        WeightMatrix::Triplet(ip, q[T[w][1]], inter.u), WeightMatrix::Triplet(ip, q[T[w][2]], inter.v)};
             }
-
 
             // insert local point weights (normalized) into matrix "filler"
             normalise(trip);
@@ -215,16 +205,13 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     W.setFromTriplets(triplets);
 }
 
-
 const char* StructuredLinear3D::name() const {
-    return  "structured-linear-3d";
+    return "structured-linear-3d";
 }
-
 
 void StructuredLinear3D::hash(eckit::MD5& md5) const {
     StructuredMethod::hash(md5);
 }
-
 
 void StructuredLinear3D::print(std::ostream& out) const {
     out << "StructuredLinear3D[";
@@ -232,8 +219,6 @@ void StructuredLinear3D::print(std::ostream& out) const {
     out << "]";
 }
 
-
-}  // namespace structured
-}  // namespace method
-}  // namespace mir
-
+} // namespace structured
+} // namespace method
+} // namespace mir

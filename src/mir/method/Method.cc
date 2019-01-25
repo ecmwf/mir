@@ -15,6 +15,8 @@
 
 #include "mir/method/Method.h"
 
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"

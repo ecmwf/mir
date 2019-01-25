@@ -16,6 +16,7 @@
 
 #include "eckit/io/DataHandle.h"
 
+
 namespace mir {
 namespace input {
 
@@ -39,12 +40,6 @@ GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle)
 
 GribDataHandleInput::~GribDataHandleInput() {
     handle_.close();
-}
-
-size_t GribDataHandleInput::dimensions() const {
-    // FIXME
-    eckit::Log::warning() << "GribDataHandleInput::dimensions() returning 1 (hardcoded!)" << std::endl;
-    return 1;
 }
 
 bool GribDataHandleInput::sameAs(const MIRInput& other) const {

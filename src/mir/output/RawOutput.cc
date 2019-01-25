@@ -16,7 +16,10 @@
 #include "mir/output/RawOutput.h"
 
 #include <istream>
+#include <cstring>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"

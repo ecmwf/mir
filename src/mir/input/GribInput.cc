@@ -353,6 +353,15 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
     });
 };
 
+static ProcessingT<double>* divide(const char *key, double denominator) {
+    ASSERT(!eckit::types::is_approximately_equal<double>(denominator, 0));
+    return new ProcessingT<double>([=](grib_handle* h, double& value) {
+        GRIB_CALL(grib_get_double(h, key, &value));
+        value /= denominator;
+        return true;
+    });
+}
+
 static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<const char*> keys) {
     return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
         ASSERT(keys.size());
@@ -381,6 +390,11 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
         {"angularPrecisionInDegrees", inverse("angularPrecision"), nullptr},
         {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
 
+        {"xDirectionGridLengthInMetres", divide("xDirectionGridLengthInMillimetres", 1000.), nullptr},
+        {"yDirectionGridLengthInMetres", divide("yDirectionGridLengthInMillimetres", 1000.), nullptr},
+        {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.), nullptr},
+        {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.), nullptr},
+
         { "grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
           _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll")) },
 
@@ -394,6 +408,7 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
     while (processings[i].name) {
         if (name == processings[i].name) {
             if (processings[i].condition == nullptr || processings[i].condition->eval(h)) {
+                ASSERT(processings[i].processing);
                 return processings[i].processing->eval(h, value);
             }
         }
@@ -855,7 +870,17 @@ bool GribInput::handle(grib_handle *h) {
         grib_handle_delete(grib_);
     }
     grib_ = h;
-    return h != nullptr;
+
+    if (h != nullptr) {
+        long value = 0;
+        GRIB_CALL(grib_get_long(h, "7777", &value));
+        if (value != 7777) {
+            throw eckit::SeriousBug("GribInput: grib_handle not terminated with 7777.");
+        }
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -901,6 +926,12 @@ void GribInput::setAuxilaryFiles(const std::string& pathToLatitudes, const std::
     // eckit::Log::debug<LibMir>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
     auxilaryValues(pathToLatitudes, latitudes_);
     auxilaryValues(pathToLongitudes, longitudes_);
+}
+
+
+size_t GribInput::dimensions() const {
+    // This will be one probably for a long time
+    return 1;
 }
 
 

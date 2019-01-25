@@ -13,16 +13,18 @@
 /// @author Tiago Quintino
 /// @date Apr 2015
 
-
 #include "MappedMask.h"
 
 #include <cmath>
 #include <fcntl.h>
+#include <memory>
 #include <sys/mman.h>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
 
@@ -44,42 +46,33 @@ namespace {
 
 class FDClose {
     int fd_;
+
 public:
-    FDClose(int fd): fd_(fd) {}
-    ~FDClose() {
-        SYSCALL(::close(fd_));
-    }
+    FDClose(int fd) : fd_(fd) {}
+    ~FDClose() { SYSCALL(::close(fd_)); }
 };
 
 class Unmapper {
-    void *address_;
+    void* address_;
     size_t size_;
+
 public:
-    Unmapper(void *address, size_t size): address_(address), size_(size) {}
-    ~Unmapper() {
-        SYSCALL(MMap::munmap(address_, size_));
-    }
+    Unmapper(void* address, size_t size) : address_(address), size_(size) {}
+    ~Unmapper() { SYSCALL(MMap::munmap(address_, size_)); }
 };
 
 static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
-}  // namespace
-
+} // namespace
 
 //----------------------------------------------------------------------------------------------------------------------
-
 
 namespace mir {
 namespace lsm {
 
-
-MappedMask::MappedMask(const std::string& name,
-                       const eckit::PathName& path,
-                       const param::MIRParametrisation&,
-                       const repres::Representation& representation,
-                       const std::string&):
-    name_(name),
-    path_(path) {
+MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
+                       const repres::Representation& representation, const std::string&)
+    : name_(name), path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
@@ -94,11 +87,9 @@ MappedMask::MappedMask(const std::string& name,
 
     size_t size = s.st_size;
 
-
-    void *address = MMap::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
+    void* address = MMap::mmap(0, size, PROT_READ, MAP_SHARED, fd, 0);
     if (address == MAP_FAILED) {
-        eckit::Log::error() << "open(" << path_ << ',' << size << ')'
-                            << eckit::Log::syserr << std::endl;
+        eckit::Log::error() << "open(" << path_ << ',' << size << ')' << eckit::Log::syserr << std::endl;
         throw eckit::FailedSystemCall("mmap");
     }
 
@@ -110,7 +101,6 @@ MappedMask::MappedMask(const std::string& name,
 
     ASSERT(Ni * Nj / 8 == size);
 
-
     const size_t ROWS = Nj;
     const size_t COLS = Ni;
 
@@ -118,13 +108,12 @@ MappedMask::MappedMask(const std::string& name,
 
     eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
 
-
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-    const unsigned char *mask = reinterpret_cast<unsigned char *>(address);
+    const unsigned char* mask = reinterpret_cast<unsigned char*>(address);
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
+    std::unique_ptr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
         const auto& p = iter->pointUnrotated();
         Latitude lat = p.lat();
@@ -132,14 +121,16 @@ MappedMask::MappedMask(const std::string& name,
 
         if (lat < Latitude::SOUTH_POLE) {
             std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
+            oss << "GRID "
+                << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
             throw eckit::SeriousBug(oss.str());
         }
         ASSERT(lat >= Latitude::SOUTH_POLE);
 
         if (lat > Latitude::NORTH_POLE) {
             std::ostringstream oss;
-            oss << "GRID " << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
+            oss << "GRID "
+                << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
             throw eckit::SeriousBug(oss.str());
         }
         ASSERT(lat <= Latitude::NORTH_POLE);
@@ -159,27 +150,22 @@ MappedMask::MappedMask(const std::string& name,
     }
 }
 
-
 MappedMask::~MappedMask() = default;
-
 
 bool MappedMask::active() const {
     return true;
 }
 
-
 bool MappedMask::cacheable() const {
     return true;
 }
 
-
-void MappedMask::hash(eckit::MD5&md5) const {
+void MappedMask::hash(eckit::MD5& md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());
 }
 
-
-void MappedMask::print(std::ostream &out) const {
+void MappedMask::print(std::ostream& out) const {
     out << "MappedMask[path=" << path_ << "]";
 }
 
@@ -187,13 +173,11 @@ std::string MappedMask::cacheName() const {
     return name_;
 }
 
-const std::vector<bool> &MappedMask::mask() const {
+const std::vector<bool>& MappedMask::mask() const {
     return mask_;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-
-}  // namespace lsm
-}  // namespace mir
-
+} // namespace lsm
+} // namespace mir

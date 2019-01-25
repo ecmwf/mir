@@ -16,6 +16,8 @@
 #include "eckit/geometry/Point2.h"
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/api/Atlas.h"
 #include "mir/repres/latlon/RotatedLL.h"
 #include "mir/util/BoundingBox.h"

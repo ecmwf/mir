@@ -14,10 +14,14 @@
 #include "mir/lsm/NamedLSM.h"
 
 #include <iostream>
+#include <map>
+
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileMaskFromMIR.h"
 #include "mir/lsm/MappedMask.h"
@@ -49,7 +53,7 @@ static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O1280   ("O1280", "~mir
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, NamedMaskFactory* >* m = 0;
+static std::map< std::string, NamedMaskFactory* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, NamedMaskFactory* >();

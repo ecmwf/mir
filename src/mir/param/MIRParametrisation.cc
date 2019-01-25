@@ -16,15 +16,13 @@
 #include <sstream>
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/Fraction.h"
 
 
 namespace mir {
 namespace param {
 
 
-MIRParametrisation::MIRParametrisation() {
-}
+MIRParametrisation::MIRParametrisation() = default;
 
 
 MIRParametrisation::~MIRParametrisation() = default;
@@ -69,10 +67,10 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     return false;
 }
 
-
-bool MIRParametrisation::get(const std::string& name, Latitude& value) const {
-    double v;
-    if(get(name, v)) {
+bool MIRParametrisation::get(const std::string &name, long long &value) const {
+    long v;
+    if (get(name, v)) {
+        ASSERT(v >= 0);
         value = v;
         return true;
     }
@@ -80,25 +78,18 @@ bool MIRParametrisation::get(const std::string& name, Latitude& value) const {
 }
 
 
-bool MIRParametrisation::get(const std::string& name, Longitude& value) const {
-    double v;
-    if(get(name, v)) {
-        value = v;
+bool MIRParametrisation::get(const std::string &name, std::vector<long long> &value) const {
+    std::vector<long> v;
+    if (get(name, v)) {
+        value.clear();
+        value.reserve(v.size());
+        for (const long& l : v) {
+            value.push_back(l);
+        }
         return true;
     }
     return false;
 }
-
-
-bool MIRParametrisation::get(const std::string& name, eckit::Fraction& value) const {
-    double v;
-    if(get(name, v)) {
-        value = eckit::Fraction(v);
-        return true;
-    }
-    return false;
-}
-
 
 }  // namespace param
 }  // namespace mir

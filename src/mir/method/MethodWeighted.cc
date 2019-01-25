@@ -18,10 +18,10 @@
 
 #include "mir/method/MethodWeighted.h"
 
-#include <algorithm>
-#include <map>
+#include <limits>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
@@ -35,7 +35,6 @@
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/Cropping.h"
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -117,14 +116,15 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         const repres::Representation& out) const {
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    auto& log = eckit::Log::debug<LibMir>();
 
-    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix " << *this << std::endl;
+    log << "MethodWeighted::getMatrix " << *this << std::endl;
     eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
 
 
     double here = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
-    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, " << (masks.active() ? "active" : "not active") << std::endl;
+    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, " << (masks.active() ? "active" : "not active") << std::endl;
 
 
     here = timer.elapsed();
@@ -164,10 +164,10 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     {
         auto j = matrix_cache.find(memory_key);
         const bool found = j != matrix_cache.end();
-        eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
             const WeightMatrix& mat = *j;
-            eckit::Log::debug<LibMir>() << "Using matrix from InMemoryCache " <<  mat << std::endl;
+            log << "Using matrix from InMemoryCache " <<  mat << std::endl;
             return mat;
         }
     }
@@ -200,8 +200,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         }
     }
 
-    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
-    eckit::Log::debug<LibMir>() << "MethodWeighted::getMatrix matrix W " << W << std::endl;
+    log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
+    log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
     // insert matrix in the in-memory cache and update memory footprint
 
@@ -211,7 +211,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     size_t footprint = w.footprint();
     caching::InMemoryCacheUsage usage(w.inSharedMemory() ? 0 : footprint, w.inSharedMemory() ? footprint : 0);
 
-    eckit::Log::info() << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
+    log << "Matrix footprint " << w.owner() << " " << usage << " W -> " << W.owner() << std::endl;
 
     matrix_cache.footprint(memory_key, usage);
     return w;
@@ -280,7 +280,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::execute");
-    eckit::Log::debug<LibMir>() << "MethodWeighted::execute" << std::endl;
+    auto& log = eckit::Log::debug<LibMir>();
+    log << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
     const size_t npts_inp = in.numberOfPoints();
@@ -322,7 +323,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         {
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
-            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(hasMissing), eckit::Log::debug<LibMir>());
+            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(hasMissing), log);
 
             if (hasMissing) {
                 WeightMatrix M;
@@ -340,11 +341,9 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         if (check_stats) {
             // compute some statistics on the result
-            // This is expensive so we might want to skip it in production code
-            eckit::Log::debug<LibMir>() << "Input  Field statistics : " << istats << std::endl;
-
             data::MIRFieldStats ostats = field.statistics(i);
-            eckit::Log::debug<LibMir>() << "Output Field statistics : " << ostats << std::endl;
+            log << "Input field statistics:  " << istats << std::endl;
+            log << "Output field statistics: " << ostats << std::endl;
 
             /// FIXME: This assertion is to early in the case of LocalGrid input
             ///        because there will be output points which won't be updated (where skipped)
@@ -457,18 +456,17 @@ void MethodWeighted::applyMissingValues(
 void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
-    eckit::Log::debug<LibMir>() << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    auto& log = eckit::Log::debug<LibMir>();
+
+    log << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 
     const std::vector< bool >& imask = masks.inputMask();
     const std::vector< bool >& omask = masks.outputMask();
 
-    eckit::Log::debug<LibMir>() << "imask size " << imask.size() << std::endl;
-    eckit::Log::debug<LibMir>() << "omask size " << omask.size() << std::endl;
-
-    eckit::Log::debug<LibMir>() << "cols " << W.cols() << std::endl;
-    eckit::Log::debug<LibMir>() << "rows " << W.rows() << std::endl;
+    log << "imask size=" << imask.size() << " == #cols=" << W.cols() << std::endl;
+    log << "omask size " << omask.size() << " == #rows=" << W.rows() << std::endl;
 
     ASSERT(imask.size() == W.cols());
     ASSERT(omask.size() == W.rows());
@@ -510,11 +508,11 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    eckit::Log::debug<LibMir>() << "MethodWeighted: applyMasks corrected "
-                                << eckit::BigNum(fix)
-                                << " out of "
-                                << eckit::Plural(W.rows() , "output point")
-                                << std::endl;
+    log << "MethodWeighted: applyMasks corrected "
+        << eckit::BigNum(fix)
+        << " out of "
+        << eckit::Plural(W.rows() , "output point")
+        << std::endl;
 }
 
 

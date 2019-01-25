@@ -17,18 +17,13 @@
 #define mir_style_MIRStyle_h
 
 #include <iosfwd>
-#include <memory>
 #include <string>
-#include <vector>
 #include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
 namespace action {
 class ActionPlan;
-}
-namespace api {
-class MIRJob;
 }
 namespace param {
 class MIRParametrisation;

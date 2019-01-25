@@ -11,17 +11,18 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Colour.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+
 
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Colour.h"
-
 #include "mir/compare/BufrField.h"
 #include "mir/compare/GribField.h"
-
-#include "eckit/option/CmdArgs.h"
-#include "eckit/option/SimpleOption.h"
 
 namespace mir {
 namespace compare {

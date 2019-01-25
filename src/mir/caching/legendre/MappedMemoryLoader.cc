@@ -17,14 +17,15 @@
 #include "mir/caching/legendre/MappedMemoryLoader.h"
 
 #include <fcntl.h>
-#include <sys/mman.h>
 #include <iostream>
+#include <sys/mman.h>
 
 #include "eckit/eckit.h"
-#include "eckit/os/Stat.h"
-
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/Log.h"
 #include "eckit/memory/MMap.h"
+#include "eckit/os/Stat.h"
 
 using eckit::MMap;
 
@@ -35,7 +36,7 @@ namespace legendre {
 //----------------------------------------------------------------------------------------------------------------------
 
 MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path), fd_(-1), address_(0), size_(0) {
+    : LegendreLoader(parametrisation, path), fd_(-1), address_(nullptr), size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 
@@ -50,7 +51,7 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 
     size_ = s.st_size;
 
-    address_ = MMap::mmap(0, size_, PROT_READ, MAP_SHARED, fd_, 0);
+    address_ = MMap::mmap(nullptr, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
         eckit::Log::error() << "open(" << path << ',' << size_ << ')' << eckit::Log::syserr << std::endl;
         throw eckit::FailedSystemCall("mmap");
@@ -58,8 +59,10 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 }
 
 MappedMemoryLoader::~MappedMemoryLoader() {
-    if (address_) SYSCALL(MMap::munmap(address_, size_));
-    if (fd_ >= 0) SYSCALL(::close(fd_));
+    if (address_)
+        SYSCALL(MMap::munmap(address_, size_));
+    if (fd_ >= 0)
+        SYSCALL(::close(fd_));
 }
 
 void MappedMemoryLoader::print(std::ostream& out) const {
@@ -78,14 +81,14 @@ bool MappedMemoryLoader::inSharedMemory() const {
     return true;
 }
 
-bool MappedMemoryLoader::shared()  {
+bool MappedMemoryLoader::shared() {
     return true;
 }
 
 namespace {
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
-}
+} // namespace
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -85,8 +85,6 @@ private:
     virtual void print(std::ostream&) const;
     virtual bool sameAs(const MIRInput& other) const;
 
-    virtual size_t dimensions() const;
-
     // -- Class members
     // None
 

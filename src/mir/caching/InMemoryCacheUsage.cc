@@ -13,7 +13,10 @@
 /// @date   Oct 2016
 
 
-#include "mir/caching/InMemoryCacheUsage.h"
+#include "InMemoryCacheUsage.h"
+
+#include <sstream>
+
 #include "eckit/serialisation/Stream.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/utils/Translator.h"

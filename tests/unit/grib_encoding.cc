@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-
 #include <algorithm>
 #include <cmath>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+#include "eckit/thread/AutoLock.h"
 
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
@@ -26,22 +27,17 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
 
-
 namespace mir {
 namespace tests {
 namespace unit {
-
 
 using input::MIRInput;
 using repres::RepresentationHandle;
 using util::BoundingBox;
 
-
 static eckit::Mutex local_mutex;
 
-
 namespace {
-
 
 class EncodeTest {
 
@@ -58,7 +54,6 @@ class EncodeTest {
     }
 
 protected:
-
     grib_handle* gribHandle(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -67,7 +62,9 @@ protected:
 
         if (handle == nullptr) {
 
-            grib_info info = {{0,}};
+            grib_info info = {{
+                0,
+            }};
 
             // paramId "Indicates a missing value"
             auto j = info.packing.extra_settings_count++;
@@ -88,9 +85,10 @@ protected:
 
             // Make sure handles are deleted even in case of exception
             class HandleFree {
-                grib_handle *h_;
+                grib_handle* h_;
+
             public:
-                HandleFree(grib_handle *h): h_(h) {}
+                HandleFree(grib_handle* h) : h_(h) {}
                 HandleFree(const HandleFree&) = delete;
                 void operator=(const HandleFree&) = delete;
                 ~HandleFree() {
@@ -109,7 +107,7 @@ protected:
             handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
 
-//            grib_write_message(handle,("error.grib" + std::to_string(edition)).c_str(),"w");
+            //            grib_write_message(handle,("error.grib" + std::to_string(edition)).c_str(),"w");
         }
 
         ASSERT(handle != nullptr);
@@ -136,14 +134,12 @@ protected:
     }
 
 public:
-
-    EncodeTest(const repres::Representation* rep) :
-        representation_(rep),
-        grib1Handle_(nullptr),
-        grib2Handle_(nullptr),
-        grib1Input_(nullptr),
-        grib2Input_(nullptr) {
-    }
+    EncodeTest(const repres::Representation* rep)
+        : representation_(rep)
+        , grib1Handle_(nullptr)
+        , grib2Handle_(nullptr)
+        , grib1Input_(nullptr)
+        , grib2Input_(nullptr) {}
 
     virtual ~EncodeTest() {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -186,7 +182,6 @@ public:
 
         grib_iterator_delete(iter);
 
-
         ASSERT(n > 0);
         return size_t(n);
     }
@@ -194,7 +189,7 @@ public:
     bool compareCoordinates(long edition, double toleranceLat, double toleranceLon) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-        eckit::ScopedPtr<repres::Iterator> iter_m(representation_->iterator());
+        std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
 
         int err = 0;
         grib_iterator* iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
@@ -236,10 +231,10 @@ public:
         ASSERT(handle);
 
         double box[4];
-        grib_get_double(handle, "latitudeOfFirstGridPointInDegrees",  &box[0]);
+        grib_get_double(handle, "latitudeOfFirstGridPointInDegrees", &box[0]);
         grib_get_double(handle, "longitudeOfFirstGridPointInDegrees", &box[1]);
-        grib_get_double(handle, "latitudeOfLastGridPointInDegrees",   &box[2]);
-        grib_get_double(handle, "longitudeOfLastGridPointInDegrees",  &box[3]);
+        grib_get_double(handle, "latitudeOfLastGridPointInDegrees", &box[2]);
+        grib_get_double(handle, "longitudeOfLastGridPointInDegrees", &box[3]);
 
         return BoundingBox(box[0], box[1], box[2], box[3]);
     }
@@ -252,43 +247,38 @@ public:
     }
 };
 
-
 class EncodeReduced : public EncodeTest {
     size_t numberOfValues_;
     size_t numberOfValues() const { return numberOfValues_; }
+
 public:
-    EncodeReduced(const repres::Representation* rep, size_t numberOfValues) :
-        EncodeTest(rep),
-        numberOfValues_(numberOfValues) {
+    EncodeReduced(const repres::Representation* rep, size_t numberOfValues)
+        : EncodeTest(rep), numberOfValues_(numberOfValues) {
         ASSERT(numberOfValues_);
     }
 };
-
 
 class EncodeReducedGaussianGrid final : public EncodeReduced {
     size_t gaussianNumber_;
     std::string gribSample(long edition) const {
         return std::string("reduced_gg_pl_" + std::to_string(gaussianNumber_) + "_grib" + std::to_string(edition));
     }
+
 public:
-    EncodeReducedGaussianGrid(const repres::Representation* rep, size_t numberOfValues, size_t gaussianNumber) :
-        EncodeReduced(rep, numberOfValues),
-        gaussianNumber_(gaussianNumber) {
+    EncodeReducedGaussianGrid(const repres::Representation* rep, size_t numberOfValues, size_t gaussianNumber)
+        : EncodeReduced(rep, numberOfValues), gaussianNumber_(gaussianNumber) {
         ASSERT(gaussianNumber_);
     }
 };
-
 
 class EncodeRegular : public EncodeTest {
     size_t Ni_, Nj_;
     size_t numberOfValues() const { return Ni_ * Nj_; }
     size_t Ni() const { return Ni_; }
     size_t Nj() const { return Nj_; }
+
 public:
-    EncodeRegular(const repres::Representation* rep, size_t Ni, size_t Nj) :
-        EncodeTest(rep),
-        Ni_(Ni),
-        Nj_(Nj){
+    EncodeRegular(const repres::Representation* rep, size_t Ni, size_t Nj) : EncodeTest(rep), Ni_(Ni), Nj_(Nj) {
         ASSERT(Ni_);
         ASSERT(Nj_);
     }
@@ -314,34 +304,26 @@ public:
         ASSERT(n > 0);
         return size_t(n);
     }
-
-
 };
 
-
 class EncodeRegularGaussianGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const {
-        return std::string("regular_gg_pl_grib" + std::to_string(edition));
-    }
+    std::string gribSample(long edition) const { return std::string("regular_gg_pl_grib" + std::to_string(edition)); }
+
 public:
-    EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber) :
-        EncodeRegular(rep, Ni, Nj) {
+    EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber)
+        : EncodeRegular(rep, Ni, Nj) {
         ASSERT(gaussianNumber);
     }
 };
 
-
 class EncodeRegularLatLonGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const {
-        return std::string("regular_ll_pl_grib" + std::to_string(edition));
-    }
+    std::string gribSample(long edition) const { return std::string("regular_ll_pl_grib" + std::to_string(edition)); }
+
 public:
     using EncodeRegular::EncodeRegular;
 };
 
-
-}  // (anonymous namespace)
-
+} // namespace
 
 CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
@@ -355,41 +337,34 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
     for (auto& test : {
 
-         // pgen
-         test_t{ "O640", {   51.941,      7.005,   43.084,    27.693  },   4512 },
-         test_t{ "O640", {   51.9406,     7.00599, 43.0847,   27.6923 },   4443 },
-         test_t{ "O640", {   57.9852,   230,       25.0918,  300      },  63479 },
-         test_t{ "O640", {   11.8782,   279,      -49.9727,  325      }, 111068 },
-         test_t{ "O640", {  -25.0918,   135,      -46.8801,  179      },  29294 },
-         test_t{ "O640", {   43.9281,    91,       21.0152,  143      },  38990 },
-         test_t{ "O640", {   59.9531,    23,       35.0722,   80      },  34426 },
+             // pgen
+             test_t{"O640", {51.941, 7.005, 43.084, 27.693}, 4512},
+             test_t{"O640", {51.9406, 7.00599, 43.0847, 27.6923}, 4443},
+             test_t{"O640", {57.9852, 230, 25.0918, 300}, 63479}, test_t{"O640", {11.8782, 279, -49.9727, 325}, 111068},
+             test_t{"O640", {-25.0918, 135, -46.8801, 179}, 29294}, test_t{"O640", {43.9281, 91, 21.0152, 143}, 38990},
+             test_t{"O640", {59.9531, 23, 35.0722, 80}, 34426},
 
-         // ECC-445
-         test_t{ "O1280", { -10.017,    -85,      -38.981,   -56      }, 124577 },
-         test_t{ "O1280", { -10.017,    275,      -38.981,   304      }, 124577 },
-         test_t{ "O1280", { -10,        -85,      -39,       -56.1    }, 124143 },
+             // ECC-445
+             test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
+             test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
 
-         // ECC-576
-         test_t{ "N256",  {  90,          0,      -90,       359.6489 },   348528 },
-         test_t{ "N256",  {  90,          0,      -90,       359.9    },   348528 },
-         test_t{ "N640",  {  90,          0,      -90,       359.9    },  2140702 },
-         test_t{ "N640",  {  90,          0,      -90,       359.99   },  2140702 },
-         test_t{ "N640",  {  90,       -180,      -90,       179.99   },  2140702 },
-         test_t{ "O640",  {  90,          0,      -90,       359.999  },  1661440 },
+             // ECC-576
+             test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
+             test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
+             test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
 
-         // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
-         test_t{ "O1280", {  37.6025,  -114.891,   27.7626, -105.188  },  12369 },
-         test_t{ "O1280", {  27.9,      253,       27.8,     254      },     19 },
-         test_t{ "O1280", {  37.5747,   245.109,   27.8032,  254.812  },  12274 },
-         test_t{ "O1280", {  37.575,   -114.892,   27.803,  -105.187  },  12373 },
-         test_t{ "O1280", {  37.6025,  -114.8915,  27.7626, -105.1875 },  12373 },
+             // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
+             test_t{"O1280", {37.6025, -114.891, 27.7626, -105.188}, 12369},
+             test_t{"O1280", {27.9, 253, 27.8, 254}, 19}, test_t{"O1280", {37.5747, 245.109, 27.8032, 254.812}, 12274},
+             test_t{"O1280", {37.575, -114.892, 27.803, -105.187}, 12373},
+             test_t{"O1280", {37.6025, -114.8915, 27.7626, -105.1875}, 12373},
 
-         // "almost global"
-         // NOTE: this cannot be supported because:
-         // * Lo2=359929 is encoded for GRIB1 O1280 global fields
-         // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
-         // so GRIB1 O1280 fields are actually not correctly encoded
-//         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
+             // "almost global"
+             // NOTE: this cannot be supported because:
+             // * Lo2=359929 is encoded for GRIB1 O1280 global fields
+             // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
+             // so GRIB1 O1280 fields are actually not correctly encoded
+             //         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
 
          }) {
 
@@ -397,7 +372,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
-
 
         // Crop to get the smallest possible bounding box
         std::vector<size_t> mapping;
@@ -410,7 +384,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
         EXPECT(test.count == n);
         EXPECT(test.bbox.contains(small));
-
 
         // GRIB1/GRIB2 encoding
         EncodeReducedGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.count, ng.gaussianNumber());
@@ -431,7 +404,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             EXPECT(bbox.contains(small));
 
             // Compare mir/eccodes iterators coordinates with a better precision
-            if ( test.gridname != "O1280" ) {  // FIXME: ECC-747
+            if (test.gridname != "O1280") { // FIXME: ECC-747
                 double tol = 1.e-3;
                 log << "\tGRIB" << edition << ": |Δ(lat,lon)| <= (" << tol << ", " << tol << ")" << std::endl;
                 EXPECT(encode.compareCoordinates(edition, tol, tol));
@@ -439,7 +412,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         }
     }
 }
-
 
 CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
@@ -454,11 +426,11 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
     for (auto& test : {
 
-         // ECC-445
-         test_t{ "F160", { 71.8, -10.66,   34.56,  32.6   },  76,  66 },
-         test_t{ "F160", { 40,    50,     -50,    169.532 }, 213, 160 },
-         test_t{ "F320", { 70.9, -40.987,  19.73,  40     }, 288, 182 },
-         test_t{ "F640", { 70.9, -40.987,  19.73,  40     }, 576, 364 },
+             // ECC-445
+             test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
+             test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
+             test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
+             test_t{"F640", {70.9, -40.987, 19.73, 40}, 576, 364},
 
          }) {
 
@@ -466,7 +438,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
-
 
         // Crop to get the smallest possible bounding box
         std::vector<size_t> mapping;
@@ -479,7 +450,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
         EXPECT(test.Ni * test.Nj == n);
         EXPECT(test.bbox.contains(small));
-
 
         // GRIB1/GRIB2 encoding
         EncodeRegularGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.Ni, test.Nj, ng.gaussianNumber());
@@ -510,7 +480,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     }
 }
 
-
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 
     using repres::latlon::RegularLL;
@@ -526,13 +495,12 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 
     for (auto& test : {
 
-         // ECC-445
-         test_t{ new RegularLL(Increments(0.1, 0.1)), { 58.5, -6.1, 36, 20.7}, 269, 226 },
+             // ECC-445
+             test_t{new RegularLL(Increments(0.1, 0.1)), {58.5, -6.1, 36, 20.7}, 269, 226},
 
          }) {
 
         log << "Test " << *(test.representation) << " with " << test.bbox << "..." << std::endl;
-
 
         // Crop to get the smallest possible bounding box
         std::vector<size_t> mapping;
@@ -545,7 +513,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 
         EXPECT(test.Ni * test.Nj == n);
         EXPECT(test.bbox.contains(small));
-
 
         // GRIB1/GRIB2 encoding
         EncodeRegularLatLonGrid enc((test.representation)->croppedRepresentation(test.bbox), test.Ni, test.Nj);
@@ -576,7 +543,6 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
     }
 }
 
-
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 
     using repres::latlon::RegularLL;
@@ -586,17 +552,17 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     RepresentationHandle rep = new RegularLL(Increments(1, 1));
     log << "Test " << *(rep) << "..." << std::endl;
 
-
     // GRIB1/GRIB2 encoding
     for (bool remove : {false, true}) {
         for (long edition : {1, 2}) {
             eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-
             // initialise a new grib handle from samples
             grib_handle* handle(nullptr);
 
-            grib_info info = {{0,}};
+            grib_info info = {{
+                0,
+            }};
 
             // paramId "Indicates a missing value"
             auto j = info.packing.extra_settings_count++;
@@ -620,9 +586,10 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 
             // Make sure handles are deleted even in case of exception
             class HandleFree {
-                grib_handle *h_;
+                grib_handle* h_;
+
             public:
-                HandleFree(grib_handle *h): h_(h) {}
+                HandleFree(grib_handle* h) : h_(h) {}
                 HandleFree(const HandleFree&) = delete;
                 void operator=(const HandleFree&) = delete;
                 ~HandleFree() {
@@ -632,7 +599,8 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
                 }
             };
 
-            grib_handle* sample = grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
+            grib_handle* sample =
+                grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
             ASSERT(sample);
             HandleFree sample_detroy(sample);
 
@@ -643,18 +611,17 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 
             ASSERT(handle != nullptr);
 
-
             // initialise a new MIRInput from the grib handle
 
             const void* message;
             size_t length;
             GRIB_CALL(grib_get_message(handle, &message, &length));
 
-            eckit::ScopedPtr<MIRInput> gribInput(new input::GribMemoryInput(message, length));
-
+            std::unique_ptr<MIRInput> gribInput(new input::GribMemoryInput(message, length));
 
             // test
-            log << "\tGRIB" << edition << ": deleteLocalDefinition = " << info.packing.deleteLocalDefinition << std::endl;
+            log << "\tGRIB" << edition << ": deleteLocalDefinition = " << info.packing.deleteLocalDefinition
+                << std::endl;
 
             long remove_result = -1;
             EXPECT(codes_get_long(handle, "localUsePresent", &remove_result) == GRIB_SUCCESS);
@@ -668,13 +635,10 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     }
 }
 
+} // namespace unit
+} // namespace tests
+} // namespace mir
 
-}  // namespace unit
-}  // namespace tests
-}  // namespace mir
-
-
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv, false);
 }
-

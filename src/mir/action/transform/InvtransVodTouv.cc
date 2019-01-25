@@ -10,13 +10,14 @@
 
 /// @date Feb 2017
 
-
 #include "mir/action/transform/InvtransVodTouv.h"
 
 #include <iostream>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/log/Timer.h"
 
 #include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
@@ -24,19 +25,15 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Wind.h"
 
-
 namespace mir {
 namespace action {
 namespace transform {
-
 
 void InvtransVodTouv::print(std::ostream& out) const {
     out << "invtrans=<vod2uv>";
 }
 
-
-void InvtransVodTouv::sh2grid(data::MIRField& field,
-                              const ShToGridded::atlas_trans_t& trans,
+void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                               const param::MIRParametrisation& parametrisation) const {
     eckit::Timer timer("InvtransVodTouv::sh2grid", eckit::Log::debug<LibMir>());
 
@@ -46,15 +43,25 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     const int number_of_grid_points = int(trans.grid().size());
     ASSERT(number_of_grid_points > 0);
 
+
     // set invtrans options
     atlas::util::Config config;
     config.set(atlas::option::global());
 
 
+    // get vo/d
+    const MIRValuesVector& field_vo = field.values(0);
+    const MIRValuesVector& field_d = field.values(1);
+
+    if (field_vo.size() != field_d.size()) {
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        ASSERT(field_vo.size() == field_d.size());
+    }
+
 
     // do inverse transform and set gridded values
     MIRValuesVector output(size_t(number_of_grid_points) * 2);
-    trans.invtrans(1, field.values(0).data(), field.values(1).data(),  output.data(), config);
+    trans.invtrans(1, field_vo.data(), field_d.data(), output.data(), config);
 
     MIRValuesVector output_field;
 
@@ -77,8 +84,6 @@ void InvtransVodTouv::sh2grid(data::MIRField& field,
     field.metadata(1, "paramId", id_v);
 }
 
-
-}  // namespace transform
-}  // namespace action
-}  // namespace mir
-
+} // namespace transform
+} // namespace action
+} // namespace mir

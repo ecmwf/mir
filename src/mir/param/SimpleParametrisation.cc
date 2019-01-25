@@ -415,6 +415,11 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long 
     return *this;
 }
 
+SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long long value) {
+    _set(name, long(value));
+    return *this;
+}
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
     // TODO: Support unsigned properly
     ASSERT(size_t(long(value)) == value);
@@ -456,6 +461,12 @@ SimpleParametrisation& SimpleParametrisation::reset() {
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long> &value) {
     _set(name, value);
+    return *this;
+}
+
+SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long long> &value) {
+    std::vector<long> value_long(value.begin(), value.end());
+    _set(name, value_long);
     return *this;
 }
 

@@ -14,9 +14,11 @@
 
 
 #include <iostream>
+#include <string>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
@@ -56,7 +58,7 @@
 #include "mir/util/MIRStatistics.h"
 
 
-class MIRToolConcrete : public mir::tools::MIRTool {
+class MIR : public mir::tools::MIRTool {
 private:
 
     void execute(const eckit::option::CmdArgs&);
@@ -71,8 +73,12 @@ private:
 
 public:
 
-    MIRToolConcrete(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIR(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
+
+        //==============================================
+        options_.push_back(new SimpleOption<bool>("version", "Display the version number"));
+        options_.push_back(new SimpleOption<bool>("info", "Same as above"));
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -115,7 +121,8 @@ public:
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Mesh output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in XYZ coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Mesh output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
         }
 
         //==============================================
@@ -178,24 +185,27 @@ public:
         options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
 
         //==============================================
-        options_.push_back(new Separator("Debugging"));
-        options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
-        options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
-        options_.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
-        options_.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
-        options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
-        options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
-        options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
-        options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
-        options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-        options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+        // Only show these options if debug channel is active
+        if (eckit::Log::debug<mir::LibMir>()) {
+            options_.push_back(new Separator("Debugging"));
+            options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
+            options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
+            options_.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
+            options_.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
+            options_.push_back(new SimpleOption<size_t>("param-id", "Set parameter id"));
+            options_.push_back(new SimpleOption<bool>("0-1", "Set pattern and checkerboard values between 0 and 1"));
+            options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
+            options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
+            options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
+            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+        }
 
     }
 
 };
 
 
-void MIRToolConcrete::usage(const std::string &tool) const {
+void MIR::usage(const std::string &tool) const {
     eckit::Log::info()
             << "\n" "Usage: " << tool << " [--key1=value [--key2=value [...]]] input.grib output.grib"
             "\n" "Examples: "
@@ -207,7 +217,7 @@ void MIRToolConcrete::usage(const std::string &tool) const {
 }
 
 
-void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
+void MIR::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("mir");
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
@@ -268,7 +278,7 @@ void MIRToolConcrete::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
+void MIR::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
     mir::util::MIRStatistics statistics;
@@ -288,7 +298,24 @@ void MIRToolConcrete::process(mir::api::MIRJob &job, mir::input::MIRInput &input
 
 
 int main(int argc, char **argv) {
-    MIRToolConcrete tool(argc, argv);
+
+    // Show version and return
+    for (int c = 1; c < argc; ++c) {
+        const std::string arg(argv[c]);
+
+        if (arg == "--version" || arg == "--info") {
+            using eckit::system::Library;
+
+            for (const auto& lib_name : Library::list()) {
+                auto& lib = Library::lookup(lib_name);
+                eckit::Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << std::endl;
+            }
+
+            return 0;
+        }
+    }
+
+    MIR tool(argc, argv);
     return tool.start();
 }
 

@@ -10,6 +10,13 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+#include <netcdf.h>
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstring>
+
 #include "mir/netcdf/Type.h"
 
 #include "mir/netcdf/Codec.h"
@@ -21,12 +28,6 @@
 #include "mir/netcdf/UpdateCoordinateStep.h"
 #include "mir/netcdf/ValueT.h"
 #include "mir/netcdf/Variable.h"
-
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {

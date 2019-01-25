@@ -18,7 +18,11 @@
 
 #include <iosfwd>
 #include <vector>
+#include <string>
+#include <map>
+
 #include "eckit/thread/Mutex.h"
+
 #include "mir/data/MIRValuesVector.h"
 
 

@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    ~GribFileInput(); // Change to virtual if base class
+    ~GribFileInput();
 
     // -- Convertors
     // None
@@ -52,7 +52,7 @@ public:
     // None
 
     // -- Overridden methods
-    virtual size_t dimensions() const;
+    // None
 
     // -- Class members
     // None
@@ -90,7 +90,7 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
     virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput

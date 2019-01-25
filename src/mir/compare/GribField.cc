@@ -8,18 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include "mir/compare/GribField.h"
+#include "GribField.h"
 
+#include <algorithm>
 #include <cmath>
+#include <iomanip>
 
 #include "eckit/config/Resource.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/serialisation/MemoryStream.h"
-
-#include "mir/util/Grib.h"
 #include "eckit/parser/JSON.h"
 
+#include "mir/util/Grib.h"
 
 namespace mir {
 namespace compare {
@@ -933,6 +934,7 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 
     if (name == "area") {
         std::ostringstream oss;
+        oss << std::setprecision(12);
         if (area_) {
             oss << north_
                 << '/'

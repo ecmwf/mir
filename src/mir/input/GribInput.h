@@ -67,6 +67,7 @@ private:
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
     virtual void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
+    virtual size_t dimensions() const;
 
     /// From MIRParametrisation
     virtual bool has(const std::string& name) const;

@@ -21,14 +21,14 @@
 #include "mir/caching/legendre/FileLoader.h"
 
 #include "eckit/eckit.h"
-#include "eckit/os/Stat.h"
-#include "eckit/io/StdFile.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/AutoCloser.h"
+#include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
+#include "eckit/os/Stat.h"
 
 #include "mir/config/LibMir.h"
-
 
 namespace mir {
 namespace caching {
@@ -65,7 +65,6 @@ bool FileLoader::inSharedMemory() const {
 bool FileLoader::shared() {
     return false;
 }
-
 
 namespace {
 static LegendreLoaderBuilder<FileLoader> loader("file-io");

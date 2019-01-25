@@ -1639,6 +1639,7 @@ intensity:
 - 260155  # Turbulent kinetic energy
 - 260159  # Contrail top
 - 260160  # Contrail base
+- 260165  # Relative clear air turbulence (RCAT)
 - 260168  # Seconds prior to initial reference time (defined in Section 1)
 - 260169  # Flash flood guidance (Encoded as an accumulation over a floating subinterval of time between the ref
 - 260183  # Model terrain height
@@ -1673,6 +1674,8 @@ intensity:
 - 260279  # Condensation Pressure of Parcali Lifted From Indicate Surface
 - 260285  # Snow temperature, depth-avg
 - 260288  # Freezing Rain
+- 260290  # Clear air turbulence (CAT)
+- 260291  # Mountain wave turbulence (eddy dissipation rate)
 - 260301  # Vertical Eddy Diffusivity Heat exchange
 - 260302  # Covariance between Meridional and Zonal Components of the wind.
 - 260303  # Covariance between Temperature and Zonal Components of the wind.
