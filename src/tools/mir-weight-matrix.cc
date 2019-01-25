@@ -46,6 +46,7 @@ public:
 
         options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
         options_.push_back(new SimpleOption<eckit::PathName>("write-csr", "Write matrix as CSR (needs --load, writes nna, nnz, ia, ja, a in 0-based indexing)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("write-mm", "Write matrix as MatrixMarket (needs --load, output in 1-based indexing)"));
     }
 
 };
@@ -64,7 +65,7 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
     auto& log = eckit::Log::info();
 
     std::string path(args(0));
-    bool write(args.has("dump") || args.has("write-csr"));
+    bool write(args.has("dump") || args.has("write-csr") || args.has("write-mm"));
 
     if (args.has("load") || write) {
 
@@ -80,10 +81,6 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
         if (args.get("dump", s)) {
 
             eckit::PathName file(s);
-            if (file.exists()) {
-                throw eckit::WriteError("File " + s + " exists");
-            }
-
             std::ofstream out(file.asString().c_str());
             if (!out) {
                 throw eckit::CantOpenFile(file);
@@ -100,10 +97,6 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
         if (args.get("write-csr", s)) {
 
             eckit::PathName file(s);
-            if (file.exists()) {
-                throw eckit::WriteError("File " + s + " exists");
-            }
-
             std::ofstream out(file.asString().c_str());
             if (!out) {
                 throw eckit::CantOpenFile(file);
@@ -135,6 +128,30 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
             }
 
             out << nl;
+
+            out.close();
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
+        }
+
+        if (args.get("write-mm", s)) {
+
+            eckit::PathName file(s);
+            std::ofstream out(file.asString().c_str());
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
+
+            static auto nl = "\n";
+
+            out << "%%MatrixMarket matrix coordinate real general" << nl;
+            out << W.rows() << " " << W.cols() << " " << W.nonZeros() << nl;
+
+            for (auto i = W.begin(); i!= W.end(); ++i) {
+                out << (i.row() + 1) << " " << (i.col() + 1) << " " << *i << nl;
+            }
+
             out.close();
             if (out.bad()) {
                 throw eckit::WriteError(file);
