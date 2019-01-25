@@ -25,13 +25,13 @@ class Grids : public eckit::Tool {
     virtual void run();
 
     void usage(const std::string& tool);
-    void grid(const atlas::grid::StructuredGrid&);
+    void grid(const atlas::StructuredGrid&);
 
 public:
     Grids(int argc, char** argv) : eckit::Tool(argc, argv) {}
 };
 
-void Grids::grid(const atlas::grid::StructuredGrid& grid) {
+void Grids::grid(const atlas::StructuredGrid& grid) {
 
     const auto& pl = grid.nx();
     ASSERT(pl.size());
@@ -57,7 +57,7 @@ void Grids::grid(const atlas::grid::StructuredGrid& grid) {
 }
 
 void Grids::run() {
-    using atlas::grid::ReducedGaussianGrid;
+    using atlas::ReducedGaussianGrid;
 
     grid(ReducedGaussianGrid("N16"));
     grid(ReducedGaussianGrid("N24"));
