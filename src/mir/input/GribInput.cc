@@ -329,7 +329,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 
                         std::ostringstream msgs;
                         msgs.precision(32);
-                        msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded (reduced_gg):"
+                        msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded:"
                              << "\n" "encoded:  " << Lon2
                              << "\n" "expected: " << Lon2_expected
                              << std::endl;
