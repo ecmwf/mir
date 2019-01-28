@@ -23,6 +23,7 @@
 #ifdef HAVE_ATLAS
 
 #include "atlas/grid.h"
+#include "atlas/library/config.h"
 #include "atlas/library/Library.h"
 #include "atlas/mesh.h"
 #include "atlas/meshgenerator.h"
@@ -35,6 +36,10 @@
 #include "atlas/util/GaussianLatitudes.h"
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
+
+#if ATLAS_HAVE_TRANS
+#include "transi/version.h"
+#endif
 
 #else
 

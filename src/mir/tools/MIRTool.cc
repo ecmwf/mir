@@ -10,51 +10,91 @@
 
 /// @date Sep 2016
 
+
 #include "mir/tools/MIRTool.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+#include "eckit/system/Library.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/api/Atlas.h"
+
+#if defined(HAVE_ECCODES)
+#include "eccodes.h"
+#endif
+
 
 namespace mir {
 namespace tools {
 
-namespace {
 
 static MIRTool* instance_ = nullptr;
+
 
 static void usage(const std::string& tool) {
     ASSERT(instance_);
     instance_->usage(tool);
 }
 
-} // namespace
 
 MIRTool::MIRTool(int argc, char** argv) : eckit::Tool(argc, argv, "MIR_HOME") {
     ASSERT(instance_ == nullptr);
     instance_ = this;
+    options_.push_back(new eckit::option::SimpleOption<bool>("version", "Display the version number"));
 }
 
+
 void MIRTool::run() {
-    eckit::option::CmdArgs args(&mir::tools::usage, options_, numberOfPositionalArguments(),
+
+    eckit::option::CmdArgs args(&mir::tools::usage,
+                                options_,
+                                numberOfPositionalArguments(),
                                 minimumPositionalArguments());
+
+    if (args.has("version")) {
+        auto& log = eckit::Log::info();
+
+        using eckit::system::Library;
+        for (const auto& lib_name : Library::list()) {
+            auto& lib = Library::lookup(lib_name);
+            log << lib.name()
+                << " " << lib.version()
+                << " git-sha1:" << lib.gitsha1(8)
+                << " home:" << lib.libraryHome()
+                << std::endl;
+        }
+
+#if defined(ATLAS_HAVE_TRANS)
+        log << "transi " << transi_version() << " git-sha1:" << transi_git_sha1_abbrev(8) << std::endl;
+        log << "trans " << trans_version() << " git-sha1:" << trans_git_sha1_abbrev(8) << std::endl;
+#endif
+
+#if defined(HAVE_ECCODES)
+        log << "eccodes " << ECCODES_VERSION_STR  << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0,8) << std::endl;
+#endif
+    }
+
     init(args);
     execute(args);
     finish(args);
 }
 
+
 void MIRTool::init(const eckit::option::CmdArgs& args) {
-#ifdef HAVE_ATLAS
+#if defined(HAVE_ATLAS)
     atlas::Library::instance().initialise(args);
 #endif
 }
 
+
 void MIRTool::finish(const eckit::option::CmdArgs&) {
-#ifdef HAVE_ATLAS
+#if defined(HAVE_ATLAS)
     atlas::Library::instance().finalise();
 #endif
 }
 
-} // namespace tools
-} // namespace mir
+
+}  // namespace tools
+}  // namespace mir

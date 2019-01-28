@@ -32,7 +32,15 @@ class MIRWeightMatrix : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const {
+        eckit::Log::info()
+                << "\n" << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>"
+                << std::endl;
+    }
+
+    int numberOfPositionalArguments() const {
+        return 1;
+    }
 
 public:
 
@@ -42,7 +50,7 @@ public:
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<bool>("load", "Load file into shared memory. If file is already loaded, does nothing."));
-        options_.push_back(new SimpleOption<bool>("unload", "Load file into shared memory. If file is not loaded, does nothing."));
+        options_.push_back(new SimpleOption<bool>("unload", "Unload file from shared memory. If file is not loaded, does nothing."));
 
         options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
         options_.push_back(new SimpleOption<eckit::PathName>("write-csr", "Write matrix as CSR (needs --load, writes nna, nnz, ia, ja, a in 0-based indexing)"));
@@ -50,13 +58,6 @@ public:
     }
 
 };
-
-
-void MIRWeightMatrix::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>"
-            << std::endl;
-}
 
 
 void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
