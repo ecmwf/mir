@@ -66,7 +66,7 @@ void MIRTool::run() {
                 << std::endl;
         }
 
-#if defined(ATLAS_HAVE_TRANS)
+#if ATLAS_HAVE_TRANS
         log << "transi " << transi_version() << " git-sha1:" << transi_git_sha1_abbrev(8) << std::endl;
         log << "trans " << trans_version() << " git-sha1:" << trans_git_sha1_abbrev(8) << std::endl;
 #endif
