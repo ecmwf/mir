@@ -462,6 +462,7 @@ dimension.2d.vector.u:
 - 200222  # Convective tendency of zonal wind difference
 - 200253  # Adiabatic tendency of zonal wind difference
 - 228131  # Neutral wind at 10 m u-component
+- 228239  # 200 metre U wind component
 - 228246  # 100 metre U wind component
 - 260062  # Momentum flux, u component
 - 260066  # u-component of wind (gust)
@@ -531,6 +532,7 @@ dimension.2d.vector.v:
 - 200223  # Convective tendency of meridional wind difference
 - 200254  # Adiabatic tendency of meridional wind difference
 - 228132  # Neutral wind at 10 m v-component
+- 228240  # 200 metre V wind component
 - 228247  # 100 metre V wind component
 - 260063  # Momentum flux, v component
 - 260067  # v-component of wind (gust)
@@ -1547,8 +1549,7 @@ intensity:
 - 228136  # U-tendency from non-orographic wave drag
 - 228139  # Soil Temperature
 - 228229  # SMOS first Brightness Temperature Bias Correction parameter
-- 228246  # 100 metre U wind component
-- 228247  # 100 metre V wind component
+- 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
 - 230046  # Solar duration (variable resolution)
