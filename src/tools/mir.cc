@@ -107,6 +107,7 @@ public:
         options_.push_back(new SimpleOption<double>("distance", "Radius [m] of neighbours to weight (k), used by k-nearest methods (default 1.)"));
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by k-nearest methods"));
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingWithLSMFactory>("distance-weighting-with-lsm", "Distance weighting with land-sea mask, used by nearest-lsm method"));
+        options_.push_back(new SimpleOption<double>("distance-tolerance", "Distance tolerance when checking distinguishing the nearest neighbours (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-gaussian-stddev", "Distance weighting Gaussian function standard deviation (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power", "Distance weighting Shepard power parameter (default 2.)"));
 
