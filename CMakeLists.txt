@@ -18,7 +18,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ###############################################################################
 # project
 
-ecbuild_add_option( FEATURE TEST_ASSERTIONS DEFAULT ON )
+ecbuild_add_option( FEATURE MIR_TOOLS       DEFAULT OFF DESCRIPTION "install mir tools" )
+
+ecbuild_add_option( FEATURE TEST_ASSERTIONS DEFAULT ON  DESCRIPTION "test: regressions" )
 ecbuild_add_option( FEATURE OMP             DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI             DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
 ecbuild_add_option( FEATURE NETCDF          DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
