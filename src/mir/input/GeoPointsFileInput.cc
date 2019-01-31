@@ -17,16 +17,17 @@
 
 #include <fstream>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/parser/Tokenizer.h"
+#include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/Translator.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/GlobaliseUnstructured.h"
-#include "eckit/serialisation/IfstreamStream.h"
-#include "mir/repres/other/UnstructuredGrid.h"
 
 
 namespace mir {
