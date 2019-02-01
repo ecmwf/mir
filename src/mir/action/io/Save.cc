@@ -27,6 +27,7 @@
 
 namespace mir {
 namespace action {
+namespace io {
 
 
 Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output):
@@ -75,6 +76,12 @@ const char* Save::name() const {
 }
 
 
+bool Save::isEndAction() const {
+    return true;
+}
+
+
+}  // namespace io
 }  // namespace action
 }  // namespace mir
 

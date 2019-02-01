@@ -59,6 +59,11 @@ bool Action::deleteWithNext(const Action&) {
 }
 
 
+bool Action::isEndAction() const {
+    return false;
+}
+
+
 bool Action::isCropAction() const {
     return false;
 }

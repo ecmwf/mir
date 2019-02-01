@@ -72,6 +72,7 @@ public:
     // For optimising plans
     virtual bool mergeWithNext(const Action&);
     virtual bool deleteWithNext(const Action&);
+    virtual bool isEndAction() const;
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;

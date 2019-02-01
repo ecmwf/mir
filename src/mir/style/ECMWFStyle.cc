@@ -580,9 +580,9 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
 
     if (plan.empty()) {
-        plan.add(new action::Copy(parametrisation_, output));
+        plan.add(new action::io::Copy(parametrisation_, output));
     } else {
-        plan.add(new action::Save(parametrisation_, input, output));
+        plan.add(new action::io::Save(parametrisation_, input, output));
     }
 }
 

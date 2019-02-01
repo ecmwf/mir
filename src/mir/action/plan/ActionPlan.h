@@ -67,6 +67,7 @@ public:
 
     void execute(context::Context& ctx) const;
     bool empty() const;
+    bool ended() const;
     size_t size() const;
     const Action& action(size_t) const;
 

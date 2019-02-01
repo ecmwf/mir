@@ -13,10 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef Copy_H
-#define Copy_H
+#ifndef mir_action_io_Copy_h
+#define mir_action_io_Copy_h
 
 #include "mir/action/plan/Action.h"
+
 
 namespace mir {
 namespace input {
@@ -25,18 +26,23 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
+}
+
+
+namespace mir {
 namespace action {
+namespace io {
 
 
 class Copy : public Action {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Copy(const param::MIRParametrisation &, output::MIROutput &output);
+    Copy(const param::MIRParametrisation&, output::MIROutput&);
 
     // -- Destructor
 
@@ -54,21 +60,20 @@ class Copy : public Action {
     // -- Overridden methods
     // None
 
-
     // -- Class members
     // None
 
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -80,12 +85,12 @@ class Copy : public Action {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
-    Copy(const Copy &);
-    Copy &operator=(const Copy &);
+    Copy(const Copy&);
+    Copy &operator=(const Copy&);
 
     // -- Members
 
@@ -96,9 +101,10 @@ class Copy : public Action {
 
     // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
-    virtual bool sameAs(const Action& other) const;
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
+    virtual bool isEndAction() const;
 
     // -- Class members
     // None
@@ -113,7 +119,11 @@ class Copy : public Action {
 
 };
 
+
+}  // namespace io
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

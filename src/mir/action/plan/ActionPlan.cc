@@ -45,14 +45,16 @@ ActionPlan::~ActionPlan() {
 }
 
 
-
 void ActionPlan::add(const std::string &name)  {
+    ASSERT(!ended());
     actions_.push_back(ActionFactory::build(name, parametrisation_));
 }
 
 
 void ActionPlan::add(const std::string &name, const std::string &param, long value) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    ASSERT(!ended());
+
+    auto runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
     actions_.push_back(ActionFactory::build(name, *runtime));
@@ -60,15 +62,19 @@ void ActionPlan::add(const std::string &name, const std::string &param, long val
 
 
 void ActionPlan::add(const std::string &name, const std::string &param, const std::string& value)  {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    ASSERT(!ended());
+
+    auto runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
     actions_.push_back(ActionFactory::build(name, *runtime));
 }
 
 
-void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string &value1, const std::string &param2, long value2) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+void ActionPlan::add(const std::string &name, const std::string &param1, const std::string &value1, const std::string &param2, long value2) {
+    ASSERT(!ended());
+
+    auto runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
@@ -77,7 +83,9 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
 
 
 void ActionPlan::add(const std::string &name, const std::string &param1,  const std::string &value1, const std::string &param2, const std::string &value2) {
-    param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    ASSERT(!ended());
+
+    auto runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
@@ -86,12 +94,15 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
 
 
 void ActionPlan::add(Action *action)  {
+    ASSERT(!ended());
+
     actions_.push_back(action);
 }
 
 
 void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime) {
-    // param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
+    ASSERT(!ended());
+
     ASSERT(runtime);
     runtimes_.push_back(runtime);
     actions_.push_back(ActionFactory::build(name, *runtime, false));
@@ -99,6 +110,7 @@ void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime
 
 
 void ActionPlan::execute(context::Context & ctx) const {
+    ASSERT(ended());
 
     std::string dumpPlanFile;
     parametrisation_.get("dump-plan-file", dumpPlanFile);
@@ -140,7 +152,7 @@ void ActionPlan::execute(context::Context & ctx) const {
 
 
 void ActionPlan::compress() {
-
+    ASSERT(ended());
     eckit::Log::debug<LibMir>() << "ActionPlan::compress ===>" << std::endl;
 
     bool more = true;
@@ -183,15 +195,22 @@ void ActionPlan::compress() {
                 break;
             }
         }
-
     }
-    eckit::Log::debug<LibMir>() << "ActionPlan::compress <===" << std::endl;
 
+    eckit::Log::debug<LibMir>() << "ActionPlan::compress <===" << std::endl;
 }
 
 
 bool ActionPlan::empty() const {
     return actions_.empty();
+}
+
+
+bool ActionPlan::ended() const {
+    if (empty()) {
+        return false;
+    }
+    return actions_.back()->isEndAction();
 }
 
 
@@ -215,6 +234,7 @@ void ActionPlan::print(std::ostream &out) const {
     }
     out << "]";
 }
+
 
 void ActionPlan::dump(std::ostream &out) const {
     for (const auto& p : actions_) {
