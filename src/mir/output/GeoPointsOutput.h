@@ -17,6 +17,7 @@
 #define mir_output_GeoPointsOutput_h
 
 #include <vector>
+
 #include "mir/output/MIROutput.h"
 
 
@@ -98,7 +99,8 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
 
     // -- Class members
     // None

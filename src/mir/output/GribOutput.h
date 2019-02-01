@@ -13,100 +13,96 @@
 /// @date Apr 2015
 
 
-#ifndef GribOutput_H
-#define GribOutput_H
+#ifndef mir_output_GribOutput_h
+#define mir_output_GribOutput_h
 
 #include "mir/output/MIROutput.h"
+
 
 struct grib_info;
 struct grib_handle;
 
-namespace eckit {
-class DataHandle;
-}
-
 
 namespace mir {
-
-
 namespace output {
 
 
 class GribOutput : public MIROutput {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GribOutput();
 
-// -- Destructor
+    // -- Destructor
 
     ~GribOutput(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
     virtual void fill(grib_handle* handle, grib_info& info) const;
 
-// -- Overridden methods
-    // From MIROutput
-
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
-    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
-
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
+    // None
+
+    // -- Class methods
     // None
 
 private:
 
-// -- Members
+    // -- Members
 
     unsigned long long total_;
 
-// -- Methods
+    // -- Methods
 
     virtual void out(const void* message, size_t length, bool iterpolated) = 0;
 
-// -- Overridden methods
+    // -- Overridden methods
 
+    // From MIROutput
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     //friend ostream& operator<<(ostream& s,const GribOutput& p)
     // { p.print(s); return s; }
@@ -116,5 +112,7 @@ private:
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif
 

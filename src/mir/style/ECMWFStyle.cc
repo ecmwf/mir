@@ -28,6 +28,7 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
+#include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
@@ -579,11 +580,17 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     epilogue(plan);
 
 
-    if (plan.empty()) {
-        plan.add(new action::io::Copy(parametrisation_, output));
-    } else {
-        plan.add(new action::io::Save(parametrisation_, input, output));
+    output.prepare(parametrisation_, plan, input, output);
+
+
+    if (!plan.ended()) {
+        if (plan.empty()) {
+            plan.add(new action::io::Copy(parametrisation_, output));
+        } else {
+            plan.add(new action::io::Save(parametrisation_, input, output));
+        }
     }
+    ASSERT(plan.ended());
 }
 
 

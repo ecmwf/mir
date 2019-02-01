@@ -131,6 +131,13 @@ bool MultiScalarOutput::printParametrisation(std::ostream& out, const param::MIR
     return components_[0]->printParametrisation(out, param);
 }
 
+
+void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) const {
+    ASSERT(!components_.empty());
+    return components_[0]->prepare(parametrisation, plan, input, output);
+}
+
+
 void MultiScalarOutput::print(std::ostream& out) const {
     out << "MultiScalarOutput[";
 

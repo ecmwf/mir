@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef VectorOutput_H
-#define VectorOutput_H
+#ifndef mir_output_VectorOutput_h
+#define mir_output_VectorOutput_h
 
 #include "mir/output/MIROutput.h"
 
@@ -24,14 +24,14 @@ namespace output {
 
 
 class VectorOutput : public MIROutput {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    VectorOutput(MIROutput &component1, MIROutput &v_component);
+    VectorOutput(MIROutput& component1, MIROutput& v_component);
 
     // -- Destructor
 
@@ -46,6 +46,24 @@ class VectorOutput : public MIROutput {
     // -- Methods
     // None
 
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+
+    // -- Members
+
+    MIROutput& component1_;
+    MIROutput& component2_;
+
+    // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -56,41 +74,24 @@ class VectorOutput : public MIROutput {
     // -- Class methods
     // None
 
-  protected:
+private:
 
     // -- Members
-
-    MIROutput &component1_;
-    MIROutput &component2_;
+    // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
 
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &) ; // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation &, context::Context &);
-    virtual bool sameAs(const MIROutput &other) const ;
-    virtual void print(std::ostream &out) const;
-    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
-    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-  private:
-
-    // -- Members
-
-
-    // -- Methods
-
-    // -- Overridden methods
-
-
+    // From MIROutput
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
+    virtual bool sameAs(const MIROutput&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -108,5 +109,7 @@ class VectorOutput : public MIROutput {
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif
 

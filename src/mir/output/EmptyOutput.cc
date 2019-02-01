@@ -82,6 +82,11 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
 }
 
 
+void EmptyOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const {
+    // do nothing
+}
+
+
 void EmptyOutput::print(std::ostream& out) const {
     out << "EmptyOutput[]";
 }
