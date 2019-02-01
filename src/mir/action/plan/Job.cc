@@ -80,14 +80,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     plan_.reset(new action::ActionPlan(*combined_));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-    style->prepare(*plan_);
-
-
-    if (plan_->empty()) {
-        plan_->add(new action::Copy(*combined_, output_));
-    } else {
-        plan_->add(new action::Save(*combined_, input_, output_));
-    }
+    style->prepare(*plan_, input_, output_);
 
 
     if (compress) {
