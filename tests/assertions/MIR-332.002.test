@@ -1,0 +1,6 @@
+# mars
+regular_ll.2-2.grib2
+# mir
+--packing=so
+# grib_get
+packingType=grid_second_order

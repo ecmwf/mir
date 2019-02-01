@@ -1,0 +1,6 @@
+# mars
+regular_ll.2-2.grib2
+# mir
+--accuracy=8
+# grib_get
+bitsPerValue=8
