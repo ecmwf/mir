@@ -191,7 +191,7 @@ public:
             options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
             options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("format", "Output format"));
         }
 
     }

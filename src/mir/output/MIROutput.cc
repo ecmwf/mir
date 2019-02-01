@@ -131,21 +131,21 @@ MIROutputFactory::~MIROutputFactory() {
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    std::string output = user.has("dryrun") ? "empty"
+    std::string format = user.has("dryrun") ? "empty"
                        : user.has("griddef") ? "geopoints"
                        : user.has("latitudes") || user.has("longitudes") ? "geopoints"
                        : "extension"; // maybe "grib"??
 
-    user.get("output", output);
+    user.get("format", format);
 
-    auto j = m_formats->find(output);
+    auto j = m_formats->find(format);
     if (j == m_formats->cend()) {
-        list(eckit::Log::error() << "MIROutputFactory: unknown '" << output << "', choices are: ");
+        list(eckit::Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
         eckit::Log::error() << std::endl;
-        throw eckit::SeriousBug("MIROutputFactory: unknown '" + output + "'");
+        throw eckit::SeriousBug("MIROutputFactory: unknown '" + format + "'");
     }
 
-    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << output << "' for '" << path << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
     return j->second->make(path);
 }
 
