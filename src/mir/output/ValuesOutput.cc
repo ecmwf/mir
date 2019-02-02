@@ -49,7 +49,7 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 }
 
 
-void ValuesOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const {
+void ValuesOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
     // do nothing
 }
 

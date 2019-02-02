@@ -580,7 +580,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     epilogue(plan);
 
 
-    output.prepare(parametrisation_, plan, input, output);
+    output.prepare(parametrisation_, plan, input);
 
 
     if (!plan.ended()) {

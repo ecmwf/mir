@@ -94,7 +94,7 @@ private:
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&);
 
     // -- Class members
     // None

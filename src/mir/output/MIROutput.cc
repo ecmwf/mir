@@ -29,8 +29,7 @@ namespace mir {
 namespace output {
 
 
-MIROutput::MIROutput() {
-}
+MIROutput::MIROutput() = default;
 
 
 MIROutput::~MIROutput() = default;
@@ -40,9 +39,9 @@ namespace {
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map<std::string, MIROutputFactory* > *m_formats = 0;
-static std::map<std::string, MIROutputFactory* > *m_extensions = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map<std::string, MIROutputFactory* > *m_formats = nullptr;
+static std::map<std::string, MIROutputFactory* > *m_extensions = nullptr;
 
 
 static void init() {

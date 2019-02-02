@@ -17,11 +17,12 @@
 
 #include <fstream>
 
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/PlanParser.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/output/MIROutput.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/PlanParser.h"
 
 
 namespace mir {
@@ -32,6 +33,8 @@ void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametr
 
     util::PlanParser parser(str);
     parser.parse(plan, parametrisation);
+
+    output.prepare(parametrisation, plan, input);
 
     if (plan.empty()) {
         plan.add(new action::io::Copy(parametrisation, output));

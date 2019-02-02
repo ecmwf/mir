@@ -54,7 +54,7 @@ bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametr
 }
 
 
-void RawOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const {
+void RawOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
     // do nothing
 }
 

@@ -100,7 +100,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) const;
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&);
 
     // -- Class members
     // None
