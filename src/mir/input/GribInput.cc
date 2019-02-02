@@ -188,6 +188,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
         {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
+        {"accuracy", "bitsPerValue", nullptr},
+        {"packing", "packingType", nullptr},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees", nullptr},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
