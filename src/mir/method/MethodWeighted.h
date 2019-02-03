@@ -55,6 +55,11 @@ public:
 
     virtual void hash(eckit::MD5&) const;
 
+    virtual void assemble(util::MIRStatistics&,
+                          WeightMatrix&,
+                          const repres::Representation& in,
+                          const repres::Representation& out) const = 0;
+
 private:
 
     // -- From Method
@@ -83,11 +88,6 @@ protected:
 private:
 
     virtual const char *name() const = 0;
-
-    virtual void assemble(util::MIRStatistics&,
-                          WeightMatrix&,
-                          const repres::Representation& in,
-                          const repres::Representation& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W,
