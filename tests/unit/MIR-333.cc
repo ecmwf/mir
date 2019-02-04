@@ -16,7 +16,6 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/memory/ScopedPtr.h"
-#include "eckit/runtime/Main.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -80,6 +79,5 @@ CASE("MIR-333") {
 
 
 int main(int argc, char** argv) {
-    eckit::Main::initialise(argc, argv);
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }
