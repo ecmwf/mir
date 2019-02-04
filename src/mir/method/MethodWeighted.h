@@ -9,6 +9,7 @@
  */
 
 /// @author Baudouin Raoult
+/// @author Peter Bispham
 /// @author Tiago Quintino
 /// @author Pedro Maciel
 /// @date May 2015
@@ -19,9 +20,9 @@
 
 #include "mir/caching/WeightCache.h"
 #include "mir/data/MIRValuesVector.h"
+#include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"
-#include "mir/method/Cropping.h"
 
 
 namespace mir {
@@ -43,7 +44,6 @@ class MIRStatistics;
 namespace mir {
 namespace method {
 
-class Cropping;
 
 class MethodWeighted : public Method {
 
@@ -55,10 +55,9 @@ public:
 
     virtual void hash(eckit::MD5&) const;
 
-    virtual void assemble(util::MIRStatistics&,
-                          WeightMatrix&,
-                          const repres::Representation& in,
-                          const repres::Representation& out) const = 0;
+    virtual const WeightMatrix& getMatrix(context::Context&,
+                                          const repres::Representation& in,
+                                          const repres::Representation& out) const;
 
 private:
 
@@ -67,7 +66,6 @@ private:
     virtual void execute(context::Context&,
                          const repres::Representation& in,
                          const repres::Representation& out) const;
-
 
     virtual bool canCrop() const;
     virtual void setCropping(const mir::util::BoundingBox&);
@@ -78,16 +76,17 @@ private:
 
 protected:
 
-    virtual const WeightMatrix& getMatrix(context::Context&,
-                                          const repres::Representation& in,
-                                          const repres::Representation& out) const;
     virtual bool sameAs(const Method& other) const = 0;
-
     virtual void print(std::ostream& out) const = 0;
 
 private:
 
     virtual const char *name() const = 0;
+
+    virtual void assemble(util::MIRStatistics&,
+                          WeightMatrix&,
+                          const repres::Representation& in,
+                          const repres::Representation& out) const = 0;
 
     /// Update interpolation weigths matrix to account for missing values
     void applyMissingValues(const WeightMatrix& W,

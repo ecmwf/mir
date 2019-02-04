@@ -11,21 +11,20 @@
 
 #include <string>
 
+#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/memory/ScopedPtr.h"
+#include "eckit/runtime/Main.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/action/context/Context.h"
 #include "mir/method/MethodWeighted.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
-#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -35,15 +34,12 @@ namespace unit {
 
 CASE("MIR-333") {
 
-    auto& log = eckit::Log::info();
-    auto old = log.precision(16);
-
-
-    param::DefaultParametrisation defaults;
-    util::MIRStatistics stats;
+    // run with '--new-reference' to generate new reference data
+    static const bool newReference = eckit::Resource<bool>("--new-reference", false);
+    static const param::DefaultParametrisation defaults;
 
     eckit::ScopedPtr<method::Method> method(method::MethodFactory::build("nn", defaults));
-    auto nn = static_cast<method::MethodWeighted*>(method.get());
+    auto nn = dynamic_cast<method::MethodWeighted*>(method.get());
     ASSERT(nn);
 
 
@@ -54,23 +50,20 @@ CASE("MIR-333") {
         repres::RepresentationHandle out(new repres::latlon::RegularLL(grid));
         repres::RepresentationHandle in(namedgrids::NamedGrid::lookup("N640").representation());
 
-        method::WeightMatrix W(out->numberOfPoints(), in->numberOfPoints());
-        nn->assemble(stats, W, *in, *out);
+        context::Context ctx;
+        const method::WeightMatrix& B = nn->getMatrix(ctx, *in, *out);
 
-        ASSERT(W.rows() == W.nonZeros());
-
-        if (!reference.exists()) {
-            eckit::Log::warning() << "Saving reference '" << reference << "'" << std::endl;
-            W.save(reference);
+        if (newReference) {
+            eckit::Log::info() << "Saving reference '" << reference << "'" << std::endl;
+            B.save(reference);
         }
 
-        eckit::Log::debug<LibMir>() << "Loading reference '" << reference << "'" << std::endl;
+        eckit::Log::info() << "Loading reference '" << reference << "'" << std::endl;
         const method::WeightMatrix A(reference);
-        const method::WeightMatrix& B(W);
 
-        EXPECT(A.rows() == W.rows());
-        EXPECT(A.cols() == W.cols());
-        EXPECT(A.nonZeros() == W.nonZeros());
+        EXPECT(A.rows() == B.rows());
+        EXPECT(A.cols() == B.cols());
+        EXPECT(A.nonZeros() == B.nonZeros());
 
         for (auto a = A.begin(), b = B.begin(); a != A.end() && b != B.end(); ++a, ++b) {
             EXPECT(a.row() == b.row());
@@ -78,9 +71,6 @@ CASE("MIR-333") {
             EXPECT(eckit::types::is_approximately_equal(*a, *b));
         }
     }
-
-
-    log.precision(old);
 }
 
 
@@ -90,5 +80,6 @@ CASE("MIR-333") {
 
 
 int main(int argc, char** argv) {
+    eckit::Main::initialise(argc, argv);
     return eckit::testing::run_tests(argc, argv, false);
 }
