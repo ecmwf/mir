@@ -12,49 +12,51 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
-#include <iostream>
 
 #include "mir/action/plan/ActionGraph.h"
+
+#include <iostream>
+
+#include "mir/action/context/Context.h"
+#include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/plan/Action.h"
-#include "mir/action/context/Context.h"
-#include "mir/api/MIRWatcher.h"
 #include "mir/action/plan/Executor.h"
-
+#include "mir/api/MIRWatcher.h"
 
 
 namespace mir {
 namespace action {
 
 
-ActionGraph::ActionGraph() {
-}
+ActionGraph::ActionGraph() = default;
 
 
 ActionGraph::~ActionGraph() {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
-        delete (*j);
+    for (auto& j : *this) {
+        delete j;
     }
 }
+
 
 void ActionGraph::execute(context::Context& ctx, const Executor& executor) const {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
+    for (auto& j : *this) {
         context::Context local(ctx);
-        executor.execute(local, *(*j));
+        executor.execute(local, *j);
     }
 }
 
-void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher *watcher) {
+
+void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
     action::ActionGraph *current = this;
 
     size_t i = 0;
     while (i < plan.size()) {
         bool found = false;
 
-        for (std::vector<action::ActionNode *>::const_iterator k = current->nodes_.begin(); k != current->nodes_.end(); ++k) {
-            if (plan.action(i).sameAs((*k)->action())) {
-                current = &(*k)->graph();
+        for (auto& k : *current) {
+            if (plan.action(i).sameAs(k->action())) {
+                current = &k->graph();
                 found = true;
                 break;
             }
@@ -73,36 +75,38 @@ void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher *watcher) {
     }
 }
 
-ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher *watcher) {
-    nodes_.push_back(new ActionNode(action, watcher));
-    return nodes_.back();
+
+ActionNode* ActionGraph::add(const Action& action, api::MIRWatcher* watcher) {
+    push_back(new ActionNode(action, watcher));
+    return back();
 }
 
 
 void ActionGraph::dump(std::ostream& out, size_t depth) const {
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
-        (*j)->dump(out, depth);
+    for (auto& j : *this) {
+        j->dump(out, depth);
     }
 }
 
-bool ActionGraph::empty() const {
-    return nodes_.empty();
-}
 
 void ActionGraph::print(std::ostream &out) const {
-    out << "ActionGraph[]";
+    out << "ActionGraph[\n";
+    dump(out, 1);
+    out << "]";
 }
 
-void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const {
-    if (nodes_.empty()) {
+
+void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher, bool& rethrow) const {
+    if (empty()) {
         if (watcher) {
             rethrow = watcher->failure(e, action) && rethrow;
         }
     }
-    for (std::vector<ActionNode *>::const_iterator j = nodes_.begin(); j != nodes_.end(); ++j) {
-        (*j)->notifyFailure(e, action, watcher, rethrow);
+    for (auto& j : *this) {
+        j->notifyFailure(e, action, watcher, rethrow);
     }
 }
+
 
 }  // namespace action
 }  // namespace mir

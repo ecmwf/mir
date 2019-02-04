@@ -13,8 +13,8 @@
 /// @date Apr 2015
 
 
-#ifndef ActionGraph_H
-#define ActionGraph_H
+#ifndef mir_action_plan_ActionGraph_H
+#define mir_action_plan_ActionGraph_H
 
 
 #include <vector>
@@ -22,115 +22,108 @@
 
 
 namespace mir {
-
 namespace context {
 class Context;
 }
-
-namespace util {
-class MIRStatistics;
-}
-
-
-namespace api {
-class MIRWatcher;
-}
-
 namespace action {
-
 class Action;
 class ActionNode;
 class ActionPlan;
 class Executor;
+}
+namespace api {
+class MIRWatcher;
+}
+}
 
-class ActionGraph {
+
+namespace mir {
+namespace action {
+
+
+class ActionGraph : public std::vector<ActionNode*> {
 public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     ActionGraph();
 
-// -- Destructor
+    // -- Destructor
 
     ~ActionGraph(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    void execute(context::Context& ctx, const Executor& executor) const;
+    void execute(context::Context&, const Executor&) const;
 
     // =================
 
-    void add(const ActionPlan&, api::MIRWatcher *watcher);
+    void add(const ActionPlan&, api::MIRWatcher*);
 
-    ActionNode* add(const Action&, api::MIRWatcher *watcher);
+    ActionNode* add(const Action&, api::MIRWatcher*);
 
-    void dump(std::ostream& out, size_t depth) const;
+    void dump(std::ostream&, size_t depth) const;
 
+    void notifyFailure(std::exception&, const Action&, api::MIRWatcher*, bool& rethrow) const;
 
-    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
-
-    bool empty() const;
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
 
-// -- Members
+    // -- Members
+    // None
 
-
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
 
-// No copy allowed
-
+    // No copy allowed
     ActionGraph(const ActionGraph&);
     ActionGraph& operator=(const ActionGraph&);
 
-// -- Members
-
-    std::vector<ActionNode *> nodes_;
-
-// -- Methods
+    // -- Members
     // None
 
-// -- Overridden methods
+    // -- Methods
     // None
 
-// -- Class members
+    // -- Overridden methods
     // None
 
-// -- Class methods
+    // -- Class members
     // None
 
-// -- Friends
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const ActionGraph& p) {
         p.print(s);
@@ -142,5 +135,7 @@ private:
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 
