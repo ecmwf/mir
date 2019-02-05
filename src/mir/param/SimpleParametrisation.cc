@@ -31,7 +31,7 @@ namespace param {
 
 class Setting {
 public:
-    virtual ~Setting() {}
+    virtual ~Setting() = default;
 
     virtual void get(const std::string &name, std::string &value) const = 0;
     virtual void get(const std::string &name, bool &value) const = 0;
@@ -108,20 +108,20 @@ class TSettings : public Setting {
 public:
     TSettings(const T& value): value_(value) {}
 
-    void get(const std::string& name, std::string& value) const { throw CannotConvert(TNamed<T>(), "string", name, value_); }
-    void get(const std::string& name, bool& value)        const { throw CannotConvert(TNamed<T>(), "bool", name, value_); }
-    void get(const std::string& name, int& value)         const { throw CannotConvert(TNamed<T>(), "int", name, value_); }
-    void get(const std::string& name, long& value)        const { throw CannotConvert(TNamed<T>(), "long", name, value_); }
-    void get(const std::string& name, size_t& value)      const { throw CannotConvert(TNamed<T>(), "size_t", name, value_); }
-    void get(const std::string& name, float& value)       const { throw CannotConvert(TNamed<T>(), "float", name, value_); }
-    void get(const std::string& name, double& value)      const { throw CannotConvert(TNamed<T>(), "double", name, value_); }
+    void get(const std::string& name, std::string&) const { throw CannotConvert(TNamed<T>(), "string", name, value_); }
+    void get(const std::string& name, bool&)        const { throw CannotConvert(TNamed<T>(), "bool", name, value_); }
+    void get(const std::string& name, int&)         const { throw CannotConvert(TNamed<T>(), "int", name, value_); }
+    void get(const std::string& name, long&)        const { throw CannotConvert(TNamed<T>(), "long", name, value_); }
+    void get(const std::string& name, size_t&)      const { throw CannotConvert(TNamed<T>(), "size_t", name, value_); }
+    void get(const std::string& name, float&)       const { throw CannotConvert(TNamed<T>(), "float", name, value_); }
+    void get(const std::string& name, double&)      const { throw CannotConvert(TNamed<T>(), "double", name, value_); }
 
-    void get(const std::string& name, std::vector<int>& value)         const { throw CannotConvert(TNamed<T>(), "vector<int>", name, value_); }
-    void get(const std::string& name, std::vector<long>& value)        const { throw CannotConvert(TNamed<T>(), "vector<long>", name, value_); }
-    void get(const std::string& name, std::vector<size_t>& value)      const { throw CannotConvert(TNamed<T>(), "vector<size_t>", name, value_); }
-    void get(const std::string& name, std::vector<float>& value)       const { throw CannotConvert(TNamed<T>(), "vector<float>", name, value_); }
-    void get(const std::string& name, std::vector<double>& value)      const { throw CannotConvert(TNamed<T>(), "vector<double>", name, value_); }
-    void get(const std::string& name, std::vector<std::string>& value) const { throw CannotConvert(TNamed<T>(), "vector<string>", name, value_); }
+    void get(const std::string& name, std::vector<int>&)         const { throw CannotConvert(TNamed<T>(), "vector<int>", name, value_); }
+    void get(const std::string& name, std::vector<long>&)        const { throw CannotConvert(TNamed<T>(), "vector<long>", name, value_); }
+    void get(const std::string& name, std::vector<size_t>&)      const { throw CannotConvert(TNamed<T>(), "vector<size_t>", name, value_); }
+    void get(const std::string& name, std::vector<float>&)       const { throw CannotConvert(TNamed<T>(), "vector<float>", name, value_); }
+    void get(const std::string& name, std::vector<double>&)      const { throw CannotConvert(TNamed<T>(), "vector<double>", name, value_); }
+    void get(const std::string& name, std::vector<std::string>&) const { throw CannotConvert(TNamed<T>(), "vector<string>", name, value_); }
 
     bool match(const std::string& name, const MIRParametrisation& other) const {
         T value;
@@ -271,10 +271,99 @@ void TSettings<std::vector<double>>::get(const std::string &name, std::vector<do
     value = value_;
 }
 
+template<> void TSettings<int>::get(const std::string& name, std::string& value) const {
+    conversion_warning("int", "string", name, value_);
+    value = std::to_string(value_);
+}
+
+template<> void TSettings<long>::get(const std::string& name, std::string& value) const {
+    conversion_warning("long", "string", name, value_);
+    value = std::to_string(value_);
+}
+
+template<> void TSettings<size_t>::get(const std::string& name, std::string& value) const {
+    conversion_warning("size_t", "string", name, value_);
+    value = std::to_string(value_);
+}
+
+template<> void TSettings<float>::get(const std::string& name, std::string& value) const {
+    conversion_warning("float", "string", name, value_);
+    value = std::to_string(value_);
+}
+
+template<> void TSettings<double>::get(const std::string& name, std::string& value) const {
+    conversion_warning("double", "string", name, value_);
+    value = std::to_string(value_);
+}
+
+template<> void TSettings<std::vector<int>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<int>", "string", name, value_);
+    value.clear();
+
+    auto sep = "";
+    for (auto& entry : value_) {
+        value += sep + std::to_string(entry);
+        sep = "/";
+    }
+}
+
+template<> void TSettings<std::vector<long>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<long>", "string", name, value_);
+    value.clear();
+
+    auto sep = "";
+    for (auto& entry : value_) {
+        value += sep + std::to_string(entry);
+        sep = "/";
+    }
+}
+
+template<> void TSettings<std::vector<size_t>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<size_t>", "string", name, value_);
+    value.clear();
+
+    auto sep = "";
+    for (auto& entry : value_) {
+        value += sep + std::to_string(entry);
+        sep = "/";
+    }
+}
+
+template<> void TSettings<std::vector<float>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<float>", "string", name, value_);
+    value.clear();
+
+    auto sep = "";
+    for (auto& entry : value_) {
+        value += sep + std::to_string(entry);
+        sep = "/";
+    }
+}
+
+template<> void TSettings<std::vector<double>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<double>", "string", name, value_);
+    value.clear();
+
+    auto sep = "";
+    for (auto& entry : value_) {
+        value += sep + std::to_string(entry);
+        sep = "/";
+    }
+}
+
+template<> void TSettings<std::vector<std::string>>::get(const std::string& name, std::string& value) const {
+    conversion_warning("vector<string>", "string", name, value_);
+    value.clear();
+    std::string sep;
+    for (auto& entry : value_) {
+        value += sep + entry;
+        sep = "/";
+    }
+}
+
 //==========================================================
 
-SimpleParametrisation::SimpleParametrisation() {
-}
+SimpleParametrisation::SimpleParametrisation() = default;
 
 
 SimpleParametrisation::~SimpleParametrisation() {
