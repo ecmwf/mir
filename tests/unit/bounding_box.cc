@@ -189,7 +189,7 @@ CASE("BoundingBox") {
 
                     EXPECT(intersects == A.contains(P));
                     if (intersects) {
-                        EXPECT(P == AiP);
+                        EXPECT(P.contains(AiP));
                     }
 
                 }
