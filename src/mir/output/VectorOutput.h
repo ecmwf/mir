@@ -47,7 +47,10 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+
+    // From MIROutput
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     // -- Class members
     // None
@@ -85,8 +88,6 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;

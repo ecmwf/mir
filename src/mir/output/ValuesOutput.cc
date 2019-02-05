@@ -49,11 +49,6 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 }
 
 
-void ValuesOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
-    // do nothing
-}
-
-
 bool ValuesOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const ValuesOutput*>(&other);
     return o && this == o;

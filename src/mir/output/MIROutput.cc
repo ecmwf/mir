@@ -161,6 +161,11 @@ void MIROutputFactory::list(std::ostream& out) {
 }
 
 
+void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
+    // do nothing
+}
+
+
 }  // namespace output
 }  // namespace mir
 

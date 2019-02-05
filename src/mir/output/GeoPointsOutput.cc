@@ -55,11 +55,6 @@ bool GeoPointsOutput::printParametrisation(std::ostream&, const param::MIRParame
 }
 
 
-void GeoPointsOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
-    // do nothing
-}
-
-
 }  // namespace output
 }  // namespace mir
 
