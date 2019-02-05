@@ -41,7 +41,11 @@ namespace mir {
 namespace action {
 
 
-class ActionGraph : public std::vector<ActionNode*> {
+class ActionGraph : protected std::vector<ActionNode*> {
+private:
+
+    using vector_t = std::vector<ActionNode*>;
+
 public:
 
     // -- Exceptions
@@ -63,9 +67,11 @@ public:
 
     // -- Methods
 
-    void execute(context::Context&, const Executor&) const;
+    using vector_t::empty;
+    using vector_t::size;
+    using vector_t::operator[];
 
-    // =================
+    void execute(context::Context&, const Executor&) const;
 
     void add(const ActionPlan&, api::MIRWatcher*);
 
