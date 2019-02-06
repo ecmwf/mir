@@ -250,7 +250,23 @@ ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
 ECMWFStyle::~ECMWFStyle() = default;
 
 
+
+void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param, const std::vector<std::string>& whens) {
+    std::string formula;
+    for (auto& when : whens) {
+        if (param.get("formula." + when, formula)) {
+            std::string metadata;  // paramId for the results of formulas
+            param.get("formula." + when + ".metadata", metadata);
+
+            plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
+            break;
+        }
+    }
+}
+
+
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
 
     std::string prologue;
     if (parametrisation_.get("prologue", prologue)) {
@@ -265,38 +281,23 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("misc.pattern");
     }
 
-    std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.prologue", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.prologue.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    add_formula(plan, user, {"prologue"});
 }
 
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
 
-    std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula) ||
-            parametrisation_.userParametrisation().get("formula.raw", formula)
-       ) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
-        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
-
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    add_formula(plan, user, {"spectral", "raw"});
 
     Resol resol(parametrisation_);
 
-    bool rotation = parametrisation_.userParametrisation().has("rotation");
+    bool rotation = user.has("rotation");
 
     bool vod2uv = false;
     bool uv2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
+    user.get("vod2uv", vod2uv);
+    user.get("uv2uv", uv2uv);
 
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
@@ -319,7 +320,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             // if the intermediate grid is the same as the target grid, the interpolation to the
             // intermediate grid  is not followed by an additional interpolation
             std::string gridname;
-            if (rotation || !parametrisation_.userParametrisation().get("gridname", gridname) || gridname != resol.gridname()) {
+            if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
                 plan.add(interpolate + target);
             }
 
@@ -338,16 +339,12 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         }
     }
 
-    if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    add_formula(plan, user, {"gridded"});
 }
 
 
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
 
     param::RuntimeParametrisation runtime(parametrisation_);
     runtime.set("intgrid", "none");
@@ -359,19 +356,10 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     ASSERT(resol.resultIsSpectral());
     resol.prepare(plan);
 
-    std::string formula;
-    std::string metadata;  // paramId for the results of formulas
-    if (parametrisation_.userParametrisation().get("formula.spectral", formula)) {
-        parametrisation_.userParametrisation().get("formula.spectral.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
-    if (parametrisation_.userParametrisation().get("formula.raw", formula)) {
-        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    add_formula(plan, user, {"spectral", "raw"});
 
     bool vod2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
+    user.get("vod2uv", vod2uv);
 
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
@@ -380,29 +368,21 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
+    auto& user = parametrisation_.userParametrisation();
 
-    bool rotation = parametrisation_.userParametrisation().has("rotation");
-
-    std::string formula;
-    if (parametrisation_.userParametrisation().get("formula.gridded", formula) ||
-            parametrisation_.userParametrisation().get("formula.raw", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
-        parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
-
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    bool rotation = user.has("rotation");
 
     bool vod2uv = false;
     bool uv2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
+    user.get("vod2uv", vod2uv);
+    user.get("uv2uv", uv2uv);
 
     if (vod2uv) {
         eckit::Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
         ASSERT(!vod2uv);
     }
+
+    add_formula(plan, user, {"gridded", "raw"});
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
@@ -427,8 +407,8 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
 
     bool vod2uv = false;
     bool uv2uv = false;
-    parametrisation_.userParametrisation().get("vod2uv", vod2uv);
-    parametrisation_.userParametrisation().get("uv2uv", uv2uv);
+    user.get("vod2uv", vod2uv);
+    user.get("uv2uv", uv2uv);
 
     if (vod2uv || uv2uv) {
         ASSERT(vod2uv != uv2uv);
@@ -450,13 +430,7 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         }
     }
 
-    std::string formula;
-    if (user.get("formula.epilogue", formula)) {
-        std::string metadata;
-        // paramId for the results of formulas
-        user.get("formula.epilogue.metadata", metadata);
-        plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-    }
+    add_formula(plan, user, {"epilogue"});
 
     std::string metadata;
     if (user.get("metadata", metadata)) {
@@ -534,16 +508,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
 
     if (field_gridded) {
-
-        std::string formula;
-        if (parametrisation_.userParametrisation().get("formula.gridded", formula)) {
-            std::string metadata;
-            // paramId for the results of formulas
-            parametrisation_.userParametrisation().get("formula.gridded.metadata", metadata);
-            parametrisation_.userParametrisation().get("formula.raw.metadata", metadata);
-
-            plan.add("calc.formula", "formula", formula, "formula.metadata", metadata);
-        }
         grid2grid(plan);
     }
 
