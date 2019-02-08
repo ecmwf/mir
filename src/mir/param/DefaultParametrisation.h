@@ -75,8 +75,7 @@ private:
     // None
 
     // -- Members
-
-    mutable SimpleParametrisation cache_;
+    // None
 
     // -- Methods
     // None

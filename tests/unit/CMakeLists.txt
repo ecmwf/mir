@@ -4,6 +4,7 @@ set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
 set(tests
+    action_graph
     bounding_box
     gaussian_grid
     grib_encoding
