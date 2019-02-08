@@ -36,12 +36,10 @@ namespace unit {
 
 
 bool plan_has_action(const action::ActionPlan& plan, const action::Action& action) {
-    for (size_t i = 0; i < plan.size(); ++ i) {
-        if (plan.action(i).sameAs(action)) {
-                return true;
-        }
-    }
-    return false;
+    return (plan.end() != std::find_if(plan.begin(), plan.end(), [&](const action::Action* test) {
+        ASSERT(test);
+        return test->sameAs(action);
+    }));
 }
 
 

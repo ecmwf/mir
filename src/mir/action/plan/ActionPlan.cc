@@ -35,7 +35,7 @@ ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
 
 
 ActionPlan::~ActionPlan() {
-    for (auto& p : actions_) {
+    for (auto& p : *this) {
         delete p;
     }
 
@@ -47,7 +47,7 @@ ActionPlan::~ActionPlan() {
 
 
 void ActionPlan::add(const std::string &name)  {
-    actions_.push_back(ActionFactory::build(name, parametrisation_));
+    push_back(ActionFactory::build(name, parametrisation_));
 }
 
 
@@ -55,7 +55,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, long val
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
-    actions_.push_back(ActionFactory::build(name, *runtime));
+    push_back(ActionFactory::build(name, *runtime));
 }
 
 
@@ -63,7 +63,7 @@ void ActionPlan::add(const std::string &name, const std::string &param, const st
     param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     runtimes_.push_back(runtime);
     runtime->set(param, value);
-    actions_.push_back(ActionFactory::build(name, *runtime));
+    push_back(ActionFactory::build(name, *runtime));
 }
 
 
@@ -72,7 +72,7 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
-    actions_.push_back(ActionFactory::build(name, *runtime));
+    push_back(ActionFactory::build(name, *runtime));
 }
 
 
@@ -81,12 +81,12 @@ void ActionPlan::add(const std::string &name, const std::string &param1,  const 
     runtimes_.push_back(runtime);
     runtime->set(param1, value1);
     runtime->set(param2, value2);
-    actions_.push_back(ActionFactory::build(name, *runtime));
+    push_back(ActionFactory::build(name, *runtime));
 }
 
 
 void ActionPlan::add(Action *action)  {
-    actions_.push_back(action);
+    push_back(action);
 }
 
 
@@ -94,7 +94,7 @@ void ActionPlan::add(const std::string &name, param::MIRParametrisation* runtime
     // param::RuntimeParametrisation *runtime = new param::RuntimeParametrisation(parametrisation_);
     ASSERT(runtime);
     runtimes_.push_back(runtime);
-    actions_.push_back(ActionFactory::build(name, *runtime, false));
+    push_back(ActionFactory::build(name, *runtime, false));
 }
 
 
@@ -123,7 +123,7 @@ void ActionPlan::execute(context::Context & ctx) const {
 
     const char* sep = "###################################################################################";
 
-    for (const auto& p : actions_) {
+    for (const auto& p : *this) {
         eckit::Log::debug<LibMir>() << "Executing:"
                                     << "\n" << sep
                                     << "\n" << *p
@@ -147,37 +147,37 @@ void ActionPlan::compress() {
     while (more) {
         more = false;
 
-        for (size_t i = 0; i < actions_.size() - 1; ++i) {
+        for (size_t i = 0; i < size() - 1; ++i) {
             std::ostringstream oldAction;
-            oldAction << *actions_[i];
+            oldAction << action(i);
 
-            if (actions_[i]->mergeWithNext(*actions_[i + 1])) {
+            if (action(i).mergeWithNext(action(i + 1))) {
 
                 eckit::Log::debug<LibMir>()
                         << "ActionPlan::compress: "
-                        << "\n   " << oldAction.str()
-                        << "\n + " << *actions_[i + 1]
-                        << "\n = " << *actions_[i]
-                        << std::endl;
+                                            << "\n   " << oldAction.str()
+                                            << "\n + " << action(i + 1)
+                                            << "\n = " << action(i)
+                                            << std::endl;
                 
-                delete actions_[i + 1];
-                actions_.erase(actions_.begin() + i + 1);
+                delete at(i + 1);
+                erase(begin() + i + 1);
 
                 more = true;
                 break;
             }
 
-            if (actions_[i]->deleteWithNext(*actions_[i + 1])) {
+            if (action(i).deleteWithNext(action(i + 1))) {
 
                 eckit::Log::debug<LibMir>()
                         << "ActionPlan::compress: "
                         << "\n   " << oldAction.str()
-                        << "\n + " << *actions_[i + 1]
-                        << "\n = " << *actions_[i + 1]
+                        << "\n + " << action(i + 1)
+                        << "\n = " << action(i + 1)
                         << std::endl;
 
-                delete actions_[i];
-                actions_.erase(actions_.begin() + i);
+                delete at(i);
+                erase(begin() + i);
 
                 more = true;
                 break;
@@ -190,26 +190,20 @@ void ActionPlan::compress() {
 }
 
 
-bool ActionPlan::empty() const {
-    return actions_.empty();
+const Action& ActionPlan::action(size_t n) const {
+    return *at(n);
 }
 
 
-size_t ActionPlan::size() const {
-    return actions_.size();
-}
-
-
-const Action &ActionPlan::action(size_t n) const {
-    ASSERT(n < actions_.size());
-    return *actions_[n];
+Action& ActionPlan::action(size_t n) {
+    return *at(n);
 }
 
 
 void ActionPlan::print(std::ostream &out) const {
     out << "ActionPlan[";
     const char *arrow = "";
-    for (const auto& p : actions_) {
+    for (const auto& p : *this) {
         out << arrow << *p;
         arrow = " ==> ";
     }
@@ -217,7 +211,7 @@ void ActionPlan::print(std::ostream &out) const {
 }
 
 void ActionPlan::dump(std::ostream &out) const {
-    for (const auto& p : actions_) {
+    for (const auto& p : *this) {
         out << "      ==> " << *p << std::endl;
     }
 }
@@ -225,7 +219,7 @@ void ActionPlan::dump(std::ostream &out) const {
 
 void ActionPlan::custom(std::ostream &out) const {
     const char *sep = "";
-    for (const auto& p : actions_) {
+    for (const auto& p : *this) {
         out << sep;
         p->custom(out);
         sep = "|";

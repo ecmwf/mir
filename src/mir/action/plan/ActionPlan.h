@@ -33,7 +33,15 @@ class Action;
 
 namespace mir {
 namespace action {
-class ActionPlan {
+
+
+class ActionPlan : protected std::vector<Action*> {
+private:
+
+    // -- Types
+
+    using container_t = std::vector<Action*>;
+
 public:
 
     // -- Exceptions
@@ -66,14 +74,20 @@ public:
 
 
     void execute(context::Context& ctx) const;
-    bool empty() const;
-    size_t size() const;
-    const Action& action(size_t) const;
-
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
-
     void compress();
+
+    const Action& action(size_t) const;
+
+    using container_t::back;
+    using container_t::begin;
+    using container_t::cbegin;
+    using container_t::cend;
+    using container_t::empty;
+    using container_t::end;
+    using container_t::operator[];
+    using container_t::size;
 
     // -- Overridden methods
     // None
@@ -89,12 +103,12 @@ protected:
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
-    std::vector<Action*> actions_;
     std::vector<param::MIRParametrisation*> runtimes_;
 
     // -- Methods
 
     void print(std::ostream&) const;
+    Action& action(size_t);
 
     // -- Overridden methods
     // None
