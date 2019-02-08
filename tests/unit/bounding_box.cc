@@ -90,6 +90,33 @@ CASE("BoundingBox") {
         { -25.0918,      135,          -46.8801,      179          },
     };
 
+    SECTION("operator==") {
+        for (const auto& A : boxes) {
+            for (auto delta : {
+                 Longitude::GLOBE * -2,
+                 Longitude::GLOBE * -1,
+                 Longitude::GREENWICH,
+                 Longitude::GLOBE,
+                 Longitude::GLOBE * 2}) {
+                auto B = BoundingBox(A.north(), A.west() + delta, A.south(), A.east() + delta);
+
+                static size_t c = 1;
+                log << "Test " << c++ << ":"
+                    << "\n\t" "d=" << delta
+                    << "\n\t" "A=" << A << " (empty? " << A.empty() << ")"
+                    << "\n\t" "B=" << B << " (empty? " << B.empty() << ")"
+                    << std::endl;
+
+                EXPECT(A == A);
+                if (delta == Longitude::GREENWICH) {
+                    EXPECT(A == B);
+                } else {
+                    EXPECT(A != B);
+                }
+            }
+        }
+    };
+
     SECTION("intersects (combinations)") {
         for (const auto& A : boxes) {
             for (const auto& B : boxes) {
@@ -189,7 +216,7 @@ CASE("BoundingBox") {
 
                     EXPECT(intersects == A.contains(P));
                     if (intersects) {
-                        EXPECT(P == AiP);
+                        EXPECT(P.contains(AiP));
                     }
 
                 }

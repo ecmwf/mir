@@ -1,0 +1,124 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
+#include <algorithm>
+
+#include "eckit/log/Log.h"
+#include "eckit/testing/Test.h"
+#include "eckit/memory/ScopedPtr.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/action/plan/Action.h"
+#include "mir/action/plan/ActionNode.h"
+#include "mir/action/plan/ActionGraph.h"
+#include "mir/action/plan/ActionPlan.h"
+#include "mir/action/plan/Job.h"
+#include "mir/action/misc/AreaCropper.h"
+#include "mir/api/MIRWatcher.h"
+#include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/BoundingBox.h"
+#include "mir/param/RuntimeParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
+
+//define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+
+
+namespace mir {
+namespace tests {
+namespace unit {
+
+
+struct TestWatcher : api::MIRWatcher {
+    void print(std::ostream&) const {
+    }
+    bool failure(std::exception& e, const mir::action::Action& action) {
+        eckit::Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
+        throw;
+    }
+};
+
+
+CASE("ActionGraph") {
+
+    eckit::ScopedPtr<api::MIRWatcher> watcher(new TestWatcher());
+    param::DefaultParametrisation empty;
+
+
+    param::RuntimeParametrisation area1(empty);
+    param::RuntimeParametrisation area2(empty);
+    area1.set("area", "0/0/0/10");
+    area2.set("area", "0/360/0/370");
+
+    action::ActionPlan plan1(area1);
+    action::ActionPlan plan2(area2);
+    plan1.add("crop.area");
+    plan2.add("crop.area");
+
+    eckit::ScopedPtr<action::Action> reference1(new action::AreaCropper(area1));
+    eckit::ScopedPtr<action::Action> reference2(new action::AreaCropper(area2));
+
+
+    SECTION("ActionGraph with two unique actions (variant 1/2)") {
+        action::ActionGraph graph;
+        graph.add(plan1, watcher.get());
+        graph.add(plan2, watcher.get());
+
+        eckit::Log::debug<LibMir>() << graph << std::endl;
+        EXPECT(graph.size() == 2);
+        EXPECT(graph[0]->action().sameAs(*reference1));
+        EXPECT(graph[1]->action().sameAs(*reference2));
+    }
+
+
+    SECTION("ActionGraph with two unique actions (variant 2/2)") {
+        action::ActionGraph graph;
+        graph.add(plan2, watcher.get());
+        graph.add(plan1, watcher.get());
+
+        eckit::Log::debug<LibMir>() << graph << std::endl;
+        EXPECT(graph.size() == 2);
+        EXPECT(graph[0]->action().sameAs(*reference2));
+        EXPECT(graph[1]->action().sameAs(*reference1));
+    }
+
+
+    SECTION("ActionGraph with two similar actions (variant 1/2)") {
+        action::ActionGraph graph;
+        graph.add(plan1, watcher.get());
+        graph.add(plan1, watcher.get());
+
+        eckit::Log::debug<LibMir>() << graph << std::endl;
+        EXPECT(graph.size() == 1);
+        EXPECT(graph[0]->action().sameAs(*reference1));
+    }
+
+
+    SECTION("ActionGraph with two similar actions (variant 2/2)") {
+        action::ActionGraph graph;
+        graph.add(plan2, watcher.get());
+        graph.add(plan2, watcher.get());
+
+        eckit::Log::debug<LibMir>() << graph << std::endl;
+        EXPECT(graph.size() == 1);
+        EXPECT(graph[0]->action().sameAs(*reference2));
+    }
+}
+
+
+} // namespace unit
+} // namespace tests
+} // namespace mir
+
+
+int main(int argc, char** argv) {
+    return eckit::testing::run_tests(argc, argv);
+}
