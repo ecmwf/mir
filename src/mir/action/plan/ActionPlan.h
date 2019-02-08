@@ -13,11 +13,12 @@
 /// @date Apr 2015
 
 
-#ifndef mir_action_ActionPlan_h
-#define mir_action_ActionPlan_h
+#ifndef mir_action_plan_ActionPlan_h
+#define mir_action_plan_ActionPlan_h
 
 #include <string>
 #include <vector>
+
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -49,11 +50,11 @@ public:
 
     // -- Contructors
 
-    ActionPlan(const param::MIRParametrisation& parametrisation);
+    ActionPlan(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    ~ActionPlan(); // Change to virtual if base class
+    ~ActionPlan();
 
     // -- Convertors
     // None
@@ -69,9 +70,8 @@ public:
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, long);
     void add(const std::string& name, const std::string&, const std::string&, const std::string&, const std::string&);
 
-    void add(Action* action);
-    void add(const std::string &name, param::MIRParametrisation* runtime);
-
+    void add(Action*);
+    void add(const std::string& name, param::MIRParametrisation*);
 
     void execute(context::Context& ctx) const;
     void dump(std::ostream&) const;
@@ -84,9 +84,14 @@ public:
     using container_t::begin;
     using container_t::cbegin;
     using container_t::cend;
+    using container_t::crbegin;
+    using container_t::crend;
     using container_t::empty;
     using container_t::end;
+    using container_t::front;
     using container_t::operator[];
+    using container_t::rbegin;
+    using container_t::rend;
     using container_t::size;
 
     // -- Overridden methods

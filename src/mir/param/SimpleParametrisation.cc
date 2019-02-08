@@ -17,12 +17,13 @@
 
 #include <ios>
 #include <sstream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/Tokenizer.h"
-#include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"
+
 #include "mir/config/LibMir.h"
 
 
@@ -31,15 +32,15 @@ namespace param {
 
 class Setting {
 public:
-    virtual ~Setting() {}
+    virtual ~Setting() = default;
 
-    virtual void get(const std::string &name, std::string &value) const = 0;
-    virtual void get(const std::string &name, bool &value) const = 0;
-    virtual void get(const std::string &name, int &value) const = 0;
-    virtual void get(const std::string &name, long &value) const = 0;
-    virtual void get(const std::string &name, size_t &value) const = 0;
-    virtual void get(const std::string &name, float &value) const = 0;
-    virtual void get(const std::string &name, double &value) const = 0;
+    virtual void get(const std::string& name, std::string& value) const = 0;
+    virtual void get(const std::string& name, bool& value) const = 0;
+    virtual void get(const std::string& name, int& value) const = 0;
+    virtual void get(const std::string& name, long& value) const = 0;
+    virtual void get(const std::string& name, size_t& value) const = 0;
+    virtual void get(const std::string& name, float& value) const = 0;
+    virtual void get(const std::string& name, double& value) const = 0;
 
     virtual void get(const std::string& name, std::vector<int>& value) const = 0;
     virtual void get(const std::string& name, std::vector<long>& value) const = 0;
@@ -48,8 +49,8 @@ public:
     virtual void get(const std::string& name, std::vector<double>& value) const = 0;
     virtual void get(const std::string& name, std::vector<std::string>& value) const = 0;
 
-    virtual bool match(const std::string &name, const MIRParametrisation &) const = 0;
-    virtual void copyValueTo(const std::string &name, SimpleParametrisation &) const = 0;
+    virtual bool match(const std::string& name, const MIRParametrisation &) const = 0;
+    virtual void copyValueTo(const std::string& name, SimpleParametrisation &) const = 0;
 
     virtual void print(std::ostream &) const = 0;
     virtual void json(eckit::JSON&) const = 0;
@@ -86,7 +87,7 @@ template<> const char* TNamed< std::vector< std::string > >() { return "vector<s
 
 
 template<class T>
-static void conversion_warning(const char *from, const char *to, const std::string &name, const T &value) {
+static void conversion_warning(const char *from, const char *to, const std::string& name, const T& value) {
     // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << " (requesting " << name << ")" << std::endl;
 }
 
@@ -94,7 +95,7 @@ static void conversion_warning(const char *from, const char *to, const std::stri
 class CannotConvert : public eckit::Exception {
 public:
     template<class T>
-    CannotConvert(const char *from, const char *to, const std::string &name, const T &value) {
+    CannotConvert(const char *from, const char *to, const std::string& name, const T& value) {
         std::ostringstream os;
         os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")";
         reason(os.str());
@@ -104,7 +105,7 @@ public:
 
 template<class T>
 class TSettings : public Setting {
-    T value_;
+    const T value_;
 public:
     TSettings(const T& value): value_(value) {}
 
@@ -172,82 +173,82 @@ void TSettings<std::vector<double> >::print(std::ostream &out) const {
 // We will implement conversion as needed
 
 template<>
-void TSettings<bool>::get(const std::string& name, std::string& value) const {
+void TSettings<bool>::get(const std::string&, std::string& value) const {
     std::ostringstream ss;
     ss << std::boolalpha << value_;
     value = ss.str();
 }
 
 template<>
-void TSettings<bool>::get(const std::string &name, bool &value) const {
+void TSettings<bool>::get(const std::string&, bool& value) const {
     value = value_;
 }
 
 template<>
-void TSettings<long>::get(const std::string &name, long &value) const {
+void TSettings<long>::get(const std::string&, long& value) const {
     value = value_;
 }
 
 
 template<>
-void TSettings<int>::get(const std::string &name, long &value) const {
+void TSettings<int>::get(const std::string&, long& value) const {
     value = value_;
 }
 
 template<>
-void TSettings<double>::get(const std::string &name, double &value) const {
+void TSettings<double>::get(const std::string&, double& value) const {
     value = value_;
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, std::string &value) const {
+void TSettings<std::string>::get(const std::string&, std::string& value) const {
     value = value_;
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, bool &value) const {
+void TSettings<std::string>::get(const std::string& name, bool& value) const {
     conversion_warning("string", "bool", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_) != 0;
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, int &value) const {
+void TSettings<std::string>::get(const std::string& name, int& value) const {
     conversion_warning("string", "int", name, value_);
     eckit::Translator<std::string, int> translate;
     value = translate(value_);
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, long &value) const {
+void TSettings<std::string>::get(const std::string& name, long& value) const {
     conversion_warning("string", "long", name, value_);
     eckit::Translator<std::string, long> translate;
     value = translate(value_);
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, size_t &value) const {
+void TSettings<std::string>::get(const std::string& name, size_t& value) const {
     conversion_warning("string", "size_t", name, value_);
     eckit::Translator<std::string, size_t> translate;
     value = translate(value_);
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, float &value) const {
+void TSettings<std::string>::get(const std::string& name, float& value) const {
     conversion_warning("string", "float", name, value_);
     eckit::Translator<std::string, float> translate;
     value = translate(value_);
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, double &value) const {
+void TSettings<std::string>::get(const std::string& name, double& value) const {
     conversion_warning("string", "double", name, value_);
     eckit::Translator<std::string, double> translate;
     value = translate(value_);
 }
 
 template<>
-void TSettings<std::string>::get(const std::string &name, std::vector<double> &value) const {
+void TSettings<std::string>::get(const std::string& name, std::vector<double>& value) const {
     conversion_warning("string", "vector<double>", name, value_);
     eckit::Translator<std::string, double> translate;
     eckit::Tokenizer parse("/");
@@ -262,19 +263,18 @@ void TSettings<std::string>::get(const std::string &name, std::vector<double> &v
 }
 
 template<>
-void TSettings<std::vector<long>>::get(const std::string &name, std::vector<long> &value) const {
+void TSettings<std::vector<long>>::get(const std::string&, std::vector<long>& value) const {
     value = value_;
 }
 
 template<>
-void TSettings<std::vector<double>>::get(const std::string &name, std::vector<double> &value) const {
+void TSettings<std::vector<double>>::get(const std::string&, std::vector<double>& value) const {
     value = value_;
 }
 
 //==========================================================
 
-SimpleParametrisation::SimpleParametrisation() {
-}
+SimpleParametrisation::SimpleParametrisation() = default;
 
 
 SimpleParametrisation::~SimpleParametrisation() {
@@ -297,11 +297,11 @@ size_t SimpleParametrisation::size() const {
 
 template<class T>
 bool SimpleParametrisation::_get(const std::string& name, T& value) const {
-    SettingsMap::const_iterator j = settings_.find(name);
+    auto j = settings_.find(name);
     if (j == settings_.end()) {
         return false;
     }
-    (*j).second->get(name, value);
+    j->second->get(name, value);
     // eckit::Log::debug<LibMir>() << "SimpleParametrisation::get(" << name << ") => " << value << std::endl;
     return true;
 }
@@ -352,140 +352,109 @@ bool SimpleParametrisation::get(const std::string&, std::vector<std::string>&) c
 
 template<class T>
 void SimpleParametrisation::_set(const std::string& name, const T& value) {
-    SettingsMap::iterator j = settings_.find(name);
+    auto j = settings_.find(name);
     if (j != settings_.end()) {
-        delete (*j).second;
+        delete j->second;
     }
     settings_[name] = new TSettings<T>(value);
 }
 
-// FIXME: can we do this in a more elegant way?
-// template<>
-// void SimpleParametrisation::_set(const std::string &name, const eckit::Value& value) {
-//     if (value.isBool()) {
-//         _set<bool>(name, value);
-//     } else if (value.isDouble()) {
-//         _set<double>(name, value);
-//     } else if (value.isNumber()) {
-//         _set<long>(name, value);
-//     } else if (value.isString()) {
-//         _set<std::string>(name, value);
-//     } else if (value.isList()) {
-//         eckit::ValueList v = value;
-//         if (v[0].isDouble()) {
-//             std::vector<double> d;
-//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-//                 d.push_back(double(*it));
-//             _set(name, d);
-//         } else if (v[0].isNumber()) {
-//             std::vector<long> l;
-//             for (eckit::ValueList::const_iterator it = v.begin(); it != v.end(); ++it)
-//                 l.push_back(long(*it));
-//             _set(name, l);
-//         } else {
-//             throw eckit::BadParameter("Vector contains invalid type", Here());
-//         }
-//     } else {
-//         throw eckit::BadParameter("Map contains invalid type", Here());
-//     }
-// }
-
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const char *value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const char *value) {
     _set(name, std::string(value));
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, float value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, float value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::string &value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::string& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, bool value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, bool value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, long long value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long long value) {
     _set(name, long(value));
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, size_t value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, size_t value) {
     // TODO: Support unsigned properly
     ASSERT(size_t(long(value)) == value);
     _set(name, long(value));
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, const std::vector<int> &value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, const std::vector<int>& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, double value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, double value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, int value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, int value) {
     _set(name, value);
     return *this;
 }
 
 SimpleParametrisation& SimpleParametrisation::clear(const std::string &name) {
-    SettingsMap::iterator j = settings_.find(name);
+    auto j = settings_.find(name);
     if (j != settings_.end()) {
-        delete (*j).second;
+        delete j->second;
         settings_.erase(j);
     }
     return *this;
 }
 
 SimpleParametrisation& SimpleParametrisation::reset() {
-    for (SettingsMap::const_iterator j = settings_.begin(); j != settings_.end(); ++j) {
-        delete (*j).second;
+    for (const auto& j : settings_) {
+        delete j.second;
     }
     settings_.clear();
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long> &value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long>& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<long long> &value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long long>& value) {
     std::vector<long> value_long(value.begin(), value.end());
     _set(name, value_long);
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, const std::vector<size_t> &value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, const std::vector<size_t>& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, const std::vector<float> &value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, const std::vector<float>& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation& SimpleParametrisation::set(const std::string &name, const std::vector<double> &value) {
+SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<double>& value) {
     _set(name, value);
     return *this;
 }
 
-SimpleParametrisation &SimpleParametrisation::set(const std::string &name, const std::vector<std::string> &value) {
+SimpleParametrisation &SimpleParametrisation::set(const std::string& name, const std::vector<std::string>& value) {
     _set(name, value);
     return *this;
 }
@@ -506,8 +475,9 @@ void SimpleParametrisation::print(std::ostream &out) const {
 
 void SimpleParametrisation::json(eckit::JSON& s) const {
     s.startObject();
-    for (const auto& j : settings_)
+    for (const auto& j : settings_) {
         s << j.first << *(j.second);
+    }
     s.endObject();
 }
 

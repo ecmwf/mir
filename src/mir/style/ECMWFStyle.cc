@@ -141,8 +141,8 @@ bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation
 template< typename T >
 struct KnownMultiKeyT : KnownKey {
 
-    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target = "", const bool supportsRotation = true) :
-        KnownKey(key, target, supportsRotation),
+    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target = "") :
+        KnownKey(key, target),
         fieldKey1_(fieldKey1),
         fieldKey2_(fieldKey2) {
     }
@@ -200,12 +200,12 @@ bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametris
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation) {
     static const std::vector< KnownKey* > keys_targets = {
         new KnownMultiKeyT< std::vector<double> > ("grid", "west_east_increment", "south_north_increment", "regular-ll"),
-        new KnownKeyT< size_t >            ("reduced",    "reduced-gg"),
-        new KnownKeyT< size_t >            ("regular",    "regular-gg"),
-        new KnownKeyT< size_t >            ("octahedral", "octahedral-gg"),
-        new KnownKeyT< std::vector<long> > ("pl",         "reduced-gg-pl-given"),
-        new KnownKeyT< std::string >       ("gridname",   "namedgrid"),
-        new KnownKeyT< std::string >       ("griddef",    "griddef", false),
+        new KnownKeyT< size_t >              ("reduced",    "reduced-gg"),
+        new KnownKeyT< size_t >              ("regular",    "regular-gg"),
+        new KnownKeyT< size_t >              ("octahedral", "octahedral-gg"),
+        new KnownKeyT< std::vector<long> >   ("pl",         "reduced-gg-pl-given"),
+        new KnownKeyT< std::string >         ("gridname",   "namedgrid"),
+        new KnownKeyT< std::string >         ("griddef",    "griddef", false),
         new Points("latitudes"),
         new Points("longitudes"),
     };
@@ -239,19 +239,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     return "";
 }
 
-}  // (anonymous namespace)
 
-
-ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
-    MIRStyle(parametrisation) {
-}
-
-
-ECMWFStyle::~ECMWFStyle() = default;
-
-
-
-void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param, const std::vector<std::string>& whens) {
+void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param, const std::vector<std::string>&& whens) {
     std::string formula;
     for (auto& when : whens) {
         if (param.get("formula." + when, formula)) {
@@ -263,6 +252,17 @@ void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& para
         }
     }
 }
+
+
+}  // (anonymous namespace)
+
+
+ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
+    MIRStyle(parametrisation) {
+}
+
+
+ECMWFStyle::~ECMWFStyle() = default;
 
 
 void ECMWFStyle::prologue(action::ActionPlan& plan) const {
