@@ -22,10 +22,13 @@
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRWatcher.h"
+#include "mir/data/MIRField.h"
+#include "mir/input/MIRInput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/output/EmptyOutput.h"
 
 //define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -41,6 +44,42 @@ bool plan_has_action(const action::ActionPlan& plan, const action::Action& actio
         return test->sameAs(action);
     }));
 }
+
+
+class InputOutput : public param::SimpleParametrisation {
+    const std::vector<double> grid{ 1, 1 };
+protected:
+    InputOutput(bool gridded) {
+        gridded ? set("grid", grid).set("gridded", true) : set("spectral", 1);
+    }
+};
+
+
+struct TestingInput : input::MIRInput, InputOutput {
+    TestingInput(bool gridded) : InputOutput(gridded) {}
+private:
+    const param::MIRParametrisation& parametrisation(size_t) const override {
+        return *this;
+    }
+    bool sameAs(const MIRInput&) const override {
+        return false;
+    }
+    data::MIRField field() const override {
+        NOTIMP;
+    }
+    void print(std::ostream& out) const override {
+        InputOutput::print(out);
+    }
+    friend std::ostream& operator<<(std::ostream& s, const TestingInput& p) {
+        p.print(s);
+        return s;
+    }
+};
+
+
+struct TestingOutput : InputOutput {
+    TestingOutput(bool gridded) : InputOutput(gridded) {}
+};
 
 
 CASE("ECMWFStyle") {
@@ -65,17 +104,8 @@ CASE("ECMWFStyle") {
                 CORRECT_ACTION(p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA));
 
 
-        class InputOutput : public param::SimpleParametrisation {
-            const std::vector<double> grid{ 1, 1 };
-        public:
-            InputOutput(bool gridded) {
-                gridded ? set("grid", grid).set("gridded", true) : set("spectral", 1);
-            }
-        };
-
-
         for (bool input_gridded : {true, false}) {
-            const InputOutput in(input_gridded);
+            TestingInput in(input_gridded);
 
             for (bool output_gridded : {true, false}) {
                 if (input_gridded && !output_gridded) {
@@ -85,9 +115,9 @@ CASE("ECMWFStyle") {
 
                 for (const std::string& when : {"prologue", "gridded", "spectral", "raw", "epilogue"}) {
 
-                    InputOutput out(output_gridded);
-                    out.set("formula." + when, CORRECT_FORMULA);
-                    out.set("formula." + when + ".metadata", CORRECT_METADATA);
+                    TestingOutput user(output_gridded);
+                    user.set("formula." + when, CORRECT_FORMULA);
+                    user.set("formula." + when + ".metadata", CORRECT_METADATA);
 
                     // test correct user formula.<when> and formula.<when>.metadata, then
                     // test extra, inconsistent formula.<when>.metadata options
@@ -99,22 +129,24 @@ CASE("ECMWFStyle") {
                         if (addWrongArguments) {
                             for (const std::string& wrongWhen : {"prologue", "gridded", "spectral", "raw", "epilogue"}) {
                                 if (wrongWhen != when) {
-                                    out.set("formula." + wrongWhen + ".metadata", WRONG_METADATA);
+                                    user.set("formula." + wrongWhen + ".metadata", WRONG_METADATA);
                                 }
                             }
                             if (input_gridded && output_gridded) {
-                                out.set("formula.spectral", WRONG_FORMULA);
+                                user.set("formula.spectral", WRONG_FORMULA);
                             }
                             if (!input_gridded && !output_gridded) {
-                                out.set("formula.gridded", WRONG_FORMULA);
+                                user.set("formula.gridded", WRONG_FORMULA);
                             }
                         }
 
-                        const param::CombinedParametrisation combined(out, in, defaults);
+                        output::EmptyOutput out;
+
+                        const param::CombinedParametrisation combined(user, in, defaults);
                         eckit::ScopedPtr<style::MIRStyle> style(style::MIRStyleFactory::build(combined));
 
                         action::ActionPlan plan(combined);
-                        style->prepare(plan);
+                        style->prepare(plan, in, out);
 
                         bool plan_has_this_formula = plan_has_action(plan, CORRECT_ACTION);
                         bool plan_has_wrong_formulae =
@@ -126,7 +158,7 @@ CASE("ECMWFStyle") {
                         eckit::Log::info() << "Test " << c++ << ":"
                                            << "\n\t" "formula." << when << ", formula." << when << ".metadata"
                                            << "\n\t" "in:   " << in
-                                           << "\n\t" "user: " << out
+                                           << "\n\t" "user: " << user
                                            << "\n\t" "plan: " << plan
                                            << "\n\t" "has " << when << " formula: " << plan_has_this_formula << " (should be " << plan_should_have_formula << ")"
                                            << std::endl;
