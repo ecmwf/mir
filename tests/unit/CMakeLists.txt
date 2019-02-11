@@ -11,6 +11,7 @@ set(tests
     increments
     rotations
     spectral_order
+    style
     wind
     )
 if(HAVE_ATLAS)
