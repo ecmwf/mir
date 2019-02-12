@@ -436,6 +436,8 @@ dimension.2d.vector.u:
 - 129222  # Convective tendency of zonal wind gradient
 - 129253  # Adiabatic tendency of zonal wind gradient
 - 130230  # Adiabatic tendency of zonal wind
+- 140101  # U-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
 - 140215  # U-component stokes drift
 - 162065  # Vertical integral of eastward mass flux
 - 162067  # Vertical integral of eastward kinetic energy flux
@@ -506,6 +508,8 @@ dimension.2d.vector.v:
 - 129223  # Convective tendency of meridional wind gradient
 - 129254  # Adiabatic tendency of meridional wind gradient
 - 130231  # Adiabatic tendency of meridional wind
+- 140102  # V-component of atmospheric surface momentum flux
+- 140104  # V-component of surface momentum flux into ocean
 - 140216  # V-component stokes drift
 - 162066  # Vertical integral of northward mass flux
 - 162068  # Vertical integral of northward kinetic energy flux
@@ -897,6 +901,14 @@ intensity:
 - 130230  # Adiabatic tendency of zonal wind
 - 130231  # Adiabatic tendency of meridional wind
 - 130232  # Mean vertical velocity
+- 140098  # Wave induced mean sea level correction
+- 140099  # Ratio of wave angular and frequency width
+- 140100  # Number of events in freak waves statistics
+- 140101  # U-component of atmospheric surface momentum flux
+- 140102  # V-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
+- 140104  # V-component of surface momentum flux into ocean
+- 140105  # Wave turbulent energy flux into ocean
 - 140112  # Wave energy flux magnitude
 - 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
 - 140115  # Significant wave height of all waves with periods within the inclusive range from 12 to 14 seconds
@@ -4858,6 +4870,12 @@ spectrum.associated-angle:
 - 140128  # Mean wave direction of third swell partition
 
 spectrum.associated-magnitude:
+- 140106  # Wave directional width of first swell partition
+- 140107  # Wave frequency width of first swell partition
+- 140108  # Wave directional width of second swell partition
+- 140109  # Wave frequency width of second swell partition
+- 140110  # Wave directional width of third swell partition
+- 140111  # Wave frequency width of third swell partition
 - 140121  # Significant wave height of first swell partition
 - 140123  # Mean wave period of first swell partition
 - 140124  # Significant wave height of second swell partition
