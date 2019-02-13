@@ -904,10 +904,6 @@ intensity:
 - 140098  # Wave induced mean sea level correction
 - 140099  # Ratio of wave angular and frequency width
 - 140100  # Number of events in freak waves statistics
-- 140101  # U-component of atmospheric surface momentum flux
-- 140102  # V-component of atmospheric surface momentum flux
-- 140103  # U-component of surface momentum flux into ocean
-- 140104  # V-component of surface momentum flux into ocean
 - 140105  # Wave turbulent energy flux into ocean
 - 140112  # Wave energy flux magnitude
 - 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
@@ -4912,6 +4908,10 @@ stress:
 - 129196  # Meridional component of gravity wave stress gradient
 - 129229  # Instantaneous X surface stress gradient
 - 129230  # Instantaneous Y surface stress gradient
+- 140101  # U-component of atmospheric surface momentum flux
+- 140102  # V-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
+- 140104  # V-component of surface momentum flux into ocean
 - 150168  # U stress
 - 150169  # V stress
 - 151153  # U stress
