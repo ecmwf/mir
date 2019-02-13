@@ -1,4 +1,5 @@
 
+if(HAVE_MIR_DOWNLOAD_MASKS)
 set(_dir "share/mir/masks")
 foreach( _f
     "lsm.10min.mask"
@@ -26,4 +27,5 @@ foreach( _f
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ )
 
 endforeach()
+endif()
 
