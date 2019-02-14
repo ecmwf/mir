@@ -113,6 +113,9 @@ density.mass:
 - 215078  # Vertically integrated mass of hydrophilic black carbon aerosol
 - 215087  # Vertically integrated mass of sulphate aerosol
 - 215174  # Vertically integrated mass of sulphur dioxide
+- 215201  # Vertically integrated mass of fine-mode nitrate aerosol
+- 215202  # Vertically integrated mass of coarse-mode nitrate aerosol
+- 215211  # Vertically integrated mass of ammonium aerosol
 - 218003  # Total column hydrogen peroxide
 - 218004  # Total column methane
 - 218006  # Total column nitric acid
@@ -1474,6 +1477,8 @@ intensity:
 - 210244  # Volcanic ash optical depth at 550 nm
 - 210245  # Profile of total aerosol dry extinction coefficient
 - 210246  # Profile of total aerosol dry absorption coefficient
+- 210250  # Nitrate aerosol optical depth at 550 nm
+- 210251  # Ammonium aerosol optical depth at 550 nm
 - 211049  # Aerosol precursor optical depth
 - 211050  # Aerosol small mode optical depth
 - 211051  # Aerosol large mode optical depth
@@ -1548,6 +1553,8 @@ intensity:
 - 215175  # Sulphur dioxide optical depth
 - 215176  # Total absorption aerosol optical depth at 2130 nm
 - 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
+- 215203  # Fine-mode nitrate aerosol optical depth at 550nm 
+- 215204  # Coarse-mode nitrate aerosol optical depth at 550nm
 - 228001  # Convective inhibition
 - 228002  # Orography
 - 228003  # Friction velocity
@@ -2507,6 +2514,9 @@ numerics.vertical-integral:
 - 215078  # Vertically integrated mass of hydrophilic black carbon aerosol
 - 215087  # Vertically integrated mass of sulphate aerosol
 - 215174  # Vertically integrated mass of sulphur dioxide
+- 215201  # Vertically integrated mass of fine-mode nitrate aerosol
+- 215202  # Vertically integrated mass of coarse-mode nitrate aerosol
+- 215211  # Vertically integrated mass of ammonium aerosol
 - 218003  # Total column hydrogen peroxide
 - 218004  # Total column methane
 - 218006  # Total column nitric acid
@@ -3382,6 +3392,24 @@ rate.mass-flux:
 - 215171  # Wet deposition of sulphur dioxide by large-scale precipitation
 - 215172  # Wet deposition of sulphur dioxide by convective precipitation
 - 215173  # Negative fixer of sulphur dioxide
+- 215189  # Source/gain of fine-mode nitrate aerosol
+- 215190  # Source/gain of coarse-mode nitrate aerosol
+- 215191  # Dry deposition of fine-mode nitrate aerosol
+- 215192  # Dry deposition of coarse-mode nitrate aerosol
+- 215193  # Sedimentation of fine-mode nitrate aerosol
+- 215194  # Sedimentation of coarse-mode nitrate aerosol
+- 215195  # Wet deposition of fine-mode nitrate aerosol by large-scale precipitation
+- 215196  # Wet deposition of coarse-mode nitrate aerosol by large-scale precipitation
+- 215197  # Wet deposition of fine-mode nitrate aerosol by convective precipitation
+- 215198  # Wet deposition of coarse-mode nitrate aerosol by convective precipitation
+- 215199  # Negative fixer of fine-mode nitrate aerosol
+- 215200  # Negative fixer of coarse-mode nitrate aerosol
+- 215205  # Source/gain of ammonium aerosol
+- 215206  # Dry deposition of ammonium aerosol
+- 215207  # Sedimentation of ammonium aerosol
+- 215208  # Wet deposition of ammonium aerosol by large-scale precipitation
+- 215209  # Wet deposition of ammonium aerosol by convective precipitation
+- 215210  # Negative fixer of ammonium aerosol
 - 219001  # Ozone emissions
 - 219002  # Nitrogen oxides emissions
 - 219003  # Hydrogen peroxide emissions
@@ -4378,6 +4406,9 @@ ratio.mass:
 - 210181  # Radon
 - 210182  # Sulphur Hexafluoride
 - 210203  # GEMS Ozone
+- 210247  # Nitrate fine mode aerosol mass mixing ratio
+- 210248  # Nitrate coarse mode aerosol mass mixing ratio
+- 210249  # Ammonium aerosol mass mixing ratio
 - 211001  # Sea Salt Aerosol (0.03 - 0.5 um) Mixing Ratio
 - 211002  # Sea Salt Aerosol (0.5 - 5 um) Mixing Ratio
 - 211003  # Sea Salt Aerosol (5 - 20 um) Mixing Ratio
