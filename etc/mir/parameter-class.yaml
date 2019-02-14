@@ -424,7 +424,10 @@ dimension.2d.vector.u:
 - 13  # U component of rotational wind
 - 131  # U component of wind
 - 165  # 10 metre U wind component
+- 180  # Eastward turbulent surface stress
+- 195  # Eastward gravity wave surface stress
 - 222  # Convective tendency of zonal wind
+- 229  # Instantaneous eastward turbulent surface stress
 - 253  # Adiabatic tendency of zonal wind
 - 3049  # U-component of current
 - 3095  # U-component of ice drift
@@ -433,10 +436,17 @@ dimension.2d.vector.u:
 - 129013  # U component of rotational wind gradient
 - 129131  # U component of wind gradient
 - 129165  # 10 metre U wind component gradient
+- 129180  # East-West surface stress gradient
+- 129195  # Longitudinal component of gravity wave stress gradient
 - 129222  # Convective tendency of zonal wind gradient
+- 129229  # Instantaneous X surface stress gradient
 - 129253  # Adiabatic tendency of zonal wind gradient
 - 130230  # Adiabatic tendency of zonal wind
+- 140101  # U-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
 - 140215  # U-component stokes drift
+- 150168  # U stress
+- 151153  # U stress
 - 162065  # Vertical integral of eastward mass flux
 - 162067  # Vertical integral of eastward kinetic energy flux
 - 162069  # Vertical integral of eastward heat flux
@@ -451,18 +461,33 @@ dimension.2d.vector.u:
 - 171013  # U component of rotational wind anomaly
 - 171131  # U component of wind anomaly
 - 171165  # 10 metre U wind component anomaly
+- 171180  # East-West surface stress anomaly
+- 171195  # Longitudinal component of gravity wave stress anomaly
 - 171222  # Convective tendency of zonal wind anomaly
+- 171229  # Instantaneous X surface stress anomaly
 - 171253  # Adiabatic tendency of zonal wind anomaly
+- 172180  # East-West surface stress
+- 172195  # Longitudinal component of gravity wave stress
+- 173180  # East-West surface stress anomaly
+- 173195  # Longitudinal component of gravity wave stress anomaly
 - 174085  # 10m U wind over land
 - 175085  # 10m U wind over land
 - 200011  # U component of divergent wind difference
 - 200013  # U component of rotational wind difference
 - 200131  # U component of wind difference
 - 200165  # 10 metre U wind component difference
+- 200180  # East-West surface stress difference
+- 200195  # Longitudinal component of gravity wave stress difference
 - 200222  # Convective tendency of zonal wind difference
+- 200229  # Instantaneous X surface stress difference
 - 200253  # Adiabatic tendency of zonal wind difference
 - 228131  # Neutral wind at 10 m u-component
+- 228239  # 200 metre U wind component
 - 228246  # 100 metre U wind component
+- 230180  # East-West surface stress (variable resolution)
+- 230195  # Longitudinal component of gravity wave stress (variable resolution)
+- 235041  # Mean eastward turbulent surface stress
+- 235045  # Mean eastward gravity wave surface stress
 - 260062  # Momentum flux, u component
 - 260066  # u-component of wind (gust)
 - 260070  # U-component storm motion
@@ -485,6 +510,7 @@ dimension.2d.vector.u:
 - 300159  # Tropopause u-wind component
 - 300164  # Gravity wave drag sfc zonal stress
 - 300192  # Surface zonal wind (u)
+- 300193  # Surface zonal wind stress
 - 300230  # Time mean surface zonal wind (u)
 - 300255  # Time mean zonal wind (u)
 
@@ -493,7 +519,10 @@ dimension.2d.vector.v:
 - 14  # V component of rotational wind
 - 132  # V component of wind
 - 166  # 10 metre V wind component
+- 181  # Northward turbulent surface stress
+- 196  # Northward gravity wave surface stress
 - 223  # Convective tendency of meridional wind
+- 230  # Instantaneous northward turbulent surface stress
 - 254  # Adiabatic tendency of meridional wind
 - 3050  # V-component of current
 - 3096  # V-component of ice drift
@@ -502,10 +531,17 @@ dimension.2d.vector.v:
 - 129014  # V component of rotational wind gradient
 - 129132  # V component of wind gradient
 - 129166  # 10 metre V wind component gradient
+- 129181  # North-South surface stress gradient
+- 129196  # Meridional component of gravity wave stress gradient
 - 129223  # Convective tendency of meridional wind gradient
+- 129230  # Instantaneous Y surface stress gradient
 - 129254  # Adiabatic tendency of meridional wind gradient
 - 130231  # Adiabatic tendency of meridional wind
+- 140102  # V-component of atmospheric surface momentum flux
+- 140104  # V-component of surface momentum flux into ocean
 - 140216  # V-component stokes drift
+- 150169  # V stress
+- 151154  # V stress
 - 162066  # Vertical integral of northward mass flux
 - 162068  # Vertical integral of northward kinetic energy flux
 - 162070  # Vertical integral of northward heat flux
@@ -520,18 +556,33 @@ dimension.2d.vector.v:
 - 171014  # V component of rotational wind anomaly
 - 171132  # V component of wind anomaly
 - 171166  # 10 metre V wind component anomaly
+- 171181  # North-South surface stress anomaly
+- 171196  # Meridional component of gravity wave stress anomaly
 - 171223  # Convective tendency of meridional wind anomaly
+- 171230  # Instantaneous Y surface stress anomaly
 - 171254  # Adiabatic tendency of meridional wind anomaly
+- 172181  # North-South surface stress
+- 172196  # Meridional component of gravity wave stress
+- 173181  # North-South surface stress anomaly
+- 173196  # Meridional component of gravity wave stress anomaly
 - 174086  # 10m V wind over land
 - 175086  # 10m V wind over land
 - 200012  # V component of divergent wind difference
 - 200014  # V component of rotational wind difference
 - 200132  # V component of wind difference
 - 200166  # 10 metre V wind component difference
+- 200181  # North-South surface stress difference
+- 200196  # Meridional component of gravity wave stress difference
 - 200223  # Convective tendency of meridional wind difference
+- 200230  # Instantaneous Y surface stress difference
 - 200254  # Adiabatic tendency of meridional wind difference
 - 228132  # Neutral wind at 10 m v-component
+- 228240  # 200 metre V wind component
 - 228247  # 100 metre V wind component
+- 230181  # North-South surface stress (variable resolution)
+- 230196  # Meridional component of gravity wave stress (variable resolution)
+- 235042  # Mean northward turbulent surface stress
+- 235046  # Mean northward gravity wave surface stress
 - 260063  # Momentum flux, v component
 - 260067  # v-component of wind (gust)
 - 260071  # V-component storm motion
@@ -554,6 +605,7 @@ dimension.2d.vector.v:
 - 300160  # Tropopause v-wind component
 - 300165  # Gravity wave drag sfc meridional stress
 - 300194  # Surface meridional wind (v)
+- 300195  # Surface meridional wind stress
 - 300231  # Time mean surface meridional wind (v)
 - 300241  # Time mean meridional wind (v)
 
@@ -895,6 +947,10 @@ intensity:
 - 130230  # Adiabatic tendency of zonal wind
 - 130231  # Adiabatic tendency of meridional wind
 - 130232  # Mean vertical velocity
+- 140098  # Wave induced mean sea level correction
+- 140099  # Ratio of wave angular and frequency width
+- 140100  # Number of events in freak waves statistics
+- 140105  # Wave turbulent energy flux into ocean
 - 140112  # Wave energy flux magnitude
 - 140114  # Significant wave height of all waves with periods within the inclusive range from 10 to 12 seconds
 - 140115  # Significant wave height of all waves with periods within the inclusive range from 12 to 14 seconds
@@ -1547,8 +1603,7 @@ intensity:
 - 228136  # U-tendency from non-orographic wave drag
 - 228139  # Soil Temperature
 - 228229  # SMOS first Brightness Temperature Bias Correction parameter
-- 228246  # 100 metre U wind component
-- 228247  # 100 metre V wind component
+- 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
 - 230046  # Solar duration (variable resolution)
@@ -4857,6 +4912,12 @@ spectrum.associated-angle:
 - 140128  # Mean wave direction of third swell partition
 
 spectrum.associated-magnitude:
+- 140106  # Wave directional width of first swell partition
+- 140107  # Wave frequency width of first swell partition
+- 140108  # Wave directional width of second swell partition
+- 140109  # Wave frequency width of second swell partition
+- 140110  # Wave directional width of third swell partition
+- 140111  # Wave frequency width of third swell partition
 - 140121  # Significant wave height of first swell partition
 - 140123  # Mean wave period of first swell partition
 - 140124  # Significant wave height of second swell partition
@@ -4893,6 +4954,10 @@ stress:
 - 129196  # Meridional component of gravity wave stress gradient
 - 129229  # Instantaneous X surface stress gradient
 - 129230  # Instantaneous Y surface stress gradient
+- 140101  # U-component of atmospheric surface momentum flux
+- 140102  # V-component of atmospheric surface momentum flux
+- 140103  # U-component of surface momentum flux into ocean
+- 140104  # V-component of surface momentum flux into ocean
 - 150168  # U stress
 - 150169  # V stress
 - 151153  # U stress

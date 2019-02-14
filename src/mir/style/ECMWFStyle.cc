@@ -18,12 +18,17 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
+
+#include "mir/action/io/Copy.h"
+#include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
+#include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
@@ -449,7 +454,7 @@ void ECMWFStyle::print(std::ostream& out) const {
 }
 
 
-void ECMWFStyle::prepare(action::ActionPlan& plan) const {
+void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) const {
 
     // All the nasty logic goes there
     prologue(plan);
@@ -537,6 +542,19 @@ void ECMWFStyle::prepare(action::ActionPlan& plan) const {
 
 
     epilogue(plan);
+
+
+    output.prepare(parametrisation_, plan, input);
+
+
+    if (!plan.ended()) {
+        if (plan.empty()) {
+            plan.add(new action::io::Copy(parametrisation_, output));
+        } else {
+            plan.add(new action::io::Save(parametrisation_, input, output));
+        }
+    }
+    ASSERT(plan.ended());
 }
 
 

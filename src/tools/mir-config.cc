@@ -16,20 +16,15 @@
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "mir/config/LibMir.h"
+
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
-#include "mir/param/ConfigurationWrapper.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
-#include "mir/param/Rules.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 
 
 class MIRConfig : public mir::tools::MIRTool {
-
-    // -- Methods
 
     // -- Overridden methods
 
@@ -42,24 +37,20 @@ class MIRConfig : public mir::tools::MIRTool {
     }
 
     void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
-        using namespace mir::param;
+        using namespace mir ::param;
 
+        static SimpleParametrisation empty;
         static DefaultParametrisation defaults;
-        CombinedParametrisation combined(metadata, defaults, defaults);
-        const MIRParametrisation& c = combined;
+        const mir::param::CombinedParametrisation combined(empty, metadata, defaults);
+        const mir::param::MIRParametrisation& param(combined);
 
         long paramId = 0;
-        c.get("paramId", paramId);
+        ASSERT(metadata.get("paramId", paramId));
 
-        if (key.empty()) {
-            // FIXME: fieldParametrisation() is used to access defaults, because
-            // CombinedParametrisation is not printing properly (maybe with good reason)
-            eckit::Log::info() << "paramId=" << paramId << ": " << c.fieldParametrisation() << std::endl;
-        } else {
-            std::string value = "???";
-            c.get(key, value);
-            eckit::Log::info() << "paramId=" << paramId << "," << key << "=" << value << std::endl;
-        }
+        std::string value = "???";
+        param.get(key, value);
+
+        eckit::Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
     }
 
 public:
@@ -67,7 +58,7 @@ public:
     // -- Contructors
 
     MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
     }
@@ -77,7 +68,7 @@ public:
 
 void MIRConfig::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--param-id=value] [--key=key] [input1.grib [input2.grib [...]]]"
+            << "\n" "Usage: " << tool << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
             "\n" "Examples: "
             "\n" "  % " << tool << ""
             "\n" "  % " << tool << " --param-id=157"
@@ -88,7 +79,7 @@ void MIRConfig::usage(const std::string &tool) const {
 
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
-    std::string key;
+    std::string key("interpolation");
     args.get("key", key);
 
 
@@ -104,11 +95,10 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
                     value = paramId_;
                     return true;
                 }
-                return mir::param::FieldParametrisation::get(name, value);
+                return FieldParametrisation::get(name, value);
             }
-
         public:
-            DummyField(long paramId): paramId_(paramId) {}
+            DummyField(long paramId) : paramId_(paramId) {}
         };
 
         display(DummyField(paramId), key);
@@ -117,7 +107,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         for (size_t i = 0; i < args.count(); i++) {
 
-            // Display configuration for a (specific or not) paramId and metadata from input file(s)
+            // Display configuration for each input file message(s)
             mir::input::GribFileInput grib(args(i));
             while (grib.next()) {
                 mir::input::MIRInput& input = grib;

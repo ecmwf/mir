@@ -17,6 +17,7 @@
 #define mir_output_ValuesOutput_h
 
 #include <vector>
+
 #include "mir/data/MIRValuesVector.h"
 #include "mir/output/MIROutput.h"
 
@@ -71,15 +72,7 @@ protected:
     // None
 
     // -- Overridden methods
-    // From MIROutput
-
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-
-    virtual bool sameParametrisation(const param::MIRParametrisation&,
-                                     const param::MIRParametrisation&) const;
-
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
+    // None
 
     // -- Class members
     // None
@@ -99,9 +92,13 @@ private:
     // None
 
     // -- Overridden methods
-    // From MIROutput
 
+    // From MIROutput
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
     virtual void print(std::ostream&) const;
 
     // -- Class members

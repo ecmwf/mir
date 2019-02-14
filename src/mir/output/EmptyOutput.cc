@@ -23,8 +23,7 @@ namespace mir {
 namespace output {
 
 
-EmptyOutput::EmptyOutput() {
-}
+EmptyOutput::EmptyOutput() = default;
 
 
 EmptyOutput::EmptyOutput(const std::string&) {
@@ -79,6 +78,11 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
     }
 
     return ok;
+}
+
+
+void EmptyOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
+    // do nothing
 }
 
 

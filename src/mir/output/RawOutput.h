@@ -20,13 +20,6 @@
 
 
 namespace mir {
-namespace repres {
-class Representation;
-}
-}
-
-
-namespace mir {
 namespace output {
 
 
@@ -92,15 +85,14 @@ private:
     // None
 
     // -- Overridden methods
+
     // From MIROutput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-
-    virtual size_t copy(const param::MIRParametrisation &, context::Context &); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
-
-    virtual bool sameAs(const MIROutput& other) const;
-    virtual bool sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const;
-    virtual bool printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const;
+    virtual bool sameAs(const MIROutput&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
+    virtual void print(std::ostream&) const;
 
     // -- Class members
     // None

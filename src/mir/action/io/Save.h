@@ -13,10 +13,11 @@
 /// @date Apr 2015
 
 
-#ifndef Save_H
-#define Save_H
+#ifndef mir_action_io_Save_h
+#define mir_action_io_Save_h
 
 #include "mir/action/plan/Action.h"
+
 
 namespace mir {
 namespace input {
@@ -25,18 +26,23 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
+}
+
+
+namespace mir {
 namespace action {
+namespace io {
 
 
 class Save : public Action {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Save(const param::MIRParametrisation &, input::MIRInput &input, output::MIROutput &output);
+    Save(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
 
     // -- Destructor
 
@@ -54,21 +60,20 @@ class Save : public Action {
     // -- Overridden methods
     // None
 
-
     // -- Class members
     // None
 
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const; // Change to virtual if base class
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -80,12 +85,12 @@ class Save : public Action {
     // -- Class methods
     // None
 
-  private:
+private:
 
     // No copy allowed
 
-    Save(const Save &);
-    Save &operator=(const Save &);
+    Save(const Save&);
+    Save &operator=(const Save&);
 
     // -- Members
 
@@ -97,9 +102,10 @@ class Save : public Action {
 
     // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
-    virtual bool sameAs(const Action& other) const;
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
+    virtual bool isEndAction() const;
 
     // -- Class members
     // None
@@ -114,7 +120,11 @@ class Save : public Action {
 
 };
 
+
+}  // namespace io
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

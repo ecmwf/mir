@@ -10,22 +10,21 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   Dec 2016
+
 
 #include <fstream>
 
+#include "eckit/io/FileHandle.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/caching/matrix/SharedMemoryLoader.h"
-#include "mir/tools/MIRTool.h"
 #include "mir/method/WeightMatrix.h"
+#include "mir/tools/MIRTool.h"
 
-
-using mir::method::WeightMatrix;
 
 class MIRWeightMatrix : public mir::tools::MIRTool {
 
@@ -33,66 +32,131 @@ class MIRWeightMatrix : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const {
+        eckit::Log::info()
+                << "\n" << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>"
+                << std::endl;
+    }
+
+    int numberOfPositionalArguments() const {
+        return 1;
+    }
 
 public:
 
     // -- Contructors
 
     MIRWeightMatrix(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::SimpleOption;
 
-        options_.push_back(new SimpleOption<bool>("load", "Load file into shared memory. If file already loaded, does nothing."));
-        options_.push_back(new SimpleOption<eckit::PathName>("dump", "Also dump the matrix (needs --load)"));
+        options_.push_back(new SimpleOption<bool>("load", "Load file into shared memory. If file is already loaded, does nothing."));
+        options_.push_back(new SimpleOption<bool>("unload", "Unload file from shared memory. If file is not loaded, does nothing."));
 
-        options_.push_back(new SimpleOption<bool>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+        options_.push_back(new SimpleOption<eckit::PathName>("dump", "Matrix dump (needs --load)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("write-csr", "Write matrix as CSR (needs --load, writes nna, nnz, ia, ja, a in 0-based indexing)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("write-mm", "Write matrix as MatrixMarket (needs --load, output in 1-based indexing)"));
     }
 
 };
 
 
-void MIRWeightMatrix::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>"
-            << std::endl;
-}
-
-
 void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
+    using mir::method::WeightMatrix;
+
+    auto& log = eckit::Log::info();
 
     std::string path(args(0));
+    bool write(args.has("dump") || args.has("write-csr") || args.has("write-mm"));
 
-    if (args.has("load") || args.has("dump")) {
+    if (args.has("load") || write) {
 
         mir::caching::matrix::SharedMemoryLoader::loadSharedMemory(path);
 
         WeightMatrix W(new mir::caching::matrix::SharedMemoryLoader("shmem", path));
 
-        eckit::linalg::SparseMatrix& spm = W;
-        eckit::Log::info()
-                << spm
-                << " memory " << W.footprint() << " bytes"
-                << std::endl;
+        log << static_cast<const eckit::linalg::SparseMatrix&>(W)
+            << " memory " << W.footprint() << " bytes"
+            << std::endl;
 
-        if(args.has("dump")) {
-
-            std::string s;
-            args.get("dump", s);
+        std::string s;
+        if (args.get("dump", s)) {
 
             eckit::PathName file(s);
-
-            if(file.exists()) {
-                throw eckit::WriteError("File " + s + " exists");
-            }
-
             std::ofstream out(file.asString().c_str());
-            if (!out) throw eckit::CantOpenFile(file);
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
 
             W.dump(out);
 
             out.close();
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
+        }
 
-            if (out.bad()) throw eckit::WriteError(file);
+        if (args.get("write-csr", s)) {
+
+            eckit::PathName file(s);
+            std::ofstream out(file.asString().c_str());
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
+
+            static auto nl = "\n";
+            static auto space = " ";
+
+            const auto nna = W.rows();
+            const auto nnz = W.nonZeros();
+            out << nna << nl << nnz;
+
+            auto ia(W.outer());
+            auto sep = nl;
+            for (WeightMatrix::Size i = 0; i <= nna; ++i, sep = space) {
+                out << sep << *(ia++);
+            }
+
+            auto ja(W.inner());
+            sep = nl;
+            for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
+                out << sep << *(ja++);
+            }
+
+            auto a(W.data());
+            sep = nl;
+            for (WeightMatrix::Size i = 0; i < nnz; ++i, sep = space) {
+                out << sep << *(a++);
+            }
+
+            out << nl;
+
+            out.close();
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
+        }
+
+        if (args.get("write-mm", s)) {
+
+            eckit::PathName file(s);
+            std::ofstream out(file.asString().c_str());
+            if (!out) {
+                throw eckit::CantOpenFile(file);
+            }
+
+            static auto nl = "\n";
+
+            out << "%%MatrixMarket matrix coordinate real general" << nl;
+            out << W.rows() << " " << W.cols() << " " << W.nonZeros() << nl;
+
+            for (auto i = W.begin(); i!= W.end(); ++i) {
+                out << (i.row() + 1) << " " << (i.col() + 1) << " " << *i << nl;
+            }
+
+            out.close();
+            if (out.bad()) {
+                throw eckit::WriteError(file);
+            }
         }
     }
 

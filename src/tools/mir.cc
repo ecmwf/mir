@@ -14,11 +14,9 @@
 
 
 #include <iostream>
-#include <string>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
@@ -75,10 +73,6 @@ public:
 
     MIR(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;
-
-        //==============================================
-        options_.push_back(new SimpleOption<bool>("version", "Display the version number"));
-        options_.push_back(new SimpleOption<bool>("info", "Same as above"));
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -197,7 +191,7 @@ public:
             options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
             options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("output", "Output format"));
+            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("format", "Output format"));
         }
 
     }
@@ -298,23 +292,6 @@ void MIR::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::outpu
 
 
 int main(int argc, char **argv) {
-
-    // Show version and return
-    for (int c = 1; c < argc; ++c) {
-        const std::string arg(argv[c]);
-
-        if (arg == "--version" || arg == "--info") {
-            using eckit::system::Library;
-
-            for (const auto& lib_name : Library::list()) {
-                auto& lib = Library::lookup(lib_name);
-                eckit::Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << std::endl;
-            }
-
-            return 0;
-        }
-    }
-
     MIR tool(argc, argv);
     return tool.start();
 }

@@ -85,9 +85,7 @@ private:
 
 public:
     MIRSpectralTransform(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        using eckit::option::Separator;
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         options_.push_back(new Separator("Output grid (mandatory one option)"));
         options_.push_back(
@@ -188,7 +186,7 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
             coordinates->push_back(atlas::PointXY(p[1], p[0]));
         }
 
-        return atlas::grid::UnstructuredGrid(coordinates);
+        return atlas::UnstructuredGrid(coordinates);
     }
 
     return representation.atlasGrid();
@@ -211,13 +209,12 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
-        throw eckit::UserError("Option 'multi-scalar' has to be greater than one");
+        throw eckit::UserError("Option 'multi-scalar' has to be greater than or equal to one");
     }
 
     size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
     if (multiTransform < 1 || multiTransform > multiScalar) {
-        throw eckit::UserError("Option 'multi-transform' has to be greater than one, and up to 'multi-scalar' (" +
-                               std::to_string(multiScalar) + ")");
+        throw eckit::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) + "] ('multi-scalar')");
     }
 
     if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
@@ -325,7 +322,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                 << transConfig.getString("type", "(default)")
                 << "\n\t"
                    "Atlas unstructured grid: "
-                << (atlas::grid::UnstructuredGrid(outputGrid) ? "yes" : "no") << std::endl;
+                << (atlas::UnstructuredGrid(outputGrid) ? "yes" : "no") << std::endl;
 
             if (vod2uv) {
                 ASSERT(field.dimensions() == multiScalar * 2);

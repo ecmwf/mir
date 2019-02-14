@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "mir/output/MultiScalarOutput.h"
 
 #include <iostream>
@@ -18,10 +19,13 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/MultiScalarInput.h"
 
+
 namespace mir {
 namespace output {
 
-MultiScalarOutput::MultiScalarOutput() {}
+
+MultiScalarOutput::MultiScalarOutput() = default;
+
 
 MultiScalarOutput::~MultiScalarOutput() {
     for (auto c = components_.rbegin(); c != components_.rend(); ++c) {
@@ -29,9 +33,11 @@ MultiScalarOutput::~MultiScalarOutput() {
     }
 }
 
+
 void MultiScalarOutput::appendScalarOutput(MIROutput* out) {
     components_.push_back(out);
 }
+
 
 size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
 
@@ -55,6 +61,7 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
         throw eckit::SeriousBug(os.str());
     }
 }
+
 
 size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     data::MIRField& field = ctx.field();
@@ -88,6 +95,7 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
     }
 }
 
+
 bool MultiScalarOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const MultiScalarOutput*>(&other);
 
@@ -104,11 +112,12 @@ bool MultiScalarOutput::sameAs(const MIROutput& other) const {
     return true;
 }
 
+
 bool MultiScalarOutput::sameParametrisation(const param::MIRParametrisation& param1,
                                             const param::MIRParametrisation& param2) const {
 
     for (auto& c : components_) {
-        if (c->sameParametrisation(param1, param2)) {
+        if (!(c->sameParametrisation(param1, param2))) {
             return false;
         }
     }
@@ -116,10 +125,18 @@ bool MultiScalarOutput::sameParametrisation(const param::MIRParametrisation& par
     return true;
 }
 
+
 bool MultiScalarOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     ASSERT(!components_.empty());
     return components_[0]->printParametrisation(out, param);
 }
+
+
+void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan, input::MIRInput& input) {
+    ASSERT(!components_.empty());
+    return components_[0]->prepare(parametrisation, plan, input);
+}
+
 
 void MultiScalarOutput::print(std::ostream& out) const {
     out << "MultiScalarOutput[";
@@ -132,6 +149,7 @@ void MultiScalarOutput::print(std::ostream& out) const {
 
     out << "]";
 }
+
 
 } // namespace output
 } // namespace mir

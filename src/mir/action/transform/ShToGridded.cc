@@ -252,10 +252,10 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
     std::string type = "local";
     parametrisation.get("atlas-trans-type", type);
 
-    if (!atlas::trans::TransFactory::has(type)) {
+    if (!atlas::trans::Trans::hasBackend(type)) {
         std::ostringstream msg;
         msg << "ShToGridded: Atlas/Trans spectral transforms type '" << type << "' not supported, available types are: ";
-        atlas::trans::TransFactory::list(msg);
+        atlas::trans::Trans::listBackends(msg);
         eckit::Log::error() << msg.str() << std::endl;
         throw eckit::UserError(msg.str());
     }

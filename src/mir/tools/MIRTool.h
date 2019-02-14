@@ -15,6 +15,7 @@
 #define mir_tools_MIRTool_h
 
 #include <vector>
+
 #include "eckit/runtime/Tool.h"
 #include "eckit/option/Option.h"
 
@@ -33,7 +34,7 @@ namespace tools {
 class MIRTool : public eckit::Tool {
 protected:
 
-    typedef std::vector<eckit::option::Option*> options_t;
+    using options_t = std::vector<eckit::option::Option*>;
 
     virtual void run();
 

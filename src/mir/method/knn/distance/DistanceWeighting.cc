@@ -11,6 +11,8 @@
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -27,8 +29,8 @@ namespace distance {
 namespace {
 
 
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, DistanceWeightingFactory* > *m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, DistanceWeightingFactory* > *m = nullptr;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
@@ -41,8 +43,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-DistanceWeighting::DistanceWeighting() {
-}
+DistanceWeighting::DistanceWeighting() = default;
 
 
 DistanceWeighting::~DistanceWeighting() = default;

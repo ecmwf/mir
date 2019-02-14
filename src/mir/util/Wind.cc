@@ -45,8 +45,9 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u,
 
         // assumes the same input parameter table for the defaults
         size_t id = 0;
-        ASSERT(parametrisation.fieldParametrisation().get("paramId", id));
-        ASSERT(id > 0);
+        if (parametrisation.fieldParametrisation().get("paramId", id)) {
+            ASSERT(id > 0);
+        }
 
         size_t table = id / 1000;
 

@@ -107,7 +107,7 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
 
 void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r,
                                                   std::vector<Latitude>& latitudes) const {
-    atlas::grid::StructuredGrid in(r.atlasGrid());
+    atlas::StructuredGrid in(r.atlasGrid());
     ASSERT(in);
 
     const auto& pl = in.nx();

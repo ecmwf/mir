@@ -29,8 +29,7 @@ namespace mir {
 namespace output {
 
 
-MIROutput::MIROutput() {
-}
+MIROutput::MIROutput() = default;
 
 
 MIROutput::~MIROutput() = default;
@@ -40,9 +39,9 @@ namespace {
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map<std::string, MIROutputFactory* > *m_formats = 0;
-static std::map<std::string, MIROutputFactory* > *m_extensions = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map<std::string, MIROutputFactory* > *m_formats = nullptr;
+static std::map<std::string, MIROutputFactory* > *m_extensions = nullptr;
 
 
 static void init() {
@@ -131,21 +130,21 @@ MIROutputFactory::~MIROutputFactory() {
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    std::string output = user.has("dryrun") ? "empty"
+    std::string format = user.has("dryrun") ? "empty"
                        : user.has("griddef") ? "geopoints"
                        : user.has("latitudes") || user.has("longitudes") ? "geopoints"
                        : "extension"; // maybe "grib"??
 
-    user.get("output", output);
+    user.get("format", format);
 
-    auto j = m_formats->find(output);
+    auto j = m_formats->find(format);
     if (j == m_formats->cend()) {
-        list(eckit::Log::error() << "MIROutputFactory: unknown '" << output << "', choices are: ");
+        list(eckit::Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
         eckit::Log::error() << std::endl;
-        throw eckit::SeriousBug("MIROutputFactory: unknown '" + output + "'");
+        throw eckit::SeriousBug("MIROutputFactory: unknown '" + format + "'");
     }
 
-    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << output << "' for '" << path << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
     return j->second->make(path);
 }
 
@@ -159,6 +158,11 @@ void MIROutputFactory::list(std::ostream& out) {
         out << sep << j.first;
         sep = ", ";
     }
+}
+
+
+void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
+    // do nothing
 }
 
 

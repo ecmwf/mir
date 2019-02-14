@@ -20,13 +20,13 @@
 #include "eckit/log/Statistics.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
 namespace action {
+namespace io {
 
 
 Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output):
@@ -54,7 +54,7 @@ void Copy::custom(std::ostream& out) const {
 }
 
 
-void Copy::execute(context::Context&  ctx) const {
+void Copy::execute(context::Context& ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
     output_.copy(parametrisation_, ctx);
 }
@@ -65,6 +65,12 @@ const char* Copy::name() const {
 }
 
 
+bool Copy::isEndAction() const {
+    return true;
+}
+
+
+}  // namespace io
 }  // namespace action
 }  // namespace mir
 

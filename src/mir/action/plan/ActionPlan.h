@@ -77,6 +77,7 @@ public:
     void dump(std::ostream&) const;
     void custom(std::ostream&) const;
     void compress();
+    bool ended() const;
 
     const Action& action(size_t) const;
 

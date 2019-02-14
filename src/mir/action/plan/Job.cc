@@ -23,7 +23,6 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
-#include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
@@ -65,7 +64,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     if (!postProcessingRequested(job)) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
-            plan_->add(new action::Copy(job, output_));
+            plan_->add(new action::io::Copy(job, output_));
+            ASSERT(plan_->ended());
 
             if (eckit::Log::debug<LibMir>()) {
                 eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
@@ -80,15 +80,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     plan_.reset(new action::ActionPlan(*combined_));
 
     eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
-    style->prepare(*plan_);
-
-
-    if (plan_->empty()) {
-        plan_->add(new action::Copy(*combined_, output_));
-    } else {
-        plan_->add(new action::Save(*combined_, input_, output_));
-    }
-
+    style->prepare(*plan_, input_, output_);
+    ASSERT(plan_->ended());
 
     if (compress) {
         plan_->compress();

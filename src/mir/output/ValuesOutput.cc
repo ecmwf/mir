@@ -37,10 +37,12 @@ size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
     NOTIMP;
 }
 
+
 bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&,
                                        const param::MIRParametrisation&) const {
     return true;
 }
+
 
 bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
     return false;

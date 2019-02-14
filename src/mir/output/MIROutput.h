@@ -23,8 +23,17 @@
 
 
 namespace mir {
+namespace action {
+class ActionPlan;
+}
 namespace context {
 class Context;
+}
+namespace input {
+class MIRInput;
+}
+namespace output {
+class MIROutput;
 }
 namespace param {
 class MIRParametrisation;
@@ -63,6 +72,7 @@ public:
     virtual bool sameAs(const MIROutput& other) const = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&);
 
     // -- Overridden methods
     // None

@@ -188,6 +188,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
 
         {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
+        {"accuracy", "bitsPerValue", nullptr},
+        {"packing", "packingType", nullptr},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees", nullptr},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
@@ -329,7 +331,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 
                         std::ostringstream msgs;
                         msgs.precision(32);
-                        msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded (reduced_gg):"
+                        msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded:"
                              << "\n" "encoded:  " << Lon2
                              << "\n" "expected: " << Lon2_expected
                              << std::endl;
@@ -874,9 +876,6 @@ bool GribInput::handle(grib_handle *h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(grib_get_long(h, "7777", &value));
-        if (value != 7777) {
-            throw eckit::SeriousBug("GribInput: grib_handle not terminated with 7777.");
-        }
         return true;
     }
 
