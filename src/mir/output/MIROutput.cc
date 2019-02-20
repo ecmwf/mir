@@ -161,7 +161,7 @@ void MIROutputFactory::list(std::ostream& out) {
 }
 
 
-void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&) {
+void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
     // do nothing
 }
 
