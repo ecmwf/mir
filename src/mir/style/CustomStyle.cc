@@ -34,7 +34,7 @@ void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametr
     util::PlanParser parser(str);
     parser.parse(plan, parametrisation);
 
-    output.prepare(parametrisation, plan, input);
+    output.prepare(parametrisation, plan, input, output);
 
     if (plan.empty()) {
         plan.add(new action::io::Copy(parametrisation, output));
