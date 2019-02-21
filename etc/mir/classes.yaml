@@ -139,3 +139,6 @@ unknown.missing:
 unknown.reserved:
     _warning: true
 
+unknown.to-classify-from-dgov:
+    _warning: true
+
