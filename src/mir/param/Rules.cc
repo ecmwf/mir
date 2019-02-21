@@ -13,10 +13,12 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/utils/Translator.h"
+
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -107,16 +109,43 @@ void Rules::readConfigurationFiles() {
 
     warning_.clear();
 
-    eckit::ValueMap classes = eckit::YAMLParser::decodeFile("~mir/etc/mir/classes.yaml");
-    eckit::ValueMap parameterClass = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameter-class.yaml");
-    for (const auto& i : parameterClass) {
+    struct ConfigFile : private eckit::PathName {
+        eckit::ValueMap map() {
+            return eckit::YAMLParser::decodeFile(static_cast<PathName>(*this));
+        }
+        using PathName::PathName;
+        using PathName::exists;
+    };
+
+    ConfigFile classes("~mir/etc/mir/classes.yaml");
+    ConfigFile parameterClass("~mir/etc/mir/parameter-class.yaml");
+    ConfigFile parameters("~mir/etc/mir/parameters.yaml");
+
+    if (!classes.exists() || !parameterClass.exists() || !parameters.exists()) {
+
+        const std::string msg = "Configuration files not found,"
+                                " post-processing defaults might not be appropriate";
+
+        static bool abortIfConfigurationFilesNotFound = eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
+        if (abortIfConfigurationFilesNotFound) {
+            eckit::Log::error() << msg << std::endl;
+            throw eckit::UserError(msg);
+        }
+
+        eckit::Log::warning() << msg << std::endl;
+        return;
+    }
+
+
+    const auto classesMap = classes.map();
+    for (const auto& i : parameterClass.map()) {
 
         // class
         const std::string& klass = i.first;
         ASSERT(klass != DEFAULT);
 
-        const auto& config = classes.find(klass);
-        if (config == classes.end()) {
+        const auto& config = classesMap.find(klass);
+        if (config == classesMap.end()) {
             throw eckit::UserError("Rules: unkown class '" + klass + "'");
         }
         const eckit::ValueMap& klassConfig = config->second;
@@ -154,8 +183,8 @@ void Rules::readConfigurationFiles() {
     }
 
 
-    const auto defaults = classes.find(DEFAULT);
-    if (defaults != classes.end()) {
+    const auto defaults = classesMap.find(DEFAULT);
+    if (defaults != classesMap.end()) {
         const eckit::ValueMap& defaultConfig = defaults->second;
         for (auto p : rules_) {
             ASSERT(p.second);
@@ -173,8 +202,7 @@ void Rules::readConfigurationFiles() {
     }
 
 
-    eckit::ValueMap parameters = eckit::YAMLParser::decodeFile("~mir/etc/mir/parameters.yaml");
-    for (const auto& i : parameters) {
+    for (const auto& i : parameters.map()) {
 
         long paramId = translate_to_long(i.first);
         SimpleParametrisation& config = Rules::lookup(paramId);
