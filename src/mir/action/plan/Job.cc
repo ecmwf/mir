@@ -15,19 +15,12 @@
 
 #include "mir/action/plan/Job.h"
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
-#include "eckit/config/Configuration.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
-#include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/style/MIRStyle.h"
@@ -38,14 +31,12 @@ namespace action {
 
 
 bool postProcessingRequested(const api::MIRJob& job) {
-    using keys_t = std::vector<std::string>;
-
-    auto& config = LibMir::instance().configuration();
-    static const keys_t keys = config.getStringVector("post-process");
-
-    return keys.end() != std::find_if(keys.begin(), keys.end(), [&job](const keys_t::value_type& key) {
-        return job.has(key);
-    });
+    for (auto& keyword : LibMir::instance().postProcess()) {
+        if (job.has(keyword)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 

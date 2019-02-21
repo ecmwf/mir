@@ -50,6 +50,31 @@ bool LibMir::caching() {
 }
 
 
+const LibMir::keywords_t LibMir::postProcess() {
+    static const keywords_t defaultKeywords {
+        "accuracy",
+        "bitmap",
+        "checkerboard",
+        "compatibility",
+        "edition",
+        "format",
+        "formula",
+        "frame",
+        "griddef",
+        "latitudes",
+        "longitudes",
+        "packing",
+        "pattern",
+        "vod2uv",
+    };
+
+    auto& config = instance().configuration();
+    static const keywords_t keywords = config.getStringVector("post-process", defaultKeywords);
+
+    return keywords;
+}
+
+
 const LibMir& LibMir::instance() {
     static LibMir libmir;
     return libmir;

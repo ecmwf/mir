@@ -17,6 +17,9 @@
 #ifndef mir_config_LibMir_h
 #define mir_config_LibMir_h
 
+#include <string>
+#include <vector>
+
 #include "eckit/system/Library.h"
 
 
@@ -25,10 +28,14 @@ namespace mir {
 
 class LibMir : public eckit::system::Library {
 public:
+    using keywords_t = std::vector<std::string>;
+
     LibMir();
+    static const LibMir& instance();
+
     static std::string cacheDir();
     static bool caching();
-    static const LibMir& instance();
+    static const keywords_t postProcess();
 
 protected:
     const void* addr() const;
