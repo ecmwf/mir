@@ -30,16 +30,6 @@ namespace mir {
 namespace action {
 
 
-bool postProcessingRequested(const api::MIRJob& job) {
-    for (auto& keyword : LibMir::instance().postProcess()) {
-        if (job.has(keyword)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
     input_(input),
     output_(output)  {
@@ -52,15 +42,22 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
-    if (!postProcessingRequested(job)) {
+    bool postProcessingRequested = false;
+    for (auto& keyword : LibMir::instance().postProcess()) {
+        if (job.has(keyword)) {
+            postProcessingRequested = true;
+            break;
+        }
+    }
+
+    if (!postProcessingRequested) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::io::Copy(job, output_));
             ASSERT(plan_->ended());
 
             if (eckit::Log::debug<LibMir>()) {
-                eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-                plan_->dump(eckit::Log::debug<LibMir>());
+                plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
             }
 
             return;
@@ -79,8 +76,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     }
 
     if (eckit::Log::debug<LibMir>()) {
-        eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-        plan_->dump(eckit::Log::debug<LibMir>());
+        plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
     }
 }
 
