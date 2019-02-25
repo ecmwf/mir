@@ -629,16 +629,18 @@ void FieldComparator::compareFieldValues(
     const param::MIRParametrisation &metadata2 = input2.parametrisation();
 
 
+    // comparison can be set by classification and/or representation
     std::string comparison1;
     std::string comparison2;
-    ASSERT(metadata1.get("comparison", comparison1));
-    ASSERT(metadata2.get("comparison", comparison2));
+    metadata1.get("comparison", comparison1);
+    metadata2.get("comparison", comparison2);
 
     repres::RepresentationHandle repres1 = input1.field().representation();
     repres::RepresentationHandle repres2 = input2.field().representation();
     repres1->comparison(comparison1);
     repres2->comparison(comparison2);
 
+    ASSERT(!comparison1.empty());
     ASSERT(comparison1 == comparison2);
 
 
