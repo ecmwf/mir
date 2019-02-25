@@ -13,13 +13,13 @@
 
 #include <cmath>
 
-#include "eckit/filesystem/PathName.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/parser/JSON.h"
 #include "eckit/parser/StringTools.h"
 
 #include "mir/caching/InMemoryCache.h"
@@ -37,18 +37,13 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
-#include "eckit/parser/JSON.h"
-
-
-using eckit::PathName;
-using eckit::AutoStdFile;
 
 
 namespace mir {
 namespace compare {
 
 
-static caching::InMemoryCache<AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
+static caching::InMemoryCache<eckit::AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
 const WhiteLister& DefaultWhiteLister::instance() {
@@ -56,7 +51,6 @@ const WhiteLister& DefaultWhiteLister::instance() {
     return i;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     using namespace eckit::option;
@@ -117,9 +111,6 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
 }
 
 
-
-//----------------------------------------------------------------------------------------------------------------------
-
 FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& whiteLister):
     fatals_(0),
     warnings_(0),
@@ -151,7 +142,9 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
 
 }
 
+
 FieldComparator::~FieldComparator() = default;
+
 
 void FieldComparator::compare(const std::string& name,
                               const MultiFile& multi1,
@@ -443,10 +436,10 @@ void FieldComparator::json(eckit::JSON& json, const std::string& path) {
 
 
 
-static AutoStdFile& open(const std::string& path) {
+static eckit::AutoStdFile& open(const std::string& path) {
     auto j = cache_.find(path);
     if (j == cache_.end()) {
-        cache_.insert(path, new AutoStdFile(path));
+        cache_.insert(path, new eckit::AutoStdFile(path));
         j = cache_.find(path);
     }
     return *j;
@@ -478,7 +471,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
-    AutoStdFile& f = open(field.path());
+    eckit::AutoStdFile& f = open(field.path());
     size_t size = buffer.size();
     fseek(f, field.offset(), SEEK_SET);
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
@@ -554,7 +547,7 @@ void FieldComparator::compareFieldStatistics(
     const Field & field2) {
 
     mir::caching::InMemoryCacheStatistics ignore;
-    mir::caching::InMemoryCacheUser<AutoStdFile> lock(cache_, ignore);
+    mir::caching::InMemoryCacheUser<eckit::AutoStdFile> lock(cache_, ignore);
 
     Statistics s1;
     getStats(field1, s1);
@@ -623,7 +616,6 @@ void FieldComparator::compareFieldValues(
 
     input::MIRInput& input1 = grib1;
     input::MIRInput& input2 = grib2;
-
 
     const param::MIRParametrisation &metadata1 = input1.parametrisation();
     const param::MIRParametrisation &metadata2 = input2.parametrisation();
@@ -859,8 +851,6 @@ void FieldComparator::compareCounts(const std::string & name,
 
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace compare
 }  // namespace mir
