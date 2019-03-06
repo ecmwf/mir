@@ -9,30 +9,23 @@
  */
 
 
-#ifndef mir_data_dimension_Dimension3DCartesian_h
-#define mir_data_dimension_Dimension3DCartesian_h
-
-#include "mir/data/dimension/DimensionLinear.h"
+#include "mir/data/space/Space1DLinear.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-class Dimension3DCartesian : public DimensionLinear {
-
-    // -- Overridden methods
-
-    size_t dimensions() const;
-
-};
+static SpaceChoice<Space1DLinear> __space("1d.linear");
 
 
-}  // namespace dimension
+size_t Space1DLinear::dimensions() const {
+    return 1;
+}
+
+
+}  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif
 

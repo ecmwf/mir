@@ -9,23 +9,25 @@
  */
 
 
-#include "mir/data/dimension/Dimension1DLinear.h"
+#include "mir/data/space/Space3DCartesian.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-static DimensionChoice<Dimension1DLinear> __dimension("1d.linear");
+static SpaceChoice<Space3DCartesian> __space1("3d.cartesian.x", 0, 3);
+static SpaceChoice<Space3DCartesian> __space2("3d.cartesian.y", 1, 3);
+static SpaceChoice<Space3DCartesian> __space3("3d.cartesian.z", 2, 3);
 
 
-size_t Dimension1DLinear::dimensions() const {
-    return 1;
+size_t Space3DCartesian::dimensions() const {
+    return 3;
 }
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 

@@ -26,7 +26,7 @@
 
 namespace mir {
 namespace data {
-class Dimension;
+class Space;
 }
 namespace lsm {
 class LandSeaMasks;
@@ -105,12 +105,13 @@ private:
             const MIRValuesVector& Avector,
             const MIRValuesVector& Bvector,
             const double& missingValue,
-            const data::Dimension&) const;
+            const data::Space&) const;
 
     /// Get interpolation operand matrices, from A = W × B
     virtual void setVectorFromOperandMatrix(const WeightMatrix::Matrix& A,
                                             MIRValuesVector& Avector,
-                                            const double& missingValue, const data::Dimension&) const;
+                                            const double& missingValue,
+                                            const data::Space&) const;
 
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in,
                                        const repres::Representation& out) const;

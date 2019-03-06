@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/data/dimension/Dimension1DAngleT.h"
+#include "mir/data/space/Space1DAngleT.h"
 
 #include <cmath>
 #include <complex>
@@ -20,7 +20,7 @@
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
 namespace {
@@ -91,19 +91,19 @@ template<> complex_t convert_to_complex< DEGREE >(const double& a) {
 }  // (anonymous namespace)
 
 
-static DimensionChoice< Dimension1DAngleT< DEGREE, ASYMMETRIC > > __dimension1("1d.angle.degree.asymmetric");
-static DimensionChoice< Dimension1DAngleT< DEGREE, SYMMETRIC  > > __dimension2("1d.angle.degree.symmetric");
-static DimensionChoice< Dimension1DAngleT< RADIAN, ASYMMETRIC > > __dimension3("1d.angle.radian.asymmetric");
-static DimensionChoice< Dimension1DAngleT< RADIAN, SYMMETRIC  > > __dimension4("1d.angle.radian.symmetric");
+static SpaceChoice< Space1DAngleT< DEGREE, ASYMMETRIC > > __space1("1d.angle.degree.asymmetric");
+static SpaceChoice< Space1DAngleT< DEGREE, SYMMETRIC  > > __space2("1d.angle.degree.symmetric");
+static SpaceChoice< Space1DAngleT< RADIAN, ASYMMETRIC > > __space3("1d.angle.radian.asymmetric");
+static SpaceChoice< Space1DAngleT< RADIAN, SYMMETRIC  > > __space4("1d.angle.radian.symmetric");
 
 
 template< int SCALE, int SYMMETRY >
-Dimension1DAngleT< SCALE, SYMMETRY >::Dimension1DAngleT() : Dimension() {
+Space1DAngleT< SCALE, SYMMETRY >::Space1DAngleT() : Space() {
 }
 
 
 template< int SCALE, int SYMMETRY >
-void Dimension1DAngleT< SCALE, SYMMETRY >::linearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double missingValue) const {
+void Space1DAngleT< SCALE, SYMMETRY >::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
     ASSERT(matrixIn.cols() == 1);
     matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
 
@@ -121,7 +121,7 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::linearise(const Dimension::Matrix& ma
 
 
 template< int SCALE, int SYMMETRY >
-void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double missingValue) const {
+void Space1DAngleT< SCALE, SYMMETRY >::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
     ASSERT(matrixIn.rows() == matrixOut.rows());
     ASSERT(matrixIn.cols() == 2);
     ASSERT(matrixOut.cols() == 1);
@@ -146,12 +146,12 @@ void Dimension1DAngleT< SCALE, SYMMETRY >::unlinearise(const Dimension::Matrix& 
 
 
 template<int SCALE, int SYMMETRY>
-size_t Dimension1DAngleT< SCALE, SYMMETRY >::dimensions() const {
+size_t Space1DAngleT< SCALE, SYMMETRY >::dimensions() const {
     return 1;
 }
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 

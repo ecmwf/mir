@@ -171,8 +171,6 @@ list(APPEND mir_srcs
     config/LibMir.h
     data/CartesianVector2DField.cc
     data/CartesianVector2DField.h
-    data/Dimension.cc
-    data/Dimension.h
     data/Field.cc
     data/Field.h
     data/MIRField.cc
@@ -181,20 +179,22 @@ list(APPEND mir_srcs
     data/MIRFieldStats.h
     data/MIRValuesVector.cc
     data/MIRValuesVector.h
-    data/dimension/Dimension1DAngleT.cc
-    data/dimension/Dimension1DAngleT.h
-    data/dimension/Dimension1DLinear.cc
-    data/dimension/Dimension1DLinear.h
-    data/dimension/Dimension2DVectorZonalMeridional.cc
-    data/dimension/Dimension2DVectorZonalMeridional.h
-    data/dimension/Dimension3DCartesian.cc
-    data/dimension/Dimension3DCartesian.h
-    data/dimension/Dimension3DVectorZonalMeridionalVertical.cc
-    data/dimension/Dimension3DVectorZonalMeridionalVertical.h
-    data/dimension/DimensionLinear.cc
-    data/dimension/DimensionLinear.h
-    data/dimension/DimensionLogarithmic.cc
-    data/dimension/DimensionLogarithmic.h
+    data/Space.cc
+    data/Space.h
+    data/space/Space1DAngleT.cc
+    data/space/Space1DAngleT.h
+    data/space/Space1DLinear.cc
+    data/space/Space1DLinear.h
+    data/space/Space2DVectorZonalMeridional.cc
+    data/space/Space2DVectorZonalMeridional.h
+    data/space/Space3DCartesian.cc
+    data/space/Space3DCartesian.h
+    data/space/Space3DVectorZonalMeridionalVertical.cc
+    data/space/Space3DVectorZonalMeridionalVertical.h
+    data/space/SpaceLinear.cc
+    data/space/SpaceLinear.h
+    data/space/SpaceLogarithmic.cc
+    data/space/SpaceLogarithmic.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc

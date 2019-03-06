@@ -31,9 +31,9 @@
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"
-#include "mir/data/Dimension.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
+#include "mir/data/Space.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/param/MIRParametrisation.h"
@@ -224,13 +224,13 @@ void MethodWeighted::setOperandMatricesFromVectors(
     const MIRValuesVector& Avector,
     const MIRValuesVector& Bvector,
     const double& missingValue,
-    const data::Dimension& dimension ) const {
+    const data::Space& space ) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     WeightMatrix::Matrix Bwrap(const_cast<double *>(Bvector.data()), Bvector.size(), 1);
 
-    dimension.linearise(Bwrap, B, missingValue);
+    space.linearise(Bwrap, B, missingValue);
 
     // set output matrix A (from A = W × B)
     // reuses output values vector if handling a column vector, otherwise allocates new matrix
@@ -254,14 +254,14 @@ void MethodWeighted::setVectorFromOperandMatrix(
     const WeightMatrix::Matrix& A,
     MIRValuesVector& Avector,
     const double& missingValue,
-    const data::Dimension& dimension ) const {
+    const data::Space& space ) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     ASSERT(Avector.size() == A.rows());
     WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
 
-    dimension.unlinearise(A, Awrap, missingValue);
+    space.unlinearise(A, Awrap, missingValue);
 }
 
 
@@ -310,14 +310,14 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         }
 
         // Get input/output matrices
-        std::string dimension;
-        parametrisation_.get("dimension", dimension);
-        const data::Dimension& dim = data::DimensionChooser::lookup(dimension);
+        std::string space;
+        parametrisation_.get("space", space);
+        const data::Space& sp = data::SpaceChooser::lookup(space);
 
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
         WeightMatrix::Matrix mi;
         WeightMatrix::Matrix mo;
-        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, dim);
+        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, sp);
         ASSERT(mi.rows() == npts_inp);
         ASSERT(mo.rows() == npts_out);
 
@@ -335,7 +335,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         }
 
         // update field values with interpolation result
-        setVectorFromOperandMatrix(mo, result, missingValue, dim);
+        setVectorFromOperandMatrix(mo, result, missingValue, sp);
         field.update(result, i, hasMissing || canIntroduceMissingValues());
 
 
