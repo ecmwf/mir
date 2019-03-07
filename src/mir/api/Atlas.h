@@ -37,10 +37,6 @@
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 
-#if ATLAS_HAVE_TRANS
-#include "transi/version.h"
-#endif
-
 #else
 
 #include "eckit/geometry/Point2.h"

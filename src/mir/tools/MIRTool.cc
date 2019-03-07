@@ -66,11 +66,6 @@ void MIRTool::run() {
                 << std::endl;
         }
 
-#if ATLAS_HAVE_TRANS
-        log << "transi " << transi_version() << " git-sha1:" << transi_git_sha1_abbrev(8) << std::endl;
-        log << "trans " << trans_version() << " git-sha1:" << trans_git_sha1_abbrev(8) << std::endl;
-#endif
-
 #if defined(HAVE_ECCODES)
         log << "eccodes " << ECCODES_VERSION_STR  << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0,8) << std::endl;
 #endif
