@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_data_Dimension_h
-#define mir_data_Dimension_h
+#ifndef mir_data_Space_h
+#define mir_data_Space_h
 
 #include <string>
 #include "eckit/linalg/Matrix.h"
@@ -21,7 +21,7 @@ namespace mir {
 namespace data {
 
 
-class Dimension : private eckit::NonCopyable {
+class Space : private eckit::NonCopyable {
 public:
 
     // -- Types
@@ -33,11 +33,11 @@ public:
 
     // -- Constructors
 
-    Dimension();
+    Space();
 
     // -- Destructor
 
-    virtual ~Dimension();
+    virtual ~Space();
 
     // -- Convertors
     // None
@@ -102,26 +102,26 @@ private:
 };
 
 
-class DimensionChooser {
+class SpaceChooser {
 private:
     std::string name_;
-    Dimension* choice_;
+    Space* choice_;
     const size_t component_;
     const size_t dimensions_;
 protected:
-    DimensionChooser(const std::string&, Dimension* choice, size_t component, size_t dimensions);
-    virtual ~DimensionChooser();
+    SpaceChooser(const std::string&, Space* choice, size_t component, size_t dimensions);
+    virtual ~SpaceChooser();
 public:
-    static const Dimension& lookup(const std::string& name);
+    static const Space& lookup(const std::string& name);
     static void list(std::ostream&);
 };
 
 
 template<class T>
-class DimensionChoice : public DimensionChooser {
+class SpaceChoice : public SpaceChooser {
 public:
-    DimensionChoice(const std::string& name, size_t component = 0, size_t dimensions = 1 ) :
-        DimensionChooser(name, new T, component, dimensions) {}
+    SpaceChoice(const std::string& name, size_t component = 0, size_t dimensions = 1 ) :
+        SpaceChooser(name, new T, component, dimensions) {}
 };
 
 

@@ -9,18 +9,18 @@
  */
 
 
-#ifndef mir_data_dimension_Dimension3DVectorZonalMeridionalVertical_h
-#define mir_data_dimension_Dimension3DVectorZonalMeridionalVertical_h
+#ifndef mir_data_dimension_Space3DVectorZonalMeridionalVertical_h
+#define mir_data_dimension_Space3DVectorZonalMeridionalVertical_h
 
-#include "mir/data/dimension/DimensionLinear.h"
+#include "mir/data/space/SpaceLinear.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-class Dimension3DVectorZonalMeridionalVertical : public DimensionLinear {
+class Space3DVectorZonalMeridionalVertical : public SpaceLinear {
 
     // -- Overridden methods
 
@@ -29,7 +29,7 @@ class Dimension3DVectorZonalMeridionalVertical : public DimensionLinear {
 };
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 

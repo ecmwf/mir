@@ -9,24 +9,24 @@
  */
 
 
-#include "mir/data/dimension/Dimension2DVectorZonalMeridional.h"
+#include "mir/data/space/Space2DVectorZonalMeridional.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-static DimensionChoice<Dimension2DVectorZonalMeridional> __dimension1("2d.vector.u", 0, 2);
-static DimensionChoice<Dimension2DVectorZonalMeridional> __dimension2("2d.vector.v", 1, 2);
+static SpaceChoice<Space2DVectorZonalMeridional> __space1("2d.vector.u", 0, 2);
+static SpaceChoice<Space2DVectorZonalMeridional> __space2("2d.vector.v", 1, 2);
 
 
-size_t Dimension2DVectorZonalMeridional::dimensions() const {
+size_t Space2DVectorZonalMeridional::dimensions() const {
     return 2;
 }
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 

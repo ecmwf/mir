@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/data/dimension/DimensionLogarithmic.h"
+#include "mir/data/space/SpaceLogarithmic.h"
 
 #include <cmath>
 #include "eckit/exception/Exceptions.h"
@@ -17,17 +17,17 @@
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-static DimensionChoice<DimensionLogarithmic> __dimension("1d.logarithmic");
+static SpaceChoice<SpaceLogarithmic> __space("1d.logarithmic");
 
 
-DimensionLogarithmic::DimensionLogarithmic() : Dimension() {
+SpaceLogarithmic::SpaceLogarithmic() : Space() {
 }
 
 
-void DimensionLogarithmic::linearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double missingValue) const {
+void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
     matrixOut.resize(matrixIn.rows(), matrixIn.cols());  // allocates memory, not initialised
 
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
@@ -40,7 +40,7 @@ void DimensionLogarithmic::linearise(const Dimension::Matrix& matrixIn, Dimensio
 }
 
 
-void DimensionLogarithmic::unlinearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double missingValue) const {
+void SpaceLogarithmic::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
     ASSERT(matrixIn.rows() == matrixOut.rows());
 
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
@@ -54,7 +54,7 @@ void DimensionLogarithmic::unlinearise(const Dimension::Matrix& matrixIn, Dimens
 }
 
 
-size_t DimensionLogarithmic::dimensions() const {
+size_t SpaceLogarithmic::dimensions() const {
     return 1;
 }
 

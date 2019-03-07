@@ -9,25 +9,25 @@
  */
 
 
-#include "mir/data/dimension/Dimension3DCartesian.h"
+#include "mir/data/space/Space3DVectorZonalMeridionalVertical.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-static DimensionChoice<Dimension3DCartesian> __dimension1("3d.cartesian.x", 0, 3);
-static DimensionChoice<Dimension3DCartesian> __dimension2("3d.cartesian.y", 1, 3);
-static DimensionChoice<Dimension3DCartesian> __dimension3("3d.cartesian.z", 2, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space1("3d.vector.u", 0, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space2("3d.vector.v", 1, 3);
+static SpaceChoice<Space3DVectorZonalMeridionalVertical> __space3("3d.vector.w", 2, 3);
 
 
-size_t Dimension3DCartesian::dimensions() const {
+size_t Space3DVectorZonalMeridionalVertical::dimensions() const {
     return 3;
 }
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 
