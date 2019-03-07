@@ -9,19 +9,19 @@
  */
 
 
-#include "mir/data/dimension/DimensionLinear.h"
+#include "mir/data/space/SpaceLinear.h"
 
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-DimensionLinear::DimensionLinear() : Dimension() {
+SpaceLinear::SpaceLinear() : Space() {
 }
 
 
-void DimensionLinear::linearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double) const {
+void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;
@@ -32,7 +32,7 @@ void DimensionLinear::linearise(const Dimension::Matrix& matrixIn, Dimension::Ma
 }
 
 
-void DimensionLinear::unlinearise(const Dimension::Matrix& matrixIn, Dimension::Matrix& matrixOut, double) const {
+void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
     using eckit::linalg::Scalar;

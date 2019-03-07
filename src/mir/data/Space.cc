@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/data/Dimension.h"
+#include "mir/data/Space.h"
 
 #include <map>
 
@@ -24,11 +24,11 @@ namespace mir {
 namespace data {
 
 
-Dimension::Dimension() {
+Space::Space() {
 }
 
 
-Dimension::~Dimension() = default;
+Space::~Space() = default;
 
 
 //=========================================================================
@@ -37,15 +37,15 @@ Dimension::~Dimension() = default;
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, DimensionChooser* >* m = 0;
+static std::map< std::string, SpaceChooser* >* m = 0;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, DimensionChooser* >();
+    m = new std::map< std::string, SpaceChooser* >();
 }
 }  // (anonymous namespace)
 
 
-DimensionChooser::DimensionChooser(const std::string& name, Dimension* choice, size_t component, size_t dimensions) :
+SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :
     name_(name),
     choice_(choice),
     component_(component),
@@ -54,18 +54,18 @@ DimensionChooser::DimensionChooser(const std::string& name, Dimension* choice, s
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DimensionChooser: duplicate '" + name + "'");
+        throw eckit::SeriousBug("SpaceChooser: duplicate '" + name + "'");
     }
 
     if (component_ >= dimensions_) {
-        throw eckit::SeriousBug("DimensionChooser: '" + name + "' component (" + std::to_string(component_) + ") is not below dimensions (" + std::to_string(dimensions_) + ")");
+        throw eckit::SeriousBug("SpaceChooser: '" + name + "' component (" + std::to_string(component_) + ") is not below dimensions (" + std::to_string(dimensions_) + ")");
     }
 
     (*m)[name] = this;
 }
 
 
-DimensionChooser::~DimensionChooser() {
+SpaceChooser::~SpaceChooser() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     delete choice_;
@@ -73,23 +73,23 @@ DimensionChooser::~DimensionChooser() {
 }
 
 
-const Dimension& DimensionChooser::lookup(const std::string& name) {
+const Space& SpaceChooser::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "DimensionChooser: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "SpaceChooser: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "DimensionChooser: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("DimensionChooser: unknown '" + name + "'");
+        list(eckit::Log::error() << "SpaceChooser: unknown '" << name << "', choices are: ");
+        throw eckit::SeriousBug("SpaceChooser: unknown '" + name + "'");
     }
 
     return *((j->second)->choice_);
 }
 
 
-void DimensionChooser::list(std::ostream& out) {
+void SpaceChooser::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

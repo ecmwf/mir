@@ -9,18 +9,18 @@
  */
 
 
-#ifndef mir_data_dimension_DimensionLogarithmic_h
-#define mir_data_dimension_DimensionLogarithmic_h
+#ifndef mir_data_dimension_Space1DAngleT_h
+#define mir_data_dimension_Space1DAngleT_h
 
-#include "mir/data/Dimension.h"
-
+#include "mir/data/Space.h"
 
 namespace mir {
 namespace data {
-namespace dimension {
+namespace space {
 
 
-class DimensionLogarithmic : public Dimension {
+template< int SCALE, int SYMMETRY >
+class Space1DAngleT : public Space {
 public:
 
     // -- Exceptions
@@ -28,7 +28,7 @@ public:
 
     // -- Constructors
 
-    DimensionLogarithmic();
+    Space1DAngleT();
 
     // -- Destructor
     // None
@@ -44,9 +44,9 @@ public:
 
     // -- Overridden methods
 
-    void linearise(const Dimension::Matrix&, Dimension::Matrix&, double missingValue) const;
+    void linearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
 
-    void unlinearise(const Dimension::Matrix&, Dimension::Matrix&, double missingValue) const;
+    void unlinearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
 
     size_t dimensions() const;
 
@@ -82,7 +82,7 @@ private:
 };
 
 
-}  // namespace dimension
+}  // namespace space
 }  // namespace data
 }  // namespace mir
 

@@ -25,7 +25,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("executor", "simple");
 
     set("interpolation", "linear"); // The word 'method' is used in grib
-    set("dimension", "1d.linear");
+    set("space", "1d.linear");
 
     bool caching = LibMir::caching();
     set("caching", caching);
