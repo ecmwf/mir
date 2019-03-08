@@ -73,11 +73,6 @@ class Spectral : public Comparator {
 
   private:
 
-    // No copy allowed
-
-    Spectral(const Spectral &);
-    Spectral &operator=(const Spectral &);
-
     // -- Members
     // None
 

@@ -16,16 +16,15 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/stats/Results.h"
-#include "mir/stats/detail/ScalarCentralMomentsFn.h"
-#include "mir/stats/detail/ScalarMinMaxFn.h"
+#include "mir/stats/detail/ScalarCentralMomentsT.h"
+#include "mir/stats/detail/ScalarMinMaxT.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/Compare.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -55,7 +54,7 @@ void MIRValuesStatistics::usage(const std::string &tool) const {
 }
 
 
-typedef mir::stats::detail::ScalarCentralMomentsFn<double> statistics_t;
+typedef mir::stats::detail::ScalarCentralMomentsT<double> statistics_t;
 
 
 void getStatisticsValues(mir::context::Context& ctx, mir::output::MIROutput& out, const std::string& name, const std::vector<statistics_t>& stats) {
@@ -93,6 +92,19 @@ void getStatisticsValues(mir::context::Context& ctx, mir::output::MIROutput& out
 
 void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
 
+    struct IsMissingFn {
+        IsMissingFn(double missingValue) {
+            missingValue_ = missingValue;
+            missingValueDefined_ = (missingValue==missingValue);
+        }
+        bool operator()(const double& v) const {
+            return (missingValueDefined_ && (missingValue_ == v));
+        }
+        double missingValue_;
+        bool missingValueDefined_;
+    };
+
+
     // setup per-value statistics vector
     mir::input::GribFileInput firstGribFile(args(0));
     ASSERT(firstGribFile.next());
@@ -121,7 +133,7 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
             eckit::Log::info() << "\n'" << args(i) << "' #" << ++count << std::endl;
 
             const mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(grib).field();
-            const mir::util::compare::IsMissingFn missingValue(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
+            const IsMissingFn missingValue(field.hasMissing()? field.missingValue() : std::numeric_limits<double>::quiet_NaN());
             ASSERT(N == field.values(0).size());
 
             for (size_t d = 0, i = 0; d < field.dimensions(); ++d, i = 0) {
@@ -163,6 +175,8 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
     } else {
 
         // Show statistics results
+        NOTIMP;
+#if 0
         for (const auto& stats : statistics) {
             mir::stats::Results results;
 
@@ -172,6 +186,7 @@ void MIRValuesStatistics::execute(const eckit::option::CmdArgs& args) {
 
             eckit::Log::info() << results << std::endl;
         }
+#endif
 
     }
 }

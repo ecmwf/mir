@@ -75,11 +75,6 @@ class Scalar : public Comparator {
 
   private:
 
-    // No copy allowed
-
-    Scalar(const Scalar &);
-    Scalar &operator=(const Scalar &);
-
     // -- Members
     // None
 

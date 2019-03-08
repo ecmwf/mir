@@ -16,11 +16,13 @@
 #include "mir/compare/Scalar.h"
 
 #include <cmath>
+#include <limits>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Compare.h"
-#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -40,6 +42,20 @@ Scalar::~Scalar() = default;
 void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2) const {
     ASSERT(field1.dimensions() == field2.dimensions());
 
+
+    struct IsMissingFn {
+        IsMissingFn(double missingValue) {
+            missingValue_ = missingValue;
+            missingValueDefined_ = (missingValue==missingValue);
+        }
+        bool operator()(const double& v) const {
+            return (missingValueDefined_ && (missingValue_ == v));
+        }
+        double missingValue_;
+        bool missingValueDefined_;
+    };
+
+
     for (size_t w = 0; w < field1.dimensions(); ++w) {
 
         const MIRValuesVector& values1 = field1.values(w);
@@ -49,8 +65,8 @@ void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2)
         if (field1.hasMissing() || field2.hasMissing()) {
             NOTIMP;
 
-            util::compare::IsMissingFn isMissing1(field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN());
-            util::compare::IsMissingFn isMissing2(field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN());
+            IsMissingFn isMissing1(field1.hasMissing()? field1.missingValue() : std::numeric_limits<double>::quiet_NaN());
+            IsMissingFn isMissing2(field2.hasMissing()? field2.missingValue() : std::numeric_limits<double>::quiet_NaN());
 
             for (size_t i = 0; i < values1.size(); ++i) {
                 if (isMissing1(values1[i] != isMissing1(values2[i]))) {

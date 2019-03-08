@@ -469,29 +469,20 @@ list(APPEND mir_srcs
     search/tree/TreeMappedFile.h
     search/tree/TreeMemory.cc
     search/tree/TreeMemory.h
-    stats/CountOutsideRange.cc
-    stats/CountOutsideRange.h
-    stats/detail/CountMissingValuesFn.h
-    stats/detail/CountOutsideRangeFn.h
-    stats/detail/MinMaxStatistics.h
-    stats/detail/Scalar.h
-    stats/detail/ScalarCentralMomentsFn.h
-    stats/detail/ScalarMinMaxFn.h
-    stats/detail/ScalarpNormsFn.h
-    stats/PNorms.cc
-    stats/PNorms.h
-    stats/Results.cc
-    stats/Results.h
-    stats/Scalar.cc
-    stats/Scalar.h
-    stats/ScalarCentralMoments.cc
-    stats/ScalarCentralMoments.h
     stats/SimplePackingEntropy.cc
     stats/SimplePackingEntropy.h
     stats/Spectral.cc
     stats/Spectral.h
     stats/Statistics.cc
     stats/Statistics.h
+    stats/StatisticsT.cc
+    stats/StatisticsT.h
+    stats/detail/AngleT.cc
+    stats/detail/AngleT.h
+    stats/detail/CentralMomentsT.h
+    stats/detail/MinMax.h
+    stats/detail/PNorms.h
+    stats/detail/Scalar.h
     style/CustomParametrisation.cc
     style/CustomParametrisation.h
     style/CustomStyle.cc
@@ -531,7 +522,6 @@ list(APPEND mir_srcs
     util/Bitmap.h
     util/BoundingBox.cc
     util/BoundingBox.h
-    util/Compare.h
     util/DeprecatedFunctionality.cc
     util/DeprecatedFunctionality.h
     util/Domain.cc

@@ -30,9 +30,6 @@ class Context;
 namespace data {
 class MIRField;
 }
-namespace util {
-class MIRStatistics;
-}
 }
 
 
@@ -41,7 +38,7 @@ namespace compare {
 
 
 class Comparator : public eckit::NonCopyable {
-  public:
+public:
 
     // -- Exceptions
     // None
@@ -52,7 +49,7 @@ class Comparator : public eckit::NonCopyable {
 
     // -- Destructor
 
-    virtual ~Comparator(); // Change to virtual if base class
+    virtual ~Comparator();
 
     // -- Convertors
     // None
@@ -73,7 +70,7 @@ class Comparator : public eckit::NonCopyable {
     // -- Class methods
     // None
 
-  protected:
+protected:
 
     // -- Members
     // None
@@ -105,12 +102,7 @@ class Comparator : public eckit::NonCopyable {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    Comparator(const Comparator &);
-    Comparator &operator=(const Comparator &);
+private:
 
     // -- Members
 
@@ -145,13 +137,13 @@ class ComparatorFactory {
 
     virtual Comparator *make(const param::MIRParametrisation&, const param::MIRParametrisation&) = 0;
 
-  protected:
+protected:
 
     ComparatorFactory(const std::string &);
 
     virtual ~ComparatorFactory();
 
-  public:
+public:
 
     static Comparator *build(const std::string&, const param::MIRParametrisation&, const param::MIRParametrisation&);
 
@@ -165,7 +157,7 @@ class ComparatorBuilder : public ComparatorFactory {
     virtual Comparator *make(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2) {
         return new T(param1, param2);
     }
-  public:
+public:
     ComparatorBuilder(const std::string &name) : ComparatorFactory(name) {}
 };
 
