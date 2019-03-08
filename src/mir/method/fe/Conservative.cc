@@ -58,8 +58,15 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     using namespace atlas::mesh;
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << "\n" "Mesh " << mesh << std::endl;
 
-    // FIXME this does not check for "virtual points"
-    ASSERT(d.size() == mesh.nodes().size());
+    size_t firstVirtualPoint = size_t(mesh.nodes().size());
+    if (mesh.nodes().metadata().has("NbRealPts")) {
+        size_t nbRealPts = mesh.nodes().metadata().get<size_t>("NbRealPts");
+        ASSERT(nbRealPts <= firstVirtualPoint && nbRealPts > 0);
+        firstVirtualPoint = nbRealPts;
+    }
+
+
+    ASSERT(d.size() == firstVirtualPoint);
     d.setZero();
 
     const Nodes& nodes = mesh.nodes();
@@ -67,13 +74,8 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
     atlas::array::ArrayView<double, 2> coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
 
     // TODO handle missing values
-    // TODO we need to consider points that are virtual
-    //    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
-    //    if( nodes.metadata().has("NbRealPts") )
-    //        firstVirtualPoint = i_nodes.metadata().get<size_t>("NbRealPts");
 
-
-    for (size_t jtype = 0; jtype < cells.nb_types(); ++jtype) {
+    for (atlas::idx_t jtype = 0; jtype < cells.nb_types(); ++jtype) {
         const Elements& elements = cells.elements(jtype);
         const BlockConnectivity& connectivity = elements.node_connectivity();
 
@@ -82,9 +84,15 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
         d.setZero();
 
         if (type == "Triangle") {
-            for (size_t e = 0; e < elements.size(); ++e) {
-                for (size_t n = 0; n < 3; ++n) {
+            for (atlas::idx_t e = 0; e < elements.size(); ++e) {
+
+                bool elementHasVirtualPoint = false;
+                for (atlas::idx_t n = 0; n < 3 && !elementHasVirtualPoint; ++n) {
                     idx[n] = size_t(connectivity(e, n));
+                    elementHasVirtualPoint = idx[n] >= firstVirtualPoint;
+                }
+                if (elementHasVirtualPoint) {
+                    continue;
                 }
 
                 atlas::interpolation::element::Triag3D triag(
@@ -96,11 +104,18 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                 for (size_t n = 0; n < 3; ++n) {
                     d[idx[n]] += nodalDistribution;
                 }
+
             }
         } else if (type == "Quadrilateral") {
-            for (size_t e = 0; e < elements.size(); ++e) {
-                for (size_t n = 0; n < 4; ++n) {
+            for (atlas::idx_t e = 0; e < elements.size(); ++e) {
+
+                bool elementHasVirtualPoint = false;
+                for (atlas::idx_t n = 0; n < 4 && !elementHasVirtualPoint; ++n) {
                     idx[n] = size_t(connectivity(e, n));
+                    elementHasVirtualPoint = idx[n] >= firstVirtualPoint;
+                }
+                if (elementHasVirtualPoint) {
+                    continue;
                 }
 
                 atlas::interpolation::element::Quad3D quad(
