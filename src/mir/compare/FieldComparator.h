@@ -44,16 +44,15 @@ namespace compare {
 
 class WhiteLister {
 public:
-    virtual bool whiteListed(const MultiFile& name, const Field&) const = 0;
-    virtual bool ignoreError(const MultiFile& name, const Field&) const = 0;
-
+    virtual bool whiteListed(const MultiFile&, const Field&) const = 0;
+    virtual bool ignoreError(const MultiFile&, const Field&) const = 0;
+    virtual ~WhiteLister();
 };
 
 class DefaultWhiteLister : public WhiteLister {
-
-    virtual bool whiteListed(const MultiFile& name, const Field&) const { return false; }
-    virtual bool ignoreError(const MultiFile& name, const Field&) const { return false; }
-
+    virtual bool whiteListed(const MultiFile&, const Field&) const { return false; }
+    virtual bool ignoreError(const MultiFile&, const Field&) const { return false; }
+    virtual ~DefaultWhiteLister();
 public:
     static const WhiteLister& instance();
 };
@@ -67,7 +66,7 @@ public: // types
 
 public: // methods
 
-    FieldComparator(const eckit::option::CmdArgs &args, const WhiteLister& = DefaultWhiteLister::instance());
+    FieldComparator(const eckit::option::CmdArgs&, const WhiteLister& = DefaultWhiteLister::instance());
     ~FieldComparator();
 
     void compare(const std::string& path1,
@@ -87,7 +86,6 @@ protected: // members
 
     size_t count(const MultiFile& multi,
                  FieldSet& fields);
-
 
     void compareCounts(const std::string& name,
                        const MultiFile& multi1,
@@ -132,17 +130,15 @@ protected: // members
                        bool compareValues,
                        bool compareStatistics);
 
-    void compareFieldStatistics(
-        const MultiFile& multi1,
-        const MultiFile& multi2,
-        const Field& field1,
-        const Field& field2);
+    void compareFieldStatistics(const MultiFile& multi1,
+                                const MultiFile& multi2,
+                                const Field& field1,
+                                const Field& field2);
 
-    void compareFieldValues(
-        const MultiFile& multi1,
-        const MultiFile& multi2,
-        const Field& field1,
-        const Field& field2);
+    void compareFieldValues(const MultiFile& multi1,
+                            const MultiFile& multi2,
+                            const Field& field1,
+                            const Field& field2);
 
     void missingField(const MultiFile& multi1,
                       const MultiFile& multi2,
@@ -162,27 +158,24 @@ protected:
 
 private:
 
-    const eckit::option::CmdArgs &args_;
-    bool normaliseLongitudes_;
-    bool ignoreWrappingAreas_;
+    const eckit::option::CmdArgs& args_;
 
-
-
-    bool roundDegrees_;
     std::vector<std::string> ignore_;
     size_t maximumNumberOfErrors_;
+    size_t saved_;
 
     const WhiteLister& whiteLister_;
+
+    bool normaliseLongitudes_;
+    bool ignoreWrappingAreas_;
+    bool roundDegrees_;
     bool whiteListEntries_;
     bool saveFirstPossibleMatch_;
     bool saveDuplicates_;
 
-    size_t saved_;
-
-    void whiteListEntries(const Field & field, const MultiFile & multi) const;
+    void whiteListEntries(const Field&, const MultiFile&) const;
 
 };
-
 
 
 }  // namespace compare

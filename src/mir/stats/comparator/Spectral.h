@@ -8,30 +8,22 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Aug 2016
 
+#ifndef mir_stats_comparator_Spectral_h
+#define mir_stats_comparator_Spectral_h
 
-#ifndef mir_stats_ScalarCentralMoments_h
-#define mir_stats_ScalarCentralMoments_h
+#include "mir/stats/Comparator.h"
 
-#include "mir/stats/Statistics.h"
-#include "mir/stats/detail/ScalarCentralMomentsFn.h"
-
-
-namespace mir {
-namespace action {
-class MIRField;
-}
-}
 
 namespace mir {
 namespace stats {
+namespace comparator {
 
 
 /**
- * @brief Calculate statistics on a MIRField
+ * @brief Calculate spectral statistics on a MIRField
  */
-class ScalarCentralMoments : public Statistics {
+class Spectral : public Comparator {
 public:
 
     // -- Exceptions
@@ -39,11 +31,11 @@ public:
 
     // -- Constructors
 
-    ScalarCentralMoments(const param::MIRParametrisation&);
+    Spectral(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~ScalarCentralMoments() {}
+    virtual ~Spectral();
 
     // -- Convertors
     // None
@@ -53,30 +45,12 @@ public:
 
     // -- Methods
 
-    /// Online statistics update
-    void operator+=(const ScalarCentralMoments&);
+    void reset();
+    double meanDiff() const;
+    double enormDiff() const;
 
     // -- Overridden methods
     // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-
-    /// Calculate statistics
-    Results calculate(const data::MIRField&) const;
 
     // -- Class members
     // None
@@ -88,13 +62,20 @@ private:
 
     // -- Members
 
-    mutable detail::ScalarCentralMomentsFn<double> stats_;
+    double meanDiffMax_;
+    double enormDiffMax_;
+
+    double meanDiff_;
+    double enormDiff_;
+    std::string stats_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    std::string execute(const data::MIRField&, const data::MIRField&);
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -108,6 +89,7 @@ private:
 };
 
 
+}  // namespace comparator
 }  // namespace stats
 }  // namespace mir
 

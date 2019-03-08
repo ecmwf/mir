@@ -8,18 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Dec 2016
-
 
 #include "mir/stats/Statistics.h"
 
 #include <map>
 #include <ostream>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 
 
 namespace mir {
@@ -29,8 +30,8 @@ namespace stats {
 namespace {
 
 
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, StatisticsFactory* > *m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, StatisticsFactory* > *m = nullptr;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 
@@ -48,21 +49,17 @@ Statistics::Statistics(const param::MIRParametrisation& parametrisation) :
 }
 
 
-void Statistics::print(std::ostream& out) const {
-    out << "Statistics["
-//        <<  "me[" << too << "]"
-        << "]";
-}
+Statistics::~Statistics() = default;
 
 
 StatisticsFactory::StatisticsFactory(const std::string& name) :
     name_(name) {
     pthread_once(&once, init);
 
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    if(m->find(name) != m->end()) {
-        throw eckit::SeriousBug("StatisticsFactory: duplicated Statistics '" + name + "'");
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("StatisticsFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -81,8 +78,8 @@ void StatisticsFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    for (std::map< std::string, StatisticsFactory* >::const_iterator j = m->begin() ; j != m->end() ; ++j) {
-        out << sep << (*j).first;
+    for (auto& j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
     out << std::endl;
@@ -95,7 +92,7 @@ Statistics* StatisticsFactory::build(const std::string& name, const param::MIRPa
 
     eckit::Log::debug<LibMir>() << "StatisticsFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, StatisticsFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
         list(eckit::Log::error() << "No StatisticsFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No StatisticsFactory '" + name + "'");

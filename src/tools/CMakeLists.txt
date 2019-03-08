@@ -22,7 +22,6 @@ if(HAVE_ATLAS)
     list(APPEND _tools
         mir-gaussian-fractions
         mir-get-data
-        mir-integrate
         mir-spectral-transform)
 endif()
 

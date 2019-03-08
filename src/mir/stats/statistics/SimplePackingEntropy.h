@@ -8,34 +8,36 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_stats_statistics_SimplePackingEntropy_h
+#define mir_stats_statistics_SimplePackingEntropy_h
 
-#ifndef mir_compare_Scalar_h
-#define mir_compare_Scalar_h
+#include "mir/stats/Statistics.h"
 
-#include "mir/compare/Comparator.h"
+#include "mir/stats/detail/Counter.h"
 
 
 namespace mir {
-namespace compare {
+namespace stats {
+namespace statistics {
 
 
-class Scalar : public Comparator {
-  public:
+/**
+ * @brief Calculate entropy statistics on a MIRField
+ */
+class SimplePackingEntropy : public Statistics, detail::Counter {
+public:
 
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    Scalar(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2);
+    SimplePackingEntropy(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Scalar(); // Change to virtual if base class
+    ~SimplePackingEntropy();
 
     // -- Convertors
     // None
@@ -44,7 +46,11 @@ class Scalar : public Comparator {
     // None
 
     // -- Methods
-    // None
+
+    void reset();
+    double entropy() const;
+    double scale() const;
+    size_t bucketCount() const;
 
     // -- Overridden methods
     // None
@@ -55,42 +61,21 @@ class Scalar : public Comparator {
     // -- Class methods
     // None
 
-  protected:
+private:
 
     // -- Members
 
-    double absoluteError_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-  private:
-
-    // No copy allowed
-
-    Scalar(const Scalar &);
-    Scalar &operator=(const Scalar &);
-
-    // -- Members
-    // None
+    double entropy_;
+    double scale_;
+    size_t bucketCount_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void execute(const data::MIRField&, const data::MIRField&) const;
-
-    virtual void print(std::ostream &) const;
+    void execute(const data::MIRField&);
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -104,8 +89,10 @@ class Scalar : public Comparator {
 };
 
 
-}  // namespace compare
+}  // namespace statistics
+}  // namespace stats
 }  // namespace mir
 
 
 #endif
+

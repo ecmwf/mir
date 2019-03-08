@@ -16,6 +16,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
@@ -40,22 +41,23 @@ private:
 public:
 
     MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
-        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("stats", "Statistics methods for interpreting field values"));
+        using eckit::option::FactoryOption;
+        using eckit::option::SimpleOption;
 
-        options_.push_back(new SimpleOption< double >("lower-limit", "count lower limit (count-outside-range)"));
-        options_.push_back(new SimpleOption< double >("upper-limit", "count upper limit (count-outside-range)"));
+        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
+        options_.push_back(new SimpleOption< double >("counter-lower-limit", "count lower limit"));
+        options_.push_back(new SimpleOption< double >("counter-upper-limit", "count upper limit"));
     }
 };
 
 
 void MIRStatistics::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\nUsage: " << tool << " [--stats=option] file.grib [file.grib [...]]"
+            << "\nUsage: " << tool << " [--statistics=option] file.grib [file.grib [...]]"
                "\nExamples:"
                "\n  % " << tool << " file.grib"
-               "\n  % " << tool << " --stats=scalar file1.grib file2.grib file3.grib"
-               "\n  % " << tool << " --stats=spectral file.grib"
+               "\n  % " << tool << " --statistics=scalar file1.grib file2.grib file3.grib"
+               "\n  % " << tool << " --statistics=spectral file.grib"
             << std::endl;
 }
 
@@ -85,15 +87,16 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
 
             // Get paramId/metadata-specific "stats" method
-            std::string stats = "scalar";
+            std::string statistics = "scalar";
             const MIRParametrisation& c = combined;
-            c.get("stats", stats);
+            c.get("statistics", statistics);
 
 
             // Calculate and show statistics
-            eckit::ScopedPtr<const mir::stats::Statistics> s(mir::stats::StatisticsFactory::build(stats, combined));
-            eckit::Log::info() << s->calculate(input.field()) << std::endl;
+            eckit::ScopedPtr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, combined));
+            stats->execute(input.field());
 
+            eckit::Log::info() << *stats << std::endl;
         }
     }
 

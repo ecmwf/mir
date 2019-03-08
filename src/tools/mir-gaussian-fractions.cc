@@ -12,12 +12,17 @@
 
 
 #include <cmath>
-#include "atlas/util/GaussianLatitudes.h"
+
 #include "eckit/log/Log.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/Fraction.h"
-#include "mir/stats/detail/Scalar.h"
+
+#include "atlas/util/GaussianLatitudes.h"
+
+#include "mir/param/ConfigurationWrapper.h"
+#include "mir/stats/detail/PNorms.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -44,45 +49,27 @@ void MIRGaussianFractions::usage(const std::string &tool) const {
 }
 
 
-typedef mir::stats::detail::Scalar<double> statistics_t;
+using statistics_t = mir::stats::detail::PNorms;
 
 
-statistics_t evaluateGaussianN(const size_t N) {
+statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisation& param) {
 
     // This returns the Gaussian latitudes of the North hemisphere
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    statistics_t stats;
+    statistics_t* stats = new statistics_t;
     for (const double& l: latitudes) {
         const double f = double(eckit::Fraction(l));
-        stats(f - l);
+        stats->operator()(f - l);
     }
 
     return stats;
 }
 
 
-eckit::Channel& operator<<(eckit::Channel& s, const statistics_t& stats) {
-    s << "Δlat:"
-      << "\n\t" "N = " << stats.count()
-      << "\n\t" "min = " << stats.min() << "\tminIndex = " << stats.minIndex()
-      << "\n\t" "max = " << stats.max() << "\tmaxIndex = " << stats.maxIndex()
-      << "\n"
-      << "\n\t" "mean     = " << stats.mean()
-      << "\n\t" "variance = " << stats.variance()
-      << "\n\t" "stdev    = " << stats.standardDeviation()
-      << "\n\t" "skewness = " << stats.skewness()
-      << "\n\t" "kurtosis = " << stats.kurtosis()
-      << "\n"
-      << "\n\t" "||L1|| = " << stats.normL1()
-      << "\n\t" "||L2|| = " << stats.normL2()
-      << "\n\t" "||L∞|| = " << stats.normLinfinity();
-    return s;
-}
-
-
 void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
+    auto& log = eckit::Log::info();
 
     size_t N = 1280;
     args.get("N", N);
@@ -94,60 +81,36 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
     size_t Nmax = 0;
     args.get("Nmax", Nmax);
 
-    statistics_t stats;
+    const mir::param::ConfigurationWrapper param(args);
+    eckit::ScopedPtr<statistics_t> stats(new statistics_t);
 
 
     if (Nmin <= Nmax) {
 
+        eckit::ScopedPtr<statistics_t> worse(stats.get());
+
         bool first = true;
-        statistics_t worse;
         for (size_t N = Nmin; N <= Nmax; N+=2) {
             eckit::Log::info() << "Evaluating N=" << N << std::endl;
 
-            statistics_t stats = evaluateGaussianN(N);
+            eckit::ScopedPtr<statistics_t> stats(evaluateGaussianN(N, param));
 
-            if (first || stats.normL1() > worse.normL1()) {
-                worse = stats;
+            if (first || stats->normL1() > worse->normL1()) {
+                worse.reset(stats.get());
                 first = false;
             }
         }
 
-        eckit::Log::info()
-                << "\n" "Δlat:"
-                << "\n\t" "N = " << worse.count()
-                << "\n\t" "min = " << worse.min() << "\tminIndex = " << worse.minIndex()
-                << "\n\t" "max = " << worse.max() << "\tmaxIndex = " << worse.maxIndex()
-                << "\n"
-                << "\n\t" "mean     = " << worse.mean()
-                << "\n\t" "variance = " << worse.variance()
-                << "\n\t" "stdev    = " << worse.standardDeviation()
-                << "\n\t" "skewness = " << worse.skewness()
-                << "\n\t" "kurtosis = " << worse.kurtosis()
-                << "\n"
-                << "\n\t" "||L1|| = " << worse.normL1()
-                << "\n\t" "||L2|| = " << worse.normL2()
-                << "\n\t" "||L∞|| = " << worse.normLinfinity()
-                << std::endl;
+        log << "\n" "Δlat: ";
+        worse->print(log);
+        log << std::endl;
 
     } else {
 
-        evaluateGaussianN(N);
-        eckit::Log::info()
-                << "Δlat:"
-                << "\n\t" "N = " << stats.count()
-                << "\n\t" "min = " << stats.min() << "\tminIndex = " << stats.minIndex()
-                << "\n\t" "max = " << stats.max() << "\tmaxIndex = " << stats.maxIndex()
-                << "\n"
-                << "\n\t" "mean     = " << stats.mean()
-                << "\n\t" "variance = " << stats.variance()
-                << "\n\t" "stdev    = " << stats.standardDeviation()
-                << "\n\t" "skewness = " << stats.skewness()
-                << "\n\t" "kurtosis = " << stats.kurtosis()
-                << "\n"
-                << "\n\t" "||L1|| = " << stats.normL1()
-                << "\n\t" "||L2|| = " << stats.normL2()
-                << "\n\t" "||L∞|| = " << stats.normLinfinity()
-                << std::endl;
+        evaluateGaussianN(N, param);
+        log << "\n" "Δlat: ";
+        stats->print(log);
+        log << std::endl;
 
     }
 }

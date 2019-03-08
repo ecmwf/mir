@@ -12,11 +12,12 @@
 #include "mir/compare/FieldComparator.h"
 
 #include <cmath>
+#include <memory>
 
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
@@ -24,7 +25,6 @@
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"
-#include "mir/compare/Comparator.h"
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/GribField.h"
@@ -36,6 +36,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/stats/Comparator.h"
 #include "mir/util/Grib.h"
 
 
@@ -46,6 +47,12 @@ namespace compare {
 static caching::InMemoryCache<eckit::AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
+WhiteLister::~WhiteLister() = default;
+
+
+DefaultWhiteLister::~DefaultWhiteLister() = default;
+
+
 const WhiteLister& DefaultWhiteLister::instance() {
     static DefaultWhiteLister i;
     return i;
@@ -53,7 +60,9 @@ const WhiteLister& DefaultWhiteLister::instance() {
 
 
 void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::FactoryOption;
+    using eckit::option::Separator;
+    using eckit::option::SimpleOption;
 
     options.push_back(new SimpleOption<size_t>("maximum-number-of-errors",
                       "Maximum number of errors per task"));
@@ -76,6 +85,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("ignore-count-mismatches",
                       "Ignore field count mismatches"));
 
+    options.push_back(new SimpleOption<bool>("ignore-values-mismatches",
+                      "Ignore field value comparison mismatches"));
+
     options.push_back(new SimpleOption<bool>("ignore-fields-not-found",
                       "Ignore fields not found"));
 
@@ -83,7 +95,7 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
                       "Ignore duplicate fields"));
 
     options.push_back(new SimpleOption<std::string>("ignore",
-                      "Slash separated list of request keys to ignore when comparing fields"));
+                      "/-separated list of request keys to ignore when comparing fields"));
 
     options.push_back(new SimpleOption<bool>("ignore-wrapping-areas",
                       "Ignore fields with an area that wraps around the globe (e.g. 0-360)"));
@@ -91,23 +103,53 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     Field::addOptions(options);
 
     //==============================================
+
     options.push_back(new Separator("Field values"));
 
-    options.push_back(new SimpleOption<bool>("compare-values", "Compare field values"));
-    options.push_back(new SimpleOption<bool>("compare-statistics", "Compare field statistics"));
+    options.push_back(new SimpleOption<bool>("compare-values",
+                      "Compare field values"));
 
-    options.push_back(new SimpleOption<double>("absolute-error", "Value comparison using absolute error, only values whose difference is more than tolerance are considered different"));
+    options.push_back(new SimpleOption<bool>("compare-statistics",
+                      "Compare field statistics"));
 
     options.push_back(new SimpleOption<bool>("white-list-entries",
                       "Output lines that can be used in white-list files"));
 
-
     options.push_back(new SimpleOption<bool>("save-first-possible-match",
                       "Save best match into a file for later analysis"));
 
-
     options.push_back(new SimpleOption<bool>("save-duplicates",
                       "Save duplicates into a file for later analysis"));
+
+    options.push_back(new SimpleOption<double>("counter-upper-limit",
+                      "Count values below lower limit"));
+
+    options.push_back(new SimpleOption<double>("counter-lower-limit",
+                      "Count values above upper limit"));
+
+    options.push_back(new SimpleOption<size_t>("ignore-different-missing-values",
+                      "Ignore counted different missing values"));
+
+    options.push_back(new SimpleOption<double>("ignore-different-missing-values-factor",
+                      "Ignore counted different missing values factor (to total count)"));
+
+    options.push_back(new SimpleOption<size_t>("ignore-above-upper-limit",
+                      "Ignore count above specified upper limit"));
+
+    options.push_back(new SimpleOption<double>("ignore-above-upper-limit-factor",
+                      "Ignore count above specified upper limit (relative to total count)"));
+
+    options.push_back(new SimpleOption<double>("absolute-error",
+                      "Absolute difference error"));
+
+    options.push_back(new SimpleOption<double>("relative-error",
+                      "Relative difference error to reference (range [0, 1])"));
+
+    options.push_back(new SimpleOption<double>("packing-error-factor",
+                      "Difference error factor to field packingError"));
+
+    options.push_back(new FactoryOption<mir::stats::ComparatorFactory>("compare",
+                      "/-separated list of value comparison methods"));
 }
 
 
@@ -115,15 +157,15 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     fatals_(0),
     warnings_(0),
     args_(args),
+    maximumNumberOfErrors_(5),
+    saved_(0),
+    whiteLister_(whiteLister),
     normaliseLongitudes_(false),
     ignoreWrappingAreas_(false),
     roundDegrees_(false),
-    maximumNumberOfErrors_(5),
-    whiteLister_(whiteLister),
     whiteListEntries_(false),
     saveFirstPossibleMatch_(false),
-    saveDuplicates_(false),
-    saved_(0) {
+    saveDuplicates_(false) {
 
     Field::setOptions(args);
 
@@ -182,7 +224,7 @@ void FieldComparator::compare(const std::string& name,
     compareFields(multi1, multi2, fields1, fields2, compareValues, compareStatistics);
 
     if (fatals_ == save) {
-        compareFields(multi2, multi1, fields2, fields1, false,         compareStatistics);
+        compareFields(multi2, multi1, fields2, fields1, false, compareStatistics);
     }
 
 
@@ -267,8 +309,9 @@ Field FieldComparator::getField(eckit::Buffer& buffer,
     const char *q = ((const char*)buffer);
     const char *p = ((const char*)buffer) + size - 4;
 
-    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7')
+    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7') {
         throw eckit::SeriousBug("No 7777 found");
+    }
 
 
     Field field;
@@ -405,10 +448,9 @@ size_t FieldComparator::list(const std::string& path) {
     }
 
 
-    for (auto f = fields.begin(); f != fields.end(); ++f) {
-        eckit::Log::info() << *f << std::endl;
+    for (const auto& field : fields) {
+        eckit::Log::info() << field << std::endl;
     }
-
 
     return result;
 }
@@ -477,7 +519,7 @@ static void getStats(const Field& field, Statistics& stats) {
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
     ASSERT(size == field.length());
 
-    grib_handle *h = grib_handle_new_from_message(0, buffer, size);
+    grib_handle *h = grib_handle_new_from_message(nullptr, buffer, size);
     ASSERT(h);
     HandleDeleter del(h);
 
@@ -506,7 +548,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     size_t first = 0;
     for (size_t i = 0; i < size; i++) {
-        if (missingValuesPresent && values[i] == missingValue )  {
+        if (missingValuesPresent && values[i] == missingValue ) {
             stats.missing_++;
         }
         else {
@@ -556,99 +598,98 @@ void FieldComparator::compareFieldStatistics(
     getStats(field2, s2);
 
     if (s1.values_ != s2.values_ ) {
-        eckit::Log::info() << "Number of data values mismatch: "
-                           << std::endl
-                           << "  " << multi1 << ": " << s1.values_ << " " << field1 << std::endl
-                           << "  " << multi2 << ": " << s2.values_ << " " << field2 << std::endl;
+        eckit::Log::info() << "Number of data values mismatch:"
+                           << "\n  " << multi1 << ": " << s1.values_ << " " << field1
+                           << "\n  " << multi2 << ": " << s2.values_ << " " << field2
+                           << std::endl;
         error("statistics-mismatches");
     }
 
     if (s1.missing_ != s2.missing_ ) {
-        eckit::Log::info() << "Number of missing values mismatch: "
-                           << std::endl
-                           << "  " << multi1 << ": " << s1.missing_ << " " << field1 << std::endl
-                           << "  " << multi2 << ": " << s2.missing_ << " " << field2 << std::endl;
+        eckit::Log::info() << "Number of missing values mismatch:"
+                           << "\n  " << multi1 << ": " << s1.missing_ << " " << field1
+                           << "\n  " << multi2 << ": " << s2.missing_ << " " << field2
+                           << std::endl;
         error("statistics-mismatches");
     }
 
     if (relative_error(s1.min_, s2.min_) > 0.01) {
         eckit::Log::info() << "Minimum relative error too large: " << relative_error(s1.min_, s2.min_)
-                           << std::endl
-                           << "  " << multi1 << ": " << s1.min_ << " " << field1 << std::endl
-                           << "  " << multi2 << ": " << s2.min_ << " " << field2 << std::endl;
+                           << "\n  " << multi1 << ": " << s1.min_ << " " << field1
+                           << "\n  " << multi2 << ": " << s2.min_ << " " << field2
+                           << std::endl;
         error("statistics-mismatches");
     }
 
     if (relative_error(s1.max_, s2.max_) > 0.01) {
         eckit::Log::info() << "Maximum relative error too large: " << relative_error(s1.max_, s2.max_)
-                           << std::endl
-                           << "  " << multi1 << ": " << s1.max_ << " " << field1 << std::endl
-                           << "  " << multi2 << ": " << s2.max_ << " " << field2 << std::endl;
+                           << "\n  " << multi1 << ": " << s1.max_ << " " << field1
+                           << "\n  " << multi2 << ": " << s2.max_ << " " << field2
+                           << std::endl;
         error("statistics-mismatches");
     }
 
 
     if (relative_error(s1.average_, s2.average_) > 0.01) {
         eckit::Log::info() << "Average relative error too large: " << relative_error(s1.average_, s2.average_)
-                           << std::endl
-                           << "  " << multi1 << ": " << s1.average_ << " " << field1 << std::endl
-                           << "  " << multi2 << ": " << s2.average_ << " " << field2 << std::endl;
+                           << "\n  " << multi1 << ": " << s1.average_ << " " << field1
+                           << "\n  " << multi2 << ": " << s2.average_ << " " << field2
+                           << std::endl;
         error("statistics-mismatches");
     }
-
 }
+
 
 void FieldComparator::compareFieldValues(
     const FieldComparator::MultiFile& multi1,
     const FieldComparator::MultiFile& multi2,
     const Field& field1,
     const Field& field2) {
-    // using namespace param;
 
-    // TODO
-
-    input::GribFileInput grib1(field1.path(), field1.offset());
-    input::GribFileInput grib2(field2.path(), field2.offset());
-
-    grib1.next();
-    grib2.next();
+    std::unique_ptr<input::MIRInput> input1(new input::GribFileInput(field1.path(), field1.offset()));
+    std::unique_ptr<input::MIRInput> input2(new input::GribFileInput(field2.path(), field2.offset()));
+    input1->next();
+    input2->next();
 
 
-    input::MIRInput& input1 = grib1;
-    input::MIRInput& input2 = grib2;
-
-    const param::MIRParametrisation &metadata1 = input1.parametrisation();
-    const param::MIRParametrisation &metadata2 = input2.parametrisation();
-
-
-    // comparison can be set by classification and/or representation
-    std::string comparison1;
-    std::string comparison2;
-    metadata1.get("comparison", comparison1);
-    metadata2.get("comparison", comparison2);
-
-    repres::RepresentationHandle repres1 = input1.field().representation();
-    repres::RepresentationHandle repres2 = input2.field().representation();
-    repres1->comparison(comparison1);
-    repres2->comparison(comparison2);
-
-    ASSERT(!comparison1.empty());
-    ASSERT(comparison1 == comparison2);
-
-
-    // get input and parameter-specific parametrisations
+    // comparison method can be set by classification and/or representation
     const param::ConfigurationWrapper args_wrap(args_);
     static param::DefaultParametrisation defaults;
-    param::CombinedParametrisation combined1(args_wrap, metadata1, defaults);
-    param::CombinedParametrisation combined2(args_wrap, metadata2, defaults);
 
-    std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
-    for (auto c = comparators.begin(); c != comparators.end(); ++c) {
-        eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, combined1, combined2));
-        comp->execute(input1.field(), input2.field());
+    param::CombinedParametrisation param1(args_wrap, input1->parametrisation(), defaults);
+    param::CombinedParametrisation param2(args_wrap, input2->parametrisation(), defaults);
+
+    auto get_comparison = [](const param::MIRParametrisation& param, const data::MIRField& field) {
+        std::string s;
+        param.get("compare", s);
+        repres::RepresentationHandle repres = field.representation();
+        repres->comparison(s);
+        return s;
+    };
+
+    std::string comparison1 = get_comparison(param1, input1->field());
+    std::string comparison2 = get_comparison(param2, input2->field());
+    ASSERT(comparison1 == comparison2);
+    ASSERT(!comparison1.empty());
+
+
+    // compare
+    for (auto& comparator : eckit::StringTools::split("/", comparison1)) {
+        std::unique_ptr<stats::Comparator> comp(stats::ComparatorFactory::build(comparator, param1, param2));
+        auto problems = comp->execute(input1->field(), input2->field());
+
+        if (!problems.empty()) {
+            eckit::Log::info() << "Value compare failed between:"
+                               << "\n  " << multi1 << ": " << field1
+                               << "\n  " << multi2 << ": " << field2
+                               << "\n  reporting " << *comp
+                               << "\n  failed because" << problems
+                               << std::endl;
+            error("values-mismatches");
+        }
     }
-
 }
+
 
 void FieldComparator::whiteListEntries(const Field & field, const MultiFile & multi) const {
     multi.whiteListEntries(eckit::Log::info());
@@ -681,19 +722,16 @@ void FieldComparator::missingField(const MultiFile & multi1,
     if (ignoreWrappingAreas_) {
 
         if (field.wrapped()) {
-            eckit::Log::info()  << "Ignoring wrapped field " << field << std::endl;
+            eckit::Log::info() << "Ignoring wrapped field " << field << std::endl;
             return;
         }
 
         std::vector<Field> matches = field.bestMatches(fields);
         std::sort(matches.begin(), matches.end(), Compare(field));
-        if (matches.size() > 0) {
-            for (auto m = matches.begin(); m != matches.end(); ++m) {
-                const auto& other = (*m);
-                if (other.wrapped()) {
-                    eckit::Log::info()  << "Ignoring field " << field << " that matches wrapped " << other << std::endl;
-                    return;
-                }
+        for (auto& other : matches) {
+            if (other.wrapped()) {
+                eckit::Log::info() << "Ignoring field " << field << " that matches wrapped " << other << std::endl;
+                return;
             }
         }
     }
@@ -712,27 +750,23 @@ void FieldComparator::missingField(const MultiFile & multi1,
     if (whiteListEntries_) {
         whiteListEntries(field, multi1);
     }
-    // Find the best mismaches
+    // Find the best mismatches
 
     std::vector<Field> matches = field.bestMatches(fields);
-    if (matches.size() == 0) {
+    if (!matches.empty()) {
         eckit::Log::info() << " ? " << "No match found in " << multi2 <<  std::endl;
         size_t cnt = 0;
 
         auto flds = field.sortByDifference(fields);
 
 
-        for (auto m = flds.begin(); m != flds.end(); ++m) {
-
-
-            const auto& other = (*m);
+        for (const auto& other : flds) {
             if (other.match(field)) {
 
                 if (cnt >= 5) {
                     eckit::Log::info() << " # ..." << std::endl;
                     break;
                 }
-
 
                 eckit::Log::info() << " @ ";
                 other.printDifference(eckit::Log::info(), field);
@@ -747,15 +781,13 @@ void FieldComparator::missingField(const MultiFile & multi1,
             }
         }
         if (!cnt) {
-            for (auto m = flds.begin(); m != flds.end(); ++m) {
+            for (const auto& other : flds) {
 
                 if (cnt >= 5) {
                     eckit::Log::info() << " # ..." << std::endl;
                     break;
                 }
 
-
-                const auto& other = (*m);
                 eckit::Log::info() << " # ";
                 other.printDifference(eckit::Log::info(), field);
                 eckit::Log::info() << " (" ;
@@ -772,9 +804,7 @@ void FieldComparator::missingField(const MultiFile & multi1,
         eckit::Log::info() << " + " << "Possible matched in " << multi2 <<  std::endl;
 
         size_t cnt = 0;
-        for (auto m = matches.begin(); m != matches.end(); ++m) {
-
-            const auto& other = (*m);
+        for (const auto& other : matches) {
 
             if (saveFirstPossibleMatch_ && cnt == 0) {
                 multi1.save(field.path(), field.offset(), field.length(), saved_);
@@ -811,17 +841,17 @@ void FieldComparator::compareFields(const MultiFile & multi1,
 
     bool show = true;
 
-    for (auto j = fields1.begin(); j != fields1.end(); ++j) {
-        auto other = fields2.same(*j);
+    for (const auto & j : fields1) {
+        auto other = fields2.same(j);
         if (other != fields2.end()) {
-            if (compareValues && compareStatistics) {
-                compareFieldStatistics(multi1, multi2, *j, *other);
+            if (compareStatistics) {
+                compareFieldStatistics(multi1, multi2, j, *other);
             }
             if (compareValues) {
-                compareFieldValues(multi1, multi2, *j, *other);
+                compareFieldValues(multi1, multi2, j, *other);
             }
         } else {
-            missingField(multi1, multi2, *j, fields2, show);
+            missingField(multi1, multi2, j, fields2, show);
         }
     }
 }
@@ -833,22 +863,16 @@ void FieldComparator::compareCounts(const std::string & name,
                                     FieldSet & fields1,
                                     FieldSet & fields2) {
 
-
     size_t n1 = count(multi1, fields1);
     size_t n2 = count(multi2, fields2);
 
     if (n1 != n2) {
-
-        eckit::Log::info() << name
-                           << " count mismatch"
-                           << std::endl
-                           << "    " << n1 << " " << multi1 << std::endl
-                           << "    " << n2 << " " << multi2  << std::endl;
-
+        eckit::Log::info() << name << " count mismatch"
+                           << "\n  " << n1 << " " << multi1
+                           << "\n  " << n2 << " " << multi2
+                           << std::endl;
         error("count-mismatches");
-
     }
-
 }
 
 
