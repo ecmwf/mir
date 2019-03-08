@@ -138,7 +138,7 @@ void Conservative::assemble(util::MIRStatistics& statistics,
 
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
-    WeightMatrix IM(in.numberOfPoints(), out.numberOfPoints());
+    WeightMatrix IM(out.numberOfPoints(), in.numberOfPoints());
     FELinear::assemble(statistics, IM, in, out);
     eckit::Log::debug<LibMir>() << "IM rows " << IM.rows() << " cols " << IM.cols() << std::endl;
     //    IM.save("IM.mat");
