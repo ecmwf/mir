@@ -147,14 +147,14 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     // 2) M_s compute the lumped mass matrix (source mesh)
     util::MIRGrid gin(in.atlasGrid());
     eckit::linalg::Vector M_s(in.numberOfPoints());
-    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams_);
+    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams);
     computeLumpedMassMatrix(M_s, inputMesh);
 
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
     util::MIRGrid gout(out.atlasGrid());
     eckit::linalg::Vector M_d(out.numberOfPoints());
-    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams_);
+    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams);
     computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
         v = 1. / v;
