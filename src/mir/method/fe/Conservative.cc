@@ -142,7 +142,7 @@ void Conservative::assemble(util::MIRStatistics& statistics,
     const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams);
     computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
-        v = 1. / v;
+        v = eckit::types::is_approximately_equal(v, 0.) ? 0. : 1. / v;
     }
 
 
