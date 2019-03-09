@@ -81,7 +81,6 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
 
         const std::string& type = elements.element_type().name();
         size_t idx[4];
-        d.setZero();
 
         if (type == "Triangle") {
             for (atlas::idx_t e = 0; e < elements.size(); ++e) {
