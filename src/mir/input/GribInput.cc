@@ -364,17 +364,18 @@ static ProcessingT<double>* divide(const char *key, double denominator) {
     });
 }
 
-static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<const char*> keys) {
+static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std::string> keys) {
+    const std::vector<std::string> keys_(keys);
     return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
         ASSERT(keys.size());
-        const std::vector<const char*> keys_(keys);
 
         values.assign(keys_.size(), 0);
-        for (size_t i = 0; i < keys_.size(); ++i) {
-            if (!grib_is_defined(h, keys_[i])) {
+        size_t i =0;
+        for (auto& key : keys_) {
+            if (!grib_is_defined(h, key.c_str())) {
                 return false;
             }
-            GRIB_CALL(grib_get_double(h, keys_[i], &values[i]));
+            GRIB_CALL(grib_get_double(h, key.c_str(), &values[i++]));
         }
         return true;
     });
