@@ -17,6 +17,7 @@
 
 #include <string>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
