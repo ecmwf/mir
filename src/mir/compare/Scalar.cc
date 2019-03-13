@@ -59,9 +59,9 @@ void Scalar::execute(const data::MIRField& field1, const data::MIRField& field2)
                     oss << "missing value mismatch at point " << (i+1);
                     throw eckit::UserError(oss.str());
 
-                } else if (!isMissing1(values1[i] && !isMissing1(values2[i]))) {
+                } else if (!isMissing1(values1[i]) && !isMissing1(values2[i])) {
 
-
+                    // FIXME
                 }
             }
 
