@@ -27,10 +27,10 @@ ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support 
 ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 
 
-ecbuild_use_package( PROJECT eccodes VERSION 2.12.0 REQUIRED )
-ecbuild_use_package( PROJECT eckit   VERSION 0.24.0 REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.16.0)
-#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
+ecbuild_use_package( PROJECT eccodes VERSION 2.12 REQUIRED )
+ecbuild_use_package( PROJECT eckit   VERSION 1.0  REQUIRED )
+ecbuild_use_package( PROJECT atlas   VERSION 0.16 REQUIRED )
+#ecbuild_use_package( PROJECT metkit  VERSION  0.7 )
 
 if(ECCODES_FOUND)
     set(HAVE_ECCODES 1)
