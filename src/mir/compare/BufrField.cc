@@ -18,7 +18,7 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/log/Colour.h"
 #include <iomanip>
 

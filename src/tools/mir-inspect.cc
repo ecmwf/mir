@@ -13,7 +13,7 @@
 /// @date Apr 2015
 
 
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/log/Log.h"
 
 #include "mir/input/GribFileInput.h"

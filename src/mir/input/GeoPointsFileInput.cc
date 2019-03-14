@@ -21,7 +21,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/Translator.h"
 

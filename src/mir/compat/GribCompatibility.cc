@@ -21,7 +21,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 namespace mir {
 namespace compat {

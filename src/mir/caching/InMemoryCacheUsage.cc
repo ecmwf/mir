@@ -20,7 +20,7 @@
 #include "eckit/serialisation/Stream.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/utils/Translator.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 namespace mir {
 namespace caching {
