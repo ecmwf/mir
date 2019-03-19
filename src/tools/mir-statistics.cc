@@ -50,11 +50,11 @@ public:
 
 void MIRStatistics::usage(const std::string &tool) const {
     eckit::Log::info()
-            << "\nUsage: " << tool << " [--stats=option] file.grib [file.grib [...]]"
+            << "\nUsage: " << tool << " [--statistics=option] file.grib [file.grib [...]]"
                "\nExamples:"
                "\n  % " << tool << " file.grib"
-               "\n  % " << tool << " --stats=scalar file1.grib file2.grib file3.grib"
-               "\n  % " << tool << " --stats=spectral file.grib"
+               "\n  % " << tool << " --statistics=scalar file1.grib file2.grib file3.grib"
+               "\n  % " << tool << " --statistics=spectral file.grib"
             << std::endl;
 }
 

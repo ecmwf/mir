@@ -22,7 +22,8 @@
 #include "atlas/util/GaussianLatitudes.h"
 
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/stats/Scalar.h"
+#include "mir/stats/StatisticsT.h"
+#include "mir/stats/detail/Scalar.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -49,19 +50,19 @@ void MIRGaussianFractions::usage(const std::string &tool) const {
 }
 
 
-using statistics_t = mir::stats::Scalar;
+using statistics_t = mir::stats::StatisticsT<mir::stats::detail::Scalar>;
 
 
-statistics_t evaluateGaussianN(const size_t N, const mir::param::MIRParametrisation& param) {
+statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisation& param) {
 
     // This returns the Gaussian latitudes of the North hemisphere
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    statistics_t stats(param);
+    statistics_t* stats = new statistics_t(param);
     for (const double& l: latitudes) {
         const double f = double(eckit::Fraction(l));
-        stats(f - l);
+        stats->operator()(f - l);
     }
 
     return stats;
@@ -81,21 +82,21 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
     args.get("Nmax", Nmax);
 
     const mir::param::ConfigurationWrapper param(args);
-    statistics_t stats(param);
+    eckit::ScopedPtr<statistics_t> stats(new statistics_t(param));
 
 
     if (Nmin <= Nmax) {
 
-        eckit::ScopedPtr<statistics_t> worse(&stats);
+        eckit::ScopedPtr<statistics_t> worse(stats.get());
 
         bool first = true;
         for (size_t N = Nmin; N <= Nmax; N+=2) {
             eckit::Log::info() << "Evaluating N=" << N << std::endl;
 
-            statistics_t stats = evaluateGaussianN(N, param);
+            eckit::ScopedPtr<statistics_t> stats(evaluateGaussianN(N, param));
 
-            if (first || stats.normL1() > worse->normL1()) {
-                worse.reset(&stats);
+            if (first || stats->normL1() > worse->normL1()) {
+                worse.reset(stats.get());
                 first = false;
             }
         }

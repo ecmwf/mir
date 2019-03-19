@@ -469,6 +469,8 @@ list(APPEND mir_srcs
     search/tree/TreeMappedFile.h
     search/tree/TreeMemory.cc
     search/tree/TreeMemory.h
+    stats/Integral.cc
+    stats/Integral.h
     stats/SimplePackingEntropy.cc
     stats/SimplePackingEntropy.h
     stats/Spectral.cc

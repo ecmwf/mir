@@ -22,8 +22,7 @@
 #include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/stats/detail/ScalarCentralMomentsT.h"
-#include "mir/stats/detail/ScalarMinMaxT.h"
+#include "mir/stats/detail/CentralMomentsT.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -35,7 +34,7 @@ private:
     int minimumPositionalArguments() const { return 1; }
 public:
     MIRValuesStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption< std::string >("output-mean", "output per-value mean to GRIB file"));
         options_.push_back(new SimpleOption< std::string >("output-variance", "output per-value variance to GRIB file"));
         options_.push_back(new SimpleOption< std::string >("output-stddev", "output per-value standard deviation to GRIB file"));
@@ -54,7 +53,7 @@ void MIRValuesStatistics::usage(const std::string &tool) const {
 }
 
 
-typedef mir::stats::detail::ScalarCentralMomentsT<double> statistics_t;
+using statistics_t = mir::stats::detail::CentralMomentsT<double>;
 
 
 void getStatisticsValues(mir::context::Context& ctx, mir::output::MIROutput& out, const std::string& name, const std::vector<statistics_t>& stats) {
