@@ -31,8 +31,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
-#include "mir/stats/StatisticsT.h"
-#include "mir/stats/detail/MinMax.h"
+#include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Grib.h"
 
@@ -198,7 +197,7 @@ size_t diff(eckit::Channel& log,
 
     mir::param::SimpleParametrisation empty;
 
-    mir::stats::StatisticsT<mir::stats::detail::MinMax> statsLat(empty), statsLon(empty);
+    mir::stats::detail::Counter statsLat(empty), statsLon(empty);
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
         return out << "\n\t@[0]=" << n
                    << '\t' << mir::Point2(lat1[n], lon1[n])
@@ -216,8 +215,8 @@ size_t diff(eckit::Channel& log,
         double dlat = mir::Latitude(lat1[n]).distance(lat2[n]).value();
         double dlon = mir::LongitudeDouble(lon1[n]).distance(lon2[n]).value();
 
-        statsLat(dlat);
-        statsLon(dlon);
+        statsLat.count(dlat);
+        statsLon.count(dlon);
 
         if (dlat > toleranceLat || dlon > toleranceLon) {
             ++Ndiff;

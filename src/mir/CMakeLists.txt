@@ -365,6 +365,8 @@ list(APPEND mir_srcs
     param/Rules.h
     param/RuntimeParametrisation.cc
     param/RuntimeParametrisation.h
+    param/SameParametrisation.cc
+    param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
     repres/gauss/Gaussian.cc
@@ -465,22 +467,19 @@ list(APPEND mir_srcs
     search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
-    stats/ComparatorT.cc
-    stats/ComparatorT.h
     stats/Statistics.cc
     stats/Statistics.h
-    stats/StatisticsT.cc
-    stats/StatisticsT.h
+    stats/comparator/ComparatorT.cc
+    stats/comparator/ComparatorT.h
     stats/comparator/Spectral.cc
     stats/comparator/Spectral.h
     stats/detail/AngleT.cc
     stats/detail/AngleT.h
     stats/detail/CentralMomentsT.h
+    stats/detail/Counter.cc
+    stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
-    stats/detail/CounterUnary.cc
-    stats/detail/CounterUnary.h
-    stats/detail/MinMax.h
     stats/detail/PNorms.h
     stats/detail/Scalar.h
     stats/statistics/Integral.cc
@@ -489,6 +488,8 @@ list(APPEND mir_srcs
     stats/statistics/SimplePackingEntropy.h
     stats/statistics/Spectral.cc
     stats/statistics/Spectral.h
+    stats/statistics/StatisticsT.cc
+    stats/statistics/StatisticsT.h
     style/CustomParametrisation.cc
     style/CustomParametrisation.h
     style/CustomStyle.cc

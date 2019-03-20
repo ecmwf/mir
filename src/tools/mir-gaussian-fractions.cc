@@ -22,8 +22,7 @@
 #include "atlas/util/GaussianLatitudes.h"
 
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/stats/StatisticsT.h"
-#include "mir/stats/detail/Scalar.h"
+#include "mir/stats/detail/PNorms.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -50,7 +49,7 @@ void MIRGaussianFractions::usage(const std::string &tool) const {
 }
 
 
-using statistics_t = mir::stats::StatisticsT<mir::stats::detail::Scalar>;
+using statistics_t = mir::stats::detail::PNorms;
 
 
 statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisation& param) {
@@ -59,7 +58,7 @@ statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisa
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    statistics_t* stats = new statistics_t(param);
+    statistics_t* stats = new statistics_t;
     for (const double& l: latitudes) {
         const double f = double(eckit::Fraction(l));
         stats->operator()(f - l);
@@ -70,6 +69,7 @@ statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisa
 
 
 void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
+    auto& log = eckit::Log::info();
 
     size_t N = 1280;
     args.get("N", N);
@@ -82,7 +82,7 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
     args.get("Nmax", Nmax);
 
     const mir::param::ConfigurationWrapper param(args);
-    eckit::ScopedPtr<statistics_t> stats(new statistics_t(param));
+    eckit::ScopedPtr<statistics_t> stats(new statistics_t);
 
 
     if (Nmin <= Nmax) {
@@ -101,12 +101,16 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
             }
         }
 
-        eckit::Log::info() << "\n" "Δlat:" << *worse << std::endl;
+        log << "\n" "Δlat: ";
+        worse->print(log);
+        log << std::endl;
 
     } else {
 
         evaluateGaussianN(N, param);
-        eckit::Log::info() << "\n" "Δlat:" << stats << std::endl;
+        log << "\n" "Δlat: ";
+        stats->print(log);
+        log << std::endl;
 
     }
 }
