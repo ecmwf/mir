@@ -8,32 +8,34 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Oct 2016
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date Jul 2015
 
 
-#ifndef mir_compare_Spectral_h
-#define mir_compare_Spectral_h
+#ifndef mir_stats_statistics_Integral_h
+#define mir_stats_statistics_Integral_h
 
-#include "mir/compare/Comparator.h"
+#include "mir/stats/Statistics.h"
 
 
 namespace mir {
-namespace compare {
+namespace stats {
+namespace statistics {
 
 
-class Spectral : public Comparator {
-  public:
+class Integral : public Statistics {
+public:
 
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    Spectral(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2);
+    Integral(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~Spectral(); // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -42,7 +44,12 @@ class Spectral : public Comparator {
     // None
 
     // -- Methods
-    // None
+
+    void reset();
+
+    double integral() const {
+        return integral_;
+    }
 
     // -- Overridden methods
     // None
@@ -53,37 +60,19 @@ class Spectral : public Comparator {
     // -- Class methods
     // None
 
-  protected:
+private:
 
     // -- Members
 
-    double absoluteError_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-  private:
-
-    // -- Members
-    // None
+    double integral_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void execute(const data::MIRField&, const data::MIRField&) const;
-
-    virtual void print(std::ostream &) const;
+    void execute(const data::MIRField&);
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -97,7 +86,8 @@ class Spectral : public Comparator {
 };
 
 
-}  // namespace compare
+}  // namespace statistics
+}  // namespace stats
 }  // namespace mir
 
 

@@ -145,8 +145,6 @@ list(APPEND mir_srcs
     caching/matrix/MatrixLoader.h
     caching/matrix/SharedMemoryLoader.cc
     caching/matrix/SharedMemoryLoader.h
-    compare/Comparator.cc
-    compare/Comparator.h
     compare/Field.cc
     compare/Field.h
     compare/GribField.cc
@@ -161,10 +159,6 @@ list(APPEND mir_srcs
     compare/FieldSet.h
     compare/MultiFile.cc
     compare/MultiFile.h
-    compare/Scalar.cc
-    compare/Scalar.h
-    compare/Spectral.cc
-    compare/Spectral.h
     compat/GribCompatibility.cc
     compat/GribCompatibility.h
     config/LibMir.cc
@@ -469,22 +463,32 @@ list(APPEND mir_srcs
     search/tree/TreeMappedFile.h
     search/tree/TreeMemory.cc
     search/tree/TreeMemory.h
-    stats/Integral.cc
-    stats/Integral.h
-    stats/SimplePackingEntropy.cc
-    stats/SimplePackingEntropy.h
-    stats/Spectral.cc
-    stats/Spectral.h
+    stats/Comparator.cc
+    stats/Comparator.h
+    stats/ComparatorT.cc
+    stats/ComparatorT.h
     stats/Statistics.cc
     stats/Statistics.h
     stats/StatisticsT.cc
     stats/StatisticsT.h
+    stats/comparator/Spectral.cc
+    stats/comparator/Spectral.h
     stats/detail/AngleT.cc
     stats/detail/AngleT.h
     stats/detail/CentralMomentsT.h
+    stats/detail/CounterBinary.cc
+    stats/detail/CounterBinary.h
+    stats/detail/CounterUnary.cc
+    stats/detail/CounterUnary.h
     stats/detail/MinMax.h
     stats/detail/PNorms.h
     stats/detail/Scalar.h
+    stats/statistics/Integral.cc
+    stats/statistics/Integral.h
+    stats/statistics/SimplePackingEntropy.cc
+    stats/statistics/SimplePackingEntropy.h
+    stats/statistics/Spectral.cc
+    stats/statistics/Spectral.h
     style/CustomParametrisation.cc
     style/CustomParametrisation.h
     style/CustomStyle.cc

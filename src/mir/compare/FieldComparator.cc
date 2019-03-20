@@ -24,7 +24,6 @@
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"
-#include "mir/compare/Comparator.h"
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/GribField.h"
@@ -36,6 +35,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/stats/Comparator.h"
 #include "mir/util/Grib.h"
 
 
@@ -644,7 +644,7 @@ void FieldComparator::compareFieldValues(
 
     std::vector<std::string> comparators = eckit::StringTools::split("/", comparison1);
     for (auto c = comparators.begin(); c != comparators.end(); ++c) {
-        eckit::ScopedPtr<Comparator> comp(ComparatorFactory::build(*c, combined1, combined2));
+        eckit::ScopedPtr<stats::Comparator> comp(stats::ComparatorFactory::build(*c, combined1, combined2));
         comp->execute(input1.field(), input2.field());
     }
 

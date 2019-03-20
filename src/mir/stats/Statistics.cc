@@ -18,7 +18,6 @@
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-//include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -53,80 +52,14 @@ Statistics::Statistics(const param::MIRParametrisation& parametrisation) :
 Statistics::~Statistics() = default;
 
 
-Statistics::CounterUnary::CounterUnary(const data::MIRField& field) :
-    count_(0),
-    missing_(0),
-    missingValue_(field.missingValue()),
-    hasMissing_(field.hasMissing()) {
-}
-
-
-bool Statistics::CounterUnary::missingValue(const double& v) {
-    count_++;
-    if (hasMissing_ && missingValue_ == v) {
-        missing_++;
-        return true;
-    }
-    return false;
-}
-
-
-Statistics::CounterBinary::CounterBinary(const data::MIRField& field1, const data::MIRField& field2) :
-    counter1_(field1),
-    counter2_(field2),
-    missing1_(0),
-    missing2_(0) {
-}
-
-
-bool Statistics::CounterBinary::missingValues(const double& v1, const double& v2) {
-    bool miss1 = counter1_.missingValue(v1);
-    bool miss2 = counter2_.missingValue(v2);
-    if (miss1 || miss2) {
-        (miss1 && miss2 ? missing2_ : missing1_)++;
-        return true;
-    }
-    return false;
-}
-
-
-size_t Statistics::CounterBinary::count() const {
-    ASSERT(counter1_.count() == counter2_.count());
-    return counter1_.count();
-}
-
-
-Statistics::CountOutside::CountOutside(const double &upperLimit, const double &lowerLimit) :
-    lowerLimit_(lowerLimit),
-    upperLimit_(upperLimit),
-    hasLowerLimit_(lowerLimit == lowerLimit),
-    hasUpperLimit_(upperLimit == upperLimit) {
-}
-
-
-size_t Statistics::CountOutside::count() const {
-    return count_;
-}
-
-
-void Statistics::CountOutside::count(const double &v) {
-    if (hasLowerLimit_ && v < lowerLimit_) {
-        ++count_;
-    }
-    if (hasUpperLimit_ && v > upperLimit_) {
-        ++count_;
-    }
-}
-
-
 StatisticsFactory::StatisticsFactory(const std::string& name) :
     name_(name) {
     pthread_once(&once, init);
 
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("StatisticsFactory: duplicated '" + name + "'");
+        throw eckit::SeriousBug("StatisticsFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());

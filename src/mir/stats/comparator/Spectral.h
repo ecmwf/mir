@@ -8,22 +8,22 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date Jul 2015
 
+#ifndef mir_stats_comparator_Spectral_h
+#define mir_stats_comparator_Spectral_h
 
-#ifndef mir_stats_Integral_h
-#define mir_stats_Integral_h
-
-#include "mir/stats/Statistics.h"
+#include "mir/stats/Comparator.h"
 
 
 namespace mir {
 namespace stats {
+namespace comparator {
 
 
-class Integral : public Statistics {
+/**
+ * @brief Calculate spectral statistics on a MIRField
+ */
+class Spectral : public Comparator {
 public:
 
     // -- Exceptions
@@ -31,10 +31,11 @@ public:
 
     // -- Constructors
 
-    Integral(const param::MIRParametrisation&);
+    Spectral(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~Spectral();
 
     // -- Convertors
     // None
@@ -45,10 +46,8 @@ public:
     // -- Methods
 
     void reset();
-
-    double integral() const {
-        return integral_;
-    }
+    double meandiff() const;
+    double enormdiff() const;
 
     // -- Overridden methods
     // None
@@ -63,14 +62,16 @@ private:
 
     // -- Members
 
-    double integral_;
+    double meanDiff_;
+    double enormDiff_;
+    std::string stats_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    void execute(const data::MIRField&);
+    void execute(const data::MIRField&, const data::MIRField&);
     void print(std::ostream&) const;
 
     // -- Class members
@@ -85,8 +86,10 @@ private:
 };
 
 
+}  // namespace comparator
 }  // namespace stats
 }  // namespace mir
 
 
 #endif
+

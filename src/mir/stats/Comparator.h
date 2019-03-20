@@ -13,28 +13,30 @@
 /// @date Apr 2015
 
 
-#ifndef mir_compare_Comparator_H
-#define mir_compare_Comparator_H
+#ifndef mir_stats_Comparator_h
+#define mir_stats_Comparator_h
 
 #include <iosfwd>
 #include <string>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/memory/NonCopyable.h"
+
 #include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
-namespace context {
-class Context;
-}
 namespace data {
 class MIRField;
+}
+namespace param {
+class MIRParametrisation;
 }
 }
 
 
 namespace mir {
-namespace compare {
+namespace stats {
 
 
 class Comparator : public eckit::NonCopyable {
@@ -43,9 +45,9 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    Comparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2);
+    Comparator(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -59,7 +61,7 @@ public:
 
     // -- Methods
 
-    virtual void execute(const data::MIRField&, const data::MIRField&) const = 0;
+    virtual void execute(const data::MIRField&, const data::MIRField&) = 0;
 
     // -- Overridden methods
     // None
@@ -73,20 +75,21 @@ public:
 protected:
 
     // -- Members
-    // None
+
+    const param::MIRParametrisation& parametrisation1_;
+    const param::MIRParametrisation& parametrisation2_;
 
     // -- Methods
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    /// Output
+    virtual void print(std::ostream &) const = 0;
 
     template< typename T >
     T getSameParameter(const std::string& parameter) {
         T value1 = T();
         T value2 = T();
 
-        bool got1 = parametrisation1_.get(parameter, value1);
-        bool got2 = parametrisation2_.get(parameter, value2);
-        if (got1 || got2) {
+        if (parametrisation1_.get(parameter, value1) || parametrisation2_.get(parameter, value2)) {
             ASSERT(value1 == value2);
         }
 
@@ -105,9 +108,7 @@ protected:
 private:
 
     // -- Members
-
-    const param::MIRParametrisation& parametrisation1_;
-    const param::MIRParametrisation& parametrisation2_;
+    // None
 
     // -- Methods
     // None
@@ -123,46 +124,39 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Comparator &p) {
-        p.print(s);
-        return s;
+    friend std::ostream& operator<<(std::ostream& out, const Comparator& r) {
+        r.print(out);
+        return out;
     }
 
 };
 
 
 class ComparatorFactory {
-
+private:
     std::string name_;
-
-    virtual Comparator *make(const param::MIRParametrisation&, const param::MIRParametrisation&) = 0;
-
+    virtual Comparator* make(const param::MIRParametrisation&, const param::MIRParametrisation&) = 0;
 protected:
-
-    ComparatorFactory(const std::string &);
-
+    ComparatorFactory(const std::string&);
     virtual ~ComparatorFactory();
-
 public:
-
-    static Comparator *build(const std::string&, const param::MIRParametrisation&, const param::MIRParametrisation&);
-
     static void list(std::ostream&);
-
+    static Comparator* build(const std::string&, const param::MIRParametrisation&, const param::MIRParametrisation&);
 };
 
 
 template<class T>
 class ComparatorBuilder : public ComparatorFactory {
-    virtual Comparator *make(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2) {
+    virtual Comparator* make(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
         return new T(param1, param2);
     }
 public:
-    ComparatorBuilder(const std::string &name) : ComparatorFactory(name) {}
+    ComparatorBuilder(const std::string& name) : ComparatorFactory(name) {
+    }
 };
 
 
-}  // namespace compare
+}  // namespace stats
 }  // namespace mir
 
 

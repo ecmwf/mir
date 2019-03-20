@@ -9,14 +9,15 @@
  */
 
 
-#ifndef mir_stats_SimplePackingEntropy_h
-#define mir_stats_SimplePackingEntropy_h
+#ifndef mir_stats_statistics_SimplePackingEntropy_h
+#define mir_stats_statistics_SimplePackingEntropy_h
 
 #include "mir/stats/Statistics.h"
 
 
 namespace mir {
 namespace stats {
+namespace statistics {
 
 
 /**
@@ -96,6 +97,7 @@ private:
 };
 
 
+}  // namespace statistics
 }  // namespace stats
 }  // namespace mir
 

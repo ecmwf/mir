@@ -8,34 +8,34 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_stats_statistics_Spectral_h
+#define mir_stats_statistics_Spectral_h
 
-#ifndef mir_compare_Scalar_h
-#define mir_compare_Scalar_h
-
-#include "mir/compare/Comparator.h"
+#include "mir/stats/Statistics.h"
 
 
 namespace mir {
-namespace compare {
+namespace stats {
+namespace statistics {
 
 
-class Scalar : public Comparator {
-  public:
+/**
+ * @brief Calculate spectral statistics on a MIRField
+ */
+class Spectral : public Statistics {
+public:
 
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    Scalar(const param::MIRParametrisation &param1, const param::MIRParametrisation& param2);
+    Spectral(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~Scalar(); // Change to virtual if base class
+    virtual ~Spectral();
 
     // -- Convertors
     // None
@@ -44,10 +44,16 @@ class Scalar : public Comparator {
     // None
 
     // -- Methods
-    // None
+
+    void reset();
+    double mean() const;
+    double variance() const;
+    double standardDeviation() const;
+    double enorm() const;
 
     // -- Overridden methods
-    // None
+
+    void execute(const data::MIRField&);
 
     // -- Class members
     // None
@@ -55,37 +61,21 @@ class Scalar : public Comparator {
     // -- Class methods
     // None
 
-  protected:
+private:
 
     // -- Members
 
-    double absoluteError_;
-
-    // -- Methods
-    // None
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-  private:
-
-    // -- Members
-    // None
+    double mean_;
+    double variance_;
+    double stddev_;
+    double enorm_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void execute(const data::MIRField&, const data::MIRField&) const;
-
-    virtual void print(std::ostream &) const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -99,8 +89,10 @@ class Scalar : public Comparator {
 };
 
 
-}  // namespace compare
+}  // namespace statistics
+}  // namespace stats
 }  // namespace mir
 
 
 #endif
+
