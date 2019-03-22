@@ -41,7 +41,7 @@ bool SameParametrisation::_get(const std::string& name, T& value) const {
         return true;
     }
 
-    return true;
+    return false;
 }
 
 

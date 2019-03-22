@@ -41,21 +41,12 @@ private:
 public:
 
     MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+        using eckit::option::FactoryOption;
         using eckit::option::SimpleOption;
 
-        options_.push_back(new eckit::option::FactoryOption<mir::stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
-
-        options_.push_back(new SimpleOption< double >("counter-upper-limit", "count lower limit"));
-        options_.push_back(new SimpleOption< double >("counter-lower-limit", "count upper limit"));
-
-        options_.push_back(new SimpleOption< bool >("ignore-different-missing-values", "ignore different missing values"));
-        options_.push_back(new SimpleOption< bool >("ignore-count-above-upper-limit", "ignore count above specified upper limit"));
-        options_.push_back(new SimpleOption< bool >("ignore-count-above-upper-limit-factor", "ignore count above specified upper limit (relative to total count)"));
-
-        options_.push_back(new SimpleOption< double >("absolute-tolerance", "absolute difference tolerance"));
-        options_.push_back(new SimpleOption< double >("relative-tolerance", "relative difference tolerance to reference (range [0, 1])"));
-        options_.push_back(new SimpleOption< double >("relative-reference", "relative difference reference"));
-        options_.push_back(new SimpleOption< double >("packing-error-factor", "difference tolerance factor to field packingError"));
+        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
+        options_.push_back(new SimpleOption< double >("counter-lower-limit", "count lower limit"));
+        options_.push_back(new SimpleOption< double >("counter-upper-limit", "count upper limit"));
     }
 };
 

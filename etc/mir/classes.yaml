@@ -2,7 +2,7 @@
 
 # default
 _default:
-    comparison: scalar
+    compare: scalar
 
 # amount of mass per unit volume (typical units: [kg m**-3])
 density.mass: {}
@@ -16,18 +16,22 @@ density.volume: {}
 # Angle starting from 0 (units: degree)
 space.1d.angle.degree.asymmetric:
     space: 1d.angle.degree.asymmetric
+    compare: angle.degree.symmetric
 
 # Angle symmetric around 0 (units: degree)
 space.1d.angle.degree.symmetric:
     space: 1d.angle.degree.symmetric
+    compare: angle.degree.symmetric
 
 # Angle starting from 0 (units: radian)
 space.1d.angle.radian.asymmetric:
     space: 1d.angle.radian.asymmetric
+    compare: angle.radian.symmetric
 
 # Angle symmetric around 0 (units: radian)
 space.1d.angle.radian.symmetric:
     space: 1d.angle.radian.symmetric
+    compare: angle.radian.symmetric
 
 # Vector in 2D Cartesian space, X component
 space.2d.vector.u:
