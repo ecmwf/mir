@@ -131,22 +131,31 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
                       "Ignore counted different missing values"));
 
     options.push_back(new SimpleOption<double>("ignore-different-missing-values-factor",
-                      "Ignore counted different missing values factor (to total count)"));
+                      "Ignore counted different missing values factor (factor of total count)"));
 
     options.push_back(new SimpleOption<size_t>("ignore-above-upper-limit",
                       "Ignore count above specified upper limit"));
 
     options.push_back(new SimpleOption<double>("ignore-above-upper-limit-factor",
-                      "Ignore count above specified upper limit (relative to total count)"));
+                      "Ignore count above specified upper limit (factor of total count)"));
 
     options.push_back(new SimpleOption<double>("absolute-error",
                       "Absolute difference error"));
 
-    options.push_back(new SimpleOption<double>("relative-error",
-                      "Relative difference error to reference (range [0, 1])"));
+    options.push_back(new SimpleOption<double>("relative-error-min",
+                      "Relative difference error to minimum of both fields"));
+
+    options.push_back(new SimpleOption<double>("relative-error-max",
+                      "Relative difference error to maximum of both fields"));
 
     options.push_back(new SimpleOption<double>("packing-error-factor",
                       "Difference error factor to field packingError"));
+
+    options.push_back(new SimpleOption<double>("spectral-mean-difference-max",
+                      "Maximum difference of spectral mean (spectral fields only)"));
+
+    options.push_back(new SimpleOption<double>("spectral-energy-norm-difference-max",
+                      "Maximum difference of spectral energy norm (spectral fields only)"));
 
     options.push_back(new FactoryOption<mir::stats::ComparatorFactory>("compare",
                       "/-separated list of value comparison methods"));
