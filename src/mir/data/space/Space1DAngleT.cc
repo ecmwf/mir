@@ -137,9 +137,9 @@ void Space1DAngleT< SCALE, SYMMETRY >::unlinearise(const Space::Matrix& matrixIn
             xy = complex_t(matrixIn(i, 0), matrixIn(i, 1));
             th = convert_to_angle< SCALE >(xy);
             matrixOut[i] = norm.normalise(th);
-	    if (matrixOut[i] > 360.) {
-		th = 2.;
-	    }
+            if (matrixOut[i] > 360.) {
+                th = 2.;
+            }
         }
     }
 }
