@@ -467,6 +467,8 @@ list(APPEND mir_srcs
     search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
+    stats/Method.cc
+    stats/Method.h
     stats/Statistics.cc
     stats/Statistics.h
     stats/comparator/ComparatorT.cc
@@ -475,6 +477,7 @@ list(APPEND mir_srcs
     stats/comparator/Spectral.h
     stats/detail/AngleT.cc
     stats/detail/AngleT.h
+    stats/detail/CentralMomentsT.cc
     stats/detail/CentralMomentsT.h
     stats/detail/Counter.cc
     stats/detail/Counter.h
@@ -482,6 +485,8 @@ list(APPEND mir_srcs
     stats/detail/CounterBinary.h
     stats/detail/PNorms.h
     stats/detail/Scalar.h
+    stats/method/MethodT.cc
+    stats/method/MethodT.h
     stats/statistics/Integral.cc
     stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
