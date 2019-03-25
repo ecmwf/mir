@@ -22,7 +22,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/linalg/SparseMatrix.h"
-
+#include "eckit/log/Channel.h"
 
 namespace mir {
 namespace caching {

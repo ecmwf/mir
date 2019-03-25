@@ -89,7 +89,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     {
         eckit::ProgressTimer progress("Interpolating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
 
-        eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+        std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 
         while (it->next()) {
