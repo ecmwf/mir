@@ -84,7 +84,7 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     minimum = 0;
     maximum = 0;
 
-    eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+    std::unique_ptr<repres::Iterator> it(r.iterator());
     size_t i = 0;
 
     while (it->next()) {
