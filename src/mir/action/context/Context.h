@@ -16,9 +16,10 @@
 #ifndef mir_action_context_Context_h
 #define mir_action_context_Context_h
 
+#include <memory>
 #include <string>
 #include <vector>
-#include "eckit/memory/ScopedPtr.h"
+
 #include "eckit/thread/Mutex.h"
 
 
@@ -145,7 +146,7 @@ private:
 
     input::MIRInput &input_;
     util::MIRStatistics& statistics_;
-    eckit::ScopedPtr<Content> content_;
+    std::unique_ptr<Content> content_;
 
     // -- Methods
     // None

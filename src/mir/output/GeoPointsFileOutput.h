@@ -18,7 +18,7 @@
 
 #include "mir/output/GeoPointsOutput.h"
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
 
 
 namespace mir {
@@ -64,7 +64,7 @@ protected:
     std::string path_;
     bool binary_;
     
-    mutable eckit::ScopedPtr<eckit::DataHandle> handle_;
+    mutable std::unique_ptr<eckit::DataHandle> handle_;
 
     // -- Methods
     // None

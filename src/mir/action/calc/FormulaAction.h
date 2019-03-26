@@ -17,10 +17,10 @@
 #define FormulaAction_H
 
 #include <map>
-
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
 
 #include "mir/action/plan/Action.h"
+
 
 namespace mir {
 
@@ -90,7 +90,7 @@ class FormulaAction : public Action {
 
 // -- Members
 
-    eckit::ScopedPtr<util::Formula> formula_;
+    std::unique_ptr<util::Formula> formula_;
     std::map<std::string, long> metadata_;
 
 // -- Methods

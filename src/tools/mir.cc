@@ -14,6 +14,7 @@
 
 
 #include <iostream>
+#include <memory>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
@@ -21,7 +22,6 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Option.h"
@@ -242,7 +242,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
 
     const mir::param::ConfigurationWrapper args_wrap(args);
-    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
+    std::unique_ptr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
     if (vod2uv || uv2uv) {
@@ -257,7 +257,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
         return;
     }
 
-    eckit::ScopedPtr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0), args_wrap));
+    std::unique_ptr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0), args_wrap));
 
     if (args.has("latitudes") || args.has("longitudes")) {
         std::string latitudes, longitudes;

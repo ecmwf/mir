@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <forward_list>
 #include <limits>
+#include <memory>
 #include <utility>
 
 #include "eckit/config/Resource.h"
@@ -26,7 +27,6 @@
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Timer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -276,7 +276,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // generate k-d tree with cell centres
-    eckit::ScopedPtr<element_tree_t> eTree;
+    std::unique_ptr<element_tree_t> eTree;
     {
         eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
         eckit::TraceTimer<LibMir> timer("k-d tree: create");
@@ -313,7 +313,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
         // output points
-        const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+        const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 
         while (it->next()) {

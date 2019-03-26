@@ -10,11 +10,11 @@
 
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/config/LibMir.h"

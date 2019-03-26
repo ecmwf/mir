@@ -12,6 +12,9 @@
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 #include <vector>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"

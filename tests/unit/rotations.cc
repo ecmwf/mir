@@ -10,13 +10,13 @@
 
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/geometry/Point2.h"
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/api/Atlas.h"
 #include "mir/repres/latlon/RotatedLL.h"
@@ -171,7 +171,7 @@ CASE("MIR-282") {
                 << std::endl;
 
             bool contains = true;
-            for (eckit::ScopedPtr<repres::Iterator> iter(repres->iterator()); iter->next();) {
+            for (std::unique_ptr<repres::Iterator> iter(repres->iterator()); iter->next();) {
                 auto& pr = iter->pointRotated();
                 if (!crop.contains(pr[0], pr[1])) {
                     log << "!crop.contains:"

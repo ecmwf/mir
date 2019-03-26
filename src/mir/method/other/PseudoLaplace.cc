@@ -86,7 +86,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<double> weights;
     weights.reserve(nclosest_);
 
-    const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+    const std::unique_ptr<repres::Iterator> it(out.iterator());
     size_t ip = 0;
     while (it->next()) {
         ASSERT(ip < out_npts);

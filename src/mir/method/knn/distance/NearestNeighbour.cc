@@ -11,6 +11,7 @@
 
 #include "mir/method/knn/distance/NearestNeighbour.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 

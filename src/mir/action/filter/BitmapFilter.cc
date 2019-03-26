@@ -65,7 +65,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     caching::InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
     if (j == cache.end()) {
-        eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
+        std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
         cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));

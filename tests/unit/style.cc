@@ -11,11 +11,11 @@
 
 #include <algorithm>
 #include <ios>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/action/calc/FormulaAction.h"
@@ -143,7 +143,7 @@ CASE("ECMWFStyle") {
                         output::EmptyOutput out;
 
                         const param::CombinedParametrisation combined(user, in, defaults);
-                        eckit::ScopedPtr<style::MIRStyle> style(style::MIRStyleFactory::build(combined));
+                        std::unique_ptr<style::MIRStyle> style(style::MIRStyleFactory::build(combined));
 
                         action::ActionPlan plan(combined);
                         style->prepare(plan, in, out);

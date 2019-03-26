@@ -10,10 +10,10 @@
 
 
 #include <algorithm>
+#include <memory>
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/action/plan/Action.h"
@@ -49,7 +49,7 @@ struct TestWatcher : api::MIRWatcher {
 
 CASE("ActionGraph") {
 
-    eckit::ScopedPtr<api::MIRWatcher> watcher(new TestWatcher());
+    std::unique_ptr<api::MIRWatcher> watcher(new TestWatcher());
     param::DefaultParametrisation empty;
 
 
@@ -63,8 +63,8 @@ CASE("ActionGraph") {
     plan1.add("crop.area");
     plan2.add("crop.area");
 
-    eckit::ScopedPtr<action::Action> reference1(new action::AreaCropper(area1));
-    eckit::ScopedPtr<action::Action> reference2(new action::AreaCropper(area2));
+    std::unique_ptr<action::Action> reference1(new action::AreaCropper(area1));
+    std::unique_ptr<action::Action> reference2(new action::AreaCropper(area2));
 
 
     SECTION("ActionGraph with two unique actions (variant 1/2)") {

@@ -13,8 +13,9 @@
 /// @date Apr 2015
 
 
+#include <memory>
+
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "eckit/runtime/Tool.h"
@@ -87,7 +88,7 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
 
     // Wrap the arguments, so that they behave as a MIRParameter
     mir::param::ConfigurationWrapper wrap(args);
-    eckit::ScopedPtr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
+    std::unique_ptr<const mir::param::MIRParametrisation> defaults(mir::config::MIRConfiguration::instance().defaults());
 
     mir::param::CombinedParametrisation parametrisation(wrap, *defaults, *defaults);
 

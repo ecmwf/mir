@@ -15,9 +15,11 @@
 
 #include "mir/output/GeoPointsFileOutputXYVector.h"
 
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/HandleBuf.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
@@ -79,7 +81,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
         auto u = values_u.cbegin();
         auto v = values_v.cbegin();
 
-        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {
             const auto& p = it->pointUnrotated();
             ASSERT(u != values_u.cend());

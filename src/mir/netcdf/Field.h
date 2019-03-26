@@ -15,7 +15,8 @@
 #define mir_netcdf_Field
 
 #include <iosfwd>
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -74,7 +75,7 @@ private:
 
 
 
-    mutable eckit::ScopedPtr<GridSpec> gridSpec_;
+    mutable std::unique_ptr<GridSpec> gridSpec_;
 
     // - Methods
 

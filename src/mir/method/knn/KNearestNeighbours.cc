@@ -16,11 +16,13 @@
 #include "mir/method/knn/KNearestNeighbours.h"
 
 #include <algorithm>
+#include <memory>
+
 #include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/param/MIRParametrisation.h"
@@ -97,7 +99,7 @@ void KNearestNeighbours::assemble(
     {
         eckit::ProgressTimer progress("Locating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
 
-        const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+        const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
         while (it->next()) {
             ASSERT(ip < nbOutputPoints);

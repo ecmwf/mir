@@ -14,11 +14,11 @@
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <memory>
 #include <vector>
 #include <utility>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
@@ -96,7 +96,7 @@ struct Coordinates {
 struct CoordinatesFromRepresentation : Coordinates {
     CoordinatesFromRepresentation(const mir::repres::Representation& rep) :
         Coordinates("mir") {
-        eckit::ScopedPtr< mir::repres::Iterator > it(rep.iterator());
+        std::unique_ptr< mir::repres::Iterator > it(rep.iterator());
 
         const size_t N(rep.numberOfPoints());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -323,7 +323,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             mir::repres::RepresentationHandle rep(field.representation());
 
             if (!atlas && !ecc && !nclosest) {
-                eckit::ScopedPtr< Iterator > it(rep->iterator());
+                std::unique_ptr< Iterator > it(rep->iterator());
                 for (const double& v: field.values(0)) {
                     ASSERT(it->next());
                     const Point2& P(**it);
@@ -336,7 +336,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 continue;
             }
 
-            eckit::ScopedPtr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
+            std::unique_ptr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
 
             if (nclosest) {
                 size_t c = 1;
@@ -355,12 +355,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             bool err = false;
             if (atlas) {
-                eckit::ScopedPtr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
+                std::unique_ptr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
                 err = diff(log, toleranceLat, toleranceLon, *crd, *atl);
             }
 
             if (ecc) {
-                eckit::ScopedPtr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
+                std::unique_ptr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
                 err = diff(log, toleranceLat, toleranceLon, *crd, *ecc) || err;
             }
 

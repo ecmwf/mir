@@ -11,7 +11,9 @@
 /// @author Andreas Mueller
 /// @author Pedro Maciel
 
+
 #include <algorithm>
+#include <memory>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
@@ -19,7 +21,6 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/mpi/Comm.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
@@ -55,6 +56,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Wind.h"
+
 
 class MIRSpectralTransform : public mir::tools::MIRTool {
 private:
@@ -176,7 +178,7 @@ atlas::Grid output_grid(const mir::param::MIRParametrisation& parametrisation,
                         const mir::repres::Representation& representation) {
 
     if (parametrisation.has("griddef") || parametrisation.has("unstructured")) {
-        eckit::ScopedPtr<mir::repres::Iterator> it(representation.iterator());
+        std::unique_ptr<mir::repres::Iterator> it(representation.iterator());
 
         std::vector<atlas::PointXY>* coordinates = new std::vector<atlas::PointXY>;
         coordinates->reserve(representation.count());
@@ -222,11 +224,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     }
 
     // Setup output (file)
-    eckit::ScopedPtr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), commandLine));
+    std::unique_ptr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), commandLine));
     ASSERT(output);
 
     // Setup input (file) and parametrisation
-    eckit::ScopedPtr<mir::input::MIRInput> input;
+    std::unique_ptr<mir::input::MIRInput> input;
     {
         auto multi = new mir::input::MultiScalarInput();
         for (size_t i = 0; i < multiScalar; ++i) {

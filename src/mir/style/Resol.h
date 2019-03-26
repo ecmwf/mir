@@ -13,9 +13,11 @@
 #define mir_style_Resol_h
 
 #include <iosfwd>
+#include <memory>
 #include <string>
+
 #include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/style/Intgrid.h"
 #include "mir/style/Truncation.h"
 
@@ -94,8 +96,8 @@ private:
     // -- Members
 
     long inputTruncation_;
-    eckit::ScopedPtr<Intgrid> intgrid_;
-    eckit::ScopedPtr<Truncation> truncation_;
+    std::unique_ptr<Intgrid> intgrid_;
+    std::unique_ptr<Truncation> truncation_;
 
     // -- Methods
 

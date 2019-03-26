@@ -12,9 +12,9 @@
 
 
 #include <cmath>
+#include <memory>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/Fraction.h"
@@ -82,18 +82,18 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
     args.get("Nmax", Nmax);
 
     const mir::param::ConfigurationWrapper param(args);
-    eckit::ScopedPtr<statistics_t> stats(new statistics_t);
+    std::unique_ptr<statistics_t> stats(new statistics_t);
 
 
     if (Nmin <= Nmax) {
 
-        eckit::ScopedPtr<statistics_t> worse(stats.get());
+        std::unique_ptr<statistics_t> worse(stats.get());
 
         bool first = true;
         for (size_t N = Nmin; N <= Nmax; N+=2) {
             eckit::Log::info() << "Evaluating N=" << N << std::endl;
 
-            eckit::ScopedPtr<statistics_t> stats(evaluateGaussianN(N, param));
+            std::unique_ptr<statistics_t> stats(evaluateGaussianN(N, param));
 
             if (first || stats->normL1() > worse->normL1()) {
                 worse.reset(stats.get());

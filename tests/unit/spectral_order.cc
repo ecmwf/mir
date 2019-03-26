@@ -9,9 +9,11 @@
  */
 
 
+#include <memory>
+
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/style/SpectralOrder.h"
 
@@ -62,7 +64,7 @@ CASE( "test_spectral_order" ) {
     };
 
 
-    eckit::ScopedPtr<SpectralOrder> order1(SpectralOrderFactory::build("linear"));
+    std::unique_ptr<SpectralOrder> order1(SpectralOrderFactory::build("linear"));
 
     for (long Tref, Nref, i = 0; (Tref = order1_cases[i][0]); ++i) {
         Nref = order1_cases[i][1];
@@ -78,7 +80,7 @@ CASE( "test_spectral_order" ) {
     }
 
 
-    eckit::ScopedPtr<SpectralOrder> order2(SpectralOrderFactory::build("quadratic"));
+    std::unique_ptr<SpectralOrder> order2(SpectralOrderFactory::build("quadratic"));
 
     for (long Tref, Nref, i = 0; (Tref = order2_cases[i][0]); ++i) {
         Nref = order2_cases[i][1];
@@ -94,7 +96,7 @@ CASE( "test_spectral_order" ) {
     }
 
 
-    eckit::ScopedPtr<SpectralOrder> order3(SpectralOrderFactory::build("cubic"));
+    std::unique_ptr<SpectralOrder> order3(SpectralOrderFactory::build("cubic"));
 
     for (long Tref, Nref, i = 0; (Tref = order3_cases[i][0]); ++i) {
         Nref = order3_cases[i][1];

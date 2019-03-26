@@ -11,9 +11,10 @@
 /// @date July 2017
 
 
+#include <memory>
+
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 

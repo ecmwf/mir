@@ -11,8 +11,9 @@
 /// @date Oct 2016
 
 
+#include <memory>
+
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -93,7 +94,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
 
             // Calculate and show statistics
-            eckit::ScopedPtr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, combined));
+            std::unique_ptr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, combined));
             stats->execute(input.field());
 
             eckit::Log::info() << *stats << std::endl;

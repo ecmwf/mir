@@ -97,7 +97,7 @@ void AreaCropper::crop(
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
-    eckit::ScopedPtr<repres::Iterator> iter(repres.iterator());
+    std::unique_ptr<repres::Iterator> iter(repres.iterator());
 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();

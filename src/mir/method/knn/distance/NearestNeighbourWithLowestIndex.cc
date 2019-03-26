@@ -11,6 +11,7 @@
 
 #include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 

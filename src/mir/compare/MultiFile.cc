@@ -11,11 +11,17 @@
 /// @author Baudouin Raoult
 /// @date   Jul 2016
 
+
 #include "mir/compare/MultiFile.h"
-#include "eckit/serialisation/Stream.h"
+
+#include <memory>
+#include <sstream>
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/MultiHandle.h"
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/log/Log.h"
+#include "eckit/serialisation/Stream.h"
+
 
 namespace mir {
 namespace compare {
@@ -65,11 +71,11 @@ const std::string& MultiFile::from() const {
 void MultiFile::save() const {
     eckit::PathName out(name_ + "." + from_);
     eckit::MultiHandle mh;
-    for (size_t i = 0; i < paths_.size(); i++) {
-        eckit::PathName p(paths_[i]);
+    for (const auto & path : paths_) {
+        eckit::PathName p(path);
         mh += p.fileHandle();
     }
-    eckit::ScopedPtr<eckit::DataHandle> h(out.fileHandle());
+    std::unique_ptr<eckit::DataHandle> h(out.fileHandle());
     eckit::Log::info() << "Save " << mh << " into " << (*h) << std::endl;
     mh.saveInto(*h);
 }
@@ -87,8 +93,8 @@ void MultiFile::save(const std::string& path, off_t offset, size_t length, size_
 
     eckit::PathName out(oss.str());
 
-    eckit::ScopedPtr<eckit::DataHandle> ih(in.partHandle(offset, length));
-    eckit::ScopedPtr<eckit::DataHandle> oh(out.fileHandle());
+    std::unique_ptr<eckit::DataHandle> ih(in.partHandle(offset, length));
+    std::unique_ptr<eckit::DataHandle> oh(out.fileHandle());
 
     eckit::Log::info() << "Save " << (*ih) << " into " << (*oh) << std::endl;
     ih->saveInto(*oh);
@@ -103,8 +109,8 @@ void MultiFile::encode(eckit::Stream& s) const {
     s << name_;
     s << from_;
     s << paths_.size();
-    for (size_t i = 0; i < paths_.size(); i++) {
-        s << paths_[i];
+    for (const auto & path : paths_) {
+        s << path;
     }
 }
 
@@ -135,8 +141,8 @@ void MultiFile::whiteListEntries(std::ostream& out) const {
 
 eckit::Length MultiFile::length() const {
     if (length_ == eckit::Length(0)) {
-        for (size_t i = 0; i < paths_.size(); i++) {
-            eckit::PathName p(paths_[i]);
+        for (const auto & path : paths_) {
+            eckit::PathName p(path);
             try {
                 length_ += p.size();
             }

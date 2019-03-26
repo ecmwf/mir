@@ -15,6 +15,8 @@
 
 #include "mir/action/plan/Job.h"
 
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/plan/ActionPlan.h"
@@ -67,7 +69,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+    std::unique_ptr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_, input_, output_);
     ASSERT(plan_->ended());
 

@@ -10,8 +10,10 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+
 #include <numeric>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
 
 #include "mir/netcdf/DataInputVariable.h"
@@ -21,6 +23,7 @@
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Dataset.h"
+
 
 namespace mir {
 namespace netcdf {

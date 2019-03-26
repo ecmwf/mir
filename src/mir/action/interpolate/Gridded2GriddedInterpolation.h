@@ -16,7 +16,8 @@
 #ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
 #define mir_action_interpolate_Gridded2GriddedInterpolation_h
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
 #include "mir/action/plan/Action.h"
 #include "mir/method/Method.h"
 
@@ -91,7 +92,7 @@ private:
     // -- Members
 
     std::string interpolation_;
-    eckit::ScopedPtr<method::Method> method_;
+    std::unique_ptr<method::Method> method_;
     bool inputIntersectsOutput_;
 
     // -- Methods

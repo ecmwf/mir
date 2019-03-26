@@ -16,8 +16,11 @@
 #include "mir/api/MIRJob.h"
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Plural.h"
 #include "eckit/utils/Tokenizer.h"
+
 #include "mir/action/plan/Job.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"

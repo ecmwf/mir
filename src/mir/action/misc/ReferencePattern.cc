@@ -17,8 +17,10 @@
 
 #include <iostream>
 #include <cmath>
+#include <memory>
 
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
@@ -106,7 +108,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
 
-        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+        std::unique_ptr<repres::Iterator> iter(representation->iterator());
         size_t j = 0;
 
         while (iter->next()) {

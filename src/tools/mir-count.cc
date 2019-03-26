@@ -9,9 +9,9 @@
  */
 
 
+#include <memory>
 
 #include "eckit/log/BigNum.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 #include "mir/data/MIRField.h"
@@ -96,7 +96,7 @@ size_t countRepresentationInBoundingBox(
     size_t values = 0;
     bool first = true;
 
-    eckit::ScopedPtr<repres::Iterator> iter(rep.iterator());
+    std::unique_ptr<repres::Iterator> iter(rep.iterator());
 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();

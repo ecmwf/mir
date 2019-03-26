@@ -12,29 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
+#include <memory>
+
+#include "eckit/io/StdFile.h"
+#include "eckit/runtime/Tool.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
 
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/runtime/Tool.h"
-#include "eckit/io/StdFile.h"
-
-// #include "eckit/runtime/Context.h"
-// #include "eckit/utils/Tokenizer.h"
-
-// #include "mir/api/MIRJob.h"
-// #include "mir/action/VOD2UVTransform.h"
-// #include "mir/action/Sh2ShTransform.h"
-
-// #include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
-// #include "mir/data/MIRField.h"
-// #include "mir/repres/Representation.h"
-
-
-// #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
-// #include "mir/output/GribFileOutput.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRValuesVector.h"
 

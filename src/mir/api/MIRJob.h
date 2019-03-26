@@ -13,15 +13,15 @@
 /// @date Apr 2015
 
 
-#ifndef MIRJob_H
-#define MIRJob_H
+#ifndef mir_api_MIRJob_h
+#define mir_api_MIRJob_h
 
+#include <memory>
 #include <string>
-
 
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
-#include "eckit/memory/ScopedPtr.h"
+
 
 namespace mir {
 namespace input {

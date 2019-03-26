@@ -16,7 +16,11 @@
 #include "mir/action/context/Context.h"
 
 #include <iostream>
+#include <sstream>
+
 #include "eckit/thread/AutoLock.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/util/MIRStatistics.h"
@@ -33,7 +37,7 @@ class MissingInput : public input::MIRInput
         NOTIMP;
     }
 
-    virtual bool sameAs(const MIRInput& other) const {
+    virtual bool sameAs(const MIRInput&) const {
         NOTIMP;
     }
 
@@ -45,12 +49,11 @@ class MissingInput : public input::MIRInput
         NOTIMP;
     }
 
-
 public:
-    MissingInput() {}
-    ~MissingInput() {}
-
+    MissingInput() = default;
+    ~MissingInput() = default;
 };
+
 
 static MissingInput missing;
 static util::MIRStatistics stats;
@@ -65,7 +68,7 @@ class Content {
 
 public:
 
-    virtual ~Content() {}
+    virtual ~Content() = default;
 
     virtual data::MIRField& field() {
         std::ostringstream oss;
@@ -160,7 +163,7 @@ public:
 
 class ExtensionContent : public Content {
 
-    eckit::ScopedPtr<Extension> extension_;
+    std::unique_ptr<Extension> extension_;
 
     virtual void print(std::ostream& out) const {
         out << "ExtensionContent[" << *extension_ << "]";
@@ -193,14 +196,14 @@ public:
 Context::Context() :
     input_(missing),
     statistics_(stats),
-    content_(0) {
+    content_(nullptr) {
 }
 
 
 Context::Context(const Context& other) :
     input_(other.input_),
     statistics_(other.statistics_),
-    content_(0) {
+    content_(nullptr) {
     eckit::AutoLock<const Context> lock(other);
     if (other.content_) {
         content_.reset(other.content_->clone());
@@ -218,7 +221,7 @@ Context::Context(data::MIRField& field, util::MIRStatistics& statistics) :
 Context::Context(input::MIRInput &input, util::MIRStatistics& statistics) :
     input_(input),
     statistics_(statistics),
-    content_(0)  {
+    content_(nullptr)  {
 }
 
 
@@ -335,7 +338,7 @@ void Context::print(std::ostream& out) const {
 Context& Context::push() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    stack_.push_back(Context(*this));
+    stack_.emplace_back(Context(*this));
     return stack_.back();
 }
 

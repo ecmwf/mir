@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+#include <memory>
 #include <queue>
 
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 
@@ -82,7 +82,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
         const param::ConfigurationWrapper args_wrap(args);
 
         for (size_t i = 0, j = 0; i < args.count(); ++i) {
-            eckit::ScopedPtr<input::MIRInput> input(input::MIRInputFactory::build(args(i), args_wrap));
+            std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(i), args_wrap));
             while (input->next()) {
                 repres::RepresentationHandle repres(input->field().representation());
                 log << "#" << ++j << ": " << *repres << std::endl;
@@ -104,7 +104,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
                 throw eckit::UserError("'grid' or 'gridname' should be provided") );
     ASSERT(rep);
 
-    eckit::ScopedPtr<repres::Iterator> iterator(rep->iterator());
+    std::unique_ptr<repres::Iterator> iterator(rep->iterator());
     ASSERT(iterator.get());
 
     util::BoundingBox bbox;
