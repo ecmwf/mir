@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "GribField.h"
 
 #include <algorithm>
@@ -17,10 +18,12 @@
 #include "eckit/config/Resource.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/serialisation/MemoryStream.h"
 #include "eckit/parser/JSON.h"
+#include "eckit/serialisation/MemoryStream.h"
+#include "eckit/utils/MD5.h"
 
 #include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace compare {
@@ -1195,15 +1198,24 @@ Field GribField::field(const char* buffer, size_t size,
 
                 setArea(*field, h);
             }  else if (strcmp(value, "reduced_ll") == 0) {
-                long n;
-                {
-                    std::ostringstream oss;
 
-                    // TODO: add PL array
-                    oss << "RLL";
+                // Don't trust eccodes
+                size_t pl_size = 0;
+                GRIB_CALL(grib_get_size(h, "pl", &pl_size));
 
-                    field->gridname(oss.str());
+                std::vector<long> pl(pl_size);
+                GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &pl_size));
+
+                std::ostringstream oss;
+                oss << "RLL" << pl.size() << "-";
+                eckit::MD5 md5;
+                for (auto& j : pl) {
+                    md5 << j;
                 }
+
+                oss << md5.digest();
+                field->gridname(oss.str());
+
                 setArea(*field, h);
             }
 
