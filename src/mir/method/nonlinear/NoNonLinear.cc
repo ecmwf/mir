@@ -22,7 +22,8 @@ namespace method {
 namespace nonlinear {
 
 
-NoNonLinear::NoNonLinear(const param::MIRParametrisation&) {
+NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) :
+    NonLinear(param) {
 }
 
 

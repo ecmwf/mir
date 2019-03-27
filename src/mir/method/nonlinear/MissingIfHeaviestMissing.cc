@@ -27,7 +27,8 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation&) {
+MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) :
+    NonLinear(param) {
 }
 
 
@@ -48,7 +49,7 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
         const WeightMatrix::iterator end = W.end(r);
 
-        // count missing values, accumulate weights (disregarding missing values) and find closest value (maximum weight)
+        // count missing values, accumulate weights (disregarding missing values) and find maximum weight in row
         size_t i_missing = i;
         size_t N_missing = 0;
         size_t N_entries = 0;

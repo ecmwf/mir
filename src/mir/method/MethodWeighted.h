@@ -18,6 +18,8 @@
 #ifndef mir_method_MethodWeighted_h
 #define mir_method_MethodWeighted_h
 
+#include <memory>
+
 #include "mir/caching/WeightCache.h"
 #include "mir/data/MIRValuesVector.h"
 #include "mir/method/Cropping.h"
@@ -31,6 +33,11 @@ class Space;
 }
 namespace lsm {
 class LandSeaMasks;
+}
+namespace method {
+namespace nonlinear {
+class NonLinear;
+}
 }
 namespace repres {
 class Representation;
@@ -127,6 +134,7 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
     Cropping cropping_;
+    std::unique_ptr<const nonlinear::NonLinear> missing_;
     bool matrixValidate_;
 
     friend class MatrixCacheCreator;

@@ -43,6 +43,7 @@
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
+#include "mir/method/nonlinear/NonLinear.h"
 #include "mir/mir_ecbuild_config.h"
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
@@ -72,7 +73,10 @@ private:
 public:
 
     MIR(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::FactoryOption;
+        using eckit::option::Separator;
+        using eckit::option::SimpleOption;
+        using eckit::option::VectorOption;
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -93,7 +97,10 @@ public:
         options_.push_back(new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
+
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+
+        options_.push_back(new FactoryOption<mir::method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
 
         options_.push_back(new SimpleOption<bool>("uv2uv", "Input is vector (gridded u/v or spectral U/V), convert to gridded u/v"));
         options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
@@ -108,7 +115,7 @@ public:
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by k-nearest methods"));
         options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingWithLSMFactory>("distance-weighting-with-lsm", "Distance weighting with land-sea mask, used by nearest-lsm method"));
         options_.push_back(new SimpleOption<double>("distance-tolerance", "Distance tolerance when checking distinguishing the nearest neighbours (default 1.)"));
-        options_.push_back(new SimpleOption<double>("distance-weighting-gaussian-stddev", "Distance weighting Gaussian function standard deviation (default 1.)"));
+        options_.push_back(new SimpleOption<double>("distance-weighting-gaussian-stddev", "Distance weighting Gaussian function standard deviation [m] (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power", "Distance weighting Shepard power parameter (default 2.)"));
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));

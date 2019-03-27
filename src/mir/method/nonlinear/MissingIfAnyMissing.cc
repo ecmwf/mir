@@ -15,7 +15,6 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/data/MIRValuesVector.h"
@@ -27,7 +26,8 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation&) {
+MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param) :
+    NonLinear(param) {
 }
 
 

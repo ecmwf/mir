@@ -27,7 +27,8 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation&) {
+MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) :
+    NonLinear(param) {
 }
 
 

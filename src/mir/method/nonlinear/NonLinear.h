@@ -48,7 +48,7 @@ public:
     using WeightMatrix = method::WeightMatrix;
     using Matrix = eckit::linalg::Matrix;
     
-    NonLinear();
+    NonLinear(const param::MIRParametrisation&);
 
     virtual ~NonLinear();
 

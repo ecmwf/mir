@@ -43,7 +43,8 @@ static void init() {
 }  // (anonymous namespace)
 
 
-NonLinear::NonLinear() = default;
+NonLinear::NonLinear(const param::MIRParametrisation&) {
+}
 
 
 NonLinear::~NonLinear() = default;

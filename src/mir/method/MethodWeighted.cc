@@ -19,7 +19,6 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <limits>
-#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -63,6 +62,12 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
 
     matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
+
+    std::string missingValues = "missing-if-heaviest-missing";
+    parametrisation_.get("non-linear", missingValues);
+
+    missing_.reset(nonlinear::NonLinearFactory::build(missingValues, parametrisation_));
+    ASSERT(missing_);
 }
 
 
@@ -324,27 +329,20 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         ASSERT(mo.rows() == npts_out);
 
         {
+            std::ostringstream str;
+            str << *missing_;
+
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
-            eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(hasMissing), log);
 
             if (hasMissing) {
+                eckit::Timer t(str.str(), log);
 
-                WeightMatrix M;
-                std::string nl = "missing-if-heaviest-missing";
-
-                std::unique_ptr<const nonlinear::NonLinear> nonlin(nonlinear::NonLinearFactory::build(nl, parametrisation_));
-                {
-                    eckit::Timer t("non-linear treatment: " + nl, eckit::Log::debug<LibMir>());
-                    WeightMatrix X(W);
-
-                    if (nonlin->treatment(mi, X, mo, field.values(i), missingValue)) {
-                        if (matrixValidate_) {
-                            M.validate(nl.c_str());
-                        }
-                        X.swap(M);
+                WeightMatrix M(W);  // copy: run-time modifiable matrix is not cacheable
+                if (missing_->treatment(mi, M, mo, field.values(i), missingValue)) {
+                    if (matrixValidate_) {
+                        M.validate(str.str().c_str());
                     }
                 }
-
 
                 M.multiply(mi, mo);
             } else {
