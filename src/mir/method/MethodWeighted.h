@@ -88,12 +88,6 @@ private:
                           const repres::Representation& in,
                           const repres::Representation& out) const = 0;
 
-    /// Update interpolation weigths matrix to account for missing values
-    void applyMissingValues(const WeightMatrix& W,
-                            const MIRValuesVector& values,
-                            const double& missingValue,
-                            WeightMatrix& MW) const;
-
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&,
                             const lsm::LandSeaMasks&) const;

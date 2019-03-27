@@ -644,6 +644,8 @@ if (HAVE_ATLAS)
         method/fe/FiniteElement.h
         method/fe/Tessellation.cc
         method/fe/Tessellation.h
+        method/nonlinear/MissingIfHeaviestMissing.cc
+        method/nonlinear/MissingIfHeaviestMissing.h
         method/nonlinear/NoNonLinear.cc
         method/nonlinear/NoNonLinear.h
         method/nonlinear/NonLinear.cc

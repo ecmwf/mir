@@ -19,6 +19,7 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <limits>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -36,6 +37,7 @@
 #include "mir/data/Space.h"
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/MatrixCacheCreator.h"
+#include "mir/method/nonlinear/NonLinear.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
@@ -326,8 +328,24 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             eckit::Timer t("Matrix-Multiply-hasMissing-" + std::to_string(hasMissing), log);
 
             if (hasMissing) {
+
                 WeightMatrix M;
-                applyMissingValues(W, field.values(i), field.missingValue(), M); // Don't assume compiler can do return value optimization !!!
+                std::string nl = "missing-if-heaviest-missing";
+
+                std::unique_ptr<const nonlinear::NonLinear> nonlin(nonlinear::NonLinearFactory::build(nl, parametrisation_));
+                {
+                    eckit::Timer t("non-linear treatment: " + nl, eckit::Log::debug<LibMir>());
+                    WeightMatrix X(W);
+
+                    if (nonlin->treatment(mi, X, mo, field.values(i), missingValue)) {
+                        if (matrixValidate_) {
+                            M.validate(nl.c_str());
+                        }
+                        X.swap(M);
+                    }
+                }
+
+
                 M.multiply(mi, mo);
             } else {
                 W.multiply(mi, mo);
@@ -374,82 +392,6 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx,
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
     }
-}
-
-
-void MethodWeighted::applyMissingValues(
-    const WeightMatrix& W,
-    const MIRValuesVector& values,
-    const double& missingValue,
-    WeightMatrix& MW) const {
-
-    eckit::Timer t1("applyMissingValues", eckit::Log::debug<LibMir>());
-
-    // correct matrix weigths for the missing values (matrix copy happens here)
-    ASSERT( W.cols() == values.size() );
-    WeightMatrix X(W);
-
-    auto data = const_cast<WeightMatrix::Scalar*>(X.data());
-
-    WeightMatrix::Size i = 0;
-    WeightMatrix::iterator it(X);
-    for (WeightMatrix::Size r = 0; r < X.rows(); ++r) {
-        const WeightMatrix::iterator end = X.end(r);
-
-        // count missing values, accumulate weights (disregarding missing values) and find closest value (maximum weight)
-        size_t i_missing = i;
-        size_t N_missing = 0;
-        size_t N_entries = 0;
-        double sum = 0.;
-        double heaviest = -1.;
-        bool heaviest_is_missing = false;
-
-        WeightMatrix::iterator kt(it);
-        WeightMatrix::Size k = i;
-        for (; it != end; ++it, ++i, ++N_entries) {
-
-            const bool miss = values[it.col()] == missingValue;
-
-            if (miss) {
-                ++N_missing;
-                i_missing = i;
-            } else {
-                sum += *it;
-            }
-
-            if (heaviest < data[i]) {
-                heaviest = data[i];
-                heaviest_is_missing = miss;
-            }
-        }
-
-        // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
-        // if all values are missing, or the closest value is missing, force missing value
-        if (N_missing > 0) {
-            if (N_missing == N_entries || heaviest_is_missing) {
-
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j) {
-                    data[j] = j == i_missing ? 1. : 0.;
-                }
-
-            } else {
-
-                const double factor = eckit::types::is_approximately_equal(sum, 0.) ? 0 : 1. / sum;
-                for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
-                    const bool miss = values[kt.col()] == missingValue;
-                    data[j] = miss ? 0. : (factor * data[j]);
-                }
-
-            }
-        }
-
-    }
-
-    if (matrixValidate_) {
-        X.validate("applyMissingValues");
-    }
-
-    MW.swap(X);
 }
 
 
