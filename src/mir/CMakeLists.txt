@@ -644,6 +644,10 @@ if (HAVE_ATLAS)
         method/fe/FiniteElement.h
         method/fe/Tessellation.cc
         method/fe/Tessellation.h
+        method/nonlinear/NoNonLinear.cc
+        method/nonlinear/NoNonLinear.h
+        method/nonlinear/NonLinear.cc
+        method/nonlinear/NonLinear.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc
