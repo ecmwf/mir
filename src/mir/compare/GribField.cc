@@ -56,13 +56,13 @@ void GribField::addOptions(std::vector<eckit::option::Option*>& options) {
                       "Ignore packing when comparing"));
 
     options.push_back(new SimpleOption<double>("area-precision-north",
-                      "Epsilon when comparing latitude and logitude of bounding box"));
+                      "Epsilon when comparing latitude and longitude of bounding box"));
     options.push_back(new SimpleOption<double>("area-precision-west",
-                      "Epsilon when comparing latitude and logitude of bounding box"));
+                      "Epsilon when comparing latitude and longitude of bounding box"));
     options.push_back(new SimpleOption<double>("area-precision-south",
-                      "Epsilon when comparing latitude and logitude of bounding box"));
+                      "Epsilon when comparing latitude and longitude of bounding box"));
     options.push_back(new SimpleOption<double>("area-precision-east",
-                      "Epsilon when comparing latitude and logitude of bounding box"));
+                      "Epsilon when comparing latitude and longitude of bounding box"));
 
     options.push_back(new SimpleOption<bool>("white-list-accuracy-packing",
                       "Report difference with accuracy & packing"));
