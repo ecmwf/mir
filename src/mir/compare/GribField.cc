@@ -1194,7 +1194,20 @@ Field GribField::field(const char* buffer, size_t size,
                 }
 
                 setArea(*field, h);
-            } else if (strcmp(value, "regular_gg") == 0) {
+            }  else if (strcmp(value, "reduced_ll") == 0) {
+                long n;
+                {
+                    std::ostringstream oss;
+
+                    // TODO: add PL array
+                    oss << "RLL";
+
+                    field->gridname(oss.str());
+                }
+                setArea(*field, h);
+            }
+
+            else if (strcmp(value, "regular_gg") == 0) {
                 long n;
                 {
                     std::ostringstream oss;
