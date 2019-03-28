@@ -143,11 +143,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             param->get("statistics", statistics);
 
             // Calculate and show statistics
-<<<<<<< HEAD
-            std::unique_ptr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, combined));
-=======
             std::unique_ptr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, *param));
->>>>>>> mir-statistics
             stats->execute(input.field());
 
             eckit::Log::info() << *stats << std::endl;
