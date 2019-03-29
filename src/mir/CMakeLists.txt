@@ -477,6 +477,7 @@ list(APPEND mir_srcs
     stats/comparator/Spectral.h
     stats/detail/AngleT.cc
     stats/detail/AngleT.h
+    stats/detail/CentralMomentsT.cc
     stats/detail/CentralMomentsT.h
     stats/detail/Counter.cc
     stats/detail/Counter.h
