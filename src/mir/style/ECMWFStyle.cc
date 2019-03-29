@@ -32,8 +32,9 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
+#include "mir/util/BoundingBox.h"
 #include "mir/util/DeprecatedFunctionality.h"
-#include "mir/util/Wind.h"
+#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -60,12 +61,12 @@ struct KnownKey {
     virtual bool sameKey(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
 
-    const std::string& key() {
+    const std::string& key() const {
         ASSERT(!key_.empty());
         return key_;
     }
 
-    const std::string& target() {
+    const std::string& target() const {
         ASSERT(!target_.empty());
         return target_;
     }
@@ -203,8 +204,12 @@ bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametris
 
 
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation) {
-    static const std::vector< KnownKey* > keys_targets = {
-        new KnownMultiKeyT< std::vector<double> > ("grid", "west_east_increment", "south_north_increment", "regular-ll"),
+
+    static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
+    static const KnownMultiKeyT< std::vector<double> > grid("grid", "west_east_increment", "south_north_increment", "regular-ll");
+
+    static const std::vector< const KnownKey* > keys_targets = {
+        &grid,
         new KnownKeyT< size_t >              ("reduced",    "reduced-gg"),
         new KnownKeyT< size_t >              ("regular",    "regular-gg"),
         new KnownKeyT< size_t >              ("octahedral", "octahedral-gg"),
@@ -215,10 +220,23 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         new Points("longitudes"),
     };
 
-    static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
+    auto& user = parametrisation.userParametrisation();
+    auto& field = parametrisation.fieldParametrisation();
 
-    const param::MIRParametrisation& user = parametrisation.userParametrisation();
-    const param::MIRParametrisation& field = parametrisation.fieldParametrisation();
+    if (user.has("area") && grid.sameValue(user, field)) {
+        if (!checkRotation || south_pole.sameValue(user, field)) {
+
+            std::vector<double> area;
+            user.get("area", area);
+            ASSERT(area.size() == 4);
+
+            util::BoundingBox userbb(area[0], area[1], area[2], area[3]);
+            util::BoundingBox fieldbb(field);
+
+            // TODO
+            // return "";
+        }
+    }
 
     for (const auto& kt : keys_targets) {
         if (user.has(kt->key())) {
