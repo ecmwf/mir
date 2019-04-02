@@ -31,10 +31,10 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/repres/latlon/LatLon.h"
 #include "mir/style/Resol.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/DeprecatedFunctionality.h"
-#include "mir/util/Increments.h"
 
 
 namespace mir {
@@ -230,11 +230,25 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
             user.get("area", area);
             ASSERT(area.size() == 4);
 
-            util::BoundingBox userbb(area[0], area[1], area[2], area[3]);
-            util::BoundingBox fieldbb(field);
+            util::BoundingBox bboxField(field);
+            PointLatLon refField {bboxField.south(), bboxField.west()};
 
-            // TODO
-            // return "";
+            util::BoundingBox bboxUser(area[0], area[1], area[2], area[3]);
+            PointLatLon refUser {bboxUser.south(), bboxUser.west()};
+
+            util::Increments inc(field);
+            size_t ni = 0;
+            size_t nj = 0;
+            repres::latlon::LatLon::correctBoundingBox(bboxUser, ni, nj, inc, refUser);
+
+            for (auto& lat : {bboxUser.south(), bboxUser.north()}) {
+                for (auto& lon : {bboxUser.west(), bboxUser.east()}) {
+                    if (inc.isShifted({refField.lat() - lat, refField.lon() - lon})) {
+                        return "regular-ll";
+                    }
+                }
+            }
+
         }
     }
 

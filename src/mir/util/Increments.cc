@@ -101,6 +101,47 @@ bool Increments::isShifted(const BoundingBox& bbox) const {
 }
 
 
+bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
+    auto& inc = south_north_.latitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(bbox.south().fraction() / inc.fraction()).integer();
+}
+
+
+bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
+    auto& inc = west_east_.longitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(bbox.west().fraction() / inc.fraction()).integer();
+}
+
+
+bool Increments::isShifted(const PointLatLon& p) const {
+    return isLatitudeShifted(p) || isLongitudeShifted(p);
+}
+
+
+bool Increments::isLatitudeShifted(const PointLatLon& p) const {
+    auto& inc = south_north_.latitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(p.lat().fraction() / inc.fraction()).integer();
+}
+
+
+bool Increments::isLongitudeShifted(const PointLatLon& p) const {
+    auto& inc = west_east_.longitude();
+    if (inc == 0) {
+        return false;
+    }
+    return !(p.lon().fraction() / inc.fraction()).integer();
+}
+
+
 void Increments::print(std::ostream& out) const {
     out << "Increments["
         << "west_east=" << west_east_.longitude()
@@ -124,24 +165,6 @@ void Increments::fill(api::MIRJob& job) const  {
 void Increments::makeName(std::ostream& out) const {
     out << "-" << west_east_.longitude().value()
         << "x" << south_north_.latitude().value();
-}
-
-
-bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
-    auto& inc = south_north_.latitude();
-    if (inc == 0) {
-        return false;
-    }
-    return !(bbox.south().fraction() / inc.fraction()).integer();
-}
-
-
-bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
-    auto& inc = west_east_.longitude();
-    if (inc == 0) {
-        return false;
-    }
-    return !(bbox.west().fraction() / inc.fraction()).integer();
 }
 
 
