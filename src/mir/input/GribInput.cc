@@ -333,8 +333,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                         msgs.precision(32);
                         msgs << "GribInput: longitudeOfLastGridPointInDegrees is wrongly encoded:"
                              << "\n" "encoded:  " << Lon2
-                             << "\n" "expected: " << Lon2_expected
-                             << std::endl;
+                             << "\n" "expected: " << double(Lon2_expected) << " (" << Lon2_expected << " +- " << eps << ")";
                         const std::string msg(msgs.str());
 
                         static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
