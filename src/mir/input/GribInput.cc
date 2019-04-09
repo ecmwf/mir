@@ -401,6 +401,10 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
         { "grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
           _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll")) },
 
+        { "rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
+        _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")),
+                    is("gridType", "rotated_sh")), is("gridType", "reduced_rotated_gg"))},
+
         {"is_wind_component_uv", is_wind_component_uv(), nullptr},
         {"is_wind_component_vod", is_wind_component_vod(), nullptr},
 
@@ -616,7 +620,7 @@ bool GribInput::has(const std::string& name) const {
     ASSERT(grib_);
     const char *key = get_key(name, grib_);
 
-    bool    ok = grib_is_defined(grib_, key);
+    bool ok = grib_is_defined(grib_, key);
 
     // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
@@ -961,7 +965,7 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    grib_keys_iterator *keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     const char *sep = "";

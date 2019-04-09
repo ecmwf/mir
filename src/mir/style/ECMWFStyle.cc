@@ -16,12 +16,12 @@
 #include "mir/style/ECMWFStyle.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
@@ -31,9 +31,9 @@
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/param/SameParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/style/Resol.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/DeprecatedFunctionality.h"
 
 
@@ -52,227 +52,67 @@ struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-struct KnownKey {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user, const param::MIRParametrisation& field, bool checkRotation) {
+    std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
-    KnownKey(const char* _key, const char* _target = "", const bool supportsRotation = true) : key_(_key), target_(_target), supportsRotation_(supportsRotation) {}
-    KnownKey(const KnownKey&) = delete;
-    virtual ~KnownKey() = default;
+    std::vector<double> rotation;
+    const bool rotated = checkRotation && user.has("rotation");
+    const std::string prefix(user.has("rotation") ? "rotated-" : "");
 
-    virtual bool sameKey(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
-    virtual bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
-
-    const std::string& key() const {
-        ASSERT(!key_.empty());
-        return key_;
+    if (user.has("grid")) {
+        std::vector<double> grid;
+        return !same->get("grid", grid) ? prefix + "regular-ll" :
+               rotated && !same->get("rotation", rotation) ? "regular-ll" : "";
     }
 
-    const std::string& target() const {
-        ASSERT(!target_.empty());
-        return target_;
+    if (user.has("reduced")) {
+        long N;
+        return !same->get("reduced", N) ? prefix + "reduced-gg" :
+               rotated && !same->get("rotation", rotation) ? "reduced-gg" : "";
     }
 
-    bool supportsRotation() const {
-        return supportsRotation_;
+    if (user.has("regular")) {
+        long N;
+        return !same->get("regular", N) ? prefix + "regular-gg" :
+               rotated && !same->get("rotation", rotation) ? "regular-gg" : "";
     }
 
-protected:
-    const std::string key_;
-    const std::string target_;
-    const bool supportsRotation_;
-};
-
-
-struct Points : KnownKey {
-    Points(const char* key) : KnownKey(key, "points", false) {}
-    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation&) const {
-        return p1.has(key_);
-    }
-    bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
-        return false;
-    }
-};
-
-
-template< typename T >
-struct KnownKeyT : KnownKey {
-    KnownKeyT(const char* key, const char* target = "", const bool supportsRotation = true) : KnownKey(key, target, supportsRotation) {}
-    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-        return p1.has(key_) == p2.has(key_);
-    }
-    bool sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-
-        T value1;
-        T value2;
-        ASSERT(p1.get(key_, value1));
-        ASSERT(p2.get(key_, value2));
-
-        return value1 == value2;
-    }
-};
-
-
-template<>
-bool KnownKeyT< double >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-
-    double value1;
-    double value2;
-    ASSERT(p1.get(key_, value1));
-    ASSERT(p2.get(key_, value2));
-
-    return eckit::types::is_approximately_equal(value1, value2);
-};
-
-
-template<>
-bool KnownKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-
-    std::vector<double> value1;
-    std::vector<double> value2;
-    ASSERT(p1.get(key_, value1));
-    ASSERT(p2.get(key_, value2));
-
-    if (value1.size() != value2.size()) {
-        return false;
+    if (user.has("octahedral")) {
+        long N;
+        return !same->get("octahedral", N) ? prefix + "octahedral-gg" :
+               rotated && !same->get("rotation", rotation) ? "octahedral-gg" : "";
     }
 
-    for (auto v1 = value1.cbegin(), v2 = value2.cbegin(); v1 != value1.cend(); ++v1, ++v2) {
-        if (!eckit::types::is_approximately_equal(*v1, *v2)) {
-            return false;
+    if (user.has("pl")) {
+        std::vector<long> pl;
+        return !same->get("pl", pl) ? prefix + "reduced-gg-pl-given" :
+               rotated && !same->get("rotation", rotation) ? "reduced-gg-pl-given" : "";
+    }
+
+    if (user.has("gridname")) {
+        std::string gridname;
+        return !same->get("gridname", gridname) ? prefix + "namedgrid" :
+               rotated && !same->get("rotation", rotation) ? "namedgrid" : "";
+    }
+
+    if (user.has("griddef")) {
+        if (user.has("rotation")) {
+            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
         }
-    }
-    return true;
-}
-
-
-template< typename T >
-struct KnownMultiKeyT : KnownKey {
-
-    KnownMultiKeyT(const char* key, const char* fieldKey1, const char* fieldKey2, const char* target = "") :
-        KnownKey(key, target),
-        fieldKey1_(fieldKey1),
-        fieldKey2_(fieldKey2) {
+        return "griddef";
     }
 
-    bool sameKey(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-        return p1.has(key_) == p2.has(fieldKey1_) && p2.has(fieldKey2_);
-    }
-
-    bool sameValue(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
-        std::ostringstream os;
-        os << "KnownMultiKeyT<T>::sameValue() not implemented";
-        throw eckit::SeriousBug(os.str());
-    }
-
-private:
-    const std::string fieldKey1_;
-    const std::string fieldKey2_;
-};
-
-
-template<>
-bool KnownMultiKeyT< std::vector<double> >::sameValue(const param::MIRParametrisation& p1, const param::MIRParametrisation& p2) const {
-
-    std::vector<double> value1;
-    std::vector<double> value2(2);
-
-    if (!p1.get(key_, value1)) {
-        std::ostringstream oss;
-        oss << "KnownMultiKeyT<std::vector<double>> cannot get key=" << key_;
-        throw eckit::SeriousBug(oss.str());
-    }
-
-    if (!p2.get(fieldKey1_, value2[0])) {
-        return false;
-    }
-
-    if (!p2.get(fieldKey2_, value2[1])) {
-        return false;
-    }
-
-
-    if (value1.size() != value2.size()) {
-        return false;
-    }
-
-    for (auto v1 = value1.cbegin(), v2 = value2.cbegin(); v1 != value1.cend(); ++v1, ++v2) {
-        if (!eckit::types::is_approximately_equal(*v1, *v2)) {
-            return false;
+    if (user.has("latitudes") || user.has("longitudes")) {
+        if (user.has("latitudes") != user.has("longitudes")) {
+            throw eckit::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
         }
-    }
-    return true;
-}
-
-
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& parametrisation, bool checkRotation) {
-
-    static const KnownMultiKeyT< std::vector<double> > south_pole("rotation", "south_pole_latitude", "south_pole_longitude");
-    static const KnownMultiKeyT< std::vector<double> > grid("grid", "west_east_increment", "south_north_increment", "regular-ll");
-
-    static const std::vector< const KnownKey* > keys_targets = {
-        &grid,
-        new KnownKeyT< size_t >              ("reduced",    "reduced-gg"),
-        new KnownKeyT< size_t >              ("regular",    "regular-gg"),
-        new KnownKeyT< size_t >              ("octahedral", "octahedral-gg"),
-        new KnownKeyT< std::vector<long> >   ("pl",         "reduced-gg-pl-given"),
-        new KnownKeyT< std::string >         ("gridname",   "namedgrid"),
-        new KnownKeyT< std::string >         ("griddef",    "griddef", false),
-        new Points("latitudes"),
-        new Points("longitudes"),
-    };
-
-    auto& user = parametrisation.userParametrisation();
-    auto& field = parametrisation.fieldParametrisation();
-
-    if (user.has("area") && grid.sameValue(user, field)) {
-        if (!checkRotation || south_pole.sameValue(user, field)) {
-
-            std::vector<double> area;
-            user.get("area", area);
-            ASSERT(area.size() == 4);
-
-            util::BoundingBox bboxField(field);
-            PointLatLon refField {bboxField.south(), bboxField.west()};
-
-            util::BoundingBox bboxUser(area[0], area[1], area[2], area[3]);
-            PointLatLon refUser {bboxUser.south(), bboxUser.west()};
-
-            util::Increments inc(field);
-            size_t ni = 0;
-            size_t nj = 0;
-            repres::latlon::LatLon::correctBoundingBox(bboxUser, ni, nj, inc, refUser);
-
-            for (auto& lat : {bboxUser.south(), bboxUser.north()}) {
-                for (auto& lon : {bboxUser.west(), bboxUser.east()}) {
-                    if (inc.isShifted({refField.lat() - lat, refField.lon() - lon})) {
-                        return "regular-ll";
-                    }
-                }
-            }
-
+        if (user.has("rotation")) {
+            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
         }
+        return "points";
     }
 
-    for (const auto& kt : keys_targets) {
-        if (user.has(kt->key())) {
-
-            // If user and field parametrisation have the same target_ key, and
-            // its value is the same (and rotation, optionally) there's nothing to do
-            if (!kt->sameKey(user, field) || !kt->sameValue(user, field)) {
-                if (user.has("rotation") && !kt->supportsRotation()) {
-                    throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with '" + kt->target() + "'");
-                }
-                return (user.has("rotation") ? "rotated-" : "") + kt->target();
-            }
-
-            if (checkRotation && !south_pole.sameValue(user, field)) {
-                return kt->target();
-            }
-
-            return "";
-        }
-    }
-
-    eckit::Log::warning() << "ECMWFStyle: could not determine target from parametrisation" << std::endl;
+    eckit::Log::debug<LibMir>() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
     return "";
 }
 
@@ -324,6 +164,7 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
+    auto& field = parametrisation_.fieldParametrisation();
 
     add_formula(plan, user, {"spectral", "raw"});
 
@@ -339,7 +180,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(parametrisation_, false);
+    const std::string target = target_gridded_from_parametrisation(user, field, false);
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
@@ -355,7 +196,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             resol.prepare(plan);
 
             // if the intermediate grid is the same as the target grid, the interpolation to the
-            // intermediate grid  is not followed by an additional interpolation
+            // intermediate grid is not followed by an additional interpolation
             std::string gridname;
             if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
                 plan.add(interpolate + target);
@@ -406,6 +247,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
+    auto& field = parametrisation_.fieldParametrisation();
 
     bool rotation = user.has("rotation");
 
@@ -423,7 +265,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(parametrisation_, rotation);
+    const std::string target = target_gridded_from_parametrisation(user, field, rotation);
 
     if (!target.empty()) {
         plan.add(interpolate + target);
