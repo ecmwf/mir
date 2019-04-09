@@ -20,9 +20,11 @@ namespace param {
 
 
 SameParametrisation::SameParametrisation(const MIRParametrisation& parametrisation1,
-                                         const MIRParametrisation& parametrisation2) :
+                                         const MIRParametrisation& parametrisation2,
+                                         bool strict) :
     parametrisation1_(parametrisation1),
-    parametrisation2_(parametrisation2) {
+    parametrisation2_(parametrisation2),
+    strict_(strict) {
 }
 
 
@@ -35,7 +37,7 @@ bool SameParametrisation::_get(const std::string& name, T& value) const {
     bool has1 = parametrisation1_.get(name, value1);
     bool has2 = parametrisation2_.get(name, value2);
 
-    if (has1 != has2 || (has1 && has2 && value1 == value2)) {
+    if ((!strict_ && has1 != has2) || (has1 && has2 && value1 == value2)) {
         value = has1 ? value1 : value2;
         ASSERT(value == value);
         return true;

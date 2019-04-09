@@ -27,7 +27,7 @@ public:
 
     // -- Contructors
 
-    SameParametrisation(const MIRParametrisation&, const MIRParametrisation&);
+    SameParametrisation(const MIRParametrisation&, const MIRParametrisation&, bool strict);
 
     // -- Destructor
     // None
@@ -73,6 +73,7 @@ private:
 
     const MIRParametrisation& parametrisation1_;
     const MIRParametrisation& parametrisation2_;
+    const bool strict_;
 
     // -- Methods
 
