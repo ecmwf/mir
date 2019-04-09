@@ -1,0 +1,6 @@
+# mars
+MIR-360.grib
+# mir
+--area=85/-80.5/25.5/40
+# plan
+AreaCropper[bbox=BoundingBox[north=85,west=-80.5,south=25.5,east=40]]|Save[output=...]
