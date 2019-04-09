@@ -62,6 +62,8 @@ public:
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
 
+    static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+
     // -- Overridden methods
     // None
 

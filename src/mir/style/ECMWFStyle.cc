@@ -112,6 +112,13 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         return "points";
     }
 
+    if (user.has("area")) {
+        std::vector<double> grid;
+        if (field.get("grid", grid) && !repres::latlon::LatLon::samePoints(user, field)) {
+            return prefix + "regular-ll";
+        }
+    }
+
     eckit::Log::debug<LibMir>() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
     return "";
 }
