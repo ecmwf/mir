@@ -97,25 +97,18 @@ bool Increments::isPeriodic() const {
 
 
 bool Increments::isShifted(const BoundingBox& bbox) const {
-    return isLatitudeShifted(bbox) || isLongitudeShifted(bbox);
+    const PointLatLon p{bbox.south(), bbox.west()};
+    return isLatitudeShifted(p) || isLongitudeShifted(p);
 }
 
 
 bool Increments::isLatitudeShifted(const BoundingBox& bbox) const {
-    auto& inc = south_north_.latitude();
-    if (inc == 0) {
-        return false;
-    }
-    return !(bbox.south().fraction() / inc.fraction()).integer();
+    return isLatitudeShifted(PointLatLon{bbox.south(), bbox.west()});
 }
 
 
 bool Increments::isLongitudeShifted(const BoundingBox& bbox) const {
-    auto& inc = west_east_.longitude();
-    if (inc == 0) {
-        return false;
-    }
-    return !(bbox.west().fraction() / inc.fraction()).integer();
+    return isLongitudeShifted(PointLatLon{bbox.south(), bbox.west()});
 }
 
 
