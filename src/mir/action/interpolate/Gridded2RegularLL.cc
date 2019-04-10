@@ -38,7 +38,7 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    if (parametrisation_.get("area", value)) {
+    if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
         reference_ = PointLatLon(bbox_.south(), bbox_.west());
