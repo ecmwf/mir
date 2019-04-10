@@ -16,9 +16,12 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Increments.h"
@@ -29,11 +32,63 @@ namespace tests {
 namespace unit {
 
 
+using eckit::Fraction;
 using util::BoundingBox;
 using util::Increments;
 
 static auto& log = eckit::Log::info();
 
+
+CASE("MIR-351") {
+
+    auto old(log.precision(16));
+    log << std::boolalpha;
+
+
+    {
+        Fraction sn(30, 128);
+        auto n(341 * sn + sn / 2);
+        auto s(-n);
+
+        Fraction we(45, 128);
+        auto w(we / 2);
+        auto e(360 - we / 2);
+
+        BoundingBox box{ n, w, s, e };
+        Increments inc{ we, sn };
+        PointLatLon ref{ box.south(), box.west() };
+
+        repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
+        auto domain(repres->domain());
+
+        log << "Representation as should be interpreted:"
+            << "\n\t" << *repres
+            << "\n\t" << domain
+            << "\n\t" "isPeriodicWestEast=" << domain.isPeriodicWestEast()
+            << std::endl;
+
+        EXPECT(!domain.isGlobal());
+        EXPECT(domain.isPeriodicWestEast());
+    }
+
+
+    {
+        std::unique_ptr<input::MIRInput> input(new input::GribFileInput("MIR-351"));
+        ASSERT(input->next());
+
+        repres::RepresentationHandle repres(input->field().representation());
+        auto domain(repres->domain());
+
+        log << "Representation from archived file:"
+            << "\n\t" << *repres
+            << "\n\t" << domain
+            << "\n\t" "isPeriodicWestEast=" << domain.isPeriodicWestEast()
+            << std::endl;
+
+        EXPECT(!domain.isGlobal());
+        EXPECT(domain.isPeriodicWestEast());
+    }
+}
 
 CASE("Increments::correctBoundingBox") {
 
@@ -608,6 +663,6 @@ CASE("MIR-309") {
 
 
 int main(int argc, char **argv) {
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }
 

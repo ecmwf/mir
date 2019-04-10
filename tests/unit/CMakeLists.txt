@@ -27,9 +27,10 @@ set( _environment
 
 foreach( _t ${tests})
   ecbuild_add_test(
-      TARGET      mir_tests_unit_${_t}
-      SOURCES     ${_t}.cc
-      LIBS        mir
-      ENVIRONMENT ${_environment} )
+      TARGET            mir_tests_unit_${_t}
+      SOURCES           ${_t}.cc
+      LIBS              mir
+      ENVIRONMENT       ${_environment}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 endforeach()
 
