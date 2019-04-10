@@ -54,15 +54,8 @@ size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::C
 
 size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
                                     context::Context& ctx) {
-
-
     ASSERT(once());
-    if (binary_) {
-        return saveBinary(param, ctx);
-    }
-    else {
-        return saveText(param, ctx);
-    }
+    return binary_ ? saveBinary(param, ctx) : saveText(param, ctx);
 }
 
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
@@ -74,7 +67,6 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
     eckit::Offset position = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
-
     std::vector<double> latitudes;
     std::vector<double> longitudes;
 

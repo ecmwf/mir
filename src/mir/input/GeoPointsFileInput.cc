@@ -73,7 +73,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw eckit::SeriousBug(oss.str());
     }
 
-    if (which_ >= count) {
+    if (which_ >= int(count)) {
         std::ostringstream oss;
         oss << path_ << " contains " << count << " fields, requested index is " << which_;
         throw eckit::SeriousBug(oss.str());

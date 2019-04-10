@@ -63,18 +63,16 @@ public:
     // -- Methods
 
     void execute(input::MIRInput&, output::MIROutput&) const;
-    void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
+    void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
 
-    using SimpleParametrisation::has;
-
-    MIRJob& set(const std::string &name, const std::string &value);
-    MIRJob& set(const std::string &name, const char *value);
-    MIRJob& set(const std::string &name, float value);
-    MIRJob& set(const std::string &name, double value);
-    MIRJob& set(const std::string &name, int value);
-    MIRJob& set(const std::string &name, long value);
-    MIRJob& set(const std::string &name, long long value);
-    MIRJob& set(const std::string &name, bool value);
+    MIRJob& set(const std::string& name, const std::string &value);
+    MIRJob& set(const std::string& name, const char *value);
+    MIRJob& set(const std::string& name, float value);
+    MIRJob& set(const std::string& name, double value);
+    MIRJob& set(const std::string& name, int value);
+    MIRJob& set(const std::string& name, long value);
+    MIRJob& set(const std::string& name, long long value);
+    MIRJob& set(const std::string& name, bool value);
     MIRJob& set(const std::string& name, size_t value);
 
     MIRJob& set(const std::string& name, const std::vector<int>& value);
@@ -128,6 +126,7 @@ protected:
 private:
 
     // -- Members
+    // None
 
     // -- Methods
 
@@ -139,8 +138,7 @@ private:
 
     // -- Overridden methods
 
-    // From MIRParametrisation
-
+    // From SimpleParametrisation
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -160,4 +158,3 @@ private:
 
 
 #endif
-

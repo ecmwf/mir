@@ -251,13 +251,15 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
         mir::input::GribFileInput input1(args(0), 0, 2);
         mir::input::GribFileInput input2(args(0), 1, 2);
-
         mir::input::VectorInput input(input1, input2);
+
         process(job, input, *output, "wind");
         return;
     }
 
+
     std::unique_ptr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0), args_wrap));
+    ASSERT(input);
 
     if (args.has("latitudes") || args.has("longitudes")) {
         std::string latitudes, longitudes;

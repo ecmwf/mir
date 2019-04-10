@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Plural.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/action/plan/Job.h"
@@ -33,8 +32,7 @@ namespace mir {
 namespace api {
 
 
-MIRJob::MIRJob() {
-}
+MIRJob::MIRJob() = default;
 
 
 MIRJob::~MIRJob() = default;

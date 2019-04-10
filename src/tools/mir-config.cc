@@ -41,8 +41,8 @@ class MIRConfig : public mir::tools::MIRTool {
 
         static SimpleParametrisation empty;
         static DefaultParametrisation defaults;
-        const mir::param::CombinedParametrisation combined(empty, metadata, defaults);
-        const mir::param::MIRParametrisation& param(combined);
+        const CombinedParametrisation combined(empty, metadata, defaults);
+        const MIRParametrisation& param(combined);
 
         long paramId = 0;
         ASSERT(metadata.get("paramId", paramId));

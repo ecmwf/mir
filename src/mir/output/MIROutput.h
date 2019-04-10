@@ -19,6 +19,7 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+
 #include "eckit/memory/NonCopyable.h"
 
 
@@ -31,9 +32,6 @@ class Context;
 }
 namespace input {
 class MIRInput;
-}
-namespace output {
-class MIROutput;
 }
 namespace param {
 class MIRParametrisation;
