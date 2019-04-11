@@ -54,8 +54,20 @@ CASE("MIR-351") {
         auto w(we / 2);
         auto e(360 - we / 2);
 
-        BoundingBox box{ n, w, s, e };
-        Increments inc{ we, sn };
+        const double jDirectionIncrementInDegrees       = sn;
+        const double latitudeOfFirstGridPointInDegrees  = n;
+        const double latitudeOfLastGridPointInDegrees   = s;
+
+        const double iDirectionIncrementInDegrees       = we;
+        const double longitudeOfFirstGridPointInDegrees = w;
+        const double longitudeOfLastGridPointInDegrees  = e;
+
+        BoundingBox box{
+            latitudeOfFirstGridPointInDegrees, longitudeOfFirstGridPointInDegrees,
+            latitudeOfLastGridPointInDegrees, longitudeOfLastGridPointInDegrees
+        };
+
+        Increments inc{ iDirectionIncrementInDegrees, jDirectionIncrementInDegrees };
         PointLatLon ref{ box.south(), box.west() };
 
         repres::RepresentationHandle repres(new repres::latlon::RegularLL(inc, box, ref));
