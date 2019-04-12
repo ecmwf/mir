@@ -36,13 +36,11 @@ public:
 
     // -- Contructors
 
-    Truncation(const param::MIRParametrisation& parametrisation) :
-        parametrisation_(parametrisation) {
-    }
+    Truncation(const param::MIRParametrisation& parametrisation);
 
     // -- Destructor
 
-    virtual ~Truncation() {}
+    virtual ~Truncation() = default;
 
     // -- Convertors
     // None
@@ -52,7 +50,7 @@ public:
 
     // -- Methods
 
-    virtual long truncation() const = 0;
+    virtual bool truncation(long&, long inputTrucation) const = 0;
 
     // -- Overridden methods
     // None

@@ -44,11 +44,11 @@ public:
 
     // -- Contructors
 
-    Resol(const param::MIRParametrisation&);
+    Resol(const param::MIRParametrisation&, bool forceNoIntermediateGrid);
 
     // -- Destructor
 
-    virtual ~Resol() {}
+    virtual ~Resol() = default;
 
     // -- Convertors
     // None
@@ -61,7 +61,6 @@ public:
     virtual void prepare(action::ActionPlan&) const;
     virtual bool resultIsSpectral() const;
     const std::string& gridname() const;
-    long truncation() const;
 
     // -- Overridden methods
     // None
