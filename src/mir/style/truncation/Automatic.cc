@@ -29,15 +29,13 @@ static TruncationBuilder< Automatic > __truncation3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
-    style::Truncation(parametrisation)  {
+    style::Truncation(parametrisation),
+    truncation_(0) {
 
     // If target Gaussian N is not specified, no truncation happens
-    if (targetGaussianN == 0) {
-        truncation_ = 0;
+    if (targetGaussianN <= 0) {
         return;
     }
-
-    ASSERT(targetGaussianN > 0);
 
     // Setup spectral order mapping
     std::string order;
@@ -52,8 +50,13 @@ Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targ
 }
 
 
-long Automatic::truncation() const {
-    return truncation_;
+bool Automatic::truncation(long& T, long inputTruncation) const {
+    ASSERT(0 < inputTruncation);
+    if (0 < truncation_ && truncation_ < inputTruncation) {
+        T = truncation_;
+        return true;
+    }
+    return false;
 }
 
 

@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Intgrid() {}
+    virtual ~Intgrid() = default;
 
     // -- Convertors
     // None

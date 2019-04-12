@@ -12,17 +12,19 @@
 #include "mir/style/Resol.h"
 
 #include <algorithm>
-#include <cctype>  // for ::isdigit
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/Fraction.h"
+
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/style/SpectralOrder.h"
+#include "mir/style/intgrid/None.h"
 #include "mir/style/truncation/Ordinal.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
@@ -32,7 +34,7 @@ namespace mir {
 namespace style {
 
 
-Resol::Resol(const param::MIRParametrisation& parametrisation) :
+Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoIntermediateGrid) :
     parametrisation_(parametrisation) {
 
     // Get input truncation and a Gaussian grid number based on input (truncation) and output (grid)
@@ -45,9 +47,13 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
 
     // Setup intermediate grid (before truncation)
     // NOTE: truncation can depend on the intermediate grid Gaussian number
-    std::string intgrid = "automatic";
-    parametrisation_.get("intgrid", intgrid);
-    intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
+    if (forceNoIntermediateGrid) {
+        intgrid_.reset(new intgrid::None(parametrisation_, N));
+    } else {
+        std::string intgrid = "automatic";
+        parametrisation_.get("intgrid", intgrid);
+        intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
+    }
     ASSERT(intgrid_);
 
     const std::string Gi = intgrid_->gridname();
@@ -72,9 +78,10 @@ Resol::Resol(const param::MIRParametrisation& parametrisation) :
 
 void Resol::prepare(action::ActionPlan& plan) const {
 
-    // truncate spectral coefficients, if specified and below input field coefficients
-    long T = truncation_->truncation();
-    if (0 < T && T < inputTruncation_) {
+    // truncate spectral coefficients
+    long T = 0;
+    if (truncation_->truncation(T, inputTruncation_)) {
+        ASSERT(0 < T);
         plan.add("transform.sh-truncate", "truncation", T);
     }
 
@@ -85,11 +92,8 @@ void Resol::prepare(action::ActionPlan& plan) const {
         bool vod2uv = false;
         parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-        if (vod2uv) {
-            plan.add("transform.sh-vod-to-uv-namedgrid", "gridname", gridname);
-        } else {
-            plan.add("transform.sh-scalar-to-namedgrid", "gridname", gridname);
-        }
+        const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + "namedgrid";
+        plan.add(transform, "gridname", gridname);
     }
 }
 
@@ -100,22 +104,27 @@ bool Resol::resultIsSpectral() const {
 
 
 void Resol::print(std::ostream& out) const {
-    out << "Resol["
-            "truncation=" << truncation()
-        << ",gridname=" << gridname()
-        << "]";
+    out << "Resol[";
+    auto sep = "";
+
+    long T = 0;
+    if (truncation_->truncation(T, inputTruncation_)) {
+        out << sep << "truncation=" << T;
+        sep = ",";
+    }
+
+    auto grid(gridname());
+    if (!grid.empty()) {
+        out << sep << "gridname=" << grid;
+        // sep = ",";
+    }
+
+    out << "]";
 }
 
 
 const std::string& Resol::gridname() const {
-    ASSERT(intgrid_);
     return intgrid_->gridname();
-}
-
-
-long Resol::truncation() const {
-    ASSERT(truncation_);
-    return truncation_->truncation();
 }
 
 

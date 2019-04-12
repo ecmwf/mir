@@ -27,8 +27,8 @@ None::None(const param::MIRParametrisation& parametrisation, long) :
 }
 
 
-long None::truncation() const {
-    return 0;
+bool None::truncation(long&, long) const {
+    return false;
 }
 
 

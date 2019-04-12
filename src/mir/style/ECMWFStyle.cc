@@ -30,7 +30,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/RuntimeParametrisation.h"
 #include "mir/style/Resol.h"
 #include "mir/util/DeprecatedFunctionality.h"
 #include "mir/util/Wind.h"
@@ -295,7 +294,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"spectral", "raw"});
 
-    Resol resol(parametrisation_);
+    Resol resol(parametrisation_, false);
 
     bool rotation = user.has("rotation");
 
@@ -351,10 +350,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
-    param::RuntimeParametrisation runtime(parametrisation_);
-    runtime.set("intgrid", "none");
-
-    Resol resol(runtime);
+    Resol resol(parametrisation_, true);
     eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion
