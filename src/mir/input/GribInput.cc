@@ -383,7 +383,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
         eps *= 1.5;
 
         double globe = LongitudeDouble::GLOBE.value();
-        if (eckit::types::is_approximately_greater_or_equal(Lon2 - Lon1 + we, globe, eps)) {
+        if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
             long Ni = 0;
             GRIB_CALL(grib_get_long(h, "Ni", &Ni));
             ASSERT(Ni > 0);
