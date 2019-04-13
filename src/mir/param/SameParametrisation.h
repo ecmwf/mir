@@ -83,9 +83,6 @@ private:
     // -- Overridden methods
 
     // From MIRParametrisation
-    const MIRParametrisation& userParametrisation() const;
-    const MIRParametrisation& fieldParametrisation() const;
-
     void print(std::ostream&) const;
 
     bool has(const std::string& name) const;

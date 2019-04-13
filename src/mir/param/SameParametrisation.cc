@@ -47,17 +47,6 @@ bool SameParametrisation::_get(const std::string& name, T& value) const {
 }
 
 
-const MIRParametrisation& SameParametrisation::userParametrisation() const {
-    // there is no guarantee the returned key/values would be the same
-    NOTIMP;
-}
-
-const MIRParametrisation& SameParametrisation::fieldParametrisation() const {
-    // there is no guarantee the returned key/values would be the same
-    NOTIMP;
-}
-
-
 void SameParametrisation::print(std::ostream& out) const {
     out << "SameParametrisation["
             "parametrisation1=" << parametrisation1_
