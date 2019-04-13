@@ -16,7 +16,9 @@
 #ifndef mir_method_knn_KNearestNeighbours_h
 #define mir_method_knn_KNearestNeighbours_h
 
+#include <memory>
 #include <string>
+
 #include "mir/method/MethodWeighted.h"
 
 
@@ -25,6 +27,9 @@ namespace method {
 namespace knn {
 namespace distance {
 class DistanceWeighting;
+}
+namespace pick {
+class Pick;
 }
 }
 }
@@ -72,7 +77,7 @@ private:
 
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
 
-    size_t nClosest_;
+    std::unique_ptr<const pick::Pick> picker_;
 
 };
 

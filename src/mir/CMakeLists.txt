@@ -283,6 +283,16 @@ list(APPEND mir_srcs
     method/knn/distance/NearestNeighbourWithLowestIndex.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
+    method/knn/pick/Distance.cc
+    method/knn/pick/Distance.h
+    method/knn/pick/DistanceWithMinNClosest.cc
+    method/knn/pick/DistanceWithMinNClosest.h
+    method/knn/pick/NClosest.cc
+    method/knn/pick/NClosest.h
+    method/knn/pick/NClosestWithMaxDistance.cc
+    method/knn/pick/NClosestWithMaxDistance.h
+    method/knn/pick/Pick.cc
+    method/knn/pick/Pick.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc

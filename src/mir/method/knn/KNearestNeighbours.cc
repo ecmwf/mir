@@ -25,6 +25,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -37,9 +38,9 @@ namespace knn {
 
 
 KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
-    nClosest_ = 4;
-    parametrisation_.get("nclosest", nClosest_);
-    ASSERT(nClosest_);
+    std::string pick = "nclosest";
+    picker_.reset(pick::PickFactory::build(pick, param));
+    ASSERT(picker_);
 }
 
 
@@ -49,13 +50,14 @@ KNearestNeighbours::~KNearestNeighbours() = default;
 bool KNearestNeighbours::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearestNeighbours*>(&other);
     return o
-            && (nClosest_ == o->nClosest_)
+            && picker_->sameAs(*(o->picker_))
             && distanceWeighting().sameAs(o->distanceWeighting());
 }
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
-    md5 << nClosest_ << distanceWeighting();
+    md5 << *picker_;
+    md5 << distanceWeighting();
 }
 
 
@@ -91,7 +93,7 @@ void KNearestNeighbours::assemble(
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    weights_triplets.reserve(nbOutputPoints * nClosest_);
+    weights_triplets.reserve(nbOutputPoints * picker_->n());
 
     std::vector<search::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
@@ -119,9 +121,8 @@ void KNearestNeighbours::assemble(
                 // 3D point to lookup
                 {
                     double t = timer.elapsed();
-                    sptree.closestNPoints(p, nClosest_, closest);
+                    picker_->pick(sptree, p, closest);
                     nearest += timer.elapsed() - t;
-                    ASSERT(closest.size() == nClosest_);
                 }
 
                 // calculate weights from distance
@@ -153,7 +154,7 @@ void KNearestNeighbours::assemble(
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);
-    out << ",nClosest=" << nClosest_
+    out << ",picker=" << (*picker_)
         << ",distanceWeighting=" << distanceWeighting()
         << "]";
 }
