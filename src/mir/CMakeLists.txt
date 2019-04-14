@@ -285,12 +285,14 @@ list(APPEND mir_srcs
     method/knn/distance/NoDistanceWeighting.h
     method/knn/pick/Distance.cc
     method/knn/pick/Distance.h
-    method/knn/pick/DistanceWithMinNClosest.cc
-    method/knn/pick/DistanceWithMinNClosest.h
+    method/knn/pick/DistanceOrNClosest.cc
+    method/knn/pick/DistanceOrNClosest.h
     method/knn/pick/NClosest.cc
     method/knn/pick/NClosest.h
-    method/knn/pick/NClosestWithMaxDistance.cc
-    method/knn/pick/NClosestWithMaxDistance.h
+    method/knn/pick/NClosestAndDistance.cc
+    method/knn/pick/NClosestAndDistance.h
+    method/knn/pick/NClosestOrNearest.cc
+    method/knn/pick/NClosestOrNearest.h
     method/knn/pick/Pick.cc
     method/knn/pick/Pick.h
     method/other/PseudoLaplace.cc

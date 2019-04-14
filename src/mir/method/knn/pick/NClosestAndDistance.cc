@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/knn/pick/NClosestWithMaxDistance.h"
+#include "mir/method/knn/pick/NClosestAndDistance.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
@@ -23,7 +23,7 @@ namespace knn {
 namespace pick {
 
 
-NClosestWithMaxDistance::NClosestWithMaxDistance(const param::MIRParametrisation& param) :
+NClosestAndDistance::NClosestAndDistance(const param::MIRParametrisation& param) :
     distance_(param) {
     nclosest_ = 4;
     param.get("nclosest", nclosest_);
@@ -31,7 +31,7 @@ NClosestWithMaxDistance::NClosestWithMaxDistance(const param::MIRParametrisation
 }
 
 
-void NClosestWithMaxDistance::pick(const search::PointSearch& tree,
+void NClosestAndDistance::pick(const search::PointSearch& tree,
                     const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     // TODO: improve the KDTree; this is slow because distance might be excessive
@@ -44,35 +44,35 @@ void NClosestWithMaxDistance::pick(const search::PointSearch& tree,
 }
 
 
-size_t NClosestWithMaxDistance::n() const {
+size_t NClosestAndDistance::n() const {
     return nclosest_;
 }
 
 
-bool NClosestWithMaxDistance::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const NClosestWithMaxDistance*>(&other);
+bool NClosestAndDistance::sameAs(const Pick& other) const {
+    auto o = dynamic_cast<const NClosestAndDistance*>(&other);
     return o
             && nclosest_ == o->nclosest_
             && distance_.sameAs(o->distance_);
 }
 
 
-void NClosestWithMaxDistance::print(std::ostream& out) const {
-    out << "NClosestWithMaxDistance["
+void NClosestAndDistance::print(std::ostream& out) const {
+    out << "NClosestAndDistance["
             "nclosest=" << nclosest_
         << ",distance=" << distance_
         << "]";
 }
 
 
-void NClosestWithMaxDistance::hash(eckit::MD5& h) const {
+void NClosestAndDistance::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
 }
 
 
-static PickBuilder<NClosestWithMaxDistance> __pick("nclosest-with-max-distance");
+static PickBuilder<NClosestAndDistance> __pick("nclosest-and-distance");
 
 
 }  // namespace pick

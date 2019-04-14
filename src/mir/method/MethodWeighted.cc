@@ -134,7 +134,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
-    std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out;
+    std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-";
     eckit::MD5 hash;
     hash << *this
          << shortName_in

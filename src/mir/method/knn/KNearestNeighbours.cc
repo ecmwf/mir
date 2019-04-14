@@ -38,7 +38,7 @@ namespace knn {
 
 
 KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
-    std::string pick = "nclosest";
+    std::string pick = "nclosest-or-nearest";
     picker_.reset(pick::PickFactory::build(pick, param));
     ASSERT(picker_);
 }

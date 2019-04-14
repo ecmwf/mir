@@ -68,7 +68,7 @@ bool NearestNeighbourWithLowestIndex::sameAs(const DistanceWeighting& other) con
 
 void NearestNeighbourWithLowestIndex::print(std::ostream& out) const {
     out << "NearestNeighbourWithLowestIndex["
-        << "distanceTolerance=" << distanceTolerance_
+            "distanceTolerance=" << distanceTolerance_
         << "]";
 }
 

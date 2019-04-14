@@ -61,8 +61,7 @@ void NClosest::hash(eckit::MD5& h) const {
 }
 
 
-static PickBuilder<NClosest> __pick1("nclosest");
-static PickBuilder<NClosest> __pick2("k");
+static PickBuilder<NClosest> __pick("nclosest");
 
 
 }  // namespace pick

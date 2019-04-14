@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/knn/pick/DistanceWithMinNClosest.h"
+#include "mir/method/knn/pick/DistanceOrNClosest.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
@@ -24,7 +24,7 @@ namespace knn {
 namespace pick {
 
 
-DistanceWithMinNClosest::DistanceWithMinNClosest(const param::MIRParametrisation& param) :
+DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) :
     nclosest_(param) {
     distance_ = 1.;
     param.get("distance", distance_);
@@ -32,7 +32,7 @@ DistanceWithMinNClosest::DistanceWithMinNClosest(const param::MIRParametrisation
 }
 
 
-void DistanceWithMinNClosest::pick(const search::PointSearch& tree,
+void DistanceOrNClosest::pick(const search::PointSearch& tree,
                     const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
@@ -42,35 +42,35 @@ void DistanceWithMinNClosest::pick(const search::PointSearch& tree,
 }
 
 
-size_t DistanceWithMinNClosest::n() const {
+size_t DistanceOrNClosest::n() const {
     return nclosest_.n();
 }
 
 
-bool DistanceWithMinNClosest::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const DistanceWithMinNClosest*>(&other);
+bool DistanceOrNClosest::sameAs(const Pick& other) const {
+    auto o = dynamic_cast<const DistanceOrNClosest*>(&other);
     return o
             && eckit::types::is_approximately_equal(distance_, o->distance_)
             && nclosest_.sameAs(o->nclosest_);
 }
 
 
-void DistanceWithMinNClosest::print(std::ostream& out) const {
-    out << "DistanceWithMinNClosest["
+void DistanceOrNClosest::print(std::ostream& out) const {
+    out << "DistanceOrNClosest["
             "nclosest=" << nclosest_
         << ",distance=" << distance_
         << "]";
 }
 
 
-void DistanceWithMinNClosest::hash(eckit::MD5& h) const {
+void DistanceOrNClosest::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
 }
 
 
-static PickBuilder<DistanceWithMinNClosest> __pick("distance-with-min-nclosest");
+static PickBuilder<DistanceOrNClosest> __pick("distance-or-nclosest");
 
 
 }  // namespace pick

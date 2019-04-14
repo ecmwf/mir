@@ -9,11 +9,11 @@
  */
 
 
-#ifndef mir_method_knn_pick_NClosestWithMaxDistance_h
-#define mir_method_knn_pick_NClosestWithMaxDistance_h
+#ifndef mir_method_knn_pick_DistanceOrNClosest_h
+#define mir_method_knn_pick_DistanceOrNClosest_h
 
 #include "mir/method/knn/pick/Pick.h"
-#include "mir/method/knn/pick/Distance.h"
+#include "mir/method/knn/pick/NClosest.h"
 
 
 namespace mir {
@@ -22,16 +22,16 @@ namespace knn {
 namespace pick {
 
 
-struct NClosestWithMaxDistance : Pick {
-    NClosestWithMaxDistance(const param::MIRParametrisation&);
+struct DistanceOrNClosest : Pick {
+    DistanceOrNClosest(const param::MIRParametrisation&);
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
     size_t n() const;
-    bool sameAs(const Pick&) const;
+    virtual bool sameAs(const Pick&) const;
 private:
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
-    Distance distance_;
-    size_t nclosest_;
+    virtual void print(std::ostream&) const;
+    virtual void hash(eckit::MD5&) const;
+    NClosest nclosest_;
+    double distance_;
 };
 
 
