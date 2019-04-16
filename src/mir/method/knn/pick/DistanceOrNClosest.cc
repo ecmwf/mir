@@ -33,8 +33,8 @@ DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) :
 
 
 void DistanceOrNClosest::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
-                    Pick::neighbours_t& closest) const {
+                              const eckit::geometry::Point3& p,
+                              Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() < nclosest_.n()) {
         nclosest_.pick(tree, p, closest);

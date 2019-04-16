@@ -12,7 +12,6 @@
 #include "mir/method/knn/pick/NClosestOrNearest.h"
 
 #include <cmath>
-#include <limits>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
@@ -52,7 +51,7 @@ void NClosestOrNearest::pick(const search::PointSearch& tree,
         auto nearest2 = Point3::distance2(p, closest.front().point());
         auto farthest2 = Point3::distance2(p, closest.back().point());
         if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
-            auto radius = std::sqrt(farthest2) + std::numeric_limits<double>::epsilon();
+            auto radius = std::sqrt(farthest2) + distanceTolerance_;
             tree.closestWithinRadius(p, radius, closest);
             ASSERT(closest.size() >= nClosest_);
         }

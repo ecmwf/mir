@@ -32,8 +32,8 @@ NClosestAndDistance::NClosestAndDistance(const param::MIRParametrisation& param)
 
 
 void NClosestAndDistance::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
-                    Pick::neighbours_t& closest) const {
+                               const eckit::geometry::Point3& p,
+                               Pick::neighbours_t& closest) const {
     // TODO: improve the KDTree; this is slow because distance might be excessive
     distance_.pick(tree, p, closest);
     if (closest.size() > nclosest_) {
