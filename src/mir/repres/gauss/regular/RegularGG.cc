@@ -42,6 +42,8 @@ RegularGG::~RegularGG() = default;
 void RegularGG::print(std::ostream& out) const {
     out << "RegularGG["
             "N=" << N_
+        << ",Ni=" << Ni_
+        << ",Nj=" << Nj_
         << ",bbox=" << bbox_
         << "]";
 }
@@ -54,7 +56,7 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t){ return long(4 * N_); };
+    auto Ni = [=](size_t){ return long(Ni_); };
     return Gaussian::unrotatedIterator(Ni);
 }
 
