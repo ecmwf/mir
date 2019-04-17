@@ -16,9 +16,7 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
-#include <memory>
 
-#include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 
 
@@ -28,7 +26,7 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) :
     Regular(parametrisation) {
 }
 
@@ -42,12 +40,10 @@ RegularGG::~RegularGG() = default;
 
 
 void RegularGG::print(std::ostream& out) const {
-    out << "RegularGG[N=" << N_ << ",bbox=" << bbox_ << "]";
-}
-
-
-void RegularGG::makeName(std::ostream& out) const {
-    Regular::makeName(out);
+    out << "RegularGG["
+            "N=" << N_
+        << ",bbox=" << bbox_
+        << "]";
 }
 
 

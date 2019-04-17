@@ -86,7 +86,6 @@ private:
     // -- Overridden methods
 
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
-    virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
     virtual Iterator* iterator() const;
 
