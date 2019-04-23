@@ -10,12 +10,12 @@
 
 
 #include <string>
+#include <memory>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -37,7 +37,7 @@ CASE("MIR-333") {
     static const bool newReference = eckit::Resource<bool>("--new-reference", false);
     static const param::DefaultParametrisation defaults;
 
-    eckit::ScopedPtr<method::Method> method(method::MethodFactory::build("nn", defaults));
+    std::unique_ptr<method::Method> method(method::MethodFactory::build("nn", defaults));
     auto nn = dynamic_cast<method::MethodWeighted*>(method.get());
     ASSERT(nn);
 
