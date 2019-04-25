@@ -17,8 +17,8 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/parser/StringTools.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

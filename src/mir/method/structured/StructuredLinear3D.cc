@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "eckit/log/Log.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 

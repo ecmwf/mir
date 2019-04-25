@@ -21,7 +21,7 @@
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"

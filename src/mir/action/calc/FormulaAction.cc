@@ -25,7 +25,7 @@
 #include "mir/util/Formula.h"
 #include "mir/data/MIRField.h"
 
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
 namespace mir {

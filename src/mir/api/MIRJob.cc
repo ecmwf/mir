@@ -17,7 +17,7 @@
 
 #include <iostream>
 #include "eckit/log/Plural.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "mir/action/plan/Job.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
