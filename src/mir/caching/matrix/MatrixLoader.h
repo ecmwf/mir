@@ -20,6 +20,7 @@
 
 #include <iosfwd>
 
+#include "eckit/log/Log.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/linalg/SparseMatrix.h"
 #include "eckit/log/Channel.h"

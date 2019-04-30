@@ -13,8 +13,6 @@
 /// @date Apr 2015
 
 
-#include <memory>
-
 #include "eckit/io/StdFile.h"
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/MD5.h"

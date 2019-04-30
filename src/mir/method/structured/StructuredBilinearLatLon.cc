@@ -14,13 +14,16 @@
 
 #include "mir/method/structured/StructuredBilinearLatLon.h"
 
+#include <vector>
+
 #include "eckit/log/Log.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include <vector>
 
 namespace mir {
 namespace method {
