@@ -81,7 +81,7 @@ struct OutputFromExtension : public MIROutputFactory {
         }
     }
 
-    OutputFromExtension() : MIROutputFactory("extension", {}) {
+    OutputFromExtension() : MIROutputFactory("extension") {
     }
 
     ~OutputFromExtension() {
