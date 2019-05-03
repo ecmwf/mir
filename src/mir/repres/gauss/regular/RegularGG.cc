@@ -56,7 +56,7 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t){ return long(Ni_); };
+    auto Ni = [=](size_t){ return long(4 * N_); };
     return Gaussian::unrotatedIterator(Ni);
 }
 
