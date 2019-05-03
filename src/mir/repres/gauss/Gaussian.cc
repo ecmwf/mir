@@ -16,6 +16,7 @@
 #include "mir/repres/gauss/Gaussian.h"
 
 #include <algorithm>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
@@ -23,6 +24,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -36,8 +38,8 @@ namespace repres {
 
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< size_t, std::vector<double> >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< size_t, std::vector<double> >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< size_t, std::vector<double> >();
