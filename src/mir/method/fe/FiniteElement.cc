@@ -56,9 +56,9 @@ namespace {
 static const double parametricEpsilon = 1e-15;
 
 
-typedef std::vector< WeightMatrix::Triplet > triplet_vector_t;
-typedef atlas::interpolation::method::ElemIndex3 element_tree_t;
-typedef std::pair< size_t, PointLatLon > failed_projection_t;
+using triplet_vector_t = std::vector< WeightMatrix::Triplet >;
+using element_tree_t = atlas::interpolation::method::ElemIndex3;
+using failed_projection_t = std::pair< size_t, PointLatLon >;
 
 
 static void normalise(triplet_vector_t& triplets) {
@@ -154,10 +154,12 @@ static triplet_vector_t projectPointTo3DElements(
 
                 for (size_t i = 0; i < 3; ++i)
                 {
-                    if (idx[i] < firstVirtualPoint)
-                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
-                    else
+                    if (idx[i] < firstVirtualPoint) {
+                        triplets.push_back(WeightMatrix::Triplet(ip, idx[i], w[i]));
+                    }
+                    else {
                         mustNormalise = true;
+                    }
                 }
 
                 break; // stop looking for elements
@@ -194,10 +196,12 @@ static triplet_vector_t projectPointTo3DElements(
 
 
                 for (size_t i = 0; i < 4; ++i) {
-                    if (idx[i] < firstVirtualPoint)
-                        triplets.push_back( WeightMatrix::Triplet( ip, idx[i], w[i] ) );
-                    else
+                    if (idx[i] < firstVirtualPoint) {
+                        triplets.push_back(WeightMatrix::Triplet(ip, idx[i], w[i]));
+                    }
+                    else {
                         mustNormalise = true;
+                    }
                 }
 
                 break; // stop looking for elements
@@ -253,7 +257,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                              WeightMatrix& W,
                              const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Log::debug<LibMir>() << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    eckit::Channel& log = eckit::Log::debug<LibMir>();
+
+    log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
     // let representation set the mesh generator parameters
     auto inputMeshGenerationParams = inputMeshGenerationParams_;
@@ -278,7 +284,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     // generate k-d tree with cell centres
     std::unique_ptr<element_tree_t> eTree;
     {
-        eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree");
+        eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree", log);
         eckit::TraceTimer<LibMir> timer("k-d tree: create");
         eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
     }
@@ -288,7 +294,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         R = gin.getMeshLongestElementDiagonal();
     }
     ASSERT(R > 0.);
-    eckit::Log::debug<LibMir>() << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
+    log << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
 
 
     // some statistics
@@ -307,7 +313,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
 
     {
-        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
+        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), log);
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -357,26 +363,27 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         }
     }
 
-    eckit::Log::debug<LibMir>()
-            << "Projected " << eckit::BigNum(nbProjections)
-            << " of " << eckit::Plural(nbOutputPoints, "point")
-            << " (" << eckit::Plural(nbFailures, "failure") << ")\n"
-            << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and " << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to " << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
-            << std::endl;
+    log << "Projected " << eckit::BigNum(nbProjections) << " of "
+        << eckit::Plural(nbOutputPoints, "point") << " (" << eckit::Plural(nbFailures, "failure")
+        << ")\n"
+        << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and "
+        << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to "
+        << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
+        << std::endl;
 
     if (nbFailures) {
         std::stringstream msg;
         msg << "Failed to project " << eckit::Plural(nbFailures, "point");
-        eckit::Log::debug<LibMir>() << msg.str() << ":";
+        log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {
-            eckit::Log::debug<LibMir>() << "\n\tpoint " << f.first << " " << f.second;
+            log << "\n\tpoint " << f.first << " " << f.second;
             if (++count > 10) {
-                eckit::Log::debug<LibMir>() << "\n\t...";
+                log << "\n\t...";
                 break;
             }
         }
-        eckit::Log::debug<LibMir>() << std::endl;
+        log << std::endl;
         throw eckit::SeriousBug(msg.str());
     }
 

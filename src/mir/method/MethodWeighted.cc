@@ -100,8 +100,9 @@ void MethodWeighted::createMatrix(context::Context& ctx,
                                   WeightMatrix& W,
                                   const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
+    eckit::Channel& log = eckit::Log::debug<LibMir>();
 
-    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]");
+    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", log);
 
     computeMatrixWeights(ctx, in, out, W);
 
