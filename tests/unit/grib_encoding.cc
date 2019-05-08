@@ -335,8 +335,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         size_t count;
     };
 
-    for (auto& test : {
-
+    std::vector<test_t> _test {
              // pgen
              test_t{"O640", {51.941, 7.005, 43.084, 27.693}, 4512},
              test_t{"O640", {51.9406, 7.00599, 43.0847, 27.6923}, 4443},
@@ -365,8 +364,9 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
              // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
              // so GRIB1 O1280 fields are actually not correctly encoded
              //         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
+    };
 
-         }) {
+    for (auto& test : _test) {
 
         auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
@@ -424,15 +424,15 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
         size_t Nj;
     };
 
-    for (auto& test : {
+    // ECC-445
+    std::vector<test_t> _test {
+        test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
+        test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
+        test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
+        test_t{"F640", {70.9, -40.987, 19.73, 40}, 576, 364},
+    };
 
-             // ECC-445
-             test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
-             test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
-             test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
-             test_t{"F640", {70.9, -40.987, 19.73, 40}, 576, 364},
-
-         }) {
+    for (auto& test : _test) {
 
         auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
@@ -493,12 +493,12 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
         size_t Nj;
     };
 
-    for (auto& test : {
+    // ECC-445
+    std::vector<test_t> _test {
+        test_t{new RegularLL(Increments(0.1, 0.1)), {58.5, -6.1, 36, 20.7}, 269, 226},
+    };
 
-             // ECC-445
-             test_t{new RegularLL(Increments(0.1, 0.1)), {58.5, -6.1, 36, 20.7}, 269, 226},
-
-         }) {
+    for (auto& test : _test) {
 
         log << "Test " << *(test.representation) << " with " << test.bbox << "..." << std::endl;
 
