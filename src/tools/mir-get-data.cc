@@ -320,11 +320,13 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
+            auto& values = field.values(0);
+
             mir::repres::RepresentationHandle rep(field.representation());
 
             if (!atlas && !ecc && !nclosest) {
                 std::unique_ptr< Iterator > it(rep->iterator());
-                for (const double& v: field.values(0)) {
+                for (const double& v: values) {
                     ASSERT(it->next());
                     const Point2& P(**it);
                     log << "\t" << P[0] << '\t' << P[1] << '\t' << v << std::endl;
@@ -343,12 +345,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 for (auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
                     Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
+                    ASSERT(i < values.size());
 
                     log << "- " << c++ << " -"
-                        << " index=" << i
-                        << " latitude=" << q[1]
-                        << " longitude=" << q[0]
-                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (Km)"
+                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (km)"
+                        << " value=" << values[i]
                         << std::endl;
                 }
             }
