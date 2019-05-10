@@ -25,9 +25,9 @@ namespace pick {
 
 NClosestAndDistance::NClosestAndDistance(const param::MIRParametrisation& param) :
     distance_(param) {
-    nclosest_ = 4;
-    param.get("nclosest", nclosest_);
-    ASSERT(nclosest_ > 0);
+    nClosest_ = 4;
+    param.get("nclosest", nClosest_);
+    ASSERT(nClosest_ > 0);
 }
 
 
@@ -36,30 +36,30 @@ void NClosestAndDistance::pick(const search::PointSearch& tree,
                                Pick::neighbours_t& closest) const {
     // TODO: improve the KDTree; this is slow because distance might be excessive
     distance_.pick(tree, p, closest);
-    if (closest.size() > nclosest_) {
+    if (closest.size() > nClosest_) {
         // closest.resize(nClosest_);  // NOTE: non-resizable
-        closest.erase(closest.begin() + neighbours_t::difference_type(nclosest_), closest.end());
-        ASSERT(closest.size() == nclosest_);
+        closest.erase(closest.begin() + neighbours_t::difference_type(nClosest_), closest.end());
+        ASSERT(closest.size() == nClosest_);
     }
 }
 
 
 size_t NClosestAndDistance::n() const {
-    return nclosest_;
+    return nClosest_;
 }
 
 
 bool NClosestAndDistance::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NClosestAndDistance*>(&other);
     return o
-            && nclosest_ == o->nclosest_
+            && nClosest_ == o->nClosest_
             && distance_.sameAs(o->distance_);
 }
 
 
 void NClosestAndDistance::print(std::ostream& out) const {
     out << "NClosestAndDistance["
-            "nclosest=" << nclosest_
+            "nclosest=" << nClosest_
         << ",distance=" << distance_
         << "]";
 }

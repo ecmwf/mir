@@ -30,7 +30,7 @@ struct DistanceOrNClosest : Pick {
 private:
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;
-    NClosest nclosest_;
+    NClosest nClosest_;
     double distance_;
 };
 

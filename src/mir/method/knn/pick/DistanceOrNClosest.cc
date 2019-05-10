@@ -25,7 +25,7 @@ namespace pick {
 
 
 DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) :
-    nclosest_(param) {
+    nClosest_(param) {
     distance_ = 1.;
     param.get("distance", distance_);
     ASSERT(distance_ > 0.);
@@ -36,14 +36,14 @@ void DistanceOrNClosest::pick(const search::PointSearch& tree,
                               const eckit::geometry::Point3& p,
                               Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
-    if (closest.size() < nclosest_.n()) {
-        nclosest_.pick(tree, p, closest);
+    if (closest.size() < nClosest_.n()) {
+        nClosest_.pick(tree, p, closest);
     }
 }
 
 
 size_t DistanceOrNClosest::n() const {
-    return nclosest_.n();
+    return nClosest_.n();
 }
 
 
@@ -51,13 +51,13 @@ bool DistanceOrNClosest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const DistanceOrNClosest*>(&other);
     return o
             && eckit::types::is_approximately_equal(distance_, o->distance_)
-            && nclosest_.sameAs(o->nclosest_);
+            && nClosest_.sameAs(o->nClosest_);
 }
 
 
 void DistanceOrNClosest::print(std::ostream& out) const {
     out << "DistanceOrNClosest["
-            "nclosest=" << nclosest_
+            "nclosest=" << nClosest_
         << ",distance=" << distance_
         << "]";
 }

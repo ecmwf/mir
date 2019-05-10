@@ -31,7 +31,7 @@ private:
     void print(std::ostream&) const;
     void hash(eckit::MD5&) const;
     Distance distance_;
-    size_t nclosest_;
+    size_t nClosest_;
 };
 
 
