@@ -117,6 +117,7 @@ public:
         options_.push_back(new SimpleOption<double>("distance-tolerance", "Distance tolerance when checking distinguishing the nearest neighbours (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-gaussian-stddev", "Distance weighting Gaussian function standard deviation [m] (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power", "Distance weighting Shepard power parameter (default 2.)"));
+        options_.push_back(new SimpleOption<double>("climate-filter-delta", "Climate filter (topographic data smoothing operator) width of filter edge, must be greater than 'distance' (default 1000.)"));
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));

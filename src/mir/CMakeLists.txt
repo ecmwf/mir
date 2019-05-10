@@ -263,6 +263,8 @@ list(APPEND mir_srcs
     method/knn/NearestLSM.h
     method/knn/NearestNeighbour.cc
     method/knn/NearestNeighbour.h
+    method/knn/distance/ClimateFilter.cc
+    method/knn/distance/ClimateFilter.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
