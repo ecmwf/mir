@@ -121,12 +121,12 @@ protected:
     }
 
 public:
-    EncodeTest(const repres::Representation* rep)
-        : representation_(rep)
-        , grib1Handle_(nullptr)
-        , grib2Handle_(nullptr)
-        , grib1Input_(nullptr)
-        , grib2Input_(nullptr) {}
+    EncodeTest(const repres::Representation* rep) :
+        representation_(rep),
+        grib1Handle_(nullptr),
+        grib2Handle_(nullptr),
+        grib1Input_(nullptr),
+        grib2Input_(nullptr) {}
 
     virtual ~EncodeTest() {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -462,13 +462,10 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 }
 
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
-
-    using repres::latlon::RegularLL;
-    using util::Increments;
     auto& log = eckit::Log::info();
 
     struct test_t {
-        RepresentationHandle representation;
+        util::Increments increments;
         BoundingBox bbox;
         size_t Ni;
         size_t Nj;
@@ -476,17 +473,18 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 
     // ECC-445
     std::vector<test_t> _test {
-        test_t{new RegularLL(Increments(0.1, 0.1)), {58.5, -6.1, 36, 20.7}, 269, 226},
+        test_t{util::Increments{0.1, 0.1}, {58.5, -6.1, 36, 20.7}, 269, 226},
     };
 
     for (auto& test : _test) {
+        RepresentationHandle repres(new repres::latlon::RegularLL(test.increments, test.bbox));
 
-        log << "Test " << *(test.representation) << " with " << test.bbox << "..." << std::endl;
+        log << "Test " << *repres << " with " << test.bbox << "..." << std::endl;
 
         // Crop to get the smallest possible bounding box
         std::vector<size_t> mapping;
         BoundingBox small(test.bbox);
-        action::AreaCropper::crop(*test.representation, small, mapping);
+        action::AreaCropper::crop(*repres, small, mapping);
 
         size_t n = mapping.size();
         ASSERT(0 < n);
@@ -496,7 +494,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
         EXPECT(test.bbox.contains(small));
 
         // GRIB1/GRIB2 encoding
-        EncodeRegularLatLonGrid enc((test.representation)->croppedRepresentation(test.bbox), test.Ni, test.Nj);
+        EncodeRegularLatLonGrid enc(repres->croppedRepresentation(test.bbox), test.Ni, test.Nj);
         EncodeRegular& encode = enc;
 
         for (long edition : {1, 2}) {
@@ -525,13 +523,10 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 }
 
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
-
-    using repres::latlon::RegularLL;
-    using util::Increments;
     auto& log = eckit::Log::info();
 
-    RepresentationHandle rep = new RegularLL(Increments(1, 1));
-    log << "Test " << *(rep) << "..." << std::endl;
+    RepresentationHandle repres(new repres::latlon::RegularLL(util::Increments(1, 1)));
+    log << "Test " << *(repres) << "..." << std::endl;
 
     // GRIB1/GRIB2 encoding
     for (bool remove : {false, true}) {
@@ -558,9 +553,9 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // this test!
             info.packing.deleteLocalDefinition = remove ? 1 : 0;
 
-            rep->fill(info);
+            repres->fill(info);
 
-            size_t n = rep->numberOfPoints();
+            size_t n = repres->numberOfPoints();
             ASSERT(n);
             std::vector<double> values(n, 0.);
             values[0] = 1.;
