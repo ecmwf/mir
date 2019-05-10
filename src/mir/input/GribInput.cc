@@ -912,12 +912,9 @@ bool GribInput::handle(grib_handle *h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     FieldParametrisation::reset();
-
     cache_.reset();
 
-    if (grib_) {
-        grib_handle_delete(grib_);
-    }
+    grib_handle_delete(grib_);
     grib_ = h;
 
     if (h != nullptr) {
@@ -958,9 +955,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
         grib_handle_delete(h);
     } catch (...) {
-        if (h) {
-            grib_handle_delete(h);
-        }
+        grib_handle_delete(h);
         throw;
     }
 }

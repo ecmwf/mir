@@ -84,23 +84,10 @@ protected:
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            class HandleFree {
-                grib_handle* h_;
-
-            public:
-                HandleFree(grib_handle* h) : h_(h) {}
-                HandleFree(const HandleFree&) = delete;
-                void operator=(const HandleFree&) = delete;
-                ~HandleFree() {
-                    if (h_) {
-                        grib_handle_delete(h_);
-                    }
-                }
-            };
-
-            grib_handle* sample = grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
+            grib_handle* sample =
+                grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
             ASSERT(sample);
-            HandleFree sample_detroy(sample);
+            HandleDeleter sample_detroy(sample);
 
             int err = 0;
             int flags = 0;
@@ -143,14 +130,8 @@ public:
 
     virtual ~EncodeTest() {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-        if (grib1Handle_) {
-            grib_handle_delete(grib1Handle_);
-        }
-        if (grib2Handle_) {
-            grib_handle_delete(grib2Handle_);
-        }
-
+        grib_handle_delete(grib1Handle_);
+        grib_handle_delete(grib2Handle_);
         delete grib1Input_;
         delete grib2Input_;
     }
@@ -585,24 +566,10 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            class HandleFree {
-                grib_handle* h_;
-
-            public:
-                HandleFree(grib_handle* h) : h_(h) {}
-                HandleFree(const HandleFree&) = delete;
-                void operator=(const HandleFree&) = delete;
-                ~HandleFree() {
-                    if (h_) {
-                        grib_handle_delete(h_);
-                    }
-                }
-            };
-
-            grib_handle* sample =
-                grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
+            grib_handle* sample = grib_handle_new_from_samples(
+                nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
             ASSERT(sample);
-            HandleFree sample_detroy(sample);
+            HandleDeleter sample_detroy(sample);
 
             int err = 0;
             int flags = 0;
