@@ -57,6 +57,7 @@ const LibMir::keywords_t LibMir::postProcess() {
         "checkerboard",
         "compatibility",
         "edition",
+        "filter",
         "format",
         "formula",
         "frame",

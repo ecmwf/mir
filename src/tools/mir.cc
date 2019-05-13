@@ -107,6 +107,7 @@ public:
         options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
 
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
+        options_.push_back(new SimpleOption<bool>("filter", "Interpolation filter, keeping the same input grid type"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
         options_.push_back(new FactoryOption<mir::method::knn::pick::PickFactory>("nearest-method", "Neighbour picking method, used by k-nearest methods"));
@@ -234,16 +235,20 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     mir::api::MIRJob job;
     args.configure(job);
 
+    bool filter = false;
+    args.get("filter", filter);
+
     std::string same;
-    if (args.get("same", same)) {
-        mir::input::GribFileInput input(same);
+    if (args.get("same", same) || filter) {
+        ASSERT(filter != !same.empty());
+        mir::input::GribFileInput input(filter ? args(0) : same);
         ASSERT(input.next());
         job.representationFrom(input);
     }
 
+
     bool uv2uv = false;
     bool vod2uv = false;
-
     args.get("uv2uv", uv2uv);
     args.get("vod2uv", vod2uv);
 

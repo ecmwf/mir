@@ -54,38 +54,43 @@ static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user, const param::MIRParametrisation& field, bool checkRotation) {
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
+    bool filter = false;
+    user.get("filter", filter);
+
     std::vector<double> rotation;
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
+
+    bool forced = filter || rotated;
     const std::string prefix(user.has("rotation") ? "rotated-" : "");
 
     if (user.has("grid")) {
         std::vector<double> grid;
-        return !same->get("grid", grid) || rotated ? prefix + "regular-ll" : "";
+        return !same->get("grid", grid) || forced ? prefix + "regular-ll" : "";
     }
 
     if (user.has("reduced")) {
         long N;
-        return !same->get("reduced", N) || rotated ? prefix + "reduced-gg" : "";
+        return !same->get("reduced", N) || forced ? prefix + "reduced-gg" : "";
     }
 
     if (user.has("regular")) {
         long N;
-        return !same->get("regular", N) || rotated ? prefix + "regular-gg" : "";
+        return !same->get("regular", N) || forced ? prefix + "regular-gg" : "";
     }
 
     if (user.has("octahedral")) {
         long N;
-        return !same->get("octahedral", N) || rotated ? prefix + "octahedral-gg" : "";
+        return !same->get("octahedral", N) || forced ? prefix + "octahedral-gg" : "";
     }
 
     if (user.has("pl")) {
         std::vector<long> pl;
-        return !same->get("pl", pl) || rotated ? prefix + "reduced-gg-pl-given" : "";
+        return !same->get("pl", pl) || forced ? prefix + "reduced-gg-pl-given" : "";
     }
 
     if (user.has("gridname")) {
         std::string gridname;
-        return !same->get("gridname", gridname) || rotated ? prefix + "namedgrid" : "";
+        return !same->get("gridname", gridname) || forced ? prefix + "namedgrid" : "";
     }
 
     if (user.has("griddef")) {
