@@ -87,6 +87,10 @@ CASE("ECMWFStyle") {
     eckit::Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
+    std::vector<bool> _no_yes {false, true};
+    std::vector<bool> _yes_no {true, false};
+    std::vector<std::string> _when {"prologue", "gridded", "spectral", "raw", "epilogue"};
+
 
     SECTION("mir::action::FormulaAction") {
 
@@ -104,16 +108,16 @@ CASE("ECMWFStyle") {
                 CORRECT_ACTION(p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA));
 
 
-        for (bool input_gridded : {true, false}) {
+        for (bool input_gridded : _yes_no) {
             TestingInput in(input_gridded);
 
-            for (bool output_gridded : {true, false}) {
+            for (bool output_gridded : _yes_no) {
                 if (input_gridded && !output_gridded) {
                     // this combination isn't supported
                     continue;
                 }
 
-                for (const std::string& when : {"prologue", "gridded", "spectral", "raw", "epilogue"}) {
+                for (const std::string& when : _when) {
 
                     TestingOutput user(output_gridded);
                     user.set("formula." + when, CORRECT_FORMULA);
@@ -125,9 +129,9 @@ CASE("ECMWFStyle") {
                                                   : when == "spectral" ? (!input_gridded || !output_gridded)
                                                   : true;
 
-                    for (bool addWrongArguments : {false, true}) {
+                    for (bool addWrongArguments : _no_yes) {
                         if (addWrongArguments) {
-                            for (const std::string& wrongWhen : {"prologue", "gridded", "spectral", "raw", "epilogue"}) {
+                            for (const std::string& wrongWhen : _when) {
                                 if (wrongWhen != when) {
                                     user.set("formula." + wrongWhen + ".metadata", WRONG_METADATA);
                                 }

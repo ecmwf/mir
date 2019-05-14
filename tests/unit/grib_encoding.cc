@@ -37,6 +37,9 @@ using util::BoundingBox;
 
 static eckit::Mutex local_mutex;
 
+static std::vector<bool> _yes_no {true, false};
+static std::vector<long> _one_two {1, 2};
+
 namespace {
 
 class EncodeTest {
@@ -370,7 +373,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         EncodeReducedGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.count, ng.gaussianNumber());
         EncodeTest& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -436,7 +439,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
         EncodeRegularGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.Ni, test.Nj, ng.gaussianNumber());
         EncodeRegular& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -497,7 +500,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
         EncodeRegularLatLonGrid enc(repres->croppedRepresentation(test.bbox), test.Ni, test.Nj);
         EncodeRegular& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -529,8 +532,8 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     log << "Test " << *(repres) << "..." << std::endl;
 
     // GRIB1/GRIB2 encoding
-    for (bool remove : {false, true}) {
-        for (long edition : {1, 2}) {
+    for (bool remove : _yes_no) {
+        for (long edition : _one_two) {
             eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
             // initialise a new grib handle from samples
