@@ -10,8 +10,11 @@
 
 
 #include <algorithm>
+#include <vector>
+
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -91,13 +94,17 @@ CASE("BoundingBox") {
     };
 
     SECTION("operator==") {
+
+        std::vector<Longitude> _delta {
+            Longitude::GLOBE * -2,
+            Longitude::GLOBE * -1,
+            Longitude::GREENWICH,
+            Longitude::GLOBE,
+            Longitude::GLOBE * 2
+        };
+
         for (const auto& A : boxes) {
-            for (auto delta : {
-                 Longitude::GLOBE * -2,
-                 Longitude::GLOBE * -1,
-                 Longitude::GREENWICH,
-                 Longitude::GLOBE,
-                 Longitude::GLOBE * 2}) {
+            for (auto delta : _delta) {
                 auto B = BoundingBox(A.north(), A.west() + delta, A.south(), A.east() + delta);
 
                 static size_t c = 1;
@@ -191,15 +198,19 @@ CASE("BoundingBox") {
 
     SECTION("intersects (point)") {
 
+        std::vector<Latitude> _lat { -90, -89, -88,  2,  1,  0,  1,  2,  88,  89, 90 };
+        std::vector<Longitude> _lon {
+            -360, -358,
+            -182, -180, -178,
+              -2,    0,    2,
+             178,  180,  182,
+             358,  360,  362,
+             718,  720,  722,
+        };
+
         for (const auto& A : boxes) {
-            for (Latitude lat :{-90, -89, -88,  2,  1,  0,  1,  2,  88,  89, 90}) {
-                for (Longitude lon :{ -360, -358,
-                                      -182, -180, -178,
-                                        -2,    0,    2,
-                                       178,  180,  182,
-                                       358,  360,  362,
-                                       718,  720,  722,
-                    }) {
+            for (Latitude lat : _lat) {
+                for (Longitude lon : _lon) {
 
                     const BoundingBox P{lat, lon, lat, lon};
                     ASSERT(P.empty());
@@ -238,23 +249,20 @@ CASE("Representation::extendedBoundingBox") {
 
     SECTION("Gaussian") {
 
-        for (const auto& name : {
-             "F16",
-             "O16",
-             "N16",
-             "F21",
-             "O21",
-            }) {
+        std::vector<std::string> _name { "F16", "O16", "N16", "F21", "O21" };
+        std::vector<BoundingBox> _bbox {
+            {  90,   10, -10,  9 },
+            {  90, -350, -10,  9 },
+            { -70,  -10, -90, 10 },
+            {   0, -350,   0,  9 },
+            {  60, -350,  20,  9 },
+            {  90,  -10,  70, 10 }
+        };
+
+        for (const auto& name : _name) {
             repres::RepresentationHandle repres = NamedGrid::lookup(name).representation();
 
-            for (const auto& bbox : {
-                     BoundingBox(90, 10, -10, 9),
-                     BoundingBox(90, -350, -10, 9),
-                     BoundingBox(-70, -10, -90, 10),
-                     BoundingBox(0, -350, 0, 9),
-                     BoundingBox(60, -350, 20, 9),
-                     BoundingBox(90, -10, 70, 10),
-                 }) {
+            for (const auto& bbox : _bbox) {
                 BoundingBox extended = repres->extendedBoundingBox(bbox);
 
                 log << name << "\t > " << *repres << " + extendedBoundingBox("
