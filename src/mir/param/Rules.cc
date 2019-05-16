@@ -63,27 +63,27 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
 
     MIRParametrisation& s = lookup(ruleValue);
 
-    if (!s.has(KLASS)) {
-        if (noted_.insert(ruleValue).second) {
-
-            const std::string msg = "No class defined for " + ruleName + "=" + std::to_string(ruleValue);
-
-            static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
-            if (abortIfUnknownParameterClass) {
-                eckit::Log::error() << msg << std::endl;
-                throw eckit::UserError(msg);
-            }
-
-            eckit::Log::warning() << msg << std::endl;
-        }
-    }
+    auto msg = [&]() -> std::string { return ruleName + "=" + std::to_string(ruleValue) + ": "; };
 
     auto w = warning_.find(ruleValue);
     if (w != warning_.end()) {
         warning_.erase(w);
-        eckit::Log::warning() << "Warning: " << ruleName << "=" << ruleValue
-                              << " post-processing defaults might not be appropriate"
-                              << std::endl;
+
+        std::string m = msg() + "post-processing defaults might not be appropriate";
+        eckit::Log::warning() << "Warning: " << m << std::endl;
+        return s;
+    }
+
+    if (!s.has(KLASS) && noted_.insert(ruleValue).second) {
+        std::string m = msg() + "no class defined";
+
+        static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
+        if (abortIfUnknownParameterClass) {
+            eckit::Log::error() << m << std::endl;
+            throw eckit::UserError(m);
+        }
+
+        eckit::Log::warning() << "Warning: " << m << std::endl;
     }
 
     return s;
