@@ -1072,6 +1072,12 @@ intensity:
 - 151210  # FG bias in pressure
 - 151211  # Bias in temperature(applied)
 - 151212  # Bias in salinity (applied)
+- 151224  # Ocean mixed layer thickness defined by vertical tracer diffusivity threshold
+- 151225  # Ocean mixed layer thickness defined by sigma theta 0.01 kg/m3
+- 151226  # Ocean mixed layer thickness defined by sigma theta 0.03 kg/m3
+- 151227  # Ocean mixed layer thickness defined by sigma theta 0.125 kg/m3
+- 151228  # Ocean mixed layer thickness defined by temperature 0.2C
+- 151229  # Ocean mixed layer thickness defined by temperature 0.5C
 - 160049  # 10 metre wind gust during averaging time
 - 160135  # vertical velocity (pressure)
 - 160137  # Precipitable water content
@@ -4844,6 +4850,12 @@ ratio.probability:
 - 133090  # Low Cloud Cover probability greater than 80%
 - 133091  # Low Cloud Cover probability greater than 90%
 - 133092  # Low Cloud Cover probability greater than 99%
+- 133093  # Probability of temperature standardized anomaly greater than 1 standard deviation
+- 133094  # Probability of temperature standardized anomaly greater than 1.5 standard deviation
+- 133095  # Probability of temperature standardized anomaly greater than 2 standard deviation
+- 133096  # Probability of temperature standardized anomaly less than -1 standard deviation
+- 133097  # Probability of temperature standardized anomaly less than -1.5 standard deviation
+- 133098  # Probability of temperature standardized anomaly less than -2 standard deviation
 - 260166  # Supercooled large droplet probability (see Note 4)
 - 260178  # Probability of 0.01 inch of precipitation (POP)
 - 260397  # Tornado probability
