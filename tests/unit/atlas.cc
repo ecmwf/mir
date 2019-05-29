@@ -10,18 +10,24 @@
 
 
 #include <iostream>
+#include <memory>
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
+
 #include "mir/api/Atlas.h"
-#include "mir/repres/latlon/RegularLL.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Domain.h"
 
 
 namespace mir {
 namespace tests {
 namespace unit {
+
+
+using Handle = repres::RepresentationHandle;
 
 
 CASE("Test number of points representation <=> grid") {
@@ -31,7 +37,7 @@ CASE("Test number of points representation <=> grid") {
     using namedgrids::NamedGrid;
 
 
-   repres::RepresentationHandle representations[] = {
+   Handle representations[] = {
        new RegularLL(util::Increments(1., 1.)),
        new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
        NamedGrid::lookup("O16").representation(),
@@ -73,8 +79,9 @@ CASE("Test number of points representation <=> cropped grid") {
     for (const auto& dom : domains) {
         ASSERT(!dom.isGlobal());
 
-        repres::RepresentationHandle repres(new RegularLL(util::Increments(1., 1.)));
-        repres::RepresentationHandle represCropped(repres->croppedRepresentation(dom));
+        Handle repres(new RegularLL(util::Increments(1., 1.)));
+        Handle represCropped(repres->croppedRepresentation(dom));
+
         size_t n1 = represCropped->numberOfPoints();
         log << "#=" << n1 << "\tfrom " << *represCropped << std::endl;
 
@@ -89,6 +96,30 @@ CASE("Test number of points representation <=> cropped grid") {
 
         EXPECT(n1 == n2);
     }
+}
+
+
+CASE("MIR-374") {
+    auto& log  = eckit::Log::info();
+    auto old   = log.precision(16);
+    double eps = 1.e-6;
+
+    Handle O640 = namedgrids::NamedGrid::lookup("O640").representation();
+    Handle crop = O640->croppedRepresentation(util::Domain{90, -180., -60., 180.});
+
+    std::unique_ptr<repres::Iterator> it(crop->iterator());
+    ASSERT(it->next());
+    PointLatLon p = it->pointUnrotated();
+    log << p << std::endl;
+
+    auto grid            = crop->atlasGrid();
+    atlas::PointLonLat q = *(grid.lonlat().begin());
+
+    log << "Compare p=" << p << " with q=" << q << std::endl;
+    EXPECT(eckit::types::is_approximately_equal(p.lat().value(), q.lat(), eps));
+    EXPECT(eckit::types::is_approximately_equal(p.lon().value(), q.lon(), eps));
+
+    log.precision(old);
 }
 
 
