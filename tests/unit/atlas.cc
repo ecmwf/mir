@@ -99,6 +99,7 @@ CASE("Test number of points representation <=> cropped grid") {
 }
 
 
+#if 0
 CASE("MIR-374") {
     auto& log  = eckit::Log::info();
     auto old   = log.precision(16);
@@ -121,6 +122,7 @@ CASE("MIR-374") {
 
     log.precision(old);
 }
+#endif
 
 
 }  // namespace unit
