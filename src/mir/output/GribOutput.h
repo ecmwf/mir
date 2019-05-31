@@ -85,7 +85,7 @@ private:
 
     // -- Methods
 
-    virtual void out(const void* message, size_t length, bool iterpolated) = 0;
+    virtual void out(const void* message, size_t length, bool interpolated) = 0;
 
     // -- Overridden methods
 

@@ -98,7 +98,7 @@ class GribMemoryOutput : public GribOutput {
 
     // -- Overridden methods
 
-    virtual void out(const void* message, size_t length, bool iterpolated);
+    virtual void out(const void* message, size_t length, bool interpolated);
     virtual void print(std::ostream&) const;
     virtual bool sameAs(const MIROutput& other) const;
 
