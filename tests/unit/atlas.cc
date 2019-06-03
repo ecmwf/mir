@@ -104,20 +104,32 @@ CASE("MIR-374") {
     auto old   = log.precision(16);
     double eps = 1.e-6;
 
-    Handle O640 = namedgrids::NamedGrid::lookup("O640").representation();
-    Handle crop = O640->croppedRepresentation(util::Domain{90, -180., -60., 180.});
+    const util::Domain domains[] = {
+        {90, -180, -90, 180},
+        {90, -180, -60, 180},
+        {10, 0, 0, 10},
+    };
 
-    std::unique_ptr<repres::Iterator> it(crop->iterator());
-    ASSERT(it->next());
-    PointLatLon p = it->pointUnrotated();
-    log << p << std::endl;
+    const std::string names[] = {"O16", "O640"};
 
-    auto grid            = crop->atlasGrid();
-    atlas::PointLonLat q = *(grid.lonlat().begin());
+    for (auto& domain : domains) {
+        for (auto& name : names) {
+            Handle repr = namedgrids::NamedGrid::lookup(name).representation();
+            Handle crop = repr->croppedRepresentation(domain);
 
-    log << "Compare p=" << p << " with q=" << q << std::endl;
-    EXPECT(eckit::types::is_approximately_equal(p.lat().value(), q.lat(), eps));
-    EXPECT(eckit::types::is_approximately_equal(p.lon().value(), q.lon(), eps));
+            std::unique_ptr<repres::Iterator> it(crop->iterator());
+            ASSERT(it->next());
+            PointLatLon p = it->pointUnrotated();
+            log << p << std::endl;
+
+            auto grid            = crop->atlasGrid();
+            atlas::PointLonLat q = *(grid.lonlat().begin());
+
+            log << "Compare p=" << p << " with q=" << q << std::endl;
+            EXPECT(eckit::types::is_approximately_equal(p.lat().value(), q.lat(), eps));
+            EXPECT(eckit::types::is_approximately_equal(p.lon().value(), q.lon(), eps));
+        }
+    }
 
     log.precision(old);
 }
