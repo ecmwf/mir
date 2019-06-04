@@ -29,7 +29,7 @@ ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support 
 
 ecbuild_use_package( PROJECT eccodes VERSION 2.12.0 REQUIRED )
 ecbuild_use_package( PROJECT eckit   VERSION 0.24.0 REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.16.0)
+ecbuild_use_package( PROJECT atlas   VERSION 0.17.2 )
 #ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
 
 if(ECCODES_FOUND)
