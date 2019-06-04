@@ -61,8 +61,8 @@ public:
 class FieldComparator {
 public: // types
 
-    typedef mir::compare::FieldSet  FieldSet;
-    typedef mir::compare::MultiFile MultiFile;
+    using FieldSet = mir::compare::FieldSet;
+    using MultiFile = mir::compare::MultiFile;
 
 public: // methods
 
