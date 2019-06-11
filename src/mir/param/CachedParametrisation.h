@@ -20,6 +20,13 @@
 
 
 namespace mir {
+namespace input {
+class GribInput;
+}
+}  // namespace mir
+
+
+namespace mir {
 namespace param {
 
 
@@ -118,6 +125,8 @@ private:
 
     // -- Friends
     // None
+
+    friend input::GribInput;
 };
 
 

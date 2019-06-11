@@ -31,6 +31,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/input/GribFixes.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 #include "mir/util/LongitudeDouble.h"
@@ -1011,6 +1012,10 @@ bool GribInput::handle(grib_handle* h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(grib_get_long(h, "7777", &value));
+
+        static GribFixes gribFixes;
+        gribFixes.fix(*this, cache_.cache_);
+
         return true;
     }
 

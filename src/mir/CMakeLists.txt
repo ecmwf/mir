@@ -210,6 +210,8 @@ list(APPEND mir_srcs
     input/GribDataHandleInput.h
     input/GribFileInput.cc
     input/GribFileInput.h
+    input/GribFixes.cc
+    input/GribFixes.h
     input/GribInput.cc
     input/GribInput.h
     input/GribMemoryInput.cc
