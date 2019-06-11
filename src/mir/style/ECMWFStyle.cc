@@ -65,7 +65,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     if (user.has("grid")) {
         std::vector<double> grid;
-        return !same->get("grid", grid) || forced ? prefix + "regular-ll" : "";
+        return !same->get("grid", grid) || forced || !repres::latlon::LatLon::samePoints(user, field) ? prefix + "regular-ll" : "";
     }
 
     if (user.has("reduced")) {
