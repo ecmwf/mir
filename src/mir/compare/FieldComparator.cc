@@ -22,7 +22,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/exceptions/Exception.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"
