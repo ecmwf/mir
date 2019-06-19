@@ -531,7 +531,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     eckit::AutoStdFile& f = open(field.path());
     size_t size = buffer.size();
-    fseek(f, field.offset(), SEEK_SET);
+    SYSCALL(fseek(f, field.offset(), SEEK_SET));
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
     ASSERT(size == field.length());
 
