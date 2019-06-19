@@ -22,6 +22,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/parser/JSON.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/exceptions/Exception.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"
@@ -408,6 +409,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
     for (auto p = multi.paths().begin(); p != multi.paths().end(); ++p) {
 
         int err;
+        off_t pos;
         size_t size = buffer.size();
 
         eckit::AutoStdFile f(*p);
@@ -416,7 +418,8 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             try {
                 GRIB_CALL(err);
-                getField(multi, buffer, fields, *p, ftello(f) - size, size, true, duplicates);
+                SYSCALL(pos = ::ftello(f));
+                getField(multi, buffer, fields, *p, pos - size, size, true, duplicates);
             } catch (std::exception& e) {
                 eckit::Log::info() << "Error in " << *p << " " << e.what() << std::endl;
                 error("exceptions");
@@ -438,6 +441,7 @@ size_t FieldComparator::list(const std::string& path) {
     size_t result = 0;
 
     int err;
+    off_t pos;
     size_t size = buffer.size();
     size_t duplicates = 0;
 
@@ -447,7 +451,8 @@ size_t FieldComparator::list(const std::string& path) {
 
         try {
             GRIB_CALL(err);
-            getField(multi, buffer, fields, path, ftello(f) - size, size, false, duplicates);
+            SYSCALL(pos = ::ftello(f));
+            getField(multi, buffer, fields, path, pos - size, size, false, duplicates);
         } catch (std::exception& e) {
             eckit::Log::info() << "Error in " << path << " " << e.what() << std::endl;
         }
@@ -469,13 +474,15 @@ void FieldComparator::json(eckit::JSON& json, const std::string& path) {
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
     int err;
+    off_t pos;
     size_t size = buffer.size();
 
     eckit::AutoStdFile f(path);
     while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
         GRIB_CALL(err);
-        Field field = getField(buffer, path, ftello(f) - size, size);
+        SYSCALL(pos = ::ftello(f));
+        Field field = getField(buffer, path, pos - size, size);
 
         json << field;
 

@@ -36,7 +36,8 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
 
     for (;;) {
         size_t len = buffer.size();
-        off_t here = ftello(f);
+        off_t here;
+        SYSCALL(here = ::ftello(f));
         int e  = wmo_read_any_from_file(f, buffer, &len);
         if (e == GRIB_END_OF_FILE) {
             break;
