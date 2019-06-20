@@ -17,6 +17,8 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
+
+#include "mir/api/Atlas.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Types.h"
 

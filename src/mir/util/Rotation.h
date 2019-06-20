@@ -17,6 +17,8 @@
 #define mir_util_Rotation_h
 
 #include <iosfwd>
+
+#include "mir/api/Atlas.h"
 #include "mir/util/Types.h"
 
 
@@ -92,7 +94,6 @@ public:
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
-    util::BoundingBox rotate(const util::BoundingBox&) const;
 
     const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
@@ -105,6 +106,8 @@ public:
     double south_pole_rotation_angle() const {
         return south_pole_rotation_angle_;
     }
+
+    atlas::Projection atlasProjection() const;
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;

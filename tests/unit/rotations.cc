@@ -162,7 +162,10 @@ CASE("MIR-282") {
                                                     test.rotation_,
                                                     test.bbox_) );
 
-            BoundingBox crop(test.rotation_.rotate(test.bbox_));
+            mir::Point2 min(test.bbox_.west().value(), test.bbox_.south().value());
+            mir::Point2 max(test.bbox_.east().value(), test.bbox_.north().value());
+
+            BoundingBox crop(min, max, test.rotation_.atlasProjection());
 
             log << "contained by cropping"
                 << "\n\t" "   " << test.bbox_
@@ -207,7 +210,10 @@ CASE("MIR-282") {
 
 
         for (auto& test : test_expected_rotations) {
-            auto rotated = test.rotation_.rotate(test.bbox_);
+            mir::Point2 min(test.bbox_.west().value(), test.bbox_.south().value());
+            mir::Point2 max(test.bbox_.east().value(), test.bbox_.north().value());
+
+            BoundingBox rotated(min, max, test.rotation_.atlasProjection());
             log << test << "\n\t" << test.rotatedBbox_ << " <- calculated" << std::endl;
 
             static constexpr double eps = 0.001;
