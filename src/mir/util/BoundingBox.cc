@@ -16,19 +16,11 @@
 #include "mir/util/BoundingBox.h"
 
 #include <algorithm>
-#include <cmath>
 #include <iostream>
-
 #include "eckit/exception/Exceptions.h"
-#include "eckit/geometry/GreatCircle.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
-
-#include "atlas/interpolation/element/Quad3D.h"
-#include "atlas/interpolation/method/Ray.h"
-#include "atlas/util/Earth.h"
-
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
@@ -58,42 +50,46 @@ BoundingBox::BoundingBox() :
     north_(Latitude::NORTH_POLE),
     west_(Longitude::GREENWICH),
     south_(Latitude::SOUTH_POLE),
-    east_(Longitude::GLOBE) {}
+    east_(Longitude::GLOBE) {
+}
 
 
-BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south,
+BoundingBox::BoundingBox(const Latitude& north,
+                         const Longitude& west,
+                         const Latitude& south,
                          const Longitude& east) :
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east) {
+    north_(north), west_(west), south_(south), east_(east) {
     normalise();
     check(*this);
 }
 
 
 BoundingBox::BoundingBox(const param::MIRParametrisation& parametrisation) {
+
     double box[4];
     ASSERT(parametrisation.get("north", box[0]));
-    ASSERT(parametrisation.get("west", box[1]));
+    ASSERT(parametrisation.get("west",  box[1]));
     ASSERT(parametrisation.get("south", box[2]));
-    ASSERT(parametrisation.get("east", box[3]));
+    ASSERT(parametrisation.get("east",  box[3]));
 
     double angularPrecision = 0.;
     parametrisation.get("angularPrecision", angularPrecision);
 
     if (angularPrecision > 0.) {
+
         const eckit::Fraction precision(angularPrecision);
         north_ = eckit::Fraction(box[0], precision);
         west_  = eckit::Fraction(box[1], precision);
         south_ = eckit::Fraction(box[2], precision);
         east_  = eckit::Fraction(box[3], precision);
-    }
-    else {
+
+    } else {
+
         north_ = box[0];
         west_  = box[1];
         south_ = box[2];
         east_  = box[3];
+
     }
 
     normalise();

@@ -17,8 +17,6 @@
 #define mir_util_Rotation_h
 
 #include <iosfwd>
-
-#include "mir/api/Atlas.h"
 #include "mir/util/Types.h"
 
 
@@ -26,6 +24,7 @@ struct grib_info;
 
 namespace atlas {
 class Grid;
+class Projection;
 }
 namespace mir {
 namespace api {
@@ -94,6 +93,7 @@ public:
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
+    util::BoundingBox boundingBox(const util::BoundingBox&) const;
 
     const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
@@ -106,8 +106,6 @@ public:
     double south_pole_rotation_angle() const {
         return south_pole_rotation_angle_;
     }
-
-    atlas::Projection atlasProjection() const;
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;
@@ -129,7 +127,8 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
+    atlas::Projection atlasProjection() const;
 
     // -- Overridden methods
     // None

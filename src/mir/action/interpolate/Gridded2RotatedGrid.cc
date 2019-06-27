@@ -53,13 +53,10 @@ bool Gridded2RotatedGrid::sameAs(const Action& other) const {
 util::BoundingBox Gridded2RotatedGrid::outputBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 
-    auto& bbox(method().hasCropping() ? method().getCropping() : out->domain());
+    auto& bbox(method().hasCropping() ? method().getCropping()
+                                      : out->domain());
 
-
-    Point2 min(bbox.west().value(), bbox.south().value());
-    Point2 max(bbox.east().value(), bbox.north().value());
-
-    bbox_ = util::BoundingBox(min, max, rotation_.atlasProjection());
+    bbox_ = rotation_.boundingBox(bbox);
     return bbox_;
 }
 

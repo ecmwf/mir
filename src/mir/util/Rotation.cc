@@ -15,16 +15,17 @@
 
 #include "mir/util/Rotation.h"
 
-#include <cmath>
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/geometry/GreatCircle.h"
 #include "eckit/types/FloatCompare.h"
+
 #include "mir/api/Atlas.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 
@@ -113,22 +114,35 @@ atlas::Grid Rotation::rotate(const atlas::Grid& grid) const {
     // ensure grid is not rotated already
     ASSERT(!grid.projection());
 
-    atlas::util::Config config(grid.spec());
-    config.set("projection", atlasProjection());
+    atlas::Grid::Spec spec(grid.spec());
+    spec.set("projection", atlasProjection().spec());
 
-    return atlas::Grid(config);
+    return {spec};
 }
 
 
 atlas::Projection Rotation::atlasProjection() const {
-    std::vector<double> p{south_pole_longitude_.value(), south_pole_latitude_.value()};
+    atlas::Projection::Spec spec;
 
-    atlas::util::Config config;
-    config.set("type", "rotated_lonlat");
-    config.set("south_pole", p);
-    config.set("rotation_angle", south_pole_rotation_angle_);
+    spec.set("type", "rotated_lonlat");
+    spec.set("south_pole", std::vector<double>({south_pole_longitude_.value(), south_pole_latitude_.value()}));
+    spec.set("rotation_angle", south_pole_rotation_angle_);
 
-    return atlas::Projection(config);
+    return {spec};
+}
+
+
+BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
+
+    atlas::RectangularDomain before({bbox.west().value(), bbox.east().value()},
+                                    {bbox.south().value(), bbox.north().value()});
+    ASSERT(before);
+
+    atlas::RectangularDomain after = atlasProjection().boundingBox(before);
+    ASSERT(after);
+
+    BoundingBox box(after.ymax(), after.xmin(), after.ymin(), after.xmax());
+    return box;
 }
 
 
