@@ -10,7 +10,6 @@ set(tests
     gaussian_grid
     grib_encoding
     increments
-    rotations
     spectral_order
     style
     wind
