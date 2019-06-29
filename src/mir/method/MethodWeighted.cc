@@ -299,8 +299,20 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT( W.rows() == npts_out );
     ASSERT( W.cols() == npts_inp );
 
-    data::MIRField& field = ctx.field();
-    const bool hasMissing = field.hasMissing();
+    std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
+    if (!in.isGlobal()) {
+        auto begin = W.begin(0);
+        auto end(begin);
+        for (size_t r = 0; r < W.rows(); r++) {
+            if (begin == (end = W.end(r))) {
+                forceMissing.push_back(r);
+            }
+            begin = end;
+        }
+    }
+
+    data::MIRField& field     = ctx.field();
+    const bool hasMissing     = field.hasMissing() || !forceMissing.empty();
     const double missingValue = hasMissing ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
@@ -348,6 +360,10 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 M.multiply(mi, mo);
             } else {
                 W.multiply(mi, mo);
+            }
+
+            for (auto& r : forceMissing) {
+                result[r] = missingValue;
             }
         }
 
