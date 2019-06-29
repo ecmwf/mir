@@ -101,7 +101,9 @@ static triplet_vector_t projectPointTo3DElements(
     size_t& nbProjectionAttempts,
     const element_tree_t::NodeList& closest ) {
 
-    ASSERT(!closest.empty());
+    if (closest.empty()) {
+        return {};
+    }
 
     triplet_vector_t triplets;
 
@@ -304,8 +306,10 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     size_t nbMaxElementsSearched = 0;
     size_t nbMaxProjectionAttempts = 0;
     size_t nbProjections = 0;
+
     size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
+    bool failuresAreMissingValues = !inDomain.isGlobal();
 
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
@@ -334,7 +338,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                 // 3D projection, trying elements closest to p first
                 element_tree_t::NodeList closest = eTree->findInSphere(p, R);
 
-                size_t nbProjectionAttempts;
+                size_t nbProjectionAttempts = 0;
                 triplet_vector_t triplets = projectPointTo3DElements(
                                                 nbInputPoints,
                                                 icoords,
@@ -371,7 +375,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
         << std::endl;
 
-    if (nbFailures) {
+    if (nbFailures && !failuresAreMissingValues) {
         std::stringstream msg;
         msg << "Failed to project " << eckit::Plural(nbFailures, "point");
         log << msg.str() << ":";
