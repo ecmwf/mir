@@ -83,20 +83,22 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     if (!input.isGlobal()) {
         if (inputIntersectsOutput_) {
-            input.intersects(output);
+
+            repres::RepresentationHandle out(outputRepresentation());
+            out->extendedBoundingBox(input).intersects(output);
+
             if (crop) {
                 crop.boundingBox().intersects(output);
             }
             crop.boundingBox(output);
         }
-    }
-
-    if (!input.contains(output)) {
-        std::ostringstream msg;
-        msg << "Input does not contain output:"
-            << "\n\t" "Input: " << input
-            << "\n\t" "Output: " << outputBoundingBox();
-        throw eckit::UserError(msg.str());
+        else if (!input.contains(output)) {
+            std::ostringstream msg;
+            msg << "Input does not contain output:"
+                << "\n\t" "Input: " << input
+                << "\n\t" "Output: " << outputBoundingBox();
+            throw eckit::UserError(msg.str());
+        }
     }
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
