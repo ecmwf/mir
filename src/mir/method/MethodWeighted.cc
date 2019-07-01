@@ -48,14 +48,12 @@ namespace method {
 
 namespace {
 static eckit::Mutex local_mutex;
-static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix",
-        512 * 1024 * 1024, 0,
-        "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
+static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, 0,
+                                                         "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 }  // (anonymous namespace)
 
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
-    Method(parametrisation) {
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) : Method(parametrisation) {
     ASSERT(parametrisation_.get("lsm-weight-adjustment", lsmWeightAdjustment_));
 
     pruneEpsilon_ = 0;
@@ -74,31 +72,22 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
 MethodWeighted::~MethodWeighted() = default;
 
 
-void MethodWeighted::print(std::ostream &out) const {
-    out <<  "cropping=" << cropping_
-        << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
+void MethodWeighted::print(std::ostream& out) const {
+    out << "cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
         << ",pruneEpsilon=" << pruneEpsilon_;
 }
 
 
-
 bool MethodWeighted::sameAs(const Method& other) const {
     auto o = dynamic_cast<const MethodWeighted*>(&other);
-    return o
-           && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_)
-           && (pruneEpsilon_ == o->pruneEpsilon_)
-           && lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_)
-           && cropping_ == o->cropping_;
-
+    return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
+           lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_ == o->cropping_;
 }
 
 
 // Called from MatrixCacheCreator when a matrix in not found in disk cache
-void MethodWeighted::createMatrix(context::Context& ctx,
-                                  const repres::Representation& in,
-                                  const repres::Representation& out,
-                                  WeightMatrix& W,
-                                  const lsm::LandSeaMasks& masks,
+void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
+                                  const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
 
@@ -119,9 +108,8 @@ void MethodWeighted::createMatrix(context::Context& ctx,
 }
 
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
-const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
-        const repres::Representation& in,
-        const repres::Representation& out) const {
+const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
+                                              const repres::Representation& out) const {
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     auto& log = eckit::Log::debug<LibMir>();
@@ -130,12 +118,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
 
 
-    double here = timer.elapsed();
+    double here                   = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
-    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, " << (masks.active() ? "active" : "not active") << std::endl;
+    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, "
+        << (masks.active() ? "active" : "not active") << std::endl;
 
 
-    here = timer.elapsed();
+    here                             = timer.elapsed();
     const std::string& shortName_in  = in.uniqueName();
     const std::string& shortName_out = out.uniqueName();
 
@@ -144,12 +133,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
     // Check with $getconf -a | grep -i name
     std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-";
     eckit::MD5 hash;
-    hash << *this
-         << shortName_in
-         << shortName_out
-         << in.boundingBox()
-         << out.boundingBox()
-         << pruneEpsilon_
+    hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox() << pruneEpsilon_
          << lsmWeightAdjustment_;
 
     disk_key += hash;
@@ -170,12 +154,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 
 
     {
-        auto j = matrix_cache.find(memory_key);
+        auto j           = matrix_cache.find(memory_key);
         const bool found = j != matrix_cache.end();
-        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, " << (found ? "found" : "not found") << " in memory cache" << std::endl;
+        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, "
+            << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
             const WeightMatrix& mat = *j;
-            log << "Using matrix from InMemoryCache " <<  mat << std::endl;
+            log << "Using matrix from InMemoryCache " << mat << std::endl;
             return mat;
         }
     }
@@ -194,14 +179,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
         static caching::WeightCache cache(parametrisation_);
         MatrixCacheCreator creator(*this, ctx, in, out, masks, cropping_);
         cache.getOrCreate(disk_key, creator, W);
-
-    } else {
+    }
+    else {
         createMatrix(ctx, in, out, W, masks, cropping_);
     }
 
     // If LSM not cacheable to disk, because it is user provided
     // it will be cached in memory nevertheless
-    if (masks.active() && !masks.cacheable())  {
+    if (masks.active() && !masks.cacheable()) {
         applyMasks(W, masks);
         if (matrixValidate_) {
             W.validate("applyMasks");
@@ -226,17 +211,13 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx,
 }
 
 
-void MethodWeighted::setOperandMatricesFromVectors(
-    WeightMatrix::Matrix& A,
-    WeightMatrix::Matrix& B,
-    const MIRValuesVector& Avector,
-    const MIRValuesVector& Bvector,
-    const double& missingValue,
-    const data::Space& space ) const {
+void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
+                                                   const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
+                                                   const double& missingValue, const data::Space& space) const {
 
     // set input matrix B (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
-    WeightMatrix::Matrix Bwrap(const_cast<double *>(Bvector.data()), Bvector.size(), 1);
+    WeightMatrix::Matrix Bwrap(const_cast<double*>(Bvector.data()), Bvector.size(), 1);
 
     space.linearise(Bwrap, B, missingValue);
 
@@ -245,40 +226,37 @@ void MethodWeighted::setOperandMatricesFromVectors(
     if (B.cols() == 1) {
 
         // FIXME: remove const_cast once Matrix provides read-only view
-        WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
+        WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
         A.swap(Awrap);
-
-    } else {
+    }
+    else {
 
         WeightMatrix::Matrix Awrap(Avector.size(), B.cols());
         Awrap.setZero();
         A.swap(Awrap);
-
     }
 }
 
 
-void MethodWeighted::setVectorFromOperandMatrix(
-    const WeightMatrix::Matrix& A,
-    MIRValuesVector& Avector,
-    const double& missingValue,
-    const data::Space& space ) const {
+void MethodWeighted::setVectorFromOperandMatrix(const WeightMatrix::Matrix& A, MIRValuesVector& Avector,
+                                                const double& missingValue, const data::Space& space) const {
 
     // set output vector A (from A = W × B)
     // FIXME: remove const_cast once Matrix provides read-only view
     ASSERT(Avector.size() == A.rows());
-    WeightMatrix::Matrix Awrap(const_cast<double *>(Avector.data()), Avector.size(), 1);
+    WeightMatrix::Matrix Awrap(const_cast<double*>(Avector.data()), Avector.size(), 1);
 
     space.unlinearise(A, Awrap, missingValue);
 }
 
 
-lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, const repres::Representation & out) const {
+lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, const repres::Representation& out) const {
     return lsm::LandSeaMasks::lookup(parametrisation_, in, out);
 }
 
 
-void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in, const repres::Representation& out) const {
+void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in,
+                             const repres::Representation& out) const {
 
 
     // Make sure another thread to no evict anything from the cache while we are using it
@@ -296,8 +274,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     const size_t npts_out = out.numberOfPoints();
 
     const WeightMatrix& W = getMatrix(ctx, in, out);
-    ASSERT( W.rows() == npts_out );
-    ASSERT( W.cols() == npts_inp );
+    ASSERT(W.rows() == npts_out);
+    ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
     if (!in.isGlobal()) {
@@ -318,7 +296,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
-        os << "Interpolating field ("  << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")";
+        os << "Interpolating field (" << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")";
         eckit::TraceTimer<LibMir> t(os.str());
 
         // compute some statistics on the result
@@ -358,7 +336,8 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 }
 
                 M.multiply(mi, mo);
-            } else {
+            }
+            else {
                 W.multiply(mi, mo);
             }
 
@@ -388,21 +367,19 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 ASSERT(eckit::types::is_approximately_greater_or_equal(istats.maximum(), ostats.maximum()));
             }
         }
-
     }
 }
 
 
-void MethodWeighted::computeMatrixWeights(context::Context& ctx,
-        const repres::Representation& in,
-        const repres::Representation& out,
-        WeightMatrix& W) const {
+void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
+                                          const repres::Representation& out, WeightMatrix& W) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
     if (in.sameAs(out)) {
         eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
-    } else {
+    }
+    else {
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
@@ -419,8 +396,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
     ASSERT(masks.active());
 
-    const std::vector< bool >& imask = masks.inputMask();
-    const std::vector< bool >& omask = masks.outputMask();
+    const std::vector<bool>& imask = masks.inputMask();
+    const std::vector<bool>& omask = masks.outputMask();
 
     log << "imask size=" << imask.size() << " == #cols=" << W.cols() << std::endl;
     log << "omask size " << omask.size() << " == #rows=" << W.rows() << std::endl;
@@ -441,7 +418,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
         ASSERT(i < omask.size());
 
         // correct weight of non-matching input point weight contribution
-        double sum = 0.;
+        double sum       = 0.;
         bool row_changed = false;
         for (it = W.begin(i); it != W.end(i); ++it) {
 
@@ -461,15 +438,11 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
                 *it /= sum;
             }
         }
-
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected "
-        << eckit::BigNum(fix)
-        << " out of "
-        << eckit::Plural(W.rows() , "output point")
-        << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of "
+        << eckit::Plural(W.rows(), "output point") << std::endl;
 }
 
 
@@ -505,4 +478,3 @@ bool MethodWeighted::canIntroduceMissingValues() const {
 
 }  // namespace method
 }  // namespace mir
-
