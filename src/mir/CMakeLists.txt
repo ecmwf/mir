@@ -384,6 +384,12 @@ list(APPEND mir_srcs
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
     repres/gauss/Gaussian.cc
+    repres/Gridded.cc
+    repres/Gridded.h
+    repres/Iterator.cc
+    repres/Iterator.h
+    repres/Representation.cc
+    repres/Representation.h
     repres/gauss/Gaussian.h
     repres/gauss/GaussianIterator.cc
     repres/gauss/GaussianIterator.h
@@ -413,10 +419,6 @@ list(APPEND mir_srcs
     repres/gauss/regular/RegularGG.h
     repres/gauss/regular/RotatedGG.cc
     repres/gauss/regular/RotatedGG.h
-    repres/Gridded.cc
-    repres/Gridded.h
-    repres/Iterator.cc
-    repres/Iterator.h
     repres/latlon/LatLon.cc
     repres/latlon/LatLon.h
     repres/latlon/ReducedLL.cc
@@ -429,8 +431,6 @@ list(APPEND mir_srcs
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
-    repres/Representation.cc
-    repres/Representation.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -441,10 +441,6 @@ list(APPEND mir_srcs
     repres/unsupported/EquatorialAzimuthalEquidistant.h
     repres/unsupported/IrregularLatlon.cc
     repres/unsupported/IrregularLatlon.h
-    repres/unsupported/Lambert.cc
-    repres/unsupported/Lambert.h
-    repres/unsupported/LambertAzimuthalEqualArea.cc
-    repres/unsupported/LambertAzimuthalEqualArea.h
     repres/unsupported/Mercator.cc
     repres/unsupported/Mercator.h
     repres/unsupported/PolarStereographic.cc
@@ -667,6 +663,12 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
+        repres/atlas/AtlasRegularGrid.cc
+        repres/atlas/AtlasRegularGrid.h
+        repres/atlas/Lambert.cc
+        repres/atlas/Lambert.h
+        repres/atlas/LambertAzimuthalEqualArea.cc
+        repres/atlas/LambertAzimuthalEqualArea.h
         util/MIRGrid.cc
         util/MIRGrid.h
         util/MeshGeneratorParameters.cc
