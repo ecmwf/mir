@@ -201,9 +201,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
         // This will be just called for has()
-        {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
-        {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
-        {"gridded", "numberOfPointsAlongXAxis", is("gridType", "lambert_azimuthal_equal_area"),},
+        {"gridded", "Nx", _or(_or(is("gridType", "polar_stereographic"),is("gridType", "lambert_azimuthal_equal_area")),is("gridType", "lambert")),},
+        {"gridded", "Ni", is("gridType", "triangular_grid"),},
         {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
 
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
@@ -440,8 +439,12 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
         {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.), nullptr},
         {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.), nullptr},
 
-        { "grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
-          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll")) },
+        {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
+         _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
+        {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
+         is("gridType", "lambert_azimuthal_equal_area")},
+        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
+         is("gridType", "lambert")},
 
         { "rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
         _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")),
