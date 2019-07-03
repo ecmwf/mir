@@ -67,14 +67,6 @@ namespace repres {
 class Representation : public eckit::Counted {
 public:
 
-    // Scanning mode bits
-    enum {
-        iScansNegatively      = 1 << 7,
-        jScansPositively      = 1 << 6,
-        jPointsAreConsecutive = 1 << 5,
-        alternateRowScanning  = 1 << 4
-    };
-
     // -- Exceptions
     // None
 
