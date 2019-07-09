@@ -79,20 +79,19 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
         // weights redistribution: zero-weight all missing values, linear re-weighting for the others;
         // if all values are missing, or the closest value is missing, force missing value
         if (N_missing > 0) {
-            if (N_missing == N_entries || heaviest_is_missing) {
+            if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.)) {
 
                 for (WeightMatrix::Size j = k; j < k + N_entries; ++j) {
                     data[j] = j == i_missing ? 1. : 0.;
                 }
+            }
+            else {
 
-            } else {
-
-                const double factor = eckit::types::is_approximately_equal(sum, 0.) ? 0 : 1. / sum;
+                const double factor = 1. / sum;
                 for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
                     const bool miss = values[kt.col()] == missingValue;
                     data[j] = miss ? 0. : (factor * data[j]);
                 }
-
             }
             modif = true;
         }
