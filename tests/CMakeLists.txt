@@ -39,10 +39,10 @@ foreach( _in ${TEST_INPUT_FILES})
       string(REGEX REPLACE "[.]grib"      ""  _label ${_label})
       string(REGEX REPLACE "[^A-Za-z0-9]" "_" _label ${_label})
       string(REGEX REPLACE "[ _]+"        "_" _label ${_label})
-      if( NOT (_in MATCHES ".*_sh\.grib$" AND _pproc MATCHES "--frame=.*" OR
-               _in MATCHES ".*\.nc$" AND _pproc MATCHES "^$" ))
+      if( NOT (_in MATCHES ".*_sh[.]grib$" AND _pproc MATCHES "--frame=.*" OR
+               _in MATCHES ".*[.]nc$" AND _pproc MATCHES "^$" ))
 
-        if( _in MATCHES ".*\.nc$" )
+        if( _in MATCHES ".*[.]nc$" )
           set(_pproc "${_pproc} --interpolation=linear")
         endif()
 
