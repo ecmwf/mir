@@ -101,6 +101,8 @@ public:
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
         options_.push_back(new FactoryOption<mir::method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
+        options_.push_back(new SimpleOption<double>("simulated-missing-value", "specific value to handle as missing (avoid interpolation)"));
+        options_.push_back(new SimpleOption<double>("simulated-missing-value-epsilon", "specific value to handle as missing, tolerance"));
 
         options_.push_back(new SimpleOption<bool>("uv2uv", "Input is vector (gridded u/v or spectral U/V), convert to gridded u/v"));
         options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
@@ -205,7 +207,6 @@ public:
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
             options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("format", "Output format"));
         }
-
     }
 
 };

@@ -658,6 +658,8 @@ if (HAVE_ATLAS)
         method/nonlinear/NoNonLinear.h
         method/nonlinear/NonLinear.cc
         method/nonlinear/NonLinear.h
+        method/nonlinear/SimulateMissingValue.cc
+        method/nonlinear/SimulateMissingValue.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc

@@ -64,6 +64,8 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
+    virtual bool canIntroduceMissingValues() const;
+
 private:
 
     virtual void print(std::ostream&) const = 0;

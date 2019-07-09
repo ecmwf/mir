@@ -47,6 +47,11 @@ NonLinear::NonLinear(const param::MIRParametrisation&) {
 }
 
 
+bool NonLinear::canIntroduceMissingValues() const {
+    return false;
+}
+
+
 NonLinear::~NonLinear() = default;
 
 

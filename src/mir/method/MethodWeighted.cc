@@ -335,7 +335,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-            if (hasMissing) {
+            if (hasMissing || missing_->canIntroduceMissingValues()) {
                 eckit::Timer t(str.str(), log);
 
                 WeightMatrix M(W);  // copy: run-time modifiable matrix is not cacheable
