@@ -54,12 +54,11 @@ DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) :
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DistanceWeightingFactory: duplicated DistanceWeighting '" + name + "'");
+    if (m->find(name) == m->end()) {
+        (*m)[name] = this;
+        return;
     }
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    throw eckit::SeriousBug("DistanceWeightingFactory: duplicated DistanceWeighting '" + name + "'");
 }
 
 
@@ -75,7 +74,7 @@ const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name
 
     eckit::Log::debug<LibMir>() << "DistanceWeightingFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, DistanceWeightingFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
         list(eckit::Log::error() << "No DistanceWeightingFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No DistanceWeightingFactory '" + name + "'");
@@ -90,9 +89,8 @@ void DistanceWeightingFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    std::map< std::string, DistanceWeightingFactory* >::const_iterator j;
-    for (j = m->begin(); j != m->end(); ++j) {
-        out << sep << j->first;
+    for (auto& j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

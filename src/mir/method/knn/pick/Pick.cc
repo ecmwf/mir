@@ -54,12 +54,11 @@ PickFactory::PickFactory(const std::string& name) :
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
+    if (m->find(name) == m->end()) {
+        (*m)[name] = this;
+        return;
     }
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    throw eckit::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
 }
 
 
@@ -75,7 +74,7 @@ const Pick* PickFactory::build(const std::string& name, const param::MIRParametr
 
     eckit::Log::debug<LibMir>() << "PickFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, PickFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
         list(eckit::Log::error() << "No PickFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No PickFactory '" + name + "'");
@@ -90,9 +89,8 @@ void PickFactory::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
-    std::map< std::string, PickFactory* >::const_iterator j;
-    for (j = m->begin(); j != m->end(); ++j) {
-        out << sep << j->first;
+    for (auto& j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

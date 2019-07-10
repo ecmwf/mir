@@ -60,12 +60,11 @@ NonLinearFactory::NonLinearFactory(const std::string& name) :
     pthread_once(&once, init);
     eckit::AutoLock< eckit::Mutex > lock(local_mutex);
 
-    if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
+    if (m->find(name) == m->end()) {
+        (*m)[name] = this;
+        return;
     }
-
-    ASSERT(m->find(name) == m->end());
-    (*m)[name] = this;
+    throw eckit::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
 }
 
 
@@ -81,7 +80,7 @@ const NonLinear* NonLinearFactory::build(const std::string& name, const param::M
 
     eckit::Log::debug<LibMir>() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
 
-    std::map< std::string, NonLinearFactory* >::const_iterator j = m->find(name);
+    auto j = m->find(name);
     if (j == m->end()) {
         list(eckit::Log::error() << "No NonLinearFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No NonLinearFactory '" + name + "'");
