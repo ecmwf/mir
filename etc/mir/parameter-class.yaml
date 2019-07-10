@@ -1014,6 +1014,7 @@ intensity:
 - 150172  # Surface solar radiation
 - 150180  # Diagnosed sea surface temperature error
 - 150182  # Observed sea surface temperature
+- 151127  # Mean sea water potential temperature in the upper 300 m
 - 151128  # In situ Temperature
 - 151129  # Ocean potential temperature
 - 151130  # Salinity
@@ -1072,6 +1073,7 @@ intensity:
 - 151210  # FG bias in pressure
 - 151211  # Bias in temperature(applied)
 - 151212  # Bias in salinity (applied)
+- 151219  # Sea surface practical salinity
 - 151224  # Ocean mixed layer thickness defined by vertical tracer diffusivity threshold
 - 151225  # Ocean mixed layer thickness defined by sigma theta 0.01 kg/m3
 - 151226  # Ocean mixed layer thickness defined by sigma theta 0.03 kg/m3
