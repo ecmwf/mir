@@ -36,10 +36,9 @@ SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& para
 
 bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
                                      const data::MIRValuesVector& values, const double& /*ignored*/) const {
+    using eckit::types::is_approximately_equal;
 
-    auto missingValue = [=](double value) {
-        return eckit::types::is_approximately_equal(value, missingValue_, epsilon_);
-    };
+    auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };
 
     // correct matrix weigths for the missing values
     // (force a missing value only if any row values is missing)
@@ -77,7 +76,7 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
             }
 
             if (heaviest < data[i]) {
-                heaviest = data[i];
+                heaviest            = data[i];
                 heaviest_is_missing = miss;
             }
         }
@@ -85,7 +84,7 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
         // weights redistribution: zero-weight all (simulated) missing values, linear re-weighting for the others;
         // if all values are missing, or the closest value is missing, force missing value
         if (N_missing > 0) {
-            if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.)) {
+            if (N_missing == N_entries || heaviest_is_missing || is_approximately_equal(sum, 0.)) {
 
                 for (auto j = k; j < k + N_entries; ++j) {
                     data[j] = j == i_missing ? 1. : 0.;
@@ -109,7 +108,8 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
 
 bool SimulateMissingValue::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const SimulateMissingValue*>(&other);
-    return o && missingValue_ == o->missingValue_ && epsilon_ == o->epsilon_;
+    return o && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
+           eckit::types::is_approximately_equal(epsilon_, o->epsilon_);
 }
 
 
