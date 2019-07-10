@@ -53,11 +53,14 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
     for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
         const WeightMatrix::iterator end = W.end(r);
 
-        // count missing values, accumulate weights (disregarding missing values)
+        // count missing values, accumulate weights (disregarding missing values) and find maximum weight in row
         size_t i_missing = i;
         size_t N_missing = 0;
         size_t N_entries = 0;
         double sum       = 0.;
+
+        double heaviest          = -1.;
+        bool heaviest_is_missing = false;
 
         WeightMatrix::iterator kt(it);
         auto k = i;
@@ -72,12 +75,17 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
             else {
                 sum += *it;
             }
+
+            if (heaviest < data[i]) {
+                heaviest = data[i];
+                heaviest_is_missing = miss;
+            }
         }
 
         // weights redistribution: zero-weight all (simulated) missing values, linear re-weighting for the others;
-        // the result is missing value if all values in row are missing
+        // if all values are missing, or the closest value is missing, force missing value
         if (N_missing > 0) {
-            if (N_missing == N_entries || eckit::types::is_approximately_equal(sum, 0.)) {
+            if (N_missing == N_entries || heaviest_is_missing || eckit::types::is_approximately_equal(sum, 0.)) {
 
                 for (auto j = k; j < k + N_entries; ++j) {
                     data[j] = j == i_missing ? 1. : 0.;
