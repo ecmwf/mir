@@ -49,7 +49,15 @@ void read_configuration_files() {
         NamedGridFromFile(const std::string& name) : NamedGrid(name) {}
         const repres::Representation* representation() const { return repres::RepresentationFactory::build(*this); }
         const repres::Representation* representation(const util::Rotation&) const { NOTIMP; }
-        size_t gaussianNumber() const { NOTIMP; }
+        size_t gaussianNumber() const {
+            long N = 64;
+            if (!get("gaussianNumber", N)) {
+                eckit::Log::warning()
+                    << "NamedGridFromFile::getTargetGaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
+                    << " (hardcoded!)" << std::endl;
+            }
+            return size_t(N);
+        }
         void print(std::ostream& out) const {
             out << "NamedGridFromFile[name=" << name_ << ",parametrisation=";
             SimpleParametrisation::print(out);
@@ -110,6 +118,7 @@ void NamedGrid::list(std::ostream& out) {
         out << sep << j.first;
         sep = ", ";
     }
+    out << std::endl;
 }
 
 

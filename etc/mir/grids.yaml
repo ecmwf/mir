@@ -2,6 +2,7 @@
 
 LAEA/EFAS/5km:
     gridType: lambert_azimuthal_equal_area
+    gaussianNumber: 1280
     standardParallelInDegrees: 52.
     centralLongitudeInDegrees: 10.
     radius: 6367470.
