@@ -1,0 +1,13 @@
+---
+
+LAEA/EFAS/5km:
+    gridType: lambert_azimuthal_equal_area
+    standardParallelInDegrees: 52.
+    centralLongitudeInDegrees: 10.
+    radius: 6367470.
+    grid: 5000./5000.
+    latitudeOfFirstGridPointInDegrees: 66.982143
+    longitudeOfFirstGridPointInDegrees: -35.034024
+    numberOfPointsAlongXAxis: 1000
+    numberOfPointsAlongYAxis: 950
+
