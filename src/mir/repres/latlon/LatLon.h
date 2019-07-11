@@ -152,6 +152,8 @@ private:
 
     virtual const LatLon* croppedRepresentation(const util::BoundingBox&) const;
 
+    virtual bool extendBoundingBoxOnIntersect() const;
+
     // -- Class members
     // None
 

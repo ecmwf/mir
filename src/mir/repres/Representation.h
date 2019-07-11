@@ -99,6 +99,7 @@ public:
     // Return a cropped version
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    virtual bool extendBoundingBoxOnIntersect() const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
     virtual const Representation* globalise(data::MIRField&) const;

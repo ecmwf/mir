@@ -106,6 +106,11 @@ void Gaussian::validate(const MIRValuesVector& values) const {
 }
 
 
+bool Gaussian::extendBoundingBoxOnIntersect() const {
+    return false;
+}
+
+
 bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
     return angularPrecision_ > 0 ?
                 eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)

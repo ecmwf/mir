@@ -85,7 +85,12 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
         if (inputIntersectsOutput_) {
 
             repres::RepresentationHandle out(outputRepresentation());
-            out->extendedBoundingBox(input).intersects(output);
+            if (out->extendBoundingBoxOnIntersect()) {
+                out->extendedBoundingBox(input).intersects(output);
+            }
+            else {
+                input.intersects(output);
+            }
 
             if (crop) {
                 crop.boundingBox().intersects(output);
