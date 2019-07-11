@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import sys
