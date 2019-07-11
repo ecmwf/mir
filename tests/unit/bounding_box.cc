@@ -239,7 +239,7 @@ CASE("BoundingBox") {
 }
 
 
-CASE("Representation::extendedBoundingBox") {
+CASE("Representation::extendBoundingBox") {
 
     using namedgrids::NamedGrid;
     using util::BoundingBox;
@@ -263,9 +263,9 @@ CASE("Representation::extendedBoundingBox") {
             repres::RepresentationHandle repres = NamedGrid::lookup(name).representation();
 
             for (const auto& bbox : _bbox) {
-                BoundingBox extended = repres->extendedBoundingBox(bbox);
+                BoundingBox extended = repres->extendBoundingBox(bbox);
 
-                log << name << "\t > " << *repres << " + extendedBoundingBox("
+                log << name << "\t > " << *repres << " + extendBoundingBox("
                     << "\n\t   " << bbox << ")"
                     << "\n\t = " << extended
                     << std::endl;

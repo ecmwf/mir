@@ -91,7 +91,7 @@ protected:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     // from Representation
     virtual bool isPeriodicWestEast() const;

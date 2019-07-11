@@ -80,7 +80,7 @@ protected:
     virtual bool sameAs(const Representation&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     // from Representation
     virtual bool isPeriodicWestEast() const;

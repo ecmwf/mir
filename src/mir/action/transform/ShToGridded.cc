@@ -326,7 +326,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
         // Magic super-powers!
         repres::RepresentationHandle out(outputRepresentation());
-        cropping_.boundingBox(out->extendedBoundingBox(bbox));
+        cropping_.boundingBox(out->extendBoundingBox(bbox));
 
         eckit::Log::debug<LibMir>()
                 << "ShToGridded::mergeWithNext: "

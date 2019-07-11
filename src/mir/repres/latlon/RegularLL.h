@@ -82,7 +82,7 @@ private:
 
     // From Representation
     const RegularLL* croppedRepresentation(const util::BoundingBox&) const;
-    util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     // -- Class members
     // None
