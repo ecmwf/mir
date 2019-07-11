@@ -43,8 +43,6 @@ list(APPEND mir_srcs
     action/interpolate/Gridded2OctahedralGG.h
     action/interpolate/Gridded2Points.cc
     action/interpolate/Gridded2Points.h
-    action/interpolate/Gridded2PolarStereographic.cc
-    action/interpolate/Gridded2PolarStereographic.h
     action/interpolate/Gridded2ReducedGG.cc
     action/interpolate/Gridded2ReducedGG.h
     action/interpolate/Gridded2ReducedGGPLGiven.cc
