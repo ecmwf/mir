@@ -36,7 +36,6 @@
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 
-
 #else
 
 #include "eckit/geometry/Point2.h"
