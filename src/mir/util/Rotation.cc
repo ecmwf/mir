@@ -138,10 +138,10 @@ BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
                                     {bbox.south().value(), bbox.north().value()});
     ASSERT(before);
 
-    atlas::RectangularDomain after = atlasProjection().boundingBox(before);
+    atlas::RectangularLonLatDomain after = atlasProjection().lonlatBoundingBox(before);
     ASSERT(after);
 
-    BoundingBox box(after.ymax(), after.xmin(), after.ymin(), after.xmax());
+    BoundingBox box(after.north(), after.west(), after.south(), after.east());
     return box;
 }
 
