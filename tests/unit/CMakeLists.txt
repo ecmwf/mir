@@ -10,6 +10,7 @@ set(tests
     gaussian_grid
     grib_encoding
     increments
+    iterator
     spectral_order
     style
     wind
