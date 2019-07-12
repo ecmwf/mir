@@ -14,4 +14,5 @@ module unload metview
 
 module load cmake/3.10.2
 
-module sw gnu intel/17.0.3 || module unload netcdf4 && module sw gnu intel/17.0.3
+module sw gnu intel/17.0.3
+
