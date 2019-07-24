@@ -65,7 +65,7 @@ void ClimateFilter::operator()(
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         auto r = Point3::distance(point, neighbours[j].point());
-        auto h = 0.5 + 0.5 * std::cos(M_PI_2 * (r - 0.5 * distance_ + delta_) / delta_);
+        auto h = 0.5 + 0.5 * std::cos(M_PI_2 * (r - 0.5 * distance_ + delta_) / (2. * delta_));
         h = std::max(0., std::min(0.99, h));
 
         weights[j] = h;
