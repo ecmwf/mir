@@ -15,6 +15,7 @@
 #include <string>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -84,19 +85,20 @@ void ClimateFilter::operator()(
 
 bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const ClimateFilter*>(&other);
-    return o;
+    return o && eckit::types::is_approximately_equal(distance_, o->distance_) &&
+           eckit::types::is_approximately_equal(delta_, o->delta_);
 }
 
 
 void ClimateFilter::print(std::ostream& out) const {
-    out << "ClimateFilter[]";
+    out << "ClimateFilter[distance=" << distance_ << ",delta=" << delta_ << "]";
 }
 
 
 void ClimateFilter::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    h.add("climate-filter");
+    h.add(distance_);
+    h.add(delta_);
 }
 
 
