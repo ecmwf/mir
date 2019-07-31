@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/knn/pick/DistanceOrNClosest.h"
+#include "mir/method/knn/pick/DistanceAndNClosest.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
@@ -24,47 +24,47 @@ namespace knn {
 namespace pick {
 
 
-DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) : nClosest_(param) {
+DistanceAndNClosest::DistanceAndNClosest(const param::MIRParametrisation& param) : nClosest_(param) {
     distance_ = 1.;
     param.get("distance", distance_);
     ASSERT(distance_ > 0.);
 }
 
 
-void DistanceOrNClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                              Pick::neighbours_t& closest) const {
+void DistanceAndNClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
+                               Pick::neighbours_t& closest) const {
     // TODO: improve k-d tree interface; this is slow because distance might be excessive
     tree.closestWithinRadius(p, distance_, closest);
-    if (closest.size() < nClosest_.n()) {
+    if (closest.size() > nClosest_.n()) {
         nClosest_.pick(tree, p, closest);
     }
 }
 
 
-size_t DistanceOrNClosest::n() const {
+size_t DistanceAndNClosest::n() const {
     return nClosest_.n();
 }
 
 
-bool DistanceOrNClosest::sameAs(const Pick& other) const {
-    auto o = dynamic_cast<const DistanceOrNClosest*>(&other);
+bool DistanceAndNClosest::sameAs(const Pick& other) const {
+    auto o = dynamic_cast<const DistanceAndNClosest*>(&other);
     return o && nClosest_.sameAs(o->nClosest_) && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
 
-void DistanceOrNClosest::print(std::ostream& out) const {
-    out << "DistanceOrNClosest[nclosest=" << nClosest_ << ",distance=" << distance_ << "]";
+void DistanceAndNClosest::print(std::ostream& out) const {
+    out << "DistanceAndNClosest[nclosest=" << nClosest_ << ",distance=" << distance_ << "]";
 }
 
 
-void DistanceOrNClosest::hash(eckit::MD5& h) const {
+void DistanceAndNClosest::hash(eckit::MD5& h) const {
     std::ostringstream s;
     s << *this;
     h.add(s.str());
 }
 
 
-static PickBuilder<DistanceOrNClosest> __pick("distance-or-nclosest");
+static PickBuilder<DistanceAndNClosest> __pick("distance-and-nclosest");
 
 
 }  // namespace pick

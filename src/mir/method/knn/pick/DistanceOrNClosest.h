@@ -12,8 +12,8 @@
 #ifndef mir_method_knn_pick_DistanceOrNClosest_h
 #define mir_method_knn_pick_DistanceOrNClosest_h
 
+#include "mir/method/knn/pick/NClosestOrNearest.h"
 #include "mir/method/knn/pick/Pick.h"
-#include "mir/method/knn/pick/NClosest.h"
 
 
 namespace mir {
@@ -26,11 +26,12 @@ struct DistanceOrNClosest : Pick {
     DistanceOrNClosest(const param::MIRParametrisation&);
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
     size_t n() const;
-    virtual bool sameAs(const Pick&) const;
+    bool sameAs(const Pick&) const;
+
 private:
-    virtual void print(std::ostream&) const;
-    virtual void hash(eckit::MD5&) const;
-    NClosest nClosest_;
+    void print(std::ostream&) const;
+    void hash(eckit::MD5&) const;
+    NClosestOrNearest nClosest_;
     double distance_;
 };
 
@@ -42,4 +43,3 @@ private:
 
 
 #endif
-
