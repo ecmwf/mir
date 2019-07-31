@@ -26,9 +26,9 @@ struct NClosestOrNearest : Pick {
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
     size_t n() const;
     bool sameAs(const Pick&) const;
+    void hash(eckit::MD5&) const;
 private:
     void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
     size_t nClosest_;
     double distanceTolerance_;
     double distanceTolerance2_;

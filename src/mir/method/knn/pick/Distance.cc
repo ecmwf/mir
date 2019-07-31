@@ -56,9 +56,7 @@ void Distance::print(std::ostream& out) const {
 
 
 void Distance::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    h.add(distance_);
 }
 
 

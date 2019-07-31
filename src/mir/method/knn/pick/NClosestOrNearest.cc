@@ -73,17 +73,13 @@ bool NClosestOrNearest::sameAs(const Pick& other) const {
 
 
 void NClosestOrNearest::print(std::ostream& out) const {
-    out << "NClosestOrNearest["
-            "nclosest=" << nClosest_
-        << ",distanceTolerance=" << distanceTolerance_
-        << "]";
+    out << "NClosestOrNearest[nclosest=" << nClosest_ << ",distanceTolerance=" << distanceTolerance_ << "]";
 }
 
 
 void NClosestOrNearest::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    h.add(nClosest_);
+    h.add(distanceTolerance_);
 }
 
 

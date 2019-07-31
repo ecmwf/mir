@@ -58,9 +58,9 @@ void DistanceAndNClosest::print(std::ostream& out) const {
 
 
 void DistanceAndNClosest::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    h.add("distance-and-nclosest");
+    h.add(distance_);
+    nClosest_.hash(h);
 }
 
 

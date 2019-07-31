@@ -55,9 +55,7 @@ void NClosest::print(std::ostream& out) const {
 
 
 void NClosest::hash(eckit::MD5& h) const {
-    std::ostringstream s;
-    s << *this;
-    h.add(s.str());
+    h.add(nClosest_);
 }
 
 
