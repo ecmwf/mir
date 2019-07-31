@@ -136,6 +136,7 @@ private:
     Cropping cropping_;
     std::unique_ptr<const nonlinear::NonLinear> missing_;
     bool matrixValidate_;
+    bool matrixAssemble_;
 
     friend class MatrixCacheCreator;
 

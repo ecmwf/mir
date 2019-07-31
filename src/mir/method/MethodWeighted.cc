@@ -60,6 +60,7 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
     ASSERT(parametrisation_.get("prune-epsilon", pruneEpsilon_));
 
     matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
+    matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
 
     std::string missingValues = "missing-if-heaviest-missing";
     parametrisation_.get("non-linear", missingValues);
@@ -375,8 +376,8 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
                                           const repres::Representation& out, WeightMatrix& W) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
-    if (in.sameAs(out)) {
-        eckit::Log::debug<LibMir>() << "Matrix is indentity" << std::endl;
+    if (in.sameAs(out) && !matrixAssemble_) {
+        eckit::Log::debug<LibMir>() << "Matrix is identity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     }
     else {
