@@ -25,7 +25,7 @@ namespace input {
 
 
 GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
-    GRIB_CALL(codes_check_message_header_footer(reinterpret_cast<const unsigned char*>(message), length, PRODUCT_GRIB));
+    GRIB_CALL(codes_check_message_header(message, length, PRODUCT_GRIB));
     ASSERT(handle(grib_handle_new_from_message(nullptr, const_cast<void*>(message), length)));
 }
 
