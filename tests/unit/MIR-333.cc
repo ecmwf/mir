@@ -35,7 +35,11 @@ CASE("MIR-333") {
 
     // run with '--new-reference' to generate new reference data
     static const bool newReference = eckit::Resource<bool>("--new-reference", false);
-    static const param::DefaultParametrisation defaults;
+
+    struct : param::DefaultParametrisation {
+        virtual const MIRParametrisation& userParametrisation() const { return *this; }
+        virtual const MIRParametrisation& fieldParametrisation() const { return *this; }
+    } static const defaults;
 
     std::unique_ptr<method::Method> method(method::MethodFactory::build("nn", defaults));
     auto nn = dynamic_cast<method::MethodWeighted*>(method.get());
