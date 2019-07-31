@@ -53,7 +53,7 @@ void InverseDistanceWeightingSquared::operator()(
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t i = 0; i < nbPoints; ++i) {
         size_t jp = neighbours[i].payload();
-        triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[i] / sum));
+        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[i] / sum));
     }
 }
 
