@@ -316,25 +316,17 @@ Field FieldComparator::getField(eckit::Buffer& buffer,
                                 const std::string& path,
                                 off_t offset,
                                 size_t size) {
-    const char *q = ((const char*)buffer);
-    const char *p = ((const char*)buffer) + size - 4;
+    auto msg = reinterpret_cast<const unsigned char*>(buffer.data());
 
-    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7') {
-        throw eckit::SeriousBug("No 7777 found");
+    if (GRIB_SUCCESS == codes_check_message_header_footer(msg, size, PRODUCT_GRIB)) {
+        return GribField::field(buffer, size, path, offset, ignore_);
     }
 
-
-    Field field;
-    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[3] == 'B') {
-        field  = GribField::field(buffer, size, path, offset, ignore_);
+    if (GRIB_SUCCESS == codes_check_message_header_footer(msg, size, PRODUCT_BUFR)) {
+        return BufrField::field(buffer, size, path, offset, ignore_);
     }
 
-    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[3] == 'R') {
-        field  = BufrField::field(buffer, size, path, offset, ignore_);
-    }
-
-    ASSERT(field);
-    return field;
+    throw eckit::SeriousBug("No 7777 found (codes_check_message_header_footer(PRODUCT_GRIB|PRODUCT_BUFR))");
 }
 
 
