@@ -67,13 +67,13 @@ void StructuredMethod::normalise(triplet_vector_t& triplets) const {
 
     // sum all calculated weights for normalisation
     double sum = 0.;
-    for (const eckit::linalg::Triplet& t : triplets) {
+    for (const auto& t : triplets) {
         sum += t.value();
     }
 
     // now normalise all weights according to the total
-    const double invSum = 1.0 / sum;
-    for (eckit::linalg::Triplet& t : triplets) {
+    const double invSum = 1. / sum;
+    for (auto& t : triplets) {
         t.value() *= invSum;
     }
 }
