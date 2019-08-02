@@ -15,6 +15,7 @@ endforeach()
 # optionally-installed tools
 unset(_tools)
 list(APPEND _tools
+    mir-climate-filter
     mir-compare  # NOTE: set in the testing scripts, however not used
     mir-config
     mir-formula
