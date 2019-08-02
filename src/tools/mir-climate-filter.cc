@@ -10,6 +10,7 @@
 
 
 #include <algorithm>
+#include <limits>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -27,6 +28,7 @@
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/option/VectorOption.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/config/LibMir.h"
@@ -69,7 +71,7 @@ private:
 public:
     MIRClimateFilter(int argc, char** argv) : tools::MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<size_t>("multiply-on-nnz", "Number of non-zeros to trigger interpolation"));
-        options_.push_back(new eckit::option::SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k)"));
+        options_.push_back(new eckit::option::VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
         options_.push_back(new eckit::option::SimpleOption<double>("distance", "Radius [m] of neighbours to weight (k) (default 1.)"));
         options_.push_back(new eckit::option::SimpleOption<double>("delta", "Climate filter (topographic data smoothing operator) width of filter edge, must be greater than 'distance' (default 1000.)"));
         options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>("backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
@@ -78,61 +80,57 @@ public:
 };
 
 
-struct BetterSearch : protected mir::search::PointSearch {
-    using closest_t = std::vector<PointValueType>;
+struct SimpleClimateFilter {
+    SimpleClimateFilter(Point3 point, size_t kMin, size_t kMax, double distance, double delta,
+                        const search::PointSearch& search) :
+        point_(point),
+        kMin_(kMin),
+        kMax_(kMax),
+        distance_(distance),
+        delta_(delta),
+        search_(search) {
+        ASSERT(kMin_ <= kMax_);
+    }
 
-    using PointSearch::statsPrint;
-    using PointSearch::statsReset;
+    using search_results_t = std::vector<search::PointSearch::PointValueType>;
+    using weight_results_t = std::vector<double>;
 
-    BetterSearch(const param::MIRParametrisation& param, const repres::Representation& repres) :
-        PointSearch(param, repres),
-        mode_(1) {}
+    void closest(const Point3& p, search_results_t& search) const {
+        search_.closestWithinRadius(p, distance_, search);
+        if (search.size() < kMin_) {
+            search_.closestNPoints(p, kMax_, search);
+        }
+    }
 
-    void closest(const PointType& p, size_t n, double radius, closest_t& closest) {
-        closestNPoints(p, n, a_);
+    void operator()(const search_results_t& search, weight_results_t& weights) const {
+        ASSERT(kMin_ < search.size());
+        weights.resize(0);
 
-        auto trim = [=](closest_t& v) {
-            if (v.size() > n) {
-                v.assign(v.begin(), v.begin() + n);
-            }
-        };
-
-        if (a_.size() >= n) {
-            trim(a_);
-            a_.swap(closest);
+        double sum = 0.;
+        for (size_t k = 0; k < kMax_; ++k) {
+            auto h = weight(search[k].point());
+            weights.emplace_back(h);
+            sum += h;
         }
 
-
-        closestWithinRadius(p, radius, b_);
-
-        (a_.size() >= b_.size() ? a_ : b_).swap(closest);
-
-        trim(closest);
-
-#if 0
-        mode_ > 0 ? closestWithinRadius(p, distance_, closest) : closestNPoints(p, nclosest_, closest);
-        if (closest.size() < nclosest_) {
-            mode_ ? closestNPoints(p, nclosest_, b_) : closestWithinRadius(p, distance_, b_);
-
-            if (closest.size() < b_.size()) {
-                closest.swap(b_);
-                mode_ = !mode_;
-                eckit::Log::info() << "swaping to " << mode_ << std::endl;
-            }
-
-            if (closest.size() > nclosest_) {
-                eckit::Log::info() << "clipping from" << closest.size() << " to " << nclosest_ << std::endl;
-                auto end = closest.begin() + closest_t::difference_type(nclosest_);
-                closest.assign(closest.begin(), end);
-            }
+        if (sum > 0.) {
+            double invSum = 1. / sum;
+            std::for_each(weights.begin(), weights.end(), [=](double& w) { w *= invSum; });
         }
-#endif
+    }
+
+    double weight(const Point3& p) const {
+        auto h = 0.5 + 0.5 * std::cos(M_PI_2 * (Point3::distance(point_, p) - 0.5 * distance_ + delta_) / delta_);
+        return std::max(0., std::min(0.99, h));
     }
 
 private:
-    closest_t a_;
-    closest_t b_;
-    int mode_;  // >= 0: radius search, otherwise n-closest search
+    const Point3 point_;
+    const size_t kMin_;
+    const size_t kMax_;
+    const double distance_;
+    const double delta_;
+    const search::PointSearch& search_;
 };
 
 
@@ -183,9 +181,9 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         param->get("multiply-on-nnz", nnz);
         ASSERT(nnz >= 2);
 
-        size_t nclosest = 4;
-        param->get("nclosest", nclosest);
-        ASSERT(nclosest);
+        std::vector<size_t> k{4, std::numeric_limits<size_t>::max()};
+        param->get("k", k);
+        ASSERT(k.size() == 2 && k[0] < k[1]);
 
         double distance = 1.;
         param->get("distance", distance = 1.);
@@ -214,20 +212,24 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
         // build/get k-d tree
         t = timer.elapsed();
-        BetterSearch tree(*param, *rep);
+        search::PointSearch tree(*param, *rep);
         log << "k-d tree: " << eckit::Seconds(timer.elapsed() - t) << std::endl;
 
 
         // allocating temporary memory
-        const auto n = rep->numberOfPoints();
+        SimpleClimateFilter::search_results_t closest;
+        SimpleClimateFilter::weight_results_t weights;
 
-        std::vector<search::PointSearch::PointValueType> closest;
         std::vector<method::WeightMatrix::Triplet> triplets;
-        triplets.reserve(std::min(n * nclosest, size_t(nnz * 1.5)));
+        triplets.reserve(size_t(nnz * 1.5));
+
+        auto n         = rep->numberOfPoints();
+        size_t i       = 0;
+        Size rowOffset = 0;
+        Vector x(const_cast<double*>(input.data()), n);
 
         {
             eckit::ProgressTimer progress("Locating", n, "point", double(5), log);
-            size_t i = 0;
 
             SimpleTimer tClosest("closest");
             SimpleTimer tWeights("weights");
@@ -243,75 +245,47 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
                 ASSERT(i < n);
                 const Point3 p(it->point3D());
+                const SimpleClimateFilter filter(p, k[0], k[1], distance, delta, tree);
 
                 t = timer.elapsed();
-//                log << "searching" << std::endl;
-                tree.closest(p, nclosest, distance, closest);
-                ASSERT(!closest.empty() && closest.size() <= nclosest);
+                filter.closest(p, closest);
                 tClosest += timer.elapsed() - t;
+
 
                 t = timer.elapsed();
                 {
-                    using method::WeightMatrix;
+                    // calculate weights (possibly not all neighbour points are used), set weight triplets
+                    filter(closest, weights);
+                    ASSERT(weights.size() <= closest.size());
 
-                    const size_t N = closest.size();
-
-                    // calculate neighbour points weights, and their total (for normalisation)
-                    std::vector<double> weights(N);
-                    double sum = 0.;
-                    for (size_t j = 0; j < N; ++j) {
-                        auto r = Point3::distance(p, closest[j].point());
-                        auto h = 0.5 + 0.5 * std::cos(M_PI_2 * (r - 0.5 * distance + delta) / delta);
-                        h      = std::max(0., std::min(0.99, h));
-
-                        weights[j] = h;
-                        sum += h;
-                    }
-
-                    ASSERT(sum > 0.);
-
-                    // normalise all weights according to the total, and set sparse matrix triplets
-                    for (size_t j = 0; j < N; ++j) {
-                        triplets.emplace_back(WeightMatrix::Triplet{i, closest[j].payload(), weights[j] / sum});
+                    for (size_t j = 0; j < weights.size(); ++j) {
+                        triplets.emplace_back(method::WeightMatrix::Triplet{i - rowOffset, closest[j].payload(), weights[j]});
                     }
                 }
                 tWeights += timer.elapsed() - t;
 
 
+                ++i;
                 if (triplets.size() > nnz) {
                     t = timer.elapsed();
 
-                    auto off = triplets.front().row();
-                    for (auto& tri : triplets) {
-                        tri.row() -= off;
-                    }
-
-                    SparseMatrix M(n - off, n, triplets);
+                    Vector y(output.data() + rowOffset, n - rowOffset);
+                    SparseMatrix M(n - rowOffset, n, triplets);
                     triplets.clear();
-
-                    Vector x(const_cast<double*>(input.data()), n);
-                    Vector y(output.data() + off, n - off);
+                    rowOffset = i;
 
                     la.spmv(M, x, y);
                     tMultipl += timer.elapsed() - t;
                 }
 
-                ++i;
             }
         }
 
 
         if (!triplets.empty()) {
-            auto off = triplets.front().row();
-            for (auto& tri : triplets) {
-                tri.row() -= off;
-            }
-
-            SparseMatrix M(n - off, n, triplets);
+            Vector y(output.data() + rowOffset, n - rowOffset);
+            SparseMatrix M(n - rowOffset, n, triplets);
             triplets.clear();
-
-            Vector x(const_cast<double*>(input.data()), n);
-            Vector y(output.data() + off, n - off);
 
             la.spmv(M, x, y);
         }
