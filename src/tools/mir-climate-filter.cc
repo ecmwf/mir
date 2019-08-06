@@ -16,6 +16,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Matrix.h"
+#include "eckit/linalg/Vector.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
@@ -59,7 +60,7 @@ private:
                "\n"
                "\nUsage: "
             << tool
-            << " [--k=min/max] [--distance=real] [--delta=real] [--weight-min=real] [--backend=name] input output"
+            << " [--k=min/max] [--distance=real] [--delta=real] [--weight-min=real] input output"
                "\nExamples: "
                "\n  % "
             << tool << " --delta=1000 --distance=5000 --k=4/100 lsm lsm-filtered" << std::endl;
@@ -68,46 +69,55 @@ private:
 public:
     MIRClimateFilter(int argc, char** argv) : tools::MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebra;
-        options_.push_back(new eckit::option::VectorOption<size_t>(
-            "k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "distance", "Climate filter radius [m] of neighbours to weight (k) (default 1.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "delta",
-            "Climate filter (topographic data smoothing operator) width of filter edge [m], must be greater than "
-            "'distance' (default 1000.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
-        options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>(
-            "backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
-        options_.push_back(
-            new eckit::option::FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new eckit::option::VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
+        options_.push_back(new eckit::option::SimpleOption<double>("distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
+        options_.push_back(new eckit::option::SimpleOption<double>("delta", "Climate filter width of filter edge [m], must be greater than 'distance' (default 1000.)"));
+        options_.push_back(new eckit::option::SimpleOption<double>("weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
+        options_.push_back(new eckit::option::SimpleOption<bool>("no-backend", "No linear algebra backend (minimum memory requirements)"));
+        options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>("backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
+        options_.push_back(new eckit::option::FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
     }
 };
 
 
 void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
-    using eckit::linalg::LinearAlgebra;
-    using eckit::linalg::Matrix;
 
+    // statistics, timers and options
     eckit::ResourceUsage usage("MIRClimateFilter");
     eckit::TraceTimer<LibMir> timer("MIRClimateFilter");
 
-
-    // linear algebra backend, statistics, input and output
-    auto& la(LinearAlgebra::hasBackend("mkl") ? LinearAlgebra::getBackend("mkl") : LinearAlgebra::backend());
-
-    util::MIRStatistics statistics;
     std::unique_ptr<input::MIRInput> in(new input::GribFileInput(args(0)));
-    std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(args(1)));
     ASSERT(in);
+
+    std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(args(1)));
     ASSERT(out);
 
     auto& log = eckit::Log::info();
+    util::MIRStatistics statistics;
+    context::Context ctx(*in, statistics);
+
     static const param::DefaultParametrisation defaults;
     static const param::ConfigurationWrapper commandLine(args);
     param::RuntimeParametrisation user(commandLine);
     user.set("filter", true);
+
+    const bool noBackend = args.has("no-backend");
+
+    std::vector<size_t> k{4, std::numeric_limits<size_t>::max()};
+    args.get("k", k);
+    ASSERT(k.size() == 2 && k[0] <= k[1]);
+
+    double distance = 1.;
+    args.get("distance", distance);
+    ASSERT(distance > 0.);
+
+    double delta = 1000.;
+    args.get("delta", delta);
+    ASSERT(delta > 0.);
+
+    double weightMin = 0.001;
+    args.get("weight-min", weightMin);
+    ASSERT(0 <= weightMin && weightMin <= 1.);
 
 
     int field = 0;
@@ -120,26 +130,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         ASSERT(param);
 
 
-        std::vector<size_t> k{4, std::numeric_limits<size_t>::max()};
-        param->get("k", k);
-        ASSERT(k.size() == 2 && k[0] <= k[1]);
-
-        double distance = 1.;
-        param->get("distance", distance = 1.);
-        ASSERT(distance > 0.);
-
-        double delta = 1000.;
-        param->get("delta", delta);
-        ASSERT(delta > 0.);
-
-        double weightMin = 0.001;
-        param->get("weight-min", weightMin);
-        ASSERT(0 <= weightMin && weightMin <= 1.);
-
-
         // input/output field values
         double t = timer.elapsed();
-        context::Context ctx(*in, statistics);
         ASSERT(ctx.field().dimensions() == 1);
 
         size_t Ni = 0;
@@ -181,31 +173,18 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
             double max, min;
             ASSERT(param->get("south", min = 0));
             ASSERT(param->get("north", max = 0));
-            ASSERT(min <= max);
+            ASSERT(min < max);
             for (size_t j = 0; j < Nj; ++j) {
                 lat[Nj - j - 1] = (max * double(j) + min * double(Nj - 1 - j)) / double(Nj - 1);
             }
 
             ASSERT(param->get("west", min = 0));
             ASSERT(param->get("east", max = 0));
-            ASSERT(min <= max);
+            ASSERT(min < max);
             for (size_t i = 0; i < Ni; ++i) {
                 lon[i] = (max * double(i) + min * double(Ni - 1 - i)) / double(Ni - 1);
             }
         }
-
-        auto point_at = [Ni, &lat, &lon](size_t i) -> Point3 {
-            // notice the order
-            Point3 R;
-            atlas::util::Earth::convertSphericalToCartesian({lon[i % Ni], lat[i / Ni]}, R);
-            return R;
-        };
-
-        auto column_shift = [Ni](size_t idx, size_t i) -> size_t {
-            auto r = idx / Ni;
-            auto c = idx % Ni;
-            return r * Ni + (c + i) % Ni;
-        };
         log << "coordinates: " << eckit::Seconds(timer.elapsed() - t) << std::endl;
 
 
@@ -214,26 +193,28 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
             double farthest = 0;
             double tClosest = 0;
             double tMatrixA = 0;
-            double tMatrixY = 0;
-            double tMatrixX = 0;
+            double tVectorY = 0;
+            double tVectorX = 0;
 
             for (size_t j = 0; j < Nj; ++j) {
                 if (++progress) {
                     tree.statsPrint(log << "   latitude: " << lat[j] << " degree"
                                         << "\n   farthest: " << farthest << " m"
                                         << "\n   closest: " << eckit::Seconds(tClosest) << "\n   matrix A: "
-                                        << eckit::Seconds(tMatrixA) << "\n   matrix Y: " << eckit::Seconds(tMatrixY)
-                                        << "\n   matrix X: " << eckit::Seconds(tMatrixX) << std::endl,
+                                        << eckit::Seconds(tMatrixA) << "\n   vector Y: " << eckit::Seconds(tVectorY)
+                                        << "\n   vector X: " << eckit::Seconds(tVectorX) << std::endl,
                                     false);
                     tree.statsReset();
-                    tClosest = tMatrixA = tMatrixY = tMatrixX = farthest = 0;
+                    tClosest = tMatrixA = tVectorY = tVectorX = farthest = 0;
                 }
 
                 // search neighbour points to P (start of j-th row)
                 t = timer.elapsed();
-                std::vector<search::PointSearch::PointValueType> closest;
 
-                const auto P = point_at(j * Ni);
+                Point3 P;
+                atlas::util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
+
+                std::vector<search::PointSearch::PointValueType> closest;
                 tree.closestWithinRadius(P, distance, closest);
                 if (closest.size() < k[0]) {
                     tree.closestNPoints(P, k[1], closest);
@@ -241,24 +222,29 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 tClosest += timer.elapsed() - t;
 
 
-                // set weights matrix A (dense) with filter weights (to P), might not use all neighbour points
-                // size(Aij) = (1, number of weights) -- this is a thin wrapper
+                // x = A y: set weights vector y with filter weights (to P), might not use all neighbour points
                 t = timer.elapsed();
 
                 size_t Nw = std::min(closest.size(), k[1]);
                 std::vector<double> weights;
                 weights.reserve(Nw);
                 {
+                    const double halfDelta = distance / 2.;
+
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
-                        auto d = Point3::distance(P, point_at(closest[w].payload()));
-                        auto h = 0.5 + 0.5 * std::cos(M_PI_2 * (d - 0.5 * distance + delta) / delta);
-                        h      = std::max(0., std::min(0.99, h));
+                        auto r = Point3::distance(P, closest[w].point());
+                        auto h = r < halfDelta - delta
+                                     ? 1.
+                                     : halfDelta + delta < r
+                                           ? 0.
+                                           : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta + delta) / delta);
+                        // h = std::max(0., std::min(0.99, h));
 
                         if (k[0] <= w && h < weightMin * (sum + h)) {
                             break;
                         }
-                        farthest = std::max(farthest, d);
+                        farthest = r;  // closest points are ordered in increasing distance
                         weights.emplace_back(h);
                         sum += h;
                     }
@@ -271,39 +257,62 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                     }
                 }
 
-                Matrix A(weights.data(), 1, Nw);  // NOTE:
+                eckit::linalg::Vector y(weights.data(), Nw);
+                tVectorY += timer.elapsed() - t;
+
+                if (noBackend) {
+                    t = timer.elapsed();
+
+                    for (size_t w = 0; w < Nw; ++w) {
+                        auto a = weights[w];
+                        auto n = closest[w].payload();
+                        auto r = n / Ni;
+                        auto c = n % Ni;
+
+                        if (!w) {
+                            for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {
+                                output[j * Ni + i] = a * input[c0 + (c + i) % Ni];
+                            }
+                            continue;
+                        }
+
+                        for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {
+                            output[j * Ni + i] += a * input[c0 + (c + i) % Ni];
+                        }
+                    }
+
+                    tVectorX += timer.elapsed() - t;
+                    continue;
+                }
+
+
+                // x = A y: set input values matrix A (dense), assembled by shifting closest neighbours by i
+                // size(A) = (number of weights, number of points in row j) -- could be a very large allocation
+                t = timer.elapsed();
+                eckit::linalg::Matrix A(Ni, Nw);
+                for (size_t w = 0; w < Nw; ++w) {
+                    auto n = closest[w].payload();
+                    auto r = n / Ni;
+                    auto c = n % Ni;
+                    for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {
+                        A(i, w) = input[c0 + (c + i) % Ni];
+                    }
+                }
                 tMatrixA += timer.elapsed() - t;
 
 
-                // set input values matrix Y (dense), assembled by shifting closest neighbours by i
-                // size(Yij) = (number of weights, number of points in row j) -- could be a very large allocation
+                // x = A y: set weights vector y and output values vector x
                 t = timer.elapsed();
-                Matrix Y(Nw, Ni);
-                for (size_t i = 0; i < Ni; ++i) {
-                    for (size_t w = 0; w < Nw; ++w) {
-                        auto r = closest[w].payload() / Ni;
-                        auto c = closest[w].payload() % Ni;
-                        Y(w, i) = input[r * Ni + (c + i) % Ni];
-                    }
-                }
-                tMatrixY += timer.elapsed() - t;
+                eckit::linalg::Vector x(output.data() + j * Ni, Ni);
+                static const auto& la(eckit::linalg::LinearAlgebra::backend());
+                la.gemv(A, y, x);
 
-
-                // set output values matrix X
-                t = timer.elapsed();
-                Matrix X(output.data() + j * Ni, 1, Ni);
-                la.gemm(A, Y, X);
-                tMatrixX += timer.elapsed() - t;
+                tVectorX += timer.elapsed() - t;
             }
 
-            {
-                auto tSaving = timer.elapsed();
-                log << "Saving..." << std::endl;
-                statistics.report(log);
-                ctx.field().update(output, 0);
-                out->save(*param, ctx);
-                log << "Saving. " << eckit::Seconds(timer.elapsed() - tSaving) << std::endl;
-            }
+            ctx.field().update(output, 0);
+            out->save(*param, ctx);
+            statistics.report(log);
         }
 
 

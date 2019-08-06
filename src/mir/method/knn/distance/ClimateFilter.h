@@ -32,7 +32,7 @@ private:
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;
-    double distance_;
+    double halfDelta_;
     double delta_;
 };
 
