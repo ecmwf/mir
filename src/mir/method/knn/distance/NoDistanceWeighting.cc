@@ -26,21 +26,14 @@ NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {
 
 
 void NoDistanceWeighting::operator()(
-        size_t ip,
         const Point3&,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+        const neighbours_t& neighbours,
+        std::vector<double>& weights ) const {
 
     ASSERT(!neighbours.empty());
 
-    triplets.clear();
-    triplets.reserve(neighbours.size());
-
     // average neighbour points
-    const double weight = 1. / neighbours.size();
-    for (auto& n : neighbours) {
-        triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
-    }
+    weights.assign(neighbours.size(), 1. / neighbours.size());
 }
 
 

@@ -52,19 +52,17 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
 
 
 void ClimateFilter::operator()(
-        size_t ip,
         const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+        const neighbours_t& neighbours,
+        std::vector<double>& weights ) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
 
-    triplets.clear();
-    triplets.reserve(nbPoints);
+    weights.clear();
+    weights.reserve(nbPoints);
 
     // calculate neighbour points weights, and their total (for normalisation)
-    std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         auto r = Point3::distance(point, neighbours[j].point());
@@ -75,17 +73,14 @@ void ClimateFilter::operator()(
                            : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta_ + delta_) / delta_);
         // h = std::max(0., std::min(0.99, h));
 
-        weights[j] = h;
+        weights.emplace_back(h);
         sum += h;
     }
 
+    // normalise all weights according to the total
     ASSERT(sum > 0.);
-
-    // normalise all weights according to the total, and set sparse matrix triplets
-    for (size_t j = 0; j < nbPoints; ++j) {
-        size_t jp = neighbours[j].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
-    }
+    double invSum = 1. / sum;
+    std::for_each(weights.begin(), weights.end(), [=](double& w) { w *= invSum; });
 }
 
 

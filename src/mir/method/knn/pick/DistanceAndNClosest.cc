@@ -31,12 +31,12 @@ DistanceAndNClosest::DistanceAndNClosest(const param::MIRParametrisation& param)
 }
 
 
-void DistanceAndNClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
+void DistanceAndNClosest::pick(const search::PointSearch& tree, size_t ip, const eckit::geometry::Point3& p,
                                Pick::neighbours_t& closest) const {
     // TODO: improve k-d tree interface; this is slow because distance might be excessive
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() > nClosest_.n()) {
-        nClosest_.pick(tree, p, closest);
+        nClosest_.pick(tree, ip, p, closest);
     }
 }
 

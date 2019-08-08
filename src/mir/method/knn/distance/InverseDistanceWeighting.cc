@@ -37,43 +37,39 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 
 
 void InverseDistanceWeighting::operator()(
-        size_t ip,
         const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+        const neighbours_t& neighbours,
+        std::vector<double>& weights ) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
 
-    triplets.clear();
-    triplets.reserve(nbPoints);
+    weights.clear();
+    weights.reserve(nbPoints);
 
     // calculate neighbour points weights, and their total (for normalisation)
-    std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = Point3::distance2(point, neighbours[j].point());
         if (eckit::types::is_strictly_greater(d2, 0.)) {
 
-            weights[j] = 1. / std::pow(d2, halfPower_);
-            sum += weights[j];
+            double weight = 1. / std::pow(d2, halfPower_);
+            weights.push_back(weight);
+            sum += weight;
 
         } else {
 
             // exact match found, use this neighbour only (inverse distance tends to infinity)
-            triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
+            weights.assign(1, 1.);
             return;
 
         }
     }
 
+    // normalise all weights according to the total
     ASSERT(sum > 0.);
-
-    // normalise all weights according to the total, and set sparse matrix triplets
-    for (size_t j = 0; j < nbPoints; ++j) {
-        size_t jp = neighbours[j].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
-    }
+    double invSum = 1. / sum;
+    std::for_each(weights.begin(), weights.end(), [=](double& w) { w *= invSum; });
 }
 
 

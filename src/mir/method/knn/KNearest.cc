@@ -15,8 +15,10 @@
 
 #include "mir/method/knn/KNearest.h"
 
-#include "mir/param/MIRParametrisation.h"
+#include "eckit/utils/MD5.h"
+
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -26,11 +28,17 @@ namespace knn {
 
 KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
 
-    std::string name = "inverse-distance-weighting-squared";
-    param.get("distance-weighting", name);
+    std::string nearestMethod;
+    param.get("nearest-method", nearestMethod = "nclosest-or-nearest");
 
-    distanceWeighting_.reset(distance::DistanceWeightingFactory::build(name, param));
-    ASSERT(distanceWeighting_);
+    pick_.reset(pick::PickFactory::build(nearestMethod, param));
+    ASSERT(pick_);
+}
+
+void KNearest::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                        const repres::Representation& out) const {
+    ASSERT(pick_);
+    assembleCustomised(stats, W, in, out, pick(), distanceWeighting());
 }
 
 
@@ -39,13 +47,22 @@ KNearest::~KNearest() = default;
 
 bool KNearest::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearest*>(&other);
-    return o && KNearestNeighbours::sameAs(other);
+    return o && pick().sameAs(o->pick()) && KNearestNeighbours::sameAs(other);
 }
 
 
-const distance::DistanceWeighting& KNearest::distanceWeighting() const {
-    ASSERT(distanceWeighting_);
-    return *distanceWeighting_;
+void KNearest::print(std::ostream& out) const {
+    ASSERT(pick_);
+
+    out << "KNearest[";
+    MethodWeighted::print(out);
+    out << ",nearestMethod=" << *pick_ << ",distanceWeighting=" << distanceWeighting() << "]";
+}
+
+
+const pick::Pick& KNearest::pick() const {
+    ASSERT(pick_);
+    return *pick_;
 }
 
 
@@ -55,11 +72,10 @@ const char* KNearest::name() const {
 
 
 namespace {
-static MethodBuilder< KNearest > __method("k-nearest");
+static MethodBuilder<KNearest> __method("k-nearest");
 }
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

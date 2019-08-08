@@ -19,36 +19,31 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
-#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
-
 
 namespace mir {
 namespace method {
 namespace knn {
 
 
-class NearestLSM: public KNearestNeighbours {
+class NearestLSM : public KNearestNeighbours {
 public:
-
     NearestLSM(const param::MIRParametrisation&);
 
     virtual ~NearestLSM();
 
 private:
-
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
 
     /// Update interpolation weigths matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
-
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
+    virtual void print(std::ostream&) const;
     virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    virtual bool sameAs(const Method&) const;
 
-    distance::DistanceWeightingWithLSM distanceWeighting_;
-
+    std::string nearestMethodWithLSM_;
 };
 
 
@@ -58,4 +53,3 @@ private:
 
 
 #endif
-

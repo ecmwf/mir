@@ -16,7 +16,6 @@
 #ifndef mir_method_knn_KNearestNeighbours_h
 #define mir_method_knn_KNearestNeighbours_h
 
-#include <memory>
 #include <string>
 
 #include "mir/method/MethodWeighted.h"
@@ -31,9 +30,9 @@ class DistanceWeighting;
 namespace pick {
 class Pick;
 }
-}
-}
-}
+}  // namespace knn
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -43,7 +42,6 @@ namespace knn {
 
 class KNearestNeighbours : public MethodWeighted {
 public:
-
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
     virtual ~KNearestNeighbours();
@@ -51,34 +49,19 @@ public:
     virtual void hash(eckit::MD5&) const;
 
 protected:
+    void assembleCustomised(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                            const repres::Representation& out, const pick::Pick&,
+                            const distance::DistanceWeighting&) const;
 
-    void assemble(
-            util::MIRStatistics&,
-            WeightMatrix&,
-            const repres::Representation& in,
-            const repres::Representation& out,
-            const distance::DistanceWeighting& ) const;
-
-    virtual void assemble(
-            util::MIRStatistics&,
-            WeightMatrix&,
-            const repres::Representation& in,
-            const repres::Representation& out ) const;
-
-    virtual bool sameAs(const Method& other) const = 0;
+    virtual bool sameAs(const Method&) const = 0;
+    virtual const distance::DistanceWeighting& distanceWeighting() const;
 
 private:
-
-    virtual void print(std::ostream&) const;
-
     virtual bool canIntroduceMissingValues() const;
 
-    virtual const char *name() const = 0;
+    virtual const char* name() const = 0;
 
-    virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
-
-    std::unique_ptr<const pick::Pick> picker_;
-
+    std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;
 };
 
 
@@ -88,4 +71,3 @@ private:
 
 
 #endif
-

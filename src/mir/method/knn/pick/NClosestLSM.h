@@ -9,10 +9,11 @@
  */
 
 
-#ifndef mir_method_knn_pick_NClosest_h
-#define mir_method_knn_pick_NClosest_h
+#ifndef mir_method_knn_pick_NClosestLSM_h
+#define mir_method_knn_pick_NClosestLSM_h
 
-#include "mir/method/knn/pick/Pick.h"
+#include "mir/method/knn/pick/NClosest.h"
+#include "mir/method/knn/pick/PickWithLSM.h"
 
 
 namespace mir {
@@ -21,15 +22,15 @@ namespace knn {
 namespace pick {
 
 
-struct NClosest : Pick {
-    NClosest(const param::MIRParametrisation&);
+struct NClosestLSM : PickWithLSM {
+    NClosestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
     void pick(const search::PointSearch&, size_t ip, const Point3&, neighbours_t&) const;
-    size_t n() const;
+    size_t n() const { return 1; }
     bool sameAs(const Pick&) const;
-    void hash(eckit::MD5&) const;
 private:
     void print(std::ostream&) const;
-    size_t nClosest_;
+    void hash(eckit::MD5&) const;
+    NClosest nClosest_;
 };
 
 

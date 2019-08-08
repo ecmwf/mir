@@ -17,8 +17,7 @@
 #define mir_method_knn_KNearest_h
 
 #include "mir/method/knn/KNearestNeighbours.h"
-
-#include <memory>
+#include "mir/method/knn/pick/Pick.h"
 
 
 namespace mir {
@@ -26,21 +25,23 @@ namespace method {
 namespace knn {
 
 
-class KNearest: public KNearestNeighbours {
+class KNearest : public KNearestNeighbours {
 public:
-
     KNearest(const param::MIRParametrisation&);
 
     virtual ~KNearest();
 
 private:
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
 
     virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    virtual bool sameAs(const Method&) const;
 
-    std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;
+    void print(std::ostream&) const;
 
+    const pick::Pick& pick() const;
+    std::unique_ptr<const pick::Pick> pick_;
 };
 
 
@@ -50,4 +51,3 @@ private:
 
 
 #endif
-

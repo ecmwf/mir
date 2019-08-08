@@ -31,14 +31,13 @@ namespace pick {
 
 class Pick {
 public:
-
     using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 
     Pick();
 
     virtual ~Pick();
 
-    virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
+    virtual void pick(const search::PointSearch&, size_t ip, const Point3&, neighbours_t&) const = 0;
     virtual size_t n() const = 0;
     virtual bool sameAs(const Pick& other) const = 0;
     virtual void hash(eckit::MD5&) const = 0;
@@ -51,7 +50,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 

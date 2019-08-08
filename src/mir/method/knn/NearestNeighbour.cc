@@ -16,6 +16,7 @@
 #include "mir/method/knn/NearestNeighbour.h"
 
 #include "eckit/utils/MD5.h"
+#include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -24,9 +25,19 @@ namespace method {
 namespace knn {
 
 
-NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    distanceWeighting_(param) {
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) : KNearestNeighbours(param), pick_(param) {}
+
+
+void NearestNeighbour::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                                const repres::Representation& out) const {
+    assembleCustomised(stats, W, in, out, pick(), distanceWeighting());
+}
+
+
+void NearestNeighbour::print(std::ostream& out) const {
+    out << "NearestNeighbour[";
+    MethodWeighted::print(out);
+    out << ",nearestMethod=" << pick() << ",distanceWeighting=" << distanceWeighting() << "]";
 }
 
 
@@ -35,12 +46,12 @@ NearestNeighbour::~NearestNeighbour() = default;
 
 bool NearestNeighbour::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestNeighbour*>(&other);
-    return o && KNearestNeighbours::sameAs(other);
+    return o && pick().sameAs(o->pick()) && KNearestNeighbours::sameAs(other);
 }
 
 
-const distance::DistanceWeighting& NearestNeighbour::distanceWeighting() const {
-    return distanceWeighting_;
+const pick::Pick& NearestNeighbour::pick() const {
+    return pick_;
 }
 
 
@@ -50,13 +61,12 @@ const char* NearestNeighbour::name() const {
 
 
 namespace {
-static MethodBuilder< NearestNeighbour > __method1("nearest-neighbour");
-static MethodBuilder< NearestNeighbour > __method2("nearest-neighbor"); // For the americans
-static MethodBuilder< NearestNeighbour > __method3("nn"); // For the lazy
-}
+static MethodBuilder<NearestNeighbour> __method1("nearest-neighbour");
+static MethodBuilder<NearestNeighbour> __method2("nearest-neighbor");  // For the americans
+static MethodBuilder<NearestNeighbour> __method3("nn");                // For the lazy
+}  // namespace
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

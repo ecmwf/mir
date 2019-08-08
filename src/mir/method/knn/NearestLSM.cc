@@ -21,7 +21,8 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/knn/distance/NearestLSMWithLowestIndex.h"
+#include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/pick/PickWithLSM.h"
 #include "mir/param/RuntimeParametrisation.h"
 
 
@@ -30,28 +31,23 @@ namespace method {
 namespace knn {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    distanceWeighting_(param) {
+NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param) {
+    param.get("nearest-method-with-lsm", nearestMethodWithLSM_ = "closest-lsm-with-lowest-index");
 }
 
 
 NearestLSM::~NearestLSM() = default;
 
 
-void NearestLSM::assemble(
-    util::MIRStatistics& stats,
-    WeightMatrix& W,
-    const repres::Representation& in,
-    const repres::Representation& out) const {
+void NearestLSM::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                          const repres::Representation& out) const {
 
-    // get distance weighting method
-    std::unique_ptr<const distance::DistanceWeighting> method(
-                distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)) );
-    ASSERT(method);
+    // assemble with run-time neighbour-picking method
+    std::unique_ptr<const pick::PickWithLSM> pick(
+        pick::PickWithLSMFactory::build(nearestMethodWithLSM_, parametrisation_, getMasks(in, out)));
 
-    // assemble with specific distance weighting method
-    KNearestNeighbours::assemble(stats, W, in, out, *method);
+    ASSERT(pick);
+    assembleCustomised(stats, W, in, out, *pick, distanceWeighting());
 }
 
 
@@ -76,7 +72,15 @@ lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const r
 }
 
 
-static bool sameLsm(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2) {
+void NearestLSM::print(std::ostream& out) const {
+    out << "NearestLSM[";
+    MethodWeighted::print(out);
+    out << ",nearestMethodWithLSM=" << nearestMethodWithLSM_ << ",distanceWeighting=" << distanceWeighting() << "]";
+}
+
+
+static bool sameLsm(const param::MIRParametrisation& parametrisation1,
+                    const param::MIRParametrisation& parametrisation2) {
     param::RuntimeParametrisation runtime1(parametrisation1);
     setParametrisation(parametrisation1, runtime1);
 
@@ -89,14 +93,8 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1, const par
 
 bool NearestLSM::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o
-           && KNearestNeighbours::sameAs(other)
-           && sameLsm(parametrisation_, o->parametrisation_);
-}
-
-
-const distance::DistanceWeighting& NearestLSM::distanceWeighting() const {
-    return distanceWeighting_;
+    return o && nearestMethodWithLSM_ == o->nearestMethodWithLSM_ && KNearestNeighbours::sameAs(other) &&
+           sameLsm(parametrisation_, o->parametrisation_);
 }
 
 
@@ -106,11 +104,10 @@ const char* NearestLSM::name() const {
 
 
 namespace {
-static MethodBuilder< NearestLSM > __method("nearest-lsm");
+static MethodBuilder<NearestLSM> __method("nearest-lsm");
 }
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

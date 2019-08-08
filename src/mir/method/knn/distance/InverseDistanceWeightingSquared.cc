@@ -26,35 +26,29 @@ InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MI
 
 
 void InverseDistanceWeightingSquared::operator()(
-        size_t ip,
         const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+        const neighbours_t& neighbours,
+        std::vector<double>& weights ) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
 
-    triplets.clear();
-    triplets.reserve(nbPoints);
+    weights.clear();
+    weights.reserve(nbPoints);
 
     // calculate neighbour points weights, and their total (for normalisation)
-    std::vector<double> weights(nbPoints);
     double sum = 0.;
     for (size_t j = 0; j < nbPoints; ++j) {
         const double d2 = Point3::distance2(point, neighbours[j].point());
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];
-
     }
 
+    // normalise all weights according to the total
     ASSERT(sum > 0.);
-
-    // normalise all weights according to the total, and set sparse matrix triplets
-    for (size_t i = 0; i < nbPoints; ++i) {
-        size_t jp = neighbours[i].payload();
-        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[i] / sum));
-    }
+    double invSum = 1. / sum;
+    std::for_each(weights.begin(), weights.end(), [=](double& w) { w *= invSum; });
 }
 
 

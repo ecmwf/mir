@@ -13,7 +13,6 @@
 #define mir_method_knn_distance_DistanceWeighting_h
 
 #include <iosfwd>
-#include "mir/method/WeightMatrix.h"
 #include "mir/search/PointSearch.h"
 
 
@@ -30,16 +29,14 @@ namespace distance {
 
 class DistanceWeighting {
 public:
+    using neighbours_t = std::vector<search::PointSearch::PointValueType>;
+    using weights_t    = std::vector<double>;
     
     DistanceWeighting();
 
     virtual ~DistanceWeighting();
 
-    virtual void operator()(
-            size_t ip,
-            const Point3& point,
-            const std::vector<search::PointSearch::PointValueType>& neighbours,
-            std::vector<WeightMatrix::Triplet>& triplets) const = 0;
+    virtual void operator()(const Point3&, const neighbours_t&, weights_t&) const = 0;
 
     virtual bool sameAs(const DistanceWeighting& other) const = 0;
 

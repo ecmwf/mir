@@ -17,8 +17,7 @@
 #define mir_method_knn_NearestNeighbour_h
 
 #include "mir/method/knn/KNearestNeighbours.h"
-
-#include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
+#include "mir/method/knn/pick/NClosestWithLowestIndex.h"
 
 
 namespace mir {
@@ -26,21 +25,22 @@ namespace method {
 namespace knn {
 
 
-class NearestNeighbour: public KNearestNeighbours {
+class NearestNeighbour : public KNearestNeighbours {
 public:
-
     NearestNeighbour(const param::MIRParametrisation&);
 
     virtual ~NearestNeighbour();
 
 private:
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
 
+    void print(std::ostream&) const;
     virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    virtual bool sameAs(const Method&) const;
 
-    distance::NearestNeighbourWithLowestIndex distanceWeighting_;
-
+    const pick::Pick& pick() const;
+    pick::NClosestWithLowestIndex pick_;
 };
 
 
@@ -50,4 +50,3 @@ private:
 
 
 #endif
-

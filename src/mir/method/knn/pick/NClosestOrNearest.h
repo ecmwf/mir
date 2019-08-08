@@ -23,7 +23,7 @@ namespace pick {
 
 struct NClosestOrNearest : Pick {
     NClosestOrNearest(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
+    void pick(const search::PointSearch&, size_t ip, const Point3&, neighbours_t&) const;
     size_t n() const;
     bool sameAs(const Pick&) const;
     void hash(eckit::MD5&) const;

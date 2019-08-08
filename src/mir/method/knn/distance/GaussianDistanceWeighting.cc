@@ -40,15 +40,14 @@ GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisa
 
 
 void GaussianDistanceWeighting::operator()(
-        size_t ip,
         const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets) const {
+        const neighbours_t& neighbours,
+        std::vector<double>& weights) const {
 
     ASSERT(!neighbours.empty());
 
-    triplets.clear();
-    triplets.reserve(neighbours.size());
+    weights.clear();
+    weights.reserve(neighbours.size());
 
     // calculate neighbour points weights, and their total (for normalisation)
     double sum = 0.;
@@ -56,15 +55,14 @@ void GaussianDistanceWeighting::operator()(
         const double d2 = Point3::distance2(point, n.point());
         const double weight = std::exp(d2 * exponentFactor_);
 
-        triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
+        weights.emplace_back(weight);
         sum += weight;
     }
 
-    // normalise all weights according to the total weights sum
+    // normalise all weights according to the total
     ASSERT(sum > 0.);
-    for (auto& t : triplets) {
-        t.value() /= sum;
-    }
+    double invSum = 1. / sum;
+    std::for_each(weights.begin(), weights.end(), [=](double& w) { w *= invSum; });
 }
 
 

@@ -265,22 +265,14 @@ list(APPEND mir_srcs
     method/knn/distance/ClimateFilter.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
-    method/knn/distance/DistanceWeightingWithLSM.cc
-    method/knn/distance/DistanceWeightingWithLSM.h
     method/knn/distance/GaussianDistanceWeighting.cc
     method/knn/distance/GaussianDistanceWeighting.h
     method/knn/distance/InverseDistanceWeighting.cc
     method/knn/distance/InverseDistanceWeighting.h
     method/knn/distance/InverseDistanceWeightingSquared.cc
     method/knn/distance/InverseDistanceWeightingSquared.h
-    method/knn/distance/NearestLSM.cc
-    method/knn/distance/NearestLSM.h
-    method/knn/distance/NearestLSMWithLowestIndex.cc
-    method/knn/distance/NearestLSMWithLowestIndex.h
     method/knn/distance/NearestNeighbour.cc
     method/knn/distance/NearestNeighbour.h
-    method/knn/distance/NearestNeighbourWithLowestIndex.cc
-    method/knn/distance/NearestNeighbourWithLowestIndex.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
     method/knn/pick/Distance.cc
@@ -291,10 +283,18 @@ list(APPEND mir_srcs
     method/knn/pick/DistanceOrNClosest.h
     method/knn/pick/NClosest.cc
     method/knn/pick/NClosest.h
+    method/knn/pick/NClosestLSM.cc
+    method/knn/pick/NClosestLSM.h
+    method/knn/pick/NClosestLSMWithLowestIndex.cc
+    method/knn/pick/NClosestLSMWithLowestIndex.h
     method/knn/pick/NClosestOrNearest.cc
     method/knn/pick/NClosestOrNearest.h
+    method/knn/pick/NClosestWithLowestIndex.cc
+    method/knn/pick/NClosestWithLowestIndex.h
     method/knn/pick/Pick.cc
     method/knn/pick/Pick.h
+    method/knn/pick/PickWithLSM.cc
+    method/knn/pick/PickWithLSM.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
