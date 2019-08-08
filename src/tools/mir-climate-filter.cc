@@ -269,15 +269,13 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                         auto r = n / Ni;
                         auto c = n % Ni;
 
-                        if (!w) {
-                            for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {
-                                output[j * Ni + i] = a * input[c0 + (c + i) % Ni];
+                        for (size_t i = 0, i0 = j * Ni, c0 = r * Ni; i < Ni; ++i) {
+                            if (!w) {
+                                output[i0 + i] = a * input[c0 + (c + i) % Ni];
                             }
-                            continue;
-                        }
-
-                        for (size_t i = 0, c0 = r * Ni; i < Ni; ++i) {
-                            output[j * Ni + i] += a * input[c0 + (c + i) % Ni];
+                            else {
+                                output[i0 + i] += a * input[c0 + (c + i) % Ni];
+                            }
                         }
                     }
 
