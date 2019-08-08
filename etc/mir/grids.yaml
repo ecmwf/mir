@@ -5,7 +5,6 @@ LAEA-EFAS-5km:
     gaussianNumber: 1280
     standardParallelInDegrees: 52.
     centralLongitudeInDegrees: 10.
-    radius: 6367470.
     grid: 5000./5000.
     latitudeOfFirstGridPointInDegrees: 66.982143
     longitudeOfFirstGridPointInDegrees: -35.034024
