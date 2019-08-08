@@ -53,7 +53,7 @@ void read_configuration_files() {
             long N = 64;
             if (!get("gaussianNumber", N)) {
                 eckit::Log::warning()
-                    << "NamedGridFromFile::getTargetGaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
+                    << "NamedGridFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
                     << " (hardcoded!)" << std::endl;
             }
             return size_t(N);
