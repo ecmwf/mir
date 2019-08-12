@@ -8,5 +8,6 @@
 #cmakedefine HAVE_ECCODES
 #cmakedefine HAVE_NETCDF
 #cmakedefine HAVE_ATLAS
+#cmakedefine HAVE_PNG
 
 #endif // mir_config_h

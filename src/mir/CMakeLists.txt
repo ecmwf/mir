@@ -813,6 +813,11 @@ if (HAVE_NETCDF)
 endif()
 
 
+if (HAVE_PNG)
+    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
+endif()
+
+
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 

@@ -31,6 +31,7 @@
 
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
+#include "mir/api/mir_config.h"
 #include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
@@ -55,6 +56,10 @@
 #include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+
+#if defined(HAVE_PNG)
+#include "mir/output/PNGOutput.h"
+#endif
 
 
 class MIR : public mir::tools::MIRTool {
@@ -206,6 +211,10 @@ public:
             options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
             options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("format", "Output format"));
+#if defined(HAVE_PNG)
+            options_.push_back(new FactoryOption<mir::output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
+            options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
+#endif
         }
     }
 
