@@ -96,7 +96,7 @@ if args.diff or args.error:
 
     # Version without numpy
 
-    for i in xrange(len(v1)):
+    for i in range(len(v1)):
         v1[i] = proc(v1[i], v2[i])
 
     eccodes.codes_set_values(h1, v1)
