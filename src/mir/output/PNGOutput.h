@@ -17,6 +17,13 @@
 
 
 namespace mir {
+namespace data {
+class MIRField;
+}
+}
+
+
+namespace mir {
 namespace output {
 
 
@@ -75,11 +82,9 @@ private:
     // -- Members
 
     const std::string path_;
-    bool once_;
 
     // -- Methods
-
-    bool once();
+    // None
 
     // -- Overridden methods
 
@@ -107,8 +112,7 @@ private:
 
 class PNGEncoderFactory {
     std::string name_;
-    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation&, const MIRValuesVector&, bool hasMissing,
-                                        double missingValue) = 0;
+    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation&, const data::MIRField&) = 0;
 
 protected:
     PNGEncoderFactory(const std::string&);
@@ -117,17 +121,15 @@ protected:
 public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
-    static const PNGOutput::PNGEncoder* build(const param::MIRParametrisation&, const MIRValuesVector&, bool hasMissing,
-                                              double missingValue);
+    static const PNGOutput::PNGEncoder* build(const param::MIRParametrisation&, const data::MIRField&);
     static void list(std::ostream&);
 };
 
 
 template <class T>
 class PNGEncoderBuilder : public PNGEncoderFactory {
-    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation& param, const MIRValuesVector& values,
-                                        bool hasMissing, double missingValue) {
-        return new T(param, values, hasMissing, missingValue);
+    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation& param, const data::MIRField& field) {
+        return new T(param, field);
     }
 
 public:
