@@ -33,6 +33,9 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 }
+namespace api {
+class MIREstimation;
+}
 }
 
 
@@ -76,6 +79,8 @@ public:
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;
+
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
     // -- Overridden methods
     // None

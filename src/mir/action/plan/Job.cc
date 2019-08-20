@@ -26,6 +26,8 @@
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -93,6 +95,16 @@ void Job::execute(util::MIRStatistics &statistics) const {
     plan_->execute(ctx);
 }
 
+
+void Job::estimate(api::MIREstimation &estimation) const {
+    ASSERT(plan_);
+
+    util::MIRStatistics statistics;
+    context::Context ctx(input_, statistics);
+    estimation.startField();
+    plan_->estimate(ctx, estimation);
+    estimation.endField();
+}
 
 const ActionPlan &Job::plan() const {
     return *plan_;

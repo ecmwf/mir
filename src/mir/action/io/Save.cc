@@ -80,6 +80,10 @@ bool Save::isEndAction() const {
     return true;
 }
 
+void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    output_.estimate(parametrisation_, estimation);
+}
+
 
 }  // namespace io
 }  // namespace action

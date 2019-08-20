@@ -9,45 +9,20 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Aug 2019
 
 
-#ifndef mir_action_Job_h
-#define mir_action_Job_h
+#ifndef MIREstimation_H
+#define MIREstimation_H
 
-#include <memory>
-#include <string>
 
 
 namespace mir {
-namespace action {
-class ActionPlan;
-}
+
 namespace api {
-class MIRJob;
-class MIREstimation;
-}
-namespace input {
-class MIRInput;
-}
-namespace output {
-class MIROutput;
-}
-namespace param {
-class MIRParametrisation;
-}
-namespace util {
-class MIRStatistics;
-}
-}
 
 
-namespace mir {
-namespace action {
-
-
-class Job  {
+class MIREstimation {
 public:
 
     // -- Exceptions
@@ -55,11 +30,11 @@ public:
 
     // -- Contructors
 
-    Job(const api::MIRJob&, input::MIRInput&, output::MIROutput&, bool compress);
+    MIREstimation();
 
     // -- Destructor
 
-    ~Job();
+    ~MIREstimation();
 
     // -- Convertors
     // None
@@ -69,12 +44,14 @@ public:
 
     // -- Methods
 
-    void execute(util::MIRStatistics& statistics) const;
-    void estimate(api::MIREstimation& estimation) const;
+    void startField();
 
-    const ActionPlan& plan() const;
+    void numberOfGridPoints(size_t count);
+    void accuracy(size_t count);
+    void edition(size_t count);
+    void packing(const std::string& packing);
 
-    const param::MIRParametrisation& parametrisation() const;
+    void endField();
 
     // -- Overridden methods
     // None
@@ -91,10 +68,11 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+
 
     // -- Overridden methods
-    // None
+
 
     // -- Class members
     // None
@@ -104,18 +82,28 @@ protected:
 
 private:
 
+
     // -- Members
 
-    input::MIRInput& input_;
-    output::MIROutput& output_;
-    std::unique_ptr< const param::MIRParametrisation > combined_;
-    std::unique_ptr< action::ActionPlan > plan_;
+    size_t totalNumberOfFields_;
+    size_t totalNumberOfGridPoints_;
+    size_t totalNumberOfBits_;
+
+    size_t numberOfGridPoints_;
+    size_t accuracy_;
+        size_t edition_;
+
+    size_t bitsPerValue_;
+    std::string packing_;
 
     // -- Methods
-    // None
+
 
     // -- Overridden methods
-    // None
+
+    // From MIRParametrisation
+
+    void print(std::ostream &) const;
 
     // -- Class members
     // None
@@ -124,14 +112,15 @@ private:
     // None
 
     // -- Friends
-    // None
 
+    friend std::ostream &operator<<(std::ostream &s, const MIREstimation &p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
-}  // namespace action
+}  // namespace api
 }  // namespace mir
-
-
 #endif
 

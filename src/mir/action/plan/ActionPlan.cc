@@ -151,6 +151,14 @@ void ActionPlan::execute(context::Context& ctx) const {
 }
 
 
+void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    ASSERT(ended());
+
+    for (const auto& p : *this) {
+        p->estimate(ctx, estimation);
+    }
+}
+
 void ActionPlan::compress() {
     ASSERT(ended());
 

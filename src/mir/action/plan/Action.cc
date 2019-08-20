@@ -78,6 +78,12 @@ util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
 }
 
+void Action::estimate(context::Context&, api::MIREstimation& estimation) const {
+    std::ostringstream oss;
+    oss << "Action::estimate not implemented for " << *this;
+    throw eckit::SeriousBug(oss.str());
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
