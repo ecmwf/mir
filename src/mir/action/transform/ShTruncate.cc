@@ -25,6 +25,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/api/MIREstimation.h"
+#include "mir/repres/sh/SphericalHarmonics.h"
 
 
 namespace mir {
@@ -78,8 +79,10 @@ void ShTruncate::execute(context::Context& ctx) const {
     }
 }
 
-void ShTruncate::estimate(context::Context&, api::MIREstimation& estimation) const {
+void ShTruncate::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    data::MIRField& field = ctx.field();
     estimation.truncation(truncation_);
+    field.representation(new repres::sh::SphericalHarmonics(truncation_));
 }
 
 

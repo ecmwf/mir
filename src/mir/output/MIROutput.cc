@@ -165,7 +165,7 @@ void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, i
     // do nothing
 }
 
-void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&) const {
+void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
     std::ostringstream oss;
     oss << "MIROutput::estimate not implemented for " << *this;
     throw eckit::SeriousBug(oss.str());

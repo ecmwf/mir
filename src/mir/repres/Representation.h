@@ -57,6 +57,10 @@ namespace data {
 class MIRField;
 }
 
+namespace api {
+class MIREstimation;
+}
+
 }
 
 
@@ -95,6 +99,7 @@ public:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void estimate(api::MIREstimation&) const;
 
     // Return a cropped version
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;

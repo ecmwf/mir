@@ -75,7 +75,7 @@ public:
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
 
-    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&) const;
+    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods
     // None

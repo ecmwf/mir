@@ -165,6 +165,7 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
     estimation.numberOfGridPoints(cnt);
 
+    ctx.field().representation(out);
 }
 
 

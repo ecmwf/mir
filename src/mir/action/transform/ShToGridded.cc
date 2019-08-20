@@ -303,7 +303,7 @@ void ShToGridded::execute(context::Context& ctx) const {
     }
 }
 
-void ShToGridded::estimate(context::Context&, api::MIREstimation& estimation) const {
+void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
 
 
     repres::RepresentationHandle out(cropping_
@@ -320,6 +320,8 @@ void ShToGridded::estimate(context::Context&, api::MIREstimation& estimation) co
     }
 
     estimation.numberOfGridPoints(cnt);
+
+    ctx.field().representation(out);
 
 }
 
