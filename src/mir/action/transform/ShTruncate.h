@@ -91,6 +91,8 @@ private:
 
     virtual const char* name() const;
 
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+
     // -- Class members
     // None
 

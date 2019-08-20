@@ -24,6 +24,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -76,6 +77,11 @@ void ShTruncate::execute(context::Context& ctx) const {
         }
     }
 }
+
+void ShTruncate::estimate(context::Context&, api::MIREstimation& estimation) const {
+    estimation.truncation(truncation_);
+}
+
 
 const char* ShTruncate::name() const {
     return "ShTruncate";

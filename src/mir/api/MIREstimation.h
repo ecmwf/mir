@@ -50,6 +50,7 @@ public:
     void accuracy(size_t count);
     void edition(size_t count);
     void packing(const std::string& packing);
+    void truncation(size_t count);
 
     void endField();
 
@@ -91,7 +92,8 @@ private:
 
     size_t numberOfGridPoints_;
     size_t accuracy_;
-        size_t edition_;
+    size_t edition_;
+    size_t truncation_;
 
     size_t bitsPerValue_;
     std::string packing_;
