@@ -103,6 +103,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
     pthread_once(&once, init);
 
     eckit::Value s = standard_names[standardName_];
+    std::cout << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;
 
     if (s.isMap()) {
         eckit::ValueMap m = s;

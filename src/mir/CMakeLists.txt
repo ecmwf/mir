@@ -109,6 +109,8 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
+    api/MIREstimation.cc
+    api/MIREstimation.h
     api/Atlas.cc
     api/Atlas.h
     caching/CroppingCache.cc

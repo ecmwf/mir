@@ -26,6 +26,9 @@ namespace mir {
 namespace repres {
 class Representation;
 }
+namespace method {
+class Cropping;
+}
 }
 
 
@@ -75,6 +78,7 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
     // -- Overridden methods
 
@@ -104,6 +108,8 @@ private:
     virtual void execute(context::Context&) const;
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
+
+    method::Cropping cropping(context::Context& ctx) const;
 
     // -- Class members
     // None

@@ -26,6 +26,7 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -67,9 +68,8 @@ bool Gridded2GriddedInterpolation::canCrop() const {
 }
 
 
-void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
+method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) const {
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
@@ -106,6 +106,20 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
         }
     }
 
+    return crop;
+}
+
+
+void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
+
+    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
+    data::MIRField& field = ctx.field();
+
+    repres::RepresentationHandle in(field.representation());
+
+    method::Cropping crop = cropping(ctx);
+
+
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
                                           : outputRepresentation());
 
@@ -127,6 +141,32 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
     out << "interpolation=" << interpolation_
         << ",method=" << *method_;
 }
+
+void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+
+    // repres::RepresentationHandle in(field.representation());
+
+    method::Cropping crop = cropping(ctx);
+
+
+    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
+                                          : outputRepresentation());
+
+
+
+    std::unique_ptr<repres::Iterator> iter(out->iterator());
+
+    size_t cnt = 0;
+    while (iter->next()) {
+        cnt++;
+    }
+
+    estimation.numberOfGridPoints(cnt);
+
+}
+
 
 
 }  // namespace interpolate

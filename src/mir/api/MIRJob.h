@@ -39,6 +39,7 @@ class MIRStatistics;
 namespace mir {
 namespace api {
 
+class MIREstimation;
 
 class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
 public:
@@ -64,6 +65,8 @@ public:
 
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
+
+    void estimate(input::MIRInput&, output::MIROutput&, MIREstimation& ) const;
 
     MIRJob& set(const std::string& name, const std::string &value);
     MIRJob& set(const std::string& name, const char *value);
