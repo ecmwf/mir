@@ -37,6 +37,7 @@ void MIREstimation::startField() {
     accuracy_ = 0;
     bitsPerValue_ = 0;
     edition_ = 0;
+    truncation_ = 0;
     packing_.clear();
 }
 
@@ -49,6 +50,7 @@ void MIREstimation::endField() {
 
 void MIREstimation::numberOfGridPoints(size_t cnt) {
     numberOfGridPoints_ = cnt;
+    truncation_ = 0;
 }
 
 
@@ -60,10 +62,15 @@ void MIREstimation::edition(size_t edition) {
     edition_ = edition;
 }
 
+
+void MIREstimation::truncation(size_t truncation) {
+    numberOfGridPoints_ = 0;
+    truncation_ = truncation;
+}
+
 void MIREstimation::packing(const std::string& packing) {
     packing_ = packing;
 }
-
 
 void MIREstimation::print(std::ostream &out) const {
     out << "MIREstimation["

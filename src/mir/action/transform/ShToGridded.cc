@@ -43,6 +43,7 @@
 #include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -61,10 +62,10 @@ static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient",
 
 
 static atlas::trans::Cache getTransCache(
-        atlas::trans::LegendreCacheCreator& creator,
-        const std::string& key,
-        const param::MIRParametrisation& parametrisation,
-        context::Context& ctx ) {
+    atlas::trans::LegendreCacheCreator& creator,
+    const std::string& key,
+    const param::MIRParametrisation& parametrisation,
+    context::Context& ctx ) {
 
 
     caching::InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
@@ -100,8 +101,8 @@ static atlas::trans::Cache getTransCache(
             }
         public:
             LegendreCacheCreator(
-                        atlas::trans::LegendreCacheCreator& creator,
-                        context::Context& ctx ) :
+                atlas::trans::LegendreCacheCreator& creator,
+                context::Context& ctx ) :
                 creator_(creator),
                 ctx_(ctx) {
             }
@@ -217,10 +218,10 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             ASSERT(creator.supported());
             atlas::trans::Cache transCache = getTransCache(
-                        creator,
-                        key,
-                        parametrisation_,
-                        ctx);
+                                                 creator,
+                                                 key,
+                                                 parametrisation_,
+                                                 ctx);
             ASSERT(transCache);
             trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
 
@@ -301,6 +302,27 @@ void ShToGridded::execute(context::Context& ctx) const {
 
     }
 }
+
+void ShToGridded::estimate(context::Context&, api::MIREstimation& estimation) const {
+
+
+    repres::RepresentationHandle out(cropping_
+                                     ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
+                                     : outputRepresentation());
+
+
+
+    std::unique_ptr<repres::Iterator> iter(out->iterator());
+
+    size_t cnt = 0;
+    while (iter->next()) {
+        cnt++;
+    }
+
+    estimation.numberOfGridPoints(cnt);
+
+}
+
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
