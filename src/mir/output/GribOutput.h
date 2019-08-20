@@ -95,7 +95,7 @@ private:
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
-    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&) const;
+    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Class members
     // None

@@ -102,6 +102,7 @@ private:
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
+    virtual void estimate(api::MIREstimation&) const;
 
     // -- Class members
     // None

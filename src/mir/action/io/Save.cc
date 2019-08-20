@@ -81,7 +81,7 @@ bool Save::isEndAction() const {
 }
 
 void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    output_.estimate(parametrisation_, estimation);
+    output_.estimate(parametrisation_, estimation, ctx);
 }
 
 
