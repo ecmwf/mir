@@ -25,100 +25,12 @@ namespace api {
 class MIREstimation {
 public:
 
-    // -- Exceptions
-    // None
+    virtual void numberOfGridPoints(size_t count) = 0;
+    virtual void accuracy(size_t count) = 0;
+    virtual void edition(size_t count) = 0;
+    virtual void packing(const std::string& packing) = 0;
+    virtual void truncation(size_t count) = 0;
 
-    // -- Contructors
-
-    MIREstimation();
-
-    // -- Destructor
-
-    ~MIREstimation();
-
-    // -- Convertors
-    // None
-
-    // -- Operators
-    // None
-
-    // -- Methods
-
-    void startField();
-
-    void numberOfGridPoints(size_t count);
-    void accuracy(size_t count);
-    void edition(size_t count);
-    void packing(const std::string& packing);
-    void truncation(size_t count);
-
-    void endField();
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-
-    // -- Members
-    // None
-
-    // -- Methods
-
-
-
-    // -- Overridden methods
-
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-private:
-
-
-    // -- Members
-
-    size_t totalNumberOfFields_;
-    size_t totalNumberOfGridPoints_;
-    size_t totalNumberOfBits_;
-
-    size_t numberOfGridPoints_;
-    size_t accuracy_;
-    size_t edition_;
-    size_t truncation_;
-
-    size_t bitsPerValue_;
-    std::string packing_;
-
-    // -- Methods
-
-
-    // -- Overridden methods
-
-    // From MIRParametrisation
-
-    void print(std::ostream &) const;
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-    // -- Friends
-
-    friend std::ostream &operator<<(std::ostream &s, const MIREstimation &p) {
-        p.print(s);
-        return s;
-    }
 };
 
 

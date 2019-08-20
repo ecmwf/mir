@@ -101,9 +101,7 @@ void Job::estimate(api::MIREstimation &estimation) const {
 
     util::MIRStatistics statistics;
     context::Context ctx(input_, statistics);
-    estimation.startField();
     plan_->estimate(ctx, estimation);
-    estimation.endField();
 }
 
 const ActionPlan &Job::plan() const {
