@@ -131,6 +131,8 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
+    virtual std::string factory() const; // Return factory name
+
     // -- Overridden methods
     // None
 

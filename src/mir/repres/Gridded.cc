@@ -76,7 +76,8 @@ bool Gridded::getLongestElementDiagonal(double&) const {
 }
 
 void Gridded::estimate(api::MIREstimation& estimation) const {
-    estimation.packing("grib_simple"); // Will be overriden
+    estimation.packing("grid_simple"); // Will be overriden
+    estimation.representation(factory());
 }
 
 
