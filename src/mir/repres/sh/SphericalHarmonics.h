@@ -117,6 +117,7 @@ class SphericalHarmonics : public Representation {
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob &) const;
     virtual void estimate(api::MIREstimation&) const;
+    virtual std::string factory() const;
 
     virtual const Representation* truncate(
             size_t truncation,
