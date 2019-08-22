@@ -121,7 +121,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                          : outputRepresentation());
+                                     : outputRepresentation());
 
     method_->execute(ctx, *in, *out);
 
@@ -132,8 +132,8 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
     return o && (interpolation_ == o->interpolation_)
-            && method_->sameAs(*o->method_)
-            && (inputIntersectsOutput_ == o->inputIntersectsOutput_);
+           && method_->sameAs(*o->method_)
+           && (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }
 
 
@@ -148,31 +148,48 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
     // repres::RepresentationHandle in(field.representation());
 
-    size_t missing = 0;
-    if(field.hasMissing()) {
-        // Load missing data
-        const MIRValuesVector& values = field.values(0);
-        double missingValue = field.missingValue();
 
-        for(size_t i = 0; i < values.size(); ++i) {
-            if(values[i] == missingValue) {
-                missing++;
-            }
-        }
-
-        std::cout << "missing " << missing << std::endl;
-        std::cout << "size " << values.size() << std::endl;
-        std::cout << "missingValue " << missingValue << std::endl;
-
-        NOTIMP;
-    }
 
     method::Cropping crop = cropping(ctx);
 
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                          : outputRepresentation());
+                                     : outputRepresentation());
 
+
+    if (field.hasMissing()) {
+        size_t missing = 0;
+        size_t points = 0;
+
+        // Load missing data
+        const MIRValuesVector& values = field.values(0);
+        double missingValue = field.missingValue();
+
+        if (crop) {
+            auto bbox = crop.boundingBox();
+            std::unique_ptr<repres::Iterator> iter(field.representation()->iterator());
+            size_t i = 0;
+            while (iter->next()) {
+                if (bbox.contains(iter->pointRotated())) {
+                    points++;
+                    if (values[i] == missingValue) {
+                        missing++;
+                    }
+                }
+                i++;
+            }
+        } else {
+            points = values.size();
+
+            for (size_t i = 0; i < points; ++i) {
+                if (values[i] == missingValue) {
+                    missing++;
+                }
+            }
+        }
+
+        estimation.missingRatio(double(missing) / double(points));
+    }
 
 
     std::unique_ptr<repres::Iterator> iter(out->iterator());
