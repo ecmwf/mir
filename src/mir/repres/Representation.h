@@ -107,6 +107,8 @@ public:
     virtual bool extendBoundingBoxOnIntersect() const;
 
     virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
+    virtual size_t frame(size_t size) const;
+
     virtual const Representation* globalise(data::MIRField&) const;
 
     virtual size_t numberOfPoints() const;
