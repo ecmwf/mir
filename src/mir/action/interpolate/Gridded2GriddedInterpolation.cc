@@ -141,6 +141,25 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
     // repres::RepresentationHandle in(field.representation());
 
+    size_t missing = 0;
+    if(field.hasMissing()) {
+        // Load missing data
+        const MIRValuesVector& values = field.values(0);
+        double missingValue = field.missingValue();
+
+        for(size_t i = 0; i < values.size(); ++i) {
+            if(values[i] == missingValue) {
+                missing++;
+            }
+        }
+
+        std::cout << "missing " << missing << std::endl;
+        std::cout << "size " << values.size() << std::endl;
+        std::cout << "missingValue " << missingValue << std::endl;
+
+        NOTIMP;
+    }
+
     method::Cropping crop = cropping(ctx);
 
 
