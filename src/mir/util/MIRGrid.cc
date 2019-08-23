@@ -129,7 +129,7 @@ double MIRGrid::getMeshLongestElementDiagonal() const {
 atlas::Mesh MIRGrid::generateMeshAndCache(MIRStatistics& statistics, const MeshGeneratorParameters& meshGenParams) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
 
-    eckit::ResourceUsage usage("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", log);
+    eckit::ResourceUsage usage_mesh("Mesh for grid " + grid_.name() + " (" + grid_.uid() + ")", log);
     caching::InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
 
     // generate signature including the mesh generation settings

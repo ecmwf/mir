@@ -77,12 +77,13 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
     field.validate();
 
     repres::RepresentationHandle rep(field.representation());
-    auto ll = dynamic_cast<const repres::latlon::LatLon*>(static_cast<const repres::Representation*>(rep));
-    if (!ll) {
-        throw eckit::UserError("PNGOutput: field should be lat/lon");
+
+    atlas::RegularGrid grid(rep->atlasGrid());
+    if (!grid) {
+        throw eckit::UserError("PNGOutput: field should be on a regular grid");
     }
-    auto Ni = ll->Ni();
-    auto Nj = ll->Nj();
+    auto Ni = size_t(grid.nx());
+    auto Nj = size_t(grid.ny());
 
     ASSERT(Ni && Nj);
     ASSERT(Ni * Nj == rep->numberOfPoints());
