@@ -26,7 +26,10 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+
 #include "mir/api/MIREstimation.h"
+#include "mir/search/PointSearch.h"
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
@@ -157,39 +160,6 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
                                      : outputRepresentation());
 
 
-    if (field.hasMissing()) {
-        size_t missing = 0;
-        size_t points = 0;
-
-        // Load missing data
-        const MIRValuesVector& values = field.values(0);
-        double missingValue = field.missingValue();
-
-        if (crop) {
-            auto bbox = crop.boundingBox();
-            std::unique_ptr<repres::Iterator> iter(field.representation()->iterator());
-            size_t i = 0;
-            while (iter->next()) {
-                if (bbox.contains(iter->pointRotated())) {
-                    points++;
-                    if (values[i] == missingValue) {
-                        missing++;
-                    }
-                }
-                i++;
-            }
-        } else {
-            points = values.size();
-
-            for (size_t i = 0; i < points; ++i) {
-                if (values[i] == missingValue) {
-                    missing++;
-                }
-            }
-        }
-
-        estimation.missingRatio(double(missing) / double(points));
-    }
 
 
     std::unique_ptr<repres::Iterator> iter(out->iterator());
@@ -200,6 +170,41 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
     }
 
     estimation.numberOfGridPoints(cnt);
+
+    if (field.hasMissing()) {
+
+        size_t missing = 0;
+
+        const MIRValuesVector& values = field.values(0);
+        double missingValue = field.missingValue();
+
+
+        repres::RepresentationHandle in(field.representation());
+
+        const search::PointSearch sptree(ctx.input().parametrisation(), *in);
+        const util::Domain& inDomain = in->domain();
+
+        std::vector<search::PointSearch::PointValueType> closest;
+
+
+        const std::unique_ptr<repres::Iterator> it(out->iterator());
+        while (it->next()) {
+
+            if (inDomain.contains(it->pointRotated())) {
+
+                // get the reference output point
+                Point3 p(it->point3D());
+                sptree.closestNPoints(p, 1, closest);
+
+                if(values[closest[0].payload()] == missingValue) {
+                    missing ++;
+                }
+
+            }
+        }
+
+        estimation.missingValues(missing);
+    }
 
     ctx.field().representation(out);
 }
