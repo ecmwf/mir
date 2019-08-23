@@ -30,6 +30,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -113,15 +114,15 @@ bool Gaussian::extendBoundingBoxOnIntersect() const {
 
 bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
     return angularPrecision_ > 0 ?
-                eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-              : A == B;
+           eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+           : A == B;
 }
 
 
 bool Gaussian::angleApproximatelyEqual(const Longitude& A, const Longitude& B) const {
     return angularPrecision_ > 0 ?
-                eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-              : A == B;
+           eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+           : A == B;
 }
 
 
@@ -167,7 +168,7 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         // extend 'outwards': don't change, it's already below the Gaussian latitudes
     } else {
         auto best = std::lower_bound(lats.begin(), lats.end(), s,
-                     [](Latitude l1, Latitude l2) { return l1 > l2; });
+        [](Latitude l1, Latitude l2) { return l1 > l2; });
         s = *best;
     }
 
@@ -214,7 +215,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(std::is_sorted(
                latitudesIt->second.begin(),
                latitudesIt->second.end(),
-               [](double a, double b) {
+    [](double a, double b) {
         return a > b;
     } ));
 
@@ -224,6 +225,11 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 
 const std::vector<double>& Gaussian::latitudes() const {
     return latitudes(N_);
+}
+
+void Gaussian::estimate(api::MIREstimation& estimation) const {
+    Gridded::estimate(estimation);
+    estimation.gaussian(N_);
 }
 
 
