@@ -77,8 +77,9 @@ void read_configuration_files() {
             ASSERT(ng);
 
             for (const auto& p : eckit::ValueMap(g.second)) {
-                // value type cheking prevents lossy conversions (string > double > string > double)
-                p.second.isDouble() ? ng->set(p.first, p.second.as<double>())
+                // value type checking prevents lossy conversions (eg. string > double > string > double)
+                p.second.isDouble() ? ng->set(p.first, p.second.as<double>()) :
+                p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
                                     : ng->set(p.first, p.second.as<std::string>());
             }
 
