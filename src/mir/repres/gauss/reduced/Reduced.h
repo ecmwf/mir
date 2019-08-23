@@ -95,6 +95,7 @@ protected:
 
     // from Representation
     virtual bool isPeriodicWestEast() const;
+    virtual void estimate(api::MIREstimation&) const;
 
     // -- Class members
 
@@ -116,6 +117,7 @@ private:
     virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
+    virtual std::string factory() const;
 
     // -- Class members
     // None

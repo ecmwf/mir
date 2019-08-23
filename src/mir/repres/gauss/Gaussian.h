@@ -85,6 +85,8 @@ protected:
     virtual void fill(util::MeshGeneratorParameters&) const;
     virtual bool sameAs(const Representation&) const;
     virtual void validate(const MIRValuesVector&) const;
+    virtual bool extendBoundingBoxOnIntersect() const;
+    virtual void estimate(api::MIREstimation&) const;
 
     bool includesNorthPole() const;
     bool includesSouthPole() const;
