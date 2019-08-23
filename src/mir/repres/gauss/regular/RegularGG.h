@@ -88,6 +88,7 @@ private:
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual bool sameAs(const Representation&) const;
     virtual Iterator* iterator() const;
+    virtual std::string factory() const;
 
     // -- Class members
     // None
