@@ -16,9 +16,7 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
-#include <memory>
 
-#include "mir/action/misc/AreaCropper.h"
 #include "mir/util/Domain.h"
 
 
@@ -28,7 +26,7 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) :
     Regular(parametrisation) {
 }
 
@@ -42,12 +40,12 @@ RegularGG::~RegularGG() = default;
 
 
 void RegularGG::print(std::ostream& out) const {
-    out << "RegularGG[N=" << N_ << ",bbox=" << bbox_ << "]";
-}
-
-
-void RegularGG::makeName(std::ostream& out) const {
-    Regular::makeName(out);
+    out << "RegularGG["
+        "N=" << N_
+        << ",Ni=" << Ni_
+        << ",Nj=" << Nj_
+        << ",bbox=" << bbox_
+        << "]";
 }
 
 
@@ -58,13 +56,17 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t){ return long(4 * N_); };
+    auto Ni = [ = ](size_t) { return long(4 * N_); };
     return Gaussian::unrotatedIterator(Ni);
 }
 
 
 const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RegularGG(N_, bbox, angularPrecision_);
+}
+
+std::string RegularGG::factory() const {
+    return "regular_gg";
 }
 
 

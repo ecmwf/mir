@@ -89,6 +89,7 @@ private:
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
     virtual Iterator* iterator() const;
+    virtual std::string factory() const;
 
     // -- Class members
     // None
