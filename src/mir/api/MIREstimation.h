@@ -27,7 +27,6 @@ public:
 
     virtual void numberOfGridPoints(size_t count) = 0;
     virtual void missingValues(size_t count) = 0;
-    virtual void gaussian(size_t N) = 0;
     virtual void pl(size_t count) = 0;
     virtual void accuracy(size_t count) = 0;
     virtual void edition(size_t count) = 0;
