@@ -153,7 +153,7 @@ void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation)
     ASSERT(ended());
 
     for (const auto& p : *this) {
-        eckit::Log::info() << "Estimate " << (*p) << std::endl;
+        eckit::Log::debug<LibMir>() << "Estimate " << (*p) << std::endl;
         p->estimate(ctx, estimation);
     }
 }

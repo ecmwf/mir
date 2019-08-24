@@ -227,10 +227,6 @@ const std::vector<double>& Gaussian::latitudes() const {
     return latitudes(N_);
 }
 
-void Gaussian::estimate(api::MIREstimation& estimation) const {
-    Gridded::estimate(estimation);
-    estimation.gaussian(N_);
-}
 
 
 }  // namespace repres
