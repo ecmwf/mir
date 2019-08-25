@@ -31,7 +31,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
-
 namespace mir {
 namespace action {
 
@@ -289,6 +288,19 @@ void AreaCropper::execute(context::Context& ctx) const {
         field.representation(cropped);
         field.update(result, i, field.hasMissing());
     }
+}
+
+
+void AreaCropper::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+
+    repres::RepresentationHandle in(ctx.field().representation());
+
+    repres::RepresentationHandle out(in->croppedRepresentation(bbox_));
+
+    estimateNumberOfGridPoints(ctx, estimation, *out);
+    estimateMissingValues(ctx, estimation, *out);
+
+    ctx.field().representation(out);
 }
 
 

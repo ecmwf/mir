@@ -22,6 +22,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -67,6 +68,10 @@ const char* Copy::name() const {
 
 bool Copy::isEndAction() const {
     return true;
+}
+
+void Copy::estimate(context::Context&, api::MIREstimation& estimation) const {
+    estimation.sameAsInput();
 }
 
 

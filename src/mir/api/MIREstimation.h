@@ -33,7 +33,7 @@ public:
     virtual void packing(const std::string& packing) = 0;
     virtual void representation(const std::string& representation) = 0;
     virtual void truncation(size_t count) = 0;
-
+    virtual void sameAsInput() = 0;
 };
 
 

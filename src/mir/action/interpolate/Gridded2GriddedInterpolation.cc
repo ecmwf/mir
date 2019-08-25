@@ -27,9 +27,6 @@
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 
-#include "mir/api/MIREstimation.h"
-#include "mir/search/PointSearch.h"
-#include "mir/input/MIRInput.h"
 
 
 namespace mir {
@@ -139,12 +136,6 @@ void Gridded2GriddedInterpolation::print(std::ostream& out) const {
 }
 
 void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    data::MIRField& field = ctx.field();
-    ASSERT(field.dimensions() == 1);
-
-    // repres::RepresentationHandle in(field.representation());
-
-
 
     method::Cropping crop = cropping(ctx);
 
@@ -154,50 +145,8 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
 
 
-
-    std::unique_ptr<repres::Iterator> iter(out->iterator());
-
-    size_t cnt = 0;
-    while (iter->next()) {
-        cnt++;
-    }
-
-    estimation.numberOfGridPoints(cnt);
-
-    if (field.hasMissing()) {
-
-        size_t missing = 0;
-
-        const MIRValuesVector& values = field.values(0);
-        double missingValue = field.missingValue();
-
-
-        repres::RepresentationHandle in(field.representation());
-
-        const search::PointSearch sptree(ctx.input().parametrisation(), *in);
-        const util::Domain& inDomain = in->domain();
-
-        std::vector<search::PointSearch::PointValueType> closest;
-
-
-        const std::unique_ptr<repres::Iterator> it(out->iterator());
-        while (it->next()) {
-
-            if (inDomain.contains(it->pointRotated())) {
-
-                // get the reference output point
-                Point3 p(it->point3D());
-                sptree.closestNPoints(p, 1, closest);
-
-                if(values[closest[0].payload()] == missingValue) {
-                    missing ++;
-                }
-
-            }
-        }
-
-        estimation.missingValues(missing);
-    }
+    estimateNumberOfGridPoints(ctx, estimation, *out);
+    estimateMissingValues(ctx, estimation, *out);
 
     ctx.field().representation(out);
 }
