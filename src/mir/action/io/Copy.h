@@ -105,6 +105,7 @@ private:
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
     virtual bool isEndAction() const;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
     // -- Class members
     // None

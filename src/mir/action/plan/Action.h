@@ -36,6 +36,9 @@ class BoundingBox;
 namespace api {
 class MIREstimation;
 }
+namespace repres {
+class Representation;
+}
 }
 
 
@@ -86,7 +89,10 @@ public:
     // None
 
     // -- Class members
-    // None
+    // Helper function for estimate()
+
+    static void estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
+    static void estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
 
     // -- Class methods
     // None
