@@ -26,6 +26,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -123,6 +124,26 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
         field.hasMissing(true);
     }
+}
+
+
+void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+
+    util::Bitmap b(path_);
+
+    size_t count = 0;
+
+    for (size_t j = 0; j < b.height() ; j++ ) {
+        for (size_t i = 0; i < b.width() ; i++ ) {
+            if (!b.on(j, i)) {
+                count++;
+            }
+        }
+    }
+
+    estimation.missingValues(count);
 }
 
 const char* BitmapFilter::name() const {
