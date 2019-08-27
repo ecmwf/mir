@@ -26,7 +26,7 @@
 #include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -42,6 +42,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {

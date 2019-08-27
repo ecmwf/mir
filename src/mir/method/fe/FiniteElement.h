@@ -18,7 +18,6 @@
 #define mir_method_fe_FiniteElement_h
 
 #include "mir/method/MethodWeighted.h"
-#include "mir/util/MIRGrid.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
 

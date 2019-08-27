@@ -16,28 +16,25 @@
 
 #include "mir/method/fe/Conservative.h"
 
+#include <algorithm>
+
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
-#include "atlas/array/IndexView.h"
-#include "atlas/field/Field.h"
+
 #include "atlas/interpolation/element/Quad3D.h"
 #include "atlas/interpolation/element/Triag3D.h"
-#include "atlas/mesh.h"
+
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRGrid.h"
 
 
 namespace mir {
 namespace method {
 namespace fe {
-
-
-static const double oneThird = 1. / 3.;
-static const double oneFourth = 1. / 4.;
 
 
 Conservative::Conservative(const param::MIRParametrisation& param) :
@@ -55,83 +52,57 @@ bool Conservative::sameAs(const Method& other) const {
 
 
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Mesh& mesh) const {
-    using namespace atlas::mesh;
     eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << "\n" "Mesh " << mesh << std::endl;
 
-    size_t firstVirtualPoint = size_t(mesh.nodes().size());
-    if (mesh.nodes().metadata().has("NbRealPts")) {
-        size_t nbRealPts = mesh.nodes().metadata().get<size_t>("NbRealPts");
-        ASSERT(nbRealPts <= firstVirtualPoint && nbRealPts > 0);
-        firstVirtualPoint = nbRealPts;
-    }
+    const auto& nodes = mesh.nodes();
+    const auto coords = atlas::array::make_view<double, 2, atlas::array::Intent::ReadOnly>(nodes.field("xyz"));
 
-
-    ASSERT(d.size() == firstVirtualPoint);
+    const auto nbRealPts = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<size_t>("NbRealPts")
+                                                             : size_t(nodes.size());
+    ASSERT(0 < d.size() && d.size() == nbRealPts);
     d.setZero();
 
-    const Nodes& nodes = mesh.nodes();
-    const Cells& cells = mesh.cells();
-    atlas::array::ArrayView<double, 2> coords = atlas::array::make_view<double, 2>(nodes.field("xyz"));
+    for (auto jtype = 0; jtype < mesh.cells().nb_types(); ++jtype) {
+        const auto& connectivity = mesh.cells().elements(jtype).node_connectivity();
 
-    // TODO handle missing values
+        /* assumes:
+         * - nb_cols == 3 implies triangle
+         * - nb_cols == 4 implies quadrilateral
+         * - no other element is supported at the time
+         */
+        const auto nb_cols = size_t(connectivity.cols());
+        ASSERT(nb_cols == 3 || nb_cols == 4);
 
-    for (atlas::idx_t jtype = 0; jtype < cells.nb_types(); ++jtype) {
-        const Elements& elements = cells.elements(jtype);
-        const BlockConnectivity& connectivity = elements.node_connectivity();
+        for (auto e = 0; e < connectivity.rows(); ++e) {
 
-        const std::string& type = elements.element_type().name();
-        size_t idx[4];
-
-        if (type == "Triangle") {
-            for (atlas::idx_t e = 0; e < elements.size(); ++e) {
-
-                bool elementHasVirtualPoint = false;
-                for (atlas::idx_t n = 0; n < 3 && !elementHasVirtualPoint; ++n) {
-                    idx[n] = size_t(connectivity(e, n));
-                    elementHasVirtualPoint = idx[n] >= firstVirtualPoint;
-                }
-                if (elementHasVirtualPoint) {
-                    continue;
-                }
-
-                atlas::interpolation::element::Triag3D triag(
-                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
-                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
-                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) });
-
-                const double nodalDistribution = triag.area() * oneThird;
-                for (size_t n = 0; n < 3; ++n) {
-                    d[idx[n]] += nodalDistribution;
-                }
-
+            std::vector<size_t> idx(nb_cols);
+            for (size_t n = 0; n < nb_cols; ++n) {
+                idx[n] = size_t(connectivity(e, atlas::idx_t(n)));
             }
-        } else if (type == "Quadrilateral") {
-            for (atlas::idx_t e = 0; e < elements.size(); ++e) {
 
-                bool elementHasVirtualPoint = false;
-                for (atlas::idx_t n = 0; n < 4 && !elementHasVirtualPoint; ++n) {
-                    idx[n] = size_t(connectivity(e, n));
-                    elementHasVirtualPoint = idx[n] >= firstVirtualPoint;
-                }
-                if (elementHasVirtualPoint) {
-                    continue;
-                }
-
-                atlas::interpolation::element::Quad3D quad(
-                      atlas::PointXYZ{ coords(idx[0],0), coords(idx[0],1), coords(idx[0],2) },
-                      atlas::PointXYZ{ coords(idx[1],0), coords(idx[1],1), coords(idx[1],2) },
-                      atlas::PointXYZ{ coords(idx[2],0), coords(idx[2],1), coords(idx[2],2) },
-                      atlas::PointXYZ{ coords(idx[3],0), coords(idx[3],1), coords(idx[3],2) });
-
-                const double nodalDistribution = quad.area() * oneFourth;
-                for (size_t n = 0; n < 4; ++n) {
-                    d[idx[n]] += nodalDistribution;
-                }
+            if (std::any_of(idx.begin(), idx.end(), [=](size_t n) { return n >= nbRealPts; })) {
+                continue;  // element has a virtual point
             }
-        } else {
-            throw eckit::SeriousBug("Found unsupported element in mesh ('" + type + "'), "
-                                    "only 'Triangle' and 'Quadrilateral' are supported",
-                                    Here());
+
+            static const double oneThird = 1. / 3.;
+            static const double oneFourth = 1. / 4.;
+
+            const double nodalDistribution =
+                    nb_cols == 3 ?
+                        oneThird * atlas::interpolation::element::Triag3D(
+                            atlas::PointXYZ{ coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2) },
+                            atlas::PointXYZ{ coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2) },
+                            atlas::PointXYZ{ coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2) }).area()
+                      : oneFourth * atlas::interpolation::element::Quad3D(
+                            atlas::PointXYZ{ coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2) },
+                            atlas::PointXYZ{ coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2) },
+                            atlas::PointXYZ{ coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2) },
+                            atlas::PointXYZ{ coords(idx[3], 0), coords(idx[3], 1), coords(idx[3], 2) }).area();
+            ASSERT(nodalDistribution > 0.);
+
+            for (auto n : idx) {
+                d[n] += nodalDistribution;
+            }
         }
     }
 }

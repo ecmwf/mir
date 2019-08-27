@@ -20,7 +20,6 @@
 
 #include <memory>
 
-#include "mir/caching/WeightCache.h"
 #include "mir/data/MIRValuesVector.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"

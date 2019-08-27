@@ -18,7 +18,7 @@
 #include <string>
 
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/config/LibMir.h"
