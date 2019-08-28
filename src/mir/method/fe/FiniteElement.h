@@ -10,6 +10,7 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Baudouin Raoult
 /// @author Willem Deconinck
 /// @date May 2015
 
@@ -26,29 +27,119 @@ namespace method {
 namespace fe {
 
 
-class FiniteElement: public MethodWeighted {
-
+class FiniteElement : public MethodWeighted {
 public:
+    // -- Types
+    // None
 
-    FiniteElement(const param::MIRParametrisation&);
+    // -- Exceptions
+    // None
+
+    // -- Constructors
+
+    FiniteElement(const param::MIRParametrisation&, const std::string& label = "input");
+
+    // -- Destructor
 
     virtual ~FiniteElement();
 
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
 protected:
+    // -- Members
+    // None
 
-    virtual void hash(eckit::MD5&) const;
+    // -- Methods
 
-protected: // methods
+    const util::MeshGeneratorParameters& meshGeneratorParams() const { return meshGeneratorParams_; }
+    util::MeshGeneratorParameters& meshGeneratorParams() { return meshGeneratorParams_; }
 
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool sameAs(const Method& other) const = 0;
-    virtual void print(std::ostream &out) const = 0;
+    atlas::Mesh atlasMesh(util::MIRStatistics& statistics, const repres::Representation&) const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+    // -- Members
+
+    util::MeshGeneratorParameters meshGeneratorParams_;
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    // From MethodWeighted
+    void hash(eckit::MD5&) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    bool sameAs(const Method&) const;
+    void print(std::ostream&) const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+
+    friend class Conservative;
+};
 
 
-protected: // members
+//=========================================================================
 
-    util::MeshGeneratorParameters inputMeshGenerationParams_;
 
+class FiniteElementFactory : public MethodFactory {
+    std::string name_;
+    virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
+    virtual FiniteElement* make(const param::MIRParametrisation&)                           = 0;
+
+protected:
+    FiniteElementFactory(const std::string&);
+    virtual ~FiniteElementFactory();
+
+public:
+    static void list(std::ostream&);
+    static FiniteElement* build(const std::string& method, const std::string& label, const param::MIRParametrisation&);
+};
+
+
+template <class T>
+class FiniteElementBuilder : public FiniteElementFactory {
+    virtual FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) {
+        return new T(param, label);
+    }
+
+    virtual FiniteElement* make(const param::MIRParametrisation& param) { return new T(param); }
+
+public:
+    FiniteElementBuilder(const std::string& name) : FiniteElementFactory(name) {}
 };
 
 
@@ -58,4 +149,3 @@ protected: // members
 
 
 #endif
-

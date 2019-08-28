@@ -11,20 +11,30 @@
 /// @author Tiago Quintino
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date   July 2015
+/// @date May 2015
 
 
 #ifndef mir_method_fe_Conservative_h
 #define mir_method_fe_Conservative_h
 
-#include "mir/method/fe/FELinear.h"
+#include <memory>
+
+#include "mir/method/MethodWeighted.h"
 
 
 namespace eckit {
 namespace linalg {
 class Vector;
-}
-}
+}  // namespace linalg
+}  // namespace eckit
+
+namespace mir {
+namespace method {
+namespace fe {
+class FiniteElement;
+}  // namespace fe
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -32,32 +42,83 @@ namespace method {
 namespace fe {
 
 
-// FIXME: not really an inheritance... could be better!
-class Conservative: public FELinear {
-
+class Conservative : public MethodWeighted {
 public:
+    // -- Types
+    // None
+
+    // -- Exceptions
+    // None
+
+    // -- Constructors
 
     Conservative(const param::MIRParametrisation&);
 
+    // -- Destructor
+
+    virtual ~Conservative();
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
 protected:
+    // -- Members
+    // None
 
-    void hash(eckit::MD5&) const;
+    // -- Methods
+    // None
 
-    void assemble(util::MIRStatistics&,
-                  WeightMatrix&,
-                  const repres::Representation& in,
-                  const repres::Representation& out) const;
+    // -- Overridden methods
+    // None
 
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
-    virtual bool sameAs(const Method& other) const;
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 private:
+    // -- Members
 
+    std::unique_ptr<FiniteElement> inputMethod_;
+    std::unique_ptr<FiniteElement> outputMethod_;
+
+    // -- Methods
+    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
+
+    // -- Overridden methods
+
+    // From MethodWeighted
+    void hash(eckit::MD5&) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
+    bool sameAs(const Method&) const;
     void print(std::ostream&) const;
-    const char* name() const;
+    virtual const char* name() const;
 
-    util::MeshGeneratorParameters outputMeshGenerationParams_;
+    // -- Class members
+    // None
 
+    // -- Class methods
+    // None
+
+    // -- Friends
+    // None
 };
 
 
@@ -67,4 +128,3 @@ private:
 
 
 #endif
-

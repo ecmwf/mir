@@ -10,6 +10,8 @@
 
 /// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Baudouin Raoult
+/// @author Willem Deconinck
 /// @date May 2015
 
 
@@ -18,6 +20,7 @@
 #include <algorithm>
 #include <forward_list>
 #include <limits>
+#include <map>
 #include <memory>
 #include <utility>
 
@@ -27,6 +30,8 @@
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -225,12 +230,23 @@ static triplet_vector_t projectPointTo3DElements(
 }  // (anonymous namespace)
 
 
-FiniteElement::FiniteElement(const param::MIRParametrisation& param) :
+FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
     MethodWeighted(param),
-    inputMeshGenerationParams_("input", param) {
+    meshGeneratorParams_(label, param) {
 
     // input mesh requirements
-    inputMeshGenerationParams_.meshCellCentres_ = true;
+    meshGeneratorParams_.meshCellCentres_ = true;
+}
+
+
+atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repres::Representation& repres) const {
+
+    // let representation set mesh generator parameters
+    auto params = meshGeneratorParams_;
+    repres.fill(params);
+
+    util::MIRGrid grid(repres.atlasGrid());
+    return grid.mesh(statistics, params);
 }
 
 
@@ -238,21 +254,23 @@ FiniteElement::~FiniteElement() = default;
 
 
 void FiniteElement::print(std::ostream &out) const {
+    out << "FiniteElement[";
     MethodWeighted::print(out);
+    out << "]";
 }
 
 
 bool FiniteElement::sameAs(const Method& other) const {
     auto o = dynamic_cast<const FiniteElement*>(&other);
     return o
-            && inputMeshGenerationParams_.sameAs(o->inputMeshGenerationParams_)
+            && meshGeneratorParams_.sameAs(o->meshGeneratorParams_)
             && MethodWeighted::sameAs(other);
 }
 
 
 void FiniteElement::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
-    inputMeshGenerationParams_.hash(md5);
+    meshGeneratorParams_.hash(md5);
 }
 
 
@@ -264,15 +282,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
-    // let representation set the mesh generator parameters
-    auto inputMeshGenerationParams = inputMeshGenerationParams_;
-    in.fill(inputMeshGenerationParams);
-    ASSERT(inputMeshGenerationParams.meshCellCentres_);  // required for the k-d tree
-
 
     // get input mesh
-    util::MIRGrid gin(in.atlasGrid());
-    const atlas::Mesh& inMesh = gin.mesh(statistics, inputMeshGenerationParams);
+    ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
+
+    const atlas::Mesh& inMesh = atlasMesh(statistics, in);
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();
@@ -289,24 +303,25 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     {
         eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree", log);
         eckit::TraceTimer<LibMir> timer("k-d tree: create");
-        eTree.reset( atlas::interpolation::method::create_element_centre_index(inMesh) );
+        eTree.reset(atlas::interpolation::method::create_element_centre_index(inMesh));
     }
 
     double R = 0.;
     if (!in.getLongestElementDiagonal(R)) {
-        R = gin.getMeshLongestElementDiagonal();
+        util::MIRGrid grid(in.atlasGrid());
+        R = grid.getMeshLongestElementDiagonal();
     }
     ASSERT(R > 0.);
     log << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
 
 
     // some statistics
-    const size_t nbInputPoints = inNodes.size();
-    const size_t nbOutputPoints = out.numberOfPoints();
-    size_t nbMinElementsSearched = std::numeric_limits<size_t>::max();
-    size_t nbMaxElementsSearched = 0;
+    const size_t nbInputPoints     = inNodes.size();
+    const size_t nbOutputPoints    = out.numberOfPoints();
+    size_t nbMinElementsSearched   = std::numeric_limits<size_t>::max();
+    size_t nbMaxElementsSearched   = 0;
     size_t nbMaxProjectionAttempts = 0;
-    size_t nbProjections = 0;
+    size_t nbProjections           = 0;
 
     size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
@@ -395,6 +410,69 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     // fill sparse matrix
     W.setFromTriplets(weights_triplets);
+}
+
+
+//=========================================================================
+
+
+namespace {
+static pthread_once_t once                             = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                       = nullptr;
+static std::map<std::string, FiniteElementFactory*>* m = nullptr;
+static void init() {
+    local_mutex = new eckit::Mutex();
+    m           = new std::map<std::string, FiniteElementFactory*>();
+}
+}  // namespace
+
+
+FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    if (m->find(name) != m->end()) {
+        throw eckit::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
+    }
+
+    ASSERT(m->find(name) == m->end());
+    (*m)[name] = this;
+}
+
+
+FiniteElementFactory::~FiniteElementFactory() {
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    m->erase(name_);
+}
+
+
+void FiniteElementFactory::list(std::ostream& out) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    const char* sep = "";
+    for (const auto& j : *m) {
+        out << sep << j.first;
+        sep = ", ";
+    }
+}
+
+
+FiniteElement* FiniteElementFactory::build(const std::string& method, const std::string& label,
+                                           const param::MIRParametrisation& param) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << method << "'" << std::endl;
+
+    auto j = m->find(method);
+    if (j == m->end()) {
+        list(eckit::Log::error() << "FiniteElementFactory: unknown '" << method << "', choices are: ");
+        throw eckit::SeriousBug("FiniteElementFactory: unknown '" + method + "'");
+    }
+
+    return j->second->make(param, label);
 }
 
 

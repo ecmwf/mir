@@ -40,10 +40,6 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-xyz", fileXYZ_);
 }
 
-void MeshGeneratorParameters::setOptions(const repres::Representation& representation) {
-    representation.fill(*this);
-}
-
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
     eckit::MD5 a, b;
     hash(a);

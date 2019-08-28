@@ -29,6 +29,8 @@
 #include "atlas/interpolation/element/Triag3D.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/method/fe/FiniteElement.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRGrid.h"
 
@@ -38,28 +40,40 @@ namespace method {
 namespace fe {
 
 
-Conservative::Conservative(const param::MIRParametrisation& param) :
-    FELinear(param),
-    outputMeshGenerationParams_("output", param) {
+Conservative::Conservative(const param::MIRParametrisation& param) : MethodWeighted(param) {
+    std::string method;
+
+    param.get("conservative-finite-element-method-input", method = "linear");
+    inputMethod_.reset(FiniteElementFactory::build(method, "input", param));
+    ASSERT(inputMethod_);
+
+    param.get("conservative-finite-element-method-output", method = "linear");
+    outputMethod_.reset(FiniteElementFactory::build(method, "output", param));
+    ASSERT(outputMethod_);
 }
+
+
+Conservative::~Conservative() = default;
 
 
 bool Conservative::sameAs(const Method& other) const {
     auto o = dynamic_cast<const Conservative*>(&other);
-    return o
-            && outputMeshGenerationParams_.sameAs(o->outputMeshGenerationParams_)
-            && FELinear::sameAs(other);
+    return o && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
+           MethodWeighted::sameAs(*o);
 }
 
 
 void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas::Mesh& mesh) const {
-    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix" << "\n" "Mesh " << mesh << std::endl;
+    eckit::Log::debug<LibMir>() << "Conservative::computeLumpedMassMatrix"
+                                << "\n"
+                                   "Mesh "
+                                << mesh << std::endl;
 
     const auto& nodes = mesh.nodes();
     const auto coords = atlas::array::make_view<double, 2, atlas::array::Intent::ReadOnly>(nodes.field("xyz"));
 
-    const auto nbRealPts = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<size_t>("NbRealPts")
-                                                             : size_t(nodes.size());
+    const auto nbRealPts =
+        nodes.metadata().has("NbRealPts") ? nodes.metadata().get<size_t>("NbRealPts") : size_t(nodes.size());
     ASSERT(0 < d.size() && d.size() == nbRealPts);
     d.setZero();
 
@@ -85,20 +99,21 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
                 continue;  // element has a virtual point
             }
 
-            static const double oneThird = 1. / 3.;
+            static const double oneThird  = 1. / 3.;
             static const double oneFourth = 1. / 4.;
 
             const double nodalDistribution =
-                    nb_cols == 3 ?
-                        oneThird * atlas::interpolation::element::Triag3D(
-                            atlas::PointXYZ{ coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2) },
-                            atlas::PointXYZ{ coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2) },
-                            atlas::PointXYZ{ coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2) }).area()
-                      : oneFourth * atlas::interpolation::element::Quad3D(
-                            atlas::PointXYZ{ coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2) },
-                            atlas::PointXYZ{ coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2) },
-                            atlas::PointXYZ{ coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2) },
-                            atlas::PointXYZ{ coords(idx[3], 0), coords(idx[3], 1), coords(idx[3], 2) }).area();
+                nb_cols == 3 ? oneThird * atlas::interpolation::element::Triag3D(
+                                              atlas::PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
+                                              atlas::PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
+                                              atlas::PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)})
+                                              .area()
+                             : oneFourth * atlas::interpolation::element::Quad3D(
+                                               atlas::PointXYZ{coords(idx[0], 0), coords(idx[0], 1), coords(idx[0], 2)},
+                                               atlas::PointXYZ{coords(idx[1], 0), coords(idx[1], 1), coords(idx[1], 2)},
+                                               atlas::PointXYZ{coords(idx[2], 0), coords(idx[2], 1), coords(idx[2], 2)},
+                                               atlas::PointXYZ{coords(idx[3], 0), coords(idx[3], 1), coords(idx[3], 2)})
+                                               .area();
             ASSERT(nodalDistribution > 0.);
 
             for (auto n : idx) {
@@ -109,38 +124,26 @@ void Conservative::computeLumpedMassMatrix(eckit::linalg::Vector& d, const atlas
 }
 
 
-void Conservative::assemble(util::MIRStatistics& statistics,
-                            WeightMatrix& W,
-                            const repres::Representation& in,
-                            const repres::Representation& out ) const {
+void Conservative::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
+                            const repres::Representation& out) const {
     eckit::Log::debug<LibMir>() << "Conservative::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-
-    // 0) let representations set the mesh generator parameters
-    auto inputMeshGenerationParams = inputMeshGenerationParams_;
-    in.fill(inputMeshGenerationParams);
-
-    auto outputMeshGenerationParams = outputMeshGenerationParams_;
-    out.fill(outputMeshGenerationParams);
-
 
     // 1) IM_{ds} compute the interpolation matrix from destination (out) to source (input)
     WeightMatrix IM(out.numberOfPoints(), in.numberOfPoints());
-    FELinear::assemble(statistics, IM, in, out);
+    inputMethod_->assemble(statistics, IM, in, out);
     eckit::Log::debug<LibMir>() << "IM rows " << IM.rows() << " cols " << IM.cols() << std::endl;
     //    IM.save("IM.mat");
 
 
     // 2) M_s compute the lumped mass matrix (source mesh)
-    util::MIRGrid gin(in.atlasGrid());
     eckit::linalg::Vector M_s(in.numberOfPoints());
-    const atlas::Mesh& inputMesh = gin.mesh(statistics, inputMeshGenerationParams);
+    const atlas::Mesh& inputMesh = inputMethod_->atlasMesh(statistics, in);
     computeLumpedMassMatrix(M_s, inputMesh);
 
 
     // 3) M_d^{-1} compute the inverse lumped mass matrix (target mesh)
-    util::MIRGrid gout(out.atlasGrid());
     eckit::linalg::Vector M_d(out.numberOfPoints());
-    const atlas::Mesh& outputMesh = gout.mesh(statistics, outputMeshGenerationParams);
+    const atlas::Mesh& outputMesh = outputMethod_->atlasMesh(statistics, out);
     computeLumpedMassMatrix(M_d, outputMesh);
     for (eckit::linalg::Scalar& v : M_d) {
         v = eckit::types::is_approximately_equal(v, 0.) ? 0. : 1. / v;
@@ -148,7 +151,7 @@ void Conservative::assemble(util::MIRStatistics& statistics,
 
 
     // 4) W = M_d^{-1} . I^{T} . M_s
-    W.reserve(IM.rows(), IM.cols(), IM.nonZeros()); // reserve same space as IM
+    W.reserve(IM.rows(), IM.cols(), IM.nonZeros());  // reserve same space as IM
     eckit::linalg::LinearAlgebra::backend().dsptd(M_d, IM, M_s, W);
 
 
@@ -165,7 +168,7 @@ void Conservative::assemble(util::MIRStatistics& statistics,
         }
 
         if (!eckit::types::is_approximately_equal(sum, 0.)) {
-            const double factor =  1. / sum;
+            const double factor = 1. / sum;
             for (it = begin; it != end; ++it) {
                 *it *= factor;
             }
@@ -175,27 +178,30 @@ void Conservative::assemble(util::MIRStatistics& statistics,
 
 
 const char* Conservative::name() const {
-    return "linear-conservative";
+    return "conservative-finite-element";
 }
 
 
 void Conservative::hash(eckit::MD5& md5) const {
-    FELinear::hash(md5);
-    outputMeshGenerationParams_.hash(md5);
+    MethodWeighted::hash(md5);
+    inputMethod_->hash(md5);
+    outputMethod_->hash(md5);
     md5.add(name());
 }
 
 
 void Conservative::print(std::ostream& out) const {
-    out << "Conservative[";
-    FELinear::print(out);
+    out << "Conservative[inputMethod=";
+    inputMethod_->print(out);
+    out << ",outputMethod=";
+    outputMethod_->print(out);
+    out << ",";
+    MethodWeighted::print(out);
     out << "]";
 }
 
 
-namespace {
-static MethodBuilder<Conservative> __conservative("conservative");
-}
+static MethodBuilder<Conservative> __builder("conservative-finite-element");
 
 
 }  // namespace fe

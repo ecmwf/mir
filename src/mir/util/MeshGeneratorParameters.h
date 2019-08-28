@@ -39,8 +39,6 @@ public:
     MeshGeneratorParameters();
     MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
 
-    void setOptions(const repres::Representation&);
-
     bool sameAs(const MeshGeneratorParameters&) const;
     void hash(eckit::Hash&) const;
     void print(std::ostream&) const;

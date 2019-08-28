@@ -41,6 +41,7 @@
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
+#include "mir/method/fe/FiniteElement.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
@@ -104,6 +105,9 @@ public:
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+
+        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-input", "Conservative FEM for input mesh"));
+        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-output", "Conservative FEM for output mesh"));
 
         options_.push_back(new FactoryOption<mir::method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
         options_.push_back(new SimpleOption<double>("simulated-missing-value", "specific value to handle as missing (avoid interpolation)"));
