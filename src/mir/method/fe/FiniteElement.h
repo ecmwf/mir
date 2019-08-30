@@ -89,7 +89,7 @@ private:
 
     // -- Methods
 
-    const atlas::Mesh& atlasMesh(util::MIRStatistics&, const atlas::Grid&, const util::MeshGeneratorParameters&) const;
+    atlas::Mesh atlasMesh(util::MIRStatistics&, const atlas::Grid&, const util::MeshGeneratorParameters&) const;
 
     // -- Overridden methods
 

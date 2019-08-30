@@ -284,8 +284,8 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
 }
 
 
-const atlas::Mesh& FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atlas::Grid& grid,
-                                            const util::MeshGeneratorParameters& meshGeneratorParams) const {
+atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atlas::Grid& grid,
+                                     const util::MeshGeneratorParameters& meshGeneratorParams) const {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -311,7 +311,7 @@ const atlas::Mesh& FiniteElement::atlasMesh(util::MIRStatistics& statistics, con
 
         const std::string meshGenerator = meshGeneratorParams.meshGenerator_;
         if (meshGenerator.empty()) {
-            throw eckit::SeriousBug("FiniteElement::atlasMesh: no mesh generator defined ('" + meshGenerator + "')");
+            throw eckit::SeriousBug("Mesh: no mesh generator defined ('" + meshGenerator + "')");
         }
 
         atlas::MeshGenerator generator(meshGenerator, meshGeneratorParams);
@@ -321,35 +321,35 @@ const atlas::Mesh& FiniteElement::atlasMesh(util::MIRStatistics& statistics, con
         // If meshgenerator did not create xyz field already, do it now.
         {
             eckit::ResourceUsage usage("BuildXYZField", log);
-            eckit::TraceTimer<LibMir> timer("FiniteElement::atlasMesh: BuildXYZField");
+            eckit::TraceTimer<LibMir> timer("Mesh: BuildXYZField");
             atlas::mesh::actions::BuildXYZField()(mesh);
         }
 
         // Calculate barycenters of mesh cells
         if (meshGeneratorParams.meshCellCentres_) {
             eckit::ResourceUsage usage("BuildCellCentres", log);
-            eckit::TraceTimer<LibMir> timer("FiniteElement::atlasMesh: BuildCellCentres");
+            eckit::TraceTimer<LibMir> timer("Mesh: BuildCellCentres");
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }
 
         // Calculate the mesh cells longest diagonal
         if (meshGeneratorParams.meshCellLongestDiagonal_) {
             eckit::ResourceUsage usage("CalculateCellLongestDiagonal", log);
-            eckit::TraceTimer<LibMir> timer("FiniteElement::atlasMesh: CalculateCellLongestDiagonal");
+            eckit::TraceTimer<LibMir> timer("Mesh: CalculateCellLongestDiagonal");
             CalculateCellLongestDiagonal()(mesh);
         }
 
         // Calculate node-lumped mass matrix
         if (meshGeneratorParams.meshNodeLumpedMassMatrix_) {
             eckit::ResourceUsage usage("BuildNodeLumpedMassMatrix", log);
-            eckit::TraceTimer<LibMir> timer("FiniteElement::atlasMesh: BuildNodeLumpedMassMatrix");
+            eckit::TraceTimer<LibMir> timer("Mesh: BuildNodeLumpedMassMatrix");
             BuildNodeLumpedMassMatrix()(mesh);
         }
 
         // Calculate node-to-cell ("inverse") connectivity
         if (meshGeneratorParams.meshNodeToCellConnectivity_) {
             eckit::ResourceUsage usage("BuildNode2CellConnectivity", log);
-            eckit::TraceTimer<LibMir> timer("FiniteElement::atlasMesh: BuildNode2CellConnectivity");
+            eckit::TraceTimer<LibMir> timer("Mesh: BuildNode2CellConnectivity");
             atlas::mesh::actions::BuildNode2CellConnectivity{mesh}();
         }
 
