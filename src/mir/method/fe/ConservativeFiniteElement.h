@@ -8,32 +8,41 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Tiago Quintino
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date May 2015
 
-#ifndef mir_util_MeshGeneratorParameters_h
-#define mir_util_MeshGeneratorParameters_h
 
-#include <iosfwd>
-#include <string>
+#ifndef mir_method_fe_ConservativeFiniteElement_h
+#define mir_method_fe_ConservativeFiniteElement_h
 
-#include "mir/api/Atlas.h"
+#include <memory>
+
+#include "mir/method/MethodWeighted.h"
 
 
 namespace eckit {
-class MD5;
-}
+namespace linalg {
+class Vector;
+}  // namespace linalg
+}  // namespace eckit
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-}  // namespace param
+namespace method {
+namespace fe {
+class FiniteElement;
+}  // namespace fe
+}  // namespace method
 }  // namespace mir
 
 
 namespace mir {
-namespace util {
+namespace method {
+namespace fe {
 
 
-class MeshGeneratorParameters : public atlas::MeshGenerator::Parameters {
+class ConservativeFiniteElement : public MethodWeighted {
 public:
     // -- Types
     // None
@@ -43,11 +52,11 @@ public:
 
     // -- Constructors
 
-    MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    ConservativeFiniteElement(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~MeshGeneratorParameters() = default;
+    virtual ~ConservativeFiniteElement();
 
     // -- Convertors
     // None
@@ -55,22 +64,8 @@ public:
     // -- Operators
     // None
 
-    // -- Members
-
-    std::string meshGenerator_;
-    bool meshCellCentres_;
-    bool meshCellLongestDiagonal_;
-    bool meshNodeLumpedMassMatrix_;
-    bool meshNodeToCellConnectivity_;
-    std::string fileLonLat_;
-    std::string fileXY_;
-    std::string fileXYZ_;
-
     // -- Methods
-
-    bool sameAs(const MeshGeneratorParameters&) const;
-    void hash(eckit::Hash&) const;
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -99,13 +94,22 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::unique_ptr<FiniteElement> inputMethod_;
+    std::unique_ptr<FiniteElement> outputMethod_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    // None
+
+    // From MethodWeighted
+    void hash(eckit::MD5&) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
+    bool sameAs(const Method&) const;
+    void print(std::ostream&) const;
+    virtual const char* name() const;
 
     // -- Class members
     // None
@@ -114,15 +118,12 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const MeshGeneratorParameters& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace util
+}  // namespace fe
+}  // namespace method
 }  // namespace mir
 
 

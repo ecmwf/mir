@@ -137,9 +137,13 @@ public:
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Mesh output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Mesh output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-centres", "Calculate cell centres for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal", "Calculate cells longest diagonal for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix", "Calculate node-lumped mass matrix for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity", "Calculate node-to-cell connectivity for " + which + " mesh"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
         }
 
         //==============================================

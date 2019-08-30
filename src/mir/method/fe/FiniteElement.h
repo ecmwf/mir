@@ -18,6 +18,7 @@
 #ifndef mir_method_fe_FiniteElement_h
 #define mir_method_fe_FiniteElement_h
 
+#include "mir/api/Atlas.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/MeshGeneratorParameters.h"
 
@@ -70,7 +71,7 @@ protected:
     const util::MeshGeneratorParameters& meshGeneratorParams() const { return meshGeneratorParams_; }
     util::MeshGeneratorParameters& meshGeneratorParams() { return meshGeneratorParams_; }
 
-    atlas::Mesh atlasMesh(util::MIRStatistics& statistics, const repres::Representation&) const;
+    atlas::Mesh atlasMesh(util::MIRStatistics&, const repres::Representation&) const;
 
     // -- Overridden methods
     // None
@@ -87,7 +88,8 @@ private:
     util::MeshGeneratorParameters meshGeneratorParams_;
 
     // -- Methods
-    // None
+
+    const atlas::Mesh& atlasMesh(util::MIRStatistics&, const atlas::Grid&, const util::MeshGeneratorParameters&) const;
 
     // -- Overridden methods
 
@@ -108,7 +110,7 @@ private:
 
     // -- Friends
 
-    friend class Conservative;
+    friend class ConservativeFiniteElement;
 };
 
 

@@ -177,7 +177,9 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
 
 
 void Gaussian::fill(util::MeshGeneratorParameters& params) const {
-    params.meshGenerator_ = "structured";
+    if (params.meshGenerator_.empty()) {
+        params.meshGenerator_ = "structured";
+    }
 
     const Latitude& s = bbox_.south();
     if (s <= latitudes().back() || s > Latitude::EQUATOR) {

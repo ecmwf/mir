@@ -8,36 +8,36 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "mir/util/MeshGeneratorParameters.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+
 
 namespace mir {
 namespace util {
 
-MeshGeneratorParameters::MeshGeneratorParameters()
-    : meshGenerator_(""), meshCellCentres_(true), fileLonLat_(""), fileXY_(""), fileXYZ_("") {
+MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param) {
+    ASSERT(!label.empty());
+    const param::MIRParametrisation& user = param.userParametrisation();
+
+    user.get(label + "-mesh-generator", meshGenerator_ = "");
+    user.get(label + "-mesh-cell-centres", meshCellCentres_ = false);
+    user.get(label + "-mesh-cell-longest-diagonal", meshCellLongestDiagonal_ = false);
+    user.get(label + "-mesh-node-lumped-mass-matrix", meshNodeLumpedMassMatrix_ = false);
+    user.get(label + "-mesh-node-to-cell-connectivity", meshNodeToCellConnectivity_ = false);
+    user.get(label + "-mesh-file-ll", fileLonLat_ = "");
+    user.get(label + "-mesh-file-xy", fileXY_ = "");
+    user.get(label + "-mesh-file-xyz", fileXYZ_ = "");
+
     set("three_dimensional", true);
     set("triangulate", false);
     set("angle", 0.);
     set("force_include_north_pole", false);
     set("force_include_south_pole", false);
-}
-
-MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param)
-    : MeshGeneratorParameters() {
-    ASSERT(!label.empty());
-    const param::MIRParametrisation& user = param.userParametrisation();
-
-    user.get(label + "-mesh-cell-centres", meshCellCentres_);
-    user.get(label + "-mesh-generator", meshGenerator_);
-    user.get(label + "-mesh-file-ll", fileLonLat_);
-    user.get(label + "-mesh-file-xy", fileXY_);
-    user.get(label + "-mesh-file-xyz", fileXYZ_);
 }
 
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
@@ -58,19 +58,25 @@ void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
 
     double angle = 0.;
     ASSERT(get("angle", angle));
-
     hash << angle;
+
     hash << meshGenerator_;
     hash << meshCellCentres_;
+    hash << meshCellLongestDiagonal_;
+    hash << meshNodeLumpedMassMatrix_;
+    hash << meshNodeToCellConnectivity_;
 }
 
 void MeshGeneratorParameters::print(std::ostream& s) const {
     s << "MeshGeneratorParameters["
       << "meshGenerator=" << meshGenerator_ << ",meshCellCentres=" << meshCellCentres_
+      << ",meshCellLongestDiagonal=" << meshCellLongestDiagonal_
+      << ",meshNodeLumpedMassMatrix=" << meshNodeLumpedMassMatrix_
+      << ",meshNodeToCellConnectivity=" << meshNodeToCellConnectivity_
       << ",three_dimensional=" << getBool("three_dimensional") << ",triangulate=" << getBool("triangulate")
       << ",angle=" << getDouble("angle") << ",force_include_north_pole=" << getBool("force_include_north_pole")
       << ",force_include_south_pole=" << getBool("force_include_south_pole") << "]";
 }
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

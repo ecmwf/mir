@@ -9,31 +9,24 @@
  */
 
 
-#ifndef mir_util_MeshGeneratorParameters_h
-#define mir_util_MeshGeneratorParameters_h
+#ifndef mir_method_fe_BuildNodeLumpedMassMatrix_h
+#define mir_method_fe_BuildNodeLumpedMassMatrix_h
 
-#include <iosfwd>
 #include <string>
 
-#include "mir/api/Atlas.h"
 
-
-namespace eckit {
-class MD5;
-}
-
-namespace mir {
-namespace param {
-class MIRParametrisation;
-}  // namespace param
-}  // namespace mir
+namespace atlas {
+class Field;
+class Mesh;
+}  // namespace atlas
 
 
 namespace mir {
-namespace util {
+namespace method {
+namespace fe {
 
 
-class MeshGeneratorParameters : public atlas::MeshGenerator::Parameters {
+class BuildNodeLumpedMassMatrix {
 public:
     // -- Types
     // None
@@ -43,34 +36,20 @@ public:
 
     // -- Constructors
 
-    MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    BuildNodeLumpedMassMatrix(std::string name = "node_lumped_mass_matrix", bool force_recompute = false);
 
     // -- Destructor
-
-    virtual ~MeshGeneratorParameters() = default;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
 
-    // -- Members
-
-    std::string meshGenerator_;
-    bool meshCellCentres_;
-    bool meshCellLongestDiagonal_;
-    bool meshNodeLumpedMassMatrix_;
-    bool meshNodeToCellConnectivity_;
-    std::string fileLonLat_;
-    std::string fileXY_;
-    std::string fileXYZ_;
+    atlas::Field& operator()(atlas::Mesh&) const;
 
     // -- Methods
-
-    bool sameAs(const MeshGeneratorParameters&) const;
-    void hash(eckit::Hash&) const;
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -99,7 +78,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::string name_;
+    bool force_recompute_;
 
     // -- Methods
     // None
@@ -114,15 +95,12 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const MeshGeneratorParameters& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace util
+}  // namespace fe
+}  // namespace method
 }  // namespace mir
 
 

@@ -8,33 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date May 2015
+
+#ifndef mir_method_fe_CalculateCellLongestDiagonal_h
+#define mir_method_fe_CalculateCellLongestDiagonal_h
+
+#include <string>
 
 
-#ifndef mir_method_fe_Conservative_h
-#define mir_method_fe_Conservative_h
-
-#include <memory>
-
-#include "mir/method/MethodWeighted.h"
-
-
-namespace eckit {
-namespace linalg {
-class Vector;
-}  // namespace linalg
-}  // namespace eckit
-
-namespace mir {
-namespace method {
-namespace fe {
-class FiniteElement;
-}  // namespace fe
-}  // namespace method
-}  // namespace mir
+namespace atlas {
+class Mesh;
+}  // namespace atlas
 
 
 namespace mir {
@@ -42,7 +25,7 @@ namespace method {
 namespace fe {
 
 
-class Conservative : public MethodWeighted {
+class CalculateCellLongestDiagonal {
 public:
     // -- Types
     // None
@@ -52,17 +35,17 @@ public:
 
     // -- Constructors
 
-    Conservative(const param::MIRParametrisation&);
+    CalculateCellLongestDiagonal(std::string name = "cell_longest_diagonal", bool force_recompute = false);
 
     // -- Destructor
-
-    virtual ~Conservative();
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    double operator()(atlas::Mesh&) const;
 
     // -- Methods
     // None
@@ -95,21 +78,14 @@ protected:
 private:
     // -- Members
 
-    std::unique_ptr<FiniteElement> inputMethod_;
-    std::unique_ptr<FiniteElement> outputMethod_;
+    std::string name_;
+    bool force_recompute_;
 
     // -- Methods
-    void computeLumpedMassMatrix(eckit::linalg::Vector&, const atlas::Mesh&) const;
+    // None
 
     // -- Overridden methods
-
-    // From MethodWeighted
-    void hash(eckit::MD5&) const;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
-    void print(std::ostream&) const;
-    virtual const char* name() const;
+    // None
 
     // -- Class members
     // None
