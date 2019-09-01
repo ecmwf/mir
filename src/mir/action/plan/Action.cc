@@ -93,22 +93,20 @@ void Action::estimate(context::Context&, api::MIREstimation& estimation) const {
 }
 
 
-void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation, const repres::Representation& out) {
-    std::unique_ptr<repres::Iterator> iter(out.iterator());
-
-    size_t cnt = 0;
-    while (iter->next()) {
-        cnt++;
-    }
-
-    estimation.numberOfGridPoints(cnt);
+void Action::estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
+    // eckit::Timer timer("estimateNumberOfGridPoints", std::cerr);
+    estimation.numberOfGridPoints(ctx.field().representation()->numberOfPoints());
 }
 
 
 void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
-   data::MIRField& field = ctx.field();
-   ASSERT(field.dimensions() == 1);
-   if (field.hasMissing()) {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+    if (field.hasMissing()) {
+
+
+        eckit::Timer timer("estimateMissingValues", std::cerr);
+
 
         size_t missing = 0;
 
@@ -133,7 +131,7 @@ void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& es
                 Point3 p(it->point3D());
                 sptree.closestNPoints(p, 1, closest);
 
-                if(values[closest[0].payload()] == missingValue) {
+                if (values[closest[0].payload()] == missingValue) {
                     missing ++;
                 }
 

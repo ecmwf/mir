@@ -27,6 +27,7 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/api/MIREstimation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -132,6 +133,8 @@ void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimatio
     ASSERT(field.dimensions() == 1);
 
     util::Bitmap b(path_);
+
+    ASSERT(b.height() * b.width() == field.representation()->numberOfPoints());
 
     size_t count = 0;
 

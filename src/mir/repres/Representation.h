@@ -113,8 +113,7 @@ public:
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
     virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
-    virtual size_t frame(size_t size) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
 
     virtual const Representation* globalise(data::MIRField&) const;
 

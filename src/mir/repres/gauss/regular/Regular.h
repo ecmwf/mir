@@ -104,8 +104,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
-    virtual size_t frame(size_t size) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 

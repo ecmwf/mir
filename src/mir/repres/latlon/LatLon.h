@@ -144,8 +144,7 @@ private:
 
     virtual void fill(util::MeshGeneratorParameters&) const;
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
-    virtual size_t frame(size_t size) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate=false) const;
 
     virtual void reorder(long scanningMode, MIRValuesVector& values) const;
 
