@@ -78,7 +78,9 @@ void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
 
-    size_t count = field.representation()->frame(size_);
+    MIRValuesVector dummy;
+
+    size_t count = field.representation()->frame(dummy, size_, 0, true);
 
     estimation.missingValues(count);
 }
