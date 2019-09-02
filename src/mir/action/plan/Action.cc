@@ -27,12 +27,15 @@
 
 // Includes needed for estimate() helper functions
 #include "mir/action/context/Context.h"
-#include "mir/repres/Representation.h"
 #include "mir/api/MIREstimation.h"
-#include "mir/search/PointSearch.h"
 #include "mir/data/MIRField.h"
-#include "mir/util/Domain.h"
-#include "mir/input/MIRInput.h"
+#include "mir/method/Method.h"
+#include "mir/param/CombinedParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
+
+
 
 namespace mir {
 namespace action {
@@ -107,34 +110,23 @@ void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& es
 
         eckit::Timer timer("estimateMissingValues", std::cerr);
 
+        param::DefaultParametrisation runtime;
+        param::CombinedParametrisation combined(runtime, runtime, runtime);
+        std::unique_ptr< method::Method > method(method::MethodFactory::build("nn", combined));
+
+        util::MIRStatistics dummy; // TODO: use the global one
+        context::Context ctx(field, dummy);
+        method->execute(ctx, *field.representation(), out);
+
 
         size_t missing = 0;
 
         const MIRValuesVector& values = field.values(0);
         double missingValue = field.missingValue();
 
-
-        repres::RepresentationHandle in(field.representation());
-
-        const search::PointSearch sptree(ctx.input().parametrisation(), *in);
-        const util::Domain& inDomain = in->domain();
-
-        std::vector<search::PointSearch::PointValueType> closest;
-
-
-        const std::unique_ptr<repres::Iterator> it(out.iterator());
-        while (it->next()) {
-
-            if (inDomain.contains(it->pointRotated())) {
-
-                // get the reference output point
-                Point3 p(it->point3D());
-                sptree.closestNPoints(p, 1, closest);
-
-                if (values[closest[0].payload()] == missingValue) {
-                    missing ++;
-                }
-
+        for(size_t i = 0; i < values.size(); ++i) {
+            if(values[i] == missingValue) {
+                missing++;
             }
         }
 
