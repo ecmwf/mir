@@ -26,11 +26,12 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/Atlas.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -75,7 +76,7 @@ Gaussian::~Gaussian() = default;
 
 bool Gaussian::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const Gaussian*>(&other);
-    return o && (N_ == o->N_) && (bbox_ == o->bbox_);
+    return o && (N_ == o->N_) && (domain() == o->domain());
 }
 
 
@@ -177,7 +178,9 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
 
 
 void Gaussian::fill(util::MeshGeneratorParameters& params) const {
-    params.meshGenerator_ = "structured";
+    if (params.meshGenerator_.empty()) {
+        params.meshGenerator_ = "structured";
+    }
 
     const Latitude& s = bbox_.south();
     if (s <= latitudes().back() || s > Latitude::EQUATOR) {

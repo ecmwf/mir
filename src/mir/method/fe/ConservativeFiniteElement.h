@@ -9,14 +9,32 @@
  */
 
 /// @author Tiago Quintino
+/// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @date May 2015
 
 
-#ifndef mir_method_fe_FEBilinear_h
-#define mir_method_fe_FEBilinear_h
+#ifndef mir_method_fe_ConservativeFiniteElement_h
+#define mir_method_fe_ConservativeFiniteElement_h
 
-#include "mir/method/fe/FiniteElement.h"
+#include <memory>
+
+#include "mir/method/MethodWeighted.h"
+
+
+namespace eckit {
+namespace linalg {
+class Vector;
+}  // namespace linalg
+}  // namespace eckit
+
+namespace mir {
+namespace method {
+namespace fe {
+class FiniteElement;
+}  // namespace fe
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -24,7 +42,7 @@ namespace method {
 namespace fe {
 
 
-class FEBilinear : public FiniteElement {
+class ConservativeFiniteElement : public MethodWeighted {
 public:
     // -- Types
     // None
@@ -34,10 +52,11 @@ public:
 
     // -- Constructors
 
-    FEBilinear(const param::MIRParametrisation&, const std::string& label = "input");
+    ConservativeFiniteElement(const param::MIRParametrisation&);
 
     // -- Destructor
-    // None
+
+    virtual ~ConservativeFiniteElement();
 
     // -- Convertors
     // None
@@ -75,7 +94,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::unique_ptr<FiniteElement> inputMethod_;
+    std::unique_ptr<FiniteElement> outputMethod_;
 
     // -- Methods
     // None
@@ -83,7 +104,12 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    const char* name() const;
+    void hash(eckit::MD5&) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
+    bool sameAs(const Method&) const;
+    void print(std::ostream&) const;
+    virtual const char* name() const;
 
     // -- Class members
     // None
