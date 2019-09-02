@@ -73,7 +73,6 @@ void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, Weight
 
     WeightMatrix I(Ni, Nj);
     inputMethod_->assemble(statistics, I, in, out);
-    I.save("M.mat");
 
 
     // 2) M_s: input (source) mesh lumped mass matrix
