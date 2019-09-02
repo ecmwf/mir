@@ -177,7 +177,7 @@ void MIRWeightMatrix::execute(const eckit::option::CmdArgs& args) {
             str.precision(std::numeric_limits<double>::digits10);
 
             auto to_string = [&str](WeightMatrix::Scalar value) {
-                str.clear();
+                str.str("");
                 str << value;
                 return str.str();
             };
