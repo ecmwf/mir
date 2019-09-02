@@ -15,52 +15,27 @@
 
 #include "mir/method/fe/FELinear.h"
 
-#include "atlas/meshgenerator.h"
-#include "mir/param/MIRParametrisation.h"
-
 
 namespace mir {
 namespace method {
 namespace fe {
 
 
-FELinear::FELinear(const param::MIRParametrisation &param) :
-    FiniteElement(param) {
-    inputMeshGenerationParams_.set("triangulate", true); // No quads allowed
+FELinear::FELinear(const param::MIRParametrisation& param, const std::string& label) : FiniteElement(param, label) {
+
+    // generate meshes only with triangles
+    meshGeneratorParams().set("triangulate", true);
 }
 
 
-FELinear::~FELinear() = default;
-
-
-bool FELinear::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const FELinear*>(&other);
-    return o && FiniteElement::sameAs(other);
-}
-
-const char *FELinear::name() const {
-    return  "linear";
+const char* FELinear::name() const {
+    return "linear";
 }
 
 
-void FELinear::hash( eckit::MD5& md5) const {
-    FiniteElement::hash(md5);
-}
-
-
-void FELinear::print(std::ostream &out) const {
-    out << "FELinear[";
-    FiniteElement::print(out);
-    out << "]";
-}
-
-
-namespace {
-static MethodBuilder< FELinear > __linear("linear");
-}
+static FiniteElementBuilder<FELinear> __builder("linear");
 
 
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-

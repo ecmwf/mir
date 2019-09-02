@@ -14,20 +14,19 @@
 
 #include <iosfwd>
 #include <string>
+
 #include "mir/api/Atlas.h"
 
 
 namespace eckit {
 class MD5;
 }
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
-}
-namespace repres {
-class Representation;
-}
-}
+}  // namespace param
+}  // namespace mir
 
 
 namespace mir {
@@ -36,28 +35,90 @@ namespace util {
 
 class MeshGeneratorParameters : public atlas::MeshGenerator::Parameters {
 public:
-    MeshGeneratorParameters();
+    // -- Types
+    // None
+
+    // -- Exceptions
+    // None
+
+    // -- Constructors
+
     MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
 
-    void setOptions(const repres::Representation&);
+    // -- Destructor
+
+    virtual ~MeshGeneratorParameters() = default;
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Members
+
+    std::string meshGenerator_;
+    bool meshCellCentres_;
+    bool meshCellLongestDiagonal_;
+    bool meshNodeLumpedMassMatrix_;
+    bool meshNodeToCellConnectivity_;
+    std::string fileLonLat_;
+    std::string fileXY_;
+    std::string fileXYZ_;
+
+    // -- Methods
 
     bool sameAs(const MeshGeneratorParameters&) const;
     void hash(eckit::Hash&) const;
     void print(std::ostream&) const;
 
-    std::string meshGenerator_;
-    bool meshCellCentres_;
-    std::string fileLonLat_;
-    std::string fileXY_;
-    std::string fileXYZ_;
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+protected:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 private:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const MeshGeneratorParameters& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -66,4 +127,3 @@ private:
 
 
 #endif
-

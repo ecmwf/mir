@@ -19,12 +19,14 @@
 
 #include <iosfwd>
 #include <string>
+
 #include "eckit/memory/NonCopyable.h"
 
 
 namespace eckit {
 class MD5;
 }
+
 namespace mir {
 namespace context {
 class Context;
@@ -64,10 +66,10 @@ public:
     virtual bool sameAs(const Method& other) const = 0;
 
     // For optimising plan
-    virtual bool canCrop() const;
-    virtual void setCropping(const util::BoundingBox&);
-    virtual bool hasCropping() const;
-    virtual const util::BoundingBox& getCropping() const;
+    virtual bool canCrop() const = 0;
+    virtual void setCropping(const util::BoundingBox&) = 0;
+    virtual bool hasCropping() const = 0;
+    virtual const util::BoundingBox& getCropping() const = 0;
 
 protected:
 

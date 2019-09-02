@@ -41,6 +41,7 @@
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
+#include "mir/method/fe/FiniteElement.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
@@ -105,6 +106,9 @@ public:
 
         options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
+        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-input", "Conservative FEM for input mesh"));
+        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-output", "Conservative FEM for output mesh"));
+
         options_.push_back(new FactoryOption<mir::method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
         options_.push_back(new SimpleOption<double>("simulated-missing-value", "specific value to handle as missing (avoid interpolation)"));
         options_.push_back(new SimpleOption<double>("simulated-missing-value-epsilon", "specific value to handle as missing, tolerance"));
@@ -133,9 +137,13 @@ public:
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Mesh output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Mesh output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
-            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Mesh output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-centres", "Calculate cell centres for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-cell-longest-diagonal", "Calculate cells longest diagonal for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-lumped-mass-matrix", "Calculate node-lumped mass matrix for " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-node-to-cell-connectivity", "Calculate node-to-cell connectivity for " + which + " mesh"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
         }
 
         //==============================================

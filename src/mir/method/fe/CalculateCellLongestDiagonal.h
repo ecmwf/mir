@@ -8,15 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
+
+#ifndef mir_method_fe_CalculateCellLongestDiagonal_h
+#define mir_method_fe_CalculateCellLongestDiagonal_h
+
+#include <string>
 
 
-#ifndef mir_method_fe_FEBilinear_h
-#define mir_method_fe_FEBilinear_h
-
-#include "mir/method/fe/FiniteElement.h"
+namespace atlas {
+class Mesh;
+}  // namespace atlas
 
 
 namespace mir {
@@ -24,7 +25,7 @@ namespace method {
 namespace fe {
 
 
-class FEBilinear : public FiniteElement {
+class CalculateCellLongestDiagonal {
 public:
     // -- Types
     // None
@@ -34,7 +35,7 @@ public:
 
     // -- Constructors
 
-    FEBilinear(const param::MIRParametrisation&, const std::string& label = "input");
+    CalculateCellLongestDiagonal(std::string name = "cell_longest_diagonal", bool force_recompute = false);
 
     // -- Destructor
     // None
@@ -43,7 +44,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    double operator()(atlas::Mesh&) const;
 
     // -- Methods
     // None
@@ -75,15 +77,15 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::string name_;
+    bool force_recompute_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-
-    // From MethodWeighted
-    const char* name() const;
+    // None
 
     // -- Class members
     // None

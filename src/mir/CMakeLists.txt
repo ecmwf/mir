@@ -632,16 +632,18 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
-        method/fe/Conservative.cc
-        method/fe/Conservative.h
+        method/fe/BuildNodeLumpedMassMatrix.cc
+        method/fe/BuildNodeLumpedMassMatrix.h
+        method/fe/CalculateCellLongestDiagonal.cc
+        method/fe/CalculateCellLongestDiagonal.h
+        method/fe/ConservativeFiniteElement.cc
+        method/fe/ConservativeFiniteElement.h
         method/fe/FEBilinear.cc
         method/fe/FEBilinear.h
         method/fe/FELinear.cc
         method/fe/FELinear.h
         method/fe/FiniteElement.cc
         method/fe/FiniteElement.h
-        method/fe/Tessellation.cc
-        method/fe/Tessellation.h
         method/nonlinear/Heaviest.cc
         method/nonlinear/Heaviest.h
         method/nonlinear/MissingIfAllMissing.cc
@@ -668,8 +670,6 @@ if (HAVE_ATLAS)
         repres/atlas/Lambert.h
         repres/atlas/LambertAzimuthalEqualArea.cc
         repres/atlas/LambertAzimuthalEqualArea.h
-        util/MIRGrid.cc
-        util/MIRGrid.h
         util/MeshGeneratorParameters.cc
         util/MeshGeneratorParameters.h
         )

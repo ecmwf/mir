@@ -24,23 +24,75 @@ namespace method {
 namespace fe {
 
 
-class FELinear: public FiniteElement {
+class FELinear : public FiniteElement {
 public:
+    // -- Types
+    // None
 
-    FELinear(const param::MIRParametrisation&);
+    // -- Exceptions
+    // None
 
-    virtual ~FELinear();
+    // -- Constructors
+
+    FELinear(const param::MIRParametrisation&, const std::string& label = "input");
+
+    // -- Destructor
+    // None
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 protected:
+    // -- Members
+    // None
 
-    virtual void hash(eckit::MD5&) const;
-    virtual bool sameAs(const Method& other) const;
-    virtual void print(std::ostream&) const;
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 private:
+    // -- Members
+    // None
 
-    virtual const char* name() const;
+    // -- Methods
+    // None
 
+    // -- Overridden methods
+
+    // From MethodWeighted
+    const char* name() const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+    // None
 };
 
 
@@ -50,4 +102,3 @@ private:
 
 
 #endif
-

@@ -20,6 +20,8 @@
 
 #include <memory>
 
+#include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace method {
