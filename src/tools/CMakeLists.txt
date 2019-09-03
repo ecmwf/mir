@@ -32,7 +32,8 @@ if(HAVE_ATLAS)
     list(APPEND _tools
         mir-gaussian-fractions
         mir-get-data
-        mir-spectral-transform)
+        mir-spectral-transform
+        mir-triangulate)
 endif()
 
 if (HAVE_MIR_TOOLS)
