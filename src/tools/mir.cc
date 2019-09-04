@@ -144,6 +144,11 @@ public:
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-ll", "Output file for " + which + " grid, in lon/lat coordinates (default <empty>)"));
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xy", "Output file for " + which + " grid, in X/Y coordinates (default <empty>)"));
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-file-xyz", "Output file for " + which + " grid, in X/Y/Z coordinates (default <empty>)"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-three-dimensional", "Generate 3-dimensional " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-triangulate", "Generate triangulated " + which + " mesh"));
+            options_.push_back(new SimpleOption<double>(which + "-mesh-generator-angle", "Generate with quadrilateral tolerance angle on " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-north-pole", "Generate including North pole on " + which + " mesh"));
+            options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole", "Generate including South pole on " + which + " mesh"));
         }
 
         //==============================================

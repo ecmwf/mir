@@ -11,6 +11,8 @@
 
 #include "mir/util/MeshGeneratorParameters.h"
 
+#include <algorithm>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
@@ -46,6 +48,19 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-ll", fileLonLat_);
     user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
+
+    for (std::string key : {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
+        bool value = false;
+        if (user.get(label + "-mesh-generator-" + key, value)) {
+            std::replace(key.begin(), key.end(), '-', '_');
+            set(key, value);
+        }
+    }
+
+    double angle = getDouble("angle");
+    if (user.get(label + "-mesh-generator-angle", angle)) {
+        set("angle", angle);
+    }
 }
 
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
@@ -57,22 +72,12 @@ bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const
 }
 
 void MeshGeneratorParameters::hash(eckit::Hash& hash) const {
-
-    for (const char* p : {"three_dimensional", "triangulate", "force_include_north_pole", "force_include_south_pole"}) {
-        bool value = false;
-        ASSERT(get(p, value));
-        hash << value;
-    }
-
-    double angle = 0.;
-    ASSERT(get("angle", angle));
-    hash << angle;
-
     hash << meshGenerator_;
     hash << meshCellCentres_;
     hash << meshCellLongestDiagonal_;
     hash << meshNodeLumpedMassMatrix_;
     hash << meshNodeToCellConnectivity_;
+    atlas::MeshGenerator::Parameters::hash(hash);
 }
 
 void MeshGeneratorParameters::print(std::ostream& s) const {
@@ -80,10 +85,9 @@ void MeshGeneratorParameters::print(std::ostream& s) const {
       << "meshGenerator=" << meshGenerator_ << ",meshCellCentres=" << meshCellCentres_
       << ",meshCellLongestDiagonal=" << meshCellLongestDiagonal_
       << ",meshNodeLumpedMassMatrix=" << meshNodeLumpedMassMatrix_
-      << ",meshNodeToCellConnectivity=" << meshNodeToCellConnectivity_
-      << ",three_dimensional=" << getBool("three_dimensional") << ",triangulate=" << getBool("triangulate")
-      << ",angle=" << getDouble("angle") << ",force_include_north_pole=" << getBool("force_include_north_pole")
-      << ",force_include_south_pole=" << getBool("force_include_south_pole") << "]";
+      << ",meshNodeToCellConnectivity=" << meshNodeToCellConnectivity_ << ",";
+    atlas::MeshGenerator::Parameters::print(s);
+    s << "]";
 }
 
 }  // namespace util
