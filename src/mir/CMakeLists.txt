@@ -244,6 +244,8 @@ list(APPEND mir_srcs
     lsm/NoneLSM.h
     lsm/TenMinutesMask.cc
     lsm/TenMinutesMask.h
+	method/ConservativeBoxAverage.cc
+	method/ConservativeBoxAverage.h
     method/Cropping.cc
     method/Cropping.h
     method/MatrixCacheCreator.cc

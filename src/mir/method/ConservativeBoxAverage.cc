@@ -1,0 +1,64 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
+#include "mir/method/ConservativeBoxAverage.h"
+
+#include "eckit/log/Log.h"
+#include "eckit/utils/MD5.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Representation.h"
+
+
+namespace mir {
+namespace method {
+
+
+ConservativeBoxAverage::~ConservativeBoxAverage() = default;
+
+
+bool ConservativeBoxAverage::sameAs(const Method& other) const {
+    auto o = dynamic_cast<const ConservativeBoxAverage*>(&other);
+    return o && MethodWeighted::sameAs(*o);
+}
+
+
+void ConservativeBoxAverage::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
+                                      const repres::Representation& in, const repres::Representation& out) const {
+    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    log << "ConservativeBoxAverage::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+}
+
+
+const char* ConservativeBoxAverage::name() const {
+    return "conservative-box-average";
+}
+
+
+void ConservativeBoxAverage::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
+    md5.add(name());
+}
+
+
+void ConservativeBoxAverage::print(std::ostream& out) const {
+    out << "ConservativeBoxAverage[";
+    MethodWeighted::print(out);
+    out << "]";
+}
+
+
+static MethodBuilder<ConservativeBoxAverage> __builder("conservative-box-average");
+
+
+}  // namespace method
+}  // namespace mir
