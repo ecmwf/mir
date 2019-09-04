@@ -99,11 +99,6 @@ protected:
     // None
 
 private:
-
-    // -- Operators
-
-    MeshGeneratorParameters& operator=(const MeshGeneratorParameters&);
-
     // -- Members
     // None
 

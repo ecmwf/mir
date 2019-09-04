@@ -33,9 +33,9 @@ MeshGeneratorParameters::MeshGeneratorParameters() {
     set("force_include_south_pole", false);
 }
 
-MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param) {
+MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param) :
+    MeshGeneratorParameters() {
     ASSERT(!label.empty());
-    *this = MeshGeneratorParameters();
 
     const param::MIRParametrisation& user = param.userParametrisation();
     user.get(label + "-mesh-generator", meshGenerator_);
@@ -46,20 +46,6 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-ll", fileLonLat_);
     user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
-}
-
-MeshGeneratorParameters& MeshGeneratorParameters::operator=(const MeshGeneratorParameters& other) {
-    meshGenerator_              = other.meshGenerator_;
-    meshCellCentres_            = other.meshCellCentres_;
-    meshCellLongestDiagonal_    = other.meshCellLongestDiagonal_;
-    meshNodeLumpedMassMatrix_   = other.meshNodeLumpedMassMatrix_;
-    meshNodeToCellConnectivity_ = other.meshNodeToCellConnectivity_;
-    fileLonLat_                 = other.fileLonLat_;
-    fileXY_                     = other.fileXY_;
-    fileXYZ_                    = other.fileXYZ_;
-
-    set(other);
-    return *this;
 }
 
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
