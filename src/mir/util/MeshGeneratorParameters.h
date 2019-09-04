@@ -43,6 +43,7 @@ public:
 
     // -- Constructors
 
+    MeshGeneratorParameters();
     MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
 
     // -- Destructor
@@ -98,6 +99,11 @@ protected:
     // None
 
 private:
+
+    // -- Operators
+
+    MeshGeneratorParameters& operator=(const MeshGeneratorParameters&);
+
     // -- Members
     // None
 
