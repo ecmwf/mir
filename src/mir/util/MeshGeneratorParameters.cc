@@ -35,23 +35,17 @@ MeshGeneratorParameters::MeshGeneratorParameters() {
 
 MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param) {
     ASSERT(!label.empty());
-    const param::MIRParametrisation& user = param.userParametrisation();
-
     *this = MeshGeneratorParameters();
+
+    const param::MIRParametrisation& user = param.userParametrisation();
     user.get(label + "-mesh-generator", meshGenerator_);
     user.get(label + "-mesh-cell-centres", meshCellCentres_);
     user.get(label + "-mesh-cell-longest-diagonal", meshCellLongestDiagonal_);
     user.get(label + "-mesh-node-lumped-mass-matrix", meshNodeLumpedMassMatrix_);
     user.get(label + "-mesh-node-to-cell-connectivity", meshNodeToCellConnectivity_);
-    user.get(label + "-mesh-file-ll", fileLonLat_ = "");
-    user.get(label + "-mesh-file-xy", fileXY_ = "");
-    user.get(label + "-mesh-file-xyz", fileXYZ_ = "");
-
-    set("three_dimensional", true);
-    set("triangulate", false);
-    set("angle", 0.);
-    set("force_include_north_pole", false);
-    set("force_include_south_pole", false);
+    user.get(label + "-mesh-file-ll", fileLonLat_);
+    user.get(label + "-mesh-file-xy", fileXY_);
+    user.get(label + "-mesh-file-xyz", fileXYZ_);
 }
 
 MeshGeneratorParameters& MeshGeneratorParameters::operator=(const MeshGeneratorParameters& other) {
