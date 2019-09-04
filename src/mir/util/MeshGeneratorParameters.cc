@@ -21,9 +21,9 @@ namespace mir {
 namespace util {
 
 MeshGeneratorParameters::MeshGeneratorParameters() {
-    meshCellCentres_ = false;
-    meshCellLongestDiagonal_ = false;
-    meshNodeLumpedMassMatrix_ = false;
+    meshCellCentres_            = false;
+    meshCellLongestDiagonal_    = false;
+    meshNodeLumpedMassMatrix_   = false;
     meshNodeToCellConnectivity_ = false;
 
     set("three_dimensional", true);
