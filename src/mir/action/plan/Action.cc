@@ -103,6 +103,9 @@ void Action::estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimatio
 
 
 void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
+
+    return;
+
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
     if (field.hasMissing()) {
