@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/ConservativeBoxAverage.h"
+#include "mir/method/gridbox/ConservativeBoxAverage.h"
 
 #include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
@@ -21,14 +21,16 @@
 
 namespace mir {
 namespace method {
+namespace gridbox {
 
 
 ConservativeBoxAverage::~ConservativeBoxAverage() = default;
 
 
+#if 0
 bool ConservativeBoxAverage::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ConservativeBoxAverage*>(&other);
-    return o && MethodWeighted::sameAs(*o);
+    return o && GridBoxMethod::sameAs(*o);
 }
 
 
@@ -45,20 +47,22 @@ const char* ConservativeBoxAverage::name() const {
 
 
 void ConservativeBoxAverage::hash(eckit::MD5& md5) const {
-    MethodWeighted::hash(md5);
+    GridBoxMethod::hash(md5);
     md5.add(name());
 }
 
 
 void ConservativeBoxAverage::print(std::ostream& out) const {
     out << "ConservativeBoxAverage[";
-    MethodWeighted::print(out);
+    GridBoxMethod::print(out);
     out << "]";
 }
+#endif
 
 
 static MethodBuilder<ConservativeBoxAverage> __builder("conservative-box-average");
 
 
+}  // namespace gridbox
 }  // namespace method
 }  // namespace mir

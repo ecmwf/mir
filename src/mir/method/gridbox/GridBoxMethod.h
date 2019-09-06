@@ -9,17 +9,18 @@
  */
 
 
-#ifndef mir_method_fe_ConservativeBoxAverage_h
-#define mir_method_fe_ConservativeBoxAverage_h
+#ifndef mir_method_gridbox_GridBoxMethod_h
+#define mir_method_gridbox_GridBoxMethod_h
 
 #include "mir/method/MethodWeighted.h"
 
 
 namespace mir {
 namespace method {
+namespace gridbox {
 
 
-class ConservativeBoxAverage : public MethodWeighted {
+class GridBoxMethod : public MethodWeighted {
 public:
     // -- Types
     // None
@@ -33,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ConservativeBoxAverage();
+    virtual ~GridBoxMethod();
 
     // -- Convertors
     // None
@@ -97,6 +98,7 @@ private:
 };
 
 
+}  // namespace gridbox
 }  // namespace method
 }  // namespace mir
 
