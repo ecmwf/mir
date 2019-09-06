@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/gridbox/ConservativeBoxAverage.h"
+#include "mir/method/gridbox/ConservativeGridBoxAverage.h"
 
 #include <ostream>
 #include <sstream>
@@ -26,7 +26,7 @@ namespace method {
 namespace gridbox {
 
 
-struct BoxAverage : nonlinear::NonLinear {
+struct GridBoxAverage : nonlinear::NonLinear {
     using NonLinear::NonLinear;
     bool treatment(Matrix& /*A*/, WeightMatrix& /*W*/, Matrix& /*B*/, const data::MIRValuesVector& /*values*/,
                    const double& /*missingValue*/) const {
@@ -35,8 +35,8 @@ struct BoxAverage : nonlinear::NonLinear {
     }
 
 private:
-    bool sameAs(const NonLinear& other) const { return dynamic_cast<const BoxAverage*>(&other); }
-    void print(std::ostream& out) const { out << "BoxAverage[]"; }
+    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxAverage*>(&other); }
+    void print(std::ostream& out) const { out << "GridBoxAverage[]"; }
     void hash(eckit::MD5& h) const {
         std::ostringstream s;
         s << *this;
@@ -45,17 +45,17 @@ private:
 };
 
 
-ConservativeBoxAverage::ConservativeBoxAverage(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    // TODO: MethodWeighted::pushNonLinear(new BoxAverage(param));  (currently MethodWeighted::missing_)
+ConservativeGridBoxAverage::ConservativeGridBoxAverage(const param::MIRParametrisation& param) : GridBoxMethod(param) {
+    // TODO: MethodWeighted::pushNonLinear(new GridBoxAverage(param));  (currently MethodWeighted::missing_)
 }
 
 
-const char* ConservativeBoxAverage::name() const {
-    return "conservative-box-average";
+const char* ConservativeGridBoxAverage::name() const {
+    return "conservative-grid-box-average";
 }
 
 
-static MethodBuilder<ConservativeBoxAverage> __builder("conservative-box-average");
+static MethodBuilder<ConservativeGridBoxAverage> __builder("conservative-grid-box-average");
 
 
 }  // namespace gridbox
