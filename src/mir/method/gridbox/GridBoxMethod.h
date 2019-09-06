@@ -85,7 +85,6 @@ private:
                   const repres::Representation& out) const;
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
-    virtual const char* name() const;
 
     // -- Class members
     // None

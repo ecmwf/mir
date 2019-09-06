@@ -221,7 +221,7 @@ ij_t overlap_decreasing(const std::vector<double>& v, double value) {
 
     auto j(i);
     j++;
-    if (*j)
+//    if (*j)
 
     return {size_t(distance(v.begin(), i) - 1), 0};
 }
@@ -243,7 +243,7 @@ GridBoxMethod::~GridBoxMethod() = default;
 
 bool GridBoxMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const GridBoxMethod*>(&other);
-    return o && MethodWeighted::sameAs(*o);
+    return o && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 
 
@@ -265,11 +265,6 @@ void GridBoxMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
 }
 
 
-const char* GridBoxMethod::name() const {
-    return "conservative-box-average";
-}
-
-
 void GridBoxMethod::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     md5.add(name());
@@ -277,7 +272,8 @@ void GridBoxMethod::hash(eckit::MD5& md5) const {
 
 
 void GridBoxMethod::print(std::ostream& out) const {
-    out << "GridBoxMethod[";
+    out << "GridBoxMethod["
+        << "name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
 }

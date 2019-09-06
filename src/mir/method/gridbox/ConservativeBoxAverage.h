@@ -30,11 +30,10 @@ public:
 
     // -- Constructors
 
-    using GridBoxMethod::GridBoxMethod;
+    explicit ConservativeBoxAverage(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~ConservativeBoxAverage();
+    // None
 
     // -- Convertors
     // None
@@ -79,15 +78,8 @@ private:
 
     // -- Overridden methods
 
-#if 0
     // From MethodWeighted
-    void hash(eckit::MD5&) const;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
-    void print(std::ostream&) const;
     virtual const char* name() const;
-#endif
 
     // -- Class members
     // None

@@ -82,6 +82,7 @@ void MethodWeighted::print(std::ostream& out) const {
 bool MethodWeighted::sameAs(const Method& other) const {
     auto o = dynamic_cast<const MethodWeighted*>(&other);
     return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
+           (missing_->sameAs(*(o->missing_))) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_ == o->cropping_;
 }
 

@@ -11,12 +11,14 @@
 
 #include "mir/method/gridbox/ConservativeBoxAverage.h"
 
-#include "eckit/log/Log.h"
+#include <ostream>
+#include <sstream>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
+#include "mir/method/WeightMatrix.h"
+#include "mir/method/nonlinear/NonLinear.h"
 
 
 namespace mir {
@@ -24,40 +26,33 @@ namespace method {
 namespace gridbox {
 
 
-ConservativeBoxAverage::~ConservativeBoxAverage() = default;
+struct BoxAverage : nonlinear::NonLinear {
+    using NonLinear::NonLinear;
+    bool treatment(Matrix& /*A*/, WeightMatrix& /*W*/, Matrix& /*B*/, const data::MIRValuesVector& /*values*/,
+                   const double& /*missingValue*/) const {
+        // TODO
+        NOTIMP;
+    }
+
+private:
+    bool sameAs(const NonLinear& other) const { return dynamic_cast<const BoxAverage*>(&other); }
+    void print(std::ostream& out) const { out << "BoxAverage[]"; }
+    void hash(eckit::MD5& h) const {
+        std::ostringstream s;
+        s << *this;
+        h.add(s.str());
+    }
+};
 
 
-#if 0
-bool ConservativeBoxAverage::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const ConservativeBoxAverage*>(&other);
-    return o && GridBoxMethod::sameAs(*o);
-}
-
-
-void ConservativeBoxAverage::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
-                                      const repres::Representation& in, const repres::Representation& out) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
-    log << "ConservativeBoxAverage::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+ConservativeBoxAverage::ConservativeBoxAverage(const param::MIRParametrisation& param) : GridBoxMethod(param) {
+    // TODO: MethodWeighted::pushNonLinear(new BoxAverage(param));  (currently MethodWeighted::missing_)
 }
 
 
 const char* ConservativeBoxAverage::name() const {
     return "conservative-box-average";
 }
-
-
-void ConservativeBoxAverage::hash(eckit::MD5& md5) const {
-    GridBoxMethod::hash(md5);
-    md5.add(name());
-}
-
-
-void ConservativeBoxAverage::print(std::ostream& out) const {
-    out << "ConservativeBoxAverage[";
-    GridBoxMethod::print(out);
-    out << "]";
-}
-#endif
 
 
 static MethodBuilder<ConservativeBoxAverage> __builder("conservative-box-average");
