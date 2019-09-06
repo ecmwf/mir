@@ -27,18 +27,18 @@ namespace reduced {
 
 class ReducedFromPL : public FromPL {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
     ReducedFromPL(const param::MIRParametrisation&);
-    ReducedFromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    ReducedFromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(),
+                  double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~ReducedFromPL(); // Change to virtual if base class
+    virtual ~ReducedFromPL();
 
     // -- Convertors
     // None
@@ -59,13 +59,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -77,7 +76,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -91,6 +89,10 @@ private:
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
 
+    // From Representation
+    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
+    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
+
     // -- Class members
     // None
 
@@ -98,10 +100,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const ReducedFromPL& p)
-    //  { p.print(s); return s; }
-
+    // None
 };
 
 
@@ -112,4 +111,3 @@ private:
 
 
 #endif
-

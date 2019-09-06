@@ -132,6 +132,9 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
+    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
+    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
+
     virtual std::string factory() const; // Return factory name
 
     // -- Overridden methods

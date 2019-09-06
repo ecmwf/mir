@@ -17,6 +17,8 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/util/Domain.h"
 
 
@@ -65,8 +67,33 @@ const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) c
     return new RegularGG(N_, bbox, angularPrecision_);
 }
 
+
 std::string RegularGG::factory() const {
     return "regular_gg";
+}
+
+
+std::vector<double> RegularGG::calculateGridBoxLatitudeEdges() const {
+    return calculateUnrotatedGridBoxLatitudeEdges();
+}
+
+
+std::vector<double> RegularGG::calculateGridBoxLongitudeEdges(size_t j) const {
+    ASSERT(j < Nj_);
+    ASSERT(1 < Ni_);
+
+    eckit::Fraction half(1, 2);
+    auto lon0 = bbox_.west();
+    auto inc  = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
+
+    // grid-box edge longitudes
+    std::vector<double> edges(Ni_ + 1, 0.);
+    edges[0] = (lon0 + inc / 2).value();
+    for (size_t i = 0; i < Ni_; ++i) {
+        edges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
+    }
+
+    return edges;
 }
 
 

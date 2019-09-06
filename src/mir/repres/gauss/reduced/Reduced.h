@@ -81,6 +81,8 @@ protected:
     Iterator* unrotatedIterator() const;
     Iterator* rotatedIterator(const util::Rotation&) const;
 
+    std::vector<double> calculateUnrotatedGridBoxLongitudeEdges(size_t j) const;
+
     const std::vector<long>& pls() const;
     template < typename PlVector >
     void setNj(const PlVector&, const Latitude& s, const Latitude& n);

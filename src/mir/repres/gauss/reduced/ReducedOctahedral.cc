@@ -58,6 +58,16 @@ bool ReducedOctahedral::sameAs(const Representation& other) const {
 }
 
 
+std::vector<double> ReducedOctahedral::calculateGridBoxLatitudeEdges() const {
+    return calculateUnrotatedGridBoxLatitudeEdges();
+}
+
+
+std::vector<double> ReducedOctahedral::calculateGridBoxLongitudeEdges(size_t j) const {
+    return calculateUnrotatedGridBoxLongitudeEdges(j);
+}
+
+
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres

@@ -90,6 +90,10 @@ private:
     virtual Iterator* iterator() const;
     virtual std::string factory() const;
 
+    // From Representation
+    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
+    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
+
     // -- Class members
     // None
 
