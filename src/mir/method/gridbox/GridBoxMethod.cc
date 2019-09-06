@@ -12,11 +12,13 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 #include <algorithm>
-#include <cmath>
-#include <iterator>
+#include <map>
+#include <vector>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/log/Plural.h"
+#include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -33,21 +35,12 @@ namespace gridbox {
 
 
 struct LongitudeRange {
-
     LongitudeRange(double _west, double _east) : west(_west), east(_east) {
-        if (!eckit::types::is_approximately_equal(west, east)) {
-            double eastNormalised = normalise(east, west);
-            if (eckit::types::is_approximately_equal(eastNormalised, west)) {
-                eastNormalised += GLOBE;
-            }
-            east = eastNormalised;
-        }
-
+        east = normalise(east, west);
         ASSERT(west <= east);
-        ASSERT(east <= west + GLOBE);
     }
 
-    double fraction(const LongitudeRange& other) const {
+    bool intersects(const LongitudeRange& other) const {
 
         auto intersect = [](const LongitudeRange& a, const LongitudeRange& b, double& w, double& e) {
             auto ref = normalise(b.west, a.west);
@@ -65,13 +58,10 @@ struct LongitudeRange {
         auto w = std::min(west, other.west);
         auto e = w;
 
-        bool intersects = west <= other.west ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
-                                             : intersect(other, *this, w, e) || intersect(*this, other, w, e);
-
-        return intersects ? (e - w) / (east - west) : 0.;
+        return west <= other.west ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
+                                  : intersect(other, *this, w, e) || intersect(*this, other, w, e);
     }
 
-private:
     static double normalise(double lon, double minimum) {
         while (lon < minimum) {
             lon += GLOBE;
@@ -89,16 +79,14 @@ private:
 
 
 struct LatitudeRange {
-
     LatitudeRange(double _south, double _north) : south(_south), north(_north) { ASSERT(south <= north); }
 
-    double fraction(const LatitudeRange& other) const {
+    bool intersects(const LatitudeRange& other) const {
         double n = std::min(north, other.north);
         double s = std::max(south, other.south);
-        return eckit::types::is_strictly_greater(n, s) ? (n - s) / (north - south) : 0.;
+        return eckit::types::is_strictly_greater(n, s);
     }
 
-private:
     double south;
     double north;
 };
@@ -106,25 +94,11 @@ private:
 
 class GridBox {
 public:
-    GridBox(double north, double west, double south, double east) :
-        north_(north),
-        west_(west),
-        south_(south),
-        east_(east) {
-        normalise();
-    }
-
-    GridBox(size_t i, size_t j, const std::vector<double>& latitudeEdges, const std::vector<double>& longitudeEdges) {
-        ASSERT(j + 1 < latitudeEdges.size());
-        ASSERT(i + 1 < longitudeEdges.size());
-
-        west_  = longitudeEdges[i];
-        north_ = latitudeEdges[j];
-        east_  = longitudeEdges[i + 1];
-        south_ = latitudeEdges[j + 1];
-
-        normalise();
-    }
+    GridBox(LatitudeRange& lat, LongitudeRange& lon) :
+        north_(lat.north),
+        west_(lon.west),
+        south_(lat.south),
+        east_(lon.east) {}
 
     double area() const { return atlas::util::Earth::area({west_, north_}, {east_, south_}); }
 
@@ -168,7 +142,10 @@ public:
                                                  : intersect(other, *this, w, e) || intersect(*this, other, w, e);
 
         ASSERT(w <= e);
-        other = {n, w, s, e};
+
+        LatitudeRange sn(s, n);
+        LongitudeRange we(w, e);
+        other = {sn, we};
 
         return intersectsSN && intersectsWE;
     }
@@ -179,20 +156,6 @@ private:
     double south_;
     double east_;
     static constexpr double GLOBE = 360.;
-
-    void normalise() {
-        if (!eckit::types::is_approximately_equal(west_, east_)) {
-            double eastNormalised = normalise(east_, west_);
-            if (eckit::types::is_approximately_equal(eastNormalised, west_)) {
-                eastNormalised += GLOBE;
-            }
-            east_ = eastNormalised;
-        }
-
-        ASSERT(west_ <= east_);
-        ASSERT(east_ <= west_ + GLOBE);
-        ASSERT(north_ >= south_);
-    }
 
     void print(std::ostream& out) const {
         out << "GridBox["
@@ -205,36 +168,17 @@ private:
     }
 };
 
-struct ij_t {
-    size_t i;
-    size_t j;
-};
+std::vector<GridBox> boxes(LatitudeRange lat, std::vector<double> lonEdges) {
+    ASSERT(lonEdges.size() > 1);
 
+    std::vector<GridBox> boxes;
+    boxes.reserve(lonEdges.size() - 1);
+    for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
+        LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
+        boxes.emplace_back(lat, lon);
+    }
 
-ij_t overlap_decreasing(const std::vector<double>& v, double value) {
-    ASSERT(v.size() >= 2);
-    ASSERT(v[1] < v[0]);
-
-    auto less = [](double e1, double e2) { return !(e1 < e2); };
-    auto i    = std::lower_bound(v.begin(), v.end(), value, less);
-    ASSERT(i != v.begin());
-
-    auto j(i);
-    j++;
-    //    if (*j)
-
-    return {size_t(distance(v.begin(), i) - 1), 0};
-}
-
-
-size_t above_increasing(const std::vector<double>& v, double value) {
-    ASSERT(v.size() >= 2);
-    ASSERT(v[0] < v[1]);
-
-    auto best = std::lower_bound(v.begin(), v.end(), value, [](double e1, double e2) { return !(e1 < e2); });
-    ASSERT(best != v.begin());
-
-    return size_t(distance(v.begin(), best) - 1);
+    return boxes;
 }
 
 
@@ -247,21 +191,78 @@ bool GridBoxMethod::sameAs(const Method& other) const {
 }
 
 
-void GridBoxMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
+void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    NOTIMP;
 
 
-    // 1) Calculate area fraction overlaps between the input and output representation points (as boxes)
+    log << "GridBoxMethod: calculate grid box latitude intersections" << std::endl;
 
-    // TODO
+    // map intersections of output rows to input rows
+    // (b, a) are (output, input) grid box row indices
 
-    //    WeightMatrix M(out.numberOfPoints(), in.numberOfPoints());
-    //    std::vector<WeightMatrix::Triplet> triplets;
-    //    M.setFromTriplets(triplets);
-    //    M.swap(W);
+    auto aLatEdges = in.calculateGridBoxLatitudeEdges();
+    ASSERT(aLatEdges.size() > 1);
+
+    auto bLatEdges = out.calculateGridBoxLatitudeEdges();
+    ASSERT(bLatEdges.size() > 1);
+
+    std::map<size_t, std::vector<size_t>> rowIntersect;
+
+    for (size_t b = 0; b < bLatEdges.size() - 1; ++b) {
+        LatitudeRange boxB(bLatEdges[b + 1], bLatEdges[b]);
+        for (size_t a = 0; a < aLatEdges.size() - 1; ++a) {
+            LatitudeRange boxA(aLatEdges[a + 1], aLatEdges[a]);
+            if (boxB.intersects(boxA)) {
+                rowIntersect[b].push_back(a);
+            }
+        }
+    }
+
+
+    log << "GridBoxMethod: calculate grid box longitude intersections (on " << eckit::Plural(rowIntersect.size(), "row") << ")" << std::endl;
+    std::vector<WeightMatrix::Triplet> triplets;
+
+    // TODO: no intelligent search yet, just brute forcing the intersections
+    // TODO: triplets, really? why not writing to the matrix directly?
+    {
+        eckit::ProgressTimer progress("Intersecting", rowIntersect.size(), "row", double(5), log);
+
+        // setup output grid boxes on row
+        for (auto& it : rowIntersect) {
+            size_t b = it.first;
+            const auto boxesB(boxes({bLatEdges[b + 1], bLatEdges[b]}, out.calculateGridBoxLongitudeEdges(b)));
+
+            // setup input grid boxes on row, and calculate intersections
+            for (size_t a : it.second) {
+                const auto boxesA(boxes({aLatEdges[a + 1], aLatEdges[a]}, in.calculateGridBoxLongitudeEdges(a)));
+
+                for (size_t colB = 0; colB < boxesB.size(); ++colB) {
+                    auto& boxB = boxesB[colB];
+
+                    for (size_t colA = 0; colA < boxesA.size(); ++colA) {
+                        auto boxA  = boxesA[colA];  // to intersect (copy)
+                        auto areaA = boxA.area();
+
+                        if (boxB.intersects(boxA)) {
+                            ASSERT(areaA > 0.);
+                            triplets.emplace_back(WeightMatrix::Triplet(colB, colA, boxA.area() / areaA));
+                        }
+                    }
+                }
+            }
+
+            ++progress;
+        }
+    }
+
+
+    log << "Intersected " << eckit::Plural(triplets.size(), "grid box") << std::endl;
+
+
+    // fill sparse matrix
+    W.setFromTriplets(triplets);
 }
 
 
