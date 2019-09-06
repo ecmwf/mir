@@ -34,46 +34,42 @@ namespace gridbox {
 
 struct LongitudeRange {
 
-    LongitudeRange(double west, double east) : west_(west), east_(east) {
-        if (!eckit::types::is_approximately_equal(west_, east_)) {
-            double eastNormalised = normalise(east_, west_);
-            if (eckit::types::is_approximately_equal(eastNormalised, west_)) {
+    LongitudeRange(double _west, double _east) : west(_west), east(_east) {
+        if (!eckit::types::is_approximately_equal(west, east)) {
+            double eastNormalised = normalise(east, west);
+            if (eckit::types::is_approximately_equal(eastNormalised, west)) {
                 eastNormalised += GLOBE;
             }
-            east_ = eastNormalised;
+            east = eastNormalised;
         }
 
-        ASSERT(west_ <= east_);
-        ASSERT(east_ <= west_ + GLOBE);
+        ASSERT(west <= east);
+        ASSERT(east <= west + GLOBE);
     }
 
-    double intersect(const LongitudeRange& other) const {
+    double fraction(const LongitudeRange& other) const {
 
         auto intersect = [](const LongitudeRange& a, const LongitudeRange& b, double& w, double& e) {
-            auto ref = normalise(b.west_, a.west_);
-            auto w_  = std::max(a.west_, ref);
-            auto e_  = std::min(a.east_, normalise(b.east_, ref));
+            auto ref = normalise(b.west, a.west);
+            auto w_  = std::max(a.west, ref);
+            auto e_  = std::min(a.east, normalise(b.east, ref));
 
             if (w_ <= e_) {
                 w = w_;
                 e = e_;
-                return true;
+                return eckit::types::is_strictly_greater(e, w);
             }
             return false;
         };
 
-        auto w = std::min(west_, other.west_);
+        auto w = std::min(west, other.west);
         auto e = w;
 
-        return (west_ <= other.west_ ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
-                                     : intersect(other, *this, w, e) || intersect(*this, other, w, e))
-                   ? LongitudeRange(w, e).range()
-                   : 0.;
-    }
+        bool intersects = west <= other.west ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
+                                             : intersect(other, *this, w, e) || intersect(*this, other, w, e);
 
-    double west() const { return west_; }
-    double east() const { return east_; }
-    double range() const { return east_ - west_; }
+        return intersects ? (e - w) / (east - west) : 0.;
+    }
 
 private:
     static double normalise(double lon, double minimum) {
@@ -86,21 +82,25 @@ private:
         return lon;
     }
 
-    void normalise() {
-        if (!eckit::types::is_approximately_equal(west_, east_)) {
-            double eastNormalised = normalise(east_, west_);
-            if (eckit::types::is_approximately_equal(eastNormalised, west_)) {
-                eastNormalised += GLOBE;
-            }
-            east_ = eastNormalised;
-        }
-
-        ASSERT(west_ <= east_);
-        ASSERT(east_ <= west_ + GLOBE);
-    }
-    double west_;
-    double east_;
+    double west;
+    double east;
     static constexpr double GLOBE = 360.;
+};
+
+
+struct LatitudeRange {
+
+    LatitudeRange(double _south, double _north) : south(_south), north(_north) { ASSERT(south <= north); }
+
+    double fraction(const LatitudeRange& other) const {
+        double n = std::min(north, other.north);
+        double s = std::max(south, other.south);
+        return eckit::types::is_strictly_greater(n, s) ? (n - s) / (north - south) : 0.;
+    }
+
+private:
+    double south;
+    double north;
 };
 
 
@@ -221,7 +221,7 @@ ij_t overlap_decreasing(const std::vector<double>& v, double value) {
 
     auto j(i);
     j++;
-//    if (*j)
+    //    if (*j)
 
     return {size_t(distance(v.begin(), i) - 1), 0};
 }
@@ -247,8 +247,8 @@ bool GridBoxMethod::sameAs(const Method& other) const {
 }
 
 
-void GridBoxMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
-                                      const repres::Representation& in, const repres::Representation& out) const {
+void GridBoxMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
+                             const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     NOTIMP;
@@ -258,10 +258,10 @@ void GridBoxMethod::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
 
     // TODO
 
-//    WeightMatrix M(out.numberOfPoints(), in.numberOfPoints());
-//    std::vector<WeightMatrix::Triplet> triplets;
-//    M.setFromTriplets(triplets);
-//    M.swap(W);
+    //    WeightMatrix M(out.numberOfPoints(), in.numberOfPoints());
+    //    std::vector<WeightMatrix::Triplet> triplets;
+    //    M.setFromTriplets(triplets);
+    //    M.swap(W);
 }
 
 
