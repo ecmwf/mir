@@ -104,22 +104,22 @@ void Action::estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimatio
 
 void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
 
-    return;
+    // return;
 
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
     if (field.hasMissing()) {
 
 
-        eckit::Timer timer("estimateMissingValues", std::cerr);
+        // eckit::Timer timer("estimateMissingValues", std::cerr);
 
-        param::DefaultParametrisation runtime;
-        param::CombinedParametrisation combined(runtime, runtime, runtime);
-        std::unique_ptr< method::Method > method(method::MethodFactory::build("nn", combined));
+        // param::DefaultParametrisation runtime;
+        // param::CombinedParametrisation combined(runtime, runtime, runtime);
+        // std::unique_ptr< method::Method > method(method::MethodFactory::build("nn", combined));
 
-        util::MIRStatistics dummy; // TODO: use the global one
-        context::Context ctx(field, dummy);
-        method->execute(ctx, *field.representation(), out);
+        // util::MIRStatistics dummy; // TODO: use the global one
+        // context::Context ctx(field, dummy);
+        // method->execute(ctx, *field.representation(), out);
 
 
         size_t missing = 0;

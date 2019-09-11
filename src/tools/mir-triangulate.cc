@@ -18,23 +18,19 @@
 #include <vector>
 #include <deque>
 
-#include "eckit/log/Log.h"
-#include "eckit/log/Timer.h"
-#include "eckit/option/CmdArgs.h"
-#include "eckit/option/SimpleOption.h"
-
 #include "atlas/output/Gmsh.h"
 #include "atlas/util/CoordinateEnums.h"
+
+#include "eckit/geometry/Point2.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 
 #include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
-
 #include "mir/util/MeshGeneratorParameters.h"
-#include "eckit/geometry/Point2.h"
 
 
 class MIRTriangulate : public mir::tools::MIRTool {
@@ -64,6 +60,8 @@ class Segment {
     std::deque<eckit::geometry::Point2> points_;
 
 public:
+    Segment() {}
+
     explicit Segment(const eckit::geometry::Point2 start, eckit::geometry::Point2 end) {
         points_.push_back(start);
         points_.push_back(end);
@@ -125,7 +123,7 @@ public:
 static std::map<Segment, eckit::geometry::Point2> cache;
 
 static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const eckit::geometry::Point2& p2) {
-
+    // return eckit::geometry::Point2::middle(p1, p2);
     Segment s(p1, p2);
     auto j = cache.find(s);
     if (j == cache.end()) {
@@ -136,6 +134,31 @@ static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const e
     }
     return (*j).second;
 }
+
+static bool connect(const eckit::geometry::Point2& p,
+                    Segment& line,
+                    const std::map<eckit::geometry::Point2, std::set<Segment > >& ends,
+                    std::set<Segment >& segments
+                   ) {
+
+    auto j = ends.find(p);
+    if (j != ends.end()) {
+        const std::set<Segment>& q = (*j).second;
+
+        std::set<Segment> i;
+        std::set_intersection(q.begin(), q.end(), segments.begin(), segments.end(),
+                              std::inserter(i, i.begin()));
+
+        if (!i.empty()) {
+            const Segment& s = *(i.begin());
+            ASSERT(line.merge(s));
+            segments.erase(s);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
@@ -192,9 +215,9 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
             eckit::geometry::Point2 pa, pb;
 
-            std::map<eckit::geometry::Point2, std::vector<Segment > > ends;
+            std::map<eckit::geometry::Point2, std::set<Segment > > ends;
 
-            std::set<Segment > segments;
+            std::set<Segment> segments;
 
             for (idx_t e = 0; e < connectivity.rows(); ++e) {
                 const auto row = connectivity.row(e);
@@ -252,14 +275,15 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                 }
 
                 Segment s(pa, pb);
-                ends[pa].push_back(s);
-                ends[pb].push_back(s);
                 segments.insert(s);
+                ends[pa].insert(s);
+                ends[pb].insert(s);
 
             }
 
-            // std::cout << "segments " << segments.size() << std::endl;
+            // std::cerr << "segments " << segments.size() << std::endl;
 
+            size_t count = 0;
             while (!segments.empty()) {
                 Segment line = *segments.begin();
                 segments.erase(segments.begin());
@@ -267,36 +291,19 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                 bool more = true;
                 while (more) {
                     more = false;
-
-                    const auto& pa = line.start();
-                    auto ja = ends.find(pa);
-                    if (ja != ends.end()) {
-                        Segment s = (*ja).second.back();
-                        (*ja).second.pop_back();
-                        ASSERT(line.merge(s));
-                        if ((*ja).second.empty()) {
-                            ends.erase(ja);
-                        }
-                        segments.erase(s);
+                    if (connect(line.start(), line, ends, segments)) {
                         more = true;
                     }
 
-                    const auto& pb = line.end();
-                    auto jb = ends.find(pb);
-                    if (jb != ends.end()) {
-                        Segment s = (*jb).second.back();
-                        (*jb).second.pop_back();
-                        ASSERT(line.merge(s));
-                        if ((*jb).second.empty()) {
-                            ends.erase(jb);
-                        }
-                        segments.erase(s);
+                    if (connect(line.end(), line, ends, segments)) {
                         more = true;
                     }
-
                 }
+
                 std::cout << line << std::endl;
+                count++;
             }
+            // std::cerr << "isolines " << count << std::endl;
 
         }
     }
