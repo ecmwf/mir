@@ -86,9 +86,9 @@ std::vector<double> RegularGG::calculateGridBoxLongitudeEdges(size_t j) const {
     auto lon0 = bbox_.west();
     auto inc  = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
 
-    // grid-box edge longitudes
+    // grid-box longitude edges
     std::vector<double> edges(Ni_ + 1, 0.);
-    edges[0] = (lon0 + inc / 2).value();
+    edges[0] = (lon0 - inc / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
         edges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
     }
