@@ -182,6 +182,14 @@ std::vector<GridBox> boxes(LatitudeRange lat, std::vector<double> lonEdges) {
 }
 
 
+GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
+    if (parametrisation.userParametrisation().has("rotation") ||
+        parametrisation.fieldParametrisation().has("rotation")) {
+        throw eckit::UserError("GridBoxMethod: rotated input/output not supported");
+    }
+}
+
+
 GridBoxMethod::~GridBoxMethod() = default;
 
 

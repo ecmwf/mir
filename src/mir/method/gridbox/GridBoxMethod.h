@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    using MethodWeighted::MethodWeighted;
+    GridBoxMethod(const param::MIRParametrisation&);
 
     // -- Destructor
 
