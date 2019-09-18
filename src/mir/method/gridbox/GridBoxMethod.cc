@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <map>
+#include <sstream>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
@@ -26,6 +27,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Domain.h"
 #include "mir/util/Pretty.h"
 
 
@@ -203,6 +205,13 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                              const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+
+
+    if (!in.domain().contains(out.domain())) {
+        std::ostringstream msg;
+        msg << "GridBoxMethod: input must contain output (input:" << in.domain() << ", output:" << out.domain() << ")";
+        throw eckit::UserError(msg.str());
+    }
 
 
     log << "GridBoxMethod: calculate grid box latitude intersections" << std::endl;
