@@ -18,7 +18,6 @@
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
@@ -43,6 +42,7 @@
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 
 using namespace mir;
@@ -314,7 +314,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         }
 
 
-        log << eckit::Plural(field, "field") << " in " << eckit::Seconds(timer.elapsed())
+        log << mir::util::Pretty(field, "field") << " in " << eckit::Seconds(timer.elapsed())
             << ", rate: " << double(field) / double(timer.elapsed()) << " "
             << "field/s" << std::endl;
     }

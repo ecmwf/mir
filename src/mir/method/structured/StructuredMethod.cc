@@ -14,8 +14,8 @@
 
 #include <memory>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"

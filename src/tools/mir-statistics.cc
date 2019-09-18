@@ -13,7 +13,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -32,6 +31,7 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 
 class MIRStatistics : public mir::tools::MIRTool {
@@ -106,7 +106,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
         size_t Nfirst = firstInput.field().values(0).size();
         ASSERT(Nfirst > 0);
-        eckit::Log::info() << "Using " << eckit::Plural(Nfirst, "grid point") << std::endl;
+        eckit::Log::info() << "Using " << mir::util::Pretty(Nfirst, "grid point") << std::endl;
 
         // set paramId/metadata-specific method per-point statistics
         std::string statistics = "scalar";

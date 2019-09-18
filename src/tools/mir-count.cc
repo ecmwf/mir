@@ -11,7 +11,6 @@
 
 #include <memory>
 
-#include "eckit/log/BigNum.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 
@@ -23,6 +22,7 @@
 #include "mir/tools/MIRTool.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Pretty.h"
 
 
 class MIRCount : public mir::tools::MIRTool {
@@ -138,7 +138,7 @@ size_t countRepresentationInBoundingBox(
     }
 
     eckit::Log::info()
-            << eckit::BigNum(count) << " out of " << eckit::BigNum(values)
+            << mir::util::Pretty(count) << " out of " << mir::util::Pretty(values)
             << ", north=" << n << " (bbox.n - n " << bbox.north() - n << ")"
             << ", west="  << w << " (w - bbox.w " << w - bbox.west()  << ")"
             << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"

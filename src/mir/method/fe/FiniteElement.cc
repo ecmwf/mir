@@ -25,8 +25,6 @@
 #include <utility>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
@@ -55,6 +53,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -356,7 +355,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
         // Some information
         log << "Mesh["
                "cells="
-            << eckit::BigNum(mesh.cells().size()) << ",nodes=" << eckit::BigNum(mesh.nodes().size()) << ","
+            << util::Pretty(mesh.cells().size()) << ",nodes=" << util::Pretty(mesh.nodes().size()) << ","
             << meshGeneratorParams << "]" << std::endl;
 
         // Write file(s)
@@ -449,7 +448,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     double R = inMesh.metadata().getDouble("cell_longest_diagonal");
     ASSERT(R > 0.);
-    log << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
+    log << "k-d tree: search radius R=" << util::Pretty(static_cast<size_t>(R)) << "m" << std::endl;
 
 
     // some statistics
@@ -520,17 +519,15 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         }
     }
 
-    log << "Projected " << eckit::BigNum(nbProjections) << " of "
-        << eckit::Plural(nbOutputPoints, "point") << " (" << eckit::Plural(nbFailures, "failure")
-        << ")\n"
-        << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and "
-        << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to "
-        << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
-        << std::endl;
+    log << "Projected " << util::Pretty(nbProjections) << " of " << util::Pretty(nbOutputPoints, "point") << " ("
+        << util::Pretty(nbFailures, "failure") << ")\n"
+        << "k-d tree: searched between " << util::Pretty(nbMinElementsSearched) << " and "
+        << util::Pretty(nbMaxElementsSearched, "element") << ", with up to "
+        << util::Pretty(nbMaxProjectionAttempts, "projection attempt") << " (per point)" << std::endl;
 
     if (nbFailures && !failuresAreMissingValues) {
         std::stringstream msg;
-        msg << "Failed to project " << eckit::Plural(nbFailures, "point");
+        msg << "Failed to project " << util::Pretty(nbFailures, "point");
         log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {

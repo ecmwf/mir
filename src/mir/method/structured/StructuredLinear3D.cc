@@ -12,11 +12,12 @@
 
 #include "mir/method/structured/StructuredLinear3D.h"
 
+#include <memory>
 #include <numeric>
 #include <vector>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 

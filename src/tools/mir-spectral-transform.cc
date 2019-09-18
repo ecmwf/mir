@@ -17,7 +17,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -54,6 +53,7 @@
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Wind.h"
 
@@ -253,7 +253,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     {
         auto& log = eckit::Log::info();
 
-        eckit::Timer timer("Total time");
+        eckit::Timer total_timer("Total time");
 
         const std::string what(vod2uv ? "vo/d field pair" : "field");
 
@@ -335,7 +335,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << mir::util::Pretty(int(F), what) << "..."
+                        << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
@@ -346,12 +347,12 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         input_vo.resize(F * N * 2);
                         input_d.resize(F * N * 2);
 
-                        for (size_t i = 0; i < F; ++i) {
-                            const size_t which = (numberOfFieldPairsProcessed + i) * 2;
+                        for (size_t f = 0; f < F; ++f) {
+                            const size_t which = (numberOfFieldPairsProcessed + f) * 2;
                             mir::repres::sh::SphericalHarmonics::interlace_spectra(input_vo, field.values(which + 0), T,
-                                                                                   N, i, F);
+                                                                                   N, f, F);
                             mir::repres::sh::SphericalHarmonics::interlace_spectra(input_d, field.values(which + 1), T,
-                                                                                   N, i, F);
+                                                                                   N, f, F);
                         }
                     }
 
@@ -377,8 +378,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         long v = long(paramIdv);
 
                         auto here = output.cbegin();
-                        for (size_t i = 0; i < F; ++i) {
-                            const size_t which = (numberOfFieldPairsProcessed + i) * 2;
+                        for (size_t f = 0; f < F; ++f) {
+                            const size_t which = (numberOfFieldPairsProcessed + f) * 2;
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
@@ -386,8 +387,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                             here += int(Ngp);
                         }
 
-                        for (size_t i = 0; i < F; ++i) {
-                            const size_t which = (numberOfFieldPairsProcessed + i) * 2 + 1;
+                        for (size_t f = 0; f < F; ++f) {
+                            const size_t which = (numberOfFieldPairsProcessed + f) * 2 + 1;
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
 
                             field.update(output_field, which);
@@ -406,45 +407,46 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << eckit::Plural(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << mir::util::Pretty(int(F), what) << "..."
+                        << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
-                    mir::MIRValuesVector input;
+                    mir::MIRValuesVector in;
                     if (F > 1) {
                         eckit::Timer timer("time on interlacing spectra", log);
-                        input.resize(F * N * 2);
+                        in.resize(F * N * 2);
 
-                        for (size_t i = 0; i < F; ++i) {
+                        for (size_t f = 0; f < F; ++f) {
                             mir::repres::sh::SphericalHarmonics::interlace_spectra(
-                                input, field.values(numberOfFieldsProcessed + i), T, N, i, F);
+                                in, field.values(numberOfFieldsProcessed + f), T, N, f, F);
                         }
                     }
 
                     // set output working area
                     const size_t Ngp = outputGrid.size();
-                    mir::MIRValuesVector output(F * Ngp);
+                    mir::MIRValuesVector out(F * Ngp);
 
                     // inverse transform
                     {
                         eckit::Timer timer("time on invtrans", log);
-                        trans.invtrans(int(F), F > 1 ? input.data() : field.values(numberOfFieldsProcessed).data(),
-                                       output.data(), atlas::option::global());
+                        trans.invtrans(int(F), F > 1 ? in.data() : field.values(numberOfFieldsProcessed).data(),
+                                       out.data(), atlas::option::global());
                     }
 
                     // set field values (again, avoid copies for one field only)
                     if (F > 1) {
                         eckit::Timer timer("time on copying grid-point values", log);
 
-                        auto here = output.cbegin();
-                        for (size_t i = 0; i < F; ++i) {
+                        auto here = out.cbegin();
+                        for (size_t f = 0; f < F; ++f) {
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
 
-                            field.update(output_field, numberOfFieldsProcessed + i);
+                            field.update(output_field, numberOfFieldsProcessed + f);
                             here += int(Ngp);
                         }
                     } else {
-                        field.update(output, numberOfFieldsProcessed);
+                        field.update(out, numberOfFieldsProcessed);
                     }
                 }
             }
@@ -462,8 +464,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
         statistics.report(log);
 
-        log << eckit::Plural(int(i * multiScalar), what) << " in " << eckit::Seconds(timer.elapsed())
-            << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+        log << mir::util::Pretty(int(i * multiScalar), what) << " in " << eckit::Seconds(total_timer.elapsed())
+            << ", rate: " << double(i) / double(total_timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }
 

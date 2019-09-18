@@ -19,7 +19,6 @@
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"

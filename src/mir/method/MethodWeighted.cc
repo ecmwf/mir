@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -40,6 +39,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -298,7 +298,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
-        os << "Interpolating field (" << eckit::BigNum(npts_inp) << " -> " << eckit::BigNum(npts_out) << ")";
+        os << "Interpolating field (" << util::Pretty(npts_inp) << " -> " << util::Pretty(npts_out) << ")";
         eckit::TraceTimer<LibMir> t(os.str());
 
         // compute some statistics on the result
@@ -443,8 +443,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected " << eckit::BigNum(fix) << " out of "
-        << eckit::Plural(W.rows(), "output point") << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << util::Pretty(fix) << " out of "
+        << util::Pretty(W.rows(), "output point") << std::endl;
 }
 
 

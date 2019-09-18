@@ -20,7 +20,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -34,6 +33,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -107,7 +107,7 @@ bool Gaussian::includesSouthPole() const {
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
-    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << eckit::Plural(values.size(), "value") << ", within domain: " << eckit::BigNum(count) << "." << std::endl;
+    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << util::Pretty(values.size(), "value") << ", within domain: " << util::Pretty(count) << "." << std::endl;
     ASSERT(values.size() == count);
 }
 

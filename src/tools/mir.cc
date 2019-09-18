@@ -18,7 +18,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
@@ -57,6 +56,7 @@
 #include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 #if defined(HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -327,7 +327,7 @@ void MIR::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::outpu
 
     statistics.report(eckit::Log::info());
 
-    eckit::Log::info() << eckit::Plural(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
+    eckit::Log::info() << mir::util::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
                        ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 

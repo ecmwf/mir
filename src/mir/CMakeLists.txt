@@ -569,8 +569,8 @@ list(APPEND mir_srcs
     util/Function.h
     util/GlobaliseUnstructured.cc
     util/GlobaliseUnstructured.h
-    util/Grib.h
     util/Grib.cc
+    util/Grib.h
     util/Increments.cc
     util/Increments.h
     util/Latitude.cc
@@ -586,6 +586,8 @@ list(APPEND mir_srcs
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
+    util/Pretty.cc
+    util/Pretty.h
     util/Rotation.cc
     util/Rotation.h
     util/Types.h

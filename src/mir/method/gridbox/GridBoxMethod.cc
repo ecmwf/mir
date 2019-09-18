@@ -17,7 +17,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
@@ -27,6 +26,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -221,7 +221,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
 
-    log << "GridBoxMethod: calculate grid box longitude intersections (on " << eckit::Plural(rowIntersect.size(), "row") << ")" << std::endl;
+    log << "GridBoxMethod: calculate grid box longitude intersections (on " << util::Pretty(rowIntersect.size(), "row") << ")" << std::endl;
     std::vector<WeightMatrix::Triplet> triplets;
 
     // TODO: no intelligent search yet, just brute forcing the intersections
@@ -258,7 +258,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
 
-    log << "Intersected " << eckit::Plural(triplets.size(), "grid box") << std::endl;
+    log << "Intersected " << util::Pretty(triplets.size(), "grid box", "grid boxes") << std::endl;
 
 
     // fill sparse matrix
