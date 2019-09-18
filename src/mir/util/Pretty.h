@@ -12,6 +12,7 @@
 #ifndef mir_util_Pretty_h
 #define mir_util_Pretty_h
 
+#include <iosfwd>
 #include <string>
 
 
