@@ -96,13 +96,15 @@ struct LatitudeRange {
 
 class GridBox {
 public:
-    GridBox(LatitudeRange& lat, LongitudeRange& lon) :
+    GridBox(LatitudeRange& lat, LongitudeRange& lon, size_t index) :
         north_(lat.north),
         west_(lon.west),
         south_(lat.south),
-        east_(lon.east) {}
+        east_(lon.east),
+        index_(index) {}
 
     double area() const { return atlas::util::Earth::area({west_, north_}, {east_, south_}); }
+    size_t index() const { return index_; }
 
     static double normalise(double lon, double minimum) {
         while (lon < minimum) {
@@ -147,7 +149,7 @@ public:
 
         LatitudeRange sn(s, n);
         LongitudeRange we(w, e);
-        other = {sn, we};
+        other = {sn, we, other.index_};
 
         return intersectsSN && intersectsWE;
     }
@@ -157,11 +159,12 @@ private:
     double west_;
     double south_;
     double east_;
+    size_t index_;
     static constexpr double GLOBE = 360.;
 
     void print(std::ostream& out) const {
-        out << "GridBox["
-            << "north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
+        out << "GridBox[index=" << index_ << ",north=" << north_ << ",west=" << west_ << ",south=" << south_
+            << ",east=" << east_ << "]";
     }
 
     friend std::ostream& operator<<(std::ostream& s, const GridBox& p) {
@@ -170,18 +173,103 @@ private:
     }
 };
 
-std::vector<GridBox> boxes(LatitudeRange lat, std::vector<double> lonEdges) {
-    ASSERT(lonEdges.size() > 1);
+//std::vector<GridBox> boxes(LatitudeRange lat, std::vector<double> lonEdges) {
+//    ASSERT(lonEdges.size() > 1);
 
-    std::vector<GridBox> boxes;
-    boxes.reserve(lonEdges.size() - 1);
-    for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
-        LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
-        boxes.emplace_back(lat, lon);
+//    std::vector<GridBox> boxes;
+//    boxes.reserve(lonEdges.size() - 1);
+//    for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
+//        LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
+//        boxes.emplace_back(lat, lon);
+//    }
+
+//    return boxes;
+//}
+
+
+struct Helper {
+    Helper(const repres::Representation& r) : repres_(r), latEdges_(r.calculateGridBoxLatitudeEdges()) {
+        ASSERT(latEdges_.size() > 1);
     }
 
-    return boxes;
-}
+    using edges_t = std::vector<double>;
+    using boxes_t = std::vector<GridBox>;
+
+    const edges_t& latitudeEdges() const { return latEdges_; }
+    size_t rows() const { return latEdges_.size() - 1; }
+
+    const boxes_t& boxesOnRow(size_t j) {
+
+        // update cache
+        preCalculateGridBoxesOnRows({j});
+
+        auto& boxes = boxesOnRows_[j];
+        ASSERT(!boxes.empty());
+        return boxes;
+    }
+
+    std::vector<boxes_t const*> boxesOnRows(const std::vector<size_t>& js) {
+
+        // update cache
+        preCalculateGridBoxesOnRows(js);
+
+        std::vector<boxes_t const*> r;
+        r.reserve(js.size());
+
+        for (auto j : js) {
+            auto& boxes = boxesOnRows_[j];
+            ASSERT(!boxes.empty());
+            r.emplace_back(&boxes);
+        }
+
+        return r;
+    }
+
+private:
+    const repres::Representation& repres_;
+    const edges_t latEdges_;
+    std::map<size_t, boxes_t> boxesOnRows_;
+
+    void preCalculateGridBoxesOnRows(const std::vector<size_t>& js) {
+
+        // determine starting node (grid box) index
+        size_t index = boxesOnRows_.empty() ? 0 : 1 + boxesOnRows_.rbegin()->second.back().index();
+
+        // remove cached, un-requested grid boxes
+        for (bool remove = true; remove && !boxesOnRows_.empty();) {
+            for (auto& r : boxesOnRows_) {
+                if ((remove = !std::count(js.begin(), js.end(), r.first))) {
+                    boxesOnRows_.erase(r.first);
+                    break;
+                }
+            }
+        }
+
+        // calculate non-cached, requested grid boxes
+        for (auto j : js) {
+            ASSERT(j < latEdges_.size() - 1);
+            LatitudeRange lat{latEdges_[j + 1], latEdges_[j]};
+
+            if (!boxesOnRows_.count(j)) {
+                auto lonEdges = repres_.calculateGridBoxLongitudeEdges(j);
+                ASSERT(lonEdges.size() > 1);
+
+                auto& boxes = boxesOnRows_[j];
+                boxes.reserve(lonEdges.size() - 1);
+
+                for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
+                    LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
+                    boxes.emplace_back(GridBox{lat, lon, index + i});
+                }
+
+                ASSERT(!boxes.empty());
+            }
+        }
+
+        // keep cached only the requested rows
+        ASSERT(js.size() == boxesOnRows_.size());
+    }
+};
 
 
 GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
@@ -214,39 +302,59 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
 
-    log << "GridBoxMethod: calculate grid box latitude intersections" << std::endl;
-
-    // map intersections of output rows to input rows
-    // (b, a) are (output, input) grid box row indices
-
-    auto aLatEdges = in.calculateGridBoxLatitudeEdges();
-    ASSERT(aLatEdges.size() > 1);
-
-    auto bLatEdges = out.calculateGridBoxLatitudeEdges();
-    ASSERT(bLatEdges.size() > 1);
-
-    std::map<size_t, std::vector<size_t>> rowIntersect;
-
-    for (size_t b = 0; b < bLatEdges.size() - 1; ++b) {
-        LatitudeRange boxB(bLatEdges[b + 1], bLatEdges[b]);
-        for (size_t a = 0; a < aLatEdges.size() - 1; ++a) {
-            LatitudeRange boxA(aLatEdges[a + 1], aLatEdges[a]);
-            if (boxB.intersects(boxA)) {
-                rowIntersect[b].push_back(a);
-            }
-        }
-    }
+    log << "GridBoxMethod: intersect " << util::Pretty(out.numberOfPoints()) << " from "
+        << util::Pretty(in.numberOfPoints(), "grid box", "grid boxes") << std::endl;
 
 
-    log << "GridBoxMethod: calculate grid box longitude intersections (on " << util::Pretty(rowIntersect.size(), "row") << ")" << std::endl;
-    std::vector<WeightMatrix::Triplet> triplets;
-
-    // TODO: no intelligent search yet, just brute forcing the intersections
     // TODO: triplets, really? why not writing to the matrix directly?
-    {
-        eckit::ProgressTimer progress("Intersecting", rowIntersect.size(), "row", double(5), log);
+    std::vector<WeightMatrix::Triplet> triplets;
+    triplets.reserve(out.numberOfPoints());
 
-        // setup output grid boxes on row
+
+    {
+        Helper a(in);
+        Helper b(out);
+        eckit::ProgressTimer progress("Intersecting", a.rows(), "row", 1ul, log);
+
+        auto& aLatEdges = a.latitudeEdges();
+        auto& bLatEdges = b.latitudeEdges();
+
+        for (size_t ja = 0; ja < a.rows(); ++ja) {
+
+            // set 'a' LatitudeRange, and 'b' list of LatitudeRanges
+            LatitudeRange aRow{aLatEdges[ja + 1], aLatEdges[ja]};
+
+            std::vector<size_t> jbs;
+            for (size_t jb = 0; jb < b.rows(); ++jb) {
+                LatitudeRange bRow{bLatEdges[jb + 1], bLatEdges[jb]};
+                if (bRow.intersects(aRow)) {
+                    jbs.emplace_back(jb);
+                }
+            }
+            ASSERT(!jbs.empty());
+
+            // intersect 'a' boxes (single row) with 'b' boxes (multiple rows)
+            auto& aBoxes = a.boxesOnRow(ja);
+            for (auto& bBoxes : b.boxesOnRows(jbs)) {
+
+                eckit::Log::info() << "---" << std::endl;
+                for (auto& b : aBoxes) {
+                    eckit::Log::info() << "a:" << b << std::endl;
+                }
+
+                for (auto& b : *bBoxes) {
+                    eckit::Log::info() << "b:" << b << std::endl;
+                }
+
+                eckit::Log::info() << std::endl;
+            }
+
+
+            ++progress;
+        }
+
+
+#if 0
         for (auto& it : rowIntersect) {
             size_t b = it.first;
             const auto boxesB(boxes({bLatEdges[b + 1], bLatEdges[b]}, out.calculateGridBoxLongitudeEdges(b)));
@@ -272,6 +380,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
             ++progress;
         }
+#endif
     }
 
 
