@@ -20,15 +20,33 @@
 #include "mir/api/Atlas.h"
 
 
+static constexpr double GLOBE      = 360.;
+static constexpr double NORTH_POLE = 90.;
+static constexpr double SOUTH_POLE = -90.;
+
+double normalise(double lon, double minimum) {
+    while (lon < minimum) {
+        lon += GLOBE;
+    }
+    while (lon >= minimum + GLOBE) {
+        lon -= GLOBE;
+    }
+    return lon;
+}
+
+
 namespace mir {
 namespace util {
 
 
-GridBox::GridBox(GridBox::LatitudeRange& lat, GridBox::LongitudeRange& lon) :
-    north_(lat.north),
-    west_(lon.west),
-    south_(lat.south),
-    east_(lon.east) {}
+GridBox::GridBox(double north, double west, double south, double east) :
+    north_(north),
+    west_(west),
+    south_(south),
+    east_(east) {
+    ASSERT(SOUTH_POLE <= south_ && south_ <= north_ && north_ <= NORTH_POLE);
+    ASSERT(west_ <= east_ && east_ <= west_ + GLOBE);
+}
 
 
 double GridBox::area() const {
@@ -36,14 +54,8 @@ double GridBox::area() const {
 }
 
 
-double GridBox::normalise(double lon, double minimum) {
-    while (lon < minimum) {
-        lon += GLOBE;
-    }
-    while (lon >= minimum + GLOBE) {
-        lon -= GLOBE;
-    }
-    return lon;
+double GridBox::diagonal() const {
+    return atlas::util::Earth::distance({west_, north_}, {east_, south_});
 }
 
 
@@ -51,17 +63,16 @@ bool GridBox::intersects(GridBox& other) const {
     double n = std::min(north_, other.north_);
     double s = std::max(south_, other.south_);
 
-    bool intersectsSN = s <= n;
-    if (!intersectsSN) {
-        n = s;
+    if (!eckit::types::is_strictly_greater(n, s)) {
+        return false;
     }
 
-    auto intersect = [](const GridBox& a, const GridBox& b, double w, double e) {
-        auto ref = normalise(b.west_, a.west_);
-        auto w_  = std::max(a.west_, ref);
-        auto e_  = std::min(a.east_, normalise(b.east_, ref));
+    auto intersect = [](const GridBox& a, const GridBox& b, double& w, double& e) {
+        double ref = normalise(b.west_, a.west_);
+        double w_  = std::max(a.west_, ref);
+        double e_  = std::min(a.east_, normalise(b.east_, ref));
 
-        if (w_ <= e_) {
+        if (eckit::types::is_strictly_greater(e_, w_)) {
             w = w_;
             e = e_;
             return true;
@@ -69,76 +80,21 @@ bool GridBox::intersects(GridBox& other) const {
         return false;
     };
 
-    auto w = std::min(west_, other.west_);
-    auto e = w;
+    double w = std::min(west_, other.west_);
+    double e = w;
 
-    bool intersectsWE = west_ <= other.west_ ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
-                                             : intersect(other, *this, w, e) || intersect(*this, other, w, e);
-
-    ASSERT(w <= e);
-
-    LatitudeRange sn(s, n);
-    LongitudeRange we(w, e);
-    other = {sn, we};
-
-    return intersectsSN && intersectsWE;
+    if (west_ <= other.west_ ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
+                             : intersect(other, *this, w, e) || intersect(*this, other, w, e)) {
+        ASSERT(w <= e);
+        other = {n, w, s, e};
+        return true;
+    }
+    return false;
 }
 
 
 void GridBox::print(std::ostream& out) const {
     out << "GridBox[north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
-}
-
-
-GridBox::LongitudeRange::LongitudeRange(double _west, double _east) : west(_west), east(_east) {
-    east = normalise(east, west);
-    ASSERT(west <= east);
-}
-
-
-bool GridBox::LongitudeRange::intersects(const GridBox::LongitudeRange& other) const {
-
-    auto intersect = [](const LongitudeRange& a, const LongitudeRange& b, double& w, double& e) {
-        auto ref = normalise(b.west, a.west);
-        auto w_  = std::max(a.west, ref);
-        auto e_  = std::min(a.east, normalise(b.east, ref));
-
-        if (w_ <= e_) {
-            w = w_;
-            e = e_;
-            return eckit::types::is_strictly_greater(e, w);
-        }
-        return false;
-    };
-
-    auto w = std::min(west, other.west);
-    auto e = w;
-
-    return west <= other.west ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
-                              : intersect(other, *this, w, e) || intersect(*this, other, w, e);
-}
-
-
-double GridBox::LongitudeRange::normalise(double lon, double minimum) {
-    while (lon < minimum) {
-        lon += GLOBE;
-    }
-    while (lon >= minimum + GLOBE) {
-        lon -= GLOBE;
-    }
-    return lon;
-}
-
-
-GridBox::LatitudeRange::LatitudeRange(double _south, double _north) : south(_south), north(_north) {
-    ASSERT(south <= north);
-}
-
-
-bool GridBox::LatitudeRange::intersects(const GridBox::LatitudeRange& other) const {
-    double n = std::min(north, other.north);
-    double s = std::max(south, other.south);
-    return eckit::types::is_strictly_greater(n, s);
 }
 
 

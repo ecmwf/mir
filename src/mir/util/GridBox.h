@@ -21,30 +21,12 @@ namespace util {
 
 class GridBox {
 public:
-    // -- Types
-
-    struct LongitudeRange {
-        LongitudeRange(double west, double east);
-        bool intersects(const LongitudeRange&) const;
-        static double normalise(double lon, double minimum);
-        double west;
-        double east;
-        static constexpr double GLOBE = 360.;
-    };
-
-    struct LatitudeRange {
-        LatitudeRange(double south, double north);
-        bool intersects(const LatitudeRange&) const;
-        double south;
-        double north;
-    };
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    GridBox(LatitudeRange&, LongitudeRange&);
+    GridBox(double north, double west, double south, double east);
 
     // -- Destructor
     // None
@@ -58,9 +40,7 @@ public:
     // -- Methods
 
     double area() const;
-
-    static double normalise(double lon, double minimum);
-
+    double diagonal() const;
     bool intersects(GridBox&) const;
 
     // -- Overridden methods
@@ -88,6 +68,9 @@ protected:
     // -- Class methods
     // None
 
+    // -- Friends
+    // None
+
 private:
     // -- Members
 
@@ -95,7 +78,6 @@ private:
     double west_;
     double south_;
     double east_;
-    static constexpr double GLOBE = 360.;
 
     // -- Methods
 

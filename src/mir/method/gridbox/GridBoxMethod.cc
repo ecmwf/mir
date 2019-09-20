@@ -12,21 +12,20 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 #include <algorithm>
-#include <map>
 #include <sstream>
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/ProgressTimer.h"
-#include "eckit/types/FloatCompare.h"
+#include "eckit/log/ResourceUsage.h"
+#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Angles.h"
+#include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Pretty.h"
@@ -35,103 +34,6 @@
 namespace mir {
 namespace method {
 namespace gridbox {
-
-
-// std::vector<GridBox> boxes(LatitudeRange lat, std::vector<double> lonEdges) {
-//    ASSERT(lonEdges.size() > 1);
-
-//    std::vector<GridBox> boxes;
-//    boxes.reserve(lonEdges.size() - 1);
-//    for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
-//        LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
-//        boxes.emplace_back(lat, lon);
-//    }
-
-//    return boxes;
-//}
-
-using util::GridBox;
-
-struct Helper {
-    Helper(const repres::Representation& r) : repres_(r), latEdges_(/*r.calculateGridBoxLatitudeEdges()*/) {
-        ASSERT(latEdges_.size() > 1);
-    }
-
-    using edges_t = std::vector<double>;
-    using boxes_t = std::vector<GridBox>;
-
-    const edges_t& latitudeEdges() const { return latEdges_; }
-    size_t rows() const { return latEdges_.size() - 1; }
-
-    const boxes_t& boxesOnRow(size_t j) {
-
-        // update cache
-        preCalculateGridBoxesOnRows({j});
-
-        auto& boxes = boxesOnRows_[j];
-        ASSERT(!boxes.empty());
-        return boxes;
-    }
-
-    std::vector<boxes_t const*> boxesOnRows(const std::vector<size_t>& js) {
-
-        // update cache
-        preCalculateGridBoxesOnRows(js);
-
-        std::vector<boxes_t const*> r;
-        r.reserve(js.size());
-
-        for (auto j : js) {
-            auto& boxes = boxesOnRows_[j];
-            ASSERT(!boxes.empty());
-            r.emplace_back(&boxes);
-        }
-
-        return r;
-    }
-
-private:
-    const repres::Representation& repres_;
-    const edges_t latEdges_;
-    std::map<size_t, boxes_t> boxesOnRows_;
-
-    void preCalculateGridBoxesOnRows(const std::vector<size_t>& js) {
-
-        // remove cached, un-requested grid boxes
-        for (bool remove = true; remove && !boxesOnRows_.empty();) {
-            for (auto& r : boxesOnRows_) {
-                if ((remove = !std::count(js.begin(), js.end(), r.first))) {
-                    boxesOnRows_.erase(r.first);
-                    break;
-                }
-            }
-        }
-
-        // calculate non-cached, requested grid boxes
-        for (auto j : js) {
-            ASSERT(j < latEdges_.size() - 1);
-            GridBox::LatitudeRange lat{latEdges_[j + 1], latEdges_[j]};
-
-            if (!boxesOnRows_.count(j)) {
-                std::vector<double> lonEdges(2) /*= repres_.calculateGridBoxLongitudeEdges(j)*/;
-                ASSERT(lonEdges.size() > 1);
-
-                auto& boxes = boxesOnRows_[j];
-                boxes.reserve(lonEdges.size() - 1);
-
-                for (size_t i = 0; i < lonEdges.size() - 1; ++i) {
-                    GridBox::LongitudeRange lon{lonEdges[i], lonEdges[i + 1]};
-                    boxes.emplace_back(GridBox{lat, lon});
-                }
-
-                ASSERT(!boxes.empty());
-            }
-        }
-
-        // keep cached only the requested rows
-        ASSERT(js.size() == boxesOnRows_.size());
-    }
-};
 
 
 GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
@@ -168,89 +70,82 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         << util::Pretty(in.numberOfPoints(), "grid box", "grid boxes") << std::endl;
 
 
+    // init structure used to fill in sparse matrix
     // TODO: triplets, really? why not writing to the matrix directly?
+    std::vector<WeightMatrix::Triplet> weights_triplets;
     std::vector<WeightMatrix::Triplet> triplets;
-    triplets.reserve(out.numberOfPoints());
+    std::vector<search::PointSearch::PointValueType> closest;
 
 
+    // set output and input grid boxes
+    const auto outBoxes = out.gridBoxes();
+    size_t Nout         = outBoxes.size();
+    ASSERT(Nout == out.numberOfPoints());
+
+    const auto inBoxes = in.gridBoxes();
+    size_t Nin         = inBoxes.size();
+    ASSERT(Nin == in.numberOfPoints());
+
+
+    // set input k-d tree for grid boxes indices
+    std::unique_ptr<search::PointSearch> tree;
     {
-        Helper a(in);
-        Helper b(out);
-        eckit::ProgressTimer progress("Intersecting", a.rows(), "row", 1ul, log);
-
-        auto& aLatEdges = a.latitudeEdges();
-        auto& bLatEdges = b.latitudeEdges();
-
-        for (size_t ja = 0; ja < a.rows(); ++ja) {
-
-            // set 'a' LatitudeRange, and 'b' list of LatitudeRanges
-            GridBox::LatitudeRange aRow{aLatEdges[ja + 1], aLatEdges[ja]};
-
-            std::vector<size_t> jbs;
-            for (size_t jb = 0; jb < b.rows(); ++jb) {
-                GridBox::LatitudeRange bRow{bLatEdges[jb + 1], bLatEdges[jb]};
-                if (bRow.intersects(aRow)) {
-                    jbs.emplace_back(jb);
-                }
-            }
-            ASSERT(!jbs.empty());
-
-            // intersect 'a' boxes (single row) with 'b' boxes (multiple rows)
-            auto& aBoxes = a.boxesOnRow(ja);
-            for (auto& bBoxes : b.boxesOnRows(jbs)) {
-
-                eckit::Log::info() << "---" << std::endl;
-                for (auto& b : aBoxes) {
-                    eckit::Log::info() << "a:" << b << std::endl;
-                }
-
-                for (auto& b : *bBoxes) {
-                    eckit::Log::info() << "b:" << b << std::endl;
-                }
-
-                eckit::Log::info() << std::endl;
-            }
-
-
-            ++progress;
-        }
-
-
-#if 0
-        for (auto& it : rowIntersect) {
-            size_t b = it.first;
-            const auto boxesB(boxes({bLatEdges[b + 1], bLatEdges[b]}, out.calculateGridBoxLongitudeEdges(b)));
-
-            // setup input grid boxes on row, and calculate intersections
-            for (size_t a : it.second) {
-                const auto boxesA(boxes({aLatEdges[a + 1], aLatEdges[a]}, in.calculateGridBoxLongitudeEdges(a)));
-
-                for (size_t colB = 0; colB < boxesB.size(); ++colB) {
-                    auto& boxB = boxesB[colB];
-
-                    for (size_t colA = 0; colA < boxesA.size(); ++colA) {
-                        auto boxA  = boxesA[colA];  // to intersect (copy)
-                        auto areaA = boxA.area();
-
-                        if (boxB.intersects(boxA)) {
-                            ASSERT(areaA > 0.);
-                            triplets.emplace_back(WeightMatrix::Triplet(colB, colA, boxA.area() / areaA));
-                        }
-                    }
-                }
-            }
-
-            ++progress;
-        }
-#endif
+        eckit::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
+        eckit::TraceTimer<LibMir> timer("k-d tree: create");
+        tree.reset(new search::PointSearch(parametrisation_, in));
     }
 
+    {
+        eckit::ProgressTimer progress("Intersecting", Nout, Nout == 1 ? "grid box" : "grid boxes", double(5), log);
 
+        const std::unique_ptr<repres::Iterator> it(out.iterator());
+        size_t i = 0;
+        while (it->next()) {
+            if (++progress) {
+                tree->statsPrint(log, false);
+                tree->statsReset();
+            }
+
+            ASSERT(i < Nout);
+            auto& outBox = outBoxes[i];
+
+
+            // 3D point to lookup
+            auto p = it->point3D();
+            auto q = tree->closestPoint(p).point();
+            tree->closestWithinRadius(p, Point3::distance(p, q) * 2., closest);
+            ASSERT(!closest.empty());
+
+
+            // calculate grid box intersections
+            triplets.clear();
+            triplets.reserve(closest.size());
+            for (auto c : closest) {
+                size_t j = c.payload();
+
+                ASSERT(j < Nin);
+                auto inBox = inBoxes[j];
+
+                auto area = inBox.area();
+
+                if (outBox.intersects(inBox)) {
+                    ASSERT(area > 0.);
+                    triplets.emplace_back(WeightMatrix::Triplet(i, j, inBox.area() / area));
+                }
+            }
+            ASSERT(!triplets.empty());
+
+            // insert the interpolant weights into the global (sparse) interpolant matrix
+            std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+
+            ++i;
+        }
+    }
     log << "Intersected " << util::Pretty(triplets.size(), "grid box", "grid boxes") << std::endl;
 
 
     // fill sparse matrix
-    W.setFromTriplets(triplets);
+    W.setFromTriplets(weights_triplets);
 }
 
 
