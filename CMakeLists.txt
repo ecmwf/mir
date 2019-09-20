@@ -28,7 +28,7 @@ ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support 
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
 ecbuild_use_package( PROJECT eccodes VERSION 2.12 REQUIRED )
-ecbuild_use_package( PROJECT eckit   VERSION 1.0  REQUIRED )
+ecbuild_use_package( PROJECT eckit   VERSION 1.4  REQUIRED )
 ecbuild_use_package( PROJECT atlas   VERSION 0.17.2 REQUIRED )
 #ecbuild_use_package( PROJECT metkit  VERSION  0.7 )
 
