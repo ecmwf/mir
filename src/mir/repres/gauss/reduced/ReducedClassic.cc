@@ -58,16 +58,6 @@ bool ReducedClassic::sameAs(const Representation& other) const {
 }
 
 
-std::vector<double> ReducedClassic::calculateGridBoxLatitudeEdges() const {
-    return calculateUnrotatedGridBoxLatitudeEdges();
-}
-
-
-std::vector<double> ReducedClassic::calculateGridBoxLongitudeEdges(size_t j) const {
-    return calculateUnrotatedGridBoxLongitudeEdges(j);
-}
-
-
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres

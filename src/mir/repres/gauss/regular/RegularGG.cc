@@ -20,6 +20,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/util/Domain.h"
+#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -73,27 +74,51 @@ std::string RegularGG::factory() const {
 }
 
 
-std::vector<double> RegularGG::calculateGridBoxLatitudeEdges() const {
-    return calculateUnrotatedGridBoxLatitudeEdges();
-}
-
-
-std::vector<double> RegularGG::calculateGridBoxLongitudeEdges(size_t j) const {
-    ASSERT(j < Nj_);
+std::vector<util::GridBox> RegularGG::gridBoxes() const {
+    using util::GridBox;
     ASSERT(1 < Ni_);
+    ASSERT(1 < Nj_);
 
+
+    // latitude edges
+    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
+
+
+    // longitude edges
+    bool periodic = isPeriodicWestEast();
+    auto lon0     = bbox_.west();
+    auto inc      = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
     eckit::Fraction half(1, 2);
-    auto lon0 = bbox_.west();
-    auto inc  = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
 
-    // grid-box longitude edges
-    std::vector<double> edges(Ni_ + 1, 0.);
-    edges[0] = (lon0 - inc / 2).value();
+    std::vector<double> lonEdges(Ni_ + 1, 0.);
+    lonEdges[0] = (lon0 - inc / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
-        edges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
+        lonEdges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
     }
 
-    return edges;
+
+    // grid boxes
+    std::vector<util::GridBox> r;
+    r.reserve(Ni_ * Nj_);
+
+    for (size_t j = 0; j < Nj_; ++j) {
+        Longitude lon1 = lon0;
+
+        for (size_t i = 0; i < Ni_; ++i) {
+            auto l = lon1;
+            lon1   = l + Longitude(inc * (i + half));
+
+            GridBox::LatitudeRange lat(latEdges[j + 1], latEdges[j]);
+            GridBox::LongitudeRange lon(l.value(), lon1.value());
+
+            r.emplace_back(GridBox(lat, lon));
+        }
+
+        ASSERT(!periodic || lon0 == lon1.normalise(lon0));
+    }
+
+    ASSERT(r.size() == Ni_ * Nj_);
+    return r;
 }
 
 

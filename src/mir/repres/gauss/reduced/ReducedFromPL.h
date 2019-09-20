@@ -89,10 +89,6 @@ private:
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation&) const;
 
-    // From Representation
-    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
-    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
-
     // -- Class members
     // None
 

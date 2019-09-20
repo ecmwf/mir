@@ -42,6 +42,7 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
+class GridBox;
 class MeshGeneratorParameters;
 }
 
@@ -132,8 +133,7 @@ public:
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
 
-    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
-    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
+    virtual std::vector<util::GridBox> gridBoxes() const;
 
     virtual std::string factory() const; // Return factory name
 

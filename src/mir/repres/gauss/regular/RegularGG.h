@@ -91,8 +91,7 @@ private:
     virtual std::string factory() const;
 
     // From Representation
-    virtual std::vector<double> calculateGridBoxLatitudeEdges() const;
-    virtual std::vector<double> calculateGridBoxLongitudeEdges(size_t j) const;
+    std::vector<util::GridBox> gridBoxes() const;
 
     // -- Class members
     // None

@@ -63,16 +63,6 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 }
 
 
-std::vector<double> ReducedFromPL::calculateGridBoxLatitudeEdges() const {
-    return calculateUnrotatedGridBoxLatitudeEdges();
-}
-
-
-std::vector<double> ReducedFromPL::calculateGridBoxLongitudeEdges(size_t j) const {
-    return calculateUnrotatedGridBoxLongitudeEdges(j);
-}
-
-
 namespace {
 static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg"); // Name is what is returned by grib_api
 }
