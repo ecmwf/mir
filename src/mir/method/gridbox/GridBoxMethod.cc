@@ -20,6 +20,7 @@
 #include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/config/LibMir.h"
@@ -77,18 +78,33 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<search::PointSearch::PointValueType> closest;
 
 
-    // set output and input grid boxes
+    // set output grid boxes
     const auto outBoxes = out.gridBoxes();
     size_t Nout         = outBoxes.size();
     ASSERT(Nout == out.numberOfPoints());
 
+    double Rout = 0.;
+    for (const auto& box : outBoxes) {
+        Rout = std::max(Rout, box.diagonal());
+    }
+    ASSERT(Rout > 0.);
+
+
+    // set input grid boxes
     const auto inBoxes = in.gridBoxes();
     size_t Nin         = inBoxes.size();
     ASSERT(Nin == in.numberOfPoints());
 
+    double Rin = 0.;
+    for (const auto& box : inBoxes) {
+        Rin = std::max(Rin, box.diagonal());
+    }
+    ASSERT(Rin > 0.);
+
 
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
+    const double R = Rin + Rout;
     {
         eckit::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
         eckit::TraceTimer<LibMir> timer("k-d tree: create");
@@ -110,30 +126,32 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             auto& outBox = outBoxes[i];
 
 
-            // 3D point to lookup
-            auto p = it->point3D();
-            auto q = tree->closestPoint(p).point();
-            tree->closestWithinRadius(p, Point3::distance(p, q) * 2., closest);
+            // lookup
+            tree->closestWithinRadius(it->point3D(), R, closest);
             ASSERT(!closest.empty());
 
 
             // calculate grid box intersections
             triplets.clear();
             triplets.reserve(closest.size());
+            double sumIntersectedArea = 0.;
             for (auto c : closest) {
                 size_t j = c.payload();
 
                 ASSERT(j < Nin);
-                auto inBox = inBoxes[j];
+                auto box  = inBoxes[j];
+                auto area = box.area();
 
-                auto area = inBox.area();
-
-                if (outBox.intersects(inBox)) {
+                if (outBox.intersects(box)) {
+                    double intersection = box.area();
+                    ASSERT(intersection > 0.);
                     ASSERT(area > 0.);
-                    triplets.emplace_back(WeightMatrix::Triplet(i, j, inBox.area() / area));
+                    triplets.emplace_back(WeightMatrix::Triplet(i, j, intersection / area));
+                    sumIntersectedArea += intersection;
                 }
             }
             ASSERT(!triplets.empty());
+            ASSERT(eckit::types::is_approximately_equal(outBox.area(), sumIntersectedArea, 1.));
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
             std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
