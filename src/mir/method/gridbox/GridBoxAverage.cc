@@ -11,43 +11,10 @@
 
 #include "mir/method/gridbox/GridBoxAverage.h"
 
-#include <ostream>
-#include <sstream>
-
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/MD5.h"
-
-#include "mir/method/WeightMatrix.h"
-#include "mir/method/nonlinear/NonLinear.h"
-
 
 namespace mir {
 namespace method {
 namespace gridbox {
-
-
-struct NonLinearGridBoxAverage : nonlinear::NonLinear {
-    using NonLinear::NonLinear;
-    bool treatment(Matrix& /*A*/, WeightMatrix& /*W*/, Matrix& /*B*/, const data::MIRValuesVector& /*values*/,
-                   const double& /*missingValue*/) const {
-        // TODO
-        NOTIMP;
-    }
-
-private:
-    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxAverage*>(&other); }
-    void print(std::ostream& out) const { out << "GridBoxAverage[]"; }
-    void hash(eckit::MD5& h) const {
-        std::ostringstream s;
-        s << *this;
-        h.add(s.str());
-    }
-};
-
-
-GridBoxAverage::GridBoxAverage(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    // TODO: MethodWeighted::pushNonLinear(new GridBoxAverage(param));  (currently MethodWeighted::missing_)
-}
 
 
 const char* GridBoxAverage::name() const {

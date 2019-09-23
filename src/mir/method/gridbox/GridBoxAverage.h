@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    explicit GridBoxAverage(const param::MIRParametrisation&);
+    using GridBoxMethod::GridBoxMethod;
 
     // -- Destructor
     // None
