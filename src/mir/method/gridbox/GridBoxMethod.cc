@@ -181,6 +181,11 @@ void GridBoxMethod::print(std::ostream& out) const {
 }
 
 
+bool GridBoxMethod::validateMatrixWeights() const {
+    return false;
+}
+
+
 }  // namespace gridbox
 }  // namespace method
 }  // namespace mir

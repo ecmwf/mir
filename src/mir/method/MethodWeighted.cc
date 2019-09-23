@@ -91,15 +91,10 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]",
+                               eckit::Log::debug<LibMir>());
 
-    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", log);
-
-    computeMatrixWeights(ctx, in, out, W);
-
-    // matrix validation always happens after creation,
-    // because the matrix can/will be cached
-    W.validate("computeMatrixWeights");
+    computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
 
     if (masks.active() && masks.cacheable()) {
         applyMasks(W, masks);
@@ -257,6 +252,11 @@ lsm::LandSeaMasks MethodWeighted::getMasks(const repres::Representation& in, con
 }
 
 
+bool MethodWeighted::validateMatrixWeights() const {
+    return true;
+}
+
+
 void MethodWeighted::execute(context::Context& ctx, const repres::Representation& in,
                              const repres::Representation& out) const {
 
@@ -374,7 +374,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
-                                          const repres::Representation& out, WeightMatrix& W) const {
+                                          const repres::Representation& out, WeightMatrix& W, bool validate) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
 
     if (in.sameAs(out) && !matrixAssemble_) {
@@ -385,6 +385,11 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         eckit::TraceTimer<LibMir> timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
+    }
+
+    // matrix validation always happens after creation, because the matrix can/will be cached
+    if (validate) {
+        W.validate("computeMatrixWeights");
     }
 }
 

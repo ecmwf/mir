@@ -85,6 +85,7 @@ private:
                   const repres::Representation& out) const;
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
+    bool validateMatrixWeights() const;
 
     // -- Class members
     // None
