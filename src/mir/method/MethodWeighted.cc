@@ -299,7 +299,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         std::ostringstream os;
         os << "Interpolating field (" << util::Pretty(npts_inp) << " -> " << util::Pretty(npts_out) << ")";
-        eckit::TraceTimer<LibMir> t(os.str());
+        eckit::TraceTimer<LibMir> trace(os.str());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
@@ -328,7 +328,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
             if (hasMissing || missing_->canIntroduceMissingValues()) {
-                eckit::Timer t(str.str(), log);
+                eckit::TraceTimer<LibMir> t(str.str());
 
                 WeightMatrix M(W);  // copy: run-time modifiable matrix is not cacheable
                 if (missing_->treatment(mi, M, mo, field.values(i), missingValue)) {
@@ -342,14 +342,14 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
             else {
                 W.multiply(mi, mo);
             }
-
-            for (auto& r : forceMissing) {
-                result[r] = missingValue;
-            }
         }
 
         // update field values with interpolation result
         setVectorFromOperandMatrix(mo, result, missingValue, sp);
+
+        for (auto& r : forceMissing) {
+            result[r] = missingValue;
+        }
         field.update(result, i, hasMissing || canIntroduceMissingValues());
 
 
