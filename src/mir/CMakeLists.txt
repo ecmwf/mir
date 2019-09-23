@@ -254,8 +254,10 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/gridbox/ConservativeGridBoxAverage.cc
-    method/gridbox/ConservativeGridBoxAverage.h
+    method/gridbox/GridBoxAverage.cc
+    method/gridbox/GridBoxAverage.h
+    method/gridbox/GridBoxMaximum.cc
+    method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
     method/knn/KNearest.cc

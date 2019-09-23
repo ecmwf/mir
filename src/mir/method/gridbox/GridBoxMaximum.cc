@@ -9,7 +9,7 @@
  */
 
 
-#include "mir/method/gridbox/ConservativeGridBoxAverage.h"
+#include "mir/method/gridbox/GridBoxMaximum.h"
 
 #include <ostream>
 #include <sstream>
@@ -26,7 +26,7 @@ namespace method {
 namespace gridbox {
 
 
-struct GridBoxAverage : nonlinear::NonLinear {
+struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     using NonLinear::NonLinear;
     bool treatment(Matrix& /*A*/, WeightMatrix& /*W*/, Matrix& /*B*/, const data::MIRValuesVector& /*values*/,
                    const double& /*missingValue*/) const {
@@ -35,8 +35,8 @@ struct GridBoxAverage : nonlinear::NonLinear {
     }
 
 private:
-    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxAverage*>(&other); }
-    void print(std::ostream& out) const { out << "GridBoxAverage[]"; }
+    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxMaximum*>(&other); }
+    void print(std::ostream& out) const { out << "GridBoxMaximum[]"; }
     void hash(eckit::MD5& h) const {
         std::ostringstream s;
         s << *this;
@@ -45,17 +45,17 @@ private:
 };
 
 
-ConservativeGridBoxAverage::ConservativeGridBoxAverage(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    // TODO: MethodWeighted::pushNonLinear(new GridBoxAverage(param));  (currently MethodWeighted::missing_)
+GridBoxMaximum::GridBoxMaximum(const param::MIRParametrisation& param) : GridBoxMethod(param) {
+    // TODO: MethodWeighted::pushNonLinear(new GridBoxMaximum(param));  (currently MethodWeighted::missing_)
 }
 
 
-const char* ConservativeGridBoxAverage::name() const {
-    return "conservative-grid-box-average";
+const char* GridBoxMaximum::name() const {
+    return "grid-box-maximum";
 }
 
 
-static MethodBuilder<ConservativeGridBoxAverage> __builder("conservative-grid-box-average");
+static MethodBuilder<GridBoxMaximum> __builder("grid-box-maximum");
 
 
 }  // namespace gridbox

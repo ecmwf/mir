@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_method_gridbox_ConservativeGridBoxAverage_h
-#define mir_method_gridbox_ConservativeGridBoxAverage_h
+#ifndef mir_method_gridbox_GridBoxMaximum_h
+#define mir_method_gridbox_GridBoxMaximum_h
 
 #include "mir/method/gridbox/GridBoxMethod.h"
 
@@ -20,7 +20,7 @@ namespace method {
 namespace gridbox {
 
 
-class ConservativeGridBoxAverage : public GridBoxMethod {
+class GridBoxMaximum : public GridBoxMethod {
 public:
     // -- Types
     // None
@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    explicit ConservativeGridBoxAverage(const param::MIRParametrisation&);
+    explicit GridBoxMaximum(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
