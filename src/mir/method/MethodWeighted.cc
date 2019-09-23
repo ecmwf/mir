@@ -455,6 +455,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
+    missing_->hash(md5);
 }
 
 
