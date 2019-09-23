@@ -19,6 +19,7 @@
 #define mir_method_MethodWeighted_h
 
 #include <memory>
+#include <vector>
 
 #include "mir/data/MIRValuesVector.h"
 #include "mir/method/Cropping.h"
@@ -96,6 +97,7 @@ protected:
     // -- Methods
 
     virtual const char* name() const = 0;
+    void addNonLinearTreatment(const nonlinear::NonLinear*);
 
     // -- Overridden methods
 
@@ -115,9 +117,10 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
     Cropping cropping_;
-    std::unique_ptr<const nonlinear::NonLinear> missing_;
     bool matrixValidate_;
     bool matrixAssemble_;
+
+    std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
 
     // -- Methods
 

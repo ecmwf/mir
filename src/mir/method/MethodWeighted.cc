@@ -21,11 +21,11 @@
 #include <limits>
 #include <sstream>
 #include <string>
-#include <vector>
 
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
@@ -62,11 +62,12 @@ MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation)
     matrixValidate_ = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
     matrixAssemble_ = parametrisation_.userParametrisation().has("filter");
 
-    std::string missingValues = "missing-if-heaviest-missing";
-    parametrisation_.get("non-linear", missingValues);
-
-    missing_.reset(nonlinear::NonLinearFactory::build(missingValues, parametrisation_));
-    ASSERT(missing_);
+    std::string nonLinear = "missing-if-heaviest-missing";
+    parametrisation_.get("non-linear", nonLinear);
+    for (auto& n : eckit::StringTools::split("/", nonLinear)) {
+        addNonLinearTreatment(nonlinear::NonLinearFactory::build(n, parametrisation_));
+        ASSERT(nonLinear_.back());
+    }
 }
 
 
@@ -80,9 +81,22 @@ void MethodWeighted::print(std::ostream& out) const {
 
 
 bool MethodWeighted::sameAs(const Method& other) const {
+    auto sameNonLinearities = [](const std::vector<std::unique_ptr<const nonlinear::NonLinear>>& a,
+                                 const std::vector<std::unique_ptr<const nonlinear::NonLinear>>& b) {
+        if (a.size() != b.size()) {
+            return false;
+        }
+        for (size_t i = 0; i < a.size(); ++i) {
+            if (!a[i]->sameAs(*b[i])) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     auto o = dynamic_cast<const MethodWeighted*>(&other);
     return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
-           (missing_->sameAs(*(o->missing_))) &&
+           (sameNonLinearities(nonLinear_, o->nonLinear_)) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_ == o->cropping_;
 }
 
@@ -208,6 +222,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 }
 
 
+void MethodWeighted::addNonLinearTreatment(const nonlinear::NonLinear* n) {
+    ASSERT(n);
+    nonLinear_.push_back(std::unique_ptr<const nonlinear::NonLinear>(n));
+}
+
+
 void MethodWeighted::setOperandMatricesFromVectors(WeightMatrix::Matrix& A, WeightMatrix::Matrix& B,
                                                    const MIRValuesVector& Avector, const MIRValuesVector& Bvector,
                                                    const double& missingValue, const data::Space& space) const {
@@ -295,6 +315,17 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     const bool hasMissing     = field.hasMissing() || !forceMissing.empty();
     const double missingValue = hasMissing ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
+    // matrix copy: run-time modifiable matrix is not cacheable
+    bool matrixCopy = hasMissing;
+    if (!matrixCopy) {
+        for (auto& n : nonLinear_) {
+            if ((matrixCopy = n->canIntroduceMissingValues())) {
+                break;
+            }
+        }
+    }
+
+
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
@@ -322,18 +353,20 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         ASSERT(mo.rows() == npts_out);
 
         {
-            std::ostringstream str;
-            str << *missing_;
-
             eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
 
-            if (hasMissing || missing_->canIntroduceMissingValues()) {
-                eckit::TraceTimer<LibMir> t(str.str());
+            if (matrixCopy) {
+                WeightMatrix M(W);  // modifiable matrix copy
 
-                WeightMatrix M(W);  // copy: run-time modifiable matrix is not cacheable
-                if (missing_->treatment(mi, M, mo, field.values(i), missingValue)) {
-                    if (matrixValidate_) {
-                        M.validate(str.str().c_str());
+                for (auto& n : nonLinear_) {
+                    std::ostringstream str;
+                    str << *n;
+                    eckit::TraceTimer<LibMir> t(str.str());
+
+                    if (n->treatment(mi, M, mo, field.values(i), missingValue)) {
+                        if (matrixValidate_) {
+                            M.validate(str.str().c_str());
+                        }
                     }
                 }
 
@@ -455,7 +488,9 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
-    missing_->hash(md5);
+    for (auto& n : nonLinear_) {
+        n->hash(md5);
+    }
 }
 
 

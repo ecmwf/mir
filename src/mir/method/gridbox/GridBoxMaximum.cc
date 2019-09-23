@@ -28,15 +28,45 @@ namespace gridbox {
 
 struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     using NonLinear::NonLinear;
-    bool treatment(Matrix& /*A*/, WeightMatrix& /*W*/, Matrix& /*B*/, const data::MIRValuesVector& /*values*/,
-                   const double& /*missingValue*/) const {
-        // TODO
-        NOTIMP;
+    bool treatment(Matrix& /*A*/, WeightMatrix& W, Matrix& /*B*/, const data::MIRValuesVector& values,
+                   const double& missingValue) const {
+
+        // locate rows referring input maximum value, and set rows to pick only those
+        ASSERT(W.cols() == values.size());
+
+        WeightMatrix::iterator it(W);
+        for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
+            const WeightMatrix::iterator end = W.end(r);
+            WeightMatrix::iterator kt(it);
+
+            size_t N     = 0;
+            size_t max_j = 0;
+            double max   = 0.;
+            bool once    = true;
+
+            for (WeightMatrix::Size j = 0; it != end; ++j, ++it, ++N) {
+                auto value = values[it.col()];
+                if (value != missingValue) {
+                    if (max < value || once) {
+                        max   = value;
+                        max_j = j;
+                    }
+                    once = false;
+                }
+            }
+
+            for (WeightMatrix::Size j = 0; j < N && once; ++j, ++kt) {
+                *kt = (j == max_j ? 1. : 0.);
+            }
+        }
+
+        return true;
     }
 
 private:
     bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxMaximum*>(&other); }
     void print(std::ostream& out) const { out << "GridBoxMaximum[]"; }
+    bool canIntroduceMissingValues() const { return true; }
     void hash(eckit::MD5& h) const {
         std::ostringstream s;
         s << *this;
@@ -46,7 +76,7 @@ private:
 
 
 GridBoxMaximum::GridBoxMaximum(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    // TODO: MethodWeighted::pushNonLinear(new GridBoxMaximum(param));  (currently MethodWeighted::missing_)
+    addNonLinearTreatment(new NonLinearGridBoxMaximum(param));
 }
 
 
