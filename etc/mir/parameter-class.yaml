@@ -1561,7 +1561,7 @@ intensity:
 - 215175  # Sulphur dioxide optical depth
 - 215176  # Total absorption aerosol optical depth at 2130 nm
 - 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
-- 215203  # Fine-mode nitrate aerosol optical depth at 550nm 
+- 215203  # Fine-mode nitrate aerosol optical depth at 550nm
 - 215204  # Coarse-mode nitrate aerosol optical depth at 550nm
 - 228001  # Convective inhibition
 - 228002  # Orography
@@ -1823,6 +1823,13 @@ intensity:
 - 260507  # Ocean Heat Content
 - 260510  # Cloudy brightness temperature
 - 260511  # Clear-sky brightness temperature
+- 260540  # Forest fire weather index
+- 260541  # Fine fuel moisture code
+- 260542  # Duff moisture code
+- 260543  # Drought code
+- 260544  # Initial fire spread index
+- 260545  # Fire buildup index
+- 260546  # Fire daily severity rating
 - 260550  # Cloudy radiance (with respect to wave number)
 - 260551  # Clear-sky radiance (with respect to wave number)
 - 260552  # Wind speed
