@@ -502,6 +502,8 @@ list(APPEND mir_srcs
     stats/detail/Scalar.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
+    stats/statistics/GridBoxIntegral.cc
+    stats/statistics/GridBoxIntegral.h
     stats/statistics/Integral.cc
     stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
