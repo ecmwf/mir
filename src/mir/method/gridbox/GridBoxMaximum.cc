@@ -61,6 +61,7 @@ struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
         ASSERT(!triplets.empty());
         WeightMatrix N(W.rows(), W.cols());
         N.setFromTriplets(triplets);
+        N.swap(W);
 
         return true;
     }
