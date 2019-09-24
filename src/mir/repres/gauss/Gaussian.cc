@@ -199,8 +199,11 @@ std::vector<double> Gaussian::calculateUnrotatedGridBoxLatitudeEdges() const {
 
     double wacc = -1.;
     for (size_t j = 0; j < N_; ++j, ++b, ++f) {
-        wacc += w[j];
-        *b = util::radian_to_degree(std::asin(wacc));
+        wacc += 2. * w[j];
+        double deg = util::radian_to_degree(std::asin(wacc));
+        ASSERT(Latitude::SOUTH_POLE.value() <= deg && deg <= Latitude::NORTH_POLE.value());
+
+        *b = deg;
         *f = -(*b);
     }
 
@@ -263,66 +266,12 @@ const std::vector<double>& Gaussian::weights(size_t N) {
         eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), eckit::Log::debug<LibMir>());
 
         // calculate quadrature weights and insert in known-N-weights map
-#if 0
         // FIXME: innefficient interface, latitudes are discarded
         std::vector<double> latitudes(N * 2);
-        std::vector<double> weights(N * 2);
-        atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
-#else
-        // auto& lats = latitudes(N);  // (don't forget to use a different mutex)
         std::vector<double>& weights = (*mw)[N];
-        weights.resize(2 * N);
+        weights.resize(N * 2);
 
-        size_t maxIterations = 10;
-        auto minPrecision    = 1.e-14;
-        auto dNj             = double(N * 2);
-
-        // latitudes first guess(es)
-        static const std::vector<double> guesses = {
-            2.4048255577,   5.5200781103,   8.6537279129,   11.7915344391,  14.9309177086,  18.0710639679,
-            21.2116366299,  24.3524715308,  27.4934791320,  30.6346064684,  33.7758202136,  36.9170983537,
-            40.0584257646,  43.1997917132,  46.3411883717,  49.4826098974,  52.6240518411,  55.7655107550,
-            58.9069839261,  62.0484691902,  65.1899648002,  68.3314693299,  71.4729816036,  74.6145006437,
-            77.7560256304,  80.8975558711,  84.0390907769,  87.1806298436,  90.3221726372,  93.4637187819,
-            96.6052679510,  99.7468198587,  102.8883742542, 106.0299309165, 109.1714896498, 112.3130502805,
-            115.4546126537, 118.5961766309, 121.7377420880, 124.8793089132, 128.0208770059, 131.1624462752,
-            134.3040166383, 137.4455880203, 140.5871603528, 143.7287335737, 146.8703076258, 150.0118824570,
-            153.1534580192, 156.2950342685};
-
-        auto wn = weights.begin();
-        auto ws = weights.rbegin();
-        for (size_t j = 0; j < N; ++j, ++wn, ++ws) {
-
-            // Newton method
-            double guess = j < guesses.size() ? guesses[j] : (guesses.back() + M_PI * (j - guesses.size() + 1));
-            double x  = std::cos(guess / std::sqrt((dNj + 0.5) * (dNj + 0.5) + (1. - M_2_PI * M_2_PI * 0.25)));
-            double dx = 1;
-
-            double P1;
-            double P0 = 1.;
-            for (size_t i = 0; i < maxIterations && std::abs(dx) >= minPrecision; ++i) {
-
-                // Legendre polynomial
-                P1 = x;
-                P0 = 1.;
-                for (size_t n = 2; n <= N * 2; ++n) {
-                    auto dn = double(n);
-                    auto P  = P0;
-                    P0      = P1;
-                    P1      = ((2. * dn - 1.) * x * P0 - (dn - 1) * P) / dn;
-                }
-
-                auto dP1 = (dNj * (P0 - x * P1)) / (1. - x * x);
-                dx       = -P1 / dP1;
-                x += dx;
-            }
-
-            // North/South symmetry
-            *wn = *ws = (1. - x * x) / (2. * N * N * P0 * P0);
-            // latn = util::radian_to_degree(std::asin(x));
-            // lats = -latn;
-        }
-#endif
+        atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
 
         weightsIt = mw->find(N);
     }
