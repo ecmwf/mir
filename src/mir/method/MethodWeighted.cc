@@ -75,7 +75,15 @@ MethodWeighted::~MethodWeighted() = default;
 
 
 void MethodWeighted::print(std::ostream& out) const {
-    out << "cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
+    out << "nonLinear[";
+    auto sep = "";
+    for (auto& n : nonLinear_) {
+        out << sep << (*n);
+        sep = ",";
+    }
+    out << "]";
+
+    out << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
         << ",pruneEpsilon=" << pruneEpsilon_;
 }
 
