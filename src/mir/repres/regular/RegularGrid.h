@@ -9,8 +9,8 @@
  */
 
 
-#ifndef mir_repres_atlas_AtlasRegularGrid_h
-#define mir_repres_atlas_AtlasRegularGrid_h
+#ifndef mir_repres_regular_RegularGrid_h
+#define mir_repres_regular_RegularGrid_h
 
 #include "mir/api/Atlas.h"
 
@@ -19,29 +19,28 @@
 
 namespace mir {
 namespace repres {
-namespace atlas {
+namespace regular {
 
-class AtlasRegularGrid : public Gridded {
+class RegularGrid : public Gridded {
 public:
     // -- Types
 
     using LinearSpacing = ::atlas::grid::LinearSpacing;
     using PointLonLat   = ::atlas::PointLonLat;
     using Projection    = ::atlas::Projection;
-    using RegularGrid   = ::atlas::RegularGrid;
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    AtlasRegularGrid(const param::MIRParametrisation&, Projection);
-    AtlasRegularGrid(const AtlasRegularGrid&) = delete;
-    AtlasRegularGrid& operator=(const AtlasRegularGrid&) = delete;
+    RegularGrid(const param::MIRParametrisation&, Projection);
+    RegularGrid(const RegularGrid&) = delete;
+    RegularGrid& operator=(const RegularGrid&) = delete;
 
     // -- Destructor
 
-    virtual ~AtlasRegularGrid();
+    virtual ~RegularGrid();
 
     // -- Convertors
     // None
@@ -69,7 +68,7 @@ protected:
 
     // -- Members
 
-    RegularGrid grid_;
+    ::atlas::RegularGrid grid_;
     LinearSpacing x_;
     LinearSpacing y_;
 
@@ -117,7 +116,7 @@ private:
 };
 
 
-}  // namespace atlas
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
 

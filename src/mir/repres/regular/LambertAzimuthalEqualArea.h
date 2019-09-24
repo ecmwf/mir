@@ -9,21 +9,21 @@
  */
 
 
-#ifndef mir_repres_atlas_LambertAzimuthalEqualArea_h
-#define mir_repres_atlas_LambertAzimuthalEqualArea_h
+#ifndef mir_repres_regular_LambertAzimuthalEqualArea_h
+#define mir_repres_regular_LambertAzimuthalEqualArea_h
 
 #include "mir/api/Atlas.h"
 
 #include "mir/repres/Iterator.h"
-#include "mir/repres/atlas/AtlasRegularGrid.h"
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
-namespace atlas {
+namespace regular {
 
 
-class LambertAzimuthalEqualArea : public AtlasRegularGrid {
+class LambertAzimuthalEqualArea : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -78,7 +78,7 @@ private:
 };
 
 
-}  // namespace atlas
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
 

@@ -9,18 +9,18 @@
  */
 
 
-#ifndef mir_repres_atlas_Lambert_h
-#define mir_repres_atlas_Lambert_h
+#ifndef mir_repres_regular_Lambert_h
+#define mir_repres_regular_Lambert_h
 
-#include "mir/repres/atlas/AtlasRegularGrid.h"
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
-namespace atlas {
+namespace regular {
 
 
-class Lambert : public AtlasRegularGrid {
+class Lambert : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -75,7 +75,7 @@ protected:
 };
 
 
-}  // namespace atlas
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
 

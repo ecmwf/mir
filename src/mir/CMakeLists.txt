@@ -676,12 +676,12 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
-        repres/atlas/AtlasRegularGrid.cc
-        repres/atlas/AtlasRegularGrid.h
-        repres/atlas/Lambert.cc
-        repres/atlas/Lambert.h
-        repres/atlas/LambertAzimuthalEqualArea.cc
-        repres/atlas/LambertAzimuthalEqualArea.h
+        repres/regular/Lambert.cc
+        repres/regular/Lambert.h
+        repres/regular/LambertAzimuthalEqualArea.cc
+        repres/regular/LambertAzimuthalEqualArea.h
+        repres/regular/RegularGrid.cc
+        repres/regular/RegularGrid.h
         util/MeshGeneratorParameters.cc
         util/MeshGeneratorParameters.h
         )
