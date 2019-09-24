@@ -86,6 +86,7 @@ private:
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
     bool validateMatrixWeights() const;
+    const char* name() const;
 
     // -- Class members
     // None

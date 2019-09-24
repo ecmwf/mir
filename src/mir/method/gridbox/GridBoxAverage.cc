@@ -17,11 +17,6 @@ namespace method {
 namespace gridbox {
 
 
-const char* GridBoxAverage::name() const {
-    return "grid-box-average";
-}
-
-
 static MethodBuilder<GridBoxAverage> __builder("grid-box-average");
 
 

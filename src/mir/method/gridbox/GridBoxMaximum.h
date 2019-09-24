@@ -77,9 +77,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    // From MethodWeighted
-    virtual const char* name() const;
+    // None
 
     // -- Class members
     // None

@@ -78,33 +78,28 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<search::PointSearch::PointValueType> closest;
 
 
-    // set output grid boxes
-    const auto outBoxes = out.gridBoxes();
-    size_t Nout         = outBoxes.size();
-    ASSERT(Nout == out.numberOfPoints());
+    // set input and output grid boxes
+    struct GridBoxes : std::vector<util::GridBox> {
+        GridBoxes(const repres::Representation& rep) : std::vector<util::GridBox>(rep.gridBoxes()) {
+            ASSERT(size() == rep.numberOfPoints());
+        }
+        double getLongestGridBoxDiagonal() const {
+            double R = 0.;
+            for (const auto& box : *this) {
+                R = std::max(R, box.diagonal());
+            }
+            ASSERT(R > 0.);
+            return R;
+        }
+    };
 
-    double Rout = 0.;
-    for (const auto& box : outBoxes) {
-        Rout = std::max(Rout, box.diagonal());
-    }
-    ASSERT(Rout > 0.);
-
-
-    // set input grid boxes
-    const auto inBoxes = in.gridBoxes();
-    size_t Nin         = inBoxes.size();
-    ASSERT(Nin == in.numberOfPoints());
-
-    double Rin = 0.;
-    for (const auto& box : inBoxes) {
-        Rin = std::max(Rin, box.diagonal());
-    }
-    ASSERT(Rin > 0.);
+    const GridBoxes inBoxes(in);
+    const GridBoxes outBoxes(out);
+    const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
 
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
-    const double R = Rin + Rout;
     {
         eckit::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
         eckit::TraceTimer<LibMir> timer("k-d tree: create");
@@ -112,7 +107,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        eckit::ProgressTimer progress("Intersecting", Nout, Nout == 1 ? "grid box" : "grid boxes", double(5), log);
+        eckit::ProgressTimer progress("Intersecting", outBoxes.size(), "grid box", double(5), log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t i = 0;
@@ -121,9 +116,6 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 tree->statsPrint(log, false);
                 tree->statsReset();
             }
-
-            ASSERT(i < Nout);
-            auto& outBox = outBoxes[i];
 
 
             // lookup
@@ -138,11 +130,10 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             for (auto c : closest) {
                 size_t j = c.payload();
 
-                ASSERT(j < Nin);
-                auto box  = inBoxes[j];
+                auto box  = inBoxes.at(j);
                 auto area = box.area();
 
-                if (outBox.intersects(box)) {
+                if (outBoxes.at(i).intersects(box)) {
                     double intersection = box.area();
                     ASSERT(intersection > 0.);
                     ASSERT(area > 0.);
@@ -151,7 +142,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 }
             }
             ASSERT(!triplets.empty());
-            ASSERT(eckit::types::is_approximately_equal(outBox.area(), sumIntersectedArea, 1.));
+            ASSERT(eckit::types::is_approximately_equal(outBoxes.at(i).area(), sumIntersectedArea, 1.));
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
             std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
@@ -183,6 +174,11 @@ void GridBoxMethod::print(std::ostream& out) const {
 
 bool GridBoxMethod::validateMatrixWeights() const {
     return false;
+}
+
+
+const char* GridBoxMethod::name() const {
+    return "grid-box";
 }
 
 

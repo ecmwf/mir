@@ -11,6 +11,7 @@
 
 #include "mir/method/gridbox/GridBoxMaximum.h"
 
+#include <limits>
 #include <ostream>
 #include <sstream>
 
@@ -34,31 +35,32 @@ struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
         // locate rows referring input maximum value, and set rows to pick only those
         ASSERT(W.cols() == values.size());
 
+        std::vector<WeightMatrix::Triplet> triplets;
+        triplets.reserve(W.rows());
+
         WeightMatrix::iterator it(W);
-        for (WeightMatrix::Size r = 0; r < W.rows(); ++r) {
-            const WeightMatrix::iterator end = W.end(r);
-            WeightMatrix::iterator kt(it);
+        for (WeightMatrix::Size r = 0, c = 0; r < W.rows(); ++r) {
+            double max = std::numeric_limits<double>::lowest();
+            bool found = false;
 
-            size_t N     = 0;
-            size_t max_j = 0;
-            double max   = 0.;
-            bool once    = true;
-
-            for (WeightMatrix::Size j = 0; it != end; ++j, ++it, ++N) {
+            for (; it != W.end(r); ++it) {
+                ASSERT(it.col() < values.size());
                 auto value = values[it.col()];
-                if (value != missingValue) {
-                    if (max < value || once) {
-                        max   = value;
-                        max_j = j;
-                    }
-                    once = false;
+                if (!found || (max < value && value != missingValue)) {
+                    max = value;
+                    c   = it.col();
                 }
+                found = true;
             }
 
-            for (WeightMatrix::Size j = 0; j < N && once; ++j, ++kt) {
-                *kt = (j == max_j ? 1. : 0.);
+            if (found) {
+                triplets.emplace_back(WeightMatrix::Triplet(r, c, 1.));
             }
         }
+
+        ASSERT(!triplets.empty());
+        WeightMatrix N(W.rows(), W.cols());
+        N.setFromTriplets(triplets);
 
         return true;
     }
@@ -77,11 +79,6 @@ private:
 
 GridBoxMaximum::GridBoxMaximum(const param::MIRParametrisation& param) : GridBoxMethod(param) {
     addNonLinearTreatment(new NonLinearGridBoxMaximum(param));
-}
-
-
-const char* GridBoxMaximum::name() const {
-    return "grid-box-maximum";
 }
 
 
