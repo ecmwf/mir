@@ -30,7 +30,7 @@ namespace distance {
 
 class DistanceWeighting {
 public:
-    
+
     DistanceWeighting();
 
     virtual ~DistanceWeighting();

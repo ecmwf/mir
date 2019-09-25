@@ -18,7 +18,6 @@
 
 #include <iosfwd>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -41,7 +40,7 @@ namespace mir {
 namespace style {
 
 
-class MIRStyle : private eckit::NonCopyable {
+class MIRStyle {
 public:
 
     // -- Exceptions
@@ -50,6 +49,7 @@ public:
     // -- Contructors
 
     MIRStyle(const param::MIRParametrisation&);
+    MIRStyle(const MIRStyle&) = delete;
 
     // -- Destructor
 
@@ -59,7 +59,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const MIRStyle&) = delete;
 
     // -- Methods
 

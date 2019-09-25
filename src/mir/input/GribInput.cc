@@ -8,6 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @author Tiago Quintino
+/// @date April 2015
+
+
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
@@ -23,7 +29,6 @@
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/NonCopyable.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
@@ -236,8 +241,13 @@ static const char *get_key(const std::string &name, grib_handle *h) {
     return key;
 }
 
-struct Processing : eckit::NonCopyable {
+struct Processing {
+    Processing()          = default;
     virtual ~Processing() = default;
+
+    Processing(const Processing&) = delete;
+    void operator=(const Processing&) = delete;
+
     virtual bool eval(grib_handle*, long&) const { NOTIMP; }
     virtual bool eval(grib_handle*, double&) const { NOTIMP; }
     virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }

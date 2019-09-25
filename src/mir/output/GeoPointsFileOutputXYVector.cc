@@ -34,7 +34,7 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path, 
+GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path,
     bool binary) :
     GeoPointsFileOutput(path, binary) {
 }

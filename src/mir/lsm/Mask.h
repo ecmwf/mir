@@ -20,13 +20,13 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace eckit {
 class MD5;
 class PathName;
 }
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -41,12 +41,13 @@ namespace mir {
 namespace lsm {
 
 
-class Mask : private eckit::NonCopyable {
+class Mask {
 public:
 
     // -- Contructors
 
     Mask();
+    Mask(const Mask&) = delete;
 
     // -- Destructor
 
@@ -56,7 +57,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Mask&) = delete;
 
     // -- Methods
 

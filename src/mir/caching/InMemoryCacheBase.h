@@ -10,16 +10,16 @@
 
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   Oct 2016
 
 
 #ifndef mir_caching_InMemoryCacheBase_h
 #define mir_caching_InMemoryCacheBase_h
 
-#include <string>
 #include <map>
+#include <string>
 
-#include "eckit/memory/NonCopyable.h"
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
@@ -27,36 +27,38 @@ namespace eckit {
 class Channel;
 }
 
+namespace mir {
+namespace caching {
+class InMemoryCacheStatistics;
+}
+}
+
 
 namespace mir {
 namespace caching {
 
 
-class InMemoryCacheStatistics;
-
-class InMemoryCacheBase : public eckit::NonCopyable {
+class InMemoryCacheBase {
 
 public:  // methods
-
-
     InMemoryCacheBase();
+
+    InMemoryCacheBase(const InMemoryCacheBase&) = delete;
+    void operator=(const InMemoryCacheBase&) = delete;
 
     virtual ~InMemoryCacheBase();
 
     static InMemoryCacheUsage totalFootprint();
 
 protected:
-
     void checkTotalFootprint();
     static eckit::Channel& log();
 
 private:
-
-    virtual InMemoryCacheUsage footprint() const = 0;
-    virtual InMemoryCacheUsage capacity() const = 0;
+    virtual InMemoryCacheUsage footprint() const                                    = 0;
+    virtual InMemoryCacheUsage capacity() const                                     = 0;
     virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) = 0;
-    virtual const std::string& name() const = 0;
-
+    virtual const std::string& name() const                                         = 0;
 };
 
 

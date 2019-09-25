@@ -12,7 +12,6 @@
 /// @author Peter Bispham
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-///
 /// @date May 2015
 
 
@@ -529,3 +528,4 @@ bool MethodWeighted::canIntroduceMissingValues() const {
 
 }  // namespace method
 }  // namespace mir
+

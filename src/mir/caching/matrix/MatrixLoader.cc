@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Oct 2016
 
 
@@ -60,9 +59,6 @@ eckit::Channel& MatrixLoader::log() {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = nullptr;
 static std::map< std::string, MatrixLoaderFactory* >* m = nullptr;
@@ -106,6 +102,7 @@ MatrixLoader* MatrixLoaderFactory::build(const std::string& name, const eckit::P
     return (*j).second->make(name, path);
 }
 
+
 void MatrixLoaderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -121,3 +118,4 @@ void MatrixLoaderFactory::list(std::ostream& out) {
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
+

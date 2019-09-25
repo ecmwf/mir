@@ -16,8 +16,6 @@
 #include <memory>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-
 #include "mir/style/Intgrid.h"
 #include "mir/style/Truncation.h"
 
@@ -36,7 +34,7 @@ namespace mir {
 namespace style {
 
 
-class Resol : public eckit::NonCopyable {
+class Resol {
 public:
 
     // -- Exceptions
@@ -45,6 +43,7 @@ public:
     // -- Contructors
 
     Resol(const param::MIRParametrisation&, bool forceNoIntermediateGrid);
+    Resol(const Resol&) = delete;
 
     // -- Destructor
 
@@ -54,7 +53,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Resol&) = delete;
 
     // -- Methods
 

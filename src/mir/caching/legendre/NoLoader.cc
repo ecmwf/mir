@@ -11,8 +11,8 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
+
 
 #include <fcntl.h>
 #include <iostream>
@@ -25,9 +25,11 @@
 
 #include "eckit/log/Bytes.h"
 
+
 namespace mir {
 namespace caching {
 namespace legendre {
+
 
 NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
     : LegendreLoader(parametrisation, path) {}
@@ -59,6 +61,8 @@ namespace {
 static LegendreLoaderBuilder<NoLoader> loader("none");
 }
 
-} // namespace legendre
-} // namespace caching
-} // namespace mir
+
+}  // namespace legendre
+}  // namespace caching
+}  // namespace mir
+

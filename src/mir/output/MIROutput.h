@@ -20,8 +20,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace mir {
 namespace action {
@@ -46,7 +44,7 @@ namespace mir {
 namespace output {
 
 
-class MIROutput : private eckit::NonCopyable {
+class MIROutput {
 public:
 
     // -- Exceptions
@@ -55,6 +53,7 @@ public:
     // -- Contructors
 
     MIROutput();
+    MIROutput(const MIROutput&) = delete;
 
     // -- Destructor
 
@@ -64,7 +63,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const MIROutput&) = delete;
 
     // -- Methods
 

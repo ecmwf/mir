@@ -12,7 +12,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Oct 2016
 
 
@@ -52,9 +51,10 @@ private:
 };
 
 
-} // namespace matrix
-} // namespace caching
-} // namespace mir
+}  // namespace matrix
+}  // namespace caching
+}  // namespace mir
 
 
 #endif
+

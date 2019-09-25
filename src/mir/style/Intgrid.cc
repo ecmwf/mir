@@ -11,7 +11,6 @@
 
 #include "mir/style/Intgrid.h"
 
-#include <algorithm>
 #include <iostream>
 #include <map>
 
@@ -31,12 +30,12 @@ namespace style {
 
 
 namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, IntgridFactory* >* m = 0;
+static pthread_once_t once                       = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                 = nullptr;
+static std::map<std::string, IntgridFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, IntgridFactory* >();
+    m           = new std::map<std::string, IntgridFactory*>();
 }
 }  // (anonymous namespace)
 

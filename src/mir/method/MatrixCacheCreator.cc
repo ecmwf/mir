@@ -12,19 +12,20 @@
 /// @author Peter Bispham
 /// @author Tiago Quintino
 /// @author Pedro Maciel
-///
 /// @date May 2015
 
-
-#include "mir/method/MatrixCacheCreator.h"
-#include "mir/method/MethodWeighted.h"
-#include "mir/caching/WeightCache.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/config/Resource.h"
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#include "eckit/thread/AutoLock.h"
+#include "eckit/config/Resource.h"
+
+#include "mir/method/MatrixCacheCreator.h"
+#include "mir/method/MethodWeighted.h"
+#include "mir/caching/WeightCache.h"
+
 
 namespace mir {
 namespace method {

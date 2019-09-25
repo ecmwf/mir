@@ -9,17 +9,17 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Feb 2018
+/// @author Pedro Maciel
+/// @date May 2015
 
 
-#ifndef mir_output_GribCompatibility_h
-#define mir_output_GribCompatibility_h
+#ifndef mir_compat_GribCompatibility_h
+#define mir_compat_GribCompatibility_h
 
 #include <iosfwd>
 #include <string>
 #include <map>
 
-#include "eckit/memory/NonCopyable.h"
 
 struct grib_info;
 struct grib_handle;
@@ -32,38 +32,34 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace output {
+class MIROutput;
+}
 }
 
 
 namespace mir {
-namespace output {
-class MIROutput;
-}
-
 namespace compat {
 
 
-class GribCompatibility : private eckit::NonCopyable {
+class GribCompatibility {
 public:
 
+    GribCompatibility(const GribCompatibility&) = delete;
+    void operator=(const GribCompatibility&) = delete;
 
     virtual void execute(const output::MIROutput&,
                          const param::MIRParametrisation&,
                          grib_handle*,
                          grib_info&) const = 0;
 
-    virtual void printParametrisation(std::ostream& out,
-                                      const param::MIRParametrisation &param) const = 0;
+    virtual void printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
 
-    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
-                                     const param::MIRParametrisation &param2) const = 0;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
 
-    virtual void initialise(const metkit::MarsRequest& request,
-                            std::map<std::string, std::string>& postproc) const = 0;
+    virtual void initialise(const metkit::MarsRequest&, std::map<std::string, std::string>& postproc) const = 0;
 
-
-    static const GribCompatibility& lookup(const std::string& name);
-
+    static const GribCompatibility& lookup(const std::string&);
 
     static void list(std::ostream& out);
 
@@ -84,7 +80,6 @@ private:
     }
 
 };
-
 
 
 }  // namespace compat

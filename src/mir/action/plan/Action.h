@@ -20,8 +20,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace mir {
 namespace context {
@@ -46,7 +44,7 @@ namespace mir {
 namespace action {
 
 
-class Action : public eckit::NonCopyable {
+class Action {
 public:
 
     // -- Exceptions
@@ -55,6 +53,7 @@ public:
     // -- Contructors
 
     Action(const param::MIRParametrisation&);
+    Action(const Action&) = delete;
 
     // -- Destructor
 
@@ -64,12 +63,12 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Action&) = delete;
 
     // -- Methods
 
     void perform(context::Context&) const;
-
 
     virtual bool sameAs(const Action&) const = 0;
     virtual void custom(std::ostream&) const;

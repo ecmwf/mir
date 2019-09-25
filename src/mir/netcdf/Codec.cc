@@ -8,7 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Jan 2015
 
 
 #include "mir/netcdf/Codec.h"
@@ -27,8 +29,7 @@
 namespace mir {
 namespace netcdf {
 
-Codec::Codec() {
-}
+Codec::Codec() = default;
 
 Codec::~Codec() = default;
 
@@ -110,7 +111,7 @@ void Codec::addAttributes(Variable &) const {
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::updateAttributes(int nc, int varid, const std::string &path) {
+void Codec::updateAttributes(int /*nc*/, int /*varid*/, const std::string& /*path*/) {
     std::ostringstream os;
     os << "Variable::updateAttributes() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -125,12 +126,12 @@ bool Codec::timeAxis() const {
 
 
 namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, CodecFactory* >* m = 0;
+static pthread_once_t once                     = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex               = nullptr;
+static std::map<std::string, CodecFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, CodecFactory* >();
+    m           = new std::map<std::string, CodecFactory*>();
 }
 }  // (anonymous namespace)
 
