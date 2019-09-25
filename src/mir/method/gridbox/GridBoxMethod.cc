@@ -113,8 +113,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         size_t i = 0;
         while (it->next()) {
             if (++progress) {
-                tree->statsPrint(log, false);
-                tree->statsReset();
+                log << *tree << std::endl;
             }
 
 

@@ -198,13 +198,13 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
             for (size_t j = 0; j < Nj; ++j) {
                 if (++progress) {
-                    tree.statsPrint(log << "   latitude: " << lat[j] << " degree"
-                                        << "\n   farthest: " << farthest << " m"
-                                        << "\n   closest: " << eckit::Seconds(tClosest) << "\n   matrix A: "
-                                        << eckit::Seconds(tMatrixA) << "\n   vector Y: " << eckit::Seconds(tVectorY)
-                                        << "\n   vector X: " << eckit::Seconds(tVectorX) << std::endl,
-                                    false);
-                    tree.statsReset();
+                    log << "   latitude: " << lat[j] << " degree"
+                        << "\n   farthest: " << farthest << " m"
+                        << "\n   closest: " << eckit::Seconds(tClosest)
+                        << "\n   matrix A: " << eckit::Seconds(tMatrixA)
+                        << "\n   vector Y: " << eckit::Seconds(tVectorY)
+                        << "\n   vector X: " << eckit::Seconds(tVectorX)
+                        << "\n" << tree << std::endl;
                     tClosest = tMatrixA = tVectorY = tVectorX = farthest = 0;
                 }
 
