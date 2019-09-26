@@ -125,10 +125,10 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             // calculate grid box intersections
             triplets.clear();
             triplets.reserve(closest.size());
+
             double sumIntersectedArea = 0.;
             for (auto c : closest) {
-                size_t j = c.payload();
-
+                auto j    = c.payload();
                 auto box  = inBoxes.at(j);
                 auto area = box.area();
 
@@ -140,11 +140,13 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                     sumIntersectedArea += intersection;
                 }
             }
-            ASSERT(!triplets.empty());
-            ASSERT(eckit::types::is_approximately_equal(outBoxes.at(i).area(), sumIntersectedArea, 1.));
+            ASSERT(eckit::types::is_approximately_equal(outBoxes.at(i).area(), sumIntersectedArea, 1. /*m2*/));
+
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
+            ASSERT(!triplets.empty());
             std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+
 
             ++i;
         }

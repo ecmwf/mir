@@ -166,7 +166,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
     // auto& log = eckit::Log::info();
 
     std::string output = args.getString("output", "");
-    bool alternate     = args.getBool("alternate", false);
+    // bool alternate     = args.getBool("alternate", false);
 
 
     // loop over each file(s) message(s)

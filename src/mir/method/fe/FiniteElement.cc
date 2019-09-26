@@ -128,7 +128,7 @@ static triplet_vector_t projectPointTo3DElements(
     for (const auto& close : closest) {
         ++nbProjectionAttempts;
 
-        const size_t elem_id = close.value().payload();
+        const auto elem_id = atlas::idx_t(close.value().payload());
         ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
@@ -136,10 +136,10 @@ static triplet_vector_t projectPointTo3DElements(
          * - nb_cols == 4 implies quadrilateral
          * - no other element is supported at the time
          */
-        const size_t nb_cols = connectivity.cols(elem_id);
+        const auto nb_cols = connectivity.cols(elem_id);
         ASSERT(nb_cols == 3 || nb_cols == 4);
 
-        for (size_t i = 0; i < nb_cols; ++i) {
+        for (atlas::idx_t i = 0; i < nb_cols; ++i) {
             idx[i] = size_t(connectivity(elem_id, i));
             ASSERT(idx[i] < nbInputPoints);
         }
@@ -157,8 +157,7 @@ static triplet_vector_t projectPointTo3DElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::method::Intersect is = triag.intersects(ray, edgeEpsilon);
-
+            auto is = triag.intersects(ray, edgeEpsilon);
             if (is) {
 
                 // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
@@ -198,8 +197,7 @@ static triplet_vector_t projectPointTo3DElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
-
+            auto is = quad.intersects(ray, edgeEpsilon);
             if (is) {
 
                 // weights are the bilinear Lagrange function evaluated at u,v

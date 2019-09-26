@@ -193,7 +193,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         ASSERT(what == "GEO");
 
         count++;
-        if (which_ >= 0 && count  > which_ + 1) {
+        if (which_ >= 0 && int(count)  > which_ + 1) {
             break;
         }
 
