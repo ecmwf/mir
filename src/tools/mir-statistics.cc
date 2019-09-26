@@ -34,6 +34,9 @@
 #include "mir/util/Pretty.h"
 
 
+using prec_t = decltype(std::cout.precision());
+
+
 class MIRStatistics : public mir::tools::MIRTool {
 private:
 
@@ -64,6 +67,7 @@ public:
         options_.push_back(new SimpleOption< double >("counter-lower-limit", "count lower limit"));
         options_.push_back(new SimpleOption< double >("counter-upper-limit", "count upper limit"));
         options_.push_back(new FactoryOption<PerPointStatistics>("output", "/-separated list of per-point statistics (output GRIB to <statistics>"));
+        options_.push_back(new SimpleOption< prec_t >("precision", "Output precision"));
     }
 };
 
@@ -93,6 +97,11 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     const mir::param::ConfigurationWrapper args_wrap(args);
     const mir::param::DefaultParametrisation defaults;
 
+    auto& log = eckit::Log::info();
+    prec_t precision;
+    auto old = args.get("precision", precision) ? log.precision(precision)
+                                                : log.precision();
+
     // on 'output' option, calculate per-point statistics
     std::string output;
     if (args_wrap.get("output", output)) {
@@ -106,7 +115,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
         size_t Nfirst = firstInput.field().values(0).size();
         ASSERT(Nfirst > 0);
-        eckit::Log::info() << "Using " << mir::util::Pretty(Nfirst, "grid point") << std::endl;
+        log << "Using " << mir::util::Pretty(Nfirst, "grid point") << std::endl;
 
         // set paramId/metadata-specific method per-point statistics
         std::string statistics = "scalar";
@@ -123,7 +132,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
             size_t count = 0;
             while (grib.next()) {
-                eckit::Log::info() << "\n'" << arg << "' #" << ++count << std::endl;
+                log << "\n'" << arg << "' #" << ++count << std::endl;
 
                 mir::repres::RepresentationHandle repres(input.field().representation());
                 if (!repres->sameAs(*reference)) {
@@ -143,7 +152,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
         parse(output, outputs);
 
         for (auto& j : outputs) {
-            eckit::Log::info() << "Writing '" << j << "'" << std::endl;
+            log << "Writing '" << j << "'" << std::endl;
 
             mir::util::MIRStatistics stats;
             mir::context::Context ctx(firstGribFile, stats);
@@ -158,6 +167,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             out->save(*param, ctx);
         }
 
+        log.precision(old);
         return;
     }
 
@@ -168,7 +178,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
         size_t count = 0;
         while (grib.next()) {
-            eckit::Log::info() << "\n'" << arg << "' #" << ++count << std::endl;
+            log << "\n'" << arg << "' #" << ++count << std::endl;
 
             // paramId/metadata-specific method
             std::string statistics = "scalar";
@@ -179,9 +189,11 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             std::unique_ptr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, *param));
             stats->execute(input.field());
 
-            eckit::Log::info() << *stats << std::endl;
+            log << *stats << std::endl;
         }
     }
+
+    log.precision(old);
 }
 
 

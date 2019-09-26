@@ -126,21 +126,24 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             triplets.clear();
             triplets.reserve(closest.size());
 
-            double sumIntersectedArea = 0.;
-            for (auto c : closest) {
-                auto j    = c.payload();
-                auto box  = inBoxes.at(j);
-                auto area = box.area();
+            auto& box   = outBoxes.at(i);
+            double area = box.area();
+            ASSERT(area > 0.);
 
-                if (outBoxes.at(i).intersects(box)) {
-                    double intersection = box.area();
-                    ASSERT(intersection > 0.);
-                    ASSERT(area > 0.);
-                    triplets.emplace_back(WeightMatrix::Triplet(i, j, intersection / area));
-                    sumIntersectedArea += intersection;
+            double sumSmallAreas = 0.;
+            for (auto& c : closest) {
+                auto j        = c.payload();
+                auto smallBox = inBoxes.at(j);
+
+                if (box.intersects(smallBox)) {
+                    double smallArea = smallBox.area();
+                    ASSERT(smallArea > 0.);
+
+                    triplets.emplace_back(WeightMatrix::Triplet(i, j, smallArea / area));
+                    sumSmallAreas += smallArea;
                 }
             }
-            ASSERT(eckit::types::is_approximately_equal(outBoxes.at(i).area(), sumIntersectedArea, 1. /*m2*/));
+            ASSERT(eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/));
 
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
