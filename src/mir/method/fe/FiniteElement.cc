@@ -450,7 +450,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // some statistics
-    const size_t nbInputPoints     = inNodes.size();
+    const auto nbInputPoints       = size_t(inNodes.size());
     const size_t nbOutputPoints    = out.numberOfPoints();
     size_t nbMinElementsSearched   = std::numeric_limits<size_t>::max();
     size_t nbMaxElementsSearched   = 0;

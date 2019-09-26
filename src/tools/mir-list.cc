@@ -61,12 +61,12 @@ void MIRList::execute(const eckit::option::CmdArgs &args) {
     args.get("json", json);
 
     if (json) {
-        eckit::JSON json(std::cout);
-        json.startList();
+        eckit::JSON j(std::cout);
+        j.startList();
         for (size_t i = 0; i < args.count(); i++) {
-            comparator.json(json, args(i));
+            comparator.json(j, args(i));
         }
-        json.endList();
+        j.endList();
     }
     else {
 

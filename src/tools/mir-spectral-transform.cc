@@ -87,7 +87,9 @@ private:
 
 public:
     MIRSpectralTransform(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        using namespace eckit::option;
+        using eckit::option::Separator;
+        using eckit::option::SimpleOption;
+        using eckit::option::VectorOption;
 
         options_.push_back(new Separator("Output grid (mandatory one option)"));
         options_.push_back(
@@ -299,11 +301,11 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     auto& values = field.direct(d);
                     ASSERT(values.size() == N * 2);
 
-                    for (size_t m = 0, i = 0; m <= T; ++m) {
+                    for (size_t m = 0, k = 0; m <= T; ++m) {
                         for (size_t n = m; n <= T; ++n) {
-                            ASSERT(i + 1 < N * 2);
-                            values[i++] *= filter[n];
-                            values[i++] *= filter[n];
+                            ASSERT(k + 1 < N * 2);
+                            values[k++] *= filter[n];
+                            values[k++] *= filter[n];
                         }
                     }
                 }
@@ -358,14 +360,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // set output working area
                     const size_t Ngp = size_t(outputGrid.size());
-                    std::vector<double> output(F * Ngp * 2);
+                    std::vector<double> out(F * Ngp * 2);
 
                     // inverse transform
                     {
                         eckit::Timer timer("time on invtrans", log);
                         const size_t which = numberOfFieldPairsProcessed * 2;
                         trans.invtrans(int(F), F > 1 ? input_vo.data() : field.values(which + 0).data(),
-                                       F > 1 ? input_d.data() : field.values(which + 1).data(), output.data(),
+                                       F > 1 ? input_d.data() : field.values(which + 1).data(), out.data(),
                                        atlas::option::global());
                     }
 
@@ -377,7 +379,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                         long u = long(paramIdu);
                         long v = long(paramIdv);
 
-                        auto here = output.cbegin();
+                        auto here = out.cbegin();
                         for (size_t f = 0; f < F; ++f) {
                             const size_t which = (numberOfFieldPairsProcessed + f) * 2;
                             mir::MIRValuesVector output_field(here, here + int(Ngp));
@@ -424,8 +426,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     }
 
                     // set output working area
-                    const size_t Ngp = outputGrid.size();
-                    mir::MIRValuesVector out(F * Ngp);
+                    const auto Ngp = outputGrid.size();
+                    mir::MIRValuesVector out(F * size_t(Ngp));
 
                     // inverse transform
                     {
@@ -440,10 +442,10 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                         auto here = out.cbegin();
                         for (size_t f = 0; f < F; ++f) {
-                            mir::MIRValuesVector output_field(here, here + int(Ngp));
+                            mir::MIRValuesVector output_field(here, here + Ngp);
 
                             field.update(output_field, numberOfFieldsProcessed + f);
-                            here += int(Ngp);
+                            here += Ngp;
                         }
                     } else {
                         field.update(out, numberOfFieldsProcessed);
