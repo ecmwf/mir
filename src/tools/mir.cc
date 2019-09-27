@@ -50,6 +50,7 @@
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
+#include "mir/stats/Statistics.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/style/SpectralOrder.h"
@@ -203,6 +204,10 @@ public:
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
+        options_.push_back(new FactoryOption<stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values (both pre- and post-processed)"));
+        options_.push_back(new FactoryOption<stats::StatisticsFactory>("input-statistics", "Statistics methods for interpreting field values (pre-processed)"));
+        options_.push_back(new FactoryOption<stats::StatisticsFactory>("output-statistics", "Statistics methods for interpreting field values (post-processed)"));
+        options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
 
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
@@ -316,7 +321,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void MIR::process(api::MIRJob &job, input::MIRInput &input, output::MIROutput &output, const std::string &what) {
+void MIR::process(api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
     eckit::Timer timer("Total time");
 
     util::MIRStatistics statistics;
