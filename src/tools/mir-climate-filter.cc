@@ -18,7 +18,6 @@
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/TraceTimer.h"
@@ -67,7 +66,7 @@ private:
     }
 
 public:
-    MIRClimateFilter(int argc, char** argv) : tools::MIRTool(argc, argv) {
+    MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebra;
         options_.push_back(new eckit::option::VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
         options_.push_back(new eckit::option::SimpleOption<double>("distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
@@ -189,7 +188,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
 
         {
-            eckit::ProgressTimer progress("Locating", Nj, "row", double(5), log);
+            Pretty::ProgressTimer progress("Locating", Nj, {"row"}, log);
             double farthest = 0;
             double tClosest = 0;
             double tMatrixA = 0;
@@ -314,7 +313,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         }
 
 
-        log << mir::util::Pretty(field, "field") << " in " << eckit::Seconds(timer.elapsed())
+        log << Pretty(field, {"field"}) << " in " << eckit::Seconds(timer.elapsed())
             << ", rate: " << double(field) / double(timer.elapsed()) << " "
             << "field/s" << std::endl;
     }

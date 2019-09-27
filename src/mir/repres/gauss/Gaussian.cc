@@ -107,7 +107,8 @@ bool Gaussian::includesSouthPole() const {
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
-    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << util::Pretty(values.size(), "value") << ", within domain: " << util::Pretty(count) << "." << std::endl;
+    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << Pretty(values.size(), {"value"})
+                                << ", within domain: " << Pretty(count) << "." << std::endl;
     ASSERT(values.size() == count);
 }
 

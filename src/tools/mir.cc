@@ -63,6 +63,9 @@
 #endif
 
 
+using namespace mir;
+
+
 class MIR : public mir::tools::MIRTool {
 private:
 
@@ -74,11 +77,11 @@ private:
         return 2;
     }
 
-    void process(mir::api::MIRJob&, mir::input::MIRInput&, mir::output::MIROutput&, const std::string&);
+    void process(api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
 public:
 
-    MIR(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIR(int argc, char **argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
         using eckit::option::Separator;
         using eckit::option::SimpleOption;
@@ -86,11 +89,11 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new FactoryOption<mir::style::TruncationFactory>("truncation", "Describes the intermediate truncation which the transform is performed from"));
-        options_.push_back(new FactoryOption<mir::style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
+        options_.push_back(new FactoryOption<style::TruncationFactory>("truncation", "Describes the intermediate truncation which the transform is performed from"));
+        options_.push_back(new FactoryOption<style::IntgridFactory>("intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>("vod2uv", "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new FactoryOption<mir::style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
+        options_.push_back(new FactoryOption<style::SpectralOrderFactory>("spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type", "Atlas/Trans spectral transforms type (default 'local')"));
 
@@ -104,12 +107,12 @@ public:
         options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
-        options_.push_back(new FactoryOption<mir::method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+        options_.push_back(new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
 
-        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-input", "Conservative FEM for input mesh"));
-        options_.push_back(new FactoryOption<mir::method::fe::FiniteElementFactory>("conservative-finite-element-method-output", "Conservative FEM for output mesh"));
+        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("conservative-finite-element-method-input", "Conservative FEM for input mesh"));
+        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("conservative-finite-element-method-output", "Conservative FEM for output mesh"));
 
-        options_.push_back(new FactoryOption<mir::method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
+        options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>("non-linear", "Non-linear treatment on the interpolation linear system (such as the handling of missing values)"));
         options_.push_back(new SimpleOption<double>("simulated-missing-value", "specific value to handle as missing (avoid interpolation)"));
         options_.push_back(new SimpleOption<double>("simulated-missing-value-epsilon", "specific value to handle as missing, tolerance"));
 
@@ -121,11 +124,11 @@ public:
         options_.push_back(new SimpleOption<bool>("filter", "Interpolation filter, keeping the same input grid type"));
         options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
-        options_.push_back(new FactoryOption<mir::method::knn::pick::PickFactory>("nearest-method", "Neighbour picking method, used by k-nearest methods"));
+        options_.push_back(new FactoryOption<method::knn::pick::PickFactory>("nearest-method", "Neighbour picking method, used by k-nearest methods"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by k-nearest methods"));
         options_.push_back(new SimpleOption<double>("distance", "Radius [m] of neighbours to weight (k), used by k-nearest methods (default 1.)"));
-        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by k-nearest methods"));
-        options_.push_back(new FactoryOption<mir::method::knn::distance::DistanceWeightingWithLSMFactory>("distance-weighting-with-lsm", "Distance weighting with land-sea mask, used by nearest-lsm method"));
+        options_.push_back(new FactoryOption<method::knn::distance::DistanceWeightingFactory>("distance-weighting", "Distance weighting method, used by k-nearest methods"));
+        options_.push_back(new FactoryOption<method::knn::distance::DistanceWeightingWithLSMFactory>("distance-weighting-with-lsm", "Distance weighting with land-sea mask, used by nearest-lsm method"));
         options_.push_back(new SimpleOption<double>("distance-tolerance", "Distance tolerance when checking distinguishing the nearest neighbours (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-gaussian-stddev", "Distance weighting Gaussian function standard deviation [m] (default 1.)"));
         options_.push_back(new SimpleOption<double>("distance-weighting-shepard-power", "Distance weighting Shepard power parameter (default 2.)"));
@@ -133,7 +136,7 @@ public:
 
         options_.push_back(new SimpleOption<bool>("caching", "Caching of weights and grids (default 1)"));
         options_.push_back(new FactoryOption<eckit::linalg::LinearAlgebra>("backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new FactoryOption<mir::search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -175,9 +178,9 @@ public:
         for (const std::string& io : {"", "input", "output"}) {
             const std::string which = io.length() ? io : "both input and output";
             const std::string key = (io.length() ? "-" : "") + io;
-            options_.push_back(new FactoryOption<mir::method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
-            options_.push_back(new FactoryOption<mir::lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
-            options_.push_back(new FactoryOption<mir::lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
+            options_.push_back(new FactoryOption<method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
+            options_.push_back(new FactoryOption<lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
+            options_.push_back(new FactoryOption<lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
             options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM grib file path to use for " + which));
             options_.push_back(new SimpleOption<double>("lsm-value-threshold" + key, "If --lsm-selection" + key + "=file, LSM field greater-or-equal to value threshold, when converting to mask for " + which + " (default 0.5)"));
         }
@@ -190,7 +193,7 @@ public:
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<mir::packing::Packer>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
@@ -198,21 +201,21 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
-        options_.push_back(new FactoryOption<mir::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<mir::data::SpaceChooser>("dimension", "Select dimension"));
+        options_.push_back(new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+        options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
 
-        options_.push_back(new FactoryOption<mir::action::Executor>("executor", "Select whether threads are used or not"));
+        options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
 
         //==============================================
         options_.push_back(new Separator("Caching"));
-        options_.push_back(new FactoryOption<mir::caching::matrix::MatrixLoaderFactory>("matrix-loader", "Select how to load matrices in memory"));
-        options_.push_back(new FactoryOption<mir::caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
+        options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>("matrix-loader", "Select how to load matrices in memory"));
+        options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
 
         //==============================================
         // Only show these options if debug channel is active
-        if (eckit::Log::debug<mir::LibMir>()) {
+        if (eckit::Log::debug<LibMir>()) {
             options_.push_back(new Separator("Debugging"));
             options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
             options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
@@ -223,9 +226,9 @@ public:
             options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
             options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-            options_.push_back(new FactoryOption<mir::output::MIROutputFactory>("format", "Output format"));
+            options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
 #if defined(HAVE_PNG)
-            options_.push_back(new FactoryOption<mir::output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
+            options_.push_back(new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
 #endif
         }
@@ -255,7 +258,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
         eckit::linalg::LinearAlgebra::backend(backend);
     }
 
-    mir::api::MIRJob job;
+    api::MIRJob job;
     args.configure(job);
 
     bool filter = false;
@@ -264,7 +267,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::string same;
     if (args.get("same", same) || filter) {
         ASSERT(filter != !same.empty());
-        mir::input::GribFileInput input(filter ? args(0) : same);
+        input::GribFileInput input(filter ? args(0) : same);
         ASSERT(input.next());
         job.representationFrom(input);
     }
@@ -281,24 +284,24 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     }
 
 
-    const mir::param::ConfigurationWrapper args_wrap(args);
-    std::unique_ptr<mir::output::MIROutput> output(mir::output::MIROutputFactory::build(args(1), args_wrap));
+    const param::ConfigurationWrapper args_wrap(args);
+    std::unique_ptr<output::MIROutput> output(output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
     if (vod2uv || uv2uv) {
         ASSERT(vod2uv != uv2uv);
         ASSERT(!args.has("latitudes") && !args.has("longitudes"));
 
-        mir::input::GribFileInput input1(args(0), 0, 2);
-        mir::input::GribFileInput input2(args(0), 1, 2);
-        mir::input::VectorInput input(input1, input2);
+        input::GribFileInput input1(args(0), 0, 2);
+        input::GribFileInput input2(args(0), 1, 2);
+        input::VectorInput input(input1, input2);
 
         process(job, input, *output, "wind");
         return;
     }
 
 
-    std::unique_ptr<mir::input::MIRInput> input(mir::input::MIRInputFactory::build(args(0), args_wrap));
+    std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
 
     if (args.has("latitudes") || args.has("longitudes")) {
@@ -313,21 +316,21 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void MIR::process(mir::api::MIRJob &job, mir::input::MIRInput &input, mir::output::MIROutput &output, const std::string &what) {
+void MIR::process(api::MIRJob &job, input::MIRInput &input, output::MIROutput &output, const std::string &what) {
     eckit::Timer timer("Total time");
 
-    mir::util::MIRStatistics statistics;
-    eckit::Log::debug<mir::LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
+    util::MIRStatistics statistics;
+    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::debug<mir::LibMir>() << "============> " << what << ": " << (++i) << std::endl;
+        eckit::Log::debug<LibMir>() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 
     statistics.report(eckit::Log::info());
 
-    eckit::Log::info() << mir::util::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
+    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed()) <<
                        ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 

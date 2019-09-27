@@ -15,30 +15,87 @@
 #include <iosfwd>
 #include <string>
 
+#include "eckit/log/Log.h"
+#include "eckit/log/Timer.h"
+
 
 namespace mir {
-namespace util {
 
 
 class Pretty {
 public:
     // -- Types
-    // None
+
+    struct Plural {
+        Plural(std::string one) : Plural(one, one + "s") {}
+        Plural(std::string one, std::string notOne) : s_{one, notOne} {}
+        Plural(const Plural& other) : s_{other.s_[0], other.s_[1]} {}
+
+        const std::string& operator()(int count) const { return s_[count != 1]; }
+        const std::string& operator()(size_t count) const { return s_[count != 1]; }
+
+        operator bool() const { return !s_[0].empty(); }
+        Plural& operator=(const Plural&) = delete;
+
+    private:
+        const std::string s_[2];
+    };
+
+    struct PrettyProgress : public eckit::Timer {
+        PrettyProgress(const std::string& name, size_t limit, Plural units, std::ostream&);
+        virtual ~PrettyProgress() = default;
+        bool operator++();
+
+    protected:
+        double lastTime_;
+        size_t counter_;
+
+    private:
+        virtual bool hasOutput() = 0;
+        const Plural units_;
+        const size_t limit_;
+    };
+
+    struct ProgressTimer : PrettyProgress {
+
+        /// @param name of the timer
+        /// @param limit counter maximum value
+        /// @param units unit/units
+        /// @param time how often to output progress, based on elapsed time
+        /// @param o output stream
+        ProgressTimer(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
+                      double time = 5.);
+
+    private:
+        bool hasOutput();
+        const double time_;
+    };
+
+    struct ProgressCounter : PrettyProgress {
+
+        /// @param name of the timer
+        /// @param limit counter maximum value
+        /// @param units unit/units
+        /// @param count how often to output progress, based on total counter
+        /// @param o output stream
+        ProgressCounter(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
+                        size_t count = 10000);
+
+    private:
+        bool hasOutput();
+        const size_t count_;
+    };
+
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Pretty(int count) : count_(count) {}
-    Pretty(size_t count) : Pretty(static_cast<int>(count)) {}
-
-    Pretty(int count, std::string one) : s_{one, one + "s"}, count_(count) {}
-    Pretty(size_t count, std::string one) : Pretty(static_cast<int>(count), one) {}
-
-    Pretty(int count, std::string one, std::string notOne) : s_{one, notOne}, count_(count) {}
-    Pretty(size_t count, std::string one, std::string notOne) : Pretty(static_cast<int>(count), one, notOne) {}
-
+    Pretty(int count);
+    Pretty(size_t count);
+    Pretty(int count, const Plural& plural) : plural_(plural), count_(count) {}
+    Pretty(size_t count, const Plural& plural) : plural_(plural), count_(static_cast<int>(count)) {}
     Pretty(const Pretty&) = delete;
 
     // -- Destructor
@@ -82,7 +139,7 @@ protected:
 private:
     // -- Members
 
-    const std::string s_[2];
+    const Plural& plural_;
     int count_;
 
     // -- Methods
@@ -107,7 +164,6 @@ private:
 };
 
 
-}  // namespace util
 }  // namespace mir
 
 

@@ -161,7 +161,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     log() << "SharedMemoryLoader: size is " << shmsize
           << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
           << ", page size: " << eckit::Bytes(page_size)
-          << ", pages: " << util::Pretty(shmsize / page_size)
+          << ", pages: " << Pretty(shmsize / page_size)
           << std::endl;
 
     int shmid;

@@ -336,7 +336,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
-        os << "Interpolating field (" << util::Pretty(npts_inp) << " -> " << util::Pretty(npts_out) << ")";
+        os << "Interpolating field (" << Pretty(npts_inp) << " -> " << Pretty(npts_out) << ")";
         eckit::TraceTimer<LibMir> trace(os.str());
 
         // compute some statistics on the result
@@ -488,8 +488,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected " << util::Pretty(fix) << " out of "
-        << util::Pretty(W.rows(), "output point") << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of "
+        << Pretty(W.rows(), {"output point"}) << std::endl;
 }
 
 

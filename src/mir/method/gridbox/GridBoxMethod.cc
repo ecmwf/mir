@@ -18,7 +18,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/types/FloatCompare.h"
@@ -68,8 +67,8 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
 
-    log << "GridBoxMethod: intersect " << util::Pretty(out.numberOfPoints()) << " from "
-        << util::Pretty(in.numberOfPoints(), "grid box", "grid boxes") << std::endl;
+    log << "GridBoxMethod: intersect " << Pretty(out.numberOfPoints()) << " from "
+        << Pretty(in.numberOfPoints(), {"grid box", "grid boxes"}) << std::endl;
 
 
     // init structure used to fill in sparse matrix
@@ -112,7 +111,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        eckit::ProgressTimer progress("Intersecting", outBoxes.size(), "grid box", double(5), log);
+        Pretty::ProgressTimer progress("Intersecting", outBoxes.size(), {"grid box", "grid boxes"}, log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t i = 0;
@@ -162,11 +161,11 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ++i;
         }
     }
-    log << "Intersected " << util::Pretty(triplets.size(), "grid box", "grid boxes") << std::endl;
+    log << "Intersected " << Pretty(triplets.size(), {"grid box", "grid boxes"}) << std::endl;
 
     if (nbFailures) {
         std::stringstream msg;
-        msg << "Failed to intersect " << util::Pretty(nbFailures, "grid box", "grid boxes");
+        msg << "Failed to intersect " << Pretty(nbFailures, {"grid box", "grid boxes"});
         log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {

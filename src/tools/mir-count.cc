@@ -25,6 +25,9 @@
 #include "mir/util/Pretty.h"
 
 
+using namespace mir;
+
+
 class MIRCount : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
@@ -33,7 +36,7 @@ private:
         return 0;
     }
 public:
-    MIRCount(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRCount(int argc, char **argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
         using eckit::option::VectorOption;
 
@@ -85,8 +88,8 @@ using DistanceLon = std::pair<Longitude, Longitude>;
 
 
 size_t countRepresentationInBoundingBox(
-        const mir::repres::Representation& rep,
-        const mir::util::BoundingBox& bbox,
+        const repres::Representation& rep,
+        const util::BoundingBox& bbox,
         std::set<DistanceLat>& nn,
         std::set<DistanceLon>& ww,
         std::set<DistanceLat>& ss,
@@ -100,7 +103,7 @@ size_t countRepresentationInBoundingBox(
     size_t values = 0;
     bool first = true;
 
-    std::unique_ptr<mir::repres::Iterator> iter(rep.iterator());
+    std::unique_ptr<repres::Iterator> iter(rep.iterator());
 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();
@@ -138,7 +141,7 @@ size_t countRepresentationInBoundingBox(
     }
 
     eckit::Log::info()
-            << mir::util::Pretty(count) << " out of " << mir::util::Pretty(values)
+            << Pretty(count) << " out of " << Pretty(values)
             << ", north=" << n << " (bbox.n - n " << bbox.north() - n << ")"
             << ", west="  << w << " (w - bbox.w " << w - bbox.west()  << ")"
             << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
@@ -162,10 +165,10 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     std::vector<double> value;
 
-    mir::util::BoundingBox bbox;
+    util::BoundingBox bbox;
     if (args.get("area", value)) {
         ASSERT(value.size() == 4);
-        bbox = mir::util::BoundingBox(value[0], value[1], value[2], value[3]);
+        bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
 
@@ -173,16 +176,16 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     if (args.get("grid", value)) {
         ASSERT(!args.has("gridname"));
         ASSERT(value.size() == 2);
-        mir::util::Increments grid(value[0], value[1]);
+        util::Increments grid(value[0], value[1]);
 
         if (args.has("ni-nj")) {
             // Note: this *does not crop*, it is a "local" representation
-            mir::repres::latlon::RegularLL rep(grid, bbox, {bbox.south(), bbox.west()});
+            repres::latlon::RegularLL rep(grid, bbox, {bbox.south(), bbox.west()});
             eckit::Log::info() << rep.Ni() << ":" << rep.Nj() << std::endl;
             return;
         }
 
-        mir::repres::latlon::RegularLL rep(grid);
+        repres::latlon::RegularLL rep(grid);
         countRepresentationInBoundingBox(rep, bbox, nn, ww, ss, ee);
         return;
     }
@@ -193,7 +196,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     if (args.get("gridname", gridname)) {
         ASSERT(!args.has("grid"));
 
-        mir::repres::RepresentationHandle rep(mir::namedgrids::NamedGrid::lookup(gridname).representation());
+        repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(gridname).representation());
         countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
         return;
     }
@@ -203,13 +206,13 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     for (size_t i = 0; i < args.count(); ++i) {
         eckit::Log::info() << args(i) << std::endl;
 
-        mir::input::GribFileInput grib(args(i));
+        input::GribFileInput grib(args(i));
         while (grib.next()) {
 
-            mir::data::MIRField field = static_cast<const mir::input::MIRInput&>(grib).field();
+            data::MIRField field = static_cast<const input::MIRInput&>(grib).field();
             ASSERT(field.dimensions() == 1);
 
-            mir::repres::RepresentationHandle rep(field.representation());
+            repres::RepresentationHandle rep(field.representation());
             countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
         }
     }

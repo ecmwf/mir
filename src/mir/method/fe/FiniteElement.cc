@@ -25,7 +25,6 @@
 #include <utility>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/thread/AutoLock.h"
@@ -353,7 +352,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
         // Some information
         log << "Mesh["
                "cells="
-            << util::Pretty(mesh.cells().size()) << ",nodes=" << util::Pretty(mesh.nodes().size()) << ","
+            << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
             << meshGeneratorParams << "]" << std::endl;
 
         // Write file(s)
@@ -446,7 +445,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     double R = inMesh.metadata().getDouble("cell_longest_diagonal");
     ASSERT(R > 0.);
-    log << "k-d tree: search radius R=" << util::Pretty(static_cast<size_t>(R)) << "m" << std::endl;
+    log << "k-d tree: search radius R=" << R << "m" << std::endl;
 
 
     // some statistics
@@ -467,7 +466,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
 
     {
-        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), log);
+        Pretty::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -517,15 +516,15 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         }
     }
 
-    log << "Projected " << util::Pretty(nbProjections) << " of " << util::Pretty(nbOutputPoints, "point") << " ("
-        << util::Pretty(nbFailures, "failure") << ")\n"
-        << "k-d tree: searched between " << util::Pretty(nbMinElementsSearched) << " and "
-        << util::Pretty(nbMaxElementsSearched, "element") << ", with up to "
-        << util::Pretty(nbMaxProjectionAttempts, "projection attempt") << " (per point)" << std::endl;
+    log << "Projected " << Pretty(nbProjections) << " of " << Pretty(nbOutputPoints, {"point"}) << " ("
+        << Pretty(nbFailures, {"failure"}) << ")\n"
+        << "k-d tree: searched between " << Pretty(nbMinElementsSearched) << " and "
+        << Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
+        << Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
 
     if (nbFailures && !failuresAreMissingValues) {
         std::stringstream msg;
-        msg << "Failed to project " << util::Pretty(nbFailures, "point");
+        msg << "Failed to project " << Pretty(nbFailures, {"point"});
         log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {

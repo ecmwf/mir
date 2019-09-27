@@ -10,6 +10,7 @@
 
 /// @date Sep 2016
 
+
 #include "mir/method/structured/StructuredLinear3D.h"
 
 #include <memory>
@@ -18,7 +19,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "atlas/interpolation/element/Triag3D.h"
@@ -29,6 +29,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Pretty.h"
+
 
 namespace mir {
 namespace method {
@@ -87,7 +89,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
     // interpolate each output point in turn
     {
-        eckit::ProgressTimer progress("Interpolating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
+        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, eckit::Log::debug<LibMir>());
         std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 

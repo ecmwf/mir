@@ -19,7 +19,6 @@
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
@@ -30,6 +29,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -103,7 +103,7 @@ void KNearestNeighbours::assemble(
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        eckit::ProgressTimer progress("Locating", nbOutputPoints, "point", double(5), log);
+        Pretty::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
