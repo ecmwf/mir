@@ -12,6 +12,7 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 #include <algorithm>
+#include <forward_list>
 #include <sstream>
 #include <vector>
 
@@ -97,6 +98,10 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     const GridBoxes outBoxes(out);
     const auto R = inBoxes.getLongestGridBoxDiagonal() + outBoxes.getLongestGridBoxDiagonal();
 
+    size_t nbFailures           = 0;
+    using failed_intersection_t = std::pair<size_t, PointLatLon>;
+    std::forward_list<failed_intersection_t> failures;
+
 
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
@@ -143,18 +148,37 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                     sumSmallAreas += smallArea;
                 }
             }
-            ASSERT(eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/));
 
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
-            ASSERT(!triplets.empty());
-            std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+            if (!triplets.empty() && eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/)) {
+                std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+            }
+            else {
+                failures.push_front({i, it->pointUnrotated()});
+            }
 
 
             ++i;
         }
     }
     log << "Intersected " << util::Pretty(triplets.size(), "grid box", "grid boxes") << std::endl;
+
+    if (nbFailures) {
+        std::stringstream msg;
+        msg << "Failed to intersect " << util::Pretty(nbFailures, "grid box", "grid boxes");
+        log << msg.str() << ":";
+        size_t count = 0;
+        for (const auto& f : failures) {
+            log << "\n\tpoint " << f.first << " " << f.second;
+            if (++count > 10) {
+                log << "\n\t...";
+                break;
+            }
+        }
+        log << std::endl;
+        throw eckit::SeriousBug(msg.str());
+    }
 
 
     // fill sparse matrix
