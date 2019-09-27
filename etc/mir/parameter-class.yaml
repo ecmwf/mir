@@ -1014,7 +1014,7 @@ intensity:
 - 150172  # Surface solar radiation
 - 150180  # Diagnosed sea surface temperature error
 - 150182  # Observed sea surface temperature
-- 151127  # Mean sea water potential temperature in the upper 300 m
+- 151127  # Mean sea water temperature in the upper 300 m
 - 151128  # In situ Temperature
 - 151129  # Ocean potential temperature
 - 151130  # Salinity
