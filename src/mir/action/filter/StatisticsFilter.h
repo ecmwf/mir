@@ -86,7 +86,7 @@ private:
     // -- Members
 
     std::vector<std::unique_ptr<stats::Statistics>> statistics_;
-    std::streamsize precision_;
+    size_t precision_;
 
     // -- Methods
     // None

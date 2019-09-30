@@ -42,7 +42,7 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
         ASSERT(statistics_.back());
     }
 
-    param.get("precision", precision_ = eckit::Log::info().precision());
+    param.get("precision", precision_ = size_t(eckit::Log::info().precision()));
 }
 
 
