@@ -89,7 +89,7 @@ void StatisticsFilter::print(std::ostream& out) const {
 
 void StatisticsFilter::execute(context::Context& ctx) const {
     auto& log = eckit::Log::info();
-    auto old  = log.precision(precision_);
+    auto old  = log.precision(static_cast<decltype(log.precision())>(precision_));
 
     auto& field = ctx.field();
     for (auto& s : statistics_) {
