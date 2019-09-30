@@ -154,6 +154,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
             }
             else {
+                ++nbFailures;
                 failures.push_front({i, it->pointUnrotated()});
             }
 
@@ -164,19 +165,17 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     log << "Intersected " << Pretty(triplets.size(), {"grid box", "grid boxes"}) << std::endl;
 
     if (nbFailures) {
-        std::stringstream msg;
-        msg << "Failed to intersect " << Pretty(nbFailures, {"grid box", "grid boxes"});
-        log << msg.str() << ":";
+        auto& warning = eckit::Log::warning();
+        warning << "Failed to intersect " << Pretty(nbFailures, {"grid box", "grid boxes"}) << ":";
         size_t count = 0;
         for (const auto& f : failures) {
-            log << "\n\tpoint " << f.first << " " << f.second;
+            warning << "\n\tpoint " << f.first << " " << f.second;
             if (++count > 10) {
-                log << "\n\t...";
+                warning << "\n\t...";
                 break;
             }
         }
-        log << std::endl;
-        throw eckit::SeriousBug(msg.str());
+        warning << std::endl;
     }
 
 
