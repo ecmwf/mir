@@ -81,10 +81,10 @@ if args.diff or args.error:
         path = args.error
         proc = error
 
-    with open(args.grib[0]) as f:
+    with open(args.grib[0], 'rb') as f:
         h1 = eccodes.codes_grib_new_from_file(f)
 
-    with open(path) as f:
+    with open(path, 'rb') as f:
         h2 = eccodes.codes_grib_new_from_file(f)
 
     v1 = eccodes.codes_get_values(h1)
@@ -105,7 +105,7 @@ if args.diff or args.error:
 
     # TODO: Use tmpfile
     tmp = "/tmp/plot-diff$$.grib"
-    with open(tmp, "w") as f:
+    with open(tmp, 'wb') as f:
         eccodes.codes_write(h1, f)
 
     eccodes.codes_release(h1)
