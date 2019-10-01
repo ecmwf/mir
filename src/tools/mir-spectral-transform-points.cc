@@ -85,7 +85,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
 
             for (atlas::idx_t i = 0; i < grid.size(); ++i) {
                 auto p = grid.lonlat(i);
-                log << p.lat() << '\t' << p.lat() << '\t' << out[size_t(i)] << std::endl;
+                log << p.lat() << '\t' << p.lon() << '\t' << out[size_t(i)] << std::endl;
             }
         }
     }
