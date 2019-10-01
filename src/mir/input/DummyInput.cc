@@ -35,6 +35,8 @@ DummyInput::DummyInput(): calls_(0) {
     parametrisation_.set("east", 359.0);
     parametrisation_.set("west_east_increment", 1.0);
     parametrisation_.set("south_north_increment", 1.0);
+    parametrisation_.set("Ni", 360);
+    parametrisation_.set("Nj", 181);
 }
 
 DummyInput::~DummyInput() = default;

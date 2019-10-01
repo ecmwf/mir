@@ -51,6 +51,9 @@ public:
     ///@return global Gaussian latitudes
     static const std::vector<double>& latitudes(size_t N);
 
+    ///@return global Gaussian quadrature weights
+    static const std::vector<double>& weights(size_t N);
+
     // -- Overridden methods
     // None
 
@@ -72,6 +75,9 @@ protected:
     ///@return global Gaussian latitudes
     const std::vector<double>& latitudes() const;
 
+    ///@return global Gaussian quadrature weigths
+    const std::vector<double>& weights() const;
+
     bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
     bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
 
@@ -80,11 +86,14 @@ protected:
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
     Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
 
+    std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
+
     // -- Overridden methods
 
     virtual void fill(util::MeshGeneratorParameters&) const;
     virtual bool sameAs(const Representation&) const;
     virtual void validate(const MIRValuesVector&) const;
+    virtual bool extendBoundingBoxOnIntersect() const;
 
     bool includesNorthPole() const;
     bool includesSouthPole() const;

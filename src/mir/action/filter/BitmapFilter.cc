@@ -26,6 +26,8 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
+#include "mir/api/MIREstimation.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
@@ -65,7 +67,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     caching::InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
     if (j == cache.end()) {
-        eckit::ScopedPtr<util::Bitmap> bitmap(new util::Bitmap(path_));
+        std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
         cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));
@@ -123,6 +125,28 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
         field.hasMissing(true);
     }
+}
+
+
+void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+
+    util::Bitmap b(path_);
+
+    ASSERT(b.height() * b.width() == field.representation()->numberOfPoints());
+
+    size_t count = 0;
+
+    for (size_t j = 0; j < b.height() ; j++ ) {
+        for (size_t i = 0; i < b.width() ; i++ ) {
+            if (!b.on(j, i)) {
+                count++;
+            }
+        }
+    }
+
+    estimation.missingValues(count);
 }
 
 const char* BitmapFilter::name() const {

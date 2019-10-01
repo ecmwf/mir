@@ -88,7 +88,7 @@ class GribStreamOutput : public GribOutput {
 // -- Overridden methods
     // From MIROutput
 
-    void out(const void* message, size_t length, bool iterpolated);
+    void out(const void* message, size_t length, bool interpolated);
 
 // -- Class members
     // None

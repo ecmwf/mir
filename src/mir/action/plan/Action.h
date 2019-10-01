@@ -20,8 +20,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace mir {
 namespace context {
@@ -33,6 +31,12 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 }
+namespace api {
+class MIREstimation;
+}
+namespace repres {
+class Representation;
+}
 }
 
 
@@ -40,7 +44,7 @@ namespace mir {
 namespace action {
 
 
-class Action : public eckit::NonCopyable {
+class Action {
 public:
 
     // -- Exceptions
@@ -49,6 +53,7 @@ public:
     // -- Contructors
 
     Action(const param::MIRParametrisation&);
+    Action(const Action&) = delete;
 
     // -- Destructor
 
@@ -58,12 +63,12 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Action&) = delete;
 
     // -- Methods
 
     void perform(context::Context&) const;
-
 
     virtual bool sameAs(const Action&) const = 0;
     virtual void custom(std::ostream&) const;
@@ -77,11 +82,16 @@ public:
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;
 
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+
     // -- Overridden methods
     // None
 
     // -- Class members
-    // None
+    // Helper function for estimate()
+
+    static void estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
+    static void estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
 
     // -- Class methods
     // None

@@ -11,6 +11,7 @@
 
 #include "mir/method/knn/distance/NoDistanceWeighting.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 
@@ -38,7 +39,7 @@ void NoDistanceWeighting::operator()(
     // average neighbour points
     const double weight = 1. / neighbours.size();
     for (auto& n : neighbours) {
-        triplets.push_back(WeightMatrix::Triplet(ip, n.payload(), weight));
+        triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
     }
 }
 

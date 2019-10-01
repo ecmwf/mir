@@ -16,6 +16,7 @@
 #include "mir/style/CustomStyle.h"
 
 #include <fstream>
+#include <sstream>
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"

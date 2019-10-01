@@ -1,0 +1,6 @@
+# mars
+rotated_ll.3-3.grib1
+# mir
+--area=3/0/0/3 --rotation=30/30
+# plan
+AreaCropper[bbox=BoundingBox[north=3,west=0,south=0,east=3]]|Save[output=...]

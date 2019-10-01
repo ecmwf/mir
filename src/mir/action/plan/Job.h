@@ -16,8 +16,8 @@
 #ifndef mir_action_Job_h
 #define mir_action_Job_h
 
+#include <memory>
 #include <string>
-#include "eckit/memory/ScopedPtr.h"
 
 
 namespace mir {
@@ -26,6 +26,7 @@ class ActionPlan;
 }
 namespace api {
 class MIRJob;
+class MIREstimation;
 }
 namespace input {
 class MIRInput;
@@ -69,6 +70,7 @@ public:
     // -- Methods
 
     void execute(util::MIRStatistics& statistics) const;
+    void estimate(api::MIREstimation& estimation) const;
 
     const ActionPlan& plan() const;
 
@@ -106,8 +108,8 @@ private:
 
     input::MIRInput& input_;
     output::MIROutput& output_;
-    eckit::ScopedPtr< const param::MIRParametrisation > combined_;
-    eckit::ScopedPtr< action::ActionPlan > plan_;
+    std::unique_ptr< const param::MIRParametrisation > combined_;
+    std::unique_ptr< action::ActionPlan > plan_;
 
     // -- Methods
     // None

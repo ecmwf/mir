@@ -33,6 +33,8 @@ list(APPEND mir_srcs
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
+    action/filter/StatisticsFilter.cc
+    action/filter/StatisticsFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -43,8 +45,6 @@ list(APPEND mir_srcs
     action/interpolate/Gridded2OctahedralGG.h
     action/interpolate/Gridded2Points.cc
     action/interpolate/Gridded2Points.h
-    action/interpolate/Gridded2PolarStereographic.cc
-    action/interpolate/Gridded2PolarStereographic.h
     action/interpolate/Gridded2ReducedGG.cc
     action/interpolate/Gridded2ReducedGG.h
     action/interpolate/Gridded2ReducedGGPLGiven.cc
@@ -111,6 +111,7 @@ list(APPEND mir_srcs
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
+    api/MIREstimation.h
     api/Atlas.cc
     api/Atlas.h
     caching/CroppingCache.cc
@@ -255,6 +256,12 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/gridbox/GridBoxAverage.cc
+    method/gridbox/GridBoxAverage.h
+    method/gridbox/GridBoxMaximum.cc
+    method/gridbox/GridBoxMaximum.h
+    method/gridbox/GridBoxMethod.cc
+    method/gridbox/GridBoxMethod.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -263,6 +270,8 @@ list(APPEND mir_srcs
     method/knn/NearestLSM.h
     method/knn/NearestNeighbour.cc
     method/knn/NearestNeighbour.h
+    method/knn/distance/ClimateFilter.cc
+    method/knn/distance/ClimateFilter.h
     method/knn/distance/DistanceWeighting.cc
     method/knn/distance/DistanceWeighting.h
     method/knn/distance/DistanceWeightingWithLSM.cc
@@ -283,6 +292,18 @@ list(APPEND mir_srcs
     method/knn/distance/NearestNeighbourWithLowestIndex.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
+    method/knn/pick/Distance.cc
+    method/knn/pick/Distance.h
+    method/knn/pick/DistanceAndNClosest.cc
+    method/knn/pick/DistanceAndNClosest.h
+    method/knn/pick/DistanceOrNClosest.cc
+    method/knn/pick/DistanceOrNClosest.h
+    method/knn/pick/NClosest.cc
+    method/knn/pick/NClosest.h
+    method/knn/pick/NClosestOrNearest.cc
+    method/knn/pick/NClosestOrNearest.h
+    method/knn/pick/Pick.cc
+    method/knn/pick/Pick.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
@@ -370,6 +391,12 @@ list(APPEND mir_srcs
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
     repres/gauss/Gaussian.cc
+    repres/Gridded.cc
+    repres/Gridded.h
+    repres/Iterator.cc
+    repres/Iterator.h
+    repres/Representation.cc
+    repres/Representation.h
     repres/gauss/Gaussian.h
     repres/gauss/GaussianIterator.cc
     repres/gauss/GaussianIterator.h
@@ -399,10 +426,6 @@ list(APPEND mir_srcs
     repres/gauss/regular/RegularGG.h
     repres/gauss/regular/RotatedGG.cc
     repres/gauss/regular/RotatedGG.h
-    repres/Gridded.cc
-    repres/Gridded.h
-    repres/Iterator.cc
-    repres/Iterator.h
     repres/latlon/LatLon.cc
     repres/latlon/LatLon.h
     repres/latlon/ReducedLL.cc
@@ -415,8 +438,6 @@ list(APPEND mir_srcs
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
-    repres/Representation.cc
-    repres/Representation.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -427,10 +448,6 @@ list(APPEND mir_srcs
     repres/unsupported/EquatorialAzimuthalEquidistant.h
     repres/unsupported/IrregularLatlon.cc
     repres/unsupported/IrregularLatlon.h
-    repres/unsupported/Lambert.cc
-    repres/unsupported/Lambert.h
-    repres/unsupported/LambertAzimuthalEqualArea.cc
-    repres/unsupported/LambertAzimuthalEqualArea.h
     repres/unsupported/Mercator.cc
     repres/unsupported/Mercator.h
     repres/unsupported/PolarStereographic.cc
@@ -487,6 +504,8 @@ list(APPEND mir_srcs
     stats/detail/Scalar.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
+    stats/statistics/GridBoxIntegral.cc
+    stats/statistics/GridBoxIntegral.h
     stats/statistics/Integral.cc
     stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
@@ -556,7 +575,10 @@ list(APPEND mir_srcs
     util/Function.h
     util/GlobaliseUnstructured.cc
     util/GlobaliseUnstructured.h
+    util/Grib.cc
     util/Grib.h
+    util/GridBox.cc
+    util/GridBox.h
     util/Increments.cc
     util/Increments.h
     util/Latitude.cc
@@ -572,6 +594,8 @@ list(APPEND mir_srcs
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
+    util/Pretty.cc
+    util/Pretty.h
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
@@ -622,24 +646,44 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
-        method/fe/Conservative.cc
-        method/fe/Conservative.h
+        method/fe/BuildNodeLumpedMassMatrix.cc
+        method/fe/BuildNodeLumpedMassMatrix.h
+        method/fe/CalculateCellLongestDiagonal.cc
+        method/fe/CalculateCellLongestDiagonal.h
+        method/fe/ConservativeFiniteElement.cc
+        method/fe/ConservativeFiniteElement.h
         method/fe/FEBilinear.cc
         method/fe/FEBilinear.h
         method/fe/FELinear.cc
         method/fe/FELinear.h
         method/fe/FiniteElement.cc
         method/fe/FiniteElement.h
-        method/fe/Tessellation.cc
-        method/fe/Tessellation.h
+        method/nonlinear/Heaviest.cc
+        method/nonlinear/Heaviest.h
+        method/nonlinear/MissingIfAllMissing.cc
+        method/nonlinear/MissingIfAllMissing.h
+        method/nonlinear/MissingIfAnyMissing.cc
+        method/nonlinear/MissingIfAnyMissing.h
+        method/nonlinear/MissingIfHeaviestMissing.cc
+        method/nonlinear/MissingIfHeaviestMissing.h
+        method/nonlinear/NoNonLinear.cc
+        method/nonlinear/NoNonLinear.h
+        method/nonlinear/NonLinear.cc
+        method/nonlinear/NonLinear.h
+        method/nonlinear/SimulateMissingValue.cc
+        method/nonlinear/SimulateMissingValue.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
-        util/MIRGrid.cc
-        util/MIRGrid.h
+        repres/regular/Lambert.cc
+        repres/regular/Lambert.h
+        repres/regular/LambertAzimuthalEqualArea.cc
+        repres/regular/LambertAzimuthalEqualArea.h
+        repres/regular/RegularGrid.cc
+        repres/regular/RegularGrid.h
         util/MeshGeneratorParameters.cc
         util/MeshGeneratorParameters.h
         )
@@ -781,6 +825,11 @@ if (HAVE_NETCDF)
         netcdf/VirtualOutputDimension.h
         )
   list(APPEND netcdflibs ${NETCDF_LIBRARIES})
+endif()
+
+
+if (HAVE_PNG)
+    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
 endif()
 
 

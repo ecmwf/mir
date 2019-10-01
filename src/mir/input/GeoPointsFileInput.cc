@@ -20,7 +20,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/Translator.h"
@@ -73,7 +72,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
         throw eckit::SeriousBug(oss.str());
     }
 
-    if (which_ >= count) {
+    if (which_ >= int(count)) {
         std::ostringstream oss;
         oss << path_ << " contains " << count << " fields, requested index is " << which_;
         throw eckit::SeriousBug(oss.str());
@@ -194,7 +193,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         ASSERT(what == "GEO");
 
         count++;
-        if (which_ >= 0 && count  > which_ + 1) {
+        if (which_ >= 0 && int(count)  > which_ + 1) {
             break;
         }
 

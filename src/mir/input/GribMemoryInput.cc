@@ -25,12 +25,7 @@ namespace input {
 
 
 GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
-    const char* p = static_cast<const char*>(message);
-    ASSERT(p[0] == 'G' && p[1] == 'R' && p[2] == 'I' && p[3] == 'B');
-
-    // p += length - 4;
-    // ASSERT(p[0] == '7' && p[1] == '7' && p[2] == '7' && p[3] == '7');
-
+    GRIB_CALL(codes_check_message_header(message, length, PRODUCT_GRIB));
     ASSERT(handle(grib_handle_new_from_message(nullptr, const_cast<void*>(message), length)));
 }
 

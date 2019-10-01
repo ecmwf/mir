@@ -1,7 +1,5 @@
 # ecbuild_find_python( VERSION 2.7 )
 
-file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
-
 # set(MIR_TOOL     "$<TARGET_FILE:mir-tool>")
 # set(MIR_COMPARE  "$<TARGET_FILE:mir-compare>")
 # set(GRIB_GET     "$<TARGET_FILE:grib_get>")
@@ -21,7 +19,7 @@ set( _environment
     "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
     "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
 
-ecbuild_info(${test_files})
+file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
 foreach( _t ${test_files} )
 

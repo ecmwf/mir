@@ -9,41 +9,40 @@
  */
 
 /// @author Baudouin Raoult
+/// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date Jun 2012
 
-#ifndef mir_Formula_h
-#define mir_Formula_h
+
+#ifndef mir_util_Formula_h
+#define mir_util_Formula_h
 
 #include <iosfwd>
-#include "eckit/memory/NonCopyable.h"
+
 #include "mir/action/plan/Action.h"
+
 
 namespace mir {
 namespace util {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 class Formula : public action::Action {
 public:
-
-    Formula(const param::MIRParametrisation &parametrisation);
+    using Action::Action;
     virtual ~Formula();
 
 private:
-
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& out, const Formula& f) {
         f.print(out);
         return out;
     }
-
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

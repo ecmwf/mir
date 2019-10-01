@@ -82,6 +82,7 @@ protected:
     util::Domain domain() const;
     const util::BoundingBox& boundingBox() const;
     virtual bool getLongestElementDiagonal(double&) const;
+    virtual void estimate(api::MIREstimation&) const;
 
     // -- Class members
     // None

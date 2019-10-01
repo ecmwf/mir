@@ -13,8 +13,10 @@
 
 #include <cmath>
 #include <iostream>
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Angles.h"
@@ -67,7 +69,7 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
             cos_C = std::cos(C),
             sin_C = std::sin(C);
 
-    eckit::ScopedPtr<repres::Iterator> it(representation_->iterator());
+    std::unique_ptr<repres::Iterator> it(representation_->iterator());
     size_t i = 0;
 
     while (it->next()) {

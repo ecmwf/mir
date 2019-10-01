@@ -16,8 +16,9 @@
 #ifndef mir_caching_InMemoryCache_h
 #define mir_caching_InMemoryCache_h
 
+#include <memory>
+
 #include "eckit/config/Resource.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/thread/Mutex.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
@@ -81,7 +82,7 @@ private:
 
     struct Entry {
 
-        eckit::ScopedPtr<T> ptr_;
+        std::unique_ptr<T> ptr_;
         size_t hits_;
         double last_;
         double insert_;

@@ -84,6 +84,7 @@ private:
 
     // From Representation
     const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;
+    std::string factory() const;
 
     // -- Class members
     // None

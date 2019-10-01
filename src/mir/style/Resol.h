@@ -13,9 +13,9 @@
 #define mir_style_Resol_h
 
 #include <iosfwd>
+#include <memory>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/style/Intgrid.h"
 #include "mir/style/Truncation.h"
 
@@ -34,7 +34,7 @@ namespace mir {
 namespace style {
 
 
-class Resol : public eckit::NonCopyable {
+class Resol {
 public:
 
     // -- Exceptions
@@ -43,6 +43,7 @@ public:
     // -- Contructors
 
     Resol(const param::MIRParametrisation&, bool forceNoIntermediateGrid);
+    Resol(const Resol&) = delete;
 
     // -- Destructor
 
@@ -52,7 +53,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Resol&) = delete;
 
     // -- Methods
 
@@ -93,8 +95,8 @@ private:
     // -- Members
 
     long inputTruncation_;
-    eckit::ScopedPtr<Intgrid> intgrid_;
-    eckit::ScopedPtr<Truncation> truncation_;
+    std::unique_ptr<Intgrid> intgrid_;
+    std::unique_ptr<Truncation> truncation_;
 
     // -- Methods
 

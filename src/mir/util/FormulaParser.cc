@@ -14,14 +14,16 @@
 /// @date   April 2016
 
 
-#include "mir/util/FormulaParser.h"
-#include "mir/util/FormulaNumber.h"
+#include <memory>
+
 #include "eckit/utils/Translator.h"
-#include "mir/util/FormulaIdent.h"
-#include "mir/util/FormulaString.h"
-#include "mir/util/FormulaFunction.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/util/FormulaBinop.h"
+#include "mir/util/FormulaFunction.h"
+#include "mir/util/FormulaIdent.h"
+#include "mir/util/FormulaNumber.h"
+#include "mir/util/FormulaParser.h"
+#include "mir/util/FormulaString.h"
 
 
 namespace mir {
@@ -107,7 +109,7 @@ Formula* FormulaParser::parseString(const param::MIRParametrisation &parametrisa
 
 Formula* FormulaParser::parseAtom(const param::MIRParametrisation &parametrisation)
 {
-    eckit::ScopedPtr<Formula> f;
+    std::unique_ptr<Formula> f;
 
     char c = peek();
     switch (c)
@@ -257,7 +259,7 @@ Formula* FormulaParser::parseTest(const param::MIRParametrisation &parametrisati
 }
 
 Formula* FormulaParser::parse(const param::MIRParametrisation &parametrisation) {
-    eckit::ScopedPtr<Formula> f(parseTest(parametrisation));
+    std::unique_ptr<Formula> f(parseTest(parametrisation));
     char c;
     if ((c = peek())) {
         throw StreamParser::Error(std::string("Error parsing rules: remaining char: ") + c);

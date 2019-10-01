@@ -34,6 +34,7 @@ class SphericalHarmonics : public Representation {
     // -- Contructors
 
     SphericalHarmonics(const param::MIRParametrisation&);
+    SphericalHarmonics(size_t truncation);
 
     // -- Destructor
 
@@ -97,7 +98,6 @@ class SphericalHarmonics : public Representation {
 
   private:
 
-    SphericalHarmonics(size_t truncation);
 
     // No copy allowed
 
@@ -116,6 +116,9 @@ class SphericalHarmonics : public Representation {
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob &) const;
+    virtual void estimate(api::MIREstimation&) const;
+    virtual std::string factory() const;
+
     virtual const Representation* truncate(
             size_t truncation,
             const MIRValuesVector&,

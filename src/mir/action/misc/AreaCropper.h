@@ -101,6 +101,7 @@ private:
     virtual bool isCropAction() const;
     virtual bool canCrop() const;
     virtual util::BoundingBox outputBoundingBox() const;
+    virtual void estimate(context::Context& ctx, api::MIREstimation& estimation) const;
 
     // -- Class members
     // None

@@ -15,17 +15,19 @@
 
 #include "mir/output/GeoPointsFileOutputXYV.h"
 
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/HandleBuf.h"
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/serialisation/HandleStream.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "eckit/serialisation/HandleStream.h"
-
 #include "mir/repres/other/UnstructuredGrid.h"
+
 
 namespace mir {
 namespace output {
@@ -52,15 +54,8 @@ size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::C
 
 size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
                                     context::Context& ctx) {
-
-
     ASSERT(once());
-    if (binary_) {
-        return saveBinary(param, ctx);
-    }
-    else {
-        return saveText(param, ctx);
-    }
+    return binary_ ? saveBinary(param, ctx) : saveText(param, ctx);
 }
 
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
@@ -72,7 +67,6 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
     eckit::Offset position = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
-
     std::vector<double> latitudes;
     std::vector<double> longitudes;
 
@@ -112,7 +106,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
         while (it->next()) {
             const auto& p = it->pointUnrotated();
             ASSERT(v != values.cend());
@@ -190,7 +184,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         latitudes.reserve(values.size());
         longitudes.reserve(values.size());
 
-        eckit::ScopedPtr<repres::Iterator> it(field.representation()->iterator());
+        std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
         size_t i = 0;
         while (it->next()) {
             const auto& p = it->pointUnrotated();

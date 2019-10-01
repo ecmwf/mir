@@ -14,7 +14,6 @@
 
 #include <iosfwd>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -28,7 +27,7 @@ namespace mir {
 namespace style {
 
 
-class Intgrid : public eckit::NonCopyable {
+class Intgrid {
 public:
 
     // -- Exceptions
@@ -40,6 +39,8 @@ public:
         parametrisation_(parametrisation) {
     }
 
+    Intgrid(const Intgrid&) = delete;
+
     // -- Destructor
 
     virtual ~Intgrid() = default;
@@ -48,7 +49,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Intgrid&) = delete;
 
     // -- Methods
 

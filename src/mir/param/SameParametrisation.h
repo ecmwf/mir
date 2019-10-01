@@ -27,7 +27,7 @@ public:
 
     // -- Contructors
 
-    SameParametrisation(const MIRParametrisation&, const MIRParametrisation&);
+    SameParametrisation(const MIRParametrisation&, const MIRParametrisation&, bool strict);
 
     // -- Destructor
     // None
@@ -73,6 +73,7 @@ private:
 
     const MIRParametrisation& parametrisation1_;
     const MIRParametrisation& parametrisation2_;
+    const bool strict_;
 
     // -- Methods
 
@@ -82,9 +83,6 @@ private:
     // -- Overridden methods
 
     // From MIRParametrisation
-    const MIRParametrisation& userParametrisation() const;
-    const MIRParametrisation& fieldParametrisation() const;
-
     void print(std::ostream&) const;
 
     bool has(const std::string& name) const;

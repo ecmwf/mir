@@ -13,19 +13,21 @@
 /// @date Apr 2015
 
 
-#ifndef MIRParametrisation_H
-#define MIRParametrisation_H
+#ifndef mir_param_MIRParametrisation_h
+#define mir_param_MIRParametrisation_h
 
 #include <iosfwd>
+
 #include "eckit/config/Parametrisation.h"
-#include "eckit/memory/NonCopyable.h"
+
 #include "mir/util/Types.h"
+
 
 namespace mir {
 namespace param {
 
 
-class MIRParametrisation : public eckit::Parametrisation, private eckit::NonCopyable {
+class MIRParametrisation : public eckit::Parametrisation {
 public:
 
     // -- Exceptions
@@ -34,6 +36,7 @@ public:
     // -- Contructors
 
     MIRParametrisation();
+    MIRParametrisation(const MIRParametrisation&) = delete;
 
     // -- Destructor
 
@@ -43,7 +46,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const MIRParametrisation&) = delete;
 
     // -- Methods
 

@@ -12,9 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/SelectField.h"
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"

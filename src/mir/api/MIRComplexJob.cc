@@ -85,7 +85,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         return;
     }
 
-    eckit::ScopedPtr<eckit::Timer> timer;
+    std::unique_ptr<eckit::Timer> timer;
 
     if (printActionGraph) {
         timer.reset(new eckit::Timer ("MIRComplexJob::execute", eckit::Log::info()));

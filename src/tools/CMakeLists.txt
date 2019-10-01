@@ -1,12 +1,23 @@
 
-# NOTE: mir-compare is also set in the testing scripts (however not used)
+# always-installed tools
+
 ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir)
 
 unset(_tools)
 list(APPEND _tools
-    mir-compare
+    mir-count)
+
+foreach(tool IN LISTS _tools)
+    ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
+endforeach()
+
+
+# optionally-installed tools
+unset(_tools)
+list(APPEND _tools
+    mir-climate-filter
+    mir-compare  # NOTE: set in the testing scripts, however not used
     mir-config
-    mir-count
     mir-formula
     mir-grid-info
     mir-inspect
@@ -21,7 +32,8 @@ if(HAVE_ATLAS)
     list(APPEND _tools
         mir-gaussian-fractions
         mir-get-data
-        mir-spectral-transform)
+        mir-spectral-transform
+        mir-triangulate)
 endif()
 
 if (HAVE_MIR_TOOLS)

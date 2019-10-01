@@ -16,9 +16,11 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
-#include "eckit/memory/ScopedPtr.h"
-#include "mir/action/misc/AreaCropper.h"
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/util/Domain.h"
+#include "mir/util/GridBox.h"
 
 
 namespace mir {
@@ -27,7 +29,7 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation& parametrisation):
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) :
     Regular(parametrisation) {
 }
 
@@ -41,12 +43,12 @@ RegularGG::~RegularGG() = default;
 
 
 void RegularGG::print(std::ostream& out) const {
-    out << "RegularGG[N=" << N_ << ",bbox=" << bbox_ << "]";
-}
-
-
-void RegularGG::makeName(std::ostream& out) const {
-    Regular::makeName(out);
+    out << "RegularGG["
+        "N=" << N_
+        << ",Ni=" << Ni_
+        << ",Nj=" << Nj_
+        << ",bbox=" << bbox_
+        << "]";
 }
 
 
@@ -57,13 +59,61 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t){ return long(4 * N_); };
+    auto Ni = [ = ](size_t) { return long(4 * N_); };
     return Gaussian::unrotatedIterator(Ni);
 }
 
 
 const Gridded* RegularGG::croppedRepresentation(const util::BoundingBox& bbox) const {
     return new RegularGG(N_, bbox, angularPrecision_);
+}
+
+
+std::string RegularGG::factory() const {
+    return "regular_gg";
+}
+
+
+std::vector<util::GridBox> RegularGG::gridBoxes() const {
+    ASSERT(1 < Ni_);
+    ASSERT(1 < Nj_);
+
+
+    // latitude edges
+    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
+
+
+    // longitude edges
+    bool periodic = isPeriodicWestEast();
+    auto lon0     = bbox_.west();
+    auto inc      = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
+    eckit::Fraction half(1, 2);
+
+    std::vector<double> lonEdges(Ni_ + 1, 0.);
+    lonEdges[0] = (lon0 - inc / 2).value();
+    for (size_t i = 0; i < Ni_; ++i) {
+        lonEdges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
+    }
+
+
+    // grid boxes
+    std::vector<util::GridBox> r;
+    r.reserve(Ni_ * Nj_);
+
+    for (size_t j = 0; j < Nj_; ++j) {
+        Longitude lon1 = lon0;
+
+        for (size_t i = 0; i < Ni_; ++i) {
+            auto l = lon1;
+            lon1   = l + Longitude(inc * (i + half));
+            r.emplace_back(util::GridBox(latEdges[j], lonEdges[i], latEdges[j + 1], lonEdges[i + 1]));
+        }
+
+        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
+    }
+
+    ASSERT(r.size() == Ni_ * Nj_);
+    return r;
 }
 
 

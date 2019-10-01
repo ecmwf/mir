@@ -12,6 +12,9 @@
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
 #include <vector>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
@@ -53,7 +56,7 @@ util::BoundingBox Gridded2RotatedGrid::outputBoundingBox() const {
     auto& bbox(method().hasCropping() ? method().getCropping()
                                       : out->domain());
 
-    bbox_ = rotation_.rotate(bbox);
+    bbox_ = rotation_.boundingBox(bbox);
     return bbox_;
 }
 

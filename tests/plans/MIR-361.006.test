@@ -1,0 +1,6 @@
+# mars
+regular_ll.2-2.grib1
+# mir
+--area=2/0/0/2
+# plan
+AreaCropper[bbox=BoundingBox[north=2,west=0,south=0,east=2]]|Save[output=...]

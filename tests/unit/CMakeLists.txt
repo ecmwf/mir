@@ -3,13 +3,14 @@
 set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
 file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
 
+unset(tests)
 set(tests
     action_graph
     bounding_box
     gaussian_grid
     grib_encoding
     increments
-    rotations
+    iterator
     spectral_order
     style
     wind
@@ -27,9 +28,24 @@ set( _environment
 
 foreach( _t ${tests})
   ecbuild_add_test(
+      TARGET            mir_tests_unit_${_t}
+      SOURCES           ${_t}.cc
+      LIBS              mir
+      ENVIRONMENT       ${_environment}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+endforeach()
+
+unset(tests)
+set(tests
+    MIR-333
+    )
+
+foreach( _t ${tests})
+  ecbuild_add_test(
       TARGET      mir_tests_unit_${_t}
       SOURCES     ${_t}.cc
       LIBS        mir
-      ENVIRONMENT ${_environment} )
+      ENVIRONMENT ${_environment}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 endforeach()
 

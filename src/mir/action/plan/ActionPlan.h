@@ -29,6 +29,9 @@ class Context;
 namespace action {
 class Action;
 }
+namespace api {
+class MIREstimation;
+}
 }
 
 
@@ -78,6 +81,8 @@ public:
     void custom(std::ostream&) const;
     void compress();
     bool ended() const;
+
+    void estimate(context::Context& ctx, api::MIREstimation&) const;
 
     const Action& action(size_t) const;
 

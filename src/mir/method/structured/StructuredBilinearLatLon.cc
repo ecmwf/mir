@@ -12,18 +12,21 @@
 /// @author Pedro Maciel
 /// @date July 2015
 
+
 #include "mir/method/structured/StructuredBilinearLatLon.h"
 
+#include <memory>
 #include <vector>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Pretty.h"
+
 
 namespace mir {
 namespace method {
@@ -90,9 +93,9 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
     // interpolate each output point in turn
     {
-        eckit::ProgressTimer progress("Interpolating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
+        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, eckit::Log::debug<LibMir>());
 
-        eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+        std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
 
         while (it->next()) {
@@ -211,10 +214,12 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 Longitude bl_lon = icoords[bot_i_lft].lon();
                 Longitude br_lon = icoords[bot_i_rgt].lon();
 
-                if (tr_lon < tl_lon)
+                if (tr_lon < tl_lon) {
                     tr_lon += Longitude::GLOBE.value();
-                if (br_lon < bl_lon)
+                }
+                if (br_lon < bl_lon) {
                     br_lon += Longitude::GLOBE.value();
+                }
 
                 // calculate the weights
                 Longitude w1 = p.lon() - tl_lon;

@@ -12,12 +12,11 @@
 /// @author Florian Rathgeber
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-/// @date   May 2015
+/// @date May 2015
 
 
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
-
 
 #include <vector>
 #include <iosfwd>
@@ -29,22 +28,19 @@
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix : public eckit::linalg::SparseMatrix {
 
-public: // types
-
-    typedef eckit::linalg::Triplet Triplet;
-    typedef eckit::linalg::Matrix  Matrix;
-    typedef eckit::linalg::Vector  Vector;
-    typedef eckit::linalg::Scalar  Scalar;
-    typedef eckit::linalg::Size    Size;
-    typedef eckit::linalg::Index   Index;
+public:  // types
+    using Triplet = eckit::linalg::Triplet;
+    using Matrix  = eckit::linalg::Matrix;
+    using Vector  = eckit::linalg::Vector;
+    using Scalar  = eckit::linalg::Scalar;
+    using Size    = eckit::linalg::Size;
 
 public: // methods
 
-    WeightMatrix(SparseMatrix::Allocator* alloc = 0);
+    WeightMatrix(SparseMatrix::Allocator* alloc = nullptr);
 
     WeightMatrix(const eckit::PathName&);
 
@@ -84,8 +80,6 @@ private: // members
     }
 
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

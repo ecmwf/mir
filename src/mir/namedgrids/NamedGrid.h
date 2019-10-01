@@ -16,8 +16,9 @@
 #ifndef NamedGrid_H
 #define NamedGrid_H
 
-#include <string>
 #include <iosfwd>
+#include <map>
+#include <string>
 
 namespace mir {
 
@@ -33,28 +34,31 @@ namespace mir {
 namespace namedgrids {
 
 class NamedGrid {
-  public:
+public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
+    NamedGrid(const NamedGrid&) = delete;
 
     // -- Destructor
-
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    NamedGrid& operator=(const NamedGrid&) = delete;
 
     // -- Methods
 
-    virtual const repres::Representation *representation() const = 0;
-    virtual const repres::Representation *representation(const util::Rotation& rotation) const = 0;
+    virtual const repres::Representation* representation() const = 0;
+    virtual const repres::Representation* representation(const util::Rotation& rotation) const = 0;
     virtual size_t gaussianNumber() const = 0;
+
     // -- Overridden methods
     // None
 
@@ -63,15 +67,14 @@ class NamedGrid {
 
     // -- Class methods
 
-    static const NamedGrid &lookup(const std::string &name);
-    static void list(std::ostream &);
+    static const NamedGrid& lookup(const std::string& name);
+    static void list(std::ostream&);
 
 
-  protected:
+protected:
 
-    NamedGrid(const std::string &name);
-    virtual ~NamedGrid(); // Change to virtual if base class
-
+    NamedGrid(const std::string& name);
+    virtual ~NamedGrid();
 
     // -- Members
 
@@ -79,8 +82,7 @@ class NamedGrid {
 
     // -- Methods
 
-
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -91,18 +93,13 @@ class NamedGrid {
     // -- Class methods
     // None
 
-  private:
-
-    // No copy allowed
-
-    NamedGrid(const NamedGrid &);
-    NamedGrid &operator=(const NamedGrid &);
+private:
 
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -111,20 +108,20 @@ class NamedGrid {
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const NamedGrid &p) {
+    friend std::ostream& operator<<(std::ostream& s, const NamedGrid& p) {
         p.print(s);
         return s;
     }
-
 };
-
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif
 

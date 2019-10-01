@@ -16,8 +16,10 @@
 
 #include "mir/method/knn/NearestLSM.h"
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
 #include "eckit/utils/MD5.h"
+
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/knn/distance/NearestLSMWithLowestIndex.h"
 #include "mir/param/RuntimeParametrisation.h"
@@ -44,7 +46,7 @@ void NearestLSM::assemble(
     const repres::Representation& out) const {
 
     // get distance weighting method
-    eckit::ScopedPtr<const distance::DistanceWeighting> method(
+    std::unique_ptr<const distance::DistanceWeighting> method(
                 distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)) );
     ASSERT(method);
 

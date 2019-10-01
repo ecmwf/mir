@@ -10,15 +10,20 @@
 
 
 #include <iostream>
+#include <cmath>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
+#include "eckit/types/FloatCompare.h"
+#include "eckit/types/Fraction.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/data/MIRField.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/input/GribFileInput.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Increments.h"
@@ -29,10 +34,85 @@ namespace tests {
 namespace unit {
 
 
+using eckit::Fraction;
 using util::BoundingBox;
 using util::Increments;
 
 static auto& log = eckit::Log::info();
+
+
+#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+
+
+CASE("MIR-351") {
+
+    auto old(log.precision(16));
+    log << std::boolalpha;
+
+    using eckit::types::is_approximately_equal;
+
+    // setup this case exact values
+    auto round_to_precision = [] (double value, double precision) {
+        return std::round(value * precision) / precision;
+    };
+
+    // MIR-351: there is a problem in the encoding of latitudes, however
+    // it doesn't trigger any known malfunction
+    //    Fraction sn(30, 128);
+    //    auto n(341 * sn + sn / 2);
+    //    auto s(-n);
+
+    //    const double north = round_to_precision(n, 1000000);
+    //    const double south = round_to_precision(s, 1000000);
+
+    Fraction we(45, 128);
+    Fraction w(we / 2);
+    Fraction e(360 - we / 2);
+
+    const double west  = round_to_precision(w, 1000000);
+    const double east  = round_to_precision(e, 1000000);
+
+    log << "Reference values:"
+        << "\n\t" "west  = " << west
+        << "\n\t" "east  = " << east
+        << std::endl;
+
+    {
+        // file wrongly encoded: fails EXPECTV(domain.isPeriodicWestEast())
+        // const std::string file = "MIR-351.wrong.grib2";
+
+        const std::string file = "MIR-351.corrected.grib2";
+        log << "Reading '" << file << "'" << std::endl;
+
+        std::unique_ptr<input::MIRInput> input(new input::GribFileInput(file));
+        ASSERT(input->next());
+
+        auto& param = input->parametrisation();
+
+        double encoded_west = 0.;
+        ASSERT(param.get("west", encoded_west));
+        EXPECTV(is_approximately_equal(encoded_west, west));
+
+        double encoded_east = 0.;
+        ASSERT(param.get("east", encoded_east));
+        EXPECTV(is_approximately_equal(encoded_east, east));
+
+        repres::RepresentationHandle repres(input->field().representation());
+
+        // West remains the same value, but East can be corrected
+        auto bbox(repres->boundingBox());
+        log << "\t" << bbox << std::endl;
+        EXPECTV(is_approximately_equal(west, bbox.west().value()));
+
+        auto domain(repres->domain());
+        log << "\t" << domain << std::endl;
+        EXPECTV(!domain.isGlobal());
+        EXPECTV(domain.isPeriodicWestEast());
+    }
+
+
+    log.precision(old);
+}
 
 
 CASE("Increments::correctBoundingBox") {
@@ -608,6 +688,6 @@ CASE("MIR-309") {
 
 
 int main(int argc, char **argv) {
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }
 

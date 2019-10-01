@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Oct 2016
 
 
@@ -70,6 +69,7 @@ static MatrixLoaderBuilder<FileLoader> loader("file-io");
 }
 
 
-} // namespace matrix
-} // namespace caching
-} // namespace mir
+}  // namespace matrix
+}  // namespace caching
+}  // namespace mir
+

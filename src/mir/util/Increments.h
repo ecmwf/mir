@@ -75,6 +75,12 @@ public:
     bool isPeriodic() const;
 
     bool isShifted(const BoundingBox&) const;
+    bool isLatitudeShifted(const BoundingBox&) const;
+    bool isLongitudeShifted(const BoundingBox&) const;
+
+    bool isShifted(const PointLatLon&) const;
+    bool isLatitudeShifted(const PointLatLon&) const;
+    bool isLongitudeShifted(const PointLatLon&) const;
 
     const LongitudeIncrement& west_east() const {
         return west_east_;
@@ -89,10 +95,6 @@ public:
     void fill(api::MIRJob&) const;
 
     void makeName(std::ostream&) const;
-
-    bool isLatitudeShifted(const BoundingBox&) const;
-
-    bool isLongitudeShifted(const BoundingBox&) const;
 
     // -- Overridden methods
     // None

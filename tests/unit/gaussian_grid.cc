@@ -84,5 +84,5 @@ CASE("NamedGrid") {
 
 
 int main(int argc, char** argv) {
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }

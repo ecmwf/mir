@@ -14,6 +14,8 @@
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
+#include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace lsm {

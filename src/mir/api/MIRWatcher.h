@@ -13,31 +13,33 @@
 /// @date Apr 2015
 
 
-#ifndef MIRWatcher_H
-#define MIRWatcher_H
+#ifndef mir_api_MIRWatcher_h
+#define mir_api_MIRWatcher_h
 
+#include <exception>
+#include <iosfwd>
 
-#include "eckit/memory/NonCopyable.h"
 
 namespace mir {
-
 namespace action {
 class Action;
 }
+}
 
+
+namespace mir {
 namespace api {
 
-class MIRJob;
 
-class MIRWatcher : private eckit::NonCopyable {
-  public:
-
+class MIRWatcher {
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
     MIRWatcher();
+    MIRWatcher(const MIRWatcher&) = delete;
 
     // -- Destructor
 
@@ -47,12 +49,12 @@ class MIRWatcher : private eckit::NonCopyable {
     // None
 
     // -- Operators
-    // None
+    void operator=(const MIRWatcher&) = delete;
 
     // -- Methods
 
     // Return true to rethrow, false to continue
-    virtual bool failure(std::exception&, const action::Action& action) = 0;
+    virtual bool failure(std::exception&, const action::Action&) = 0;
 
     // -- Overridden methods
     // None
@@ -63,17 +65,15 @@ class MIRWatcher : private eckit::NonCopyable {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
-
-
+    // None
 
     // -- Overridden methods
-
+    // None
 
     // -- Class members
     // None
@@ -81,20 +81,17 @@ class MIRWatcher : private eckit::NonCopyable {
     // -- Class methods
     // None
 
-  private:
-
-
+private:
     // -- Members
-
+    // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
 
     // From MIRParametrisation
-
-    virtual void print(std::ostream &) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Class members
     // None
@@ -104,7 +101,7 @@ class MIRWatcher : private eckit::NonCopyable {
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const MIRWatcher &p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRWatcher& p) {
         p.print(s);
         return s;
     }
@@ -113,5 +110,6 @@ class MIRWatcher : private eckit::NonCopyable {
 
 }  // namespace api
 }  // namespace mir
-#endif
 
+
+#endif

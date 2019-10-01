@@ -12,7 +12,6 @@
 #include <time.h>
 #include <sys/time.h>
 
-#include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/thread/AutoLock.h"

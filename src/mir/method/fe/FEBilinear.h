@@ -13,8 +13,8 @@
 /// @date May 2015
 
 
-#ifndef mir_method_fe_FEBilinear_H
-#define mir_method_fe_FEBilinear_H
+#ifndef mir_method_fe_FEBilinear_h
+#define mir_method_fe_FEBilinear_h
 
 #include "mir/method/fe/FiniteElement.h"
 
@@ -24,23 +24,75 @@ namespace method {
 namespace fe {
 
 
-class FEBilinear: public FiniteElement {
+class FEBilinear : public FiniteElement {
 public:
+    // -- Types
+    // None
 
-    FEBilinear(const param::MIRParametrisation&);
+    // -- Exceptions
+    // None
 
-    virtual ~FEBilinear();
+    // -- Constructors
+
+    FEBilinear(const param::MIRParametrisation&, const std::string& label = "input");
+
+    // -- Destructor
+    // None
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 protected:
+    // -- Members
+    // None
 
-    virtual void hash(eckit::MD5&) const;
-    virtual bool sameAs(const Method& other) const;
-    virtual void print(std::ostream&) const;
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
 
 private:
+    // -- Members
+    // None
 
-    virtual const char* name() const;
+    // -- Methods
+    // None
 
+    // -- Overridden methods
+
+    // From MethodWeighted
+    const char* name() const;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+    // None
 };
 
 
@@ -50,4 +102,3 @@ private:
 
 
 #endif
-

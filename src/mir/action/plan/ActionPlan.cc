@@ -115,13 +115,11 @@ void ActionPlan::execute(context::Context& ctx) const {
     std::string dumpPlanFile;
     parametrisation_.get("dump-plan-file", dumpPlanFile);
 
-    if (dumpPlanFile.size()) {
-
+    if (!dumpPlanFile.empty()) {
         if (dumpPlanFile == "-") {
             custom(std::cout);
             std::cout << std::endl;
-        }
-        else {
+        } else {
             std::ofstream out(dumpPlanFile, std::ios::app);
             custom(out);
             out << std::endl;
@@ -151,6 +149,15 @@ void ActionPlan::execute(context::Context& ctx) const {
 }
 
 
+void ActionPlan::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    ASSERT(ended());
+
+    for (const auto& p : *this) {
+        eckit::Log::debug<LibMir>() << "Estimate " << (*p) << std::endl;
+        p->estimate(ctx, estimation);
+    }
+}
+
 void ActionPlan::compress() {
     ASSERT(ended());
 
@@ -178,7 +185,7 @@ void ActionPlan::compress() {
                                             << "\n + " << action(i + 1)
                                             << "\n = " << action(i)
                                             << std::endl;
-                
+
                 delete at(i + 1);
                 erase(begin() + i + 1);
 

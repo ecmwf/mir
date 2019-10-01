@@ -51,11 +51,15 @@ CASE("MIR-324") {
     static const long PARAMID_U = LibMir::instance().configuration().getLong("parameter-id-u", 131);
     static const long PARAMID_V = LibMir::instance().configuration().getLong("parameter-id-v", 132);
 
+    const std::vector<size_t> _table {0, 129, 171, 200};
+    const std::vector<long> _user_u {0, 1, PARAMID_U, 999, 999999};
+    const std::vector<long> _user_v {0, 1, PARAMID_V, 999, 999999};
+
 
     SECTION("Wind: u/v paramId from vorticity/divergence") {
-        for (size_t table : std::vector<size_t>{0, 129, 171, 200}) {
-            for (long user_u : std::vector<long>{ 0, 1, PARAMID_U, 999, 999999 }) {
-                for (long user_v : std::vector<long>{ 0, 1, PARAMID_V, 999, 999999 }) {
+        for (size_t table : _table) {
+            for (long user_u : _user_u) {
+                for (long user_v : _user_v) {
 
                     FakeInput input(138 + table * 1000);
 
@@ -96,6 +100,6 @@ CASE("MIR-324") {
 
 
 int main(int argc, char **argv) {
-    return eckit::testing::run_tests(argc, argv, true);
+    return eckit::testing::run_tests(argc, argv);
 }
 

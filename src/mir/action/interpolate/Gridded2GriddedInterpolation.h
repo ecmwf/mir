@@ -16,7 +16,8 @@
 #ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
 #define mir_action_interpolate_Gridded2GriddedInterpolation_h
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
 #include "mir/action/plan/Action.h"
 #include "mir/method/Method.h"
 
@@ -24,6 +25,9 @@
 namespace mir {
 namespace repres {
 class Representation;
+}
+namespace method {
+class Cropping;
 }
 }
 
@@ -74,6 +78,7 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
     // -- Overridden methods
 
@@ -91,7 +96,7 @@ private:
     // -- Members
 
     std::string interpolation_;
-    eckit::ScopedPtr<method::Method> method_;
+    std::unique_ptr<method::Method> method_;
     bool inputIntersectsOutput_;
 
     // -- Methods
@@ -103,6 +108,8 @@ private:
     virtual void execute(context::Context&) const;
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
+
+    method::Cropping cropping(context::Context& ctx) const;
 
     // -- Class members
     // None

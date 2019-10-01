@@ -11,8 +11,10 @@
 
 #include "mir/method/knn/distance/InverseDistanceWeighting.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -70,7 +72,7 @@ void InverseDistanceWeighting::operator()(
     // normalise all weights according to the total, and set sparse matrix triplets
     for (size_t j = 0; j < nbPoints; ++j) {
         size_t jp = neighbours[j].payload();
-        triplets.push_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
+        triplets.emplace_back(WeightMatrix::Triplet(ip, jp, weights[j] / sum));
     }
 }
 

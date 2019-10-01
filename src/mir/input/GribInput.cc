@@ -8,6 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @author Tiago Quintino
+/// @date April 2015
+
+
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
@@ -23,7 +29,6 @@
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/NonCopyable.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
@@ -33,6 +38,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/util/LongitudeDouble.h"
 #include "mir/util/Wind.h"
 
 
@@ -167,6 +173,7 @@ static Condition *_not(const Condition *c) {
 }
 */
 
+
 static const char *get_key(const std::string &name, grib_handle *h) {
 
     static struct {
@@ -174,6 +181,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         const char *key;
         const Condition *condition;
     } mappings[] = {
+        {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids", is("gridType", "regular_ll")},
         {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
         {"south_north_increment", "jDirectionIncrementInDegrees", nullptr},
 
@@ -186,6 +194,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 
         {"north", "latitudeOfLastGridPointInDegrees", is("jScansPositively", 1L)},
         {"south", "latitudeOfFirstGridPointInDegrees", is("jScansPositively", 1L)},
+        {"north", "latitudeOfFirstGridPointInDegrees", nullptr},
+        {"south", "latitudeOfLastGridPointInDegrees", nullptr},
 
         {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
         {"accuracy", "bitsPerValue", nullptr},
@@ -196,9 +206,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
         // This will be just called for has()
-        {"gridded", "Nx", is("gridType", "polar_stereographic"),},  // Polar stereo
-        {"gridded", "Ni", is("gridType", "triangular_grid"),},  // Polar stereo
-        {"gridded", "numberOfPointsAlongXAxis", is("gridType", "lambert_azimuthal_equal_area"),},
+        {"gridded", "Nx", _or(_or(is("gridType", "polar_stereographic"),is("gridType", "lambert_azimuthal_equal_area")),is("gridType", "lambert")),},
+        {"gridded", "Ni", is("gridType", "triangular_grid"),},
         {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
 
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
@@ -215,6 +224,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 
         /// TODO: is that a good idea?
         {"param", "paramId", nullptr},
+        {"statistics", "", nullptr},  // (avoid ecCodes error "statistics: Function not yet implemented")
 
         {nullptr, nullptr, nullptr},
     };
@@ -232,8 +242,13 @@ static const char *get_key(const std::string &name, grib_handle *h) {
     return key;
 }
 
-struct Processing : eckit::NonCopyable {
+struct Processing {
+    Processing()          = default;
     virtual ~Processing() = default;
+
+    Processing(const Processing&) = delete;
+    void operator=(const Processing&) = delete;
+
     virtual bool eval(grib_handle*, long&) const { NOTIMP; }
     virtual bool eval(grib_handle*, double&) const { NOTIMP; }
     virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }
@@ -354,6 +369,43 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
     });
 };
 
+static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regular_grids() {
+    return new ProcessingT<double>([](grib_handle* h, double& we) {
+
+        long iScansPositively = 0L;
+        GRIB_CALL(grib_get_long(h, "iScansPositively", &iScansPositively));
+        ASSERT(iScansPositively == 1L);
+
+        ASSERT(GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we)));
+        ASSERT(we > 0.);
+
+        double Lon1 = 0.;
+        double Lon2 = 0.;
+        GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &Lon1));
+        GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
+
+        Lon2 = LongitudeDouble(Lon2).normalise(Lon1).value();
+        ASSERT(Lon2 >= Lon1);
+
+        // angles are within +-1/2 precision, so (Lon2 - Lon1 + we) uses factor 3*1/2
+        double eps = 0.;
+        std::unique_ptr<Processing> precision_in_degrees(inverse("angularPrecision"));
+        ASSERT(precision_in_degrees->eval(h, eps));
+        eps *= 1.5;
+
+        double globe = LongitudeDouble::GLOBE.value();
+        if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
+            long Ni = 0;
+            GRIB_CALL(grib_get_long(h, "Ni", &Ni));
+            ASSERT(Ni > 0);
+
+            we = globe / Ni;
+        }
+
+        return true;
+    });
+};
+
 static ProcessingT<double>* divide(const char *key, double denominator) {
     ASSERT(!eckit::types::is_approximately_equal<double>(denominator, 0));
     return new ProcessingT<double>([=](grib_handle* h, double& value) {
@@ -391,14 +443,23 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
 
         {"angularPrecisionInDegrees", inverse("angularPrecision"), nullptr},
         {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
+        {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids", iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
 
         {"xDirectionGridLengthInMetres", divide("xDirectionGridLengthInMillimetres", 1000.), nullptr},
         {"yDirectionGridLengthInMetres", divide("yDirectionGridLengthInMillimetres", 1000.), nullptr},
         {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.), nullptr},
         {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.), nullptr},
 
-        { "grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
-          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll")) },
+        {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
+         _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
+        {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
+         is("gridType", "lambert_azimuthal_equal_area")},
+        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
+         is("gridType", "lambert")},
+
+        { "rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
+        _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")),
+                    is("gridType", "rotated_sh")), is("gridType", "reduced_rotated_gg"))},
 
         {"is_wind_component_uv", is_wind_component_uv(), nullptr},
         {"is_wind_component_vod", is_wind_component_vod(), nullptr},
@@ -613,9 +674,12 @@ bool GribInput::has(const std::string& name) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
-    bool    ok = grib_is_defined(grib_, key);
+    bool ok = grib_is_defined(grib_, key);
 
     // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
     return ok;
@@ -626,9 +690,13 @@ bool GribInput::get(const std::string& name, bool& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     long temp = GRIB_MISSING_LONG;
-    const char *key = get_key(name, grib_);
-    int err = grib_get_long(grib_, key, &temp);
+    int err   = grib_get_long(grib_, key, &temp);
 
     if (err == GRIB_NOT_FOUND || temp == GRIB_MISSING_LONG) {
         return FieldParametrisation::get(name, value);
@@ -661,7 +729,11 @@ bool GribInput::get(const std::string& name, long& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     int err = grib_get_long(grib_, key, &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
@@ -694,7 +766,11 @@ bool GribInput::get(const std::string& name, double& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     int err = grib_get_double(grib_, key, &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
@@ -731,7 +807,10 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     size_t count = 0;
     int err = grib_get_size(grib_, key, &count);
@@ -788,7 +867,10 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     char buffer[10240];
     size_t size = sizeof(buffer);
@@ -823,7 +905,10 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     if (get_value(key, grib_, value)) {
         return true;
@@ -865,12 +950,9 @@ bool GribInput::handle(grib_handle *h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     FieldParametrisation::reset();
-
     cache_.reset();
 
-    if (grib_) {
-        grib_handle_delete(grib_);
-    }
+    grib_handle_delete(grib_);
     grib_ = h;
 
     if (h != nullptr) {
@@ -911,9 +993,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
         grib_handle_delete(h);
     } catch (...) {
-        if (h) {
-            grib_handle_delete(h);
-        }
+        grib_handle_delete(h);
         throw;
     }
 }
@@ -960,7 +1040,7 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    grib_keys_iterator *keys =  grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    grib_keys_iterator *keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     const char *sep = "";

@@ -12,8 +12,11 @@
 #include "mir/method/knn/distance/GaussianDistanceWeighting.h"
 
 #include <cmath>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/api/Atlas.h"
 #include "mir/param/MIRParametrisation.h"
 

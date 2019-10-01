@@ -18,7 +18,9 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
+#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {
@@ -39,7 +41,7 @@ private:
     virtual bool sameAs(const Method& other) const;
     virtual const distance::DistanceWeighting& distanceWeighting() const;
 
-    eckit::ScopedPtr<const distance::DistanceWeighting> distanceWeighting_;
+    std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;
 
 };
 

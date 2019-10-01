@@ -12,17 +12,20 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/SetMetadata.h"
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/types/Types.h"
+#include "eckit/utils/Tokenizer.h"
+#include "eckit/utils/Translator.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
 
-#include "eckit/utils/Tokenizer.h"
-#include "eckit/types/Types.h"
-#include "eckit/utils/Translator.h"
 
 namespace mir {
 namespace action {
@@ -42,9 +45,9 @@ SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
     std::vector<std::string> v;
     parse1(metadata, v);
 
-    for (auto j = v.begin(); j != v.end(); ++j) {
+    for (auto& j : v) {
         std::vector<std::string> w;
-        parse2(*j, w);
+        parse2(j, w);
         ASSERT(w.size() == 2);
 
         metadata_[w[0]] = s2l(w[1]);

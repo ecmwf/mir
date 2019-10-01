@@ -58,7 +58,7 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     const repres::Representation* representation(field.representation());
     ASSERT(representation);
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+    std::unique_ptr<repres::Iterator> iter(representation->iterator());
 
     std::vector<double> scale(N);
     for (auto& s : scale) {

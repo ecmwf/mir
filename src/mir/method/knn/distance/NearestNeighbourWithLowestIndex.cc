@@ -11,8 +11,11 @@
 
 #include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
+
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -21,7 +24,13 @@ namespace knn {
 namespace distance {
 
 
-NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MIRParametrisation&) {
+NearestNeighbourWithLowestIndex::NearestNeighbourWithLowestIndex(const param::MIRParametrisation& parametrisation) {
+
+    distanceTolerance_ = 1.;
+    parametrisation.get("distance-tolerance", distanceTolerance_);
+    ASSERT(distanceTolerance_ >= 0.);
+
+    distanceTolerance2_ = distanceTolerance_ * distanceTolerance_;
 }
 
 
@@ -39,7 +48,7 @@ void NearestNeighbourWithLowestIndex::operator()(
     const double d2 = Point3::distance2(point, neighbours.front().point());
 
     for (size_t j = 1; j < nbPoints; ++j) {
-        if (eckit::types::is_strictly_greater(Point3::distance2(point, neighbours[j].point()), d2)) {
+        if (eckit::types::is_strictly_greater(Point3::distance2(point, neighbours[j].point()), d2, distanceTolerance2_)) {
             break;
         }
         if (jp > neighbours[j].payload()) {
@@ -53,12 +62,14 @@ void NearestNeighbourWithLowestIndex::operator()(
 
 bool NearestNeighbourWithLowestIndex::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
-    return o;
+    return o && eckit::types::is_approximately_equal(distanceTolerance_, o->distanceTolerance_);
 }
 
 
 void NearestNeighbourWithLowestIndex::print(std::ostream& out) const {
-    out << "NearestNeighbourWithLowestIndex[]";
+    out << "NearestNeighbourWithLowestIndex["
+            "distanceTolerance=" << distanceTolerance_
+        << "]";
 }
 
 

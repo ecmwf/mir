@@ -13,8 +13,10 @@
 /// @date Apr 2015
 
 
+#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/types/Types.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"

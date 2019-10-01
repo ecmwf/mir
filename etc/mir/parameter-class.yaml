@@ -1014,7 +1014,8 @@ intensity:
 - 150172  # Surface solar radiation
 - 150180  # Diagnosed sea surface temperature error
 - 150182  # Observed sea surface temperature
-- 151127  # Mean sea water potential temperature in the upper 300 m
+- 151126  # Mean sea water potential temperature in the upper 300 m
+- 151127  # Mean sea water temperature in the upper 300 m
 - 151128  # In situ Temperature
 - 151129  # Ocean potential temperature
 - 151130  # Salinity
@@ -1561,7 +1562,7 @@ intensity:
 - 215175  # Sulphur dioxide optical depth
 - 215176  # Total absorption aerosol optical depth at 2130 nm
 - 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
-- 215203  # Fine-mode nitrate aerosol optical depth at 550nm 
+- 215203  # Fine-mode nitrate aerosol optical depth at 550nm
 - 215204  # Coarse-mode nitrate aerosol optical depth at 550nm
 - 228001  # Convective inhibition
 - 228002  # Orography
@@ -1823,6 +1824,13 @@ intensity:
 - 260507  # Ocean Heat Content
 - 260510  # Cloudy brightness temperature
 - 260511  # Clear-sky brightness temperature
+- 260540  # Forest fire weather index
+- 260541  # Fine fuel moisture code
+- 260542  # Duff moisture code
+- 260543  # Drought code
+- 260544  # Initial fire spread index
+- 260545  # Fire buildup index
+- 260546  # Fire daily severity rating
 - 260550  # Cloudy radiance (with respect to wave number)
 - 260551  # Clear-sky radiance (with respect to wave number)
 - 260552  # Wind speed
@@ -5711,4 +5719,11 @@ unknown.reserved:
 - 151193  # Reserved
 - 200024  # Reserved for future unbalanced components
 - 200025  # Reserved for future unbalanced components
+
+unknown.to-classify-from-dgov:
+- 228070  # SMOS observed soil moisture retrieved using neural network
+- 228071  # SMOS observed soil moisture uncertainty retrieved using neural network
+- 228072  # SMOS radio frequency interference probability
+- 228073  # SMOS number of observations per grid point
+- 228074  # SMOS observation time for the satellite soil moisture data
 

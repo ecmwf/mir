@@ -29,6 +29,8 @@ struct NearestNeighbourWithLowestIndex : DistanceWeighting {
             const std::vector<search::PointSearch::PointValueType>& neighbours,
             std::vector<WeightMatrix::Triplet>& triplets) const;
 private:
+    double distanceTolerance_;
+    double distanceTolerance2_;
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;

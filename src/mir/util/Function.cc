@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   Function.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   April 2016
+/// @author Pedro Maciel
+/// @date April 2016
 
 
 #include "mir/util/Function.h"
@@ -46,7 +46,6 @@ static void init() {
 
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 Function::Function(const std::string& name):
     name_(name) {
@@ -58,6 +57,7 @@ Function::Function(const std::string& name):
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
+
 
 Function::~Function() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -85,7 +85,6 @@ const Function& Function::lookup(const std::string &name) {
     return *(*j).second;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir

@@ -31,7 +31,6 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
-
 namespace mir {
 namespace action {
 
@@ -97,7 +96,7 @@ void AreaCropper::crop(
 
     // Iterator is "unrotated", because the cropping area
     // is expressed in before the rotation is applied
-    eckit::ScopedPtr<repres::Iterator> iter(repres.iterator());
+    std::unique_ptr<repres::Iterator> iter(repres.iterator());
 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();
@@ -289,6 +288,19 @@ void AreaCropper::execute(context::Context& ctx) const {
         field.representation(cropped);
         field.update(result, i, field.hasMissing());
     }
+}
+
+
+void AreaCropper::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+
+    repres::RepresentationHandle in(ctx.field().representation());
+
+    repres::RepresentationHandle out(in->croppedRepresentation(bbox_));
+
+    estimateNumberOfGridPoints(ctx, estimation, *out);
+    estimateMissingValues(ctx, estimation, *out);
+
+    ctx.field().representation(out);
 }
 
 

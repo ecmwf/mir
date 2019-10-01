@@ -20,17 +20,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ecbuild_add_option( FEATURE MIR_TOOLS          DEFAULT OFF DESCRIPTION "install mir tools" )
 ecbuild_add_option( FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files" )
-                                             
+
 ecbuild_add_option( FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions" )
 ecbuild_add_option( FEATURE OMP                DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
 ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
-
-ecbuild_use_package( PROJECT eccodes VERSION 2.12.0 REQUIRED )
-ecbuild_use_package( PROJECT eckit   VERSION 0.24.0 REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.17.2 )
-#ecbuild_use_package( PROJECT metkit  VERSION  0.7.0 )
+ecbuild_use_package( PROJECT eccodes VERSION 2.12 REQUIRED )
+ecbuild_use_package( PROJECT eckit   VERSION 1.4  REQUIRED )
+ecbuild_use_package( PROJECT atlas   VERSION 0.17.2 REQUIRED )
+#ecbuild_use_package( PROJECT metkit  VERSION  0.7 )
 
 if(ECCODES_FOUND)
     set(HAVE_ECCODES 1)
@@ -38,6 +38,10 @@ endif()
 
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
+endif()
+
+if(HAVE_PNG)
+    add_definitions(${PNG_DEFINITIONS})
 endif()
 
 

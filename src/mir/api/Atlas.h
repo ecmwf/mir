@@ -23,12 +23,11 @@
 #ifdef HAVE_ATLAS
 
 #include "atlas/grid.h"
-#include "atlas/library/config.h"
 #include "atlas/library/Library.h"
+#include "atlas/library/config.h"
 #include "atlas/mesh.h"
 #include "atlas/meshgenerator.h"
 #include "atlas/option/Options.h"
-#include "atlas/projection/Projection.h"
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"

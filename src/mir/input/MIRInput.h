@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date April 2015
 
 
@@ -21,11 +20,9 @@
 #include <string>
 #include <iosfwd>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 // Forward declaration only, not need for grib_api
-typedef struct grib_handle grib_handle;
+using grib_handle = struct grib_handle;
 
 
 namespace mir {
@@ -42,13 +39,21 @@ namespace mir {
 namespace input {
 
 
-class MIRInput : private eckit::NonCopyable {
+class MIRInput {
 
 protected:
+
+    // -- Constructors
 
     MIRInput();
 
 public:
+
+    // -- Constructors
+
+    MIRInput(const MIRInput&) = delete;
+
+    // -- Destructor
 
     virtual ~MIRInput();
 
@@ -56,7 +61,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const MIRInput&) = delete;
 
     // -- Methods
 

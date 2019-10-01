@@ -12,7 +12,10 @@
 #include "mir/style/intgrid/Source.h"
 
 #include <iostream>
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/style/SpectralOrder.h"
 
@@ -29,7 +32,7 @@ static IntgridBuilder< Source > __intgrid2("SOURCE");
 Source::Source(const param::MIRParametrisation& parametrisation, long) :
     style::Intgrid(parametrisation) {
 
-    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
+    std::unique_ptr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
     long T = 0;

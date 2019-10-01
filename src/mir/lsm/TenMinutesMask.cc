@@ -16,13 +16,15 @@
 
 #include "TenMinutesMask.h"
 
-#include "eckit/io/StdFile.h"
+#include <memory>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/AutoCloser.h"
+#include "eckit/io/StdFile.h"
 #include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
@@ -92,7 +94,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());
 
-    eckit::ScopedPtr<repres::Iterator> iter(representation.iterator());
+    std::unique_ptr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
         const auto& p = iter->pointUnrotated();
         Latitude lat = p.lat();

@@ -35,32 +35,16 @@ Method::Method(const param::MIRParametrisation &params) :
 Method::~Method() = default;
 
 
-bool Method::canCrop() const {
-    return false;
-}
-
-void Method::setCropping(const mir::util::BoundingBox&) {
-    NOTIMP;
-}
-
-bool Method::hasCropping() const {
-    return false;
-}
-
-const util::BoundingBox& Method::getCropping() const {
-    NOTIMP;
-}
-
 //=========================================================================
 
 
 namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = 0;
-static std::map< std::string, MethodFactory* >* m = 0;
+static pthread_once_t once                      = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                = nullptr;
+static std::map<std::string, MethodFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, MethodFactory* >();
+    m           = new std::map<std::string, MethodFactory*>();
 }
 }  // (anonymous namespace)
 

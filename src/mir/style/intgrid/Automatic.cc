@@ -11,8 +11,10 @@
 
 #include "mir/style/intgrid/Automatic.h"
 
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/memory/ScopedPtr.h"
+
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"

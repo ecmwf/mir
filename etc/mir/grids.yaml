@@ -1,0 +1,24 @@
+---
+
+LAEA-EFAS-5km:
+    gridType: lambert_azimuthal_equal_area
+    standardParallelInDegrees: 52.
+    centralLongitudeInDegrees: 10.
+    grid: 5000./5000.
+    gaussianNumber: 1280
+    latitudeOfFirstGridPointInDegrees: 66.982143
+    longitudeOfFirstGridPointInDegrees: -35.034024
+    numberOfPointsAlongXAxis: 1000
+    numberOfPointsAlongYAxis: 950
+
+LAEA-EFAS-5km-proj:
+    gridType: lambert_azimuthal_equal_area
+    proj: +proj=laea +lat_0=52 +lon_0=10 +ellps=GRS80 +units=m +no_defs
+    shapeOfTheEarth: 4
+    grid: 5000./5000.
+    gaussianNumber: 1280
+    latitudeOfFirstGridPointInDegrees: 66.982143
+    longitudeOfFirstGridPointInDegrees: -35.034024
+    numberOfPointsAlongXAxis: 1000
+    numberOfPointsAlongYAxis: 950
+

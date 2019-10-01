@@ -13,15 +13,15 @@
 /// @date Apr 2015
 
 
-#ifndef MIRJob_H
-#define MIRJob_H
+#ifndef mir_api_MIRJob_h
+#define mir_api_MIRJob_h
 
+#include <memory>
 #include <string>
-
 
 #include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
-#include "eckit/memory/ScopedPtr.h"
+
 
 namespace mir {
 namespace input {
@@ -39,6 +39,7 @@ class MIRStatistics;
 namespace mir {
 namespace api {
 
+class MIREstimation;
 
 class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
 public:
@@ -63,18 +64,18 @@ public:
     // -- Methods
 
     void execute(input::MIRInput&, output::MIROutput&) const;
-    void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics& statistics) const;
+    void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
 
-    using SimpleParametrisation::has;
+    void estimate(input::MIRInput&, output::MIROutput&, MIREstimation& ) const;
 
-    MIRJob& set(const std::string &name, const std::string &value);
-    MIRJob& set(const std::string &name, const char *value);
-    MIRJob& set(const std::string &name, float value);
-    MIRJob& set(const std::string &name, double value);
-    MIRJob& set(const std::string &name, int value);
-    MIRJob& set(const std::string &name, long value);
-    MIRJob& set(const std::string &name, long long value);
-    MIRJob& set(const std::string &name, bool value);
+    MIRJob& set(const std::string& name, const std::string &value);
+    MIRJob& set(const std::string& name, const char *value);
+    MIRJob& set(const std::string& name, float value);
+    MIRJob& set(const std::string& name, double value);
+    MIRJob& set(const std::string& name, int value);
+    MIRJob& set(const std::string& name, long value);
+    MIRJob& set(const std::string& name, long long value);
+    MIRJob& set(const std::string& name, bool value);
     MIRJob& set(const std::string& name, size_t value);
 
     MIRJob& set(const std::string& name, const std::vector<int>& value);
@@ -128,6 +129,7 @@ protected:
 private:
 
     // -- Members
+    // None
 
     // -- Methods
 
@@ -139,8 +141,7 @@ private:
 
     // -- Overridden methods
 
-    // From MIRParametrisation
-
+    // From SimpleParametrisation
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -160,4 +161,3 @@ private:
 
 
 #endif
-

@@ -17,6 +17,7 @@
 
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -72,6 +73,11 @@ const util::BoundingBox& Gridded::boundingBox() const {
 
 bool Gridded::getLongestElementDiagonal(double&) const {
     return false;
+}
+
+void Gridded::estimate(api::MIREstimation& estimation) const {
+    estimation.packing("grid_simple"); // Will be overriden
+    estimation.representation(factory());
 }
 
 

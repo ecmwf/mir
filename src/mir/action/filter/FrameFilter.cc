@@ -22,6 +22,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/data/MIRField.h"
+#include "mir/api/MIREstimation.h"
 
 namespace mir {
 namespace action {
@@ -72,6 +73,18 @@ void FrameFilter::execute(context::Context & ctx) const {
 const char* FrameFilter::name() const {
     return "FrameFilter";
 }
+
+void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+
+    MIRValuesVector dummy;
+
+    size_t count = field.representation()->frame(dummy, size_, 0, true);
+
+    estimation.missingValues(count);
+}
+
 
 
 namespace {

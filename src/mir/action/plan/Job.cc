@@ -15,11 +15,7 @@
 
 #include "mir/action/plan/Job.h"
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
-#include "eckit/config/Configuration.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
@@ -27,26 +23,15 @@
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
-#include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/style/MIRStyle.h"
+#include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
 namespace action {
-
-
-bool postProcessingRequested(const api::MIRJob& job) {
-    using keys_t = std::vector<std::string>;
-
-    auto& config = LibMir::instance().configuration();
-    static const keys_t keys = config.getStringVector("post-process");
-
-    return keys.end() != std::find_if(keys.begin(), keys.end(), [&job](const keys_t::value_type& key) {
-        return job.has(key);
-    });
-}
 
 
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
@@ -61,15 +46,22 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // skip preparing an Action plan if nothing to do, or
     // input is already what was specified
 
-    if (!postProcessingRequested(job)) {
+    bool postProcessingRequested = false;
+    for (auto& keyword : LibMir::instance().postProcess()) {
+        if (job.has(keyword)) {
+            postProcessingRequested = true;
+            break;
+        }
+    }
+
+    if (!postProcessingRequested) {
         if (job.empty() || job.matches(metadata)) {
             plan_.reset(new action::ActionPlan(job));
             plan_->add(new action::io::Copy(job, output_));
             ASSERT(plan_->ended());
 
             if (eckit::Log::debug<LibMir>()) {
-                eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-                plan_->dump(eckit::Log::debug<LibMir>());
+                plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
             }
 
             return;
@@ -79,7 +71,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    eckit::ScopedPtr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+    std::unique_ptr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_, input_, output_);
     ASSERT(plan_->ended());
 
@@ -88,8 +80,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     }
 
     if (eckit::Log::debug<LibMir>()) {
-        eckit::Log::debug<LibMir>() << "Action plan is: " << std::endl;
-        plan_->dump(eckit::Log::debug<LibMir>());
+        plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
     }
 }
 
@@ -104,6 +95,14 @@ void Job::execute(util::MIRStatistics &statistics) const {
     plan_->execute(ctx);
 }
 
+
+void Job::estimate(api::MIREstimation &estimation) const {
+    ASSERT(plan_);
+
+    util::MIRStatistics statistics;
+    context::Context ctx(input_, statistics);
+    plan_->estimate(ctx, estimation);
+}
 
 const ActionPlan &Job::plan() const {
     return *plan_;

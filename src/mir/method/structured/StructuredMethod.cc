@@ -14,8 +14,8 @@
 
 #include <memory>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -67,13 +67,13 @@ void StructuredMethod::normalise(triplet_vector_t& triplets) const {
 
     // sum all calculated weights for normalisation
     double sum = 0.;
-    for (const eckit::linalg::Triplet& t : triplets) {
+    for (const auto& t : triplets) {
         sum += t.value();
     }
 
     // now normalise all weights according to the total
-    const double invSum = 1.0 / sum;
-    for (eckit::linalg::Triplet& t : triplets) {
+    const double invSum = 1. / sum;
+    for (auto& t : triplets) {
         t.value() *= invSum;
     }
 }
@@ -85,7 +85,7 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     minimum = 0;
     maximum = 0;
 
-    eckit::ScopedPtr<repres::Iterator> it(r.iterator());
+    std::unique_ptr<repres::Iterator> it(r.iterator());
     size_t i = 0;
 
     while (it->next()) {

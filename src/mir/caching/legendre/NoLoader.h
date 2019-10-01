@@ -11,21 +11,20 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
-#ifndef mir_caching_NoLoader_H
-#define mir_caching_NoLoader_H
+
+#ifndef mir_caching_legendre_NoLoader_h
+#define mir_caching_legendre_NoLoader_h
 
 #include "mir/caching/legendre/LegendreLoader.h"
+
 
 namespace mir {
 namespace caching {
 namespace legendre {
 
-/// NoLoader turns off loading of coefficients
-/// but will not prevent the creation of the file
-
+/// NoLoader turns off loading of coefficients but will not prevent the creation of the file
 class NoLoader : public LegendreLoader {
 public:
     NoLoader(const param::MIRParametrisation&, const eckit::PathName& path);
@@ -45,8 +44,11 @@ private:
 
 };
 
-} // namespace legendre
-} // namespace caching
-} // namespace mir
+
+}  // namespace legendre
+}  // namespace caching
+}  // namespace mir
+
 
 #endif
+

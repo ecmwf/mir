@@ -62,6 +62,8 @@ public:
 
     static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
 
+    static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+
     // -- Overridden methods
     // None
 
@@ -142,13 +144,15 @@ private:
 
     virtual void fill(util::MeshGeneratorParameters&) const;
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate=false) const;
 
     virtual void reorder(long scanningMode, MIRValuesVector& values) const;
 
     virtual void validate(const MIRValuesVector&) const;
 
     virtual const LatLon* croppedRepresentation(const util::BoundingBox&) const;
+
+    virtual bool extendBoundingBoxOnIntersect() const;
 
     // -- Class members
     // None

@@ -85,7 +85,7 @@ private:
 
     // -- Methods
 
-    virtual void out(const void* message, size_t length, bool iterpolated) = 0;
+    virtual void out(const void* message, size_t length, bool interpolated) = 0;
 
     // -- Overridden methods
 
@@ -95,6 +95,7 @@ private:
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
+    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Class members
     // None

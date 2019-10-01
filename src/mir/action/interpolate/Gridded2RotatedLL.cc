@@ -29,22 +29,22 @@ namespace interpolate {
 
 
 Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation) {
+    Gridded2RotatedGrid(parametrisation),
+    reference_(0, 0) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("grid", value));
+    ASSERT(parametrisation_.get("grid", value));
 
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
-    PointLatLon ref(0, 0);
     if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
-        ref = PointLatLon(bbox_.south(), bbox_.west());
+        reference_ = PointLatLon(bbox_.south(), bbox_.west());
     }
 
-    repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, ref);
+    repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
     eckit::Log::debug<LibMir>()
             << "Gridded2RotatedLL: globalise:"
@@ -75,9 +75,8 @@ void Gridded2RotatedLL::print(std::ostream& out) const {
 }
 
 
-const repres::Representation *Gridded2RotatedLL::outputRepresentation() const {
-    const PointLatLon ref(bbox_.south(), bbox_.west());
-    return new repres::latlon::RotatedLL(increments_, rotation(), bbox_, ref);
+const repres::Representation* Gridded2RotatedLL::outputRepresentation() const {
+    return new repres::latlon::RotatedLL(increments_, rotation(), bbox_, reference_);
 }
 
 

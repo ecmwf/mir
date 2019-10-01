@@ -11,11 +11,14 @@
 // Baudouin Raoult - ECMWF Jan 2015
 
 
-#ifndef mir_netcdf_Field
-#define mir_netcdf_Field
+#ifndef mir_netcdf_Field_h
+#define mir_netcdf_Field_h
 
+#include <cstddef>
 #include <iosfwd>
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+#include <string>
+
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -74,7 +77,7 @@ private:
 
 
 
-    mutable eckit::ScopedPtr<GridSpec> gridSpec_;
+    mutable std::unique_ptr<GridSpec> gridSpec_;
 
     // - Methods
 

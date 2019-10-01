@@ -85,6 +85,7 @@ protected:
 
     virtual void print(std::ostream&) const = 0;
     virtual bool sameAs(const Action& other) const = 0;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
     // -- Class members
     // None

@@ -20,8 +20,9 @@
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/compare/BufrField.h"
@@ -315,25 +316,17 @@ Field FieldComparator::getField(eckit::Buffer& buffer,
                                 const std::string& path,
                                 off_t offset,
                                 size_t size) {
-    const char *q = ((const char*)buffer);
-    const char *p = ((const char*)buffer) + size - 4;
-
-    if (p[0] != '7' || p[1] != '7' || p[2] != '7' || p[3] != '7') {
-        throw eckit::SeriousBug("No 7777 found");
+    if (GRIB_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_GRIB) &&
+        GRIB_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_GRIB)) {
+        return GribField::field(buffer, size, path, offset, ignore_);
     }
 
-
-    Field field;
-    if (q[0] == 'G' && q[1] == 'R' && q[2] == 'I' && q[3] == 'B') {
-        field  = GribField::field(buffer, size, path, offset, ignore_);
+    if (GRIB_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_BUFR) &&
+        GRIB_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_BUFR)) {
+        return BufrField::field(buffer, size, path, offset, ignore_);
     }
 
-    if (q[0] == 'B' && q[1] == 'U' && q[2] == 'F' && q[3] == 'R') {
-        field  = BufrField::field(buffer, size, path, offset, ignore_);
-    }
-
-    ASSERT(field);
-    return field;
+    throw eckit::SeriousBug("No message found (codes_check_message_header|footer(PRODUCT_GRIB|PRODUCT_BUFR))");
 }
 
 
@@ -408,6 +401,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
     for (auto p = multi.paths().begin(); p != multi.paths().end(); ++p) {
 
         int err;
+        off_t pos;
         size_t size = buffer.size();
 
         eckit::AutoStdFile f(*p);
@@ -416,7 +410,8 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
             try {
                 GRIB_CALL(err);
-                getField(multi, buffer, fields, *p, ftello(f) - size, size, true, duplicates);
+                SYSCALL(pos = ::ftello(f));
+                getField(multi, buffer, fields, *p, pos - size, size, true, duplicates);
             } catch (std::exception& e) {
                 eckit::Log::info() << "Error in " << *p << " " << e.what() << std::endl;
                 error("exceptions");
@@ -438,6 +433,7 @@ size_t FieldComparator::list(const std::string& path) {
     size_t result = 0;
 
     int err;
+    off_t pos;
     size_t size = buffer.size();
     size_t duplicates = 0;
 
@@ -447,7 +443,8 @@ size_t FieldComparator::list(const std::string& path) {
 
         try {
             GRIB_CALL(err);
-            getField(multi, buffer, fields, path, ftello(f) - size, size, false, duplicates);
+            SYSCALL(pos = ::ftello(f));
+            getField(multi, buffer, fields, path, pos - size, size, false, duplicates);
         } catch (std::exception& e) {
             eckit::Log::info() << "Error in " << path << " " << e.what() << std::endl;
         }
@@ -469,13 +466,15 @@ void FieldComparator::json(eckit::JSON& json, const std::string& path) {
     eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
     int err;
+    off_t pos;
     size_t size = buffer.size();
 
     eckit::AutoStdFile f(path);
     while ( (err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE ) {
 
         GRIB_CALL(err);
-        Field field = getField(buffer, path, ftello(f) - size, size);
+        SYSCALL(pos = ::ftello(f));
+        Field field = getField(buffer, path, pos - size, size);
 
         json << field;
 
@@ -524,7 +523,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     eckit::AutoStdFile& f = open(field.path());
     size_t size = buffer.size();
-    fseek(f, field.offset(), SEEK_SET);
+    SYSCALL(fseek(f, field.offset(), SEEK_SET));
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
     ASSERT(size == field.length());
 

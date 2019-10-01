@@ -81,7 +81,7 @@ struct OutputFromExtension : public MIROutputFactory {
         }
     }
 
-    OutputFromExtension() : MIROutputFactory("extension", {}) {
+    OutputFromExtension() : MIROutputFactory("extension") {
     }
 
     ~OutputFromExtension() {
@@ -163,6 +163,12 @@ void MIROutputFactory::list(std::ostream& out) {
 
 void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
     // do nothing
+}
+
+void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
+    std::ostringstream oss;
+    oss << "MIROutput::estimate not implemented for " << *this;
+    throw eckit::SeriousBug(oss.str());
 }
 
 

@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
 
@@ -43,6 +42,7 @@
 #include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -61,10 +61,10 @@ static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient",
 
 
 static atlas::trans::Cache getTransCache(
-        atlas::trans::LegendreCacheCreator& creator,
-        const std::string& key,
-        const param::MIRParametrisation& parametrisation,
-        context::Context& ctx ) {
+    atlas::trans::LegendreCacheCreator& creator,
+    const std::string& key,
+    const param::MIRParametrisation& parametrisation,
+    context::Context& ctx ) {
 
 
     caching::InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
@@ -94,14 +94,15 @@ static atlas::trans::Cache getTransCache(
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
+                eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
                 creator_.create(path);
 
                 saved = path.exists();
             }
         public:
             LegendreCacheCreator(
-                        atlas::trans::LegendreCacheCreator& creator,
-                        context::Context& ctx ) :
+                atlas::trans::LegendreCacheCreator& creator,
+                context::Context& ctx ) :
                 creator_(creator),
                 ctx_(ctx) {
             }
@@ -119,10 +120,12 @@ static atlas::trans::Cache getTransCache(
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load Legendre coefficients");
+        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: loading Legendre coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
-        const eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
+        eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
+
+        auto before = eckit::system::SystemInfo::instance().memoryUsage();
 
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
         ASSERT(tc.loader_);
@@ -130,7 +133,7 @@ static atlas::trans::Cache getTransCache(
 
         transCache = tc.loader_->transCache();
 
-        eckit::system::MemoryInfo after = eckit::system::SystemInfo::instance().memoryUsage();
+        auto after = eckit::system::SystemInfo::instance().memoryUsage();
         after.delta(eckit::Log::info(), before);
 
         size_t memory = 0;
@@ -217,10 +220,10 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             ASSERT(creator.supported());
             atlas::trans::Cache transCache = getTransCache(
-                        creator,
-                        key,
-                        parametrisation_,
-                        ctx);
+                                                 creator,
+                                                 key,
+                                                 parametrisation_,
+                                                 ctx);
             ASSERT(transCache);
             trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
 
@@ -302,6 +305,29 @@ void ShToGridded::execute(context::Context& ctx) const {
     }
 }
 
+void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
+
+
+    repres::RepresentationHandle out(cropping_
+                                     ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
+                                     : outputRepresentation());
+
+
+
+    std::unique_ptr<repres::Iterator> iter(out->iterator());
+
+    size_t cnt = 0;
+    while (iter->next()) {
+        cnt++;
+    }
+
+    estimation.numberOfGridPoints(cnt);
+
+    ctx.field().representation(out);
+
+}
+
+
 
 bool ShToGridded::mergeWithNext(const Action& next) {
 
@@ -326,7 +352,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
         // Magic super-powers!
         repres::RepresentationHandle out(outputRepresentation());
-        cropping_.boundingBox(out->extendedBoundingBox(bbox));
+        cropping_.boundingBox(out->extendBoundingBox(bbox));
 
         eckit::Log::debug<LibMir>()
                 << "ShToGridded::mergeWithNext: "

@@ -33,7 +33,7 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
     reference_(0, 0) {
 
     std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("grid", value));
+    ASSERT(parametrisation_.get("grid", value));
 
     ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);

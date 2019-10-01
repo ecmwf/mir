@@ -16,8 +16,10 @@
 #include "mir/api/MIRJob.h"
 
 #include <iostream>
-#include "eckit/log/Plural.h"
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Tokenizer.h"
+
 #include "mir/action/plan/Job.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -30,8 +32,7 @@ namespace mir {
 namespace api {
 
 
-MIRJob::MIRJob() {
-}
+MIRJob::MIRJob() = default;
 
 
 MIRJob::~MIRJob() = default;
@@ -50,6 +51,11 @@ void MIRJob::execute(input::MIRInput& input, output::MIROutput& output) const {
     util::MIRStatistics statistics;
     execute(input, output, statistics);
 }
+
+void MIRJob::estimate(input::MIRInput& input, output::MIROutput& output, MIREstimation& estimation) const {
+    action::Job(*this, input, output, true).estimate(estimation);
+}
+
 
 
 void MIRJob::print(std::ostream& out) const {

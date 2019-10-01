@@ -42,6 +42,7 @@ class Iterator;
 namespace util {
 class BoundingBox;
 class Domain;
+class GridBox;
 class MeshGeneratorParameters;
 }
 
@@ -57,6 +58,10 @@ namespace data {
 class MIRField;
 }
 
+namespace api {
+class MIREstimation;
+}
+
 }
 
 
@@ -66,14 +71,6 @@ namespace repres {
 
 class Representation : public eckit::Counted {
 public:
-
-    // Scanning mode bits
-    enum {
-        iScansNegatively      = 1 << 7,
-        jScansPositively      = 1 << 6,
-        jPointsAreConsecutive = 1 << 5,
-        alternateRowScanning  = 1 << 4
-    };
 
     // -- Exceptions
     // None
@@ -103,12 +100,15 @@ public:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void estimate(api::MIREstimation&) const;
 
     // Return a cropped version
     virtual const Representation* croppedRepresentation(const util::BoundingBox&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
+    virtual bool extendBoundingBoxOnIntersect() const;
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
+
     virtual const Representation* globalise(data::MIRField&) const;
 
     virtual size_t numberOfPoints() const;
@@ -132,6 +132,10 @@ public:
     virtual void setComplexPacking(grib_info&) const;
     virtual void setSimplePacking(grib_info&) const;
     virtual void setGivenPacking(grib_info&) const;
+
+    virtual std::vector<util::GridBox> gridBoxes() const;
+
+    virtual std::string factory() const; // Return factory name
 
     // -- Overridden methods
     // None

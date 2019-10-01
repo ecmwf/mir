@@ -91,10 +91,12 @@ protected:
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
     virtual bool sameAs(const Representation&) const;
-    virtual util::BoundingBox extendedBoundingBox(const util::BoundingBox&) const;
+    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     // from Representation
     virtual bool isPeriodicWestEast() const;
+    virtual void estimate(api::MIREstimation&) const;
+    virtual std::vector<util::GridBox> gridBoxes() const;
 
     // -- Class members
 
@@ -113,9 +115,10 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate=false) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
+    virtual std::string factory() const;
 
     // -- Class members
     // None

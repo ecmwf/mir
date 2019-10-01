@@ -15,7 +15,10 @@
 
 #include "mir/util/GlobaliseUnstructured.h"
 
-#include "eckit/memory/ScopedPtr.h"
+#include <memory>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -67,7 +70,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
 
     // insert global grid points when distant enough from provided grid points
-    eckit::ScopedPtr<repres::Iterator> it(globe->iterator());
+    std::unique_ptr<repres::Iterator> it(globe->iterator());
     while (it->next()) {
         const Point3 p(it->point3D());
         if (Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
@@ -102,7 +105,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
 
     // insert global grid points when outside provided domain
-    eckit::ScopedPtr<repres::Iterator> it(globe->iterator());
+    std::unique_ptr<repres::Iterator> it(globe->iterator());
     while (it->next()) {
         const auto& p = it->pointUnrotated();
         if (!domain.contains(p)) {

@@ -19,7 +19,6 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -32,11 +31,11 @@ class Context;
 namespace input {
 class MIRInput;
 }
-namespace output {
-class MIROutput;
-}
 namespace param {
 class MIRParametrisation;
+}
+namespace api {
+class MIREstimation;
 }
 }
 
@@ -45,7 +44,7 @@ namespace mir {
 namespace output {
 
 
-class MIROutput : private eckit::NonCopyable {
+class MIROutput {
 public:
 
     // -- Exceptions
@@ -54,6 +53,7 @@ public:
     // -- Contructors
 
     MIROutput();
+    MIROutput(const MIROutput&) = delete;
 
     // -- Destructor
 
@@ -63,7 +63,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const MIROutput&) = delete;
 
     // -- Methods
 
@@ -73,6 +74,8 @@ public:
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
+
+    virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods
     // None

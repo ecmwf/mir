@@ -25,6 +25,17 @@
 #include "mir/config/LibMir.h"
 #include "mir/util/BoundingBox.h"
 
+// Includes needed for estimate() helper functions
+#include "mir/action/context/Context.h"
+#include "mir/api/MIREstimation.h"
+#include "mir/data/MIRField.h"
+#include "mir/method/Method.h"
+#include "mir/param/CombinedParametrisation.h"
+#include "mir/param/DefaultParametrisation.h"
+#include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
+
+
 
 namespace mir {
 namespace action {
@@ -76,6 +87,51 @@ bool Action::canCrop() const {
 
 util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
+}
+
+void Action::estimate(context::Context&, api::MIREstimation& estimation) const {
+    std::ostringstream oss;
+    oss << "Action::estimate not implemented for " << *this;
+    throw eckit::SeriousBug(oss.str());
+}
+
+
+void Action::estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
+    // eckit::Timer timer("estimateNumberOfGridPoints", std::cerr);
+    estimation.numberOfGridPoints(ctx.field().representation()->numberOfPoints());
+}
+
+
+void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
+    data::MIRField& field = ctx.field();
+    ASSERT(field.dimensions() == 1);
+    if (field.hasMissing()) {
+
+
+        eckit::Timer timer("estimateMissingValues", std::cerr);
+
+        param::DefaultParametrisation runtime;
+        param::CombinedParametrisation combined(runtime, runtime, runtime);
+        std::unique_ptr< method::Method > method(method::MethodFactory::build("nn", combined));
+
+        util::MIRStatistics dummy; // TODO: use the global one
+        context::Context ctx(field, dummy);
+        method->execute(ctx, *field.representation(), out);
+
+
+        size_t missing = 0;
+
+        const MIRValuesVector& values = field.values(0);
+        double missingValue = field.missingValue();
+
+        for(size_t i = 0; i < values.size(); ++i) {
+            if(values[i] == missingValue) {
+                missing++;
+            }
+        }
+
+        estimation.missingValues(missing);
+    }
 }
 
 

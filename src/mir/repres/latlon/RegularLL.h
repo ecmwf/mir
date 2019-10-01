@@ -82,6 +82,10 @@ private:
 
     // From Representation
     const RegularLL* croppedRepresentation(const util::BoundingBox&) const;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
+    std::vector<util::GridBox> gridBoxes() const;
+
+    virtual std::string factory() const;
 
     // -- Class members
     // None

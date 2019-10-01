@@ -24,6 +24,7 @@ struct grib_info;
 
 namespace atlas {
 class Grid;
+class Projection;
 }
 namespace mir {
 namespace api {
@@ -92,7 +93,7 @@ public:
     // -- Methods
 
     atlas::Grid rotate(const atlas::Grid&) const;
-    util::BoundingBox rotate(const util::BoundingBox&) const;
+    util::BoundingBox boundingBox(const util::BoundingBox&) const;
 
     const Latitude& south_pole_latitude() const {
         return south_pole_latitude_;
@@ -126,7 +127,8 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
+    atlas::Projection atlasProjection() const;
 
     // -- Overridden methods
     // None

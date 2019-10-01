@@ -17,6 +17,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
 
 
@@ -24,20 +25,16 @@ namespace mir {
 namespace data {
 
 
-Space::Space() {
-}
+Space::Space() = default;
 
 
 Space::~Space() = default;
 
 
-//=========================================================================
-
-
 namespace {
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, SpaceChooser* >* m = 0;
+static eckit::Mutex* local_mutex = nullptr;
+static std::map< std::string, SpaceChooser* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, SpaceChooser* >();

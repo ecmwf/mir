@@ -16,17 +16,20 @@
 #include "mir/method/knn/KNearestNeighbours.h"
 
 #include <algorithm>
-#include "eckit/log/Plural.h"
-#include "eckit/log/ProgressTimer.h"
+#include <memory>
+
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/TraceTimer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -35,9 +38,12 @@ namespace knn {
 
 
 KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
-    nClosest_ = 4;
-    parametrisation_.get("nclosest", nClosest_);
-    ASSERT(nClosest_);
+
+    std::string name = "nclosest-or-nearest";
+    param.get("nearest-method", name);
+
+    picker_.reset(pick::PickFactory::build(name, param));
+    ASSERT(picker_);
 }
 
 
@@ -47,13 +53,14 @@ KNearestNeighbours::~KNearestNeighbours() = default;
 bool KNearestNeighbours::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearestNeighbours*>(&other);
     return o
-            && (nClosest_ == o->nClosest_)
+            && picker_->sameAs(*(o->picker_))
             && distanceWeighting().sameAs(o->distanceWeighting());
 }
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
-    md5 << nClosest_ << distanceWeighting();
+    md5 << *picker_;
+    md5 << distanceWeighting();
 }
 
 
@@ -74,8 +81,9 @@ void KNearestNeighbours::assemble(
         const repres::Representation& in,
         const repres::Representation& out,
         const distance::DistanceWeighting& distanceWeighting ) const {
+    auto& log = eckit::Log::debug<LibMir>();
 
-    eckit::Log::debug<LibMir>() << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
 
     const size_t nbOutputPoints = out.numberOfPoints();
@@ -84,53 +92,52 @@ void KNearestNeighbours::assemble(
     const util::Domain& inDomain = in.domain();
 
 
-    double nearest = 0;
-    double push_back = 0;
+    double search = 0;
+    double insert = 0;
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    weights_triplets.reserve(nbOutputPoints * nClosest_);
+    weights_triplets.reserve(nbOutputPoints * picker_->n());
 
     std::vector<search::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
 
     {
-        eckit::ProgressTimer progress("Locating", nbOutputPoints, "point", double(5), eckit::Log::debug<LibMir>());
+        Pretty::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
 
-        const eckit::ScopedPtr<repres::Iterator> it(out.iterator());
+        const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
         while (it->next()) {
             ASSERT(ip < nbOutputPoints);
             if (++progress) {
-                eckit::Log::debug<LibMir>() << "KNearestNeighbours: k-d tree closest_n_points: " << nearest << "s, W push back:" << push_back << "s" << std::endl;
-                sptree.statsPrint(eckit::Log::debug<LibMir>(), false);
-                eckit::Log::debug<LibMir>() << std::endl;
-                sptree.statsReset();
-                nearest = push_back = 0;
+                log << "KNearestNeighbours: k-d tree"
+                       "\n" "search: " << search << "s"
+                       "\n" "insert: " << insert << "s"
+                       "\n" << sptree << std::endl;
+                search = insert = 0;
             }
 
             if (inDomain.contains(it->pointRotated())) {
 
-                // get the reference output point
+                // 3D point to lookup
                 Point3 p(it->point3D());
 
-                // 3D point to lookup
+                // search
                 {
                     double t = timer.elapsed();
-                    sptree.closestNPoints(p, nClosest_, closest);
-                    nearest += timer.elapsed() - t;
-                    ASSERT(closest.size() == nClosest_);
+                    picker_->pick(sptree, p, closest);
+                    search += timer.elapsed() - t;
                 }
 
-                // calculate weights from distance
+                // calculate weights
                 distanceWeighting(ip, p, closest, triplets);
                 ASSERT(!triplets.empty());
 
-                // insert the interpolant weights into the global (sparse) interpolant matrix
+                // insert weights into the global (sparse) interpolant matrix
                 {
                     double t = timer.elapsed();
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                    push_back += timer.elapsed() - t;
+                    insert += timer.elapsed() - t;
                 }
 
             }
@@ -151,7 +158,7 @@ void KNearestNeighbours::assemble(
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);
-    out << ",nClosest=" << nClosest_
+    out << ",nearestMethod=" << (*picker_)
         << ",distanceWeighting=" << distanceWeighting()
         << "]";
 }

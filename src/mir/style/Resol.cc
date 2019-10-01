@@ -175,7 +175,7 @@ long Resol::getTargetGaussianNumber() const {
 long Resol::getSourceGaussianNumber() const {
 
     // Set Gaussian N
-    eckit::ScopedPtr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
+    std::unique_ptr<SpectralOrder> spectralOrder(SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
     const long N = spectralOrder->getGaussianNumberFromTruncation(inputTruncation_);

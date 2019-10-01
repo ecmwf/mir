@@ -37,6 +37,9 @@ using util::BoundingBox;
 
 static eckit::Mutex local_mutex;
 
+static std::vector<bool> _yes_no {true, false};
+static std::vector<long> _one_two {1, 2};
+
 namespace {
 
 class EncodeTest {
@@ -84,23 +87,10 @@ protected:
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            class HandleFree {
-                grib_handle* h_;
-
-            public:
-                HandleFree(grib_handle* h) : h_(h) {}
-                HandleFree(const HandleFree&) = delete;
-                void operator=(const HandleFree&) = delete;
-                ~HandleFree() {
-                    if (h_) {
-                        grib_handle_delete(h_);
-                    }
-                }
-            };
-
-            grib_handle* sample = grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
+            grib_handle* sample =
+                grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
             ASSERT(sample);
-            HandleFree sample_detroy(sample);
+            HandleDeleter sample_detroy(sample);
 
             int err = 0;
             int flags = 0;
@@ -134,23 +124,17 @@ protected:
     }
 
 public:
-    EncodeTest(const repres::Representation* rep)
-        : representation_(rep)
-        , grib1Handle_(nullptr)
-        , grib2Handle_(nullptr)
-        , grib1Input_(nullptr)
-        , grib2Input_(nullptr) {}
+    EncodeTest(const repres::Representation* rep) :
+        representation_(rep),
+        grib1Handle_(nullptr),
+        grib2Handle_(nullptr),
+        grib1Input_(nullptr),
+        grib2Input_(nullptr) {}
 
     virtual ~EncodeTest() {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-        if (grib1Handle_) {
-            grib_handle_delete(grib1Handle_);
-        }
-        if (grib2Handle_) {
-            grib_handle_delete(grib2Handle_);
-        }
-
+        grib_handle_delete(grib1Handle_);
+        grib_handle_delete(grib2Handle_);
         delete grib1Input_;
         delete grib2Input_;
     }
@@ -335,8 +319,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         size_t count;
     };
 
-    for (auto& test : {
-
+    std::vector<test_t> _test {
              // pgen
              test_t{"O640", {51.941, 7.005, 43.084, 27.693}, 4512},
              test_t{"O640", {51.9406, 7.00599, 43.0847, 27.6923}, 4443},
@@ -354,10 +337,14 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
              test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
 
              // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
+#if 0
+             // MIR-390: resolution triggers these
              test_t{"O1280", {37.6025, -114.891, 27.7626, -105.188}, 12369},
-             test_t{"O1280", {27.9, 253, 27.8, 254}, 19}, test_t{"O1280", {37.5747, 245.109, 27.8032, 254.812}, 12274},
+             test_t{"O1280", {27.9, 253, 27.8, 254}, 19},
+             test_t{"O1280", {37.5747, 245.109, 27.8032, 254.812}, 12274},
              test_t{"O1280", {37.575, -114.892, 27.803, -105.187}, 12373},
              test_t{"O1280", {37.6025, -114.8915, 27.7626, -105.1875}, 12373},
+#endif
 
              // "almost global"
              // NOTE: this cannot be supported because:
@@ -365,8 +352,9 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
              // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
              // so GRIB1 O1280 fields are actually not correctly encoded
              //         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
+    };
 
-         }) {
+    for (auto& test : _test) {
 
         auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
@@ -389,7 +377,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
         EncodeReducedGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.count, ng.gaussianNumber());
         EncodeTest& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -424,15 +412,15 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
         size_t Nj;
     };
 
-    for (auto& test : {
+    // ECC-445
+    std::vector<test_t> _test {
+        test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
+        test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
+        test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
+        test_t{"F640", {70.9, -40.987, 19.73, 40}, 576, 364},
+    };
 
-             // ECC-445
-             test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
-             test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
-             test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
-             test_t{"F640", {70.9, -40.987, 19.73, 40}, 576, 364},
-
-         }) {
+    for (auto& test : _test) {
 
         auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
@@ -455,7 +443,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
         EncodeRegularGaussianGrid enc(rep->croppedRepresentation(test.bbox), test.Ni, test.Nj, ng.gaussianNumber());
         EncodeRegular& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -481,31 +469,29 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 }
 
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
-
-    using repres::latlon::RegularLL;
-    using util::Increments;
     auto& log = eckit::Log::info();
 
     struct test_t {
-        RepresentationHandle representation;
+        util::Increments increments;
         BoundingBox bbox;
         size_t Ni;
         size_t Nj;
     };
 
-    for (auto& test : {
+    // ECC-445
+    std::vector<test_t> _test {
+        test_t{util::Increments{0.1, 0.1}, {58.5, -6.1, 36, 20.7}, 269, 226},
+    };
 
-             // ECC-445
-             test_t{new RegularLL(Increments(0.1, 0.1)), {58.5, -6.1, 36, 20.7}, 269, 226},
+    for (auto& test : _test) {
+        RepresentationHandle repres(new repres::latlon::RegularLL(test.increments, test.bbox));
 
-         }) {
-
-        log << "Test " << *(test.representation) << " with " << test.bbox << "..." << std::endl;
+        log << "Test " << *repres << " with " << test.bbox << "..." << std::endl;
 
         // Crop to get the smallest possible bounding box
         std::vector<size_t> mapping;
         BoundingBox small(test.bbox);
-        action::AreaCropper::crop(*test.representation, small, mapping);
+        action::AreaCropper::crop(*repres, small, mapping);
 
         size_t n = mapping.size();
         ASSERT(0 < n);
@@ -515,10 +501,10 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
         EXPECT(test.bbox.contains(small));
 
         // GRIB1/GRIB2 encoding
-        EncodeRegularLatLonGrid enc((test.representation)->croppedRepresentation(test.bbox), test.Ni, test.Nj);
+        EncodeRegularLatLonGrid enc(repres->croppedRepresentation(test.bbox), test.Ni, test.Nj);
         EncodeRegular& encode = enc;
 
-        for (long edition : {1, 2}) {
+        for (long edition : _one_two) {
 
             const size_t numberOfValues = encode.numberOfValuesEncodedInGrib(edition);
             log << "\tGRIB" << edition << ": numberOfValues = " << numberOfValues << " (key)" << std::endl;
@@ -544,17 +530,14 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 }
 
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
-
-    using repres::latlon::RegularLL;
-    using util::Increments;
     auto& log = eckit::Log::info();
 
-    RepresentationHandle rep = new RegularLL(Increments(1, 1));
-    log << "Test " << *(rep) << "..." << std::endl;
+    RepresentationHandle repres(new repres::latlon::RegularLL(util::Increments(1, 1)));
+    log << "Test " << *(repres) << "..." << std::endl;
 
     // GRIB1/GRIB2 encoding
-    for (bool remove : {false, true}) {
-        for (long edition : {1, 2}) {
+    for (bool remove : _yes_no) {
+        for (long edition : _one_two) {
             eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
             // initialise a new grib handle from samples
@@ -577,32 +560,18 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // this test!
             info.packing.deleteLocalDefinition = remove ? 1 : 0;
 
-            rep->fill(info);
+            repres->fill(info);
 
-            size_t n = rep->numberOfPoints();
+            size_t n = repres->numberOfPoints();
             ASSERT(n);
             std::vector<double> values(n, 0.);
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            class HandleFree {
-                grib_handle* h_;
-
-            public:
-                HandleFree(grib_handle* h) : h_(h) {}
-                HandleFree(const HandleFree&) = delete;
-                void operator=(const HandleFree&) = delete;
-                ~HandleFree() {
-                    if (h_) {
-                        grib_handle_delete(h_);
-                    }
-                }
-            };
-
-            grib_handle* sample =
-                grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
+            grib_handle* sample = grib_handle_new_from_samples(
+                nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
             ASSERT(sample);
-            HandleFree sample_detroy(sample);
+            HandleDeleter sample_detroy(sample);
 
             int err = 0;
             int flags = 0;
@@ -640,5 +609,5 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 } // namespace mir
 
 int main(int argc, char** argv) {
-    return eckit::testing::run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv);
 }

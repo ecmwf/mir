@@ -16,8 +16,9 @@
 #include "mir/action/misc/CheckerBoard.h"
 
 #include <iostream>
+#include <memory>
 
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
@@ -120,7 +121,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
 
 
         // Assumes iterator scans in the same order as the values
-        eckit::ScopedPtr<repres::Iterator> iter(representation->iterator());
+        std::unique_ptr<repres::Iterator> iter(representation->iterator());
         size_t j = 0;
 
         while (iter->next()) {

@@ -14,11 +14,11 @@
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <memory>
 #include <vector>
 #include <utility>
 
 #include "eckit/log/Log.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
@@ -96,7 +96,7 @@ struct Coordinates {
 struct CoordinatesFromRepresentation : Coordinates {
     CoordinatesFromRepresentation(const mir::repres::Representation& rep) :
         Coordinates("mir") {
-        eckit::ScopedPtr< mir::repres::Iterator > it(rep.iterator());
+        std::unique_ptr< mir::repres::Iterator > it(rep.iterator());
 
         const size_t N(rep.numberOfPoints());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -320,11 +320,13 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
 
+            auto& values = field.values(0);
+
             mir::repres::RepresentationHandle rep(field.representation());
 
             if (!atlas && !ecc && !nclosest) {
-                eckit::ScopedPtr< Iterator > it(rep->iterator());
-                for (const double& v: field.values(0)) {
+                std::unique_ptr< Iterator > it(rep->iterator());
+                for (const double& v: values) {
                     ASSERT(it->next());
                     const Point2& P(**it);
                     log << "\t" << P[0] << '\t' << P[1] << '\t' << v << std::endl;
@@ -336,31 +338,31 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                 continue;
             }
 
-            eckit::ScopedPtr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
+            std::unique_ptr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
 
             if (nclosest) {
                 size_t c = 1;
                 for (auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
                     Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
+                    ASSERT(i < values.size());
 
                     log << "- " << c++ << " -"
-                        << " index=" << i
-                        << " latitude=" << q[1]
-                        << " longitude=" << q[0]
-                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (Km)"
+                        << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
+                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (km)"
+                        << " value=" << values[i]
                         << std::endl;
                 }
             }
 
             bool err = false;
             if (atlas) {
-                eckit::ScopedPtr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
+                std::unique_ptr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
                 err = diff(log, toleranceLat, toleranceLon, *crd, *atl);
             }
 
             if (ecc) {
-                eckit::ScopedPtr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
+                std::unique_ptr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
                 err = diff(log, toleranceLat, toleranceLon, *crd, *ecc) || err;
             }
 

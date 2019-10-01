@@ -60,14 +60,14 @@ public:
 private:
 
     // -- Members
-    
+
     size_t N_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
-    
+
     bool sameAs(const Action&) const;
     const char* name() const;
     const repres::Representation* outputRepresentation() const;

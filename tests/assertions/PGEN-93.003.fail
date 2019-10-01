@@ -1,7 +1,0 @@
-# Different versions of IFS-generated octahedral grids
-# MARS request
-O400.version=3.grib1.ERROR
-# mir
---grid=3/3
-# grib_get assertions
-gridType=regular_ll
