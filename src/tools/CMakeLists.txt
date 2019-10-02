@@ -33,6 +33,7 @@ if(HAVE_ATLAS)
         mir-gaussian-fractions
         mir-get-data
         mir-spectral-transform
+        mir-spectral-transform-points
         mir-triangulate)
 endif()
 
