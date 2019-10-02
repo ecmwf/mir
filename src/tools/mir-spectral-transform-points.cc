@@ -12,15 +12,13 @@
 #include <memory>
 #include <string>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
-#include "atlas/grid.h"
-#include "atlas/option.h"
-#include "atlas/trans/Trans.h"
-
+#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/output/MIROutput.h"
@@ -36,9 +34,9 @@ private:
 
     void usage(const std::string& tool) const {
         eckit::Log::info() << "\n" "Usage: " << tool << " --point=N/W input1.grib [input2.grib [...]]"
-                                      "\n" "Examples: "
-                                      "\n" "  % " << tool << " --point=1/1 in"
-                                      "\n" "  % " << tool << " --pont=\"1/1 2/2\" in"
+                              "\n" "Examples: "
+                              "\n" "  % " << tool << " --point=1/1 in"
+                              "\n" "  % " << tool << " --pont=\"1/1 2/2\" in"
                            << std::endl;
     }
 
@@ -55,7 +53,7 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
 
     std::string point = args.getString("point");
 
-    auto pts = new std::vector<atlas::PointXY>();  // pointer, to transfer ownership to UnstructuredGrid
+    auto pts = new std::vector<atlas::PointXY>;  // pointer, to transfer ownership to UnstructuredGrid
     for (auto& pt : eckit::StringTools::split(" ", point)) {
         auto ll = eckit::StringTools::split("/", pt);
         if (ll.size() != 2) {
