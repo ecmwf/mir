@@ -82,6 +82,7 @@ private:
 
     // From Representation
     const RegularLL* croppedRepresentation(const util::BoundingBox&) const;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     virtual std::string factory() const;
 

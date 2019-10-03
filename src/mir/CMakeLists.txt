@@ -557,6 +557,7 @@ list(APPEND mir_srcs
     util/Function.h
     util/GlobaliseUnstructured.cc
     util/GlobaliseUnstructured.h
+    util/Grib.cc
     util/Grib.h
     util/Increments.cc
     util/Increments.h
