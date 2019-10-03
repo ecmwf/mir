@@ -9,18 +9,18 @@
  */
 
 
+#include <iomanip>
+
+#include "eckit/log/Colour.h"
+#include "eckit/log/JSON.h"
+#include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
+#include "eckit/types/Types.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "mir/compare/BufrField.h"
 #include "mir/util/Grib.h"
-#include "eckit/types/Types.h"
 
-
-#include "eckit/option/CmdArgs.h"
-#include "eckit/option/SimpleOption.h"
-#include "eckit/parser/JSON.h"
-#include "eckit/utils/Tokenizer.h"
-#include "eckit/log/Colour.h"
-#include <iomanip>
 
 namespace mir {
 namespace compare {

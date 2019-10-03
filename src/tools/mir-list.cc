@@ -11,13 +11,13 @@
 /// @date Sep 2016
 
 
+#include "eckit/log/JSON.h"
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
-#include "eckit/parser/JSON.h"
 
 
 class MIRList : public mir::tools::MIRTool {

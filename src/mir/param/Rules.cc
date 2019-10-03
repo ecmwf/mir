@@ -14,7 +14,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/utils/Translator.h"
