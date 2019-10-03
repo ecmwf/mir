@@ -162,7 +162,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ++i;
         }
     }
-    log << "Intersected " << Pretty(triplets.size(), {"grid box", "grid boxes"}) << std::endl;
+    log << "Intersected " << Pretty(weights_triplets.size(), {"grid box", "grid boxes"}) << std::endl;
 
     if (nbFailures) {
         auto& warning = eckit::Log::warning();
