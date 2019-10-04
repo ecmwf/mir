@@ -12,32 +12,34 @@
 /// @date Aug 2019
 
 
-#ifndef MIREstimation_H
-#define MIREstimation_H
+#ifndef mir_api_MIREstimation_h
+#define mir_api_MIREstimation_h
 
+#include <cstddef>
+#include <string>
 
 
 namespace mir {
-
 namespace api {
 
 
 class MIREstimation {
 public:
-
-    virtual void numberOfGridPoints(size_t count) = 0;
-    virtual void missingValues(size_t count) = 0;
-    virtual void pl(size_t count) = 0;
-    virtual void accuracy(size_t count) = 0;
-    virtual void edition(size_t count) = 0;
-    virtual void packing(const std::string& packing) = 0;
+    virtual ~MIREstimation()                                       = default;
+    virtual void numberOfGridPoints(size_t count)                  = 0;
+    virtual void missingValues(size_t count)                       = 0;
+    virtual void pl(size_t count)                                  = 0;
+    virtual void accuracy(size_t count)                            = 0;
+    virtual void edition(size_t count)                             = 0;
+    virtual void packing(const std::string& packing)               = 0;
     virtual void representation(const std::string& representation) = 0;
-    virtual void truncation(size_t count) = 0;
-    virtual void sameAsInput() = 0;
+    virtual void truncation(size_t count)                          = 0;
+    virtual void sameAsInput()                                     = 0;
 };
 
 
 }  // namespace api
 }  // namespace mir
-#endif
 
+
+#endif
