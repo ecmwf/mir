@@ -306,23 +306,11 @@ void ShToGridded::execute(context::Context& ctx) const {
 void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
 
 
-    repres::RepresentationHandle out(cropping_
-                                     ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
-                                     : outputRepresentation());
+    repres::RepresentationHandle out(cropping_ ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
+                                               : outputRepresentation());
 
-
-
-    std::unique_ptr<repres::Iterator> iter(out->iterator());
-
-    size_t cnt = 0;
-    while (iter->next()) {
-        cnt++;
-    }
-
-    estimation.numberOfGridPoints(cnt);
-
+    estimation.numberOfGridPoints(out->numberOfPoints());
     ctx.field().representation(out);
-
 }
 
 
