@@ -1581,8 +1581,9 @@ intensity:
 - 228017  # Duct base height
 - 228018  # Trapping layer base height
 - 228019  # Trapping layer top height
+- 228020  # -10ºC Isothermal Level (atm)
 - 228023  # Cloud base height
-- 228024  # Zero degree level
+- 228024  # 0ºC Isothermal Level (atm)
 - 228025  # Horizontal visibility
 - 228026  # Maximum temperature at 2 metres in the last 3 hours
 - 228027  # Minimum temperature at 2 metres in the last 3 hours
