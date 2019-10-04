@@ -96,9 +96,10 @@ void Action::estimate(context::Context&, api::MIREstimation& estimation) const {
 }
 
 
-void Action::estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation& out) {
+void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation,
+                                        const repres::Representation& out) {
     // eckit::Timer timer("estimateNumberOfGridPoints", std::cerr);
-    estimation.numberOfGridPoints(ctx.field().representation()->numberOfPoints());
+    estimation.numberOfGridPoints(out.numberOfPoints());
 }
 
 

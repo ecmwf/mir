@@ -171,7 +171,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     fatals_(0),
     warnings_(0),
     args_(args),
-    maximumNumberOfErrors_(5),
+    maximumNumberOfErrors_(0),
     saved_(0),
     whiteLister_(whiteLister),
     normaliseLongitudes_(false),
