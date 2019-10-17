@@ -8,6 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   Oct 2016
+
 
 #include "eckit/config/Resource.h"
 

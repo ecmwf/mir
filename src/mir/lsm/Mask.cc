@@ -20,6 +20,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
@@ -33,9 +34,9 @@ namespace lsm {
 namespace {
 
 
-static eckit::Mutex *local_mutex = 0;
+static eckit::Mutex *local_mutex = nullptr;
 
-static std::map<std::string, Mask *> *cache = 0;
+static std::map<std::string, Mask *> *cache = nullptr;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
@@ -47,8 +48,7 @@ static void init() {
 }  // (anonymous namespace)
 
 
-Mask::Mask() {
-}
+Mask::Mask() = default;
 
 
 Mask::~Mask() = default;
@@ -127,7 +127,7 @@ Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const
 
 static bool same(const param::MIRParametrisation& parametrisation1,
                  const param::MIRParametrisation& parametrisation2,
-                 const std::string& which) {
+                 const std::string& /*which*/) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -138,11 +138,12 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     bool lsm2 = false;
     parametrisation2.get("lsm", lsm2);
 
+    return lsm1 == lsm2;
+#if 0
     if (lsm1 != lsm2) {
         return false;
     }
 
-#if 0
     // Check LSM selection method
     std::string name1;
     parametrisation1.get("lsm-selection-" + which, name1) || parametrisation1.get("lsm-selection", name1);
@@ -172,8 +173,8 @@ static bool same(const param::MIRParametrisation& parametrisation1,
     if (key1 != key2) {
         return false;
     }
-#endif
     return true;
+#endif
 }
 
 

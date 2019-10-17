@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   Formula.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   April 2016
+/// @author Pedro Maciel
+/// @date Jun 2012
 
 
 #include "mir/util/Formula.h"
@@ -19,12 +19,6 @@
 
 namespace mir {
 namespace util {
-
-
-Formula::Formula(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
-
-}
 
 
 Formula::~Formula() = default;

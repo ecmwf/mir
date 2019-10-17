@@ -61,7 +61,7 @@ public:
 private:
 
     // -- Members
-    
+
     size_t N_;
     util::Rotation rotation_;
 
@@ -69,7 +69,7 @@ private:
     // None
 
     // -- Overridden methods
-    
+
     bool sameAs(const Action&) const;
     const char* name() const;
     const repres::Representation* outputRepresentation() const;

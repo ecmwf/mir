@@ -12,17 +12,19 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
-#ifndef mir_caching_MappedMemoryLoader_H
-#define mir_caching_MappedMemoryLoader_H
+
+#ifndef mir_caching_legendre_MappedMemoryLoader_h
+#define mir_caching_legendre_MappedMemoryLoader_h
 
 #include "mir/caching/legendre/LegendreLoader.h"
+
 
 namespace mir {
 namespace caching {
 namespace legendre {
+
 
 class MappedMemoryLoader : public LegendreLoader {
 public:
@@ -47,8 +49,11 @@ private:
     size_t size_;
 };
 
-} // namespace legendre
-} // namespace caching
-} // namespace mir
+
+}  // namespace legendre
+}  // namespace caching
+}  // namespace mir
+
 
 #endif
+

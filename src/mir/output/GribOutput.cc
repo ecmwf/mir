@@ -18,7 +18,6 @@
 #include <istream>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/Plural.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -26,6 +25,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/compat/GribCompatibility.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -36,7 +36,7 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/api/MIREstimation.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -349,13 +349,8 @@ size_t GribOutput::save(const param::MIRParametrisation& parametrisation, contex
 
                 // There is a bug in grib_api if the user ask 1 value and select second-order
                 // Once this fixed, remove this code
-                eckit::Log::debug<LibMir>() << "Field has "
-                                            << eckit::Plural(field.values(i).size(), "value")
-                                            << ", ignoring packer "
-                                            << packer
-                                            << std::endl;
-
-
+                eckit::Log::debug<LibMir>() << "Field has " << Pretty(field.values(i).size(), {"value"})
+                                            << ", ignoring packer " << packer << std::endl;
             } else {
                 packer.fill(info, *field.representation());
             }

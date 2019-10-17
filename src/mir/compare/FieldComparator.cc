@@ -140,6 +140,10 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("ignore-above-upper-limit-factor",
                       "Ignore count above specified upper limit (factor of total count)"));
 
+    options.push_back(new SimpleOption<double>("ignore-above-latitude", "Ignore points values above latitude"));
+
+    options.push_back(new SimpleOption<double>("ignore-below-latitude", "Ignore points values below latitude"));
+
     options.push_back(new SimpleOption<double>("absolute-error",
                       "Absolute difference error"));
 
@@ -167,7 +171,7 @@ FieldComparator::FieldComparator(const eckit::option::CmdArgs &args, const White
     fatals_(0),
     warnings_(0),
     args_(args),
-    maximumNumberOfErrors_(5),
+    maximumNumberOfErrors_(0),
     saved_(0),
     whiteLister_(whiteLister),
     normaliseLongitudes_(false),

@@ -1,5 +1,5 @@
 # Test with input area 69.946/-60/21.45/60
-# mars 
+# mars
 gridType=regular_gg,gridName=F48,shortName=msl,global=0.001.grib1
 # Mir tool options
 --grid=0.5/0.5 --area=60/-350/20/9

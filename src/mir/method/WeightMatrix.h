@@ -12,12 +12,11 @@
 /// @author Florian Rathgeber
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-/// @date   May 2015
+/// @date May 2015
 
 
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
-
 
 #include <vector>
 #include <iosfwd>
@@ -29,7 +28,6 @@
 namespace mir {
 namespace method {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class WeightMatrix : public eckit::linalg::SparseMatrix {
 
@@ -82,8 +80,6 @@ private: // members
     }
 
 };
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 }  // namespace method

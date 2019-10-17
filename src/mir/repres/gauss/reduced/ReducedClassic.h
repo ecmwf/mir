@@ -27,7 +27,6 @@ namespace reduced {
 
 class ReducedClassic : public Classic {
 public:
-
     // -- Exceptions
     // None
 
@@ -37,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedClassic(); // Change to virtual if base class
+    virtual ~ReducedClassic();
 
     // -- Convertors
     // None
@@ -58,13 +57,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -76,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -97,10 +94,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const ReducedClassic& p)
-    //  { p.print(s); return s; }
-
+    // None
 };
 
 
@@ -111,4 +105,3 @@ private:
 
 
 #endif
-

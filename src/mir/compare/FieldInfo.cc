@@ -11,13 +11,14 @@
 /// @date Sep 2016
 
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
+
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/compare/FieldInfo.h"
-#include "eckit/exception/Exceptions.h"
 #include "mir/compare/FieldSet.h"
-#include "eckit/log/JSON.h"
 
 
 namespace mir {

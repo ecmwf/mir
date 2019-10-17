@@ -8,10 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Jan 2015
 
-#ifndef mir_netcdf_Codec
-#define mir_netcdf_Codec
+
+#ifndef mir_netcdf_Codec_h
+#define mir_netcdf_Codec_h
 
 #include <iosfwd>
 #include <string>
@@ -19,50 +22,51 @@
 
 #include "eckit/memory/Counted.h"
 
+
+namespace mir {
+namespace netcdf {
+class Variable;
+}
+}
+
+
 namespace mir {
 namespace netcdf {
 
-class Variable;
 
 class Codec : public eckit::Counted {
 public:
     Codec();
     virtual ~Codec();
 
-    virtual void decode(std::vector<double> &) const ;
-    virtual void decode(std::vector<float> &) const ;
-    virtual void decode(std::vector<long> &) const ;
-    virtual void decode(std::vector<short> &) const ;
-    virtual void decode(std::vector<unsigned char> &) const ;
-    virtual void decode(std::vector<long long> &) const ;
+    Codec(const Codec&) = delete;
+    void operator=(const Codec&) = delete;
 
-    virtual void encode(std::vector<double> &) const ;
-    virtual void encode(std::vector<float> &) const ;
-    virtual void encode(std::vector<long> &) const ;
-    virtual void encode(std::vector<short> &) const ;
-    virtual void encode(std::vector<unsigned char> &) const ;
-    virtual void encode(std::vector<long long> &) const ;
+    virtual void decode(std::vector<double>&) const;
+    virtual void decode(std::vector<float>&) const;
+    virtual void decode(std::vector<long>&) const;
+    virtual void decode(std::vector<short>&) const;
+    virtual void decode(std::vector<unsigned char>&) const;
+    virtual void decode(std::vector<long long>&) const;
 
-    virtual void addAttributes(Variable &) const;
-    virtual void updateAttributes(int nc, int varid, const std::string &path);
+    virtual void encode(std::vector<double>&) const;
+    virtual void encode(std::vector<float>&) const;
+    virtual void encode(std::vector<long>&) const;
+    virtual void encode(std::vector<short>&) const;
+    virtual void encode(std::vector<unsigned char>&) const;
+    virtual void encode(std::vector<long long>&) const;
+
+    virtual void addAttributes(Variable&) const;
+    virtual void updateAttributes(int nc, int varid, const std::string& path);
 
     virtual bool timeAxis() const;
 
-protected:
-    // -- Members
-
 private:
-
-    Codec(const Codec &);
-    Codec &operator=(const Codec &);
-
     // -- Methods
-    virtual void print(std::ostream &out) const = 0;
-
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &out, const Codec &v)
-    {
+    friend std::ostream& operator<<(std::ostream& out, const Codec& v) {
         v.print(out);
         return out;
     }
@@ -99,7 +103,9 @@ public:
     CodecBuilder(const std::string &name) : CodecFactory(name) {}
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
 
 #endif

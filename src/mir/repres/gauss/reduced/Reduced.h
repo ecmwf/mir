@@ -96,6 +96,7 @@ protected:
     // from Representation
     virtual bool isPeriodicWestEast() const;
     virtual void estimate(api::MIREstimation&) const;
+    virtual std::vector<util::GridBox> gridBoxes() const;
 
     // -- Class members
 

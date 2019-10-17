@@ -19,6 +19,7 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
 
 
@@ -40,13 +41,10 @@ long SpectralOrder::getGaussianNumberFromTruncation(const long&) const {
 }
 
 
-//=========================================================================
-
-
 namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = 0;
-static std::map< std::string, SpectralOrderFactory* >* m = 0;
+static pthread_once_t once                             = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                       = nullptr;
+static std::map<std::string, SpectralOrderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, SpectralOrderFactory* >();

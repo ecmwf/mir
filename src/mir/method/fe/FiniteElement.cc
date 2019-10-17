@@ -25,9 +25,6 @@
 #include <utility>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Plural.h"
-#include "eckit/log/ProgressTimer.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/thread/AutoLock.h"
@@ -55,6 +52,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -129,7 +127,7 @@ static triplet_vector_t projectPointTo3DElements(
     for (const auto& close : closest) {
         ++nbProjectionAttempts;
 
-        const size_t elem_id = close.value().payload();
+        const auto elem_id = atlas::idx_t(close.value().payload());
         ASSERT(elem_id < connectivity.rows());
 
         /* assumes:
@@ -137,10 +135,10 @@ static triplet_vector_t projectPointTo3DElements(
          * - nb_cols == 4 implies quadrilateral
          * - no other element is supported at the time
          */
-        const size_t nb_cols = connectivity.cols(elem_id);
+        const auto nb_cols = connectivity.cols(elem_id);
         ASSERT(nb_cols == 3 || nb_cols == 4);
 
-        for (size_t i = 0; i < nb_cols; ++i) {
+        for (atlas::idx_t i = 0; i < nb_cols; ++i) {
             idx[i] = size_t(connectivity(elem_id, i));
             ASSERT(idx[i] < nbInputPoints);
         }
@@ -158,8 +156,7 @@ static triplet_vector_t projectPointTo3DElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::method::Intersect is = triag.intersects(ray, edgeEpsilon);
-
+            auto is = triag.intersects(ray, edgeEpsilon);
             if (is) {
 
                 // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
@@ -199,8 +196,7 @@ static triplet_vector_t projectPointTo3DElements(
             const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
             ASSERT(edgeEpsilon >= 0);
 
-            atlas::interpolation::method::Intersect is = quad.intersects(ray, edgeEpsilon);
-
+            auto is = quad.intersects(ray, edgeEpsilon);
             if (is) {
 
                 // weights are the bilinear Lagrange function evaluated at u,v
@@ -356,7 +352,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
         // Some information
         log << "Mesh["
                "cells="
-            << eckit::BigNum(mesh.cells().size()) << ",nodes=" << eckit::BigNum(mesh.nodes().size()) << ","
+            << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
             << meshGeneratorParams << "]" << std::endl;
 
         // Write file(s)
@@ -449,11 +445,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
     double R = inMesh.metadata().getDouble("cell_longest_diagonal");
     ASSERT(R > 0.);
-    log << "k-d tree: search radius R=" << eckit::BigNum(static_cast<long long>(R)) << "m" << std::endl;
+    log << "k-d tree: search radius R=" << R << "m" << std::endl;
 
 
     // some statistics
-    const size_t nbInputPoints     = inNodes.size();
+    const auto nbInputPoints       = size_t(inNodes.size());
     const size_t nbOutputPoints    = out.numberOfPoints();
     size_t nbMinElementsSearched   = std::numeric_limits<size_t>::max();
     size_t nbMaxElementsSearched   = 0;
@@ -470,7 +466,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
 
     {
-        eckit::ProgressTimer progress("Projecting", nbOutputPoints, "point", double(5), log);
+        Pretty::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -520,17 +516,15 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
         }
     }
 
-    log << "Projected " << eckit::BigNum(nbProjections) << " of "
-        << eckit::Plural(nbOutputPoints, "point") << " (" << eckit::Plural(nbFailures, "failure")
-        << ")\n"
-        << "k-d tree: searched between " << eckit::BigNum(nbMinElementsSearched) << " and "
-        << eckit::Plural(nbMaxElementsSearched, "element") << ", with up to "
-        << eckit::Plural(nbMaxProjectionAttempts, "projection attempt") << " (per point)"
-        << std::endl;
+    log << "Projected " << Pretty(nbProjections) << " of " << Pretty(nbOutputPoints, {"point"}) << " ("
+        << Pretty(nbFailures, {"failure"}) << ")\n"
+        << "k-d tree: searched between " << Pretty(nbMinElementsSearched) << " and "
+        << Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
+        << Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
 
     if (nbFailures && !failuresAreMissingValues) {
         std::stringstream msg;
-        msg << "Failed to project " << eckit::Plural(nbFailures, "point");
+        msg << "Failed to project " << Pretty(nbFailures, {"point"});
         log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {

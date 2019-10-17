@@ -163,6 +163,10 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
         plan.add("misc.pattern");
     }
 
+    if (user.has("statistics") || user.has("input-statistics")) {
+        plan.add("filter.statistics", "which-statistics", "input");
+    }
+
     add_formula(plan, user, {"prologue"});
 }
 
@@ -316,6 +320,10 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     std::string metadata;
     if (user.get("metadata", metadata)) {
         plan.add("set.metadata", "metadata", metadata);
+    }
+
+    if (user.has("statistics") || user.has("output-statistics")) {
+        plan.add("filter.statistics", "which-statistics", "output");
     }
 
     std::string epilogue;

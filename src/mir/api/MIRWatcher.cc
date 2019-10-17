@@ -17,12 +17,12 @@
 
 #include "mir/api/MIRWatcher.h"
 
+
 namespace mir {
 namespace api {
 
 
-MIRWatcher::MIRWatcher() {
-}
+MIRWatcher::MIRWatcher() = default;
 
 
 MIRWatcher::~MIRWatcher() = default;

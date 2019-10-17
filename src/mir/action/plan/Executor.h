@@ -13,32 +13,31 @@
 /// @date Apr 2015
 
 
-#ifndef Executor_H
-#define Executor_H
+#ifndef mir_action_plan_Executor_h
+#define mir_action_plan_Executor_h
 
 #include <iosfwd>
-#include <vector>
 #include <string>
+#include <vector>
 
 
 namespace mir {
-
 namespace context {
 class Context;
 }
-
-
 namespace param {
 class MIRParametrisation;
 }
-
 namespace action {
-
 class ActionNode;
+}
+}
 
+
+namespace mir {
+namespace action {
 class Executor {
 public:
-
     // -- Exceptions
     // None
 
@@ -57,10 +56,8 @@ public:
     // -- Methods
 
     virtual void execute(context::Context&, const ActionNode&) const = 0;
-    virtual void wait() const = 0;
-    virtual void parametrisation(const param::MIRParametrisation&) = 0;
-
-    //=====================================
+    virtual void wait() const                                        = 0;
+    virtual void parametrisation(const param::MIRParametrisation&)   = 0;
 
     // -- Overridden methods
     // None
@@ -70,13 +67,12 @@ public:
 
     // -- Class methods
 
-    static const Executor &lookup(const param::MIRParametrisation&);
+    static const Executor& lookup(const param::MIRParametrisation&);
     static void list(std::ostream&);
 
 protected:
-
-    Executor(const std::string& name);
-    virtual ~Executor(); // Change to virtual if base class
+    Executor(const std::string&);
+    virtual ~Executor();
 
     // -- Members
 
@@ -84,7 +80,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -96,7 +92,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     Executor(const Executor&);
     Executor& operator=(const Executor&);
@@ -122,7 +117,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -131,4 +125,3 @@ private:
 
 
 #endif
-

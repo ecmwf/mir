@@ -8,39 +8,37 @@
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Jan 2015
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/types/Types.h"
 
 #include "mir/netcdf/GridSpec.h"
 
-// #include "mir/netcdf/Attribute.h"
-// #include "mir/netcdf/Dimension.h"
-// #include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/Variable.h"
-// #include "mir/netcdf/HyperCube.h"
-#include "mir/netcdf/Dataset.h"
+#include <iostream>
+#include <sstream>
 
+#include "eckit/exception/Exceptions.h"
+#include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include <iostream>
-#include <sstream>
+#include "mir/netcdf/Variable.h"
+#include "mir/netcdf/Dataset.h"
 
 
 namespace mir {
 namespace netcdf {
 
-static eckit::Mutex* local_mutex = 0;
-static std::map<size_t, GridSpecGuesser*>* m = 0;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex             = nullptr;
+static std::map<size_t, GridSpecGuesser*>* m = nullptr;
+static pthread_once_t once                   = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<size_t, GridSpecGuesser*>();
+    m           = new std::map<size_t, GridSpecGuesser*>();
 }
 
 
@@ -64,8 +62,6 @@ GridSpec* GridSpec::create(const Variable &variable) {
 
 }
 
-
-//================================================================
 
 GridSpecGuesser::GridSpecGuesser(size_t priority) :
     priority_(priority) {
@@ -116,38 +112,25 @@ static const Variable& find_variable(const Variable& variable,
 }
 
 
-
-GridSpec* GridSpecGuesser::guess(const Variable &variable) {
-
+GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    std::map<size_t, GridSpecGuesser*>::const_iterator j;
 
     // We assume lat/lon are the innermost coordinates
+    const Variable& latitudes = find_variable(variable, "latitude", "degrees_north", 2);
+    const Variable& longitudes = find_variable(variable, "longitude", "degrees_east", 1);
 
-
-    const Variable &latitudes = find_variable(variable,
-                                "latitude",
-                                "degrees_north",
-                                2);
-
-    const Variable &longitudes = find_variable(variable,
-                                 "longitude",
-                                 "degrees_east",
-                                 1);
-
-    for (auto j = m->begin(); j != m->end(); ++j) {
-        GridSpec* spec = (*j).second->guess(variable, latitudes, longitudes);
+    for (auto& j : *m) {
+        GridSpec* spec = j.second->guess(variable, latitudes, longitudes);
         if (spec) {
             eckit::Log::info() << "GRIDSPEC is " << *spec << std::endl;
             return spec;
         }
     }
 
-    return 0;
-
+    return nullptr;
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

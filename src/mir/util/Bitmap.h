@@ -11,12 +11,11 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date April 2015
 
 
-#ifndef mir_util_Bitmap_H
-#define mir_util_Bitmap_H
+#ifndef mir_util_Bitmap_h
+#define mir_util_Bitmap_h
 
 #include <string>
 #include <vector>
@@ -127,3 +126,4 @@ class Bitmap {
 
 
 #endif
+

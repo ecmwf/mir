@@ -13,7 +13,6 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/log/Plural.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -32,6 +31,11 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Pretty.h"
+
+
+using namespace mir;
+using prec_t = decltype(std::cout.precision());
 
 
 class MIRStatistics : public mir::tools::MIRTool {
@@ -56,14 +60,15 @@ private:
 
 public:
 
-    MIRStatistics(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRStatistics(int argc, char **argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
         using eckit::option::SimpleOption;
 
-        options_.push_back(new FactoryOption<mir::stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
+        options_.push_back(new FactoryOption<stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values"));
         options_.push_back(new SimpleOption< double >("counter-lower-limit", "count lower limit"));
         options_.push_back(new SimpleOption< double >("counter-upper-limit", "count upper limit"));
         options_.push_back(new FactoryOption<PerPointStatistics>("output", "/-separated list of per-point statistics (output GRIB to <statistics>"));
+        options_.push_back(new SimpleOption< prec_t >("precision", "Output precision"));
     }
 };
 
@@ -90,42 +95,47 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
     // - input grib metadata
     // - lookup configuration for input metadata-specific parametrisation
 
-    const mir::param::ConfigurationWrapper args_wrap(args);
-    const mir::param::DefaultParametrisation defaults;
+    const param::ConfigurationWrapper args_wrap(args);
+    const param::DefaultParametrisation defaults;
+
+    auto& log = eckit::Log::info();
+    prec_t precision;
+    auto old = args.get("precision", precision) ? log.precision(precision)
+                                                : log.precision();
 
     // on 'output' option, calculate per-point statistics
     std::string output;
     if (args_wrap.get("output", output)) {
 
         // read in first field to reset statistics and reference representation
-        mir::input::GribFileInput firstGribFile(args(0));
+        input::GribFileInput firstGribFile(args(0));
         ASSERT(firstGribFile.next());
 
-        const mir::input::MIRInput& firstInput(firstGribFile);
-        mir::repres::RepresentationHandle reference(firstInput.field().representation());
+        const input::MIRInput& firstInput(firstGribFile);
+        repres::RepresentationHandle reference(firstInput.field().representation());
 
         size_t Nfirst = firstInput.field().values(0).size();
         ASSERT(Nfirst > 0);
-        eckit::Log::info() << "Using " << eckit::Plural(Nfirst, "grid point") << std::endl;
+        log << "Using " << Pretty(Nfirst, {"grid point"}) << std::endl;
 
         // set paramId/metadata-specific method per-point statistics
         std::string statistics = "scalar";
         args_wrap.get("statistics", statistics);
 
         // per-point statistics
-        std::unique_ptr<mir::param::MIRParametrisation> param(new mir::param::CombinedParametrisation(args_wrap, firstGribFile, defaults));
-        std::unique_ptr<mir::stats::Method> pps(mir::stats::MethodFactory::build(statistics, *param));
+        std::unique_ptr<param::MIRParametrisation> param(new param::CombinedParametrisation(args_wrap, firstGribFile, defaults));
+        std::unique_ptr<stats::Method> pps(stats::MethodFactory::build(statistics, *param));
         pps->resize(Nfirst);
 
         for (auto& arg : args) {
-            mir::input::GribFileInput grib(arg);
-            const mir::input::MIRInput& input = grib;
+            input::GribFileInput grib(arg);
+            const input::MIRInput& input = grib;
 
             size_t count = 0;
             while (grib.next()) {
-                eckit::Log::info() << "\n'" << arg << "' #" << ++count << std::endl;
+                log << "\n'" << arg << "' #" << ++count << std::endl;
 
-                mir::repres::RepresentationHandle repres(input.field().representation());
+                repres::RepresentationHandle repres(input.field().representation());
                 if (!repres->sameAs(*reference)) {
                     eckit::Log::error() << "Input not expected,"
                                            "\n" "expected " << *reference
@@ -143,10 +153,10 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
         parse(output, outputs);
 
         for (auto& j : outputs) {
-            eckit::Log::info() << "Writing '" << j << "'" << std::endl;
+            log << "Writing '" << j << "'" << std::endl;
 
-            mir::util::MIRStatistics stats;
-            mir::context::Context ctx(firstGribFile, stats);
+            util::MIRStatistics stats;
+            context::Context ctx(firstGribFile, stats);
 
             auto& f = ctx.field();
             j == "mean" ? pps->mean(f) :
@@ -154,34 +164,37 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             j == "stddev" ? pps->stddev(f) :
             throw eckit::UserError("Output " + j + "' not supported");
 
-            std::unique_ptr<mir::output::MIROutput> out(new mir::output::GribFileOutput(j));
+            std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(j));
             out->save(*param, ctx);
         }
 
+        log.precision(old);
         return;
     }
 
     // per-field statistics
     for (auto& arg : args) {
-        mir::input::GribFileInput grib(arg);
-        const mir::input::MIRInput& input = grib;
+        input::GribFileInput grib(arg);
+        const input::MIRInput& input = grib;
 
         size_t count = 0;
         while (grib.next()) {
-            eckit::Log::info() << "\n'" << arg << "' #" << ++count << std::endl;
+            log << "\n'" << arg << "' #" << ++count << std::endl;
 
             // paramId/metadata-specific method
             std::string statistics = "scalar";
             args_wrap.get("statistics", statistics);
 
             // Calculate and show statistics
-            std::unique_ptr<mir::param::MIRParametrisation> param(new mir::param::CombinedParametrisation(args_wrap, grib, defaults));
-            std::unique_ptr<mir::stats::Statistics> stats(mir::stats::StatisticsFactory::build(statistics, *param));
+            std::unique_ptr<param::MIRParametrisation> param(new param::CombinedParametrisation(args_wrap, grib, defaults));
+            std::unique_ptr<stats::Statistics> stats(stats::StatisticsFactory::build(statistics, *param));
             stats->execute(input.field());
 
-            eckit::Log::info() << *stats << std::endl;
+            log << *stats << std::endl;
         }
     }
+
+    log.precision(old);
 }
 
 

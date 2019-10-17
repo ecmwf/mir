@@ -19,8 +19,6 @@
 #include <string>
 #include <iosfwd>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace mir {
 namespace param {
@@ -39,17 +37,22 @@ namespace mir {
 namespace lsm {
 
 
-class LSMSelection : private eckit::NonCopyable {
+class LSMSelection {
 public:
 
     // -- Exceptions
     // None
 
+    // -- Constructors
+
+    LSMSelection(const LSMSelection&) = delete;
+
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const LSMSelection&) = delete;
 
     // -- Methods
 

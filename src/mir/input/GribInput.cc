@@ -8,6 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @author Tiago Quintino
+/// @date April 2015
+
+
 #include "mir/input/GribInput.h"
 
 #include <algorithm>
@@ -23,7 +29,6 @@
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/memory/NonCopyable.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
@@ -219,6 +224,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
 
         /// TODO: is that a good idea?
         {"param", "paramId", nullptr},
+        {"statistics", "", nullptr},  // (avoid ecCodes error "statistics: Function not yet implemented")
 
         {nullptr, nullptr, nullptr},
     };
@@ -236,8 +242,13 @@ static const char *get_key(const std::string &name, grib_handle *h) {
     return key;
 }
 
-struct Processing : eckit::NonCopyable {
+struct Processing {
+    Processing()          = default;
     virtual ~Processing() = default;
+
+    Processing(const Processing&) = delete;
+    void operator=(const Processing&) = delete;
+
     virtual bool eval(grib_handle*, long&) const { NOTIMP; }
     virtual bool eval(grib_handle*, double&) const { NOTIMP; }
     virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }
@@ -663,7 +674,10 @@ bool GribInput::has(const std::string& name) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     bool ok = grib_is_defined(grib_, key);
 
@@ -676,9 +690,13 @@ bool GribInput::get(const std::string& name, bool& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     long temp = GRIB_MISSING_LONG;
-    const char *key = get_key(name, grib_);
-    int err = grib_get_long(grib_, key, &temp);
+    int err   = grib_get_long(grib_, key, &temp);
 
     if (err == GRIB_NOT_FOUND || temp == GRIB_MISSING_LONG) {
         return FieldParametrisation::get(name, value);
@@ -711,7 +729,11 @@ bool GribInput::get(const std::string& name, long& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     int err = grib_get_long(grib_, key, &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
@@ -744,7 +766,11 @@ bool GribInput::get(const std::string& name, double& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
+
     int err = grib_get_double(grib_, key, &value);
 
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
@@ -781,7 +807,10 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     size_t count = 0;
     int err = grib_get_size(grib_, key, &count);
@@ -838,7 +867,10 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     char buffer[10240];
     size_t size = sizeof(buffer);
@@ -873,7 +905,10 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char *key = get_key(name, grib_);
+    const char* key = get_key(name, grib_);
+    if (std::string(key).empty()) {
+        return false;
+    }
 
     if (get_value(key, grib_, value)) {
         return true;

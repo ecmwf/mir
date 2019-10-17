@@ -9,15 +9,19 @@
  */
 
 /// @author Simon Smart
+/// @author Pedro Maciel
 /// @date March 2016
 
 
 #ifndef mir_param_ConfigurationWrapper_h
 #define mir_param_ConfigurationWrapper_h
 
-#include "eckit/config/Configuration.h"
-#include "eckit/memory/NonCopyable.h"
 #include "mir/param/MIRParametrisation.h"
+
+
+namespace eckit {
+class Configuration;
+}
 
 
 namespace mir {

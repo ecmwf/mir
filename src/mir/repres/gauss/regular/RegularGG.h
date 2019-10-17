@@ -90,6 +90,9 @@ private:
     virtual Iterator* iterator() const;
     virtual std::string factory() const;
 
+    // From Representation
+    std::vector<util::GridBox> gridBoxes() const;
+
     // -- Class members
     // None
 

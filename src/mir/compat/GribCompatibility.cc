@@ -23,13 +23,14 @@
 #include "mir/param/MIRParametrisation.h"
 #include "eckit/utils/Tokenizer.h"
 
+
 namespace mir {
 namespace compat {
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = 0;
-static std::map< std::string, GribCompatibility* >* m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map< std::string, GribCompatibility* >* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m = new std::map< std::string, GribCompatibility* >();
@@ -124,7 +125,7 @@ class CombinedGribCompatibility : public GribCompatibility {
 public:
     CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names):
         GribCompatibility(name) {
-        for (auto n : names) {
+        for (auto& n : names) {
             list_.push_back(&GribCompatibility::lookup(n));
         }
     }

@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
 
@@ -95,6 +94,7 @@ static atlas::trans::Cache getTransCache(
                 eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
+                eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
                 creator_.create(path);
 
                 saved = path.exists();
@@ -120,10 +120,12 @@ static atlas::trans::Cache getTransCache(
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: load Legendre coefficients");
+        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: loading Legendre coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
-        const eckit::system::MemoryInfo before = eckit::system::SystemInfo::instance().memoryUsage();
+        eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
+
+        auto before = eckit::system::SystemInfo::instance().memoryUsage();
 
         tc.loader_ = caching::legendre::LegendreLoaderFactory::build(parametrisation, path);
         ASSERT(tc.loader_);
@@ -131,7 +133,7 @@ static atlas::trans::Cache getTransCache(
 
         transCache = tc.loader_->transCache();
 
-        eckit::system::MemoryInfo after = eckit::system::SystemInfo::instance().memoryUsage();
+        auto after = eckit::system::SystemInfo::instance().memoryUsage();
         after.delta(eckit::Log::info(), before);
 
         size_t memory = 0;
@@ -306,23 +308,11 @@ void ShToGridded::execute(context::Context& ctx) const {
 void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
 
 
-    repres::RepresentationHandle out(cropping_
-                                     ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
-                                     : outputRepresentation());
+    repres::RepresentationHandle out(cropping_ ? outputRepresentation()->croppedRepresentation(cropping_.boundingBox())
+                                               : outputRepresentation());
 
-
-
-    std::unique_ptr<repres::Iterator> iter(out->iterator());
-
-    size_t cnt = 0;
-    while (iter->next()) {
-        cnt++;
-    }
-
-    estimation.numberOfGridPoints(cnt);
-
+    estimation.numberOfGridPoints(out->numberOfPoints());
     ctx.field().representation(out);
-
 }
 
 

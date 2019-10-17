@@ -105,6 +105,9 @@ private:
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
+    // From Representation
+    std::vector<util::GridBox> gridBoxes() const;
+
     // -- Class members
     // None
 

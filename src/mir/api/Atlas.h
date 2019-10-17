@@ -27,7 +27,7 @@
 #include "atlas/library/config.h"
 #include "atlas/mesh.h"
 #include "atlas/meshgenerator.h"
-#include "atlas/option/Options.h"
+#include "atlas/option.h"
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"

@@ -10,10 +10,13 @@
  */
 
 /// @author Simon Smart
+/// @author Pedro Maciel
 /// @date March 2016
 
 
 #include "mir/param/ConfigurationWrapper.h"
+
+#include "eckit/config/Configuration.h"
 
 
 namespace mir {

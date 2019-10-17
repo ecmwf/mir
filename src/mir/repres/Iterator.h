@@ -18,18 +18,16 @@
 
 #include <iosfwd>
 
-#include "eckit/memory/NonCopyable.h"
-
+#include "mir/api/Atlas.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
-#include "mir/api/Atlas.h"
 
 
 namespace mir {
 namespace repres {
 
 
-class Iterator : protected PointLatLon, private eckit::NonCopyable {
+class Iterator : protected PointLatLon {
 public:
 
     // -- Exceptions
@@ -38,6 +36,7 @@ public:
     // -- Contructors
 
     Iterator(const util::Rotation& = util::Rotation());
+    Iterator(const Iterator&) = delete;
 
     // -- Destructor
 
@@ -50,6 +49,8 @@ public:
     }
 
     // -- Operators
+
+    void operator=(const Iterator&) = delete;
 
     inline const Point2& operator*() const {
         return pointRotated();

@@ -44,7 +44,7 @@ namespace context {
 
 class Extension{
 public:
-    
+
     virtual ~Extension() {}
 
     virtual Extension* clone() const = 0;

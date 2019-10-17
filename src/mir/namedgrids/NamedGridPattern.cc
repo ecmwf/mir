@@ -29,8 +29,8 @@ namespace namedgrids {
 namespace {
 
 
-static eckit::Mutex *local_mutex = 0;
-static std::map<std::string, NamedGridPattern *> *m = 0;
+static eckit::Mutex *local_mutex = nullptr;
+static std::map<std::string, NamedGridPattern *> *m = nullptr;
 
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
@@ -103,10 +103,8 @@ const NamedGrid *NamedGridPattern::build(const std::string& name) {
 
     eckit::Log::debug<LibMir>() << "NamedGridPattern: looking for '" << name << "'" << std::endl;
 
-    typedef std::map<std::string, NamedGridPattern *>::const_iterator it;
-
-    it k = m->end();
-    for (it j = m->begin() ; j != m->end() ; ++j) {
+    auto k = m->end();
+    for (auto j = m->begin() ; j != m->end() ; ++j) {
         if (j->second->pattern_.match(name)) {
             eckit::Log::debug<LibMir>() << "NamedGridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
@@ -131,7 +129,7 @@ const NamedGrid *NamedGridPattern::build(const std::string& name) {
         eckit::Log::error() << std::endl;
     }
 
-    return 0;
+    return nullptr;
 }
 
 

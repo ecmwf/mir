@@ -9,27 +9,24 @@
  */
 
 
-#ifndef mir_repres_atlas_Lambert_h
-#define mir_repres_atlas_Lambert_h
+#ifndef mir_util_GridBox_h
+#define mir_util_GridBox_h
 
-#include "mir/repres/atlas/AtlasRegularGrid.h"
+#include <iosfwd>
 
 
 namespace mir {
-namespace repres {
-namespace atlas {
+namespace util {
 
 
-class Lambert : public AtlasRegularGrid {
+class GridBox {
 public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
-    Lambert(const param::MIRParametrisation&);
-    Lambert(const Lambert&) = delete;
-    Lambert& operator=(const Lambert&) = delete;
+    GridBox(double north, double west, double south, double east);
 
     // -- Destructor
     // None
@@ -41,7 +38,10 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    double area() const;
+    double diagonal() const;
+    bool intersects(GridBox&) const;
 
     // -- Overridden methods
     // None
@@ -57,12 +57,10 @@ protected:
     // None
 
     // -- Methods
-
-    static Projection make_projection(const param::MIRParametrisation&);
+    // None
 
     // -- Overridden methods
-
-    virtual void fill(grib_info&) const;
+    // None
 
     // -- Class members
     // None
@@ -72,11 +70,38 @@ protected:
 
     // -- Friends
     // None
+
+private:
+    // -- Members
+
+    double north_;
+    double west_;
+    double south_;
+    double east_;
+
+    // -- Methods
+
+    void print(std::ostream&) const;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+    // -- Friends
+
+    friend std::ostream& operator<<(std::ostream& s, const GridBox& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
-}  // namespace atlas
-}  // namespace repres
+}  // namespace util
 }  // namespace mir
 
 

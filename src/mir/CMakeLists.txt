@@ -33,6 +33,8 @@ list(APPEND mir_srcs
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
+    action/filter/StatisticsFilter.cc
+    action/filter/StatisticsFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -254,6 +256,12 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/gridbox/GridBoxAverage.cc
+    method/gridbox/GridBoxAverage.h
+    method/gridbox/GridBoxMaximum.cc
+    method/gridbox/GridBoxMaximum.h
+    method/gridbox/GridBoxMethod.cc
+    method/gridbox/GridBoxMethod.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -496,6 +504,8 @@ list(APPEND mir_srcs
     stats/detail/Scalar.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
+    stats/statistics/GridBoxIntegral.cc
+    stats/statistics/GridBoxIntegral.h
     stats/statistics/Integral.cc
     stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
@@ -565,8 +575,10 @@ list(APPEND mir_srcs
     util/Function.h
     util/GlobaliseUnstructured.cc
     util/GlobaliseUnstructured.h
-    util/Grib.h
     util/Grib.cc
+    util/Grib.h
+    util/GridBox.cc
+    util/GridBox.h
     util/Increments.cc
     util/Increments.h
     util/Latitude.cc
@@ -582,6 +594,8 @@ list(APPEND mir_srcs
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
+    util/Pretty.cc
+    util/Pretty.h
     util/Rotation.cc
     util/Rotation.h
     util/Types.h
@@ -664,12 +678,12 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
-        repres/atlas/AtlasRegularGrid.cc
-        repres/atlas/AtlasRegularGrid.h
-        repres/atlas/Lambert.cc
-        repres/atlas/Lambert.h
-        repres/atlas/LambertAzimuthalEqualArea.cc
-        repres/atlas/LambertAzimuthalEqualArea.h
+        repres/regular/Lambert.cc
+        repres/regular/Lambert.h
+        repres/regular/LambertAzimuthalEqualArea.cc
+        repres/regular/LambertAzimuthalEqualArea.h
+        repres/regular/RegularGrid.cc
+        repres/regular/RegularGrid.h
         util/MeshGeneratorParameters.cc
         util/MeshGeneratorParameters.h
         )

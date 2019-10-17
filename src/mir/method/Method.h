@@ -20,8 +20,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace eckit {
 class MD5;
@@ -50,12 +48,15 @@ namespace mir {
 namespace method {
 
 
-class Method : private eckit::NonCopyable {
+class Method {
 public:
 
     Method(const param::MIRParametrisation&);
+    Method(const Method&) = delete;
 
     virtual ~Method();
+
+    void operator=(const Method&) = delete;
 
     virtual void hash(eckit::MD5&) const = 0;
 

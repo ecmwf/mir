@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
 
@@ -32,7 +31,6 @@
 #include "eckit/config/Resource.h"
 #include "eckit/io/AutoCloser.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/log/BigNum.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/Shmget.h"
@@ -42,6 +40,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -162,7 +161,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation &parametr
     log() << "SharedMemoryLoader: size is " << shmsize
           << " (" << eckit::Bytes(shmsize) << "), key=0x" << std::hex << key << std::dec
           << ", page size: " << eckit::Bytes(page_size)
-          << ", pages: " << eckit::BigNum(shmsize / page_size)
+          << ", pages: " << Pretty(shmsize / page_size)
           << std::endl;
 
     int shmid;

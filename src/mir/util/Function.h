@@ -9,28 +9,32 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date April 2016
 
-#ifndef mir_Function_H
-#define mir_Function_H
+
+#ifndef mir_util_Function_h
+#define mir_util_Function_h
 
 #include <string>
 #include <vector>
 
-#include "eckit/memory/NonCopyable.h"
-
 #include "mir/util/Formula.h"
+
 
 namespace mir {
 namespace util {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-class Function : public eckit::NonCopyable {
+class Function {
 public:
 
     Function(const std::string& name);
+
+    Function(const Function&) = delete;
+    void operator=(const Function&) = delete;
+
     virtual ~Function();
 
     virtual void execute(context::Context& ctx) const = 0;

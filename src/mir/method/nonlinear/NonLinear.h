@@ -15,8 +15,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/memory/NonCopyable.h"
-
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -42,13 +40,16 @@ namespace method {
 namespace nonlinear {
 
 
-class NonLinear : public eckit::NonCopyable {
+class NonLinear {
 public:
 
     using WeightMatrix = method::WeightMatrix;
     using Matrix = eckit::linalg::Matrix;
-    
+
     NonLinear(const param::MIRParametrisation&);
+
+    NonLinear(const NonLinear&) = delete;
+    void operator=(const NonLinear&) = delete;
 
     virtual ~NonLinear();
 

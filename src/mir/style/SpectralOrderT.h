@@ -50,10 +50,10 @@ public:
     // -- Overridden methods
     long getTruncationFromGaussianNumber(const long& N) const {
         ASSERT(N);
-    
+
         long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
         ASSERT(T);
-    
+
         return T;
     }
 

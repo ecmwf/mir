@@ -8,6 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Baudouin Raoult
+/// @author Florian Rathgeber
+/// @author Pedro Maciel
 /// @author Tiago Quintino
 /// @date May 2015
 
@@ -19,10 +22,10 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/Plural.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -32,20 +35,13 @@ namespace method {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc)
-{
-}
+WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc) {}
 
-WeightMatrix::WeightMatrix(const eckit::PathName& path) :
-    SparseMatrix()
-{
+WeightMatrix::WeightMatrix(const eckit::PathName& path) : SparseMatrix() {
     load(path);
 }
 
-WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) :
-    SparseMatrix(rows, cols)
-{
-}
+WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) : SparseMatrix(rows, cols) {}
 
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
     ASSERT(rows());
@@ -135,10 +131,9 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t r = rows();
         size_t c = cols();
         size_t total = r * c;
-        eckit::Log::debug<LibMir>() << "WeightMatrix::cleanup fixed "
-                                    << eckit::Plural(fixed, "value") << " out of " << eckit::BigNum(count)
-                                    << " (matrix is " << eckit::BigNum(r) << "x" << eckit::BigNum(c) << ", total="
-                                    << eckit::BigNum(total) << ")" << std::endl;
+        eckit::Log::debug<LibMir>() << "WeightMatrix::cleanup fixed " << Pretty(fixed, {"value"}) << " out of "
+                                    << Pretty(count) << " (matrix is " << Pretty(r) << "x"
+                                    << Pretty(c) << ", total=" << Pretty(total) << ")" << std::endl;
     }
     prune(0.0);
 }
@@ -191,8 +186,6 @@ void WeightMatrix::validate(const char *when) const {
     }
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace method
 }  // namespace mir

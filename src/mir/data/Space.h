@@ -13,20 +13,19 @@
 #define mir_data_Space_h
 
 #include <string>
+
 #include "eckit/linalg/Matrix.h"
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
 namespace data {
 
 
-class Space : private eckit::NonCopyable {
+class Space {
 public:
-
     // -- Types
 
-    typedef eckit::linalg::Matrix Matrix;
+    using Matrix = eckit::linalg::Matrix;
 
     // -- Exceptions
     // None
@@ -34,6 +33,7 @@ public:
     // -- Constructors
 
     Space();
+    Space(const Space&) = delete;
 
     // -- Destructor
 
@@ -43,7 +43,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Space&) = delete;
 
     // -- Methods
 
@@ -63,7 +64,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -80,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -98,7 +97,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -108,19 +106,21 @@ private:
     Space* choice_;
     const size_t component_;
     const size_t dimensions_;
+
 protected:
     SpaceChooser(const std::string&, Space* choice, size_t component, size_t dimensions);
     virtual ~SpaceChooser();
+
 public:
     static const Space& lookup(const std::string& name);
     static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class SpaceChoice : public SpaceChooser {
 public:
-    SpaceChoice(const std::string& name, size_t component = 0, size_t dimensions = 1 ) :
+    SpaceChoice(const std::string& name, size_t component = 0, size_t dimensions = 1) :
         SpaceChooser(name, new T, component, dimensions) {}
 };
 
@@ -130,4 +130,3 @@ public:
 
 
 #endif
-

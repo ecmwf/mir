@@ -272,19 +272,17 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
     // auto& log = eckit::Log::info();
 
     std::string output = args.getString("output", "");
-    bool alternate     = args.getBool("alternate", false);
+    // bool alternate     = args.getBool("alternate", false);
 
 
     // loop over each file(s) message(s)
-    for (size_t i = 0; i < args.count(); ++i) {
+    for (size_t a = 0; a < args.count(); ++a) {
+        std::unique_ptr<mir::input::MIRInput> input(new mir::input::GribFileInput(args(a)));
 
-        mir::input::GribFileInput grib(args(i));
-        const mir::input::MIRInput& input = grib;
-
-        while (grib.next()) {
+        while (input->next()) {
             // eckit::Timer tim(alternate ? "Delaunay triangulation (alternate)" : "Delaunay triangulation");
 
-            auto field = input.field();
+            auto field = input->field();
             double missingValue = field.missingValue();
 
             // Build a mesh from grid
@@ -327,14 +325,14 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             for (idx_t e = 0; e < connectivity.rows(); ++e) {
                 const auto row = connectivity.row(e);
 
-                size_t size = row.size();
+                auto size      = size_t(row.size());
                 size_t missing = 0;
 
                 ASSERT(size == 3);
 
                 size_t n = 0;
                 for (size_t i = 0; i < size; ++i) {
-                    if (values[row(i)] == missingValue) {
+                    if (values[size_t(row(i))] == missingValue) {
                         missing ++;
                         n |= 1 << i;
                     }

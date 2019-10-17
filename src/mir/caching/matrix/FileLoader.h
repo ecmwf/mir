@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Oct 2016
 
 
@@ -19,6 +18,7 @@
 #define mir_caching_matrix_FileLoader_h
 
 #include "eckit/memory/MemoryBuffer.h"
+
 #include "mir/caching/matrix/MatrixLoader.h"
 
 
@@ -47,9 +47,10 @@ private:
 };
 
 
-} // namespace matrix
-} // namespace caching
-} // namespace mir
+}  // namespace matrix
+}  // namespace caching
+}  // namespace mir
 
 
 #endif
+

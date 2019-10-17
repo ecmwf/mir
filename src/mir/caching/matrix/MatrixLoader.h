@@ -11,7 +11,6 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Oct 2016
 
 
@@ -24,6 +23,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/linalg/SparseMatrix.h"
 #include "eckit/log/Channel.h"
+
 
 namespace mir {
 namespace caching {
@@ -50,9 +50,6 @@ protected:
     eckit::PathName path_;
 
 };
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 class MatrixLoaderFactory {
@@ -85,3 +82,4 @@ public:
 
 
 #endif
+

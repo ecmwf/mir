@@ -20,22 +20,27 @@
 #include <string>
 
 #include "eckit/utils/Regex.h"
-#include "eckit/memory/NonCopyable.h"
+
+
+namespace mir {
+namespace namedgrids {
+class NamedGrid;
+}
+}
 
 
 namespace mir {
 namespace namedgrids {
 
-class NamedGrid;
 
-class NamedGridPattern : private eckit::NonCopyable {
+class NamedGridPattern {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
-    // None
+
+    NamedGridPattern(const NamedGridPattern&) = delete;
 
     // -- Destructor
     // None
@@ -44,7 +49,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const NamedGridPattern&) = delete;
 
     // -- Methods
     // None
@@ -57,13 +63,12 @@ public:
 
     // -- Class methods
 
-    static bool match(const std::string &name);
-    static const NamedGrid* build(const std::string &name);
-    static void list(std::ostream &);
+    static bool match(const std::string&);
+    static const NamedGrid* build(const std::string&);
+    static void list(std::ostream&);
 
 protected:
-
-    NamedGridPattern(const std::string &pattern);
+    NamedGridPattern(const std::string&);
     virtual ~NamedGridPattern();
 
     // -- Members
@@ -72,8 +77,8 @@ protected:
 
     // -- Methods
 
-    virtual const NamedGrid* make(const std::string &name) const = 0;
-    virtual void print(std::ostream &) const = 0;
+    virtual const NamedGrid* make(const std::string&) const = 0;
+    virtual void print(std::ostream&) const                 = 0;
 
     // -- Overridden methods
     // None
@@ -85,7 +90,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -103,11 +107,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const NamedGridPattern &p) {
+    friend std::ostream& operator<<(std::ostream& s, const NamedGridPattern& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -116,4 +119,3 @@ private:
 
 
 #endif
-

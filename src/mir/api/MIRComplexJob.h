@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/memory/NonCopyable.h"
-
 
 namespace mir {
 namespace action {
@@ -44,7 +42,7 @@ class MIRStatistics;
 namespace api {
 
 
-class MIRComplexJob : private eckit::NonCopyable {
+class MIRComplexJob {
   public:
 
     // -- Exceptions
@@ -53,6 +51,7 @@ class MIRComplexJob : private eckit::NonCopyable {
     // -- Contructors
 
     MIRComplexJob();
+    MIRComplexJob(const MIRComplexJob&) = delete;
 
     // -- Destructor
 
@@ -62,7 +61,7 @@ class MIRComplexJob : private eckit::NonCopyable {
     // None
 
     // -- Operators
-    // None
+    void operator=(const MIRComplexJob&) = delete;
 
     // -- Methods
 
@@ -70,7 +69,7 @@ class MIRComplexJob : private eckit::NonCopyable {
     bool empty() const;
     void clear();
 
-    MIRComplexJob& add(MIRJob*, input::MIRInput&, output::MIROutput&, MIRWatcher* = 0);
+    MIRComplexJob& add(MIRJob*, input::MIRInput&, output::MIROutput&, MIRWatcher* = nullptr);
 
     // -- Overridden methods
     // None

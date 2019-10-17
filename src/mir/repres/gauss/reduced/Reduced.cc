@@ -24,18 +24,18 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Plural.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
+#include "mir/api/MIREstimation.h"
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Angles.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/api/MIREstimation.h"
-
+#include "mir/util/GridBox.h"
 
 namespace mir {
 namespace repres {
@@ -266,7 +266,7 @@ void Reduced::setNj(const PlVector& pl, const Latitude& s, const Latitude& n) {
     pls();  // check internal assumptions
 }
 
-// Explicit template instantiations of above implemenation for different PlVector types
+// Explicit template instantiations of above implementation for different PlVector types
 
 // PlVector = std::vector<int>
 template void Reduced::setNj(const std::vector<int>& pl, const Latitude& s, const Latitude& n);
@@ -285,10 +285,10 @@ void Reduced::fill(grib_info& info) const  {
     info.grid.Nj = long(Nj_);
     info.grid.N = long(N_);
 
+    ASSERT(k_ + Nj_ <= pl.size());
     info.grid.pl = &pl[k_];
     info.grid.pl_size = long(Nj_);
 
-    ASSERT(k_ + Nj_ <= pl.size());
     for (size_t i = k_; i < k_ + Nj_; i++) {
         ASSERT(pl[i] > 0);
     }
@@ -296,11 +296,58 @@ void Reduced::fill(grib_info& info) const  {
     bbox_.fill(info);
 }
 
+
 void Reduced::estimate(api::MIREstimation& estimation) const {
     Gaussian::estimate(estimation);
     const std::vector<long>& pl = pls();
     estimation.pl(pl.size());
 }
+
+
+std::vector<util::GridBox> Reduced::gridBoxes() const {
+    ASSERT(1 < Nj_);
+
+
+    // latitude edges
+    std::vector<double> latEdges = calculateUnrotatedGridBoxLatitudeEdges();
+
+
+    // grid boxes
+    std::vector<util::GridBox> r;
+    r.reserve(numberOfPoints());
+
+    bool periodic = isPeriodicWestEast();
+    auto& pl = pls();
+    ASSERT(k_ + Nj_ <= pl.size());
+
+    for (size_t j = k_; j < k_ + Nj_; ++j) {
+        ASSERT(pl[j] > 0);
+        eckit::Fraction inc(360, pl[j]);
+
+        auto Ni = size_t(pl[j]);
+
+        // longitude edges
+        auto west = bbox_.west().fraction();
+        auto Nw   = (west / inc).integralPart();
+        if (Nw * inc < west) {
+            Nw += 1;
+        }
+        Longitude lon0 = (Nw * inc) - (inc / 2);
+        Longitude lon1 = lon0;
+
+        for (size_t i = 0; i < Ni; ++i) {
+            auto l = lon1;
+            lon1 += inc;
+            r.emplace_back(util::GridBox(latEdges[j], l.value(), latEdges[j + 1], lon1.value()));
+        }
+
+        ASSERT(periodic ? lon0 == lon1.normalise(lon0) : lon0 < lon1.normalise(lon0));
+    }
+
+    ASSERT(r.size() == numberOfPoints());
+    return r;
+}
+
 
 void Reduced::fill(api::MIRJob& job) const  {
     ASSERT(isGlobal());

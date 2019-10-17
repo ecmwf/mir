@@ -1014,7 +1014,8 @@ intensity:
 - 150172  # Surface solar radiation
 - 150180  # Diagnosed sea surface temperature error
 - 150182  # Observed sea surface temperature
-- 151127  # Mean sea water potential temperature in the upper 300 m
+- 151126  # Mean sea water potential temperature in the upper 300 m
+- 151127  # Mean sea water temperature in the upper 300 m
 - 151128  # In situ Temperature
 - 151129  # Ocean potential temperature
 - 151130  # Salinity
@@ -1561,7 +1562,7 @@ intensity:
 - 215175  # Sulphur dioxide optical depth
 - 215176  # Total absorption aerosol optical depth at 2130 nm
 - 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
-- 215203  # Fine-mode nitrate aerosol optical depth at 550nm 
+- 215203  # Fine-mode nitrate aerosol optical depth at 550nm
 - 215204  # Coarse-mode nitrate aerosol optical depth at 550nm
 - 228001  # Convective inhibition
 - 228002  # Orography
@@ -1580,8 +1581,9 @@ intensity:
 - 228017  # Duct base height
 - 228018  # Trapping layer base height
 - 228019  # Trapping layer top height
+- 228020  # -10ºC Isothermal Level (atm)
 - 228023  # Cloud base height
-- 228024  # Zero degree level
+- 228024  # 0ºC Isothermal Level (atm)
 - 228025  # Horizontal visibility
 - 228026  # Maximum temperature at 2 metres in the last 3 hours
 - 228027  # Minimum temperature at 2 metres in the last 3 hours
@@ -1823,6 +1825,13 @@ intensity:
 - 260507  # Ocean Heat Content
 - 260510  # Cloudy brightness temperature
 - 260511  # Clear-sky brightness temperature
+- 260540  # Forest fire weather index
+- 260541  # Fine fuel moisture code
+- 260542  # Duff moisture code
+- 260543  # Drought code
+- 260544  # Initial fire spread index
+- 260545  # Fire buildup index
+- 260546  # Fire daily severity rating
 - 260550  # Cloudy radiance (with respect to wave number)
 - 260551  # Clear-sky radiance (with respect to wave number)
 - 260552  # Wind speed

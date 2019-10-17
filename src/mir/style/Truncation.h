@@ -14,7 +14,6 @@
 
 #include <iosfwd>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
@@ -28,7 +27,7 @@ namespace mir {
 namespace style {
 
 
-class Truncation : public eckit::NonCopyable {
+class Truncation {
 public:
 
     // -- Exceptions
@@ -37,6 +36,7 @@ public:
     // -- Contructors
 
     Truncation(const param::MIRParametrisation& parametrisation);
+    Truncation(const Truncation&) = delete;
 
     // -- Destructor
 
@@ -46,7 +46,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Truncation&) = delete;
 
     // -- Methods
 

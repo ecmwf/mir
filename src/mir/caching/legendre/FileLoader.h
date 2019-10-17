@@ -11,18 +11,21 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
 
-#ifndef mir_caching_FileLoader_H
-#define mir_caching_FileLoader_H
+
+#ifndef mir_caching_legendre_FileLoader_h
+#define mir_caching_legendre_FileLoader_h
 
 #include "eckit/io/Buffer.h"
+
 #include "mir/caching/legendre/LegendreLoader.h"
+
 
 namespace mir {
 namespace caching {
 namespace legendre {
+
 
 class FileLoader : public LegendreLoader {
 public:
@@ -44,8 +47,11 @@ private:
 
 };
 
-} // namespace legendre
-} // namespace caching
-} // namespace mir
+
+}  // namespace legendre
+}  // namespace caching
+}  // namespace mir
+
 
 #endif
+

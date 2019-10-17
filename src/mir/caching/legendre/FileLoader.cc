@@ -11,8 +11,8 @@
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
 /// @author Tiago Quintino
-///
 /// @date Apr 2015
+
 
 #include <fcntl.h>
 #include <iostream>
@@ -30,9 +30,11 @@
 
 #include "mir/config/LibMir.h"
 
+
 namespace mir {
 namespace caching {
 namespace legendre {
+
 
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
     : LegendreLoader(parametrisation, path), buffer_(path.size()) {
@@ -70,6 +72,8 @@ namespace {
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }
 
-} // namespace legendre
-} // namespace caching
-} // namespace mir
+
+}  // namespace legendre
+}  // namespace caching
+}  // namespace mir
+

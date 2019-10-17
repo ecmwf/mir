@@ -22,7 +22,6 @@
 #include <memory>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/memory/NonCopyable.h"
 
 #include "mir/api/Atlas.h"
 
@@ -39,19 +38,21 @@ namespace caching {
 namespace legendre {
 
 
-class LegendreLoader : public eckit::NonCopyable {
+class LegendreLoader {
 
 public:
-    LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName&);
+    LegendreLoader(const param::MIRParametrisation&, const eckit::PathName&);
+
+    LegendreLoader(const LegendreLoader&) = delete;
+    void operator=(const LegendreLoader&) = delete;
+
     virtual ~LegendreLoader();
 
     virtual const void* address() const = 0;
-    virtual size_t size() const = 0;
+    virtual size_t size() const         = 0;
     virtual bool inSharedMemory() const = 0;
 
-    atlas::trans::LegendreCache transCache() {
-        return atlas::trans::LegendreCache(address(), size());
-    }
+    atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
 
 protected:
     const param::MIRParametrisation& parametrisation_;
@@ -69,23 +70,21 @@ private:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 class LegendreLoaderFactory {
     std::string name_;
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
-    virtual bool shared() const = 0;
+    virtual bool shared() const                                                                 = 0;
 
 protected:
     LegendreLoaderFactory(const std::string&);
     virtual ~LegendreLoaderFactory();
 
 public:
-    static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName& path);
+    static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName&);
     static void list(std::ostream&);
     static bool inSharedMemory(const param::MIRParametrisation&);
 };
+
 
 template <class T>
 class LegendreLoaderBuilder : public LegendreLoaderFactory {
@@ -94,9 +93,7 @@ class LegendreLoaderBuilder : public LegendreLoaderFactory {
         return new T(param, path);
     }
 
-    virtual bool shared() const {
-        return T::shared();
-    }
+    virtual bool shared() const { return T::shared(); }
 
 public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}
@@ -106,5 +103,6 @@ public:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
+
 
 #endif

@@ -16,32 +16,36 @@
 
 #include <iosfwd>
 #include <string>
-#include "eckit/memory/NonCopyable.h"
 
 
 namespace mir {
 namespace style {
 
 
-class SpectralOrder : public eckit::NonCopyable {
+class SpectralOrder {
 public:
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    SpectralOrder() {}
+
+    SpectralOrder()                     = default;
+    SpectralOrder(const SpectralOrder&) = delete;
 
     // -- Destructor
-    virtual ~SpectralOrder() {}
+
+    virtual ~SpectralOrder() = default;
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const SpectralOrder&) = delete;
 
     // -- Methods
+
     virtual long getTruncationFromGaussianNumber(const long&) const;
     virtual long getGaussianNumberFromTruncation(const long&) const;
     virtual void print(std::ostream&) const = 0;

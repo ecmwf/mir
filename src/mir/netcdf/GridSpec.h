@@ -8,14 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
+/// @author Baudouin Raoult
+/// @author Pedro Maciel
+/// @date Jan 2015
 
 
-#ifndef mir_netcdf_GridSpec
-#define mir_netcdf_GridSpec
+#ifndef mir_netcdf_GridSpec_h
+#define mir_netcdf_GridSpec_h
 
 #include <iosfwd>
 #include <vector>
+
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -26,48 +29,43 @@ class Variable;
 
 class GridSpec  {
 public:
-
-    GridSpec(const Variable &);
+    GridSpec(const Variable&);
     virtual ~GridSpec();
+
+    GridSpec(const GridSpec&) = delete;
+    void operator=(const GridSpec&) = delete;
 
     // -- Methods
 
-    static GridSpec* create(const Variable &variable);
+    static GridSpec* create(const Variable& variable);
 
     // For MIR
-    virtual bool has(const std::string& name) const = 0;
-    virtual bool get(const std::string&, long&) const = 0;
-    virtual bool get(const std::string&, std::string&) const = 0;
-    virtual bool get(const std::string &name, double &value) const = 0;
-    virtual bool get(const std::string &name, std::vector<double> &value) const = 0;
+    virtual bool has(const std::string& name) const                             = 0;
+    virtual bool get(const std::string&, long&) const                           = 0;
+    virtual bool get(const std::string&, std::string&) const                    = 0;
+    virtual bool get(const std::string& name, double& value) const              = 0;
+    virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
 
     virtual void reorder(MIRValuesVector& values) const = 0;
 
 
 protected:
-
     // -- Members
     const Variable& variable_;
 
 private:
-
-    GridSpec(const GridSpec &);
-    GridSpec &operator=(const GridSpec &);
-
     // From Endowed
 
     // - Methods
 
-    virtual void print(std::ostream &s) const = 0;
+    virtual void print(std::ostream& s) const = 0;
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &s, const GridSpec &v) {
+    friend std::ostream& operator<<(std::ostream& s, const GridSpec& v) {
         v.print(s);
         return s;
     }
 };
-
-//==================================================
 
 
 class GridSpecGuesser {
@@ -90,7 +88,6 @@ private:
     size_t priority_;
 
 };
-
 
 
 template< class T>
