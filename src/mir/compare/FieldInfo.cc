@@ -17,7 +17,7 @@
 #include "mir/compare/FieldInfo.h"
 #include "eckit/exception/Exceptions.h"
 #include "mir/compare/FieldSet.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 
 
 namespace mir {

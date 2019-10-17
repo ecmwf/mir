@@ -20,7 +20,7 @@
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 #include "eckit/utils/StringTools.h"
 #include "eckit/exception/Exceptions.h"
 

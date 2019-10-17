@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/value/Value.h"

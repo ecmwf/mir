@@ -17,7 +17,7 @@
 
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
-#include "eckit/parser/JSON.h"
+#include "eckit/log/JSON.h"
 
 
 class MIRList : public mir::tools::MIRTool {
