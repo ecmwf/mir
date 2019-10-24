@@ -61,7 +61,7 @@ void read_configuration_files() {
         void print(std::ostream& out) const {
             out << "NamedGridFromFile[name=" << name_ << ",parametrisation=";
             SimpleParametrisation::print(out);
-            out << "]" << std::endl;
+            out << "]";
         }
     };
 
