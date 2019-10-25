@@ -43,14 +43,14 @@
 namespace mir {
 namespace output {
 
-void call_zero(int bad, std::string msg) {
+void call_zero(int bad, const std::string& msg) {
     if (bad) {
         eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
         throw eckit::SeriousBug(msg);
     }
 }
 
-void call_nonzero(void* ok, std::string msg) {
+void call_nonzero(void* ok, const std::string& msg) {
     call_zero(!ok, msg);
 }
 
