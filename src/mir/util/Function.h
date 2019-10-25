@@ -52,7 +52,6 @@ protected:
 
 private:
 
-
     friend std::ostream &operator<<(std::ostream &s, const Function &p) {
         p.print(s);
         return s;
@@ -60,7 +59,10 @@ private:
 
 };
 
-}
-} // namespace eckit
+
+}  // namespace util
+}  // namespace mir
+
 
 #endif
+

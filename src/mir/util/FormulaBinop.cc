@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FormulaBinop.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   April 2016
 
 
@@ -67,9 +67,9 @@ class Unop : public Function {
 
         field.dimensions(field1.dimensions());
 
-        for (size_t i = 0; i < field1.dimensions(); ++i)
+        for (size_t d = 0; d < field1.dimensions(); ++d)
         {
-            const MIRValuesVector& values1 = field1.values(i);
+            const MIRValuesVector& values1 = field1.values(d);
 
             size_t size = values1.size();
 
@@ -86,7 +86,7 @@ class Unop : public Function {
                     }
                 }
 
-                field.update(values, i);
+                field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
 
@@ -95,7 +95,7 @@ class Unop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i]);
                 }
-                field.update(values, i);
+                field.update(values, d);
             }
         }
     }
@@ -149,10 +149,10 @@ class Binop : public Function {
         ASSERT(field1.dimensions() == field2.dimensions());
         field.dimensions(field1.dimensions());
 
-        for (size_t i = 0; i < field1.dimensions(); ++i)
+        for (size_t d = 0; d < field1.dimensions(); ++d)
         {
-            const MIRValuesVector& values1 = field1.values(i);
-            const MIRValuesVector& values2 = field2.values(i);
+            const MIRValuesVector& values1 = field1.values(d);
+            const MIRValuesVector& values2 = field2.values(d);
 
             size_t size = values1.size();
             ASSERT(values1.size() == values2.size());
@@ -171,7 +171,7 @@ class Binop : public Function {
                     }
                 }
 
-                field.update(values, i);
+                field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
 
@@ -180,7 +180,7 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i], values2[i]);
                 }
-                field.update(values, i);
+                field.update(values, d);
             }
         }
     }
@@ -199,9 +199,9 @@ class Binop : public Function {
 
         field.dimensions(field1.dimensions());
 
-        for (size_t i = 0; i < field1.dimensions(); ++i)
+        for (size_t d = 0; d < field1.dimensions(); ++d)
         {
-            const MIRValuesVector& values1 = field1.values(i);
+            const MIRValuesVector& values1 = field1.values(d);
 
             size_t size = values1.size();
 
@@ -218,7 +218,7 @@ class Binop : public Function {
                     }
                 }
 
-                field.update(values, i);
+                field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
 
@@ -227,7 +227,7 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i], scalar2);
                 }
-                field.update(values, i);
+                field.update(values, d);
             }
         }
     }
@@ -242,9 +242,9 @@ class Binop : public Function {
 
         field.dimensions(field2.dimensions());
 
-        for (size_t i = 0; i < field2.dimensions(); ++i)
+        for (size_t d = 0; d < field2.dimensions(); ++d)
         {
-            const MIRValuesVector& values2 = field2.values(i);
+            const MIRValuesVector& values2 = field2.values(d);
 
             size_t size = values2.size();
 
@@ -261,7 +261,7 @@ class Binop : public Function {
                     }
                 }
 
-                field.update(values, i);
+                field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue2);
 
@@ -270,7 +270,7 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(scalar1, values2[i]);
                 }
-                field.update(values, i);
+                field.update(values, d);
             }
         }
     }

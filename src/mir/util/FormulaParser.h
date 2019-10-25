@@ -9,27 +9,32 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaParser_h
-#define mir_FormulaParser_h
+
+#ifndef mir_util_FormulaParser_h
+#define mir_util_FormulaParser_h
 
 #include <vector>
 
 #include "eckit/parser/StreamParser.h"
 #include "eckit/types/Types.h"
 
-namespace mir {
 
+namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
 namespace util {
-
 class Formula;
-//----------------------------------------------------------------------------------------------------------------------
+}
+}
 
+
+namespace mir {
+namespace util {
 class FormulaParser : public eckit::StreamParser {
 
 public: // methods
@@ -52,9 +57,9 @@ private: // methods
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

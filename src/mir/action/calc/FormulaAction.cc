@@ -93,7 +93,7 @@ const char* FormulaAction::name() const {
     return "FormulaAction";
 }
 
-static ActionBuilder< FormulaAction > formula("calc.formula");
+static ActionBuilder< FormulaAction > __action("calc.formula");
 
 
 

@@ -9,7 +9,10 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date April 2016
+
 
 #ifndef mir_PlanParser_h
 #define mir_PlanParser_h
@@ -19,19 +22,20 @@
 #include "eckit/parser/StreamParser.h"
 #include "eckit/types/Types.h"
 
-namespace mir {
 
+namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-
 namespace action {
 class ActionPlan;
 }
+}
 
+
+namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 class PlanParser : public eckit::StreamParser {
 
@@ -39,13 +43,11 @@ public: // methods
 
     PlanParser(std::istream &in);
 
-    void parse(action::ActionPlan &plan,
-               const param::MIRParametrisation &parametrisation);
+    void parse(action::ActionPlan&p, const param::MIRParametrisation&);
 
 private: // methods
 
-    void parseAction(action::ActionPlan &plan,
-                     const param::MIRParametrisation &parametrisation);
+    void parseAction(action::ActionPlan&, const param::MIRParametrisation&);
 
     std::string parseToken();
     std::map<std::string, std::vector<std::string> > parseArguments(const std::string& action);
@@ -53,9 +55,10 @@ private: // methods
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif
+

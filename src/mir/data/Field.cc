@@ -258,12 +258,11 @@ bool Field::hasMissing() const {
     // re-check for missing values if required
     if (recomputeHasMissing_) {
         recomputeHasMissing_ = false;
-        hasMissing_ = false;
+        hasMissing_          = false;
         for (const auto& v : values_) {
-            if ((hasMissing_ =
-                 v.front() == missingValue_ ||
-                 v.back() == missingValue_ ||
-                 std::find(v.begin(), v.end(), missingValue_) != v.end())) {
+            if (v.front() == missingValue_ || v.back() == missingValue_ ||
+                std::find(v.begin(), v.end(), missingValue_) != v.end()) {
+                hasMissing_ = true;
                 break;
             }
         }

@@ -41,7 +41,7 @@ Reshape::Reshape(const HyperCube &cube, size_t which, size_t where, size_t count
     ASSERT(which_ <= size_);
 }
 
-bool Reshape::merge(Reshape &other) {
+bool Reshape::merge(const Reshape& other) {
 
     if (which_ == other.which_) {
         ASSERT(other.where_ != where_);

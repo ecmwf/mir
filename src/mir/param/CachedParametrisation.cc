@@ -9,6 +9,7 @@
  */
 
 /// @author Baudouin Raoult
+/// @author Pedro Maciel
 /// @date Jul 2016
 
 
@@ -58,7 +59,7 @@ void CachedParametrisation::_set(const std::string& name, const T& value) const 
 }
 
 bool CachedParametrisation::has(const std::string& name) const {
-    MIRParametrisation& cache = cache_;
+    const MIRParametrisation& cache = cache_;
     return cache.has(name) || parametrisation_.has(name);
 }
 

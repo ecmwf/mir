@@ -103,14 +103,14 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         // then calculate the nearest neighbour weights
         weights.resize(npts, 0.0);
 
-        double Ixx(0), Ixy(0), Ixz(0), Iyy(0), Iyz(0), Izz(0), Rx(0), Ry(0), Rz(0), Lx, Ly, Lz, dx, dy, dz;
+        double Ixx(0), Ixy(0), Ixz(0), Iyy(0), Iyz(0), Izz(0), Rx(0), Ry(0), Rz(0), Lx, Ly, Lz;
 
-        for ( size_t j = 0; j < npts; ++j) {
+        for (size_t j = 0; j < npts; ++j) {
             Point3 np  = closest[j].point();
 
-            dx = np[XX] - p[XX];
-            dy = np[YY] - p[YY];
-            dz = np[ZZ] - p[ZZ];
+            const double dx = np[XX] - p[XX];
+            const double dy = np[YY] - p[YY];
+            const double dz = np[ZZ] - p[ZZ];
 
             Ixx += dx * dx;
             Ixy += dx * dy;
@@ -128,20 +128,20 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             Dz[j] = dz;
         }
 
-        Lx =  (-(Iyz * Iyz * Rx) + Iyy * Izz * Rx + Ixz * Iyz * Ry - Ixy * Izz * Ry - Ixz * Iyy * Rz + Ixy * Iyz * Rz) /
-              (Ixz * Ixz * Iyy - 2.*Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
-        Ly =  (Ixz * Iyz * Rx - Ixy * Izz * Rx - Ixz * Ixz * Ry + Ixx * Izz * Ry + Ixy * Ixz * Rz - Ixx * Iyz * Rz) /
-              (Ixz * Ixz * Iyy - 2.*Ixy * Ixz * Iyz + Ixx * Iyz * Iyz + Ixy * Ixy * Izz - Ixx * Iyy * Izz);
-        Lz =  (-(Ixz * Iyy * Rx) + Ixy * Iyz * Rx + Ixy * Ixz * Ry - Ixx * Iyz * Ry - Ixy * Ixy * Rz + Ixx * Iyy * Rz) /
-              (Ixz * Ixz * Iyy - 2.*Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
+        Lx = (-(Iyz * Iyz * Rx) + Iyy * Izz * Rx + Ixz * Iyz * Ry - Ixy * Izz * Ry - Ixz * Iyy * Rz + Ixy * Iyz * Rz) /
+             (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
+        Ly = (Ixz * Iyz * Rx - Ixy * Izz * Rx - Ixz * Ixz * Ry + Ixx * Izz * Ry + Ixy * Ixz * Rz - Ixx * Iyz * Rz) /
+             (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixx * Iyz * Iyz + Ixy * Ixy * Izz - Ixx * Iyy * Izz);
+        Lz = (-(Ixz * Iyy * Rx) + Ixy * Iyz * Rx + Ixy * Ixz * Ry - Ixx * Iyz * Ry - Ixy * Ixy * Rz + Ixx * Iyy * Rz) /
+             (Ixz * Ixz * Iyy - 2. * Ixy * Ixz * Iyz + Ixy * Ixy * Izz + Ixx * (Iyz * Iyz - Iyy * Izz));
 
         double S = 0;
-        for ( size_t j = 0; j < npts; ++j ) {
+        for (size_t j = 0; j < npts; ++j) {
             weights[j] = 1.0 + Lx * Dx[j] + Ly * Dy[j] + Lz * Dz[j];
             S += weights[j];
         }
 
-        for ( size_t j = 0; j < npts; ++j ) {
+        for (size_t j = 0; j < npts; ++j) {
             weights[j] /= S;
         }
 

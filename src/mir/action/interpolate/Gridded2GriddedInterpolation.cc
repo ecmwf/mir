@@ -70,7 +70,7 @@ bool Gridded2GriddedInterpolation::canCrop() const {
 
 method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) const {
 
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
     auto input = in->domain();

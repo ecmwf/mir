@@ -91,7 +91,7 @@ static atlas::trans::Cache getTransCache(
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
                 eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create Legendre coefficients");
-                eckit::AutoTiming timing(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
+                eckit::AutoTiming timer(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
                 eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;

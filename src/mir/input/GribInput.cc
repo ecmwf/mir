@@ -1043,8 +1043,8 @@ void GribInput::marsRequest(std::ostream& out) const {
     grib_keys_iterator *keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
-    const char *sep = "";
     try {
+        const char *sep = "";
         while (grib_keys_iterator_next(keys)) {
 
             char value[1024];
@@ -1080,6 +1080,7 @@ void GribInput::marsRequest(std::ostream& out) const {
                 std::string param;
                 in >> param;
                 out << sep << param;
+                sep = ",";
                 const char *slash = "=";
                 int m;
                 in >> m;

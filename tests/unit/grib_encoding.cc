@@ -201,13 +201,16 @@ public:
         return true;
     }
 
+#if 0
     size_t numberOfValuesFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->numberOfPoints();
     }
+#endif
 
+#if 0
     BoundingBox boundingBoxEncodedInGrib(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -222,6 +225,7 @@ public:
 
         return BoundingBox(box[0], box[1], box[2], box[3]);
     }
+#endif
 
     BoundingBox boundingBoxFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);

@@ -61,7 +61,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
                                         context::Context& ctx) {
 
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position = handle.position();
@@ -139,7 +139,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
 size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param,
         context::Context& ctx) {
 
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position = handle.position();

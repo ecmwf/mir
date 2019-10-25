@@ -53,8 +53,7 @@ bool Gridded2RotatedGrid::sameAs(const Action& other) const {
 util::BoundingBox Gridded2RotatedGrid::outputBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 
-    auto& bbox(method().hasCropping() ? method().getCropping()
-                                      : out->domain());
+    const auto& bbox(method().hasCropping() ? method().getCropping() : out->domain());
 
     bbox_ = rotation_.boundingBox(bbox);
     return bbox_;

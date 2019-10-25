@@ -39,6 +39,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     which_(which),
     next_(0),
     hasMissing_(false),
+    missingValue_(3e38),
     footprint_(0) {
 
     // For now, this should give an ovwerestimate of the memory footprint

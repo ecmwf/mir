@@ -78,7 +78,7 @@ private:
         return 2;
     }
 
-    void process(api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
+    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
 public:
 
@@ -321,7 +321,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-void MIR::process(api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
+void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
     eckit::Timer timer("Total time");
 
     util::MIRStatistics statistics;

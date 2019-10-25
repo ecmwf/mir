@@ -92,9 +92,6 @@ void KNearestNeighbours::assemble(
     const util::Domain& inDomain = in.domain();
 
 
-    double search = 0;
-    double insert = 0;
-
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
     weights_triplets.reserve(nbOutputPoints * picker_->n());
@@ -104,6 +101,8 @@ void KNearestNeighbours::assemble(
 
     {
         Pretty::ProgressTimer progress("Locating", nbOutputPoints, {"point"}, log);
+        double search = 0;
+        double insert = 0;
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;

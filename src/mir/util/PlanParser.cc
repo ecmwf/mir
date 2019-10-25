@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   PlanParser.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
-/// @date   April 2016
+/// @author Pedro Maciel
+/// @date April 2016
 
 
 #include "mir/util/PlanParser.h"
@@ -22,10 +22,10 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 PlanParser::PlanParser(std::istream &in) : StreamParser(in, true) {
 }
+
 
 void PlanParser::parse(action::ActionPlan &plan, const
                        param::MIRParametrisation &parametrisation) {
@@ -41,6 +41,7 @@ void PlanParser::parse(action::ActionPlan &plan, const
     }
 
 }
+
 
 void PlanParser::parseAction(action::ActionPlan &plan, const
                              param::MIRParametrisation &parametrisation) {
@@ -61,6 +62,7 @@ std::string PlanParser::parseToken() {
     }
     return s;
 }
+
 
 std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(const std::string& action) {
     std::map<std::string, std::vector<std::string> > result;
@@ -126,7 +128,7 @@ std::vector<std::string> PlanParser::parseValues() {
     return result;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace util
 } // namespace mir
+

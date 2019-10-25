@@ -10,7 +10,7 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Jul 2016
 
 
 #ifndef mir_param_CachedParametrisation_h

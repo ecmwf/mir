@@ -93,7 +93,7 @@ public:
 
     MIRJob& set(const std::string& args);
 
-    MIRJob& representationFrom(input::MIRInput&);
+    MIRJob& representationFrom(const input::MIRInput&);
 
     // For debugging only
     void mirToolCall(std::ostream&) const;

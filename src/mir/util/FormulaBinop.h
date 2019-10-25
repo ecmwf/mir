@@ -9,21 +9,23 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaBinop_H
-#define mir_FormulaBinop_H
+
+#ifndef mir_util_FormulaBinop_h
+#define mir_util_FormulaBinop_h
 
 #include <string>
 #include <vector>
 
 #include "mir/util/FormulaFunction.h"
 
+
 namespace mir {
 namespace util {
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class FormulaBinop : public FormulaFunction {
 public:
@@ -39,9 +41,9 @@ private:
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

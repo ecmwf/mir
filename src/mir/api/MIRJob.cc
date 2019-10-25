@@ -272,7 +272,7 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 }
 
 
-MIRJob& MIRJob::representationFrom(input::MIRInput& input) {
+MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
 
     const data::MIRField field = input.field();
     const repres::Representation* repres = field.representation();

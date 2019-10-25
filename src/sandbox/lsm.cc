@@ -57,7 +57,7 @@ class LSM : public eckit::Tool {
 void LSM::run() {
 
     mir::input::GribFileInput file("/tmp/lsm.grib");
-    mir::input::MIRInput &input = file;
+    const mir::input::MIRInput& input = file;
 
     while (file.next()) {
 

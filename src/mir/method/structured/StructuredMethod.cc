@@ -142,7 +142,7 @@ void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<La
     jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
     jSouth = jNorth + 1;
 
-    ASSERT(0 <= jNorth && jNorth < Nj - 1);
+    ASSERT(/*0 <= jNorth &&*/ jNorth < Nj - 1);
     ASSERT(0 < jSouth && jSouth <= Nj - 1);
 }
 

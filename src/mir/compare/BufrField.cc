@@ -317,15 +317,15 @@ BufrField::BufrField(const char* buffer, size_t size,
     ASSERT(h);
     HandleDeleter delh(h);
 
-    size_t count;
-    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &count));
-    ASSERT(count > 0);
+    size_t nDescriptors;
+    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &nDescriptors));
+    ASSERT(nDescriptors > 0);
 
-    descriptors_.resize(count);
+    descriptors_.resize(nDescriptors);
 
-    size_t n = count;
+    size_t n = nDescriptors;
     GRIB_CALL(grib_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
-    ASSERT(n == count);
+    ASSERT(n == nDescriptors);
 
 
 

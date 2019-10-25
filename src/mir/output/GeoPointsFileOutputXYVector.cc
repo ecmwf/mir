@@ -49,7 +49,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
     ASSERT(once());
     ASSERT(!binary_);
 
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position = handle.position();

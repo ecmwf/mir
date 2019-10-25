@@ -166,8 +166,8 @@ public:
     }
 
 
-    friend eckit::JSON& operator<<(eckit::JSON& s, const Segment& p) {
-        p.json(s);
+    friend eckit::JSON& operator<<(eckit::JSON& s, const Segment& q) {
+        q.json(s);
         return s;
     }
 
@@ -175,10 +175,10 @@ public:
         json.startObject();
         json << "points";
         json.startList();
-        for (auto p : points_) {
+        for (auto q : points_) {
             json.startList();
-            json << p.x();
-            json << p.y();
+            json << q.x();
+            json << q.y();
             json.endList();
         }
         json.endList();
@@ -195,20 +195,20 @@ static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const e
     // Segment s(p1, p2);
     // auto j = cache.find(s);
     // if (j == cache.end()) {
-    //     auto p = eckit::geometry::Point2::middle(p1, p2);
-    //     cache[Segment(p1, p2)] = p;
-    //     cache[Segment(p2, p1)] = p;
+    //     auto q = eckit::geometry::Point2::middle(p1, p2);
+    //     cache[Segment(p1, p2)] = q;
+    //     cache[Segment(p2, p1)] = q;
     //     j = cache.find(s);
     // }
     // return (*j).second;
 }
 
-static bool connect(const eckit::geometry::Point2& p,
+static bool connect(const eckit::geometry::Point2& q,
                     Segment& line,
                     const std::map<eckit::geometry::Point2, std::set<Segment > >& ends,
                     std::set<Segment >& segments) {
 
-    auto j = ends.find(p);
+    auto j = ends.find(q);
     if (j != ends.end()) {
         const std::set<Segment>& q = (*j).second;
 
