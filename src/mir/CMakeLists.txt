@@ -488,6 +488,8 @@ list(APPEND mir_srcs
     stats/Method.h
     stats/Statistics.cc
     stats/Statistics.h
+    stats/ValueStatistics.cc
+    stats/ValueStatistics.h
     stats/comparator/ComparatorT.cc
     stats/comparator/ComparatorT.h
     stats/comparator/Spectral.cc
@@ -500,8 +502,10 @@ list(APPEND mir_srcs
     stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
-    stats/detail/PNorms.h
-    stats/detail/Scalar.h
+    stats/detail/PNormsT.cc
+    stats/detail/PNormsT.h
+    stats/detail/ScalarT.cc
+    stats/detail/ScalarT.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc
