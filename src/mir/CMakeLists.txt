@@ -492,6 +492,8 @@ list(APPEND mir_srcs
     stats/ValueStatistics.h
     stats/comparator/ComparatorT.cc
     stats/comparator/ComparatorT.h
+    stats/comparator/MissingValues.cc
+    stats/comparator/MissingValues.h
     stats/comparator/Spectral.cc
     stats/comparator/Spectral.h
     stats/detail/AngleT.cc

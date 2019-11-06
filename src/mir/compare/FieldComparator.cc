@@ -110,6 +110,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("compare-values",
                       "Compare field values"));
 
+    options.push_back(new SimpleOption<bool>("compare-missing-values",
+                      "Compare field bitmap"));
+
     options.push_back(new SimpleOption<bool>("compare-statistics",
                       "Compare field statistics"));
 
@@ -219,6 +222,9 @@ void FieldComparator::compare(const std::string& name,
     bool compareValues = false;
     args_.get("compare-values", compareValues);
 
+    bool compareMissingValues = false;
+    args_.get("compare-missing-values", compareMissingValues);
+
     bool compareStatistics = false;
     args_.get("compare-statistics", compareStatistics);
 
@@ -235,10 +241,10 @@ void FieldComparator::compare(const std::string& name,
 
     compareCounts(name, multi1, multi2, fields1, fields2);
 
-    compareFields(multi1, multi2, fields1, fields2, compareValues, compareStatistics);
+    compareFields(multi1, multi2, fields1, fields2, compareValues, compareMissingValues, compareStatistics);
 
     if (fatals_ == save) {
-        compareFields(multi2, multi1, fields2, fields1, false, compareStatistics);
+        compareFields(multi2, multi1, fields2, fields1, false, false, compareStatistics);
     }
 
 
@@ -703,6 +709,36 @@ void FieldComparator::compareFieldValues(
 }
 
 
+void FieldComparator::compareFieldMissingValues(
+    const FieldComparator::MultiFile& multi1,
+    const FieldComparator::MultiFile& multi2,
+    const Field& field1,
+    const Field& field2) {
+
+    std::unique_ptr<input::MIRInput> input1(new input::GribFileInput(field1.path(), field1.offset()));
+    std::unique_ptr<input::MIRInput> input2(new input::GribFileInput(field2.path(), field2.offset()));
+    input1->next();
+    input2->next();
+
+
+    const param::ConfigurationWrapper args_wrap(args_);
+    static param::DefaultParametrisation defaults;
+
+    param::CombinedParametrisation param1(args_wrap, input1->parametrisation(), defaults);
+    param::CombinedParametrisation param2(args_wrap, input2->parametrisation(), defaults);
+
+    std::unique_ptr<stats::Comparator> comp(stats::ComparatorFactory::build("missing-values", param1, param2));
+    auto problems = comp->execute(input1->field(), input2->field());
+
+    if (!problems.empty()) {
+        eckit::Log::info() << "Value compare failed between:"
+                           << "\n  " << multi1 << ": " << field1 << "\n  " << multi2 << ": " << field2
+                           << "\n  reporting " << *comp << "\n  failed because" << problems << std::endl;
+        error("values-mismatches");
+    }
+}
+
+
 void FieldComparator::whiteListEntries(const Field & field, const MultiFile & multi) const {
     multi.whiteListEntries(eckit::Log::info());
     eckit::Log::info() << ' ';
@@ -849,6 +885,7 @@ void FieldComparator::compareFields(const MultiFile & multi1,
                                     const FieldSet & fields1,
                                     const FieldSet & fields2,
                                     bool compareValues,
+                                    bool compareMissingValues,
                                     bool compareStatistics) {
 
     bool show = true;
@@ -856,11 +893,14 @@ void FieldComparator::compareFields(const MultiFile & multi1,
     for (const auto & j : fields1) {
         auto other = fields2.same(j);
         if (other != fields2.end()) {
-            if (compareStatistics) {
-                compareFieldStatistics(multi1, multi2, j, *other);
-            }
             if (compareValues) {
                 compareFieldValues(multi1, multi2, j, *other);
+            }
+            if (compareMissingValues) {
+                compareFieldMissingValues(multi1, multi2, j, *other);
+            }
+            if (compareStatistics) {
+                compareFieldStatistics(multi1, multi2, j, *other);
             }
         } else {
             missingField(multi1, multi2, j, fields2, show);
