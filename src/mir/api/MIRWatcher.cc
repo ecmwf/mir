@@ -13,8 +13,6 @@
 /// @date Apr 2015
 
 
-#include <iostream>
-
 #include "mir/api/MIRWatcher.h"
 
 

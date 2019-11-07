@@ -13,14 +13,13 @@
 /// @date Apr 2015
 
 
-#include <cmath>
 #include <iostream>
 
 #include "mir/data/MIRField.h"
-
 #include "mir/input/EmptyInput.h"
 
 #include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace input {
@@ -35,10 +34,11 @@ EmptyInput::EmptyInput(): calls_(0) {
 EmptyInput::~EmptyInput() = default;
 
 
-bool EmptyInput::sameAs(const MIRInput &other) const {
+bool EmptyInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const EmptyInput *>(&other);
     return o;
 }
+
 
 bool EmptyInput::next() {
     return calls_++ == 0;
@@ -60,12 +60,12 @@ void EmptyInput::print(std::ostream &out) const {
     out << "EmptyInput[...]";
 }
 
-void EmptyInput::latitudes(std::vector<double> &) const {
 
+void EmptyInput::latitudes(std::vector<double>&) const {
 }
 
-void EmptyInput::longitudes(std::vector<double> &) const {
 
+void EmptyInput::longitudes(std::vector<double>&) const {
 }
 
 

@@ -16,12 +16,10 @@
 #ifndef mir_param_CachedParametrisation_h
 #define mir_param_CachedParametrisation_h
 
-#include <map>
-#include <set>
 #include <string>
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-
 
 
 namespace mir {

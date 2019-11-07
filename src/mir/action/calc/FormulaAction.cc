@@ -12,26 +12,29 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/calc/FormulaAction.h"
 
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/MIRStatistics.h"
-#include "mir/util/FormulaParser.h"
-#include "mir/util/Formula.h"
-#include "mir/data/MIRField.h"
-
-#include "eckit/utils/Tokenizer.h"
 #include "eckit/types/Types.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
+
+#include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Formula.h"
+#include "mir/util/FormulaParser.h"
+#include "mir/util/MIRStatistics.h"
+
+
 namespace mir {
 namespace action {
 
-FormulaAction::FormulaAction(const param::MIRParametrisation &parametrisation):
+
+FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
 
     std::string formula;
@@ -76,7 +79,7 @@ void FormulaAction::print(std::ostream &out) const {
 }
 
 
-void FormulaAction::execute(context::Context & ctx) const {
+void FormulaAction::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
@@ -89,13 +92,13 @@ void FormulaAction::execute(context::Context & ctx) const {
 
 }
 
+
 const char* FormulaAction::name() const {
     return "FormulaAction";
 }
 
+
 static ActionBuilder< FormulaAction > __action("calc.formula");
-
-
 
 
 }  // namespace action

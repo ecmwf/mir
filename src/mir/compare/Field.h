@@ -8,17 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   Field.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
 
-#ifndef mir_compare_Field_H
-#define mir_compare_Field_H
+
+#ifndef mir_compare_Field_h
+#define mir_compare_Field_h
 
 #include <iosfwd>
 #include <string>
-#include <set>
 #include <vector>
 
 #include "mir/compare/FieldInfo.h"
@@ -37,8 +37,6 @@ namespace mir {
 namespace compare {
 
 class FieldSet;
-class GribField;
-class BufrField;
 
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -103,13 +101,6 @@ public:
     bool operator==(const Field& other) const;
 
     operator bool() const;
-
-
-    // const GribField& asGribField() const;
-    // const BufrField& asBufrField() const;
-
-    // GribField& asGribField();
-    // BufrField& asBufrField();
 
     off_t offset() const;
     size_t length() const;

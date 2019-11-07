@@ -26,12 +26,10 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/Atlas.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
 

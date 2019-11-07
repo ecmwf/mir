@@ -18,7 +18,9 @@
 
 #include <iosfwd>
 #include <string>
+
 #include "eckit/memory/Counted.h"
+
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -44,10 +46,6 @@ class BoundingBox;
 class Domain;
 class GridBox;
 class MeshGeneratorParameters;
-}
-
-namespace context {
-class Context;
 }
 
 namespace api {

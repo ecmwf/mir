@@ -11,7 +11,7 @@
 
 #include "mir/compare/FieldComparator.h"
 
-#include <cmath>
+#include <algorithm>
 #include <memory>
 
 #include "eckit/io/Buffer.h"

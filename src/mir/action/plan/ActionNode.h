@@ -13,122 +13,112 @@
 /// @date Apr 2015
 
 
-#ifndef ActionNode_H
-#define ActionNode_H
+#ifndef mir_action_plan_ActionNode_h
+#define mir_action_plan_ActionNode_h
 
 #include <iosfwd>
 
 #include "mir/action/plan/ActionGraph.h"
 
+
 namespace mir {
-
-namespace data {
-class Context;
-}
-
-
-namespace util {
-class MIRStatistics;
-}
-
-
 namespace api {
 class MIRWatcher;
 }
+namespace action {
+class Action;
+}
+}
 
+
+namespace mir {
 namespace action {
 
-class Action;
 
 class ActionNode {
   public:
 
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
-    ActionNode(const Action& action, api::MIRWatcher *watcher);
+    ActionNode(const Action&, api::MIRWatcher*);
 
-// -- Destructor
+    // -- Destructor
 
     ~ActionNode(); // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-    void execute(context::Context& ctx, const Executor& executor) const;
+    void execute(context::Context&, const Executor&) const;
 
-    //=====================================
-
-    const action::Action &action() const;
+    const action::Action& action() const;
 
     ActionGraph& graph();
 
-    void dump(std::ostream& out, size_t depth) const;
+    void dump(std::ostream&, size_t depth) const;
 
-    void notifyFailure(std::exception&, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const;
+    void notifyFailure(std::exception&, const Action&, api::MIRWatcher*, bool& rethrow) const;
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   protected:
 
-// -- Members
+    // -- Members
+    // None
 
-
-// -- Methods
+    // -- Methods
 
     void print(std::ostream&) const; // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
   private:
 
-// No copy allowed
-
+    // No copy allowed
     ActionNode(const ActionNode&);
     ActionNode& operator=(const ActionNode&);
 
-// -- Members
+    // -- Members
 
-    const Action &action_;
+    const Action& action_;
     ActionGraph graph_;
-    api::MIRWatcher* watcher_;  // Just a reference, do not won
+    api::MIRWatcher* watcher_;  // Just a reference, do not own
 
-// -- Methods
+    // -- Methods
     // None
 
-
-
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
     friend std::ostream& operator<<(std::ostream& s, const ActionNode& p) {
         p.print(s);
@@ -140,5 +130,7 @@ class ActionNode {
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif
 

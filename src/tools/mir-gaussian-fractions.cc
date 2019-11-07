@@ -11,7 +11,6 @@
 /// @date Jun 2017
 
 
-#include <cmath>
 #include <memory>
 
 #include "eckit/log/Log.h"

@@ -24,8 +24,6 @@
 #include "eckit/thread/Once.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/action/context/Context.h"
-
 
 namespace mir {
 namespace util {

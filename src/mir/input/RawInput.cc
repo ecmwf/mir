@@ -15,11 +15,15 @@
 
 #include "mir/input/RawInput.h"
 
-#include <cmath>
+#include <cstring>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/input/RawMetadata.h"
+#include "mir/util/BoundingBox.h"
 
 
 namespace mir {
@@ -57,7 +61,7 @@ data::MIRField RawInput::field() const {
     data::MIRField field(*this, metadata_.hasMissing(), metadata_.missingValue());
 
     MIRValuesVector values(count_);
-    ::memcpy(&values[0], values_, sizeof(double) * count_);
+    std::memcpy(&values[0], values_, sizeof(double) * count_);
     field.update(values, 0);
 
     // eckit::Log::debug<LibMir>() << "RawInput::field: " << field << std::endl;
@@ -73,7 +77,7 @@ void RawInput::print(std::ostream& out) const {
 
 size_t RawInput::copy(double *values, size_t size) const {
     ASSERT(count_ <= size);
-    ::memcpy(values, values_, sizeof(double) * count_);
+    std::memcpy(values, values_, sizeof(double) * count_);
     return count_;
 }
 

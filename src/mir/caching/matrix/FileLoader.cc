@@ -16,15 +16,11 @@
 
 #include "mir/caching/matrix/FileLoader.h"
 
-#include <fcntl.h>
 #include <iostream>
-#include <sys/mman.h>
 
-#include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
+#include "eckit/log/Log.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
 
 

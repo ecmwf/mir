@@ -16,8 +16,6 @@
 #include "mir/param/CombinedParametrisation.h"
 
 #include <iostream>
-#include "eckit/exception/Exceptions.h"
-#include "mir/config/LibMir.h"
 
 
 namespace mir {

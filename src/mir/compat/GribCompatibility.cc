@@ -18,9 +18,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-
-#include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
 #include "eckit/utils/Tokenizer.h"
 
 
@@ -135,9 +132,6 @@ public:
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-
-    // eckit::Log::debug<LibMir>() << "GribCompatibility: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {

@@ -16,13 +16,10 @@
 
 #include "mir/action/transform/ShToGridded.h"
 
-#include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <vector>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/geometry/UnitSphere.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Timer.h"
 #include "eckit/system/SystemInfo.h"
@@ -37,9 +34,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/api/MIREstimation.h"

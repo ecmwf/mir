@@ -15,8 +15,8 @@
 
 
 #include <iostream>
+
 #include "mir/util/FormulaNumber.h"
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 
 
@@ -27,7 +27,6 @@ namespace util {
 FormulaNumber::FormulaNumber(const param::MIRParametrisation &parametrisation, double value):
     Formula(parametrisation),
     value_(value) {
-
 }
 
 FormulaNumber::~FormulaNumber() = default;

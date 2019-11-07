@@ -16,6 +16,7 @@
 #include "mir/param/SimpleParametrisation.h"
 
 #include <ios>
+#include <iostream>
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"

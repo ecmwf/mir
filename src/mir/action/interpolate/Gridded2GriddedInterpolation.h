@@ -19,7 +19,6 @@
 #include <memory>
 
 #include "mir/action/plan/Action.h"
-#include "mir/method/Method.h"
 
 
 namespace mir {
@@ -28,6 +27,7 @@ class Representation;
 }
 namespace method {
 class Cropping;
+class Method;
 }
 }
 

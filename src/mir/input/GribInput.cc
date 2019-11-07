@@ -18,15 +18,13 @@
 
 #include <algorithm>
 #include <functional>
-#include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
-#include "eckit/io/BufferedHandle.h"
+#include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/serialisation/HandleStream.h"

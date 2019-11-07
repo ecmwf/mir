@@ -14,7 +14,6 @@
 
 #include <iosfwd>
 
-#include "mir/method/WeightMatrix.h"
 #include "mir/search/PointSearch.h"
 
 

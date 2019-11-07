@@ -17,6 +17,7 @@
 #include "mir/lsm/Mask.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
@@ -24,9 +25,9 @@
 #include "mir/config/LibMir.h"
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/RuntimeParametrisation.h"
+//#include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/repres/latlon/RegularLL.h"
+//#include "mir/repres/latlon/RegularLL.h"
 
 
 namespace mir {

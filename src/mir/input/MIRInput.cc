@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
+
 #include "mir/input/MIRInput.h"
 
 #include <iomanip>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -23,6 +23,7 @@
 #include "mir/input/DummyInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace input {

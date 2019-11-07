@@ -17,7 +17,6 @@
 #define mir_data_MIRField_h
 
 #include <iosfwd>
-#include <vector>
 #include <string>
 #include <map>
 

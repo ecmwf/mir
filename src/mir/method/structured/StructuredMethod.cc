@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date June 2017
 
 #include "mir/method/structured/StructuredMethod.h"
 
@@ -18,8 +17,9 @@
 #include "eckit/log/Log.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+
 
 namespace mir {
 namespace method {

@@ -8,8 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <algorithm>
-#include <cmath>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,10 +21,12 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace tests {

@@ -22,8 +22,6 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Representation.h"
 #include "mir/util/FormulaBinop.h"
 #include "mir/util/Function.h"
 #include "mir/util/MIRStatistics.h"

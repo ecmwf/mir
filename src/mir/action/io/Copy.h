@@ -20,9 +20,6 @@
 
 
 namespace mir {
-namespace input {
-class MIRInput;
-}
 namespace output {
 class MIROutput;
 }
@@ -105,7 +102,7 @@ private:
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
     virtual bool isEndAction() const;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    virtual void estimate(context::Context&, api::MIREstimation&) const;
 
     // -- Class members
     // None

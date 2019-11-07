@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   MIRStatistics.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   April 2016
 
 
@@ -83,3 +83,4 @@ public:
 
 
 #endif
+

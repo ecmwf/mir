@@ -11,6 +11,7 @@
 
 #include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
 
+#include "mir/method/Method.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 

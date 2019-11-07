@@ -17,7 +17,6 @@
 #define mir_action_context_Context_h
 
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "eckit/thread/Mutex.h"

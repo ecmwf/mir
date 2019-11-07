@@ -12,17 +12,15 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/plan/ThreadExecutor.h"
-#include "mir/action/plan/Action.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
-#include "mir/api/MIRWatcher.h"
-#include "mir/action/plan/ActionNode.h"
 
-#include "eckit/exception/Exceptions.h"
-
+#include "eckit/log/Log.h"
 #include "eckit/thread/ThreadPool.h"
+
+#include "mir/action/context/Context.h"
+#include "mir/action/plan/ActionNode.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -60,6 +58,7 @@ public:
     }
 };
 
+
 ThreadExecutor::ThreadExecutor(const std::string& name):
     Executor(name) {
 
@@ -73,10 +72,12 @@ void ThreadExecutor::print(std::ostream& out) const {
     out << "ThreadExecutor[]";
 }
 
+
 void ThreadExecutor::wait() const {
     pthread_once(&once, init);
     pool->wait();
 }
+
 
 void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) const {
     pthread_once(&once, init);
@@ -96,6 +97,7 @@ void ThreadExecutor::parametrisation(const param::MIRParametrisation &parametris
 namespace {
 static ThreadExecutor executor("thread");
 }
+
 
 }  // namespace action
 }  // namespace mir

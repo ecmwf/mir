@@ -17,6 +17,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"

@@ -18,7 +18,6 @@
 #define mir_util_FormulaBinop_h
 
 #include <string>
-#include <vector>
 
 #include "mir/util/FormulaFunction.h"
 
@@ -30,14 +29,14 @@ namespace util {
 class FormulaBinop : public FormulaFunction {
 public:
 
-    FormulaBinop(const param::MIRParametrisation &parametrisation,
+    FormulaBinop(const param::MIRParametrisation& parametrisation,
         const std::string& name, Formula* arg1, Formula *arg2);
 
     virtual ~FormulaBinop();
 
 private:
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 
 };
 

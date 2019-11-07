@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
+#include <iostream>
 
 #include "mir/namedgrids/NamedRegular.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
-#include "eckit/exception/Exceptions.h"
-#include <iostream>
+
 
 namespace mir {
 namespace namedgrids {

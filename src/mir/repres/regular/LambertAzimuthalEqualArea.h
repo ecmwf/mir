@@ -14,7 +14,6 @@
 
 #include "mir/api/Atlas.h"
 
-#include "mir/repres/Iterator.h"
 #include "mir/repres/regular/RegularGrid.h"
 
 

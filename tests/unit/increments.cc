@@ -20,7 +20,6 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/input/GribFileInput.h"

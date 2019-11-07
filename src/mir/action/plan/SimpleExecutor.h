@@ -13,17 +13,17 @@
 /// @date Apr 2015
 
 
-#ifndef SimpleExecutor_h
-#define SimpleExecutor_h
+#ifndef mir_action_plan_SimpleExecutor_h
+#define mir_action_plan_SimpleExecutor_h
 
 #include <iosfwd>
 
 #include "mir/action/plan/Executor.h"
 
+
 namespace mir {
 namespace action {
 
-class Action;
 
 class SimpleExecutor : public Executor {
 public:

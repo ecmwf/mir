@@ -14,13 +14,13 @@
 /// @date April 2016
 
 
-#ifndef mir_PlanParser_h
-#define mir_PlanParser_h
+#ifndef mir_util_PlanParser_h
+#define mir_util_PlanParser_h
 
+#include <map>
 #include <vector>
 
 #include "eckit/parser/StreamParser.h"
-#include "eckit/types/Types.h"
 
 
 namespace mir {

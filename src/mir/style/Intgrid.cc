@@ -21,7 +21,6 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGridPattern.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/style/intgrid/NamedGrid.h"
 
 

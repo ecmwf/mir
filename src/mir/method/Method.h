@@ -38,9 +38,6 @@ class Representation;
 namespace util {
 class BoundingBox;
 }
-namespace api {
-class MIREstimation;
-}
 }
 
 

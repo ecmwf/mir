@@ -16,7 +16,6 @@
 #ifndef mir_api_MIRComplexJob_h
 #define mir_api_MIRComplexJob_h
 
-#include <string>
 #include <vector>
 
 

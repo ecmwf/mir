@@ -8,19 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date September 2017
-
 
 #ifndef mir_lsm_NamedLSM_h
 #define mir_lsm_NamedLSM_h
 
 #include "mir/lsm/LSMSelection.h"
 
-#include "eckit/utils/MD5.h"
-
 
 namespace eckit {
-class PathName;
+class MD5;
 }
 
 

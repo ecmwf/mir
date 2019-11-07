@@ -13,11 +13,13 @@
 /// @author Pedro Maciel
 /// @date   April 2016
 
+
 #include <iostream>
+
 #include "mir/util/FormulaFunction.h"
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 #include "mir/util/Function.h"
+
 
 namespace mir {
 namespace util {

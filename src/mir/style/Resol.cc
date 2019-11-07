@@ -22,11 +22,9 @@
 #include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/latlon/LatLon.h"
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/intgrid/None.h"
 #include "mir/style/truncation/Ordinal.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
 

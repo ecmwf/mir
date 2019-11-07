@@ -15,6 +15,8 @@
 
 #include "mir/method/knn/KNearest.h"
 
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 

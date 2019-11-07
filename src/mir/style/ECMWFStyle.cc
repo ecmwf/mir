@@ -26,7 +26,6 @@
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"

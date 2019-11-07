@@ -17,9 +17,7 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/data/MIRField.h"

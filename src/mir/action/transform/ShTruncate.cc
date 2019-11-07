@@ -16,7 +16,6 @@
 #include "mir/action/transform/ShTruncate.h"
 
 #include <iostream>
-#include <memory>
 
 #include "eckit/exception/Exceptions.h"
 

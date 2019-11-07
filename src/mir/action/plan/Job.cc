@@ -27,7 +27,6 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/style/MIRStyle.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -96,7 +95,7 @@ void Job::execute(util::MIRStatistics &statistics) const {
 }
 
 
-void Job::estimate(api::MIREstimation &estimation) const {
+void Job::estimate(api::MIREstimation& estimation) const {
     ASSERT(plan_);
 
     util::MIRStatistics statistics;

@@ -9,7 +9,6 @@
  */
 
 #include <memory>
-#include <queue>
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
@@ -18,6 +17,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/ConfigurationWrapper.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
 

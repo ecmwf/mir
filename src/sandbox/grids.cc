@@ -12,13 +12,14 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
-#include "eckit/utils/MD5.h"
 #include "eckit/utils/RLE.h"
 
 #include "atlas/grid.h"
+
 
 class Grids : public eckit::Tool {
 

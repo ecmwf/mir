@@ -25,6 +25,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
@@ -66,9 +67,9 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         throw eckit::UserError(msg.str());
     }
 
-
+    const Pretty::Plural gridBoxes("grid box", "grid boxes");
     log << "GridBoxMethod: intersect " << Pretty(out.numberOfPoints()) << " from "
-        << Pretty(in.numberOfPoints(), {"grid box", "grid boxes"}) << std::endl;
+        << Pretty(in.numberOfPoints(), gridBoxes) << std::endl;
 
 
     // init structure used to fill in sparse matrix
@@ -111,7 +112,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        Pretty::ProgressTimer progress("Intersecting", outBoxes.size(), {"grid box", "grid boxes"}, log);
+        Pretty::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t i = 0;
@@ -162,11 +163,11 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ++i;
         }
     }
-    log << "Intersected " << Pretty(weights_triplets.size(), {"grid box", "grid boxes"}) << std::endl;
+    log << "Intersected " << Pretty(weights_triplets.size(), gridBoxes) << std::endl;
 
     if (nbFailures) {
         auto& warning = eckit::Log::warning();
-        warning << "Failed to intersect " << Pretty(nbFailures, {"grid box", "grid boxes"}) << ":";
+        warning << "Failed to intersect " << Pretty(nbFailures, gridBoxes) << ":";
         size_t count = 0;
         for (const auto& f : failures) {
             warning << "\n\tpoint " << f.first << " " << f.second;

@@ -15,9 +15,6 @@
 
 #include "mir/method/knn/NearestNeighbour.h"
 
-#include "eckit/utils/MD5.h"
-#include "mir/param/MIRParametrisation.h"
-
 
 namespace mir {
 namespace method {

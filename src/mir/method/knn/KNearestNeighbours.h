@@ -17,7 +17,6 @@
 #define mir_method_knn_KNearestNeighbours_h
 
 #include <memory>
-#include <string>
 
 #include "mir/method/MethodWeighted.h"
 

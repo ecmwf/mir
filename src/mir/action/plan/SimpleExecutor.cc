@@ -12,16 +12,12 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/plan/SimpleExecutor.h"
-#include "mir/action/plan/Action.h"
-#include "mir/param/RuntimeParametrisation.h"
-#include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
-#include "mir/api/MIRWatcher.h"
+
+#include <iostream>
+
 #include "mir/action/plan/ActionNode.h"
-
-#include "eckit/exception/Exceptions.h"
-
 
 
 namespace mir {
@@ -42,22 +38,22 @@ void SimpleExecutor::print(std::ostream& out) const {
 
 
 void SimpleExecutor::wait() const {
-
 }
+
 
 void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) const {
     node.execute(ctx, *this);
 }
 
-void SimpleExecutor::parametrisation(const param::MIRParametrisation &parametrisation) {
 
+void SimpleExecutor::parametrisation(const param::MIRParametrisation&) {
 }
-
 
 
 namespace {
 static SimpleExecutor executor("simple");
 }
+
 
 }  // namespace action
 }  // namespace mir

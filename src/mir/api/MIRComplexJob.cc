@@ -19,17 +19,12 @@
 #include "eckit/log/Timer.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionGraph.h"
-#include "mir/action/plan/ActionPlan.h"
+#include "mir/action/plan/Executor.h"
 #include "mir/action/plan/Job.h"
-#include "mir/action/plan/SimpleExecutor.h"
-#include "mir/action/plan/ThreadExecutor.h"
 #include "mir/api/MIRComplexJob.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
-#include "mir/config/LibMir.h"
-#include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 
 
@@ -37,34 +32,33 @@ namespace mir {
 namespace api {
 
 
-MIRComplexJob::MIRComplexJob():
-    input_(0) {
-}
+MIRComplexJob::MIRComplexJob() : input_(0) {}
 
 
 MIRComplexJob::~MIRComplexJob() {
     clear();
 }
 
+
 void MIRComplexJob::clear() {
-    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j) {
-        delete (*j);
+    for (auto& j : jobs_) {
+        delete j;
     }
     jobs_.clear();
-    for (std::vector<api::MIRJob *>::const_iterator j = apis_.begin(); j != apis_.end(); ++j) {
-        delete (*j);
+
+    for (auto& j : apis_) {
+        delete j;
     }
     apis_.clear();
-    for (std::vector<api::MIRWatcher *>::const_iterator j = watchers_.begin(); j != watchers_.end(); ++j) {
-        delete (*j);
+
+    for (auto& j : watchers_) {
+        delete j;
     }
     watchers_.clear();
-    input_ = 0;
+
+    input_ = nullptr;
 }
 
-// static void fill(size_t n) {
-
-// }
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
 
@@ -77,7 +71,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     action::ActionGraph graph;
 
     size_t i = 0;
-    for (std::vector<action::Job *>::const_iterator j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
+    for (auto j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
         graph.add((*j)->plan(), watchers_[i]);
     }
 
@@ -88,7 +82,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     std::unique_ptr<eckit::Timer> timer;
 
     if (printActionGraph) {
-        timer.reset(new eckit::Timer ("MIRComplexJob::execute", eckit::Log::info()));
+        timer.reset(new eckit::Timer("MIRComplexJob::execute", eckit::Log::info()));
     }
 
     context::Context ctx(*input_, statistics);
@@ -99,7 +93,6 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         eckit::Log::info() << *input_ << std::endl;
     }
 
-    // action::SimpleExecutor executor;
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
 
     if (printActionGraph) {
@@ -112,22 +105,21 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     if (printActionGraph) {
         eckit::Log::info() << "<<<<<<<<<<< ======" << std::endl;
     }
-
-
 }
+
 
 bool MIRComplexJob::empty() const {
     return jobs_.empty();
 }
 
-void MIRComplexJob::print(std::ostream &out) const {
+
+void MIRComplexJob::print(std::ostream& out) const {
     out << "MIRComplexJob[]";
 }
 
-MIRComplexJob &MIRComplexJob::add(api::MIRJob *job,
-                                  input::MIRInput &input,
-                                  output::MIROutput &output,
-                                  api::MIRWatcher *watcher) {
+
+MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, output::MIROutput& output,
+                                  api::MIRWatcher* watcher) {
 
     if (!job) {
         return *this;
@@ -144,7 +136,7 @@ MIRComplexJob &MIRComplexJob::add(api::MIRJob *job,
     }
 
 
-    apis_.push_back(job); // We keep it becase the Job needs a reference
+    apis_.push_back(job);  // We keep it becase the Job needs a reference
     jobs_.push_back(new action::Job(*job, input, output, false));
     watchers_.push_back(watcher);
 
@@ -154,4 +146,3 @@ MIRComplexJob &MIRComplexJob::add(api::MIRJob *job,
 
 }  // namespace api
 }  // namespace mir
-

@@ -24,7 +24,6 @@
 
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
-#include "mir/caching/WeightCache.h"
 
 
 namespace mir {

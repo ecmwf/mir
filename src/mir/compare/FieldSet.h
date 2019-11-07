@@ -8,16 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FieldSet.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
 
 
 #ifndef mir_compare_FieldSet_h
 #define mir_compare_FieldSet_h
 
-//include <deque>
+#include <set>
 
 #include "mir/compare/Field.h"
 

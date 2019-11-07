@@ -18,7 +18,7 @@
 #define mir_data_MIRFieldStats_h
 
 #include <iosfwd>
-#include <vector>
+
 #include "mir/data/MIRValuesVector.h"
 
 

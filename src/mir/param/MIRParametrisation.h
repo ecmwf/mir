@@ -20,8 +20,6 @@
 
 #include "eckit/config/Parametrisation.h"
 
-#include "mir/util/Types.h"
-
 
 namespace mir {
 namespace param {

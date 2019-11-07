@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FieldComparator.h
-/// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
+
 
 #ifndef mir_compare_FieldComparator_h
 #define mir_compare_FieldComparator_h

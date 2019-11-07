@@ -13,13 +13,11 @@
 /// @date Apr 2015
 
 
+#include "mir/repres/unsupported/StretchedGG.h"
+
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-
-#include "mir/param/MIRParametrisation.h"
-
-#include "mir/repres/unsupported/StretchedGG.h"
 
 
 namespace mir {

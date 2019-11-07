@@ -17,7 +17,7 @@
 #define mir_data_CartesianVector2DField_h
 
 #include <iosfwd>
-#include <vector>
+
 #include "mir/data/MIRValuesVector.h"
 
 

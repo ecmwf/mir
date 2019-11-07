@@ -21,6 +21,7 @@
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/method/Cropping.h"
+#include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"

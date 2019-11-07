@@ -21,7 +21,6 @@
 #include "mir/action/calc/FormulaAction.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/MIRWatcher.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/CombinedParametrisation.h"

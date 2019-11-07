@@ -29,7 +29,6 @@
 #include "eckit/log/TraceTimer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "atlas/interpolation/element/Quad3D.h"
@@ -47,7 +46,6 @@
 #include "mir/config/LibMir.h"
 #include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"

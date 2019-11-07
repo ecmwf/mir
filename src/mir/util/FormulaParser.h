@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "eckit/parser/StreamParser.h"
-#include "eckit/types/Types.h"
 
 
 namespace mir {
@@ -39,21 +38,21 @@ class FormulaParser : public eckit::StreamParser {
 
 public: // methods
 
-    FormulaParser(std::istream &in);
+    FormulaParser(std::istream&);
 
-    Formula* parse(const param::MIRParametrisation &parametrisation);
+    Formula* parse(const param::MIRParametrisation&);
 
 private: // methods
 
-    Formula* parseAtom(const param::MIRParametrisation &parametrisation);
-    Formula* parseTest(const param::MIRParametrisation &parametrisation);
-    Formula* parsePower(const param::MIRParametrisation &parametrisation);
-    std::vector<Formula*> parseList(const param::MIRParametrisation &parametrisation);
-    Formula* parseFactor(const param::MIRParametrisation &parametrisation);
-    Formula* parseTerm(const param::MIRParametrisation &parametrisation);
-    std::string parseIdent(const param::MIRParametrisation &parametrisation);
-    Formula* parseString(const param::MIRParametrisation &parametrisation);
-    Formula* parseNumber(const param::MIRParametrisation &parametrisation);
+    Formula* parseAtom(const param::MIRParametrisation&);
+    Formula* parseTest(const param::MIRParametrisation&);
+    Formula* parsePower(const param::MIRParametrisation&);
+    std::vector<Formula*> parseList(const param::MIRParametrisation&);
+    Formula* parseFactor(const param::MIRParametrisation&);
+    Formula* parseTerm(const param::MIRParametrisation&);
+    std::string parseIdent(const param::MIRParametrisation&);
+    Formula* parseString(const param::MIRParametrisation&);
+    Formula* parseNumber(const param::MIRParametrisation&);
 
 };
 

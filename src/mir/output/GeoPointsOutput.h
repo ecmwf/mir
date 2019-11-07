@@ -16,8 +16,6 @@
 #ifndef mir_output_GeoPointsOutput_h
 #define mir_output_GeoPointsOutput_h
 
-#include <vector>
-
 #include "mir/output/MIROutput.h"
 
 

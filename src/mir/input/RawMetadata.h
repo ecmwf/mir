@@ -19,7 +19,12 @@
 #include <string>
 #include <vector>
 
-#include "mir/util/BoundingBox.h"
+
+namespace mir {
+namespace util {
+class BoundingBox;
+}
+}
 
 
 namespace mir {

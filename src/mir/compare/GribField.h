@@ -8,30 +8,29 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   GribField.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
 
-#ifndef mir_compare_GribField_H
-#define mir_compare_GribField_H
+
+#ifndef mir_compare_GribField_h
+#define mir_compare_GribField_h
 
 #include <iosfwd>
+#include <map>
 #include <string>
-#include <set>
 #include <vector>
 
 #include "mir/compare/Field.h"
-#include "mir/compare/FieldInfo.h"
+
 
 struct grib_handle;
+
 
 namespace mir {
 namespace compare {
 
-
-//----------------------------------------------------------------------------------------------------------------------
-//
 
 class GribField : public FieldBase {
 public:
@@ -72,22 +71,22 @@ private:
 
     std::map<std::string, std::string>::const_iterator end() const;
 
-    std::map<std::string, std::string>::const_iterator find(const std::string& key) const;
+    std::map<std::string, std::string>::const_iterator find(const std::string&) const;
 
 
-    bool sameArea(const GribField& other) const;
-    bool samePacking(const GribField& other) const;
-    bool sameAccuracy(const GribField& other) const;
-    bool sameBitmap(const GribField& other) const;
-    bool sameFormat(const GribField& other) const;
-    bool sameField(const GribField& other) const;
-    bool sameGrid(const GribField& other) const;
-    bool sameRotation(const GribField& other) const;
-    bool sameResol(const GribField& other) const;
-    bool sameGridname(const GribField& other) const;
-    bool sameGridtype(const GribField& other) const;
-    bool sameParam(const GribField& other) const;
-    bool sameNumberOfPoints(const GribField& other) const;
+    bool sameArea(const GribField&) const;
+    bool samePacking(const GribField&) const;
+    bool sameAccuracy(const GribField&) const;
+    bool sameBitmap(const GribField&) const;
+    bool sameFormat(const GribField&) const;
+    bool sameField(const GribField&) const;
+    bool sameGrid(const GribField&) const;
+    bool sameRotation(const GribField&) const;
+    bool sameResol(const GribField&) const;
+    bool sameGridname(const GribField&) const;
+    bool sameGridtype(const GribField&) const;
+    bool sameParam(const GribField&) const;
+    bool sameNumberOfPoints(const GribField&) const;
 
     bool match(const std::string&, const std::string&) const;
 
@@ -104,16 +103,16 @@ public:
 
 private:
 
-    // virtual bool equal_to(const GribField& other) const;
+    // virtual bool equal_to(const GribField&) const;
     virtual bool wrapped() const;
-    virtual bool less_than(const FieldBase& other) const;
+    virtual bool less_than(const FieldBase&) const;
     virtual void whiteListEntries(std::ostream&) const;
-    virtual size_t differences(const FieldBase& other) const;
-    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
-    virtual void compareExtra(std::ostream&, const FieldBase& other) const ;
-    virtual bool same(const FieldBase& other) const;
-    virtual bool match(const FieldBase& other) const;
-    virtual void json(eckit::JSON& json) const;
+    virtual size_t differences(const FieldBase&) const;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase&) const;
+    virtual void compareExtra(std::ostream&, const FieldBase&) const ;
+    virtual bool same(const FieldBase&) const;
+    virtual bool match(const FieldBase&) const;
+    virtual void json(eckit::JSON&) const;
 
     std::map<std::string, std::string> values_;
 
@@ -148,17 +147,13 @@ private:
 
 private:
 
-
     void print(std::ostream &out) const;
-
 
     static void setGrid(GribField& field, grib_handle *h);
     static void setArea(GribField& field, grib_handle *h);
 
 };
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace mir
 } // namespace compare

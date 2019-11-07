@@ -16,10 +16,15 @@
 #ifndef mir_input_RawInput_h
 #define mir_input_RawInput_h
 
-
 #include "mir/input/MIRInput.h"
-#include "mir/input/RawMetadata.h"
 #include "mir/param/MIRParametrisation.h"
+
+
+namespace mir {
+namespace input {
+class RawMetadata;
+}
+}
 
 
 namespace mir {

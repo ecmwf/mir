@@ -18,6 +18,7 @@
 
 #include "mir/api/Atlas.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Domain.h"
 

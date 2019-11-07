@@ -15,6 +15,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
+#include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"

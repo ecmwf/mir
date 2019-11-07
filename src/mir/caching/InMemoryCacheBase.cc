@@ -14,16 +14,15 @@
 /// @date   Oct 2016
 
 
-#include "eckit/config/Resource.h"
-
 #include "mir/caching/InMemoryCacheBase.h"
-#include "mir/config/LibMir.h"
 
+#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
