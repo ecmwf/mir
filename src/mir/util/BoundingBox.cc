@@ -16,11 +16,14 @@
 #include "mir/util/BoundingBox.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"

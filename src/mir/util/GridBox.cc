@@ -12,6 +12,7 @@
 #include "mir/util/GridBox.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"

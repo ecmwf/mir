@@ -8,11 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Sep 2016
-
 
 #include "mir/method/structured/StructuredLinear3D.h"
 
+#include <cmath>
 #include <memory>
 #include <numeric>
 #include <vector>

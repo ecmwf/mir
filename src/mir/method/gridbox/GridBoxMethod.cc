@@ -12,6 +12,7 @@
 #include "mir/method/gridbox/GridBoxMethod.h"
 
 #include <algorithm>
+#include <cmath>
 #include <forward_list>
 #include <sstream>
 #include <vector>

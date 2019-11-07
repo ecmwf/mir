@@ -10,12 +10,17 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
-#include "mir/netcdf/UnstructuredGrid.h"
-#include "mir/netcdf/Variable.h"
-#include "eckit/types/Types.h"
-#include "mir/netcdf/Dimension.h"
 
+#include "mir/netcdf/UnstructuredGrid.h"
+
+#include <cmath>
 #include <iostream>
+
+#include "eckit/types/Types.h"
+
+#include "mir/netcdf/Dimension.h"
+#include "mir/netcdf/Variable.h"
+
 
 namespace mir {
 namespace netcdf {
