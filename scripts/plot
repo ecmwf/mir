@@ -15,6 +15,7 @@ import os
 import argparse
 from Magics import macro
 from sys import platform
+import tempfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--format', help='Output file format (pdf, png, gif, svg, ...)', default='pdf')
@@ -38,8 +39,6 @@ parser.add_argument('grib', type=str, metavar="GRIB", nargs=1, help="GRIB file t
 args = parser.parse_args()
 
 print(args)
-
-tmp = None
 
 EPSILON = 1e-7
 
@@ -103,15 +102,12 @@ if args.diff or args.error:
 
     print('min:', min(v1), 'max:', max(v1))
 
-    # TODO: Use tmpfile
-    tmp = "/tmp/plot-diff$$.grib"
-    with open(tmp, 'wb') as f:
-        eccodes.codes_write(h1, f)
+    with tempfile.NamedTemporaryFile(mode='wb') as f:
+        args.grib = [f.name]
+        eccodes.codes_write(h1, f.file)
 
     eccodes.codes_release(h1)
     eccodes.codes_release(h2)
-
-    args.grib = [tmp]
 
     if args.diff:
         grib_extra = {'grib_interpolation_method': 'nearest'}
@@ -225,9 +221,6 @@ for i in range(1, 2):
 print('output:', output, 'projection:', projection, 'data:', data)
 
 macro.plot(output, projection, data)
-
-if tmp:
-    os.unlink(tmp)
 
 if view:
     op = "open" if platform == "darwin" else "xdg-open"
