@@ -40,6 +40,8 @@ args = parser.parse_args()
 
 print(args)
 
+tmp = None
+
 EPSILON = 1e-7
 
 
@@ -102,9 +104,10 @@ if args.diff or args.error:
 
     print('min:', min(v1), 'max:', max(v1))
 
-    with tempfile.NamedTemporaryFile(mode='wb') as f:
-        args.grib = [f.name]
-        eccodes.codes_write(h1, f.file)
+    tmp = tempfile.NamedTemporaryFile(mode='wb')
+    args.grib = [tmp.name]
+
+    eccodes.codes_write(h1, tmp.file)
 
     eccodes.codes_release(h1)
     eccodes.codes_release(h2)
