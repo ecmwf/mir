@@ -360,6 +360,8 @@ list(APPEND mir_srcs
     output/VectorOutput.h
     packing/ArchivedValue.cc
     packing/ArchivedValue.h
+    packing/CCSDS.cc
+    packing/CCSDS.h
     packing/Complex.cc
     packing/Complex.h
     packing/JPEG2000.cc
