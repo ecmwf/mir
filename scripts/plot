@@ -13,27 +13,45 @@ from __future__ import print_function
 
 import os
 import argparse
-from Magics import macro
-from sys import platform
 import tempfile
+from sys import platform
+
+from Magics import macro
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--format', help='Output file format (pdf, png, gif, svg, ...)', default='pdf')
 parser.add_argument('-w', '--wind', help='Plot wind fields', action='store_true')
-parser.add_argument('-d', '--default', help='Use MAGICS defaults settings', action='store_true')
-parser.add_argument('-r', '--raw', help='Turn off MAGICS automatic scaling', action='store_true')
-parser.add_argument('-g', '--grid_shading', help='Use grid_shading', action='store_true')
-parser.add_argument('-c', '--cell_shading', help='Use cell_shading', action='store_true')
-parser.add_argument('-m', '--marker', help='Use marker', action='store_true')
+parser.add_argument('-d', '--default', help='Use Magics defaults settings', action='store_true')
+parser.add_argument('-r', '--raw', help='Turn off Magics automatic scaling', action='store_true')
 parser.add_argument('-o', '--output', help='Path to output file', metavar='OUTPUT')
-parser.add_argument('-D', '--diff', help='Path to other GRIB', metavar='GRIB')
-parser.add_argument('-R', '--reference', help='Path to reference GRIB', metavar='GRIB')
-
-parser.add_argument('-E', '--error', help='Path of other GRIB', metavar='GRIB')
-parser.add_argument('-l', '--legend', help='Turn on legend', action='store_true')
-parser.add_argument('-n', '--polar_north', help='Polar stereographic north', action='store_true')
-parser.add_argument('-s', '--polar_south', help='Polar stereographic south', action='store_true')
 parser.add_argument('-e', '--europe', help='Europe', action='store_true')
+
+parser.add_argument('--land', help='Map coastline land shade colour', default='cream')
+parser.add_argument('--sea', help='Map coastline sea shade colour', default='')
+parser.add_argument('--width', help='Plot width', type=int, default=0)
+
+g = parser.add_mutually_exclusive_group()
+g.add_argument('-n', '--polar_north', help='Polar stereographic North', action='store_true')
+g.add_argument('-s', '--polar_south', help='Polar stereographic South', action='store_true')
+
+g = parser.add_mutually_exclusive_group()
+g.add_argument('-g', '--grid_shading', help='Use grid_shading', action='store_true')
+g.add_argument('-c', '--cell_shading', help='Use cell_shading', action='store_true')
+g.add_argument('-m', '--marker', help='Use marker', action='store_true')
+
+g = parser.add_mutually_exclusive_group()
+g.add_argument('-D', '--diff', help='Difference to another GRIB', metavar='GRIB')
+g.add_argument('-E', '--error', help='Error to another GRIB', metavar='GRIB')
+g.add_argument('-M', '--miss', help='Compare missing values to another GRIB', metavar='GRIB')
+
+def add_feature(name, **kwargs):
+    g = parser.add_mutually_exclusive_group()
+    g.add_argument('--{}'.format(name), dest=name, action='store_true')
+    g.add_argument('--no-{}'.format(name), dest=name, action='store_false') 
+    parser.set_defaults(**kwargs)
+
+add_feature('grid', grid=True)
+add_feature('legend', legend=True)
 
 parser.add_argument('grib', type=str, metavar="GRIB", nargs=1, help="GRIB file to plot")
 args = parser.parse_args()
@@ -46,10 +64,8 @@ EPSILON = 1e-7
 
 
 def error(x, y):
-
     if x < EPSILON and y < EPSILON:
         return abs(x - y)
-
     return abs(x - y) / max(abs(x), abs(y))
 
 
@@ -66,20 +82,19 @@ scaling = 'on'
 contour = mproc(contour_automatic_setting='ecchart',)
 grib_extra = {}
 contour_extra = {}
+output_extra = {}
 
 if args.legend:
     contour_extra['legend'] = 'on'
 
-if args.diff or args.error:
+if args.width:
+    output_extra['output_width'] = args.width
+
+if args.diff or args.error or args.miss:
     scaling = 'off'
     import eccodes
 
-    if args.diff:
-        path = args.diff
-        proc = diff
-    else:
-        path = args.error
-        proc = error
+    path = args.diff if args.diff else args.error if args.error else args.miss
 
     with open(args.grib[0], 'rb') as f:
         h1 = eccodes.codes_grib_new_from_file(f)
@@ -89,6 +104,19 @@ if args.diff or args.error:
 
     v1 = eccodes.codes_get_values(h1)
     v2 = eccodes.codes_get_values(h2)
+
+    if args.miss:
+        b1 = eccodes.codes_get(h1, "bitmapPresent")
+        b2 = eccodes.codes_get(h2, "bitmapPresent")
+        assert b1 and b2, "both files must have missing values"
+
+        m1 = eccodes.codes_get(h1, "missingValue")
+        m2 = eccodes.codes_get(h2, "missingValue")
+        proc = lambda x, y: m1 if (x == m1) == (y == m2) else [1,2][y == m2]
+    elif args.diff :
+        proc = diff
+    else:
+        proc = error
 
     e1 = eccodes.codes_get(h1, "packingError")
     e2 = eccodes.codes_get(h2, "packingError")
@@ -111,8 +139,8 @@ if args.diff or args.error:
     eccodes.codes_release(h1)
     eccodes.codes_release(h2)
 
+    grib_extra = {'grib_interpolation_method': 'nearest'}
     if args.diff:
-        grib_extra = {'grib_interpolation_method': 'nearest'}
         contour = [mproc(contour="off",
                          contour_method="linear",
                          contour_shade="on",
@@ -130,13 +158,22 @@ if args.diff or args.error:
                          contour_shade_max_level_colour='rgb(1,0,0)',
                          contour_shade_min_level_colour='rgb(1,0,0)', **contour_extra)]
     if args.error:
-        grib_extra = {'grib_interpolation_method': 'nearest'}
         contour = mproc(contour="off",
                         contour_shade="on",
                         contour_method="linear",
                         contour_shade_technique="grid_shading",
                         contour_shade_min_level=EPSILON - EPSILON / 2.0,
                         contour_label="off", **contour_extra)
+    if args.miss:
+        contour = mproc(contour="off",
+                        contour_max_level=2.1,
+                        contour_level_count=2,
+                        contour_level_tolerance=0,
+                        contour_shade="on",
+                        contour_shade_technique="marker",
+                        contour_shade_colour_method="list",
+                        contour_shade_colour_list=["red","blue"],
+                        **contour_extra)
 
 
 if not args.output:
@@ -151,8 +188,8 @@ base, args.format = os.path.splitext(args.output)
 
 output = macro.output(output_formats=[args.format[1:]],
                       output_name_first_page_number='off',
-                      #output_width=8000,
-                      output_name=base)
+                      output_name=base,
+                      **output_extra)
 
 # Setting the coordinates of the geographical area
 
@@ -178,11 +215,13 @@ if args.europe:
                             subpage_lower_left_latitude=18.51,
                             subpage_upper_right_latitude=51.28)
 
-foreground = macro.mcoast(map_grid='on')
-background = macro.mcoast(map_grid='on',
+foreground = macro.mcoast(map_grid=args.grid)
+background = macro.mcoast(map_grid=args.grid,
                           map_grid_colour='tan',
-                          map_coastline_land_shade='on',
-                          map_coastline_land_shade_colour='cream',
+                          map_coastline_land_shade=bool(args.land),
+                          map_coastline_land_shade_colour=args.land,
+                          map_coastline_sea_shade=bool(args.sea),
+                          map_coastline_sea_shade_colour=args.sea,
                           map_coastline_colour='tan')
 
 
