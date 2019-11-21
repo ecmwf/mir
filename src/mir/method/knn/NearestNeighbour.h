@@ -18,7 +18,7 @@
 
 #include "mir/method/knn/KNearestNeighbours.h"
 
-#include "mir/method/knn/distance/NearestNeighbourWithLowestIndex.h"
+#include "mir/method/knn/distance/InverseDistanceWeightingSquared.h"
 
 
 namespace mir {
@@ -39,7 +39,7 @@ private:
     virtual bool sameAs(const Method& other) const;
     virtual const distance::DistanceWeighting& distanceWeighting() const;
 
-    distance::NearestNeighbourWithLowestIndex distanceWeighting_;
+    distance::InverseDistanceWeightingSquared distanceWeighting_;
 
 };
 

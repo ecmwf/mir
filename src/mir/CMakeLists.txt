@@ -288,8 +288,6 @@ list(APPEND mir_srcs
     method/knn/distance/NearestLSMWithLowestIndex.h
     method/knn/distance/NearestNeighbour.cc
     method/knn/distance/NearestNeighbour.h
-    method/knn/distance/NearestNeighbourWithLowestIndex.cc
-    method/knn/distance/NearestNeighbourWithLowestIndex.h
     method/knn/distance/NoDistanceWeighting.cc
     method/knn/distance/NoDistanceWeighting.h
     method/knn/pick/Distance.cc
@@ -302,6 +300,8 @@ list(APPEND mir_srcs
     method/knn/pick/NClosest.h
     method/knn/pick/NClosestOrNearest.cc
     method/knn/pick/NClosestOrNearest.h
+    method/knn/pick/NearestNeighbourWithLowestIndex.cc
+    method/knn/pick/NearestNeighbourWithLowestIndex.h
     method/knn/pick/Pick.cc
     method/knn/pick/Pick.h
     method/other/PseudoLaplace.cc
