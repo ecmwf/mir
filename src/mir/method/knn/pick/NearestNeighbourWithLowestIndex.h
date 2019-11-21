@@ -9,39 +9,40 @@
  */
 
 
-#ifndef mir_method_knn_distance_NearestNeighbourWithLowestIndex_h
-#define mir_method_knn_distance_NearestNeighbourWithLowestIndex_h
+#ifndef mir_method_knn_pick_NearestNeighbourWithLowestIndex_h
+#define mir_method_knn_pick_NearestNeighbourWithLowestIndex_h
 
-#include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/pick/Pick.h"
 
 
 namespace mir {
 namespace method {
 namespace knn {
-namespace distance {
+namespace pick {
 
 
-struct NearestNeighbourWithLowestIndex : DistanceWeighting {
+struct NearestNeighbourWithLowestIndex : Pick {
     NearestNeighbourWithLowestIndex(const param::MIRParametrisation&);
-    void operator()(
-            size_t ip,
-            const Point3& point,
-            const std::vector<search::PointSearch::PointValueType>& neighbours,
-            std::vector<WeightMatrix::Triplet>& triplets) const;
+
+    NearestNeighbourWithLowestIndex(const NearestNeighbourWithLowestIndex&) = delete;
+    NearestNeighbourWithLowestIndex& operator=(const NearestNeighbourWithLowestIndex&) = delete;
+
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
+    virtual size_t n() const;
+    virtual bool sameAs(const Pick&) const;
+
 private:
-    double distanceTolerance_;
-    double distanceTolerance2_;
-    virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;
+
+    size_t nClosest_;
 };
 
 
-}  // namespace distance
+}  // namespace pick
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
 
 
 #endif
-
