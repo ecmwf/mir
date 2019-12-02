@@ -373,7 +373,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     }
 
     if (parametrisation_.userParametrisation().has("latitudes") ||
-            parametrisation_.userParametrisation().has("longitudes")) {
+        parametrisation_.userParametrisation().has("longitudes")) {
         user_wants_gridded++;
     }
 

@@ -1,0 +1,6 @@
+# ICON example
+icon.shortName=lsm.grib2
+# Mir tool options
+--latitudes="$tests_assertions_dir/icon.shortName=CLAT.grib2" --longitudes="$tests_assertions_dir/icon.shortName=CLON.grib2" --area=20/0/0/20
+# grib_get assertions
+# (none for the moment)
