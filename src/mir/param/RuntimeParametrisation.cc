@@ -196,7 +196,17 @@ bool RuntimeParametrisation::get(const std::string& name, bool& value) const {
 }
 
 
+bool RuntimeParametrisation::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
+
+
 bool RuntimeParametrisation::get(const std::string& name, long& value) const {
+    return _get(name, value);
+}
+
+
+bool RuntimeParametrisation::get(const std::string& name, float& value) const {
     return _get(name, value);
 }
 
