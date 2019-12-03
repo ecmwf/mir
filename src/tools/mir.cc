@@ -121,7 +121,6 @@ public:
 
         options_.push_back(new SimpleOption<eckit::PathName>("same", "Interpolate to the same grid type as the first GRIB message in file"));
         options_.push_back(new SimpleOption<bool>("filter", "Interpolation filter, keeping the same input grid type"));
-        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "Path to GRIB file containing a list of latitude/longitude pairs"));
 
         options_.push_back(new FactoryOption<method::knn::pick::PickFactory>("nearest-method", "Neighbour picking method, used by k-nearest methods"));
         options_.push_back(new SimpleOption<size_t>("nclosest", "Number of points neighbours to weight (k), used by k-nearest methods"));
@@ -157,7 +156,7 @@ public:
         options_.push_back(new Separator("Filtering"));
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<double>("area-precision", "cropping area precision ('outward')"));
-        options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Path to the bitmap to apply"));
+        options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
 
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
@@ -180,14 +179,15 @@ public:
             options_.push_back(new FactoryOption<method::MethodFactory>("lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
             options_.push_back(new FactoryOption<lsm::LSMSelection>("lsm-selection" + key, "LSM selection method for " + which));
             options_.push_back(new FactoryOption<lsm::NamedMaskFactory>("lsm-named" + key, "If --lsm-selection" + key + "=named, LSM name to use for " + which));
-            options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM grib file path to use for " + which));
+            options_.push_back(new SimpleOption<eckit::PathName>("lsm-file" + key, "If --lsm-selection" + key + "=file, LSM GRIB file path to use for " + which));
             options_.push_back(new SimpleOption<double>("lsm-value-threshold" + key, "If --lsm-selection" + key + "=file, LSM field greater-or-equal to value threshold, when converting to mask for " + which + " (default 0.5)"));
         }
 
         //==============================================
         options_.push_back(new Separator("Unstructured grids"));
-        options_.push_back(new SimpleOption<eckit::PathName>("latitudes", "Path GRIB file of latitudes"));
-        options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "Path GRIB file of longitudes"));
+        options_.push_back(new SimpleOption<eckit::PathName>("griddef", "GRIB file with latitude/longitude pairs (output)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("latitudes",  "GRIB file with latitudes (output)"));
+        options_.push_back(new SimpleOption<eckit::PathName>("longitudes", "GRIB file with longitudes (output)"));
 
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
@@ -199,12 +199,16 @@ public:
         options_.push_back(new SimpleOption<std::string>("metadata", "Set eccodes keys to integer values (a=b,c=d,..)"));
 
         //==============================================
-        options_.push_back(new Separator("Miscellaneous"));
-        options_.push_back(new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
-        options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
+        options_.push_back(new Separator("Statistics"));
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values (both pre- and post-processed)"));
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("input-statistics", "Statistics methods for interpreting field values (pre-processed)"));
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("output-statistics", "Statistics methods for interpreting field values (post-processed)"));
+
+        //==============================================
+        options_.push_back(new Separator("Miscellaneous"));
+        options_.push_back(new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+        options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
+        options_.push_back(new SimpleOption<std::string>("input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
 
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
@@ -306,14 +310,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
-
-    if (args.has("latitudes") || args.has("longitudes")) {
-        std::string latitudes, longitudes;
-        ASSERT(args.get("latitudes", latitudes));
-        ASSERT(args.get("longitudes", longitudes));
-
-        input->setAuxilaryFiles(latitudes, longitudes);
-    }
 
     process(job, *input, *output, "field");
 }
