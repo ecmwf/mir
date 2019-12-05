@@ -181,9 +181,12 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool rotation = user.has("rotation");
 
     bool vod2uv = false;
-    bool uv2uv = false;
+    bool uv2uv  = false;
     user.get("vod2uv", vod2uv);
     user.get("uv2uv", uv2uv);
+
+    long uv = 0;
+    uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && uv);
 
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
