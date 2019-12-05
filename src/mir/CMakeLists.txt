@@ -360,6 +360,8 @@ list(APPEND mir_srcs
     output/VectorOutput.h
     packing/ArchivedValue.cc
     packing/ArchivedValue.h
+    packing/CCSDS.cc
+    packing/CCSDS.h
     packing/Complex.cc
     packing/Complex.h
     packing/JPEG2000.cc
@@ -488,8 +490,12 @@ list(APPEND mir_srcs
     stats/Method.h
     stats/Statistics.cc
     stats/Statistics.h
+    stats/ValueStatistics.cc
+    stats/ValueStatistics.h
     stats/comparator/ComparatorT.cc
     stats/comparator/ComparatorT.h
+    stats/comparator/MissingValues.cc
+    stats/comparator/MissingValues.h
     stats/comparator/Spectral.cc
     stats/comparator/Spectral.h
     stats/detail/AngleT.cc
@@ -500,8 +506,10 @@ list(APPEND mir_srcs
     stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
-    stats/detail/PNorms.h
-    stats/detail/Scalar.h
+    stats/detail/PNormsT.cc
+    stats/detail/PNormsT.h
+    stats/detail/ScalarT.cc
+    stats/detail/ScalarT.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc
@@ -646,6 +654,8 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
+        method/StructuredMethod2D.cc
+        method/StructuredMethod2D.h
         method/fe/BuildNodeLumpedMassMatrix.cc
         method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc

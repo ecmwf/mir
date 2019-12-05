@@ -8,30 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   BufrField.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
+
 
 #ifndef mir_compare_BufrField_H
 #define mir_compare_BufrField_H
 
 #include <iosfwd>
-#include <string>
+#include <map>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "mir/compare/Field.h"
-#include "mir/compare/FieldInfo.h"
 
 
 namespace mir {
 namespace compare {
-
-class FieldSet;
-
-//----------------------------------------------------------------------------------------------------------------------
-//
 
 class BufrEntry {
 
@@ -136,9 +132,8 @@ private:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 } // namespace mir
 } // namespace compare
+
 
 #endif

@@ -18,10 +18,6 @@
 #include "mir/api/Atlas.h"
 
 
-namespace eckit {
-class MD5;
-}
-
 namespace mir {
 namespace param {
 class MIRParametrisation;

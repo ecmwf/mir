@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
+#include <iostream>
 
 #include "mir/namedgrids/NamedOctahedral.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
-#include "eckit/exception/Exceptions.h"
-#include <iostream>
+
 
 namespace mir {
 namespace namedgrids {

@@ -16,6 +16,8 @@
 #include "mir/action/plan/ActionPlan.h"
 
 #include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include "eckit/exception/Exceptions.h"
 

@@ -25,7 +25,6 @@
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 
 

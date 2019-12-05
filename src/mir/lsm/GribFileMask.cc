@@ -16,6 +16,7 @@
 
 #include "mir/lsm/GribFileMask.h"
 
+#include <algorithm>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -48,7 +49,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
     eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
 
     mir::input::GribFileInput file( path_ );
-    mir::input::MIRInput& input = file;
+    const mir::input::MIRInput& input = file;
 
     ASSERT(file.next());
     data::MIRField field = input.field();

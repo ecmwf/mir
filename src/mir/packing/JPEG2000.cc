@@ -13,12 +13,12 @@
 /// @date Apr 2015
 
 
-
 #include "mir/packing/JPEG2000.h"
-#include "mir/util/Grib.h"
-#include "mir/repres/Representation.h"
 
 #include <iostream>
+
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace packing {
@@ -35,7 +35,7 @@ void JPEG2000::print(std::ostream& out) const {
     out << "JPEG2000[]";
 }
 
-void JPEG2000::fill(grib_info& info, const repres::Representation& repres) const {
+void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_JPEG;
 }

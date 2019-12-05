@@ -22,7 +22,9 @@
 
 #ifdef HAVE_ATLAS
 
+#include "atlas/functionspace.h"
 #include "atlas/grid.h"
+#include "atlas/interpolation.h"
 #include "atlas/library/Library.h"
 #include "atlas/library/config.h"
 #include "atlas/mesh.h"

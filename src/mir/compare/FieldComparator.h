@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FieldComparator.h
-/// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
+
 
 #ifndef mir_compare_FieldComparator_h
 #define mir_compare_FieldComparator_h
@@ -128,6 +128,7 @@ protected: // members
                        const FieldSet& fields1,
                        const FieldSet& fields2,
                        bool compareValues,
+                       bool compareMissingValues,
                        bool compareStatistics);
 
     void compareFieldStatistics(const MultiFile& multi1,
@@ -139,6 +140,11 @@ protected: // members
                             const MultiFile& multi2,
                             const Field& field1,
                             const Field& field2);
+
+    void compareFieldMissingValues(const MultiFile& multi1,
+                                   const MultiFile& multi2,
+                                   const Field& field1,
+                                   const Field& field2);
 
     void missingField(const MultiFile& multi1,
                       const MultiFile& multi2,

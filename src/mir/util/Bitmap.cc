@@ -8,17 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include <iostream>
-#include <fstream>
+
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Bitmap.h"
+
 
 // TODO: Cache bitmaps
 

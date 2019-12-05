@@ -84,7 +84,7 @@ void BitmapFilter::execute(context::Context & ctx) const {
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
     data::MIRField& field = ctx.field();
 
-    util::Bitmap& b = bitmap();
+    const util::Bitmap& b = bitmap();
 
     for (size_t f = 0; f < field.dimensions() ; f++) {
 
@@ -129,10 +129,10 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
 
 void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
 
-    util::Bitmap b(path_);
+    const util::Bitmap b(path_);
 
     ASSERT(b.height() * b.width() == field.representation()->numberOfPoints());
 

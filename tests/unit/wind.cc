@@ -10,7 +10,6 @@
 
 
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "eckit/log/Log.h"

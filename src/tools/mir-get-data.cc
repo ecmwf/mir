@@ -308,14 +308,14 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
         nclosest = 0;
     }
 
-    for (size_t i = 0; i < args.count(); ++i) {
-        mir::input::GribFileInput grib(args(i));
+    for (size_t a = 0; a < args.count(); ++a) {
+        mir::input::GribFileInput grib(args(a));
         const mir::input::MIRInput& input = grib;
 
 
         size_t count = 0;
         while (grib.next()) {
-            log << "\n'" << args(i) << "' #" << ++count << std::endl;
+            log << "\n'" << args(a) << "' #" << ++count << std::endl;
 
             mir::data::MIRField field = input.field();
             ASSERT(field.dimensions() == 1);
@@ -362,8 +362,8 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             }
 
             if (ecc) {
-                std::unique_ptr<Coordinates> ecc(new CoordinatesFromGRIB(input.gribHandle()));
-                err = diff(log, toleranceLat, toleranceLon, *crd, *ecc) || err;
+                std::unique_ptr<Coordinates> ecd(new CoordinatesFromGRIB(input.gribHandle()));
+                err = diff(log, toleranceLat, toleranceLon, *crd, *ecd) || err;
             }
 
             if (err) {

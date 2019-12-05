@@ -11,7 +11,6 @@
 
 #include "mir/style/intgrid/Source.h"
 
-#include <iostream>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"

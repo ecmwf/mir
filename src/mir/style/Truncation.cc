@@ -22,7 +22,6 @@
 #include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/style/truncation/Ordinal.h"
 
 

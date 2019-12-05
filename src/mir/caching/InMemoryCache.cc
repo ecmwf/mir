@@ -12,6 +12,7 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/thread/AutoLock.h"
@@ -87,10 +88,10 @@ void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsa
           << std::endl;
 
 
-    auto j = cache_.find(key);
-    ASSERT(j != cache_.end());
-    (*j).second->footprint_ = usage;
-    keys_[key] = usage;
+    auto k = cache_.find(key);
+    ASSERT(k != cache_.end());
+    k->second->footprint_ = usage;
+    keys_[key]            = usage;
 
     footprint(); //  Update stats
 

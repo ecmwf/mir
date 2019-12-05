@@ -15,12 +15,9 @@
 
 
 #include <fstream>
-#include <ios>
 #include <limits>
 #include <sstream>
 
-#include "eckit/io/FileHandle.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/utils/StringTools.h"

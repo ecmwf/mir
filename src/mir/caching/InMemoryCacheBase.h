@@ -17,7 +17,6 @@
 #ifndef mir_caching_InMemoryCacheBase_h
 #define mir_caching_InMemoryCacheBase_h
 
-#include <map>
 #include <string>
 
 #include "mir/caching/InMemoryCacheUsage.h"
@@ -25,12 +24,6 @@
 
 namespace eckit {
 class Channel;
-}
-
-namespace mir {
-namespace caching {
-class InMemoryCacheStatistics;
-}
 }
 
 

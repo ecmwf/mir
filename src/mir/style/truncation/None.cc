@@ -11,8 +11,6 @@
 
 #include "mir/style/truncation/None.h"
 
-#include <iostream>
-
 namespace mir {
 namespace style {
 namespace truncation {

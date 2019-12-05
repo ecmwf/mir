@@ -33,7 +33,7 @@ void InvtransScalar::print(std::ostream& out) const {
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
     auto& log = eckit::Log::debug<LibMir>();
-    eckit::Timer timer("InvtransScalar::sh2grid", log);
+    eckit::Timer mainTimer("InvtransScalar::sh2grid", log);
 
     // set invtrans options
     atlas::util::Config config;

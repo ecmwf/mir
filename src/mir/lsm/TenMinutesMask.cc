@@ -19,9 +19,7 @@
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/log/Timer.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"

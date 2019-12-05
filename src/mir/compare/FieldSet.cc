@@ -12,13 +12,7 @@
 
 
 #include "mir/compare/FieldSet.h"
-#include "eckit/log/Log.h"
 
-#include <algorithm>
-
-
-#include "mir/compare/BufrField.h"
-#include "mir/compare/GribField.h"
 
 namespace mir {
 namespace compare {
@@ -28,9 +22,11 @@ void FieldSet::clear() {
     fields_.clear();
 }
 
+
 size_t FieldSet::size() const {
     return fields_.size();
 }
+
 
 void FieldSet::insert(const Field& field) {
     fields_.insert(field);
@@ -50,17 +46,9 @@ std::set<Field>::const_iterator FieldSet::same(const Field& field) const {
 
     for (j = fields_.begin(); j != fields_.end(); ++j) {
         if (field.same(*j)) {
-            // eckit::Log::warning() << "Returning approximate match: " << field << std::endl;
-            // eckit::Log::warning() << "                             " << *j << std::endl;
             return j;
         }
     }
-
-    // eckit::Log::warning() << "Cannot find " << field << std::endl;
-    // for (j = fields_.begin(); j != fields_.end(); ++j) {
-    //     eckit::Log::warning() << *j << std::endl;
-    //     eckit::Log::warning() << " " << ((*j) < field ) << " " << (field < (*j)) << std::endl;
-    // }
 
     return end();
 }

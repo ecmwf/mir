@@ -19,18 +19,19 @@
 #include <string>
 #include <vector>
 
-#include "mir/param/MIRParametrisation.h"
-
 
 namespace mir {
-namespace context {
-class Context;
-}
 namespace action {
 class Action;
 }
 namespace api {
 class MIREstimation;
+}
+namespace context {
+class Context;
+}
+namespace param {
+class MIRParametrisation;
 }
 }
 

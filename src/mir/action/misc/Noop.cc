@@ -12,22 +12,18 @@
 /// @author Pedro Maciel
 /// @date Apr 2015
 
+
 #include "mir/action/misc/Noop.h"
 
 #include <iostream>
-
-#include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace action {
 
 
-Noop::Noop(const param::MIRParametrisation &parametrisation):
+Noop::Noop(const param::MIRParametrisation& parametrisation):
     Action(parametrisation) {
-
 }
 
 
@@ -39,13 +35,15 @@ bool Noop::sameAs(const Action& other) const {
     return o;
 }
 
-void Noop::print(std::ostream &out) const {
+
+void Noop::print(std::ostream& out) const {
     out << "Noop[]";
 }
 
 
-void Noop::execute(context::Context & ctx) const {
+void Noop::execute(context::Context&) const {
 }
+
 
 const char* Noop::name() const {
     return "Noop";

@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date June 2017
-
 
 #ifndef mir_method_structured_StructuredMethod_h
 #define mir_method_structured_StructuredMethod_h
@@ -17,8 +15,6 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <vector>
-#include "eckit/geometry/Point3.h"
-#include "mir/repres/Iterator.h"
 
 
 namespace mir {

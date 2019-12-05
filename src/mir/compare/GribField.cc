@@ -693,7 +693,7 @@ std::ostream & GribField::printGrid(std::ostream & out) const {
         if (comma) {
             out << ',';
         }
-        comma = true;
+        // comma = true;
         out << "area=" << north_ << "/" << west_ << "/" << south_ << "/" << east_;
     }
 
@@ -778,22 +778,28 @@ void GribField::whiteListEntries(std::ostream& out) const {
 
     if (whiteListAccuracyPacking_) {
         if (param_) {
-            out << sep << "param=" << param_; sep = ",";
+            out << sep << "param=" << param_;
+            sep = ",";
         }
         if (format_.length()) {
-            out << sep << "format=" << format_; sep = ",";
+            out << sep << "format=" << format_;
+            sep = ",";
         }
         if (packing_.length()) {
-            out << sep << "packing=" << packing_; sep = ",";
+            out << sep << "packing=" << packing_;
+            sep = ",";
         }
         if (gridtype_.length()) {
-            out << sep << "gridtype=" << gridtype_; sep = ",";
+            out << sep << "gridtype=" << gridtype_;
+            sep = ",";
         }
         if (accuracy_ >= 0) {
-            out << sep << "accuracy=" << accuracy_; sep = ",";
+            out << sep << "accuracy=" << accuracy_;
+            sep = ",";
         }
         if (decimalScaleFactor_) {
-            out << sep << "decimal_scale_factor=" << decimalScaleFactor_; sep = ",";
+            out << sep << "decimal_scale_factor=" << decimalScaleFactor_;
+            // sep = ",";
         }
     }
     else {
@@ -801,20 +807,17 @@ void GribField::whiteListEntries(std::ostream& out) const {
             out << sep << "gridname=" << gridname_;
             sep = ",";
         }
-
         if (grid_) {
             out << sep << "grid=" << north_south_ << "/" << west_east_;
             sep = ",";
         }
-
         if (area_) {
             out << sep << "area=" << north_ << "/" << west_ << "/" <<  south_ << "/" << east_;
             sep = ",";
         }
-
         if (rotation_) {
             out << sep << "rotation=" << rotation_latitude_ << "/"  << rotation_longitude_;
-            sep = ",";
+            // sep = ",";
         }
     }
 }
@@ -1087,27 +1090,27 @@ Field GribField::field(const char* buffer, size_t size,
     // Look for request embbeded in GRIB message
     long local;
 
-    if (grib_get_long(h, "localDefinitionNumber", &local) ==  0 && local == 191) {
-        size_t size;
+    if (grib_get_long(h, "localDefinitionNumber", &local) == 0 && local == 191) {
+        size_t dataSize;
         /* TODO: Not grib2 compatible, but speed-up process */
-        if (grib_get_size(h, "freeFormData", &size) ==  0 && size != 0) {
-            unsigned char buffer[size];
-            GRIB_CALL(grib_get_bytes(h, "freeFormData", buffer, &size) );
+        if (grib_get_size(h, "freeFormData", &dataSize) == 0 && dataSize != 0) {
+            unsigned char data[dataSize];
+            GRIB_CALL(grib_get_bytes(h, "freeFormData", data, &dataSize));
 
-            eckit::MemoryStream s(buffer, size);
+            eckit::MemoryStream s(data, dataSize);
 
             int count;
-            s >> count; // Number of requests
+            s >> count;  // Number of requests
             ASSERT(count == 1);
             std::string tmp;
-            s >> tmp; // verb
+            s >> tmp;  // verb
             s >> count;
             for (int i = 0; i < count; i++) {
                 std::string keyword, value;
                 int n;
                 s >> keyword;
                 std::transform(keyword.begin(), keyword.end(), keyword.begin(), tolower);
-                s >> n; // Number of values
+                s >> n;  // Number of values
                 ASSERT(n == 1);
                 s >> value;
                 std::transform(value.begin(), value.end(), value.begin(), tolower);

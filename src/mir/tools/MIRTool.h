@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date Sep 2016
-
 
 #ifndef mir_tools_MIRTool_h
 #define mir_tools_MIRTool_h
@@ -17,12 +15,12 @@
 #include <vector>
 
 #include "eckit/runtime/Tool.h"
-#include "eckit/option/Option.h"
 
 
 namespace eckit {
 namespace option {
 class CmdArgs;
+class Option;
 }
 }
 

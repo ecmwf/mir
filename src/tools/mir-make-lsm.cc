@@ -14,13 +14,13 @@
 
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Log.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/tools/MIRTool.h"
+
 
 class MIRMakeLSM : public mir::tools::MIRTool {
 

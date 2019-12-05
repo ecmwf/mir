@@ -9,18 +9,20 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaNumber_h
-#define mir_FormulaNumber_h
+
+#ifndef mir_util_FormulaNumber_h
+#define mir_util_FormulaNumber_h
 
 #include "mir/util/Formula.h"
+
 
 namespace mir {
 namespace util {
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class FormulaNumber : public Formula {
 public:
@@ -41,9 +43,9 @@ private: // members
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

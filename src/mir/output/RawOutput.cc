@@ -62,7 +62,7 @@ size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context 
 
 
 size_t RawOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
 
     field.validate();
     // field.hasMissing();

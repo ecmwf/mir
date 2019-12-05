@@ -19,7 +19,6 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/util/Domain.h"
 #include "mir/util/GridBox.h"
 
 

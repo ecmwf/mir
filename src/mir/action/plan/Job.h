@@ -17,7 +17,6 @@
 #define mir_action_Job_h
 
 #include <memory>
-#include <string>
 
 
 namespace mir {

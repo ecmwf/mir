@@ -22,12 +22,6 @@
 #include "mir/method/MethodWeighted.h"
 
 
-namespace eckit {
-namespace linalg {
-class Vector;
-}  // namespace linalg
-}  // namespace eckit
-
 namespace mir {
 namespace method {
 namespace fe {

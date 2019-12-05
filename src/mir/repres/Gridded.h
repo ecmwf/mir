@@ -21,13 +21,6 @@
 
 
 namespace mir {
-namespace util {
-class Rotation;
-}
-}
-
-
-namespace mir {
 namespace repres {
 
 

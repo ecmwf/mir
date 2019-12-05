@@ -19,7 +19,6 @@
 #define mir_caching_legendre_LegendreLoader_h
 
 #include <iosfwd>
-#include <memory>
 
 #include "eckit/filesystem/PathName.h"
 

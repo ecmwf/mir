@@ -13,18 +13,16 @@
 /// @author Tiago Quintino
 /// @date Apr 2015
 
+
 #include "MappedMask.h"
 
-#include <cmath>
 #include <fcntl.h>
 #include <memory>
 #include <sys/mman.h>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/StdFile.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
 #include "eckit/log/TraceTimer.h"
+#include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
 
@@ -32,7 +30,6 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 
-#include "eckit/memory/MMap.h"
 
 using eckit::MMap;
 

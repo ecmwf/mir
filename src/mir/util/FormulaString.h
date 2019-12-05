@@ -9,19 +9,22 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaString_H
-#define mir_FormulaString_H
+
+#ifndef mir_util_FormulaString_h
+#define mir_util_FormulaString_h
 
 #include <string>
+
 #include "mir/util/Formula.h"
+
 
 namespace mir {
 namespace util {
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class FormulaString : public Formula {
 public:
@@ -42,9 +45,9 @@ private: // members
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

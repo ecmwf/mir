@@ -18,10 +18,7 @@
 
 #include <memory>
 
-#include "eckit/utils/MD5.h"
-
 #include "mir/lsm/LandSeaMasks.h"
-#include "mir/method/knn/distance/NearestLSMWithLowestIndex.h"
 #include "mir/param/RuntimeParametrisation.h"
 
 

@@ -9,39 +9,40 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaBinop_H
-#define mir_FormulaBinop_H
+
+#ifndef mir_util_FormulaBinop_h
+#define mir_util_FormulaBinop_h
 
 #include <string>
-#include <vector>
 
 #include "mir/util/FormulaFunction.h"
+
 
 namespace mir {
 namespace util {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 class FormulaBinop : public FormulaFunction {
 public:
 
-    FormulaBinop(const param::MIRParametrisation &parametrisation,
+    FormulaBinop(const param::MIRParametrisation& parametrisation,
         const std::string& name, Formula* arg1, Formula *arg2);
 
     virtual ~FormulaBinop();
 
 private:
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

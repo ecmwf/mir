@@ -8,8 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <algorithm>
-#include <cmath>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,10 +21,12 @@
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace tests {
@@ -201,13 +202,16 @@ public:
         return true;
     }
 
+#if 0
     size_t numberOfValuesFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->numberOfPoints();
     }
+#endif
 
+#if 0
     BoundingBox boundingBoxEncodedInGrib(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -222,6 +226,7 @@ public:
 
         return BoundingBox(box[0], box[1], box[2], box[3]);
     }
+#endif
 
     BoundingBox boundingBoxFromGribInput(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);

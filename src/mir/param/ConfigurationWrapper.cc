@@ -16,6 +16,8 @@
 
 #include "mir/param/ConfigurationWrapper.h"
 
+#include <iostream>
+
 #include "eckit/config/Configuration.h"
 
 

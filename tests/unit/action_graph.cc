@@ -9,7 +9,6 @@
  */
 
 
-#include <algorithm>
 #include <memory>
 
 #include "eckit/log/Log.h"
@@ -20,12 +19,8 @@
 #include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/ActionGraph.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/action/plan/Job.h"
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/api/MIRWatcher.h"
-#include "mir/namedgrids/NamedGrid.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 

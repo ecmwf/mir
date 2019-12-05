@@ -36,16 +36,16 @@ foreach( _t ${tests})
 endforeach()
 
 unset(tests)
-set(tests
-    MIR-333
-    )
-
-foreach( _t ${tests})
-  ecbuild_add_test(
-      TARGET      mir_tests_unit_${_t}
-      SOURCES     ${_t}.cc
-      LIBS        mir
-      ENVIRONMENT ${_environment}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-endforeach()
+#set(tests
+#    MIR-333
+#    )
+#
+#foreach( _t ${tests})
+#  ecbuild_add_test(
+#      TARGET      mir_tests_unit_${_t}
+#      SOURCES     ${_t}.cc
+#      LIBS        mir
+#      ENVIRONMENT ${_environment}
+#      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+#endforeach()
 

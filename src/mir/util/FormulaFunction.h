@@ -9,22 +9,29 @@
  */
 
 /// @author Baudouin Raoult
-/// @date Jun 2012
+/// @author Tiago Quintino
+/// @author Pedro Maciel
+/// @date   April 2016
 
-#ifndef mir_FormulaFunction_H
-#define mir_FormulaFunction_H
+
+#ifndef mir_util_FormulaFunction_h
+#define mir_util_FormulaFunction_h
 
 #include <string>
 #include <vector>
 
 #include "mir/util/Formula.h"
 
+
 namespace mir {
 namespace util {
-
 class Function;
+}
+}
 
-//----------------------------------------------------------------------------------------------------------------------
+
+namespace mir {
+namespace util {
 
 class FormulaFunction : public Formula {
 public:
@@ -58,9 +65,9 @@ private:
 
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
-}
-} // namespace eckit
+}  // namespace util
+}  // namespace mir
+
 
 #endif

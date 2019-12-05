@@ -75,7 +75,7 @@ const char* FrameFilter::name() const {
 }
 
 void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-    data::MIRField& field = ctx.field();
+    const data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
 
     MIRValuesVector dummy;

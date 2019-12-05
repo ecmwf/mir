@@ -27,15 +27,13 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
-#include "eckit/eckit.h"
-#include "eckit/config/Resource.h"
-#include "eckit/io/AutoCloser.h"
+//#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/Shmget.h"
-#include "eckit/os/SemLocker.h"
-#include "eckit/os/Stat.h"
+//#include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
 #include "mir/config/LibMir.h"

@@ -8,27 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FieldInfo.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   May 2016
+
 
 #ifndef mir_compare_FieldInfo_h
 #define mir_compare_FieldInfo_h
 
 #include <iosfwd>
 #include <string>
-#include <map>
-#include <vector>
 
 
 namespace eckit {
 class JSON;
-}
-namespace mir {
-namespace compare {
-class FieldSet;
-}
 }
 
 

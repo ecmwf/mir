@@ -11,7 +11,6 @@
 /// @date Jun 2017
 
 
-#include <cmath>
 #include <memory>
 
 #include "eckit/log/Log.h"
@@ -22,7 +21,7 @@
 #include "atlas/util/GaussianLatitudes.h"
 
 #include "mir/param/ConfigurationWrapper.h"
-#include "mir/stats/detail/PNorms.h"
+#include "mir/stats/detail/PNormsT.h"
 #include "mir/tools/MIRTool.h"
 
 
@@ -49,7 +48,7 @@ void MIRGaussianFractions::usage(const std::string &tool) const {
 }
 
 
-using statistics_t = mir::stats::detail::PNorms;
+using statistics_t = mir::stats::detail::PNormsT<double>;
 
 
 statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisation&) {

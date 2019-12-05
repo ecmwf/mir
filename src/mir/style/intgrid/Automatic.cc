@@ -11,16 +11,6 @@
 
 #include "mir/style/intgrid/Automatic.h"
 
-#include <memory>
-
-#include "eckit/exception/Exceptions.h"
-
-#include "mir/action/plan/ActionPlan.h"
-#include "mir/namedgrids/NamedGrid.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/BoundingBox.h"
-#include "mir/util/Increments.h"
-
 
 namespace mir {
 namespace style {

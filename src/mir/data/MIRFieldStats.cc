@@ -18,7 +18,6 @@
 
 #include <iostream>
 #include <cmath>
-#include "eckit/exception/Exceptions.h"
 
 
 namespace mir {

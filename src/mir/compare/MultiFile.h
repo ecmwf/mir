@@ -8,29 +8,27 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @file   MultiFile.h
 /// @author Florian Rathgeber
+/// @author Pedro Maciel
 /// @date   Jul 2016
 
-#ifndef mir_MultiFile_H
-#define mir_MultiFile_H
 
-#include <map>
+#ifndef mir_compare_MultiFile_h
+#define mir_compare_MultiFile_h
+
 #include <string>
 #include <vector>
 
 #include "eckit/io/Length.h"
 
+
 namespace eckit {
 class Stream;
 }
 
+
 namespace mir {
 namespace compare {
-
-class FieldInfo;
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 class MultiFile {
@@ -87,9 +85,8 @@ private:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
+}  // namespace compare
+}  // namespace mir
 
-} // namespace compare
-} // namespace mir
 
 #endif

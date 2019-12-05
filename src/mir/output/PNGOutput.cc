@@ -33,8 +33,10 @@
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/MIRStatistics.h"
@@ -43,14 +45,14 @@
 namespace mir {
 namespace output {
 
-void call_zero(int bad, std::string msg) {
+void call_zero(int bad, const std::string& msg) {
     if (bad) {
         eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
         throw eckit::SeriousBug(msg);
     }
 }
 
-void call_nonzero(void* ok, std::string msg) {
+void call_nonzero(void* ok, const std::string& msg) {
     call_zero(!ok, msg);
 }
 

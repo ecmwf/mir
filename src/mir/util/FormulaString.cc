@@ -8,10 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-/// @file   FormulaString.h
 /// @author Baudouin Raoult
 /// @author Tiago Quintino
+/// @author Pedro Maciel
 /// @date   April 2016
+
 
 #include <iostream>
 #include "mir/util/FormulaString.h"

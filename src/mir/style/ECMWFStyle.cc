@@ -26,7 +26,6 @@
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -182,9 +181,12 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool rotation = user.has("rotation");
 
     bool vod2uv = false;
-    bool uv2uv = false;
+    bool uv2uv  = false;
     user.get("vod2uv", vod2uv);
     user.get("uv2uv", uv2uv);
+
+    long uv = 0;
+    uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && uv);
 
     // completed later
     const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
@@ -374,7 +376,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     }
 
     if (parametrisation_.userParametrisation().has("latitudes") ||
-            parametrisation_.userParametrisation().has("longitudes")) {
+        parametrisation_.userParametrisation().has("longitudes")) {
         user_wants_gridded++;
     }
 

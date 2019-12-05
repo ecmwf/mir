@@ -13,16 +13,15 @@
 /// @date Apr 2015
 
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/BufferedHandle.h"
-#include "eckit/config/Resource.h"
-#include "eckit/log/Bytes.h"
-#include "mir/config/LibMir.h"
-
-#include "mir/data/MIRField.h"
-#include "mir/util/Grib.h"
-
 #include "mir/input/GribStreamInput.h"
+
+#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/log/Bytes.h"
+
+#include "mir/config/LibMir.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {

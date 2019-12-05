@@ -13,6 +13,8 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
 
 namespace mir {
 namespace lsm {

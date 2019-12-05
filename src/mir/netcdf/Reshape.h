@@ -27,7 +27,7 @@ public:
 
     size_t operator()(size_t) const;
 
-    bool merge(Reshape &other);
+    bool merge(const Reshape& other);
 
 protected:
 

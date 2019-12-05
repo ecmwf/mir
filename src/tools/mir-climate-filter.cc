@@ -27,6 +27,7 @@
 #include "eckit/option/VectorOption.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"

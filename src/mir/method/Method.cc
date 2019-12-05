@@ -22,7 +22,7 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace method {

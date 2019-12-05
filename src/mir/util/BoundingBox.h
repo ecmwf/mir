@@ -17,7 +17,7 @@
 #define mir_util_BoundingBox_h
 
 #include <iosfwd>
-#include "mir/repres/Iterator.h"
+
 #include "mir/util/Types.h"
 
 
@@ -31,9 +31,6 @@ class MIRJob;
 }
 namespace param {
 class MIRParametrisation;
-}
-namespace util {
-class Rotation;
 }
 }
 

@@ -24,9 +24,7 @@ namespace mir {
 namespace param {
 
 
-RuntimeParametrisation::RuntimeParametrisation(const MIRParametrisation& owner):
-    owner_(owner) {
-}
+RuntimeParametrisation::RuntimeParametrisation(const MIRParametrisation& owner) : owner_(owner) {}
 
 
 RuntimeParametrisation::~RuntimeParametrisation() = default;
@@ -40,101 +38,208 @@ void RuntimeParametrisation::print(std::ostream& out) const {
     out << "]]";
 }
 
-template<class T>
+template <class T>
 void RuntimeParametrisation::_set(const std::string& name, const T& value) {
-    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]" << std::endl;
+    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = [" << value << "]"
+                                << std::endl;
     SimpleParametrisation::set(name, value);
 }
 
-MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const char* value) {
-    _set(name, value);
-    return *this;
+
+template <class T>
+void RuntimeParametrisation::_set(const std::string& name, const std::vector<T>& value) {
+    eckit::Log::debug<LibMir>() << "************* RuntimeParametrisation::set [" << name << "] = #" << value.size()
+                                << std::endl;
+    SimpleParametrisation::set(name, value);
 }
+
 
 MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::string& value) {
     _set(name, value);
     return *this;
 }
 
-MIRParametrisation& RuntimeParametrisation::set(const std::string& name, bool value) {
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const char* value) {
     _set(name, value);
     return *this;
 }
 
-MIRParametrisation& RuntimeParametrisation::set(const std::string& name, long value) {
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, float value) {
     _set(name, value);
     return *this;
 }
+
 
 MIRParametrisation& RuntimeParametrisation::set(const std::string& name, double value) {
     _set(name, value);
     return *this;
 }
 
-void  RuntimeParametrisation::unset(const std::string& name)  {
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, int value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, long value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, long long value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, bool value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, size_t value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<int>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<long>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<long long>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<size_t>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<float>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<double>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+MIRParametrisation& RuntimeParametrisation::set(const std::string& name, const std::vector<std::string>& value) {
+    _set(name, value);
+    return *this;
+}
+
+
+void RuntimeParametrisation::unset(const std::string& name) {
     hidden_.insert(name);
 }
 
 
 bool RuntimeParametrisation::has(const std::string& name) const {
 
-    if(hidden_.find(name) != hidden_.end()) {
+    if (hidden_.find(name) != hidden_.end()) {
         return false;
     }
 
-    if(SimpleParametrisation::has(name)) {
-        return true;
-    }
-    return owner_.has(name);
+    return SimpleParametrisation::has(name) || owner_.has(name);
 }
+
 
 const MIRParametrisation& RuntimeParametrisation::userParametrisation() const {
     return *this;
 }
 
+
 const MIRParametrisation& RuntimeParametrisation::fieldParametrisation() const {
     return *this;
 }
 
-template<class T>
-bool RuntimeParametrisation::_get(const std::string& name,  T& value) const {
 
-    if(hidden_.find(name) != hidden_.end()) {
+template <class T>
+bool RuntimeParametrisation::_get(const std::string& name, T& value) const {
+
+    if (hidden_.find(name) != hidden_.end()) {
         return false;
     }
 
-    if(SimpleParametrisation::get(name, value)) {
-        return true;
-    }
-    return owner_.get(name, value);
+    return SimpleParametrisation::get(name, value) || owner_.get(name, value);
 }
+
 
 bool RuntimeParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
 }
 
+
 bool RuntimeParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
 }
+
+
+bool RuntimeParametrisation::get(const std::string& name, int& value) const {
+    return _get(name, value);
+}
+
 
 bool RuntimeParametrisation::get(const std::string& name, long& value) const {
     return _get(name, value);
 }
 
+
+bool RuntimeParametrisation::get(const std::string& name, float& value) const {
+    return _get(name, value);
+}
+
+
 bool RuntimeParametrisation::get(const std::string& name, double& value) const {
     return _get(name, value);
 }
 
+
+bool RuntimeParametrisation::get(const std::string& name, std::vector<int>& value) const {
+    return _get(name, value);
+}
+
+
 bool RuntimeParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
+
+
+bool RuntimeParametrisation::get(const std::string& name, std::vector<float>& value) const {
+    return _get(name, value);
+}
+
 
 bool RuntimeParametrisation::get(const std::string& name, std::vector<double>& value) const {
     return _get(name, value);
 }
 
 
+bool RuntimeParametrisation::get(const std::string& name, std::vector<std::string>& value) const {
+    return _get(name, value);
+}
+
 
 }  // namespace param
 }  // namespace mir
-

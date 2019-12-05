@@ -16,11 +16,11 @@
 #include <iostream>
 #include <map>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 #include "eckit/utils/MD5.h"
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileMaskFromMIR.h"

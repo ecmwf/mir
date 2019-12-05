@@ -10,13 +10,18 @@
 
 // Baudouin Raoult - ECMWF Jan 2015
 
+
 #include "mir/netcdf/Curvilinear.h"
-#include "mir/netcdf/Variable.h"
+
+#include <cmath>
+#include <iostream>
+
 #include "eckit/types/Types.h"
+
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/HyperCube.h"
+#include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {

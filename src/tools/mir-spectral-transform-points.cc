@@ -22,7 +22,6 @@
 #include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/output/MIROutput.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 

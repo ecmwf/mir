@@ -14,27 +14,24 @@
 /// @date   Apr 2015
 
 
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
-#include "eckit/system/SystemInfo.h"
 
+//#include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
-#include "mir/config/LibMir.h"
-#include "mir/util/BoundingBox.h"
-
-// Includes needed for estimate() helper functions
-#include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
-#include "mir/data/MIRField.h"
-#include "mir/method/Method.h"
-#include "mir/param/CombinedParametrisation.h"
-#include "mir/param/DefaultParametrisation.h"
+#include "mir/config/LibMir.h"
+//#include "mir/data/MIRField.h"
+//#include "mir/method/Method.h"
+//#include "mir/param/CombinedParametrisation.h"
+//#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/MIRStatistics.h"
-
+#include "mir/util/BoundingBox.h"
+//#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -54,7 +51,7 @@ void Action::custom(std::ostream & out) const {
 }
 
 
-void Action::perform(context::Context & ctx) const {
+void Action::perform(context::Context& ctx) const {
     eckit::TraceResourceUsage<LibMir> usage(name());
     execute(ctx);
 }
@@ -231,8 +228,6 @@ void ActionFactory::list(std::ostream& out) {
         sep = ", ";
     }
 }
-
-
 
 
 }  // namespace action

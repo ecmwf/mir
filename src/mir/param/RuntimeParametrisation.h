@@ -49,11 +49,23 @@ public:
 
     void unset(const std::string& name);
 
-    MIRParametrisation& set(const std::string& name, const char* value);
-    MIRParametrisation& set(const std::string& name, const std::string& value);
-    MIRParametrisation& set(const std::string& name, bool value);
-    MIRParametrisation& set(const std::string& name, long value);
+    MIRParametrisation& set(const std::string& name, const std::string &value);
+    MIRParametrisation& set(const std::string& name, const char *value);
+    MIRParametrisation& set(const std::string& name, float value);
     MIRParametrisation& set(const std::string& name, double value);
+    MIRParametrisation& set(const std::string& name, int value);
+    MIRParametrisation& set(const std::string& name, long value);
+    MIRParametrisation& set(const std::string& name, long long value);
+    MIRParametrisation& set(const std::string& name, bool value);
+    MIRParametrisation& set(const std::string& name, size_t value);
+
+    MIRParametrisation& set(const std::string& name, const std::vector<int>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<long>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<long long>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<size_t>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<float>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<double>& value);
+    MIRParametrisation& set(const std::string& name, const std::vector<std::string>& value);
 
     // -- Overridden methods
 
@@ -63,10 +75,16 @@ public:
     // From SimpleParametrisation
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, int& value) const;
     virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, float& value) const;
     virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
     virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None
@@ -102,6 +120,9 @@ private:
 
     template<class T>
     void _set(const std::string&, const T&);
+
+    template<class T>
+    void _set(const std::string&, const std::vector<T>&);
 
     template<class T>
     bool _get(const std::string&, T&) const;

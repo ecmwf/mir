@@ -14,9 +14,8 @@
 
 
 #include "eckit/io/StdFile.h"
+#include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
-#include "eckit/utils/MD5.h"
-#include "eckit/utils/RLE.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
@@ -57,7 +56,7 @@ class LSM : public eckit::Tool {
 void LSM::run() {
 
     mir::input::GribFileInput file("/tmp/lsm.grib");
-    mir::input::MIRInput &input = file;
+    const mir::input::MIRInput& input = file;
 
     while (file.next()) {
 

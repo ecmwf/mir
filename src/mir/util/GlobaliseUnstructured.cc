@@ -21,12 +21,10 @@
 
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/search/PointSearch.h"
-#include "mir/util/Domain.h"
 
 
 namespace mir {
@@ -75,9 +73,9 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
         const Point3 p(it->point3D());
         if (Point3::distance(p, tree.closestPoint(p).point()) > globaliseMissingRadius_) {
 
-            const auto& p = it->pointUnrotated();
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
+            const auto& unrotated = it->pointUnrotated();
+            latitudes.push_back(unrotated.lat().value());
+            longitudes.push_back(unrotated.lon().value());
             ++nbExtraPoints;
 
         }
@@ -85,41 +83,6 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
     return nbExtraPoints;
 }
-
-
-#if 0
-size_t GlobaliseUnstructured::appendGlobalPoints(
-        std::vector<double>& latitudes,
-        std::vector<double>& longitudes,
-        const Domain& domain ) {
-    if (domain.isGlobal()) {
-        return 0;
-    }
-
-    // TODO: cache me
-
-
-    // setup global grid
-    repres::RepresentationHandle globe(namedgrids::NamedGrid::lookup(globaliseGridname_).representation());
-    size_t nbExtraPoints = 0;
-
-
-    // insert global grid points when outside provided domain
-    std::unique_ptr<repres::Iterator> it(globe->iterator());
-    while (it->next()) {
-        const auto& p = it->pointUnrotated();
-        if (!domain.contains(p)) {
-
-            latitudes.push_back(p.lat().value());
-            longitudes.push_back(p.lon().value());
-            ++nbExtraPoints;
-
-        }
-    }
-
-    return nbExtraPoints;
-}
-#endif
 
 
 }  // namespace util

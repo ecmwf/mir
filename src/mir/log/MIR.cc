@@ -9,10 +9,12 @@
  */
 
 /// @author Baudouin Raoult
+/// @author Pedro Maciel
 /// @date Feb 2016
 
-#include "mir/config/LibMir.h"
-#include "eckit/config/Resource.h"
+
+//#include "eckit/config/Resource.h"
+
 
 namespace mir {
 

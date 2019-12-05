@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/other/UnstructuredGrid.h"

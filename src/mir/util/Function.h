@@ -18,9 +18,13 @@
 #define mir_util_Function_h
 
 #include <string>
-#include <vector>
 
-#include "mir/util/Formula.h"
+
+namespace mir {
+namespace context {
+class Context;
+}
+}
 
 
 namespace mir {
@@ -30,28 +34,26 @@ namespace util {
 class Function {
 public:
 
-    Function(const std::string& name);
+    Function(const std::string&);
 
     Function(const Function&) = delete;
     void operator=(const Function&) = delete;
 
     virtual ~Function();
 
-    virtual void execute(context::Context& ctx) const = 0;
+    virtual void execute(context::Context&) const = 0;
 
-
-    static const Function& lookup(const std::string& name);
+    static const Function& lookup(const std::string&);
 
 private:
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
 protected:
 
     const std::string name_;
 
 private:
-
 
     friend std::ostream &operator<<(std::ostream &s, const Function &p) {
         p.print(s);
@@ -60,7 +62,10 @@ private:
 
 };
 
-}
-} // namespace eckit
+
+}  // namespace util
+}  // namespace mir
+
 
 #endif
+

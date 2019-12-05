@@ -17,9 +17,10 @@
 #include "mir/caching/matrix/SharedMemoryLoader.h"
 
 #include <errno.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <cstring>
+#include <sstream>
 
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -28,19 +29,17 @@
 #include <sys/time.h>
 #include <sys/sem.h>
 
-#include "eckit/eckit.h"
-#include "eckit/config/Resource.h"
-#include "eckit/io/StdFile.h"
+//#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
 #include "eckit/memory/Shmget.h"
-#include "eckit/os/SemLocker.h"
+//#include "eckit/os/SemLocker.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Pretty.h"
 
 

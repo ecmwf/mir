@@ -65,7 +65,7 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual grib_handle *gribHandle(size_t which = 0) const;
-    virtual void setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes);
+    virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t dimensions() const;
 
     /// From MIRParametrisation

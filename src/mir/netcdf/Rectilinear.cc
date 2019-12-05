@@ -27,6 +27,7 @@ Rectilinear::Rectilinear(const Variable &variable,
                                  double east,
                                  const std::vector<double>& longitudes):
   GridSpec(variable),
+  jScansPositively_(false),
   north_(north),
   south_(south),
   latitudes_(latitudes),

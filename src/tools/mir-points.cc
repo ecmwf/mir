@@ -17,11 +17,9 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/types/Types.h"
 
-#include "mir/action/context/Context.h"
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/output/ValuesOutput.h"
-#include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"
 
 

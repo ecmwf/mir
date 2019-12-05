@@ -16,11 +16,11 @@
 #ifndef mir_api_MIRJob_h
 #define mir_api_MIRJob_h
 
-#include <memory>
 #include <string>
 
-#include "mir/param/SimpleParametrisation.h"
 #include "eckit/config/Configured.h"
+
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -93,7 +93,7 @@ public:
 
     MIRJob& set(const std::string& args);
 
-    MIRJob& representationFrom(input::MIRInput&);
+    MIRJob& representationFrom(const input::MIRInput&);
 
     // For debugging only
     void mirToolCall(std::ostream&) const;

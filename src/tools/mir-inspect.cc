@@ -14,7 +14,6 @@
 
 
 #include "eckit/log/Log.h"
-#include "eckit/utils/Tokenizer.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/tools/MIRTool.h"

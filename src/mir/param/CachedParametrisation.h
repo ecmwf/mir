@@ -10,18 +10,16 @@
 
 /// @author Baudouin Raoult
 /// @author Pedro Maciel
-/// @date Apr 2015
+/// @date Jul 2016
 
 
 #ifndef mir_param_CachedParametrisation_h
 #define mir_param_CachedParametrisation_h
 
-#include <map>
-#include <set>
 #include <string>
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-
 
 
 namespace mir {

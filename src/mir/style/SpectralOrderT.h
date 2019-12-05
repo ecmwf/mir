@@ -8,15 +8,14 @@
  * nor does it submit to any jurisdiction.
  */
 
-/// @date May 2017
-
 
 #ifndef mir_style_SpectralOrderT_h
 #define mir_style_SpectralOrderT_h
 
 #include <cmath>
-#include <string>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/style/SpectralOrder.h"
 
 

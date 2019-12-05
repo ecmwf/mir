@@ -13,7 +13,6 @@
 #define mir_method_knn_pick_Distance_h
 
 #include "mir/method/knn/pick/Pick.h"
-#include "mir/method/knn/pick/NClosest.h"
 
 
 namespace mir {

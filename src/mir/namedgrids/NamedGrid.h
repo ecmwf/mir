@@ -13,15 +13,14 @@
 /// @date Apr 2015
 
 
-#ifndef NamedGrid_H
-#define NamedGrid_H
+#ifndef mir_namedgrids_NamedGrid_h
+#define mir_namedgrids_NamedGrid_h
 
 #include <iosfwd>
-#include <map>
 #include <string>
 
-namespace mir {
 
+namespace mir {
 namespace repres {
 class Representation;
 }
@@ -29,6 +28,7 @@ namespace util {
 class Rotation;
 }
 }
+
 
 namespace mir {
 namespace namedgrids {

@@ -11,6 +11,7 @@
 
 #include "mir/compare/BufrField.h"
 
+#include <cmath>
 #include <iomanip>
 
 #include "eckit/log/Colour.h"
@@ -205,7 +206,7 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
     }
 
     if (name == "latitude" || name == "longitude") {
-        return ::fabs(a - b) <= 0.0001 || sameValue("-", ::fabs(a - b), 0.0001, 1e-7);
+        return std::abs(a - b) <= 0.0001 || sameValue("-", std::abs(a - b), 0.0001, 1e-7);
     }
 
     if (headerKeys.find(name) != headerKeys.end()) {
@@ -213,12 +214,12 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
     }
 
 
-    double m = std::max(::fabs(a), ::fabs(b));
+    double m = std::max(std::abs(a), std::abs(b));
     if (m > 0) {
-        return ::fabs(a - b) / m <= e;
+        return std::abs(a - b) / m <= e;
     }
     else {
-        return ::fabs(a - b) <= e;
+        return std::abs(a - b) <= e;
     }
 }
 
@@ -317,15 +318,15 @@ BufrField::BufrField(const char* buffer, size_t size,
     ASSERT(h);
     HandleDeleter delh(h);
 
-    size_t count;
-    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &count));
-    ASSERT(count > 0);
+    size_t nDescriptors;
+    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &nDescriptors));
+    ASSERT(nDescriptors > 0);
 
-    descriptors_.resize(count);
+    descriptors_.resize(nDescriptors);
 
-    size_t n = count;
+    size_t n = nDescriptors;
     GRIB_CALL(grib_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
-    ASSERT(n == count);
+    ASSERT(n == nDescriptors);
 
 
 

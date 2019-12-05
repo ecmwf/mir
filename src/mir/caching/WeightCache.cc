@@ -10,9 +10,6 @@
 
 #include "mir/caching/WeightCache.h"
 
-#include <unistd.h>
-
-#include "eckit/io/Buffer.h"
 #include "eckit/log/Bytes.h"
 
 #include "mir/caching/matrix/MatrixLoader.h"

@@ -20,7 +20,6 @@
 #include <iostream>
 #include <sys/mman.h>
 
-#include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Log.h"

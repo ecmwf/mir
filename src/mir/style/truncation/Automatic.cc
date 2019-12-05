@@ -11,7 +11,6 @@
 
 #include "mir/style/truncation/Automatic.h"
 
-#include <algorithm>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"

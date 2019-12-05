@@ -12,7 +12,6 @@
 #include "mir/style/truncation/Ordinal.h"
 
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {

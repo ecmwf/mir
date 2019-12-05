@@ -18,17 +18,16 @@
 
 #include <algorithm>
 #include <functional>
-#include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
-#include "eckit/io/BufferedHandle.h"
+#include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
@@ -999,12 +998,20 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 }
 
 
-void GribInput::setAuxilaryFiles(const std::string& pathToLatitudes, const std::string& pathToLongitudes) {
+void GribInput::setAuxiliaryInformation(const std::string& yaml) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // eckit::Log::debug<LibMir>() << "Loading auxilary files " << pathToLatitudes << " and " << pathToLongitudes << std::endl;
-    auxilaryValues(pathToLatitudes, latitudes_);
-    auxilaryValues(pathToLongitudes, longitudes_);
+    eckit::ValueMap keyValue = eckit::YAMLParser::decodeString(yaml);
+    for (const auto& kv : keyValue) {
+        if (kv.first == "latitudes") {
+            eckit::Log::debug<LibMir>() << "Loading auxilary file '" << kv.second << "'" << std::endl;
+            auxilaryValues(kv.second, latitudes_);
+        }
+        else if (kv.first == "longitudes") {
+            eckit::Log::debug<LibMir>() << "Loading auxilary file '" << kv.second << "'" << std::endl;
+            auxilaryValues(kv.second, longitudes_);
+        }
+    }
 }
 
 
@@ -1043,8 +1050,8 @@ void GribInput::marsRequest(std::ostream& out) const {
     grib_keys_iterator *keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
-    const char *sep = "";
     try {
+        const char *sep = "";
         while (grib_keys_iterator_next(keys)) {
 
             char value[1024];
@@ -1080,6 +1087,7 @@ void GribInput::marsRequest(std::ostream& out) const {
                 std::string param;
                 in >> param;
                 out << sep << param;
+                sep = ",";
                 const char *slash = "=";
                 int m;
                 in >> m;

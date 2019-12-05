@@ -23,7 +23,6 @@
 #include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {

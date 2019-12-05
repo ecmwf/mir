@@ -92,7 +92,7 @@ void MIRPlotLSM::execute(const eckit::option::CmdArgs& args) {
     atlas::grid::RegularLonLatGrid grid(gridname);
 
 
-    mir::lsm::Mask& mask = mir::lsm::Mask::lookupOutput(parametrisation, grid);
+    const mir::lsm::Mask& mask = mir::lsm::Mask::lookupOutput(parametrisation, grid);
 
     eckit::Log::info() << "MASK IS => " << mask << std::endl;
 

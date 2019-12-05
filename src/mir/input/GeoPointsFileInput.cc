@@ -15,18 +15,18 @@
 
 #include "mir/input/GeoPointsFileInput.h"
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/utils/Tokenizer.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/serialisation/IfstreamStream.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
-#include "mir/util/GlobaliseUnstructured.h"
 
 
 namespace mir {
@@ -39,6 +39,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     which_(which),
     next_(0),
     hasMissing_(false),
+    missingValue_(3e38),
     footprint_(0) {
 
     // For now, this should give an ovwerestimate of the memory footprint
@@ -107,7 +108,7 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
 
     while (in.getline(line, sizeof(line))) {
 
-        if (strncmp(line, "#GEO", 4) == 0) {
+        if (std::strncmp(line, "#GEO", 4) == 0) {
             count++;
 
             if (which_ >= 0 && count  > which_ + 1) {
@@ -125,7 +126,7 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             continue;
         }
 
-        if (!data && strncmp(line, "#FORMAT ", 8) == 0) {
+        if (!data && std::strncmp(line, "#FORMAT ", 8) == 0) {
             std::vector<std::string> v;
             parse(line + 8, v);
             ASSERT(v.size() == 1);
@@ -136,17 +137,14 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
                      throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
-        if (!data && strncmp(line, "# ", 2) == 0) {
+        if (!data && std::strncmp(line, "# ", 2) == 0) {
             std::vector<std::string> v;
-            // eckit::Log::info() << "PARSE " << line +2 << std::endl;
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
             fieldParametrisation_.set(v[0], v[1]);
-
-            // eckit::Log::info() << path_ << " ===> " << v[0] << "=" << v[1] << std::endl;
         }
 
-        if (!data && strncmp(line, "#DATA", 5) == 0) {
+        if (!data && std::strncmp(line, "#DATA", 5) == 0) {
             if (which_ < 0) {
                 data = true;
             }
@@ -176,15 +174,10 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
     eckit::IfstreamStream s(in);
     size_t count = 0;
 
-    // eckit::Log::info() << "GeoPointsFileInput::readBinary " << path_ << std::endl;
-
-
     for (;;) {
 
         std::string what;
         s >> what;
-
-        // eckit::Log::info() << "GeoPointsFileInput::readBinary " << what << std::endl;
 
         if (what == "END") {
             break;
@@ -208,7 +201,6 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         std::string format;
         s >> format;
         ASSERT(format == "XYV");
-        // eckit::Log::info() << "GeoPointsFileInput::readBinary format=" << format << std::endl;
 
         for (;;) {
             std::string k, v;
@@ -217,14 +209,12 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
                 break;
             }
             s >> v;
-            // eckit::Log::info() << "GeoPointsFileInput::readBinary " << k << "=" << v << std::endl;
 
             fieldParametrisation_.set(k, v);
         }
 
         size_t n;
         s >> n;
-        // eckit::Log::info() << "GeoPointsFileInput::readBinary " << n << " points " << std::endl;
         latitudes_.resize(n);
         longitudes_.resize(n);
         values_.resize(n);
@@ -232,9 +222,6 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
             s >> longitudes_[i]
               >> latitudes_[i]
               >> values_[i];
-
-            // eckit::Log::info() << "GeoPointsFileInput::readBinary points " << i << std::endl;
-
         }
 
     }

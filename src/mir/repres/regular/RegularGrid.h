@@ -15,7 +15,7 @@
 #include "mir/api/Atlas.h"
 
 #include "mir/repres/Gridded.h"
-#include "mir/repres/Iterator.h"
+
 
 namespace mir {
 namespace repres {

@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-/// @date August 2017
-
 
 #ifndef mir_input_GlobaliseUnstructured_h
 #define mir_input_GlobaliseUnstructured_h
@@ -21,9 +19,6 @@
 namespace mir {
 namespace param {
 class MIRParametrisation;
-}
-namespace util {
-class Domain;
 }
 }
 
@@ -48,13 +43,6 @@ public:
     size_t appendGlobalPoints(
             std::vector<double>& latitudes,
             std::vector<double>& longitudes );
-
-#if 0
-    size_t appendGlobalPoints(
-            std::vector<double>& latitudes,
-            std::vector<double>& longitudes,
-            const Domain&& );
-#endif
 
 private:
 

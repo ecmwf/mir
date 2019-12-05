@@ -16,8 +16,9 @@
 #include "mir/repres/Iterator.h"
 
 #include <ostream>
-#include <vector>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/api/Atlas.h"
 
 
