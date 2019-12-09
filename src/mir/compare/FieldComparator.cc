@@ -151,6 +151,9 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<double>("absolute-error",
                       "Absolute difference error"));
 
+    options.push_back(new SimpleOption<double>("relative-error-factor",
+                      "Relative error to maximum difference"));
+
     options.push_back(new SimpleOption<double>("relative-error-min",
                       "Relative difference error to minimum of both fields"));
 
