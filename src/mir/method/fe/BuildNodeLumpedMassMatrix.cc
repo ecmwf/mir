@@ -15,13 +15,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "atlas/array/MakeView.h"
-#include "atlas/field/Field.h"
-#include "atlas/interpolation/element/Quad3D.h"
-#include "atlas/interpolation/element/Triag3D.h"
-#include "atlas/mesh.h"
-#include "atlas/runtime/Trace.h"
-#include "atlas/util/Point.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {

@@ -16,24 +16,17 @@
 
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 
-#include <errno.h>
 #include <unistd.h>
-#include <fcntl.h>
 
-#include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <sys/stat.h>
-#include <sys/time.h>
 #include <sys/sem.h>
 
-//#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/Shmget.h"
-//#include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
 
 #include "mir/config/LibMir.h"
@@ -76,9 +69,9 @@ public:
     }
 
     ~Unloader() {
-        for (std::vector<eckit::PathName>::const_iterator j = paths_.begin(); j != paths_.end(); ++j) {
+        for (auto& j : paths_) {
             try {
-                SharedMemoryLoader::unloadSharedMemory(*j);
+                SharedMemoryLoader::unloadSharedMemory(j);
             } catch (std::exception& e) {
                 eckit::Log::error() << e.what() << std::endl;
             }

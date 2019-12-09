@@ -25,11 +25,8 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
-#include "atlas/grid.h"
-#include "atlas/option.h"
-#include "atlas/trans/Trans.h"
-
 #include "mir/action/context/Context.h"
+#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"

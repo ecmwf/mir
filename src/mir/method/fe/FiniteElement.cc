@@ -31,16 +31,7 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "atlas/interpolation/element/Quad3D.h"
-#include "atlas/interpolation/element/Triag3D.h"
-#include "atlas/interpolation/method/PointIndex3.h"
-#include "atlas/interpolation/method/Ray.h"
-#include "atlas/mesh/Elements.h"
-#include "atlas/mesh/Nodes.h"
-#include "atlas/mesh/actions/BuildCellCentres.h"
-#include "atlas/mesh/actions/BuildNode2CellConnectivity.h"
-#include "atlas/mesh/actions/BuildXYZField.h"
-#include "atlas/output/Gmsh.h"
+#include "mir/api/Atlas.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/config/LibMir.h"

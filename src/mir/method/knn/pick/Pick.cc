@@ -16,7 +16,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
 
 

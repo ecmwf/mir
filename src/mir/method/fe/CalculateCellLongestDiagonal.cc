@@ -11,7 +11,7 @@
 
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
 
-#include <cmath>
+#include <algorithm>
 #include <utility>
 
 #include "eckit/exception/Exceptions.h"

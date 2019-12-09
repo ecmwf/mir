@@ -17,11 +17,12 @@
 
 #include "mir/caching/legendre/LegendreLoader.h"
 
+#include <map>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -32,8 +33,9 @@ namespace caching {
 namespace legendre {
 
 
-LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : parametrisation_(parametrisation), path_(path.realName()) {}
+LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    parametrisation_(parametrisation),
+    path_(path.realName()) {}
 
 
 LegendreLoader::~LegendreLoader() = default;
@@ -49,14 +51,14 @@ eckit::Channel& LegendreLoader::log() {
 
 
 namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, LegendreLoaderFactory* >* m = nullptr;
+static pthread_once_t once                              = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                        = nullptr;
+static std::map<std::string, LegendreLoaderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, LegendreLoaderFactory* >();
+    m           = new std::map<std::string, LegendreLoaderFactory*>();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
 LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {

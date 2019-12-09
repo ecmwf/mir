@@ -19,7 +19,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/MIRParametrisation.h"

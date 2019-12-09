@@ -11,7 +11,6 @@
 
 #include "mir/method/structured/StructuredLinear3D.h"
 
-#include <cmath>
 #include <memory>
 #include <numeric>
 #include <vector>

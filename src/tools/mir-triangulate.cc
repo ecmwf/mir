@@ -10,20 +10,20 @@
 
 
 #include <algorithm>
-#include <cmath>
+#include <deque>
 #include <iomanip>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <vector>
-#include <deque>
 
 #include "atlas/output/Gmsh.h"
 #include "atlas/util/CoordinateEnums.h"
 
 #include "eckit/geometry/Point2.h"
+#include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/log/JSON.h"
 
 #include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"

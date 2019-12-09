@@ -14,21 +14,14 @@
 /// @date Apr 2015
 
 
-#include <fcntl.h>
-#include <iostream>
-#include <sys/mman.h>
-
 #include "mir/caching/legendre/FileLoader.h"
 
-#include "eckit/eckit.h"
+#include <fcntl.h>
+#include <iostream>
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
-#include "eckit/os/Stat.h"
-
-#include "mir/config/LibMir.h"
 
 
 namespace mir {
@@ -36,10 +29,10 @@ namespace caching {
 namespace legendre {
 
 
-FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path), buffer_(path.size()) {
+FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    LegendreLoader(parametrisation, path),
+    buffer_(path.size()) {
 
-    //    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from file");
     log() << "Loading legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);

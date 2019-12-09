@@ -15,7 +15,7 @@
 
 #include "mir/action/misc/CheckerBoard.h"
 
-#include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 

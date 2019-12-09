@@ -11,6 +11,7 @@
 
 #include "mir/compare/BufrField.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 

@@ -18,7 +18,7 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/utils/RLE.h"
 
-#include "atlas/grid.h"
+#include "mir/api/Atlas.h"
 
 
 class Grids : public eckit::Tool {

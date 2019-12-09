@@ -16,7 +16,6 @@
 #include "mir/util/BoundingBox.h"
 
 #include <algorithm>
-#include <cmath>
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
@@ -57,11 +56,11 @@ BoundingBox::BoundingBox() :
 }
 
 
-BoundingBox::BoundingBox(const Latitude& north,
-                         const Longitude& west,
-                         const Latitude& south,
-                         const Longitude& east) :
-    north_(north), west_(west), south_(south), east_(east) {
+BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
+    north_(north),
+    west_(west),
+    south_(south),
+    east_(east) {
     normalise();
     check(*this);
 }
@@ -263,10 +262,7 @@ bool BoundingBox::empty() const {
 
 
 void BoundingBox::makeName(std::ostream& out) const {
-    out << "-" << north_
-        << ":" << west_
-        << ":" << south_
-        << ":" << east_;
+    out << "-" << north_ << ":" << west_ << ":" << south_ << ":" << east_;
 }
 
 

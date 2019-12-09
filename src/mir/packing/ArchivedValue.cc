@@ -14,7 +14,6 @@
 
 
 #include "mir/packing/ArchivedValue.h"
-#include "mir/util/Grib.h"
 
 #include <iostream>
 
@@ -23,29 +22,27 @@ namespace mir {
 namespace packing {
 
 
-ArchivedValue::ArchivedValue(const std::string &name):
-    Packer(name) {
-}
+ArchivedValue::ArchivedValue(const std::string& name) : Packer(name) {}
 
 
 ArchivedValue::~ArchivedValue() = default;
+
 
 void ArchivedValue::print(std::ostream& out) const {
     out << "ArchivedValue[]";
 }
 
-void ArchivedValue::fill(grib_info& info, const repres::Representation& ) const {
+
+void ArchivedValue::fill(grib_info&, const repres::Representation&) const {
     // Nothing to do
 }
 
 
 namespace {
 static ArchivedValue packing1("archived-value");
-static ArchivedValue packing2("av"); // For the lazy
-
-}
+static ArchivedValue packing2("av");  // For the lazy
+}  // namespace
 
 
 }  // namespace packing
 }  // namespace mir
-

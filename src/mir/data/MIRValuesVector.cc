@@ -11,8 +11,10 @@
 
 #include "mir/data/MIRValuesVector.h"
 
+#ifdef VEC_IS_SPECIAL_VECTOR
 #include <algorithm>
 #include <stdexcept>
+#endif
 
 
 namespace mir {
