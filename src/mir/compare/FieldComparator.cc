@@ -220,7 +220,7 @@ void FieldComparator::compare(const std::string& name,
     std::string requirements;
     args_.get("requirements", requirements);
 
-    bool compareValues = false;
+    bool compareValues = true;
     args_.get("compare-values", compareValues);
 
     bool compareMissingValues = false;
