@@ -17,6 +17,7 @@
 #include "mir/config/LibMir.h"
 
 #include "mir/api/mir_version.h"
+
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 

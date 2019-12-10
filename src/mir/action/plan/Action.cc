@@ -17,7 +17,6 @@
 #include <map>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
@@ -32,6 +31,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 //#include "mir/util/MIRStatistics.h"
+#include "mir/util/TraceResourceUsage.h"
 
 
 namespace mir {
@@ -52,7 +52,7 @@ void Action::custom(std::ostream & out) const {
 
 
 void Action::perform(context::Context& ctx) const {
-    eckit::TraceResourceUsage<LibMir> usage(name());
+    mir::util::TraceResourceUsage usage(name());
     execute(ctx);
 }
 

@@ -608,6 +608,8 @@ list(APPEND mir_srcs
     util/Pretty.h
     util/Rotation.cc
     util/Rotation.h
+    util/TraceResourceUsage.cc
+    util/TraceResourceUsage.h
     util/Types.h
     util/Wind.cc
     util/Wind.h
