@@ -162,6 +162,7 @@ public:
         options_.push_back(new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
         options_.push_back(new SimpleOption<std::string>("globalise-gridname", "Unstructured grid globalise using gridname (default O16)"));
         options_.push_back(new SimpleOption<std::string>("globalise-missing-radius", "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
+        options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));
 
         //==============================================
         options_.push_back(new Separator("Compute"));
@@ -258,6 +259,7 @@ void MIR::usage(const std::string &tool) const {
 
 void MIR::execute(const eckit::option::CmdArgs& args) {
     eckit::ResourceUsage usage("mir");
+    const param::ConfigurationWrapper args_wrap(args);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob
     std::string backend;
@@ -274,9 +276,9 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::string same;
     if (args.get("same", same) || filter) {
         ASSERT(filter != !same.empty());
-        input::GribFileInput input(filter ? args(0) : same);
-        ASSERT(input.next());
-        job.representationFrom(input);
+        std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(filter ? args(0) : same, args_wrap));
+        ASSERT(input->next());
+        job.representationFrom(*input);
     }
 
 
@@ -291,7 +293,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     }
 
 
-    const param::ConfigurationWrapper args_wrap(args);
     std::unique_ptr<output::MIROutput> output(output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 

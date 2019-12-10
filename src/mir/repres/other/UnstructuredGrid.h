@@ -16,6 +16,8 @@
 #ifndef mir_repres_other_UnstructuredGrid_h
 #define mir_repres_other_UnstructuredGrid_h
 
+#include <vector>
+
 #include "mir/repres/Gridded.h"
 
 
@@ -31,7 +33,6 @@ namespace other {
 
 class UnstructuredGrid : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
@@ -39,8 +40,7 @@ public:
 
     UnstructuredGrid(const eckit::PathName&);
     UnstructuredGrid(const param::MIRParametrisation&);
-    UnstructuredGrid(const std::vector<double>& latitudes,
-                     const std::vector<double>& longitudes,
+    UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
                      const util::BoundingBox& = util::BoundingBox());
 
     // -- Destructor
@@ -55,17 +55,14 @@ public:
 
     // -- Methods
 
-    static void save(const eckit::PathName&,
-                     const std::vector<double>& latitudes,
-                     const std::vector<double>& longitudes,
-                     bool binary);
+    static void save(const eckit::PathName&, const std::vector<double>& latitudes,
+                     const std::vector<double>& longitudes, bool binary);
 
-    static void check( const std::string& title,
-                       const std::vector<double>& latitudes,
-                       const std::vector<double>& longitudes);
+    static void check(const std::string& title, const std::vector<double>& latitudes,
+                      const std::vector<double>& longitudes);
 
     // -- Overridden methods
-    // None
+
 
     // -- Class members
     // None
@@ -74,13 +71,14 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    // From Representation
+    virtual bool extendBoundingBoxOnIntersect() const;
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -92,7 +90,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<double> latitudes_;
@@ -108,12 +105,12 @@ private:
     virtual void fill(util::MeshGeneratorParameters&) const;
 
     virtual atlas::Grid atlasGrid() const;
-    virtual void validate(const MIRValuesVector& values) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation&) const;
 
     // Domain operations
     virtual bool isPeriodicWestEast() const;
@@ -121,7 +118,6 @@ private:
     virtual bool includesSouthPole() const;
 
     virtual size_t numberOfPoints() const;
-
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
 
     // -- Class members
@@ -132,9 +128,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
+    // friend ostream& operator<<(ostream& s,const UnstructuredGrid& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -144,4 +139,3 @@ private:
 
 
 #endif
-

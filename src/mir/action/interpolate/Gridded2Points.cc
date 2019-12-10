@@ -30,12 +30,12 @@ namespace interpolate {
 
 Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation):
     Gridded2UnrotatedGrid(parametrisation) {
-    auto& user = parametrisation_.userParametrisation();
-    auto& field = parametrisation_.fieldParametrisation();
+    ASSERT(parametrisation_.get("latitudes", latitudes_));
+    ASSERT(parametrisation_.get("longitudes", longitudes_));
 
-    ASSERT(user.has("latitudes")  && field.get("latitudes",  latitudes_));
-    ASSERT(user.has("longitudes") && field.get("longitudes", longitudes_));
-
+    if (latitudes_.empty() || longitudes_.empty()) {
+        throw eckit::UserError("Gridded2Points: requires 'latitudes' and 'longitudes'");
+    }
     ASSERT(latitudes_.size() == longitudes_.size());
 }
 

@@ -424,6 +424,10 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
             plan.add("filter.frame");
         }
 
+        if (parametrisation_.userParametrisation().has("unstructured")) {
+            plan.add("filter.unstructured");
+        }
+
     }
 
 

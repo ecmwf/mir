@@ -131,12 +131,12 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
 
     if (name == "latitudes") {
         latitudes(value);
-        return true;
+        return !value.empty();
     }
 
     if (name == "longitudes") {
         longitudes(value);
-        return true;
+        return !value.empty();
     }
 
     return false;
