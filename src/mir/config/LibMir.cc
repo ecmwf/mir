@@ -20,7 +20,6 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/ResourceUsage.h"
 
 
 namespace mir {
@@ -100,20 +99,6 @@ std::string LibMir::gitsha1(unsigned int count) const {
     }
 
     return sha1.substr(0, std::min(count, 40u));
-}
-
-TraceResourceUsage::TraceResourceUsage(const char* name) {
-    static bool usage = eckit::LibResource<bool, LibMir>(
-        "mir-trace-resource-usage;"
-        "$MIR_TRACE_RESOURCE_USAGE",
-        false);
-    if (usage) {
-        info_ = new eckit::ResourceUsage(name, eckit::Log::debug<LibMir>());
-    }
-}
-
-TraceResourceUsage::~TraceResourceUsage() {
-     delete info_;
 }
 
 } // namespace mir

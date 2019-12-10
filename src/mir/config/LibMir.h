@@ -9,8 +9,9 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+
 /// @date August 2016
 
 
@@ -22,13 +23,7 @@
 
 #include "eckit/system/Library.h"
 
-namespace eckit {
-class ResourceUsage;
-}
-
 namespace mir {
-
-//----------------------------------------------------------------------------------------------------------------------
 
 class LibMir : public eckit::system::Library {
 public:
@@ -46,18 +41,6 @@ protected:
     virtual std::string version() const;
     virtual std::string gitsha1(unsigned int count) const;
 };
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class TraceResourceUsage {
-public:
-    explicit TraceResourceUsage(const char* name);
-    ~TraceResourceUsage();
-private:
-    eckit::ResourceUsage* info_ = nullptr;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace mir
 

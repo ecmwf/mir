@@ -33,6 +33,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/TraceResourceUsage.h"
 
 
 
@@ -54,7 +55,7 @@ void Action::custom(std::ostream & out) const {
 
 
 void Action::perform(context::Context & ctx) const {
-    mir::TraceResourceUsage usage(name());
+    mir::util::TraceResourceUsage usage(name());
     execute(ctx);
 }
 
