@@ -8,29 +8,29 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
-
-#ifndef mir_input_DummyInput_h
-#define mir_input_DummyInput_h
+#ifndef mir_input_DistributionInput_h
+#define mir_input_DistributionInput_h
 
 #include "mir/input/ArtificialInput.h"
+
+#include <memory>
+
+#include "mir/stats/Distribution.h"
 
 
 namespace mir {
 namespace input {
 
 
-class DummyInput : public ArtificialInput {
+class DistributionInput : public ArtificialInput {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    DummyInput(const param::MIRParametrisation&);
+    DistributionInput(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -71,7 +71,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::string name_;
+    mutable std::unique_ptr<stats::Distribution> distribution_;
 
     // -- Methods
     // None
@@ -79,7 +81,7 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual bool sameAs(const MIRInput&) const;
+    virtual bool sameAs(const MIRInput&) const { return false; }
 
     // From ArtificialInput
     virtual void print(std::ostream&) const;

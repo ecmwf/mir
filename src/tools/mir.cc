@@ -34,6 +34,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/Space.h"
+#include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
 #include "mir/lsm/LSMSelection.h"
@@ -48,6 +49,7 @@
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
+#include "mir/stats/Distribution.h"
 #include "mir/stats/Statistics.h"
 #include "mir/style/Intgrid.h"
 #include "mir/style/MIRStyle.h"
@@ -204,6 +206,7 @@ public:
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("statistics", "Statistics methods for interpreting field values (both pre- and post-processed)"));
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("input-statistics", "Statistics methods for interpreting field values (pre-processed)"));
         options_.push_back(new FactoryOption<stats::StatisticsFactory>("output-statistics", "Statistics methods for interpreting field values (post-processed)"));
+        options_.push_back(new FactoryOption<stats::DistributionFactory>("distribution", "Generate random numbers according to a probability density function"));
 
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
@@ -225,7 +228,6 @@ public:
         // Only show these options if debug channel is active
         if (eckit::Log::debug<LibMir>()) {
             options_.push_back(new Separator("Debugging"));
-            options_.push_back(new SimpleOption<bool>("dummy", "Use dummy data"));
             options_.push_back(new SimpleOption<bool>("dryrun", "Only read data from source, no interpolation done or output produced"));
             options_.push_back(new SimpleOption<bool>("checkerboard", "Create checkerboard field"));
             options_.push_back(new SimpleOption<bool>("pattern", "Create reference pattern field"));
@@ -234,6 +236,7 @@ public:
             options_.push_back(new VectorOption<long>("frequencies", "Set pattern and checkerboard frequencies", 2));
             options_.push_back(new SimpleOption<std::string>("dump-plan-file", "Dump plan to file"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
+            options_.push_back(new FactoryOption<input::ArtificialInputFactory>("artificial-input", "Use artificial data for input"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
 #if defined(HAVE_PNG)
             options_.push_back(new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));

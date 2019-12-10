@@ -19,7 +19,7 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/input/DummyInput.h"
+#include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Grib.h"
 
@@ -129,8 +129,10 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    const param::MIRParametrisation& user = parametrisation.userParametrisation();
+
     std::string input;
-    parametrisation.userParametrisation().get("input", input);
+    user.get("input", input);
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
     auto aux = [&input](MIRInput* in) {
@@ -141,9 +143,9 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
         return in;
     };
 
-    bool dummy = false;
-    if (parametrisation.userParametrisation().get("dummy", dummy) && dummy) {
-        return aux(new DummyInput());
+    std::string synth;
+    if (user.get("artificial-input", synth)) {
+        return aux(ArtificialInputFactory::build(synth, user));
     }
 
     eckit::AutoStdFile f(path);

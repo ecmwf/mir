@@ -190,6 +190,10 @@ void TSettings<long>::get(const std::string&, long& value) const {
     value = value_;
 }
 
+template<>
+void TSettings<long>::get(const std::string&, int& value) const {
+    value = value_;
+}
 
 template<>
 void TSettings<int>::get(const std::string&, long& value) const {

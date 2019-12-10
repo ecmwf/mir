@@ -13,71 +13,64 @@
 /// @date Apr 2015
 
 
+#include "mir/input/DummyInput.h"
+
 #include <cmath>
 #include <iostream>
 
 #include "mir/data/MIRField.h"
 
-#include "mir/input/DummyInput.h"
-#include "eckit/exception/Exceptions.h"
-
 
 namespace mir {
 namespace input {
 
+static ArtificialInputBuilder<DummyInput> __artificial("dummy");
 
-DummyInput::DummyInput(): calls_(0) {
-    parametrisation_.set("gridded", true);
-    parametrisation_.set("gridType", "regular_ll");
-    parametrisation_.set("north", 90.0);
-    parametrisation_.set("south", -90.0);
-    parametrisation_.set("west", 0.0);
-    parametrisation_.set("east", 359.0);
-    parametrisation_.set("west_east_increment", 1.0);
-    parametrisation_.set("south_north_increment", 1.0);
-    parametrisation_.set("Ni", 360);
-    parametrisation_.set("Nj", 181);
-}
 
-DummyInput::~DummyInput() = default;
+struct dummy_t : public param::SimpleParametrisation {
+    dummy_t() {
+        set("gridded", true);
+        set("gridType", "regular_ll");
+        set("north", 90.0);
+        set("south", -90.0);
+        set("west", 0.0);
+        set("east", 359.0);
+        set("west_east_increment", 1.0);
+        set("south_north_increment", 1.0);
+        set("Ni", 360);
+        set("Nj", 181);
+    }
+} static const dummy;
+
+
+DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : ArtificialInput(dummy) {}
 
 
 bool DummyInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const DummyInput*>(&other);
-    return o;
-}
-
-bool DummyInput::next() {
-    return calls_++ == 0;
+    return o && ArtificialInput::sameAs(other);
 }
 
 
-const param::MIRParametrisation &DummyInput::parametrisation(size_t which) const {
-    ASSERT(which == 0);
-    return parametrisation_;
+void DummyInput::print(std::ostream& out) const {
+    out << "DummyInput[";
+    ArtificialInput::print(out);
+    out << "]";
 }
 
 
-data::MIRField DummyInput::field() const {
-    data::MIRField field(parametrisation_, false, 999.);
-
+data::MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
     MIRValuesVector values(360 * 181, 42.);
     size_t k = 0;
-    for (size_t i = 0; i < 360; ++i)
+    for (size_t i = 0; i < 360; ++i) {
         for (size_t j = 0; j < 181; ++j) {
-            values[k++] = sin(double(i) / 10.) + cos(double(j) / 10.);
+            values[k++] = std::sin(double(i) / 10.) + std::cos(double(j) / 10.);
         }
-    field.update(values, 0);
+    }
 
-    return field;
-}
-
-
-void DummyInput::print(std::ostream &out) const {
-    out << "DummyInput[...]";
+    return values;
 }
 
 
 }  // namespace input
 }  // namespace mir
-

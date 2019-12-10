@@ -192,6 +192,10 @@ list(APPEND mir_srcs
     data/space/SpaceLinear.h
     data/space/SpaceLogarithmic.cc
     data/space/SpaceLogarithmic.h
+    input/ArtificialInput.cc
+    input/ArtificialInput.h
+    input/DistributionInput.cc
+    input/DistributionInput.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
@@ -488,6 +492,8 @@ list(APPEND mir_srcs
     search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
+    stats/Distribution.cc
+    stats/Distribution.h
     stats/Method.cc
     stats/Method.h
     stats/Statistics.cc
@@ -512,6 +518,8 @@ list(APPEND mir_srcs
     stats/detail/PNormsT.h
     stats/detail/ScalarT.cc
     stats/detail/ScalarT.h
+    stats/distribution/DistributionT.cc
+    stats/distribution/DistributionT.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc

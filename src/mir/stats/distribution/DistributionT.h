@@ -8,29 +8,34 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_stats_distribution_DistributionT_h
+#define mir_stats_distribution_DistributionT_h
 
-#ifndef mir_input_DummyInput_h
-#define mir_input_DummyInput_h
-
-#include "mir/input/ArtificialInput.h"
+#include "mir/stats/Distribution.h"
 
 
 namespace mir {
-namespace input {
+namespace param {
+class MIRParametrisation;
+}
+}  // namespace mir
 
 
-class DummyInput : public ArtificialInput {
+namespace mir {
+namespace stats {
+namespace distribution {
+
+
+template <typename DISTRIBUTION >
+class DistributionT : public Distribution {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    DummyInput(const param::MIRParametrisation&);
+    DistributionT(const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -71,19 +76,20 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    mutable DISTRIBUTION distribution_;
 
     // -- Methods
-    // None
+
+    typename DISTRIBUTION::param_type param(const param::MIRParametrisation&) const;
+    std::string to_string(typename DISTRIBUTION::param_type&) const;
 
     // -- Overridden methods
 
-    // From MIRInput
-    virtual bool sameAs(const MIRInput&) const;
-
-    // From ArtificialInput
-    virtual void print(std::ostream&) const;
-    virtual data::MIRValuesVector fill(size_t) const;
+    // From Distribution
+    void reset();
+    double operator()() const;
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -96,7 +102,8 @@ private:
 };
 
 
-}  // namespace input
+}  // namespace distribution
+}  // namespace stats
 }  // namespace mir
 
 
