@@ -22,9 +22,13 @@
 
 #include "eckit/system/Library.h"
 
+namespace eckit {
+class ResourceUsage;
+}
 
 namespace mir {
 
+//----------------------------------------------------------------------------------------------------------------------
 
 class LibMir : public eckit::system::Library {
 public:
@@ -43,6 +47,17 @@ protected:
     virtual std::string gitsha1(unsigned int count) const;
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
+class TraceResourceUsage {
+public:
+    explicit TraceResourceUsage(const char* name);
+    ~TraceResourceUsage();
+private:
+    eckit::ResourceUsage* info_ = nullptr;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace mir
 

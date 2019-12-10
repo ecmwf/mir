@@ -15,7 +15,6 @@
 
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -55,7 +54,7 @@ void Action::custom(std::ostream & out) const {
 
 
 void Action::perform(context::Context & ctx) const {
-    eckit::TraceResourceUsage<LibMir> usage(name());
+    mir::TraceResourceUsage usage(name());
     execute(ctx);
 }
 
