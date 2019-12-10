@@ -9,8 +9,9 @@
  */
 
 /// @author Baudouin Raoult
-/// @author Tiago Quintino
 /// @author Pedro Maciel
+/// @author Tiago Quintino
+
 /// @date August 2016
 
 
@@ -22,9 +23,7 @@
 
 #include "eckit/system/Library.h"
 
-
 namespace mir {
-
 
 class LibMir : public eckit::system::Library {
 public:
@@ -42,7 +41,6 @@ protected:
     virtual std::string version() const;
     virtual std::string gitsha1(unsigned int count) const;
 };
-
 
 } // namespace mir
 

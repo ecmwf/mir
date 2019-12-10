@@ -17,6 +17,7 @@
 #include "mir/config/LibMir.h"
 
 #include "mir/api/mir_version.h"
+
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
 
@@ -100,6 +101,5 @@ std::string LibMir::gitsha1(unsigned int count) const {
 
     return sha1.substr(0, std::min(count, 40u));
 }
-
 
 } // namespace mir

@@ -37,6 +37,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/TraceResourceUsage.h"
 #include "mir/api/MIREstimation.h"
 
 
@@ -85,7 +86,7 @@ static atlas::trans::Cache getTransCache(
             context::Context& ctx_;
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
-                eckit::TraceResourceUsage<LibMir> usage("ShToGridded: create Legendre coefficients");
+                mir::util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
                 eckit::AutoTiming timer(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
 
                 // This will create the cache
@@ -115,7 +116,7 @@ static atlas::trans::Cache getTransCache(
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: loading Legendre coefficients");
+        mir::util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
         eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
@@ -287,7 +288,7 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
-        eckit::TraceResourceUsage<LibMir> usage("ShToGridded: cropping");
+        mir::util::TraceResourceUsage usage("ShToGridded: cropping");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
