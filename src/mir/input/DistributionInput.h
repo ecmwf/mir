@@ -16,7 +16,12 @@
 
 #include <memory>
 
-#include "mir/stats/Distribution.h"
+
+namespace mir {
+namespace stats {
+class Distribution;
+}
+}  // namespace mir
 
 
 namespace mir {

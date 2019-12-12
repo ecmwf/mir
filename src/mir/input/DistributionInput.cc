@@ -11,12 +11,13 @@
 
 #include "mir/input/DistributionInput.h"
 
+#include <algorithm>
+#include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRParametrisation.h"
-
-#include <algorithm>
-#include <iostream>
+#include "mir/stats/Distribution.h"
 
 
 namespace mir {
@@ -37,7 +38,7 @@ DistributionInput::DistributionInput(const param::MIRParametrisation& parametris
 
 
 void DistributionInput::print(std::ostream& out) const {
-    out << "RandomInput[distribution=" << *distribution_ << ",";
+    out << "DistributionInput[distribution=" << *distribution_ << ",";
     ArtificialInput::print(out);
     out << "]";
 }
