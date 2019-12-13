@@ -24,7 +24,11 @@
 namespace mir {
 namespace input {
 
+
 static ArtificialInputBuilder<DummyInput> __artificial("dummy");
+
+
+static const param::SimpleParametrisation empty;
 
 
 struct dummy_t : public param::SimpleParametrisation {
@@ -43,7 +47,9 @@ struct dummy_t : public param::SimpleParametrisation {
 } static const dummy;
 
 
-DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : ArtificialInput(dummy) {}
+DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : ArtificialInput(empty) {
+    dummy.copyValuesTo(parametrisation());
+}
 
 
 bool DummyInput::sameAs(const MIRInput& other) const {

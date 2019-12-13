@@ -40,7 +40,7 @@ static void init() {
 }  // namespace
 
 
-ArtificialInput::ArtificialInput(const param::MIRParametrisation&) : calls_(0) {}
+ArtificialInput::ArtificialInput(const param::MIRParametrisation& /*ignored*/) : calls_(0) {}
 
 
 ArtificialInput::~ArtificialInput() = default;
@@ -53,6 +53,12 @@ bool ArtificialInput::next() {
 
 size_t ArtificialInput::dimensions() const {
     return 1;
+}
+
+
+param::SimpleParametrisation& ArtificialInput::parametrisation(size_t which) {
+    ASSERT(which == 0);
+    return parametrisation_;
 }
 
 
