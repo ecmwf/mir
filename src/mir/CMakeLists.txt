@@ -310,6 +310,10 @@ list(APPEND mir_srcs
     method/knn/pick/NearestNeighbourWithLowestIndex.h
     method/knn/pick/Pick.cc
     method/knn/pick/Pick.h
+    method/knn/pick/Sample.cc
+    method/knn/pick/Sample.h
+    method/knn/pick/SortedSample.cc
+    method/knn/pick/SortedSample.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
