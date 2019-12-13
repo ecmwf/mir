@@ -214,6 +214,7 @@ public:
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
         options_.push_back(new SimpleOption<std::string>("input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
+        options_.push_back(new SimpleOption<double>("constant", "Set input to constant value"));
 
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));

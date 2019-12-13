@@ -194,6 +194,8 @@ list(APPEND mir_srcs
     data/space/SpaceLogarithmic.h
     input/ArtificialInput.cc
     input/ArtificialInput.h
+    input/ConstantInput.cc
+    input/ConstantInput.h
     input/DistributionInput.cc
     input/DistributionInput.h
     input/DummyInput.cc
