@@ -104,9 +104,8 @@ void KNearestNeighbours::assemble(
         double search = 0;
         double insert = 0;
 
-        const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
-        while (it->next()) {
+        for (const std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++ip) {
             ASSERT(ip < nbOutputPoints);
             if (++progress) {
                 log << "KNearestNeighbours: k-d tree"
@@ -126,6 +125,9 @@ void KNearestNeighbours::assemble(
                     double t = timer.elapsed();
                     picker_->pick(sptree, p, closest);
                     search += timer.elapsed() - t;
+                    if (closest.empty()) {
+                        continue;
+                    }
                 }
 
                 // calculate weights
@@ -141,7 +143,6 @@ void KNearestNeighbours::assemble(
 
             }
 
-            ++ip;
         }
     }
 
