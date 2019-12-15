@@ -483,16 +483,18 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
 void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
     ASSERT(values.size());
 
-    if (!std::count(values.begin(), values.end(), missing)) {
+    // check if it's unique, otherwise a high then a low value
+    if (std::find(values.begin(), values.end(), missing) == values.end()) {
         return;
     }
 
-    missing = *std::max_element(values.begin(), values.end()) + 1.;
+    auto mm = std::minmax_element(values.begin(), values.end());
+    missing = *(mm.second) + 1.;
     if (missing == missing) {
         return;
     }
 
-    missing = *std::min_element(values.begin(), values.end()) - 1.;
+    missing = *(mm.first) - 1.;
     if (missing == missing) {
         return;
     }
@@ -584,6 +586,14 @@ data::MIRField GribInput::field() const {
 
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
+
+    long numberOfMissingValues;
+    GRIB_CALL(grib_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues));
+
+    if (!numberOfMissingValues) {
+        // ensure missingValue is unique, so values are not wrongly "missing"
+        get_unique_missing_value(values, missing);
+    }
 
     // If grib has a 0-containing pl array, add missing values in their place
     if (has("pl")) {
