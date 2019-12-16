@@ -587,13 +587,13 @@ data::MIRField GribInput::field() const {
     double missing;
     GRIB_CALL(grib_get_double(grib_, "missingValue", &missing));
 
-    long numberOfMissingValues;
-    GRIB_CALL(grib_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues));
+//    long numberOfMissingValues;
+//    GRIB_CALL(grib_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues));
 
-    if (!numberOfMissingValues) {
-        // ensure missingValue is unique, so values are not wrongly "missing"
-        get_unique_missing_value(values, missing);
-    }
+//    if (!numberOfMissingValues) {
+//        // ensure missingValue is unique, so values are not wrongly "missing"
+//        get_unique_missing_value(values, missing);
+//    }
 
     // If grib has a 0-containing pl array, add missing values in their place
     if (has("pl")) {
