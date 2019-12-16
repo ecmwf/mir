@@ -53,8 +53,7 @@ void Sample::pick(const search::PointSearch& tree, const eckit::geometry::Point3
     }
 
     // closest.resize(nClosest_);  // FIXME: better than below (but has black magic)
-    Pick::neighbours_t sample(closest.begin(), closest.begin() + nClosest_);
-    closest.swap(sample);
+    closest.erase(closest.begin() + nClosest_, closest.end());
 }
 
 
