@@ -9,6 +9,7 @@
  */
 
 
+#include <cmath>
 #include <limits>
 #include <memory>
 #include <string>
@@ -94,11 +95,6 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     bool counter;
     param.get("counter", counter);
 
-    double tolerance = 0;
-    std::unique_ptr<diff_t> diff(param.get("tolerance", tolerance)
-                                     ? static_cast<diff_t*>(new approximate_diff_t(tolerance))
-                                     : new strict_diff_t());
-
     WeightMatrix a(MatrixLoaderFactory::build(matrixLoader, args(0)));
     if (matrixValidate) {
         a.validate(("load '" + args(0) + "'").c_str());
@@ -121,7 +117,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         auto j = b.begin();
         for (; i != a.end() && j != b.end(); ++i, ++j) {
             if (i.row() == j.row() && i.col() == j.col()) {
-                counter.count(*i, *j, *i - *j);
+                counter.count(*i, *j, std::abs(*i - *j));
             }
             else {
                 counter.count(*i, *j, std::numeric_limits<double>::infinity());
@@ -142,11 +138,10 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         }
     }
     else {
-        size_t d = 0;
-
-        std::unique_ptr<diff_t> diff(param.get("tolerance", tolerance)
-                                         ? static_cast<diff_t*>(new approximate_diff_t(tolerance))
-                                         : new strict_diff_t());
+        size_t d   = 0;
+        double eps = 0;
+        std::unique_ptr<diff_t> diff(
+            param.get("absolute-error", eps) ? static_cast<diff_t*>(new approximate_diff_t(eps)) : new strict_diff_t());
 
         auto i = a.begin();
         auto j = b.begin();
