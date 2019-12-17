@@ -26,7 +26,8 @@ list(APPEND _tools
     mir-points
     mir-shared-memory
     mir-statistics
-    mir-weight-matrix)
+    mir-weight-matrix
+    mir-weight-matrix-diff)
 
 if(HAVE_ATLAS)
     list(APPEND _tools
