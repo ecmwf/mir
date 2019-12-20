@@ -222,6 +222,11 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         n = s;
     }
 
+    if (isPeriodicWestEast() && other.isPeriodicWestEast()) {
+        other = { n, other.west_, s, other.east_ };
+        return intersectsSN;
+    }
+
     Longitude w = std::min(west_, other.west_);
     Longitude e = w;
 
