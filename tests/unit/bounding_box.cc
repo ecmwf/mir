@@ -141,7 +141,14 @@ CASE("BoundingBox") {
                     << std::endl;
 
                 EXPECT(commutative);
-                EXPECT(AiB == BiA && AiB.west() == BiA.west());
+                if (A.isPeriodicWestEast() && B.isPeriodicWestEast()) {
+                    EXPECT(AiB.isPeriodicWestEast() && BiA.isPeriodicWestEast());
+                    EXPECT(AiB.west() == B.west());
+                    EXPECT(BiA.west() == A.west());
+                }
+                else {
+                    EXPECT(AiB == BiA && AiB.west() == BiA.west());
+                }
 
                 if (A.empty() || B.empty()) {
                     EXPECT(AiB.empty());
@@ -232,6 +239,37 @@ CASE("BoundingBox") {
 
                 }
             }
+        }
+    }
+
+    SECTION("intersects (periodic longitude ranges)") {
+        for (auto shift : {-180, -90, -2, -1, 0, 1, 2, 90, 180}) {
+            const BoundingBox A;
+            ASSERT(A.isPeriodicWestEast());
+
+            const BoundingBox B{A.north(), A.west() + shift, A.south(), A.east() + shift};
+            EXPECT(B.isPeriodicWestEast());
+
+            BoundingBox AiB(B);
+            bool AintersectsB = A.intersects(AiB);
+            bool AiBequalsB   = AiB == B;
+
+            BoundingBox BiA(A);
+            bool BintersectsA = B.intersects(BiA);
+            bool BiAequalsA   = BiA == A;
+
+            static size_t c = 1;
+            log << "Test " << c++ << ":"
+                << "\n\t" "A=" << A
+                << "\n\t" "B=" << B
+                << "\n\t" "A intersects B = " << AiB << " = B ? " << AiBequalsB
+                << "\n\t" "B intersects A = " << BiA << " = A ? " << BiAequalsA
+                << std::endl;
+
+            EXPECT(AintersectsB);
+            EXPECT(AiBequalsB);
+            EXPECT(BintersectsA);
+            EXPECT(BiAequalsA);
         }
     }
 
