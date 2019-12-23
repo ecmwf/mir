@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "mir/lsm/LandSeaMasks.h"
+#include "mir/method/knn/pick/Pick.h"
 #include "mir/param/RuntimeParametrisation.h"
 
 
@@ -30,6 +31,10 @@ namespace knn {
 NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
     KNearestNeighbours(param),
     distanceWeighting_(param) {
+
+    std::string nearestMethod = "nclosest";
+    param.get("nearest-method", nearestMethod);
+    pick_.reset(pick::PickFactory::build(nearestMethod, param));
 }
 
 
@@ -48,7 +53,7 @@ void NearestLSM::assemble(
     ASSERT(method);
 
     // assemble with specific distance weighting method
-    KNearestNeighbours::assemble(stats, W, in, out, *method);
+    KNearestNeighbours::assemble(stats, W, in, out, *pick_, *method);
 }
 
 
@@ -86,9 +91,13 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1, const par
 
 bool NearestLSM::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o
-           && KNearestNeighbours::sameAs(other)
-           && sameLsm(parametrisation_, o->parametrisation_);
+    return o && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
+}
+
+
+const pick::Pick& NearestLSM::pick() const {
+    ASSERT(pick_);
+    return *pick_;
 }
 
 

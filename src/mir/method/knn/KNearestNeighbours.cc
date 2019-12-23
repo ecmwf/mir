@@ -37,14 +37,7 @@ namespace method {
 namespace knn {
 
 
-KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {
-
-    std::string name = "nearest-neighbour-with-lowest-index";
-    param.get("nearest-method", name);
-
-    picker_.reset(pick::PickFactory::build(name, param));
-    ASSERT(picker_);
-}
+KNearestNeighbours::KNearestNeighbours(const param::MIRParametrisation& param) : MethodWeighted(param) {}
 
 
 KNearestNeighbours::~KNearestNeighbours() = default;
@@ -52,14 +45,12 @@ KNearestNeighbours::~KNearestNeighbours() = default;
 
 bool KNearestNeighbours::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearestNeighbours*>(&other);
-    return o
-            && picker_->sameAs(*(o->picker_))
-            && distanceWeighting().sameAs(o->distanceWeighting());
+    return o && pick().sameAs(o->pick()) && distanceWeighting().sameAs(o->distanceWeighting());
 }
 
 
 void KNearestNeighbours::hash(eckit::MD5& md5) const {
-    md5 << *picker_;
+    md5 << pick();
     md5 << distanceWeighting();
 }
 
@@ -71,16 +62,13 @@ void KNearestNeighbours::assemble(
         const repres::Representation& out) const {
 
     // assemble with specific distance weighting method
-    assemble(stats, W, in, out, distanceWeighting());
+    assemble(stats, W, in, out, pick(), distanceWeighting());
 }
 
 
-void KNearestNeighbours::assemble(
-        util::MIRStatistics&,
-        WeightMatrix& W,
-        const repres::Representation& in,
-        const repres::Representation& out,
-        const distance::DistanceWeighting& distanceWeighting ) const {
+void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+                                  const repres::Representation& out, const pick::Pick& pick,
+                                  const distance::DistanceWeighting& distanceWeighting) const {
     auto& log = eckit::Log::debug<LibMir>();
 
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
@@ -94,7 +82,7 @@ void KNearestNeighbours::assemble(
 
     // init structure used to fill in sparse matrix
     std::vector<WeightMatrix::Triplet> weights_triplets;
-    weights_triplets.reserve(nbOutputPoints * picker_->n());
+    weights_triplets.reserve(nbOutputPoints * pick.n());
 
     std::vector<search::PointSearch::PointValueType> closest;
     std::vector<WeightMatrix::Triplet> triplets;
@@ -123,7 +111,7 @@ void KNearestNeighbours::assemble(
                 // search
                 {
                     double t = timer.elapsed();
-                    picker_->pick(sptree, p, closest);
+                    pick.pick(sptree, p, closest);
                     search += timer.elapsed() - t;
                     if (closest.empty()) {
                         continue;
@@ -158,7 +146,7 @@ void KNearestNeighbours::assemble(
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);
-    out << ",nearestMethod=" << (*picker_)
+    out << ",nearestMethod=" << pick()
         << ",distanceWeighting=" << distanceWeighting()
         << "]";
 }

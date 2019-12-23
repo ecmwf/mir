@@ -24,7 +24,8 @@ namespace knn {
 namespace distance {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks& landSeaMasks) :
+NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const lsm::LandSeaMasks& landSeaMasks) :
+    DistanceWeightingWithLSM(parametrisation),
     imask_(landSeaMasks.inputMask()),
     omask_(landSeaMasks.outputMask()) {
     ASSERT(!imask_.empty());
