@@ -46,7 +46,9 @@ struct Choice {
 };
 
 
-NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisation&, const lsm::LandSeaMasks& landSeaMasks) :
+NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisation& parametrisation,
+                                                     const lsm::LandSeaMasks& landSeaMasks) :
+    DistanceWeightingWithLSM(parametrisation),
     imask_(landSeaMasks.inputMask()),
     omask_(landSeaMasks.outputMask()) {
     ASSERT(!imask_.empty());

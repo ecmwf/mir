@@ -37,8 +37,10 @@ private:
 
     virtual const char* name() const;
     virtual bool sameAs(const Method& other) const;
+    virtual const pick::Pick& pick() const;
     virtual const distance::DistanceWeighting& distanceWeighting() const;
 
+    std::unique_ptr<const pick::Pick> pick_;
     std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;
 
 };
