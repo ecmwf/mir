@@ -50,19 +50,11 @@ public:
     virtual void hash(eckit::MD5&) const;
 
 protected:
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out, const pick::Pick& pick, const distance::DistanceWeighting&) const;
 
-    void assemble(
-            util::MIRStatistics&,
-            WeightMatrix&,
-            const repres::Representation& in,
-            const repres::Representation& out,
-            const distance::DistanceWeighting& ) const;
-
-    virtual void assemble(
-            util::MIRStatistics&,
-            WeightMatrix&,
-            const repres::Representation& in,
-            const repres::Representation& out ) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
 
     virtual bool sameAs(const Method& other) const = 0;
 
@@ -74,10 +66,8 @@ private:
 
     virtual const char *name() const = 0;
 
+    virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
-
-    std::unique_ptr<const pick::Pick> picker_;
-
 };
 
 
