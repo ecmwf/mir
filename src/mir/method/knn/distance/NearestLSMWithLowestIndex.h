@@ -12,7 +12,7 @@
 #ifndef mir_method_knn_distance_NearestLSMWithLowestIndex_h
 #define mir_method_knn_distance_NearestLSMWithLowestIndex_h
 
-#include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 
 namespace mir {
@@ -30,7 +30,7 @@ namespace distance {
 
 // Note: DistanceWeightingFactory cannot instantiate this because it
 // requires the LandSeaMasks from the interpolation method
-struct NearestLSMWithLowestIndex : DistanceWeighting {
+struct NearestLSMWithLowestIndex : DistanceWeightingWithLSM {
     NearestLSMWithLowestIndex(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
     void operator()(
             size_t ip,

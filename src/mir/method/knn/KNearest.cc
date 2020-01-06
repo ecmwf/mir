@@ -17,8 +17,9 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
+#include "mir/method/knn/pick/Pick.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -33,6 +34,10 @@ KNearest::KNearest(const param::MIRParametrisation& param) : KNearestNeighbours(
 
     distanceWeighting_.reset(distance::DistanceWeightingFactory::build(name, param));
     ASSERT(distanceWeighting_);
+
+    std::string nearestMethod = "nearest-neighbour-with-lowest-index";
+    param.get("nearest-method", nearestMethod);
+    pick_.reset(pick::PickFactory::build(nearestMethod, param));
 }
 
 
@@ -42,6 +47,12 @@ KNearest::~KNearest() = default;
 bool KNearest::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearest*>(&other);
     return o && KNearestNeighbours::sameAs(other);
+}
+
+
+const pick::Pick& KNearest::pick() const {
+    ASSERT(pick_);
+    return *pick_;
 }
 
 
