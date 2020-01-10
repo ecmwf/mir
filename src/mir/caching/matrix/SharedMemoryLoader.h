@@ -28,7 +28,6 @@ namespace matrix {
 
 class SharedMemoryLoader : public MatrixLoader {
 public:
-
     SharedMemoryLoader(const std::string& name, const eckit::PathName&);
 
     virtual ~SharedMemoryLoader();
@@ -47,7 +46,6 @@ private:
     void* address_;
     size_t size_;
     bool unload_;
-
 };
 
 
@@ -57,4 +55,3 @@ private:
 
 
 #endif
-

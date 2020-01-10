@@ -53,13 +53,14 @@ public:
 
     atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
 
+    static eckit::Channel& log();
+    static eckit::Channel& warn();
+
 protected:
     const param::MIRParametrisation& parametrisation_;
     eckit::PathName path_;
 
     virtual void print(std::ostream&) const = 0;
-
-    static eckit::Channel& log();
 
 private:
     friend std::ostream& operator<<(std::ostream& s, const LegendreLoader& p) {

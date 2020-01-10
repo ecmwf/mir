@@ -67,7 +67,7 @@ void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, Weight
     log << "ConservativeFiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
-    // 1) I: compute the interpolation matrix from input to output
+    // 1) I: compute the matrix from input to output
     size_t Ni = out.numberOfPoints();
     size_t Nj = in.numberOfPoints();
 

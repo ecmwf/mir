@@ -16,6 +16,7 @@
 
 #include "TenMinutesMask.h"
 
+#include <cstdio>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -77,7 +78,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
             size_t k = 0;
             std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
             for (size_t j = 0; j < bytes ; j++) {
-                ASSERT(fread(&c, 1, 1, file) == 1);
+                ASSERT(std::fread(&c, 1, 1, file) == 1);
                 for (size_t b = 0; b < 8 && k < COLS; b++) {
                     v[k++] = (c >> (7 - b)) & 0x1;
                 }
