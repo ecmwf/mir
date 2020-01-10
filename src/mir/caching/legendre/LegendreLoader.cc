@@ -32,8 +32,9 @@ namespace caching {
 namespace legendre {
 
 
-LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : parametrisation_(parametrisation), path_(path.realName()) {}
+LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    parametrisation_(parametrisation),
+    path_(path.realName()) {}
 
 
 LegendreLoader::~LegendreLoader() = default;
@@ -41,6 +42,12 @@ LegendreLoader::~LegendreLoader() = default;
 
 eckit::Channel& LegendreLoader::log() {
     static auto& channel = eckit::Log::debug<LibMir>();
+    return channel;
+}
+
+
+eckit::Channel& LegendreLoader::warn() {
+    static auto& channel = eckit::Log::warning();
     return channel;
 }
 

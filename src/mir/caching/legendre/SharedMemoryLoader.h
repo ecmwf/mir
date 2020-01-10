@@ -28,28 +28,26 @@ namespace legendre {
 
 class SharedMemoryLoader : public LegendreLoader {
 public:
-    SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName& path);
+    SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName&);
 
-    ~SharedMemoryLoader(); // Change to virtual if base class
+    virtual ~SharedMemoryLoader();
 
-    static void unloadSharedMemory(const eckit::PathName& path);
-    static void loadSharedMemory(const eckit::PathName& path);
+    static void loadSharedMemory(const eckit::PathName&);
+    static void unloadSharedMemory(const eckit::PathName&);
+
     static bool shared();
 
 protected:
-
     virtual void print(std::ostream&) const;
 
 private:
-
-    void* address_;
-    size_t size_;
-    bool unload_;
-
     virtual const void* address() const;
     virtual size_t size() const;
     virtual bool inSharedMemory() const;
 
+    void* address_;
+    size_t size_;
+    bool unload_;
 };
 
 
@@ -59,4 +57,3 @@ private:
 
 
 #endif
-

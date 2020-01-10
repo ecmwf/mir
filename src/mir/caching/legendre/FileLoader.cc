@@ -14,21 +14,15 @@
 /// @date Apr 2015
 
 
-#include <fcntl.h>
-#include <iostream>
-#include <sys/mman.h>
-
 #include "mir/caching/legendre/FileLoader.h"
 
-#include "eckit/eckit.h"
+#include <cstdio>
+#include <ostream>
+
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/AutoCloser.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
-#include "eckit/os/Stat.h"
-
-#include "mir/config/LibMir.h"
+#include "eckit/log/Log.h"
 
 
 namespace mir {
@@ -36,14 +30,14 @@ namespace caching {
 namespace legendre {
 
 
-FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path), buffer_(path.size()) {
+FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    LegendreLoader(parametrisation, path),
+    buffer_(path.size()) {
 
-    //    eckit::TraceTimer<LibMir> timer("Loading legendre coefficients from file");
-    log() << "Loading legendre coefficients from " << path << std::endl;
+    log() << "Loading Legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);
-    ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
+    ASSERT(std::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 
 FileLoader::~FileLoader() = default;
@@ -76,4 +70,3 @@ static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

@@ -38,7 +38,7 @@ private:
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
 
-    /// Update interpolation weigths matrix to account for field masked values
+    /// Update matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
 
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
