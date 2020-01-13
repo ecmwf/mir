@@ -17,12 +17,9 @@ configure_file( mir-test.sh.in mir-test.sh @ONLY )
 set( _environment
     "MIR_DEBUG=1"
     "MIR_HOME=${CMAKE_BINARY_DIR}"
-    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
-if( NOT HAVE_MEMFS )
-    list( APPEND _environment 
-        "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
-        "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
-endif()
+    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
+    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
+    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
 
 file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test *.fail)
 
