@@ -581,6 +581,8 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
+    util/Error.cc
+    util/Error.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc

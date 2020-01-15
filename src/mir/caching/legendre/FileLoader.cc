@@ -16,12 +16,13 @@
 
 #include "mir/caching/legendre/FileLoader.h"
 
-#include <fcntl.h>
-#include <iostream>
+#include <cstdio>
+#include <ostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/Log.h"
 
 
 namespace mir {
@@ -33,10 +34,10 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
     LegendreLoader(parametrisation, path),
     buffer_(path.size()) {
 
-    log() << "Loading legendre coefficients from " << path << std::endl;
+    log() << "Loading Legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);
-    ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
+    ASSERT(std::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 
 FileLoader::~FileLoader() = default;
@@ -69,4 +70,3 @@ static LegendreLoaderBuilder<FileLoader> loader("file-io");
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

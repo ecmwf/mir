@@ -13,12 +13,11 @@
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
-
 #include <memory>
 
 #include "mir/action/context/Context.h"
 #include "mir/action/interpolate/Gridded2RegularLL.h"
-#include "mir/input/ConstantInput.h"
+#include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/method/Method.h"
 #include "mir/param/CombinedParametrisation.h"
@@ -58,7 +57,7 @@ CASE("MIR-425") {
     ASSERT(input->next());
 
 
-    SECTION("Test interpolation=linear") {
+    SECTION("Test interpolation=linear, should not contain missing values") {
         param::SimpleParametrisation user;
         user.set("grid", std::vector<double>{1., 1.});
         user.set("interpolation", "linear");
@@ -103,6 +102,7 @@ CASE("MIR-425") {
         bool hasMissing = ctx.field().hasMissing();
         EXPECT(hasMissing);
     }
+
 
     log.precision(old);
 }

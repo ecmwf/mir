@@ -116,7 +116,7 @@ static atlas::trans::Cache getTransCache(
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        mir::util::TraceResourceUsage usage("ShToGridded: loading Legendre coefficients");
+        mir::util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
 
         eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;

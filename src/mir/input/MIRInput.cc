@@ -11,6 +11,7 @@
 
 #include "mir/input/MIRInput.h"
 
+#include <cstdio>
 #include <iomanip>
 
 #include "eckit/exception/Exceptions.h"
@@ -155,7 +156,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     for (size_t i = 0; i < 4; i++) {
         unsigned char c;
-        if (fread(&c, 1, 1, f)) {
+        if (std::fread(&c, 1, 1, f)) {
             magic <<= 8;
             magic |= c;
             p[i] = isprint(c) ? c : '.';
