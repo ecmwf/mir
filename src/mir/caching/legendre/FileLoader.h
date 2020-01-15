@@ -31,20 +31,19 @@ class FileLoader : public LegendreLoader {
 public:
     FileLoader(const param::MIRParametrisation&, const eckit::PathName&);
 
-    ~FileLoader(); // Change to virtual if base class
+    virtual ~FileLoader();
 
     static bool shared();
 
 protected:
-    void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
 private:
-    eckit::Buffer buffer_;
-
     virtual const void* address() const;
     virtual size_t size() const;
     virtual bool inSharedMemory() const;
 
+    eckit::Buffer buffer_;
 };
 
 
@@ -54,4 +53,3 @@ private:
 
 
 #endif
-

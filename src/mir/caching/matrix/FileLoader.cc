@@ -16,7 +16,7 @@
 
 #include "mir/caching/matrix/FileLoader.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Log.h"
@@ -33,12 +33,10 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path),
     buffer_(path.size()) {
 
+    log() << "Loading matrix from " << path << std::endl;
+
     // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
-
-    log() << "Loading interpolation matrix from " << path << std::endl;
-
     method::WeightMatrix w(path);
-
     w.dump(buffer_);
 }
 
@@ -68,4 +66,3 @@ static MatrixLoaderBuilder<FileLoader> loader("file-io");
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-

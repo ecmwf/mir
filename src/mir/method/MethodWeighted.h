@@ -155,7 +155,7 @@ private:
     virtual const util::BoundingBox& getCropping() const;
 
 
-    /// Update interpolation weigths matrix to account for field masked values
+    /// Update matrix to account for field masked values
     // -- Class members
     // None
 

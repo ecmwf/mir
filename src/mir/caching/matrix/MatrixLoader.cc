@@ -57,6 +57,11 @@ eckit::Channel& MatrixLoader::log() {
     return channel;
 }
 
+eckit::Channel& MatrixLoader::warn() {
+    static auto& channel = eckit::Log::warning();
+    return channel;
+}
+
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = nullptr;

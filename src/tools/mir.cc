@@ -218,7 +218,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>("matrix-loader", "Select how to load matrices in memory"));
-        options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load legendre coefficients in memory"));
+        options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>("legendre-loader", "Select how to load Legendre coefficients in memory"));
 
         //==============================================
         // Only show these options if debug channel is active
