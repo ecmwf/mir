@@ -176,11 +176,6 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     }
     msg << ", shmid=" << shmid << std::endl;
 
-    // Make sure memory is unloaded on exit
-    if (unload_) {
-        Unloader::instance().add(path);
-    }
-
 #ifdef SHM_PAGESIZE
     {
 
@@ -238,13 +233,14 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             nfo->ready = 1;
         }
 
-        if (unload_) {
-            Unloader::instance().add(path);
-        }
-
     } catch (...) {
         eckit::Shmget::shmdt(address_);
         throw;
+    }
+
+    // Make sure memory is unloaded on exit
+    if (unload_) {
+        Unloader::instance().add(path);
     }
 
     // eckit::StdPipe f("ipcs", "r");
