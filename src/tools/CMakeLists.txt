@@ -22,11 +22,11 @@ list(APPEND _tools
     mir-grid-info
     mir-inspect
     mir-list
+    mir-load-legendre
+    mir-load-matrix
     mir-make-lsm
     mir-points
-    mir-shared-memory
-    mir-statistics
-    mir-weight-matrix)
+    mir-statistics)
 
 if(HAVE_ATLAS)
     list(APPEND _tools
