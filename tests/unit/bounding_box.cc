@@ -243,7 +243,8 @@ CASE("BoundingBox") {
     }
 
     SECTION("intersects (periodic longitude ranges)") {
-        for (auto shift : {-180, -90, -2, -1, 0, 1, 2, 90, 180}) {
+        std::vector<double> _shifts {-180, -90, -2, -1, 0, 1, 2, 90, 180};
+        for (auto shift : _shifts) {
             const BoundingBox A;
             ASSERT(A.isPeriodicWestEast());
 
