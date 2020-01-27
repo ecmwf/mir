@@ -573,6 +573,12 @@ data::MIRField GribInput::field() const {
         }
     }
 
+    long earthIsOblate;
+    GRIB_CALL(grib_get_long(grib_, "earthIsOblate", &earthIsOblate));
+    if (earthIsOblate != 0) {
+        throw eckit::UserError("GribInput: GRIB earthIsOblate!=0 not supported");
+    }
+
     size_t count;
     GRIB_CALL(grib_get_size(grib_, "values", &count));
 
