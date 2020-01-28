@@ -228,8 +228,6 @@ list(APPEND mir_srcs
     input/VectorInput.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
-    log/MIR.cc
-    log/MIR.h
     lsm/FileLSM.cc
     lsm/FileLSM.h
     lsm/GribFileMask.cc
