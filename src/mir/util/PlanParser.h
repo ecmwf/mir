@@ -26,7 +26,7 @@ class MIRParametrisation;
 namespace action {
 class ActionPlan;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -35,20 +35,17 @@ namespace util {
 
 class PlanParser : public eckit::StreamParser {
 
-public: // methods
+public:  // methods
+    PlanParser(std::istream& in);
 
-    PlanParser(std::istream &in);
+    void parse(action::ActionPlan& p, const param::MIRParametrisation&);
 
-    void parse(action::ActionPlan&p, const param::MIRParametrisation&);
-
-private: // methods
-
+private:  // methods
     void parseAction(action::ActionPlan&, const param::MIRParametrisation&);
 
     std::string parseToken();
     std::map<std::string, std::vector<std::string> > parseArguments(const std::string& action);
     std::vector<std::string> parseValues();
-
 };
 
 
@@ -57,4 +54,3 @@ private: // methods
 
 
 #endif
-

@@ -43,7 +43,7 @@ class BoundingBox;
 class Domain;
 class GridBox;
 class MeshGeneratorParameters;
-}
+}  // namespace util
 
 namespace api {
 class MIRJob;
@@ -57,7 +57,7 @@ namespace api {
 class MIREstimation;
 }
 
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -66,7 +66,6 @@ namespace repres {
 
 class Representation : public eckit::Counted {
 public:
-
     // -- Exceptions
     // None
 
@@ -102,7 +101,7 @@ public:
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
     virtual bool extendBoundingBoxOnIntersect() const;
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
 
     virtual const Representation* globalise(data::MIRField&) const;
 
@@ -130,7 +129,7 @@ public:
 
     virtual std::vector<util::GridBox> gridBoxes() const;
 
-    virtual std::string factory() const; // Return factory name
+    virtual std::string factory() const;  // Return factory name
 
     // -- Overridden methods
     // None
@@ -142,7 +141,6 @@ public:
     // None
 
 protected:
-
     // -- Destructor
 
     virtual ~Representation();
@@ -171,7 +169,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -193,30 +190,28 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
 class RepresentationHandle {
     const Representation* representation_;
+
 public:
     RepresentationHandle(const Representation* r);
     ~RepresentationHandle();
-    const Representation* operator->() const {
-        return representation_;
-    }
-    operator const Representation*() const {
-        return representation_;
-    }
+    const Representation* operator->() const { return representation_; }
+    operator const Representation*() const { return representation_; }
 };
 
 
 class RepresentationFactory {
     std::string name_;
-    virtual Representation* make(const param::MIRParametrisation&) = 0 ;
+    virtual Representation* make(const param::MIRParametrisation&) = 0;
+
 protected:
     RepresentationFactory(const std::string&);
     virtual ~RepresentationFactory();
+
 public:
     // This is 'const' as the representation uses reference counting
     // Represention should always be immutable
@@ -225,11 +220,10 @@ public:
 };
 
 
-template<class T>
+template <class T>
 class RepresentationBuilder : public RepresentationFactory {
-    virtual Representation* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual Representation* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}
 };

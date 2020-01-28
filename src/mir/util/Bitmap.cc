@@ -29,7 +29,7 @@ namespace mir {
 namespace util {
 namespace {
 
-static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::string &line, bool on, long &prev) {
+static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::string& line, bool on, long& prev) {
 
     ASSERT(row >= 0);
 
@@ -52,9 +52,9 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
 
 
     ASSERT(row >= 0 && row < long(bitmap.size()));
-    std::vector<bool> &v = bitmap[row];
+    std::vector<bool>& v = bitmap[row];
 
-    for (size_t i = 0; i < r.size() ; i++) {
+    for (size_t i = 0; i < r.size(); i++) {
 
         std::vector<std::string> s;
         t2(r[i], s);
@@ -72,7 +72,7 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
             ASSERT(a >= 0 && a < long(v.size()));
             ASSERT(b >= 0 && b < long(v.size()));
 
-            for (int j = a; j <= b ; j++) {
+            for (int j = a; j <= b; j++) {
                 v[j] = on;
             }
         }
@@ -80,13 +80,10 @@ static void out(std::vector<std::vector<bool> > &bitmap, long row, const std::st
 }
 
 
-}  // (unnamed namespace)
+}  // namespace
 
 
-Bitmap::Bitmap(const std::string& path):
-    path_(path),
-    width_(0),
-    height_(0) {
+Bitmap::Bitmap(const std::string& path) : path_(path), width_(0), height_(0) {
 
     std::vector<std::string> v;
     eckit::Tokenizer parse(":");
@@ -106,20 +103,19 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     int c;
     std::string s;
 
-    while ( (c = fgetc(file)) != EOF) {
+    while ((c = fgetc(file)) != EOF) {
 
         switch (c) {
 
-        case ' ':
-        case '\t':
-        case '\n':
-        case '\r':
-            break;
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+                break;
 
-        default:
-            s += char(tolower(c));
-            break;
-
+            default:
+                s += char(tolower(c));
+                break;
         }
     }
 
@@ -128,11 +124,11 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     size_t pos = s.find("size=");
     ASSERT(pos != s.npos);
     pos += 5;
-    int  n = 0;
+    int n = 0;
     while (pos < s.size()) {
         if (s[pos] == ':') {
             height_ = n;
-            n = 0;
+            n       = 0;
             pos++;
             continue;
         }
@@ -157,7 +153,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     std::vector<std::vector<bool> > bitmap(height_, std::vector<bool>(width_, !on));
 
     std::string t;
-    long row = -1;
+    long row  = -1;
     long prev = -1;
     eckit::Translator<std::string, long> s2l;
 
@@ -165,7 +161,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
 
         if (s[pos] == ':') {
             row = s2l(t) - 1;
-            t = "";
+            t   = "";
             pos++;
             continue;
         }
@@ -193,9 +189,8 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     std::swap(bitmap, bitmap_);
 }
 
-void Bitmap::prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number)
-{
-    char  line[1024];
+void Bitmap::prodgenBitmap(const std::string& path, const std::string& destination, const std::string& number) {
+    char line[1024];
     std::ifstream in(path.c_str());
     if (!in) {
         throw eckit::CantOpenFile(path);
@@ -209,10 +204,10 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
 
         std::string dest(line, line + 5);
         size_t num = s2l(std::string(line + 6, line + 9));
-        bool ok = (num == no && destination == dest);
+        bool ok    = (num == no && destination == dest);
 
         size_t size = 0;
-        for (const char *c = line + 10; c != line + 20; ++c) {
+        for (const char* c = line + 10; c != line + 20; ++c) {
             if (::isdigit(*c)) {
                 size *= 10;
                 size += *c - '0';
@@ -231,7 +226,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
             len += strlen(line);
 
             if (ok) {
-                const char *p = line;
+                const char* p = line;
 
                 while (*p) {
                     bitmap[k++] = (*p == '1');
@@ -244,10 +239,9 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
             }
         }
 
-        if (ok)
-        {
+        if (ok) {
             height_ = 1;
-            width_ = bitmap.size();
+            width_  = bitmap.size();
             bitmap_.resize(1);
             std::swap(bitmap_[0], bitmap);
             return;
@@ -263,7 +257,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
 Bitmap::~Bitmap() = default;
 
 
-void Bitmap::print(std::ostream &out) const {
+void Bitmap::print(std::ostream& out) const {
     out << "Bitmap[path=" << path_ << "]";
 }
 
@@ -273,7 +267,7 @@ size_t Bitmap::footprint() const {
     result += path_.capacity();
     result += bitmap_.capacity() * sizeof(std::vector<bool>);
 
-    for(auto j = bitmap_.begin(); j != bitmap_.end(); ++j) {
+    for (auto j = bitmap_.begin(); j != bitmap_.end(); ++j) {
         result += (*j).capacity() * sizeof(bool);
     }
 
@@ -281,7 +275,5 @@ size_t Bitmap::footprint() const {
 }
 
 
-
 }  // namespace util
 }  // namespace mir
-

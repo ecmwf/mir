@@ -25,8 +25,8 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation &parametrisation):
+template <class Invtrans>
+ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     std::vector<double> value;
@@ -42,42 +42,41 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation &parametr
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToRegularLL<Invtrans>::~ShToRegularLL() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToRegularLL<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRegularLL*>(&other);
     return o && (increments_ == o->increments_);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToRegularLL<Invtrans>::print(std::ostream& out) const {
     out << "ShToRegularLL[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",bbox=" << bbox_
-        << ",increments=" << increments_
-        << "]";
+    out << ",bbox=" << bbox_ << ",increments=" << increments_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                      const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToRegularLL<Invtrans>::name() const {
     return "ShToRegularLL";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() const {
 
     util::BoundingBox bbox(bbox_);
@@ -90,12 +89,11 @@ const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() co
 
 
 namespace {
-static ActionBuilder< ShToRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-regular-ll");
-static ActionBuilder< ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
-}
+static ActionBuilder<ShToRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-regular-ll");
+static ActionBuilder<ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

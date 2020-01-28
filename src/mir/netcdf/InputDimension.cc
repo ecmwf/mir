@@ -20,22 +20,17 @@
 namespace mir {
 namespace netcdf {
 
-InputDimension::InputDimension(Dataset &owner,
-                               const std::string &name,
-                               int id,
-                               size_t len):
+InputDimension::InputDimension(Dataset& owner, const std::string& name, int id, size_t len) :
     Dimension(owner, name, len),
-    id_(id)
-{
-}
+    id_(id) {}
 
 InputDimension::~InputDimension() = default;
 
-void InputDimension::clone(Dataset &owner) const {
+void InputDimension::clone(Dataset& owner) const {
     owner.add(new OutputDimension(owner, name_, len_));
 }
 
-void InputDimension::print(std::ostream &out) const {
+void InputDimension::print(std::ostream& out) const {
     out << "InputDimension[name=" << name_ << "]";
 }
 

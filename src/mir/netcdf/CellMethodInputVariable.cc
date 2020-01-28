@@ -18,18 +18,18 @@
 namespace mir {
 namespace netcdf {
 
-CellMethodInputVariable::CellMethodInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions):
-    InputVariable(owner, name, id, dimensions)
-{
-}
+CellMethodInputVariable::CellMethodInputVariable(Dataset& owner, const std::string& name, int id,
+                                                 const std::vector<Dimension*>& dimensions) :
+    InputVariable(owner, name, id, dimensions) {}
 
 CellMethodInputVariable::~CellMethodInputVariable() = default;
 
-Variable *CellMethodInputVariable::makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const {
+Variable* CellMethodInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
+                                                      const std::vector<Dimension*>& dimensions) const {
     return new CellMethodOutputVariable(owner, name, dimensions);
 }
 
-void CellMethodInputVariable::print(std::ostream &out) const {
+void CellMethodInputVariable::print(std::ostream& out) const {
     out << "CellMethodInputVariable[name=" << name_ << "]";
 }
 

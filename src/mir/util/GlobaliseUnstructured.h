@@ -21,7 +21,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,29 +30,24 @@ namespace util {
 
 class GlobaliseUnstructured {
 public:
-
     // -- Contructors
 
     GlobaliseUnstructured(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    ~GlobaliseUnstructured(); // Change to virtual if base class
+    ~GlobaliseUnstructured();  // Change to virtual if base class
 
     // -- Methods
 
-    size_t appendGlobalPoints(
-            std::vector<double>& latitudes,
-            std::vector<double>& longitudes );
+    size_t appendGlobalPoints(std::vector<double>& latitudes, std::vector<double>& longitudes);
 
 private:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
     std::string globaliseGridname_;
     double globaliseMissingRadius_;
-
 };
 
 
@@ -61,4 +56,3 @@ private:
 
 
 #endif
-

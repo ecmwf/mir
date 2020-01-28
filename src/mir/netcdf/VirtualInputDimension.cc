@@ -20,18 +20,15 @@
 namespace mir {
 namespace netcdf {
 
-VirtualInputDimension::VirtualInputDimension(Dataset &owner, const std::string &name):
-    Dimension(owner, name, 1)
-{
-}
+VirtualInputDimension::VirtualInputDimension(Dataset& owner, const std::string& name) : Dimension(owner, name, 1) {}
 
 VirtualInputDimension::~VirtualInputDimension() = default;
 
-void VirtualInputDimension::clone(Dataset &owner) const {
+void VirtualInputDimension::clone(Dataset& owner) const {
     owner.add(new VirtualOutputDimension(owner, name_));
 }
 
-void VirtualInputDimension::print(std::ostream &out) const {
+void VirtualInputDimension::print(std::ostream& out) const {
     out << "VirtualInputDimension[name=" << name_ << "]";
 }
 
@@ -42,7 +39,6 @@ int VirtualInputDimension::id() const {
 void VirtualInputDimension::realDimensions(std::vector<size_t>& dims) const {
     // empty
 }
-
 
 
 }  // namespace netcdf

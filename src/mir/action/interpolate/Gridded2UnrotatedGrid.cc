@@ -28,12 +28,10 @@ Gridded2UnrotatedGrid::~Gridded2UnrotatedGrid() = default;
 util::BoundingBox Gridded2UnrotatedGrid::outputBoundingBox() const {
     repres::RepresentationHandle out(outputRepresentation());
 
-    return method().hasCropping() ? method().getCropping()
-                                  : out->domain();
+    return method().hasCropping() ? method().getCropping() : out->domain();
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

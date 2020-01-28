@@ -11,8 +11,8 @@
 
 
 #include "mir/packing/Complex.h"
-#include "mir/util/Grib.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Grib.h"
 
 #include <iostream>
 
@@ -20,9 +20,7 @@ namespace mir {
 namespace packing {
 
 
-Complex::Complex(const std::string &name):
-    Packer(name) {
-}
+Complex::Complex(const std::string& name) : Packer(name) {}
 
 
 Complex::~Complex() = default;
@@ -43,4 +41,3 @@ static Complex packing2("co");
 
 }  // namespace packing
 }  // namespace mir
-

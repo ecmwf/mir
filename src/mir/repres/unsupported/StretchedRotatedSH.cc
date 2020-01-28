@@ -21,33 +21,31 @@ namespace mir {
 namespace repres {
 
 
-StretchedRotatedSH::StretchedRotatedSH(const param::MIRParametrisation &parametrisation) {
-}
+StretchedRotatedSH::StretchedRotatedSH(const param::MIRParametrisation& parametrisation) {}
 
 
-StretchedRotatedSH::StretchedRotatedSH() {
-}
+StretchedRotatedSH::StretchedRotatedSH() {}
 
 
 StretchedRotatedSH::~StretchedRotatedSH() = default;
 
 
-void StretchedRotatedSH::print(std::ostream &out) const {
+void StretchedRotatedSH::print(std::ostream& out) const {
     out << "StretchedRotatedSH["
         << "]";
 }
 
 
-void StretchedRotatedSH::fill(grib_info &info) const  {
+void StretchedRotatedSH::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<StretchedRotatedSH> stretchedRotatedSH("stretched_rotated_sh"); // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedRotatedSH> stretchedRotatedSH(
+    "stretched_rotated_sh");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

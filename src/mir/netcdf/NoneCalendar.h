@@ -13,31 +13,24 @@
 #ifndef mir_netcdf_GregorianDateCodec
 #define mir_netcdf_GregorianDateCodec
 
-#include "mir/netcdf/Calendar.h"
 #include "eckit/types/DateTime.h"
+#include "mir/netcdf/Calendar.h"
 
 namespace mir {
 namespace netcdf {
 
 
-
-class NoneCalendar : public Calendar
-{
+class NoneCalendar : public Calendar {
 public:
-
     NoneCalendar(const Variable& variable);
     virtual ~NoneCalendar();
 
 private:
-
     // -- Methods
 
-    virtual void print(std::ostream &s) const;
-
-
-
+    virtual void print(std::ostream& s) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -21,7 +21,8 @@ namespace repres {
 namespace gauss {
 
 
-GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox& bbox, size_t N, ni_type Ni, const util::Rotation& rotation) :
+GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox& bbox, size_t N,
+                                   ni_type Ni, const util::Rotation& rotation) :
     Iterator(rotation),
     latitudes_(latitudes),
     bbox_(bbox),
@@ -39,14 +40,16 @@ GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const u
     // NOTE: pl is global
     ASSERT(N_ * 2 == latitudes_.size());
 
-    k_ = 0;
+    k_  = 0;
     Nj_ = 0;
     for (auto& lat : latitudes_) {
         if (bbox_.north() < lat) {
             ++k_;
-        } else if (bbox_.south() <= lat) {
+        }
+        else if (bbox_.south() <= lat) {
             ++Nj_;
-        } else {
+        }
+        else {
             break;
         }
     }
@@ -67,13 +70,13 @@ size_t GaussianIterator::resetToRow(size_t j) {
     inc_ = Longitude::GLOBE.fraction() / Ni_globe;
 
     const eckit::Fraction w = bbox_.west().fraction();
-    auto Nw = (w / inc_).integralPart();
+    auto Nw                 = (w / inc_).integralPart();
     if (Nw * inc_ < w) {
         Nw += 1;
     }
 
     const eckit::Fraction e = bbox_.east().fraction();
-    auto Ne = (e / inc_).integralPart();
+    auto Ne                 = (e / inc_).integralPart();
     if (Ne * inc_ > e) {
         Ne -= 1;
     }
@@ -86,15 +89,8 @@ size_t GaussianIterator::resetToRow(size_t j) {
 void GaussianIterator::print(std::ostream& out) const {
     out << "GaussianIterator[";
     Iterator::print(out);
-    out << ",N=" << N_
-        << ",bbox=" << bbox_
-        << ",Ni=" << Ni_
-        << ",Nj=" << Nj_
-        << ",i=" << i_
-        << ",j=" << j_
-        << ",k=" << k_
-        << ",count=" << count_
-        << "]";
+    out << ",N=" << N_ << ",bbox=" << bbox_ << ",Ni=" << Ni_ << ",Nj=" << Nj_ << ",i=" << i_ << ",j=" << j_
+        << ",k=" << k_ << ",count=" << count_ << "]";
 }
 
 
@@ -110,7 +106,7 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
 
         lon_ += inc_;
         if (++i_ == Ni_) {
-            i_ = 0;
+            i_  = 0;
             Ni_ = 0;
         }
 
@@ -124,4 +120,3 @@ bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

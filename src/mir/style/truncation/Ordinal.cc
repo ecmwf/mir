@@ -36,4 +36,3 @@ bool Ordinal::truncation(long& T, long) const {
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir
-

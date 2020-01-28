@@ -23,7 +23,7 @@ namespace mir {
 namespace stats {
 class Statistics;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

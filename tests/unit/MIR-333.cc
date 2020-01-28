@@ -10,8 +10,8 @@
  */
 
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
@@ -78,9 +78,9 @@ CASE("MIR-333") {
 }
 
 
-} // namespace unit
-} // namespace tests
-} // namespace mir
+}  // namespace unit
+}  // namespace tests
+}  // namespace mir
 
 
 int main(int argc, char** argv) {

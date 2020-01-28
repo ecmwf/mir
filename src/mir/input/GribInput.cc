@@ -46,21 +46,22 @@ namespace {
 
 class Condition {
 public:
-    virtual ~Condition() = default;
-    virtual bool eval(grib_handle *) const = 0;
+    virtual ~Condition()                  = default;
+    virtual bool eval(grib_handle*) const = 0;
 };
 
-template<class T>
+template <class T>
 class ConditionT : public Condition {
-    const char *key_;
+    const char* key_;
     T value_;
-    virtual bool eval(grib_handle *) const;
+    virtual bool eval(grib_handle*) const;
+
 public:
-    ConditionT(const char *key, const T &value): key_(key), value_(value) {}
+    ConditionT(const char* key, const T& value) : key_(key), value_(value) {}
 };
 
-template<>
-bool ConditionT<long>::eval(grib_handle *h ) const {
+template <>
+bool ConditionT<long>::eval(grib_handle* h) const {
     long value;
     ASSERT(h);
     int err = grib_get_long(h, key_, &value);
@@ -70,15 +71,16 @@ bool ConditionT<long>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        // eckit::Log::debug<LibMir>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err <<
+        // std::endl;
         GRIB_ERROR(err, key_);
     }
 
     return value_ == value;
 }
 
-template<>
-bool ConditionT<double>::eval(grib_handle *h ) const {
+template <>
+bool ConditionT<double>::eval(grib_handle* h) const {
     double value;
     ASSERT(h);
     int err = grib_get_double(h, key_, &value);
@@ -88,15 +90,16 @@ bool ConditionT<double>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        // eckit::Log::debug<LibMir>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err <<
+        // std::endl;
         GRIB_ERROR(err, key_);
     }
 
-    return value_ == value; // Want an epsilon?
+    return value_ == value;  // Want an epsilon?
 }
 
-template<>
-bool ConditionT<std::string>::eval(grib_handle *h ) const {
+template <>
+bool ConditionT<std::string>::eval(grib_handle* h) const {
     char buffer[10240];
     size_t size = sizeof(buffer);
     ASSERT(h);
@@ -107,7 +110,8 @@ bool ConditionT<std::string>::eval(grib_handle *h ) const {
     }
 
     if (err) {
-        eckit::Log::debug<LibMir>() << "ConditionT<std::string>::eval(" << ",key=" << key_ << ") failed " << err << std::endl;
+        eckit::Log::debug<LibMir>() << "ConditionT<std::string>::eval("
+                                    << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -115,40 +119,37 @@ bool ConditionT<std::string>::eval(grib_handle *h ) const {
 }
 
 class ConditionOR : public Condition {
-    const Condition *left_;
-    const Condition *right_;
-    virtual bool eval(grib_handle *h) const {
-        return left_->eval(h) || right_->eval(h);
-    }
+    const Condition* left_;
+    const Condition* right_;
+    virtual bool eval(grib_handle* h) const { return left_->eval(h) || right_->eval(h); }
+
 public:
-    ConditionOR(const Condition *left, const Condition *right): left_(left), right_(right) {}
+    ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
 
 class ConditionAND : public Condition {
-    const Condition *left_;
-    const Condition *right_;
-    virtual bool eval(grib_handle *h) const {
-        return left_->eval(h) && right_->eval(h);
-    }
+    const Condition* left_;
+    const Condition* right_;
+    virtual bool eval(grib_handle* h) const { return left_->eval(h) && right_->eval(h); }
+
 public:
-    ConditionAND(const Condition *left, const Condition *right): left_(left), right_(right) {}
+    ConditionAND(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
 
 class ConditionNOT : public Condition {
-    const Condition *c_;
-    virtual bool eval(grib_handle *h) const {
-        return !c_->eval(h);
-    }
+    const Condition* c_;
+    virtual bool eval(grib_handle* h) const { return !c_->eval(h); }
+
 public:
-    ConditionNOT(const Condition *c) : c_(c) {}
+    ConditionNOT(const Condition* c) : c_(c) {}
 };
 
-template<class T>
-static Condition *is(const char *key, const T &value) {
+template <class T>
+static Condition* is(const char* key, const T& value) {
     return new ConditionT<T>(key, value);
 }
 
-static Condition *is(const char *key, const char *value) {
+static Condition* is(const char* key, const char* value) {
     return new ConditionT<std::string>(key, value);
 }
 
@@ -158,7 +159,7 @@ static Condition *_and(const Condition *left, const Condition *right) {
 }
 */
 
-static Condition *_or(const Condition *left, const Condition *right) {
+static Condition* _or(const Condition* left, const Condition* right) {
     return new ConditionOR(left, right);
 }
 
@@ -181,14 +182,15 @@ void wrongly_encoded_grib(std::string msg) {
 }
 
 
-static const char *get_key(const std::string &name, grib_handle *h) {
+static const char* get_key(const std::string& name, grib_handle* h) {
 
     static struct {
-        const char *name;
-        const char *key;
-        const Condition *condition;
+        const char* name;
+        const char* key;
+        const Condition* condition;
     } mappings[] = {
-        {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids", is("gridType", "regular_ll")},
+        {"west_east_increment", "iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
+         is("gridType", "regular_ll")},
         {"west_east_increment", "iDirectionIncrementInDegrees", nullptr},
         {"south_north_increment", "jDirectionIncrementInDegrees", nullptr},
 
@@ -213,9 +215,22 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
         // This will be just called for has()
-        {"gridded", "Nx", _or(_or(is("gridType", "polar_stereographic"),is("gridType", "lambert_azimuthal_equal_area")),is("gridType", "lambert")),},
-        {"gridded", "Ni", is("gridType", "triangular_grid"),},
-        {"gridded", "numberOfGridInReference", is("gridType", "unstructured_grid"),},  // numberOfGridInReference is just dummy
+        {
+            "gridded",
+            "Nx",
+            _or(_or(is("gridType", "polar_stereographic"), is("gridType", "lambert_azimuthal_equal_area")),
+                is("gridType", "lambert")),
+        },
+        {
+            "gridded",
+            "Ni",
+            is("gridType", "triangular_grid"),
+        },
+        {
+            "gridded",
+            "numberOfGridInReference",
+            is("gridType", "unstructured_grid"),
+        },  // numberOfGridInReference is just dummy
 
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
 
@@ -225,7 +240,7 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
         /// FIXME: Find something that does no clash
-        {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator",  is("isOctahedral", 0L)},
+        {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 0L)},
         {"regular", "N", is("gridType", "regular_gg")},
         {"octahedral", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 1L)},
 
@@ -236,8 +251,8 @@ static const char *get_key(const std::string &name, grib_handle *h) {
         {nullptr, nullptr, nullptr},
     };
 
-    const char *key = name.c_str();
-    size_t i = 0;
+    const char* key = name.c_str();
+    size_t i        = 0;
     while (mappings[i].name) {
         if (name == mappings[i].name) {
             if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
@@ -261,14 +276,12 @@ struct Processing {
     virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }
 };
 
-template<typename T>
+template <typename T>
 struct ProcessingT : Processing {
     using fun_t = std::function<bool(grib_handle*, T&)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
-    bool eval(grib_handle* h, T& v) const override {
-        return fun_(h, v);
-    }
+    bool eval(grib_handle* h, T& v) const override { return fun_(h, v); }
 };
 
 static ProcessingT<long>* is_wind_component_uv() {
@@ -277,7 +290,7 @@ static ProcessingT<long>* is_wind_component_uv() {
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
         long ind = paramId % 1000;
-        value = (ind == def.u ? 1 : ind == def.v ? 2 : 0);
+        value    = (ind == def.u ? 1 : ind == def.v ? 2 : 0);
         return value;
     });
 }
@@ -288,12 +301,12 @@ static ProcessingT<long>* is_wind_component_vod() {
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
         long ind = paramId % 1000;
-        value = (ind == def.vo ? 1 : ind == def.d ? 2 : 0);
+        value    = (ind == def.vo ? 1 : ind == def.d ? 2 : 0);
         return value;
     });
 }
 
-static ProcessingT<double>* inverse(const char *key) {
+static ProcessingT<double>* inverse(const char* key) {
     return new ProcessingT<double>([=](grib_handle* h, double& value) {
         double inv = 0;
         GRIB_CALL(grib_get_double(h, key, &inv));
@@ -305,7 +318,6 @@ static ProcessingT<double>* inverse(const char *key) {
 
 static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids() {
     return new ProcessingT<double>([](grib_handle* h, double& Lon2) {
-
         Lon2 = 0;
         GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
 
@@ -354,15 +366,18 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                         std::ostringstream msgs;
                         msgs.precision(32);
                         msgs << "GribInput: wrongly encoded longitudeOfLastGridPointInDegrees:"
-                             << "\n" "encoded:  " << Lon2
-                             << "\n" "expected: " << double(Lon2_expected) << " (" << Lon2_expected << " +- " << eps << ")";
+                             << "\n"
+                                "encoded:  "
+                             << Lon2
+                             << "\n"
+                                "expected: "
+                             << double(Lon2_expected) << " (" << Lon2_expected << " +- " << eps << ")";
 
                         wrongly_encoded_grib(msgs.str());
 
                         Lon2 = Lon2_expected;
                     }
                 }
-
             }
         }
 
@@ -372,7 +387,6 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 
 static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regular_grids() {
     return new ProcessingT<double>([](grib_handle* h, double& we) {
-
         long iScansPositively = 0L;
         GRIB_CALL(grib_get_long(h, "iScansPositively", &iScansPositively));
         ASSERT(iScansPositively == 1L);
@@ -407,10 +421,18 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
             std::ostringstream msgs;
             msgs.precision(32);
             msgs << "GribInput: wrongly encoded iDirectionIncrementInDegrees:"
-                    "\n" "encoded: " << we
-                 << "\n" "Ni: " << Ni
-                 << "\n" "longitudeOfFirstGridPointInDegree: " << Lon1
-                 << "\n" "longitudeOfLastGridPointInDegrees: " << Lon2;
+                    "\n"
+                    "encoded: "
+                 << we
+                 << "\n"
+                    "Ni: "
+                 << Ni
+                 << "\n"
+                    "longitudeOfFirstGridPointInDegree: "
+                 << Lon1
+                 << "\n"
+                    "longitudeOfLastGridPointInDegrees: "
+                 << Lon2;
 
             wrongly_encoded_grib(msgs.str());
         }
@@ -419,7 +441,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
     });
 };
 
-static ProcessingT<double>* divide(const char *key, double denominator) {
+static ProcessingT<double>* divide(const char* key, double denominator) {
     ASSERT(!eckit::types::is_approximately_equal<double>(denominator, 0));
     return new ProcessingT<double>([=](grib_handle* h, double& value) {
         GRIB_CALL(grib_get_double(h, key, &value));
@@ -434,7 +456,7 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
         ASSERT(keys.size());
 
         values.assign(keys_.size(), 0);
-        size_t i =0;
+        size_t i = 0;
         for (auto& key : keys_) {
             if (!grib_is_defined(h, key.c_str())) {
                 return false;
@@ -445,18 +467,20 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
     });
 }
 
-template<typename T>
+template <typename T>
 static bool get_value(const std::string& name, grib_handle* h, T& value) {
 
     static struct {
-            const char* name;
-            const Processing* processing;
-            const Condition *condition;
-        } processings[] = {
+        const char* name;
+        const Processing* processing;
+        const Condition* condition;
+    } processings[] = {
 
         {"angularPrecisionInDegrees", inverse("angularPrecision"), nullptr},
-        {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids", longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
-        {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids", iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
+        {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
+         longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
+        {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
+         iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
 
         {"xDirectionGridLengthInMetres", divide("xDirectionGridLengthInMillimetres", 1000.), nullptr},
         {"yDirectionGridLengthInMetres", divide("yDirectionGridLengthInMillimetres", 1000.), nullptr},
@@ -467,18 +491,16 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
          is("gridType", "lambert_azimuthal_equal_area")},
-        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
-         is("gridType", "lambert")},
+        {"grid", vector_double({"DxInMetres", "DyInMetres"}), is("gridType", "lambert")},
 
-        { "rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
-        _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")),
-                    is("gridType", "rotated_sh")), is("gridType", "reduced_rotated_gg"))},
+        {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
+         _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
+             is("gridType", "reduced_rotated_gg"))},
 
         {"is_wind_component_uv", is_wind_component_uv(), nullptr},
         {"is_wind_component_vod", is_wind_component_vod(), nullptr},
 
-        {nullptr, nullptr, nullptr}
-    };
+        {nullptr, nullptr, nullptr}};
 
     size_t i = 0;
     while (processings[i].name) {
@@ -531,7 +553,6 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
                 new_entries += size_t(*nz) * size_t(std::distance(p, nz));
                 std::fill(p, nz, *nz);
             }
-
         }
     }
 
@@ -544,7 +565,6 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
                 new_entries += size_t(*nz) * size_t(std::distance(p, nz));
                 std::fill(p, nz, *nz);
             }
-
         }
     }
 
@@ -554,21 +574,18 @@ size_t fix_pl_array_zeros(std::vector<long>& pl) {
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-GribInput::GribInput():
-    cache_(*this),
-    grib_(nullptr) {
-}
+GribInput::GribInput() : cache_(*this), grib_(nullptr) {}
 
 
 GribInput::~GribInput() {
-    handle(nullptr); // Will delete handle
+    handle(nullptr);  // Will delete handle
 }
 
 
-const param::MIRParametrisation &GribInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& GribInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return cache_;
 }
@@ -632,19 +649,21 @@ data::MIRField GribInput::field() const {
 
             // if there are no missing values yet, set them
             if (!missingValuesPresent) {
-                eckit::Log::debug<LibMir>() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
+                eckit::Log::debug<LibMir>()
+                    << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
                 missingValuesPresent = 1;
                 get_unique_missing_value(values, missing);
             }
 
             // pl array: insert entries in place of zeros
             std::vector<long> pl_fixed = pl;
-            size_t new_values = fix_pl_array_zeros(pl_fixed);
+            size_t new_values          = fix_pl_array_zeros(pl_fixed);
             ASSERT(new_values > 0);
 
 
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
-            eckit::Log::debug<LibMir>() << "GribInput::field(): correcting values array with " << new_values << " new missing values." << std::endl;
+            eckit::Log::debug<LibMir>() << "GribInput::field(): correcting values array with " << new_values
+                                        << " new missing values." << std::endl;
 
             MIRValuesVector values_extended;
             values_extended.reserve(count + new_values);
@@ -657,14 +676,13 @@ data::MIRField GribInput::field() const {
                     size_t Ni = size_t(*p2);
 
                     values_extended.insert(values_extended.end(), Ni, missing);
-
-                } else {
+                }
+                else {
                     size_t Ni = size_t(*p1);
                     ASSERT(i + Ni <= count);
 
                     values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);
                     i += Ni;
-
                 }
             }
 
@@ -692,7 +710,7 @@ data::MIRField GribInput::field() const {
 }
 
 
-grib_handle *GribInput::gribHandle(size_t which) const {
+grib_handle* GribInput::gribHandle(size_t which) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     ASSERT(which == 0);
@@ -711,7 +729,8 @@ bool GribInput::has(const std::string& name) const {
 
     bool ok = grib_is_defined(grib_, key);
 
-    // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") << std::endl;
+    // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") <<
+    // std::endl;
     return ok;
 }
 
@@ -788,7 +807,6 @@ bool GribInput::get(const std::string& name, float& value) const {
         return true;
     }
     return false;
-
 }
 
 
@@ -809,7 +827,8 @@ bool GribInput::get(const std::string& name, double& value) const {
     }
 
     if (err) {
-        // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err <<
+        // std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -843,14 +862,15 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     }
 
     size_t count = 0;
-    int err = grib_get_size(grib_, key, &count);
+    int err      = grib_get_size(grib_, key, &count);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
     if (err) {
-        eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
+        eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err
+                                    << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -863,7 +883,8 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
 
     ASSERT(value.size());
 
-    // eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") size=" << value.size() <<
+    // std::endl;
     if (name == "pl") {
 
         // try locating a zero in the pl array, in which case adjust it before continuing
@@ -871,7 +892,6 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
         if (std::find(value.rbegin(), value.rend(), 0) != value.rend()) {
             fix_pl_array_zeros(value);
         }
-
     }
 
     return true;
@@ -904,14 +924,15 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
     char buffer[10240];
     size_t size = sizeof(buffer);
-    int err = grib_get_string(grib_, key, buffer, &size);
+    int err     = grib_get_string(grib_, key, buffer, &size);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
     if (err) {
-        // eckit::Log::debug<LibMir>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err <<
+        // std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -945,14 +966,15 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     }
 
     size_t count = 0;
-    int err = grib_get_size(grib_, key, &count);
+    int err      = grib_get_size(grib_, key, &count);
 
     if (err == GRIB_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
     if (err) {
-        // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << " count=" << count << std::endl;
+        // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << "
+        // count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -965,7 +987,8 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     ASSERT(value.size());
 
-    // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() << std::endl;
+    // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") size=" << value.size() <<
+    // std::endl;
 
 
     return true;
@@ -976,7 +999,7 @@ bool GribInput::get(const std::string&, std::vector<std::string>&) const {
 }
 
 
-bool GribInput::handle(grib_handle *h) {
+bool GribInput::handle(grib_handle* h) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     FieldParametrisation::reset();
@@ -1001,7 +1024,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
     eckit::AutoStdFile f(path);
 
     int e;
-    grib_handle *h = nullptr;
+    grib_handle* h = nullptr;
 
     // We cannot use GribFileInput to read these files, because lat/lon files are also
     // has grid_type = triangular_grid, and we will create a loop
@@ -1022,7 +1045,8 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
         ASSERT(!missingValuesPresent);
 
         grib_handle_delete(h);
-    } catch (...) {
+    }
+    catch (...) {
         grib_handle_delete(h);
         throw;
     }
@@ -1078,11 +1102,12 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    grib_keys_iterator *keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    grib_keys_iterator* keys =
+        grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     try {
-        const char *sep = "";
+        const char* sep = "";
         while (grib_keys_iterator_next(keys)) {
 
             char value[1024];
@@ -1096,30 +1121,30 @@ void GribInput::marsRequest(std::ostream& out) const {
         keys = nullptr;
 
         size_t size = 0;
-        int err = grib_get_size(grib_, "freeFormData", &size);
+        int err     = grib_get_size(grib_, "freeFormData", &size);
 
         if (err == 0) {
             eckit::Buffer buffer(size);
-            char *b = buffer;
+            char* b = buffer;
 
-            GRIB_CALL(grib_get_bytes(grib_ , "freeFormData", (unsigned char *)b, &size));
+            GRIB_CALL(grib_get_bytes(grib_, "freeFormData", (unsigned char*)b, &size));
             ASSERT(size == buffer.size());
 
             eckit::MemoryHandle h(buffer);
             eckit::HandleStream in(h);
             int n;
-            in >> n; // Number of requests
+            in >> n;  // Number of requests
             ASSERT(n == 1);
             std::string verb;
             in >> verb;
 
             in >> n;
-            for (int i = 0; i < n ; i++) {
+            for (int i = 0; i < n; i++) {
                 std::string param;
                 in >> param;
                 out << sep << param;
-                sep = ",";
-                const char *slash = "=";
+                sep               = ",";
+                const char* slash = "=";
                 int m;
                 in >> m;
                 for (int j = 0; j < m; j++) {
@@ -1128,7 +1153,6 @@ void GribInput::marsRequest(std::ostream& out) const {
                     out << slash << value;
                     slash = "/";
                 }
-
             }
 
             NOTIMP;
@@ -1138,8 +1162,8 @@ void GribInput::marsRequest(std::ostream& out) const {
         if (err != GRIB_NOT_FOUND) {
             grib_call(err, "freeFormData");
         }
-
-    } catch (...) {
+    }
+    catch (...) {
         if (keys) {
             grib_keys_iterator_delete(keys);
         }
@@ -1150,4 +1174,3 @@ void GribInput::marsRequest(std::ostream& out) const {
 
 }  // namespace input
 }  // namespace mir
-

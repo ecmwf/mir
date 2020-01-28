@@ -12,25 +12,24 @@
 
 #include "mir/netcdf/Field.h"
 
+#include "eckit/parser/YAMLParser.h"
+#include "mir/data/MIRField.h"
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
-#include "mir/data/MIRField.h"
-#include "eckit/parser/YAMLParser.h"
 
 #include <iostream>
 
 namespace mir {
 namespace netcdf {
 
-Field::Field(const Variable &variable):
+Field::Field(const Variable& variable) :
     variable_(variable),
     standardName_(variable.getAttributeValue<std::string>("standard_name")),
-    units_(variable.getAttributeValue<std::string>("units")) {
-}
+    units_(variable.getAttributeValue<std::string>("units")) {}
 
 Field::~Field() = default;
 
-const GridSpec &Field::gridSpec() const {
+const GridSpec& Field::gridSpec() const {
     if (!gridSpec_) {
         // TODO: may need a mutex
         gridSpec_.reset(GridSpec::create(variable_));
@@ -63,7 +62,7 @@ bool Field::has(const std::string& name) const {
     return gridSpec().has(name);
 }
 
-bool Field::get(const std::string&name, long& value) const {
+bool Field::get(const std::string& name, long& value) const {
     if (name == "paramId") {
         value = 255;
         return true;
@@ -71,20 +70,20 @@ bool Field::get(const std::string&name, long& value) const {
     return gridSpec().get(name, value);
 }
 
-bool Field::get(const std::string&name, std::string& value) const {
+bool Field::get(const std::string& name, std::string& value) const {
     return gridSpec().get(name, value);
 }
 
-bool Field::get(const std::string &name, double &value) const {
+bool Field::get(const std::string& name, double& value) const {
     return gridSpec().get(name, value);
 }
 
 
-bool Field::get(const std::string &name, std::vector<double> &value) const {
+bool Field::get(const std::string& name, std::vector<double>& value) const {
     return gridSpec().get(name, value);
 }
 
-void Field::print(std::ostream &out) const {
+void Field::print(std::ostream& out) const {
     out << "Field[variable=" << variable_ << "]";
 }
 
@@ -110,19 +109,13 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
         for (const auto& k : m) {
             mirField.metadata(i, k.first, k.second);
         }
-
     }
     else {
-        eckit::Log::warning()
-                << "No mapping for NetCDF standard name ["
-                << standardName_
-                << "] "
-                << variable_
-                << std::endl;
+        eckit::Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "] " << variable_
+                              << std::endl;
     }
 }
 
 
 }  // namespace netcdf
 }  // namespace mir
-

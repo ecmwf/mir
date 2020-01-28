@@ -22,7 +22,6 @@ namespace input {
 
 class GribMemoryInput : public GribInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribMemoryInput(); // Change to virtual if base class
+    virtual ~GribMemoryInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -70,7 +68,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -90,9 +87,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
+    // friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -101,4 +97,3 @@ private:
 
 
 #endif
-

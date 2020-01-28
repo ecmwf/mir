@@ -121,21 +121,21 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 //                    << w << " "
                 //                    << w << " "
                 //                    << w << std::endl;
-
-            } else {
+            }
+            else {
 
                 // find encompassing latitudes ("bottom/top")
 
-                size_t top_n = 0; // number of points in top latitude line
-                size_t bot_n = 0; // number of points in bottom latitude line
+                size_t top_n = 0;  // number of points in top latitude line
+                size_t bot_n = 0;  // number of points in bottom latitude line
 
-                size_t top_i = 0; // index of first point in top latitude line
-                size_t bot_i = 0; // index of first point in bottom latitude line
+                size_t top_i = 0;  // index of first point in top latitude line
+                size_t bot_i = 0;  // index of first point in bottom latitude line
 
                 Latitude top_lat = 0;
                 Latitude bot_lat = 0;
 
-                ASSERT(pl.size() >= 2); // at least 2 lines of latitude
+                ASSERT(pl.size() >= 2);  // at least 2 lines of latitude
 
                 if (eckit::types::is_approximately_equal(max_lat.value(), p.lat().value())) {
 
@@ -143,15 +143,15 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                     bot_n = pl[1];
                     top_i = 0;
                     bot_i = top_i + top_n;
-
-                } else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
+                }
+                else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
 
                     top_n = pl[pl.size() - 2];
                     bot_n = pl[pl.size() - 1];
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
-
-                } else {
+                }
+                else {
 
                     top_lat = icoords[top_i].lat();
                     bot_lat = icoords[bot_i].lat();
@@ -293,6 +293,6 @@ void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

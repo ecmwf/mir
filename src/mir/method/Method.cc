@@ -24,9 +24,7 @@
 namespace mir {
 namespace method {
 
-Method::Method(const param::MIRParametrisation &params) :
-    parametrisation_(params) {
-}
+Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {}
 
 
 Method::~Method() = default;
@@ -43,11 +41,10 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MethodFactory*>();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
-MethodFactory::MethodFactory(const std::string &name):
-    name_(name) {
+MethodFactory::MethodFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -79,7 +76,7 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method *MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+Method* MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -95,7 +92,5 @@ Method *MethodFactory::build(const std::string& name, const param::MIRParametris
 }
 
 
-
 }  // namespace method
 }  // namespace mir
-

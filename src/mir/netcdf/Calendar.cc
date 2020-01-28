@@ -17,8 +17,7 @@ namespace mir {
 namespace netcdf {
 
 
-Calendar::Calendar() {
-}
+Calendar::Calendar() {}
 
 Calendar::~Calendar() = default;
 

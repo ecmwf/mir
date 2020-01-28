@@ -22,7 +22,6 @@ namespace style {
 
 class CustomStyle : public MIRStyle {
 public:
-
     // -- Exceptions
     // None
 
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -92,7 +89,6 @@ private:
 
     // friend std::ostream& operator<<(std::ostream& s, const CustomStyle& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -101,4 +97,3 @@ private:
 
 
 #endif
-

@@ -30,7 +30,7 @@ class Context;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -39,13 +39,11 @@ namespace action {
 
 class ActionPlan : protected std::vector<Action*> {
 private:
-
     // -- Types
 
     using container_t = std::vector<Action*>;
 
 public:
-
     // -- Exceptions
     // None
 
@@ -108,7 +106,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -129,7 +126,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     ActionPlan(const ActionPlan&);
     ActionPlan& operator=(const ActionPlan&);
@@ -155,7 +151,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -164,4 +159,3 @@ private:
 
 
 #endif
-

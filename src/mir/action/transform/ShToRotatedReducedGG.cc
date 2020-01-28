@@ -25,8 +25,8 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisation& parametrisation):
+template <class Invtrans>
+ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
@@ -38,54 +38,52 @@ ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisa
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToRotatedReducedGG<Invtrans>::~ShToRotatedReducedGG() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToRotatedReducedGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedReducedGG*>(&other);
     return o && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToRotatedReducedGG<Invtrans>::print(std::ostream& out) const {
     out << "ShToRotatedReducedGG[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",N=" << N_
-        << ",rotation=" << rotation_
-        << "]";
+    out << ",N=" << N_ << ",rotation=" << rotation_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToRotatedReducedGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToRotatedReducedGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                             const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToRotatedReducedGG<Invtrans>::name() const {
     return "ShToRotatedReducedGG";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToRotatedReducedGG<Invtrans>::outputRepresentation() const {
     return new repres::gauss::reduced::RotatedClassic(N_, rotation_);
 }
 
 
 namespace {
-static ActionBuilder< ShToRotatedReducedGG<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-reduced-gg");
-static ActionBuilder< ShToRotatedReducedGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-reduced-gg");
-}
+static ActionBuilder<ShToRotatedReducedGG<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-reduced-gg");
+static ActionBuilder<ShToRotatedReducedGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-reduced-gg");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

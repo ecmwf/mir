@@ -34,13 +34,11 @@ inline double normalise(double x) {
     return std::max(std::min(x, 1.0), -1.0);
 }
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-CartesianVector2DField::CartesianVector2DField(
-        const repres::Representation* representation,
-        bool hasMissing,
-        double missingValue) :
+CartesianVector2DField::CartesianVector2DField(const repres::Representation* representation, bool hasMissing,
+                                               double missingValue) :
     valuesX_(),
     valuesY_(),
     missingValue_(missingValue),
@@ -54,7 +52,8 @@ CartesianVector2DField::CartesianVector2DField(
 CartesianVector2DField::~CartesianVector2DField() = default;
 
 
-void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX, MIRValuesVector& valuesY) const {
+void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX,
+                                    MIRValuesVector& valuesY) const {
 
     // setup results vectors
     ASSERT(valuesX.size() == valuesY.size());
@@ -65,10 +64,8 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
     // NOTE: uses spherical (not geodetic) coordinates: C = θ = π / 2 - latitude
     ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
-    const double
-            C = util::degree_to_radian(90. - rotation.south_pole_latitude().value()),
-            cos_C = std::cos(C),
-            sin_C = std::sin(C);
+    const double C = util::degree_to_radian(90. - rotation.south_pole_latitude().value()), cos_C = std::cos(C),
+                 sin_C = std::sin(C);
 
     std::unique_ptr<repres::Iterator> it(representation_->iterator());
     size_t i = 0;
@@ -83,21 +80,17 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
         }
 
         const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it))[1];
-        const double
-                lon_rotated = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value(),
-                lon_unrotated = it->pointUnrotated().lon().value(),
+        const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value(),
+                     lon_unrotated       = it->pointUnrotated().lon().value(),
 
-                a = util::degree_to_radian(lon_rotated),
-                b = util::degree_to_radian(lon_unrotated),
-                q = (sin_C * lon_rotated < 0.) ? 1. : -1.,  // correct quadrant
+                     a = util::degree_to_radian(lon_rotated), b = util::degree_to_radian(lon_unrotated),
+                     q = (sin_C * lon_rotated < 0.) ? 1. : -1.,  // correct quadrant
 
-                cos_c = normalise(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
-                sin_c = q * std::sqrt(1. - cos_c * cos_c);
+            cos_c          = normalise(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
+                     sin_c = q * std::sqrt(1. - cos_c * cos_c);
 
         // TODO: use matrix multiplication
-        const double
-                x = cos_c * valuesX[i] - sin_c * valuesY[i],
-                y = sin_c * valuesX[i] + cos_c * valuesY[i];
+        const double x = cos_c * valuesX[i] - sin_c * valuesY[i], y = sin_c * valuesX[i] + cos_c * valuesY[i];
         valuesX[i] = x;
         valuesY[i] = y;
         ++i;
@@ -113,4 +106,3 @@ void CartesianVector2DField::print(std::ostream& out) const {
 
 }  // namespace data
 }  // namespace mir
-

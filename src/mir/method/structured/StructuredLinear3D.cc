@@ -105,7 +105,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
 
-                const size_t Ni = size_t(too_much_north ? pl.front() : pl.back());
+                const size_t Ni     = size_t(too_much_north ? pl.front() : pl.back());
                 const size_t iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
 
                 size_t l[2];
@@ -113,10 +113,10 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 const Longitude& l0 = icoords[l[0]].lon();
                 const Longitude& l1 = icoords[l[1]].lon();
-                trip = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
+                trip                = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
                         WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value())};
-
-            } else {
+            }
+            else {
 
                 /*
                  * setup quadrilateral: determine enveloping indices
@@ -174,7 +174,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 // project on first triangle (0 or 2) depending on split, if that fails try next (1 or 3)
                 const size_t T[4][3] = {{1, 0, 2}, {2, 3, 1}, {0, 2, 3}, {3, 1, 0}};
-                size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
+                size_t w             = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
 
                 const Point3 p3d = it->point3D();
                 const atlas::interpolation::method::Ray ray(p3d.data());
@@ -222,6 +222,6 @@ void StructuredLinear3D::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

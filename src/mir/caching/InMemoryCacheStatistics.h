@@ -30,11 +30,11 @@ namespace caching {
 
 class InMemoryCacheStatistics : public eckit::Statistics {
 public:
-    InMemoryCacheStatistics() ;
-    InMemoryCacheStatistics(eckit::Stream &) ;
+    InMemoryCacheStatistics();
+    InMemoryCacheStatistics(eckit::Stream&);
 
-    InMemoryCacheStatistics &operator+=(const InMemoryCacheStatistics &rhs) ;
-    InMemoryCacheStatistics &operator/=(size_t) ;
+    InMemoryCacheStatistics& operator+=(const InMemoryCacheStatistics& rhs);
+    InMemoryCacheStatistics& operator/=(size_t);
 
 
     size_t hits_;
@@ -49,20 +49,19 @@ public:
     size_t unique_;
     InMemoryCacheUsage required_;
 
-    void report(const char *title, std::ostream &out, const char *indent = "") const;
+    void report(const char* title, std::ostream& out, const char* indent = "") const;
 
-    void encode(eckit::Stream &) const;
+    void encode(eckit::Stream&) const;
 
-    friend eckit::Stream &operator<<(eckit::Stream &s, const InMemoryCacheStatistics &x) {
+    friend eckit::Stream& operator<<(eckit::Stream& s, const InMemoryCacheStatistics& x) {
         x.encode(s);
         return s;
     }
 };
 
 
-} // namespace caching
-} // namespace mir
+}  // namespace caching
+}  // namespace mir
 
 
 #endif
-

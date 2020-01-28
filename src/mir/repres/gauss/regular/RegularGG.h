@@ -24,7 +24,6 @@ namespace regular {
 
 class RegularGG : public Regular {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -73,7 +71,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -98,9 +95,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularGG& p)
+    // friend ostream& operator<<(ostream& s,const RegularGG& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -111,4 +107,3 @@ private:
 
 
 #endif
-

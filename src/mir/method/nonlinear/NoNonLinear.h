@@ -23,12 +23,9 @@ namespace nonlinear {
 
 struct NoNonLinear : NonLinear {
     NoNonLinear(const param::MIRParametrisation&);
-    bool treatment(
-            Matrix& A,
-            WeightMatrix& W,
-            Matrix& B,
-            const data::MIRValuesVector& values,
-            const double& missingValue) const;
+    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
+                   const double& missingValue) const;
+
 private:
     bool sameAs(const NonLinear&) const;
     void print(std::ostream&) const;
@@ -42,4 +39,3 @@ private:
 
 
 #endif
-

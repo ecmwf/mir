@@ -25,62 +25,60 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToReducedGG<Invtrans>::ShToReducedGG(const param::MIRParametrisation& parametrisation):
+template <class Invtrans>
+ShToReducedGG<Invtrans>::ShToReducedGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
-
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToReducedGG<Invtrans>::~ShToReducedGG() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToReducedGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToReducedGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToReducedGG<Invtrans>::print(std::ostream& out) const {
     out << "ShToReducedGG[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",N=" << N_
-        << "]";
+    out << ",N=" << N_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToReducedGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToReducedGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                      const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToReducedGG<Invtrans>::name() const {
     return "ShToReducedGG";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToReducedGG<Invtrans>::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
 
 namespace {
-static ActionBuilder< ShToReducedGG<InvtransScalar> > __action1("transform.sh-scalar-to-reduced-gg");
-static ActionBuilder< ShToReducedGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-reduced-gg");
-}
+static ActionBuilder<ShToReducedGG<InvtransScalar> > __action1("transform.sh-scalar-to-reduced-gg");
+static ActionBuilder<ShToReducedGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-reduced-gg");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

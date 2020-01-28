@@ -16,14 +16,13 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/Types.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
+#include "eckit/types/Types.h"
 
-#include "mir/netcdf/Variable.h"
 #include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Variable.h"
 
 
 namespace mir {
@@ -39,29 +38,25 @@ static void init() {
 }
 
 
-GridSpec::GridSpec(const Variable &variable):
-    variable_(variable) {
-}
+GridSpec::GridSpec(const Variable& variable) : variable_(variable) {}
 
 GridSpec::~GridSpec() = default;
 
-GridSpec* GridSpec::create(const Variable &variable) {
+GridSpec* GridSpec::create(const Variable& variable) {
 
     GridSpec* spec = GridSpecGuesser::guess(variable);
 
     if (!spec) {
         std::ostringstream oss;
-        oss <<  "Cannot guess GridSpec for " << variable;
+        oss << "Cannot guess GridSpec for " << variable;
         throw eckit::SeriousBug(oss.str());
     }
 
     return spec;
-
 }
 
 
-GridSpecGuesser::GridSpecGuesser(size_t priority) :
-    priority_(priority) {
+GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
 
     pthread_once(&once, init);
 
@@ -76,10 +71,8 @@ GridSpecGuesser::~GridSpecGuesser() {
     m->erase(priority_);
 }
 
-static const Variable& find_variable(const Variable& variable,
-                               const std::string& standardName,
-                               const std::string& units,
-                               size_t n) {
+static const Variable& find_variable(const Variable& variable, const std::string& standardName,
+                                     const std::string& units, size_t n) {
 
     const Dataset& dataset = variable.dataset();
 
@@ -94,7 +87,7 @@ static const Variable& find_variable(const Variable& variable,
     for (const auto& k : dataset.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("units") == units) {
-            std::cout  << "XXXXX find_variable"  << v << " has units " << units << std::endl;
+            std::cout << "XXXXX find_variable" << v << " has units " << units << std::endl;
             return v;
         }
     }
@@ -103,9 +96,8 @@ static const Variable& find_variable(const Variable& variable,
     ASSERT(coordinates.size() >= n);
 
     const Variable& v = dataset.variable(coordinates[coordinates.size() - n]);
-    std::cout  << "XXXXX find_variable"  << v << "is number " << coordinates.size() - n << std::endl;
+    std::cout << "XXXXX find_variable" << v << "is number " << coordinates.size() - n << std::endl;
     return v;
-
 }
 
 
@@ -114,7 +106,7 @@ GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     // We assume lat/lon are the innermost coordinates
-    const Variable& latitudes = find_variable(variable, "latitude", "degrees_north", 2);
+    const Variable& latitudes  = find_variable(variable, "latitude", "degrees_north", 2);
     const Variable& longitudes = find_variable(variable, "longitude", "degrees_east", 1);
 
     for (auto& j : *m) {

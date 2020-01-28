@@ -31,10 +31,8 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path,
-    bool binary) :
-    GeoPointsFileOutput(path, binary) {
-}
+GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path, bool binary) :
+    GeoPointsFileOutput(path, binary) {}
 
 
 size_t GeoPointsFileOutputXYVector::copy(const param::MIRParametrisation&, context::Context&) {
@@ -49,7 +47,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
     const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
-    eckit::Offset position = handle.position();
+    eckit::Offset position    = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
 
@@ -102,4 +100,3 @@ static MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector
 
 }  // namespace output
 }  // namespace mir
-

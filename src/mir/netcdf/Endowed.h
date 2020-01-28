@@ -13,8 +13,8 @@
 #ifndef mir_netcdf_Endowned
 #define mir_netcdf_Endowned
 
-#include <string>
 #include <map>
+#include <string>
 
 namespace mir {
 namespace netcdf {
@@ -27,17 +27,17 @@ public:
     virtual ~Endowed();
 
     // -- Methods
-    void add(Attribute *);
+    void add(Attribute*);
 
     void getAttributes(int nc, int i, int nattr);
-    void copyAttributes(const Endowed &other);
-    void mergeAttributes(const Endowed &other);
+    void copyAttributes(const Endowed& other);
+    void mergeAttributes(const Endowed& other);
 
-    virtual const std::string &path() const = 0;
-    virtual int varid() const = 0;
-    virtual const std::string &name() const = 0;
+    virtual const std::string& path() const = 0;
+    virtual int varid() const               = 0;
+    virtual const std::string& name() const = 0;
 
-    const std::map<std::string, Attribute *> &attributes() const ;
+    const std::map<std::string, Attribute*>& attributes() const;
 
     //=============================================
 
@@ -45,18 +45,15 @@ public:
 
 
 protected:
-
     // -- Members
 
-    std::map<std::string, Attribute *> attributes_;
+    std::map<std::string, Attribute*> attributes_;
 
 private:
-
-    Endowed(const Endowed &);
-    Endowed &operator=(const Endowed &);
-
+    Endowed(const Endowed&);
+    Endowed& operator=(const Endowed&);
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

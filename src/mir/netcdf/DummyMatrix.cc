@@ -20,19 +20,17 @@
 namespace mir {
 namespace netcdf {
 
-DummyMatrix::DummyMatrix(const Variable &v):
+DummyMatrix::DummyMatrix(const Variable& v) :
     Matrix(v.matrix()->type(), v.name(), v.matrix()->size()),
-    other_(v.matrix())
-{
+    other_(v.matrix()) {
     other_->attach();
 }
 
-DummyMatrix::~DummyMatrix()
-{
+DummyMatrix::~DummyMatrix() {
     other_->detach();
 }
 
-void DummyMatrix::print(std::ostream &out) const {
+void DummyMatrix::print(std::ostream& out) const {
     out << "DummyMatrix[type=" << *type_ << ",name=" << name_ << ",other=" << *other_ << "]";
 }
 

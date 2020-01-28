@@ -26,12 +26,12 @@ class MIRParametrisation;
 namespace api {
 class MIRJob;
 }
-}
+}  // namespace mir
 namespace mir {
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -40,7 +40,6 @@ namespace util {
 
 class Increments {
 public:
-
     // -- Exceptions
     // None
 
@@ -79,13 +78,9 @@ public:
     bool isLatitudeShifted(const PointLatLon&) const;
     bool isLongitudeShifted(const PointLatLon&) const;
 
-    const LongitudeIncrement& west_east() const {
-        return west_east_;
-    }
+    const LongitudeIncrement& west_east() const { return west_east_; }
 
-    const LatitudeIncrement& south_north() const {
-        return south_north_;
-    }
+    const LatitudeIncrement& south_north() const { return south_north_; }
 
     void fill(grib_info&) const;
 
@@ -103,7 +98,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -121,7 +115,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     LongitudeIncrement west_east_;
@@ -141,11 +134,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream& s, const Increments& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Increments& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -154,4 +146,3 @@ private:
 
 
 #endif
-

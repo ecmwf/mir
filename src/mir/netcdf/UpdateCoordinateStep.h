@@ -21,27 +21,24 @@ namespace netcdf {
 class Variable;
 
 
-class UpdateCoordinateStep : public Step  {
+class UpdateCoordinateStep : public Step {
 public:
-
-    UpdateCoordinateStep(Variable &out, const Variable &in, size_t growth);
+    UpdateCoordinateStep(Variable& out, const Variable& in, size_t growth);
     ~UpdateCoordinateStep();
 
 private:
-
     // Members
 
-    Variable &out_;
-    const Variable &in_;
+    Variable& out_;
+    const Variable& in_;
     size_t growth_;
 
     // -- Methods
-    virtual void print(std::ostream &out) const;
+    virtual void print(std::ostream& out) const;
     virtual int rank() const;
-    virtual void execute(MergePlan &plan);
-
+    virtual void execute(MergePlan& plan);
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -65,4 +65,3 @@ std::set<Field>::const_iterator FieldSet::begin() const {
 
 }  // namespace compare
 }  // namespace mir
-

@@ -14,8 +14,8 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/gauss/reduced/ReducedClassic.h"
 
 
 namespace mir {
@@ -23,7 +23,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& parametrisation):
+Gridded2ReducedGG::Gridded2ReducedGG(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
 }
@@ -39,7 +39,8 @@ bool Gridded2ReducedGG::sameAs(const Action& other) const {
 
 void Gridded2ReducedGG::print(std::ostream& out) const {
     out << "Gridded2ReducedGG["
-           "N=" << N_ << ",";
+           "N="
+        << N_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
@@ -55,11 +56,10 @@ const char* Gridded2ReducedGG::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2ReducedGG > grid2grid("interpolate.grid2reduced-gg");
+static ActionBuilder<Gridded2ReducedGG> grid2grid("interpolate.grid2reduced-gg");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

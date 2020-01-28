@@ -24,7 +24,6 @@ namespace data {
 
 class MIRFieldStats {
 public:
-
     MIRFieldStats();
     MIRFieldStats(const MIRValuesVector&, size_t missing);
 
@@ -32,7 +31,6 @@ public:
     double minimum() const;
 
 private:
-
     size_t count_;
     size_t missing_;
     double min_;
@@ -43,7 +41,7 @@ private:
 
     void print(std::ostream&) const;
 
-    friend std::ostream& operator<<(std::ostream& s, const MIRFieldStats &p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRFieldStats& p) {
         p.print(s);
         return s;
     }
@@ -55,4 +53,3 @@ private:
 
 
 #endif
-

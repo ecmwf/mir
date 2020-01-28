@@ -25,8 +25,8 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParametrisation& parametrisation):
+template <class Invtrans>
+ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
@@ -38,54 +38,54 @@ ShToRotatedOctahedralGG<Invtrans>::ShToRotatedOctahedralGG(const param::MIRParam
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToRotatedOctahedralGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedOctahedralGG*>(&other);
     return o && (N_ == o->N_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToRotatedOctahedralGG<Invtrans>::~ShToRotatedOctahedralGG() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToRotatedOctahedralGG<Invtrans>::print(std::ostream& out) const {
     out << "ShToRotatedOctahedralGG[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",N=" << N_
-        << ",rotation=" << rotation_
-        << "]";
+    out << ",N=" << N_ << ",rotation=" << rotation_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToRotatedOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToRotatedOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                                const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToRotatedOctahedralGG<Invtrans>::name() const {
     return "ShToRotatedOctahedralGG";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToRotatedOctahedralGG<Invtrans>::outputRepresentation() const {
     return new repres::gauss::reduced::RotatedOctahedral(N_, rotation_);
 }
 
 
 namespace {
-static ActionBuilder< ShToRotatedOctahedralGG<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-octahedral-gg");
-static ActionBuilder< ShToRotatedOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-octahedral-gg");
-}
+static ActionBuilder<ShToRotatedOctahedralGG<InvtransScalar> > __action1(
+    "transform.sh-scalar-to-rotated-octahedral-gg");
+static ActionBuilder<ShToRotatedOctahedralGG<InvtransVodTouv> > __action2(
+    "transform.sh-vod-to-uv-rotated-octahedral-gg");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

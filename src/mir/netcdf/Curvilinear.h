@@ -13,8 +13,8 @@
 #ifndef mir_netcdf_RegularLL
 #define mir_netcdf_RegularLL
 
-#include "mir/netcdf/GridSpec.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/netcdf/GridSpec.h"
 
 
 namespace mir {
@@ -23,55 +23,46 @@ namespace netcdf {
 
 class Curvilinear : public GridSpec {
 public:
-
-  Curvilinear(const Variable &,
-                  const std::vector<double>& latitudes,
-                  const std::vector<double>& longitudes);
+    Curvilinear(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
 
+    virtual ~Curvilinear();
 
-  virtual ~Curvilinear();
-
-  // -- Methods
+    // -- Methods
 
 
-  static GridSpec* guess(const Variable &variable,
-                         const Variable &latitudes,
-                         const Variable &longitudes);
+    static GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes);
 
 
 protected:
+    // -- Members
 
-  // -- Members
 
+    std::vector<double> latitudes_;
+    std::vector<double> longitudes_;
 
-  std::vector<double> latitudes_;
-  std::vector<double> longitudes_;
-
-  double north_;
-  double west_;
-  double south_;
-  double east_;
+    double north_;
+    double west_;
+    double south_;
+    double east_;
 
 private:
+    Curvilinear(const Curvilinear&);
+    Curvilinear& operator=(const Curvilinear&);
 
-  Curvilinear(const Curvilinear &);
-  Curvilinear &operator=(const Curvilinear &);
 
+    // - Methods
 
-  // - Methods
+    virtual void print(std::ostream& s) const;
 
-  virtual void print(std::ostream &s) const;
+    // For MIR
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, long&) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-  // For MIR
-  virtual bool has(const std::string& name) const;
-  virtual bool get(const std::string&, long&) const;
-  virtual bool get(const std::string&, std::string&) const;
-  virtual bool get(const std::string &name, double &value) const;
-  virtual bool get(const std::string &name, std::vector<double> &value) const;
-
-  virtual void reorder(MIRValuesVector& values) const;
-
+    virtual void reorder(MIRValuesVector& values) const;
 };
 
 

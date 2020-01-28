@@ -14,8 +14,8 @@
 #define mir_action_plan_ActionGraph_H
 
 
-#include <vector>
 #include <iosfwd>
+#include <vector>
 
 
 namespace mir {
@@ -27,11 +27,11 @@ class Action;
 class ActionNode;
 class ActionPlan;
 class Executor;
-}
+}  // namespace action
 namespace api {
 class MIRWatcher;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -40,11 +40,9 @@ namespace action {
 
 class ActionGraph : protected std::vector<ActionNode*> {
 private:
-
     using vector_t = std::vector<ActionNode*>;
 
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +52,7 @@ public:
 
     // -- Destructor
 
-    ~ActionGraph(); // Change to virtual if base class
+    ~ActionGraph();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -88,13 +86,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -106,7 +103,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     ActionGraph(const ActionGraph&);
     ActionGraph& operator=(const ActionGraph&);
@@ -132,7 +128,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -141,4 +136,3 @@ private:
 
 
 #endif
-

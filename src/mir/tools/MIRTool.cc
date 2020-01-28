@@ -17,8 +17,8 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/system/Library.h"
 
-#include "mir/api/mir_config.h"
 #include "mir/api/Atlas.h"
+#include "mir/api/mir_config.h"
 
 #if defined(HAVE_ECCODES)
 #include "eccodes.h"
@@ -47,9 +47,7 @@ MIRTool::MIRTool(int argc, char** argv) : eckit::Tool(argc, argv, "MIR_HOME") {
 
 void MIRTool::run() {
 
-    eckit::option::CmdArgs args(&mir::tools::usage,
-                                options_,
-                                numberOfPositionalArguments(),
+    eckit::option::CmdArgs args(&mir::tools::usage, options_, numberOfPositionalArguments(),
                                 minimumPositionalArguments());
 
     if (args.has("version")) {
@@ -58,15 +56,13 @@ void MIRTool::run() {
         using eckit::system::Library;
         for (const auto& lib_name : Library::list()) {
             auto& lib = Library::lookup(lib_name);
-            log << lib.name()
-                << " " << lib.version()
-                << " git-sha1:" << lib.gitsha1(8)
-                << " home:" << lib.libraryHome()
+            log << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(8) << " home:" << lib.libraryHome()
                 << std::endl;
         }
 
 #if defined(HAVE_ECCODES)
-        log << "eccodes " << ECCODES_VERSION_STR  << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0,8) << std::endl;
+        log << "eccodes " << ECCODES_VERSION_STR << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, 8)
+            << std::endl;
 #endif
     }
 

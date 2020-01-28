@@ -30,7 +30,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -39,7 +39,6 @@ namespace data {
 
 class Field : public eckit::Counted {
 public:
-
     // -- Exceptions
     // None
 
@@ -51,7 +50,7 @@ public:
 
     // -- Destructor
 
-    ~Field(); // Change to virtual if base class
+    ~Field();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -67,14 +66,14 @@ public:
     /// Resize to one, and keep only which
     void select(size_t which);
 
-    void representation(const repres::Representation *);
-    const repres::Representation *representation() const;
+    void representation(const repres::Representation*);
+    const repres::Representation* representation() const;
 
     /// @warning Takes ownership of the vector
     void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
 
     const MIRValuesVector& values(size_t which) const;
-    MIRValuesVector& direct(size_t which);   // Non-const version for direct update (Filter)
+    MIRValuesVector& direct(size_t which);  // Non-const version for direct update (Filter)
 
     void metadata(size_t which, const std::map<std::string, long>&);
     void metadata(size_t which, const std::string& name, long value);
@@ -103,13 +102,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -121,7 +119,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     Field(const Field& other);
@@ -151,11 +148,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Field &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Field& p) {
         p.print(s);
         return s;
     }
-
 };
 
 

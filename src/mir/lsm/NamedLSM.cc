@@ -37,16 +37,16 @@ namespace {
 static NamedLSM __lsm_selection("named");
 
 
-static NamedMaskBuilder<MappedMask>          __NamedMask_1km_1   ("1km",   "~mir/share/mir/masks/lsm.1km.mask");
-static NamedMaskBuilder<MappedMask>          __NamedMask_1km_2   ("1KM",   "~mir/share/mir/masks/lsm.1km.mask");
-static NamedMaskBuilder<TenMinutesMask>      __NamedMask_10min_1 ("10min", "~mir/share/mir/masks/lsm.10min.mask");
-static NamedMaskBuilder<TenMinutesMask>      __NamedMask_10min_2 ("10MIN", "~mir/share/mir/masks/lsm.10min.mask");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N128    ("N128",  "~mir/share/mir/masks/lsm.N128.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N256    ("N256",  "~mir/share/mir/masks/lsm.N256.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N320    ("N320",  "~mir/share/mir/masks/lsm.N320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O320    ("O320",  "~mir/share/mir/masks/lsm.O320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O640    ("O640",  "~mir/share/mir/masks/lsm.O640.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O1280   ("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
+static NamedMaskBuilder<MappedMask> __NamedMask_1km_1("1km", "~mir/share/mir/masks/lsm.1km.mask");
+static NamedMaskBuilder<MappedMask> __NamedMask_1km_2("1KM", "~mir/share/mir/masks/lsm.1km.mask");
+static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_1("10min", "~mir/share/mir/masks/lsm.10min.mask");
+static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_2("10MIN", "~mir/share/mir/masks/lsm.10min.mask");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N128("N128", "~mir/share/mir/masks/lsm.N128.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N256("N256", "~mir/share/mir/masks/lsm.N256.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N320("N320", "~mir/share/mir/masks/lsm.N320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O320("O320", "~mir/share/mir/masks/lsm.O320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O640("O640", "~mir/share/mir/masks/lsm.O640.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O1280("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
 
 
 static pthread_once_t once                         = PTHREAD_ONCE_INIT;
@@ -58,12 +58,10 @@ static void init() {
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-NamedLSM::NamedLSM(const std::string& name) :
-    LSMSelection(name) {
-}
+NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}
 
 
 NamedLSM::~NamedLSM() = default;
@@ -74,26 +72,20 @@ void NamedLSM::print(std::ostream& out) const {
 }
 
 
-Mask* NamedLSM::create(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+Mask* NamedLSM::create(const param::MIRParametrisation& param, const repres::Representation& representation,
+                       const std::string& which) const {
     return NamedMaskFactory::build(param, representation, which);
 }
 
 
-std::string NamedLSM::cacheKey(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+std::string NamedLSM::cacheKey(const param::MIRParametrisation& param, const repres::Representation& representation,
+                               const std::string& which) const {
     return NamedMaskFactory::cacheKey(param, representation, which);
 }
 
 
-NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& path) :
-    name_(name),
-    path_(path) {
-    pthread_once(&once,init);
+NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& path) : name_(name), path_(path) {
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
@@ -112,12 +104,10 @@ NamedMaskFactory::~NamedMaskFactory() {
 }
 
 
-Mask* NamedMaskFactory::build(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) {
+Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repres::Representation& representation,
+                              const std::string& which) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name;
@@ -134,12 +124,10 @@ Mask* NamedMaskFactory::build(
 }
 
 
-std::string NamedMaskFactory::cacheKey(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) {
+std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
+                                       const repres::Representation& representation, const std::string& which) {
 
-    pthread_once(&once,init);
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name;
@@ -156,7 +144,7 @@ std::string NamedMaskFactory::cacheKey(
     j->second->hashCacheKey(md5, param, representation, which);
     return "named." + name + "." + md5.digest();
 
-//    return (*j).second->cacheKey(param, representation, which);
+    //    return (*j).second->cacheKey(param, representation, which);
 }
 
 
@@ -174,4 +162,3 @@ void NamedMaskFactory::list(std::ostream& out) {
 
 }  // namespace lsm
 }  // namespace mir
-

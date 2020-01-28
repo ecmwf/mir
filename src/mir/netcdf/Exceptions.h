@@ -18,24 +18,21 @@
 namespace mir {
 namespace netcdf {
 
-class NCError : public eckit::Exception
-{
+class NCError : public eckit::Exception {
 public:
-    NCError(int e, const std::string &call, const std::string &path);
+    NCError(int e, const std::string& call, const std::string& path);
 };
 
 
 class MergeError : public eckit::Exception {
 public:
-    MergeError(const std::string &message):
-        eckit::Exception("MergeError: " + message) {}
+    MergeError(const std::string& message) : eckit::Exception("MergeError: " + message) {}
 };
 
 
-inline int _nc_call(int e, const char *call, const std::string &path)
-{
+inline int _nc_call(int e, const char* call, const std::string& path) {
     if (e) {
-        throw  NCError(e, call, path);
+        throw NCError(e, call, path);
     }
     return e;
 }
@@ -43,6 +40,6 @@ inline int _nc_call(int e, const char *call, const std::string &path)
 
 #define NC_CALL(a, path) _nc_call(a, #a, path)
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

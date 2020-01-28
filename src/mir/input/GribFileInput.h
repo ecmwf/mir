@@ -23,7 +23,6 @@ namespace input {
 
 class GribFileInput : public GribStreamInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -73,7 +71,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     eckit::PathName path_;
@@ -99,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribFileInput& p)
+    // friend ostream& operator<<(ostream& s,const GribFileInput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

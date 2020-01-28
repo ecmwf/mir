@@ -20,7 +20,7 @@ namespace mir {
 namespace output {
 class MIROutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace io {
 
 class Copy : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -40,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Copy(); // Change to virtual if base class
+    virtual ~Copy();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,13 +60,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -80,15 +78,14 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     Copy(const Copy&);
-    Copy &operator=(const Copy&);
+    Copy& operator=(const Copy&);
 
     // -- Members
 
-    output::MIROutput &output_;
+    output::MIROutput& output_;
 
     // -- Methods
     // None
@@ -109,9 +106,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Copy& p)
+    // friend ostream& operator<<(ostream& s,const Copy& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -121,4 +117,3 @@ private:
 
 
 #endif
-

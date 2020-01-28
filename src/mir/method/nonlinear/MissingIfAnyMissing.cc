@@ -27,22 +27,17 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfAnyMissing::treatment(NonLinear::Matrix&,
-                                    NonLinear::WeightMatrix& W,
-                                    NonLinear::Matrix&,
-                                    const data::MIRValuesVector& values,
-                                    const double& missingValue) const {
+bool MissingIfAnyMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+                                    const data::MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if any row values is missing)
     ASSERT(W.cols() == values.size());
 
-    auto data = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -104,4 +99,3 @@ static NonLinearBuilder<MissingIfAnyMissing> __nonlinear("missing-if-any-missing
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

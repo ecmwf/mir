@@ -21,18 +21,17 @@ namespace packing {
 
 
 class JPEG2000 : public Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    JPEG2000(const std::string &name);
+    JPEG2000(const std::string& name);
 
     // -- Destructor
 
-    virtual ~JPEG2000(); // Change to virtual if base class
+    virtual ~JPEG2000();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class JPEG2000 : public Packer {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -69,12 +67,11 @@ class JPEG2000 : public Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    JPEG2000(const JPEG2000 &);
-    JPEG2000 &operator=(const JPEG2000 &);
+    JPEG2000(const JPEG2000&);
+    JPEG2000& operator=(const JPEG2000&);
 
     // -- Members
     // None
@@ -89,18 +86,13 @@ class JPEG2000 : public Packer {
 
     // -- Class methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const;
-
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace packing
 }  // namespace mir
 #endif
-

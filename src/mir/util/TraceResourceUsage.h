@@ -24,12 +24,13 @@ class TraceResourceUsage {
 public:
     explicit TraceResourceUsage(const char* name);
     ~TraceResourceUsage();
+
 private:
     eckit::ResourceUsage* info_ = nullptr;
 };
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir
 
 
 #endif

@@ -14,8 +14,8 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
 
 namespace mir {
@@ -23,7 +23,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& parametrisation):
+Gridded2OctahedralGG::Gridded2OctahedralGG(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
 }
@@ -40,9 +40,10 @@ bool Gridded2OctahedralGG::sameAs(const Action& other) const {
 
 void Gridded2OctahedralGG::print(std::ostream& out) const {
     out << "Gridded2OctahedralGG["
-           "N=" << N_ << ",";
+           "N="
+        << N_ << ",";
     Gridded2UnrotatedGrid::print(out);
-    out  << "]";
+    out << "]";
 }
 
 
@@ -56,11 +57,10 @@ const char* Gridded2OctahedralGG::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2OctahedralGG > grid2grid("interpolate.grid2octahedral-gg");
+static ActionBuilder<Gridded2OctahedralGG> grid2grid("interpolate.grid2octahedral-gg");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

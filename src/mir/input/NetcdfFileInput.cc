@@ -22,7 +22,7 @@ namespace mir {
 namespace input {
 
 
-NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path):
+NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
     path_(path),
     cache_(*this),
     dataset_(path, *this),
@@ -42,9 +42,9 @@ NetcdfFileInput::~NetcdfFileInput() {
 }
 
 
-grib_handle *NetcdfFileInput::gribHandle(size_t which) const {
-    //ASSERT(which == 0);
-    static grib_handle *handle = nullptr;
+grib_handle* NetcdfFileInput::gribHandle(size_t which) const {
+    // ASSERT(which == 0);
+    static grib_handle* handle = nullptr;
     if (!handle) {
         handle = grib_handle_new_from_samples(nullptr, "GRIB1");
         grib_set_long(handle, "paramId", 255);
@@ -95,19 +95,25 @@ data::MIRField NetcdfFileInput::field() const {
 
 bool NetcdfFileInput::get(const std::string& name, long& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {return true;}
+    if (fields_[current_]->get(name, value)) {
+        return true;
+    }
     return FieldParametrisation::get(name, value);
 }
 
 bool NetcdfFileInput::has(const std::string& name) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->has(name)) {return true;}
+    if (fields_[current_]->has(name)) {
+        return true;
+    }
     return FieldParametrisation::has(name);
 }
 
 bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {return true;}
+    if (fields_[current_]->get(name, value)) {
+        return true;
+    }
     return FieldParametrisation::get(name, value);
 }
 
@@ -124,14 +130,18 @@ bool NetcdfFileInput::get(const std::string& name, bool& value) const {
 
 bool NetcdfFileInput::get(const std::string& name, double& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {return true;}
+    if (fields_[current_]->get(name, value)) {
+        return true;
+    }
     return FieldParametrisation::get(name, value);
 }
 
 
 bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) const {
     ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {return true;}
+    if (fields_[current_]->get(name, value)) {
+        return true;
+    }
     return FieldParametrisation::get(name, value);
 }
 
@@ -146,12 +156,10 @@ size_t NetcdfFileInput::dimensions() const {
 }
 
 
-static MIRInputBuilder< NetcdfFileInput > netcdf4(0x89484446); // ".HDF"
-static MIRInputBuilder< NetcdfFileInput > netcdf31(0x43444601); // "CDF."
-static MIRInputBuilder< NetcdfFileInput > netcdf32(0x43444602); // "CDF."
-
+static MIRInputBuilder<NetcdfFileInput> netcdf4(0x89484446);   // ".HDF"
+static MIRInputBuilder<NetcdfFileInput> netcdf31(0x43444601);  // "CDF."
+static MIRInputBuilder<NetcdfFileInput> netcdf32(0x43444602);  // "CDF."
 
 
 }  // namespace input
 }  // namespace mir
-

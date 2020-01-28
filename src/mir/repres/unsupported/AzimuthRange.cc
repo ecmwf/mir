@@ -21,33 +21,30 @@ namespace mir {
 namespace repres {
 
 
-AzimuthRange::AzimuthRange(const param::MIRParametrisation &parametrisation) {
-}
+AzimuthRange::AzimuthRange(const param::MIRParametrisation& parametrisation) {}
 
 
-AzimuthRange::AzimuthRange() {
-}
+AzimuthRange::AzimuthRange() {}
 
 
 AzimuthRange::~AzimuthRange() = default;
 
 
-void AzimuthRange::print(std::ostream &out) const {
+void AzimuthRange::print(std::ostream& out) const {
     out << "AzimuthRange["
         << "]";
 }
 
 
-void AzimuthRange::fill(grib_info &info) const  {
+void AzimuthRange::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<AzimuthRange> azimuthRange("azimuth_range"); // Name is what is returned by grib_api
+static RepresentationBuilder<AzimuthRange> azimuthRange("azimuth_range");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

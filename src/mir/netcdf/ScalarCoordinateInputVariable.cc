@@ -22,37 +22,38 @@ namespace mir {
 namespace netcdf {
 
 
-ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions) :
-    InputVariable(owner, name, id, dimensions) {
-}
+ScalarCoordinateInputVariable::ScalarCoordinateInputVariable(Dataset& owner, const std::string& name, int id,
+                                                             const std::vector<Dimension*>& dimensions) :
+    InputVariable(owner, name, id, dimensions) {}
 
 
 ScalarCoordinateInputVariable::~ScalarCoordinateInputVariable() = default;
 
 
-Variable *ScalarCoordinateInputVariable::makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const {
+Variable* ScalarCoordinateInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
+                                                            const std::vector<Dimension*>& dimensions) const {
     return new ScalarCoordinateOutputVariable(owner, name, dimensions);
 }
 
 
-Variable *ScalarCoordinateInputVariable::makeScalarCoordinateVariable()  {
+Variable* ScalarCoordinateInputVariable::makeScalarCoordinateVariable() {
     return this;
 }
 
 
-Variable *ScalarCoordinateInputVariable::makeCoordinateVariable()  {
+Variable* ScalarCoordinateInputVariable::makeCoordinateVariable() {
     return this;
 }
 
 
-void ScalarCoordinateInputVariable::print(std::ostream &out) const {
+void ScalarCoordinateInputVariable::print(std::ostream& out) const {
     out << "ScalarCoordinateInputVariable[name=" << name_ << "]";
 }
 
 
-Dimension *ScalarCoordinateInputVariable::getVirtualDimension() {
+Dimension* ScalarCoordinateInputVariable::getVirtualDimension() {
     if (dimensions_.size() == 0) {
-        Dimension *dim = new VirtualInputDimension(dataset_, name_);
+        Dimension* dim = new VirtualInputDimension(dataset_, name_);
         dataset_.add(dim);
         dimensions_.push_back(dim);
     }
@@ -60,5 +61,5 @@ Dimension *ScalarCoordinateInputVariable::getVirtualDimension() {
 }
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

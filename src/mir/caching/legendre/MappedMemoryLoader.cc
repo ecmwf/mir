@@ -13,8 +13,8 @@
 #include "mir/caching/legendre/MappedMemoryLoader.h"
 
 #include <fcntl.h>
-#include <iostream>
 #include <sys/mman.h>
+#include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
@@ -28,8 +28,11 @@ namespace caching {
 namespace legendre {
 
 
-MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path), fd_(-1), address_(nullptr), size_(0) {
+MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    LegendreLoader(parametrisation, path),
+    fd_(-1),
+    address_(nullptr),
+    size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 
@@ -81,10 +84,9 @@ bool MappedMemoryLoader::shared() {
 namespace {
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
-}
+}  // namespace
 
 
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

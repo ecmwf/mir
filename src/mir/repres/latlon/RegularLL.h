@@ -23,15 +23,13 @@ namespace latlon {
 
 class RegularLL : public LatLon {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     RegularLL(const param::MIRParametrisation&);
-    RegularLL(const util::Increments&,
-              const util::BoundingBox& = util::BoundingBox(),
+    RegularLL(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),
               const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
@@ -57,7 +55,6 @@ public:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -92,9 +89,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    // friend ostream& operator<<(ostream& s,const RegularLL& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -104,4 +100,3 @@ private:
 
 
 #endif
-

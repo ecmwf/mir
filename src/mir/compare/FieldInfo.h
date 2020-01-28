@@ -28,7 +28,6 @@ namespace compare {
 
 class FieldInfo {
 public:
-
     FieldInfo(const std::string& path, off_t offset, size_t length);
 
     off_t offset() const;
@@ -38,24 +37,22 @@ public:
     const std::string& path() const;
 
 private:
-
     std::string path_;
     off_t offset_;
     size_t length_;
 
-    void print(std::ostream &out) const;
+    void print(std::ostream& out) const;
     void json(eckit::JSON& json) const;
 
-    friend std::ostream &operator<<(std::ostream &s, const FieldInfo &x) {
+    friend std::ostream& operator<<(std::ostream& s, const FieldInfo& x) {
         x.print(s);
         return s;
     }
 
-     friend eckit::JSON &operator<<(eckit::JSON &s, const FieldInfo &x) {
+    friend eckit::JSON& operator<<(eckit::JSON& s, const FieldInfo& x) {
         x.json(s);
         return s;
     }
-
 };
 
 
@@ -64,4 +61,3 @@ private:
 
 
 #endif
-

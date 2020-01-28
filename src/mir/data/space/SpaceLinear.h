@@ -23,7 +23,6 @@ namespace space {
 
 class SpaceLinear : public Space {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,7 +55,6 @@ public:
     // None
 
 private:
-
     // -- Types
     // None
 
@@ -77,7 +75,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -87,4 +84,3 @@ private:
 
 
 #endif
-

@@ -23,8 +23,7 @@ namespace output {
 EmptyOutput::EmptyOutput() = default;
 
 
-EmptyOutput::EmptyOutput(const std::string&) {
-}
+EmptyOutput::EmptyOutput(const std::string&) {}
 
 
 EmptyOutput::~EmptyOutput() = default;
@@ -62,14 +61,18 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
 
     std::string packing;
     if (param.userParametrisation().get("packing", packing)) {
-        if (ok) { out << ","; }
+        if (ok) {
+            out << ",";
+        }
         out << "packing=" << packing;
         ok = true;
     }
 
     long edition;
     if (param.userParametrisation().get("edition", edition)) {
-        if (ok) { out << ","; }
+        if (ok) {
+            out << ",";
+        }
         out << "edition=" << edition;
         ok = true;
     }
@@ -93,4 +96,3 @@ static MIROutputBuilder<EmptyOutput> output("empty");
 
 }  // namespace output
 }  // namespace mir
-

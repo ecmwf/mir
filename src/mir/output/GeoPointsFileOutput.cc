@@ -20,10 +20,7 @@ namespace mir {
 namespace output {
 
 
-GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) :
-    path_(path),
-    binary_(binary) {
-}
+GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) : path_(path), binary_(binary) {}
 
 
 GeoPointsFileOutput::~GeoPointsFileOutput() = default;
@@ -45,11 +42,10 @@ bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
 }
 
 
-void GeoPointsFileOutput::print(std::ostream &out) const {
+void GeoPointsFileOutput::print(std::ostream& out) const {
     out << "GeoPointsFileOutput[path=" << path_ << "]";
 }
 
 
 }  // namespace output
 }  // namespace mir
-

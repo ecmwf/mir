@@ -20,12 +20,10 @@ namespace netcdf {
 
 class OutputDimension : public Dimension {
 public:
-
-    OutputDimension(Dataset &owner, const std::string &name, size_t len);
+    OutputDimension(Dataset& owner, const std::string& name, size_t len);
     virtual ~OutputDimension();
 
 private:
-
     mutable int id_;
     mutable bool created_;
     bool grown_;
@@ -33,12 +31,12 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
     virtual void create(int nc) const;
     virtual int id() const;
     virtual void grow(size_t n);
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

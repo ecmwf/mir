@@ -25,7 +25,6 @@ namespace interpolate {
 
 class Gridded2RegularLL : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -76,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     util::Increments increments_;
@@ -102,7 +99,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -112,4 +108,3 @@ private:
 
 
 #endif
-

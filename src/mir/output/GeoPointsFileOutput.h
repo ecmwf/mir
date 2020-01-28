@@ -24,7 +24,6 @@ namespace output {
 
 class GeoPointsFileOutput : public GeoPointsOutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     std::string path_;
@@ -78,7 +76,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -88,7 +85,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIROutput& other) const;
 
     // -- Class members
@@ -99,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

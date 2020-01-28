@@ -47,7 +47,7 @@ bool LongitudeFraction::operator<(double value) const {
 }
 
 bool LongitudeFraction::operator>=(double value) const {
-   return value_ >= value;
+    return value_ >= value;
 }
 
 bool LongitudeFraction::operator<=(double value) const {
@@ -73,7 +73,7 @@ bool LongitudeFraction::operator<(const eckit::Fraction& value) const {
 }
 
 bool LongitudeFraction::operator>=(const eckit::Fraction& value) const {
-   return value_ >= value;
+    return value_ >= value;
 }
 
 bool LongitudeFraction::operator<=(const eckit::Fraction& value) const {
@@ -95,7 +95,7 @@ bool LongitudeFraction::operator>(const LongitudeFraction& other) const {
 }
 
 bool LongitudeFraction::operator>=(const LongitudeFraction& other) const {
-   return value_ >= other.value_;
+    return value_ >= other.value_;
 }
 
 bool LongitudeFraction::operator==(const LongitudeFraction& other) const {
@@ -142,4 +142,3 @@ LongitudeFraction LongitudeFraction::distance(const LongitudeFraction& meridian)
 }
 
 }  // namespace mir
-

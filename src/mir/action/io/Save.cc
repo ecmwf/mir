@@ -27,11 +27,10 @@ namespace action {
 namespace io {
 
 
-Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output):
+Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
     Action(parametrisation),
     input_(input),
-    output_(output) {
-}
+    output_(output) {}
 
 
 Save::~Save() = default;
@@ -39,8 +38,8 @@ Save::~Save() = default;
 
 bool Save::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Save*>(&other);
-    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
-            && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
+           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 
@@ -85,4 +84,3 @@ void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const
 }  // namespace io
 }  // namespace action
 }  // namespace mir
-

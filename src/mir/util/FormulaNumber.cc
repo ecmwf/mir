@@ -12,18 +12,17 @@
 
 #include <iostream>
 
-#include "mir/util/FormulaNumber.h"
 #include "mir/action/context/Context.h"
+#include "mir/util/FormulaNumber.h"
 
 
 namespace mir {
 namespace util {
 
 
-FormulaNumber::FormulaNumber(const param::MIRParametrisation &parametrisation, double value):
+FormulaNumber::FormulaNumber(const param::MIRParametrisation& parametrisation, double value) :
     Formula(parametrisation),
-    value_(value) {
-}
+    value_(value) {}
 
 FormulaNumber::~FormulaNumber() = default;
 
@@ -47,5 +46,5 @@ const char* FormulaNumber::name() const {
 }
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

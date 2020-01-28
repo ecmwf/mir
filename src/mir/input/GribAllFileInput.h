@@ -26,7 +26,6 @@ namespace input {
 
 class GribAllFileInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribAllFileInput(); // Change to virtual if base class
+    virtual ~GribAllFileInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +56,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -74,7 +72,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string path_;
@@ -90,8 +87,8 @@ private:
     virtual data::MIRField field() const;
     virtual bool next();
 
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
 
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
@@ -104,7 +101,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -113,4 +109,3 @@ private:
 
 
 #endif
-

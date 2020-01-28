@@ -23,6 +23,7 @@ namespace util {
 
 struct DeprecatedFunctionality {
     DeprecatedFunctionality(const std::string& msg, std::ostream& = eckit::Log::warning());
+
 private:
     static void message(const std::string& msg, std::ostream& = eckit::Log::warning());
 };

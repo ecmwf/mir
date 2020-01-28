@@ -24,21 +24,17 @@ namespace util {
 
 class FormulaString : public Formula {
 public:
-
-    FormulaString(const param::MIRParametrisation &parametrisation, const std::string& value);
+    FormulaString(const param::MIRParametrisation& parametrisation, const std::string& value);
     virtual ~FormulaString();
 
 private:
-
     virtual void print(std::ostream& s) const;
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
-private: // members
-
+private:  // members
     std::string value_;
-
 };
 
 

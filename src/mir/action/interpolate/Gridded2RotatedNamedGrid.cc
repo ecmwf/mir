@@ -23,7 +23,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation &parametrisation):
+Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
@@ -38,16 +38,19 @@ bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
     return o && (gridname_ == o->gridname_) && Gridded2RotatedGrid::sameAs(other);
 }
 
-void Gridded2RotatedNamedGrid::print(std::ostream &out) const {
+void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
     out << "Gridded2RotatedNamedGrid["
-           "gridname=" << gridname_ << ","
-           "rotation=" << rotation() << ",";
+           "gridname="
+        << gridname_
+        << ","
+           "rotation="
+        << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
-const repres::Representation *Gridded2RotatedNamedGrid::outputRepresentation() const {
-    const namedgrids::NamedGrid &ng = namedgrids::NamedGrid::lookup(gridname_);
+const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
+    const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation(rotation());
 }
 
@@ -57,11 +60,10 @@ const char* Gridded2RotatedNamedGrid::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedNamedGrid > grid2grid("interpolate.grid2rotated-namedgrid");
+static ActionBuilder<Gridded2RotatedNamedGrid> grid2grid("interpolate.grid2rotated-namedgrid");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

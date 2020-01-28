@@ -25,18 +25,18 @@ namespace reduced {
 
 class FromPL : public Reduced {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
     FromPL(const param::MIRParametrisation&);
-    FromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    FromPL(size_t, const std::vector<long>&, const util::BoundingBox& = util::BoundingBox(),
+           double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~FromPL(); // Change to virtual if base class
+    virtual ~FromPL();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +57,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -78,7 +77,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -96,9 +94,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FromPL& p)
+    // friend ostream& operator<<(ostream& s,const FromPL& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -109,4 +106,3 @@ private:
 
 
 #endif
-

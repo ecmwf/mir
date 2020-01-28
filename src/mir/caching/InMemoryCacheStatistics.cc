@@ -20,7 +20,7 @@ namespace caching {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-InMemoryCacheStatistics::InMemoryCacheStatistics():
+InMemoryCacheStatistics::InMemoryCacheStatistics() :
     hits_(0),
     misses_(0),
     evictions_(0),
@@ -30,10 +30,9 @@ InMemoryCacheStatistics::InMemoryCacheStatistics():
     capacity_(),
     footprint_(),
     unique_(0),
-    required_() {
-}
+    required_() {}
 
-InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
+InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {
     s >> insertions_;
     s >> evictions_;
     s >> hits_;
@@ -46,7 +45,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
     s >> required_;
 }
 
-void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
+void InMemoryCacheStatistics::encode(eckit::Stream& s) const {
     s << insertions_;
     s << evictions_;
     s << hits_;
@@ -59,7 +58,7 @@ void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
     s << required_;
 }
 
-InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics &other) {
+InMemoryCacheStatistics& InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics& other) {
     insertions_ += other.insertions_;
     evictions_ += other.evictions_;
     hits_ += other.hits_;
@@ -74,7 +73,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
 }
 
 
-InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
+InMemoryCacheStatistics& InMemoryCacheStatistics::operator/=(size_t n) {
     insertions_ /= n;
     evictions_ /= n;
     hits_ /= n;
@@ -88,7 +87,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
     return *this;
 }
 
-void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const char *indent) const {
+void InMemoryCacheStatistics::report(const char* title, std::ostream& out, const char* indent) const {
 
     std::string t(title);
     reportBytes(out, (t + ", capacity").c_str(), capacity_.memory(), indent);
@@ -110,10 +109,8 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
 
     reportBytes(out, (t + ", required").c_str(), required_.memory(), indent);
     reportBytes(out, (t + ", required - shared").c_str(), required_.shared(), indent);
-
-
 }
 
 
-} // namespace caching
-} // namespace mir
+}  // namespace caching
+}  // namespace mir

@@ -24,49 +24,34 @@ namespace mir {
 REGISTER_LIBRARY(LibMir);
 
 
-LibMir::LibMir() : Library("mir") {
-}
+LibMir::LibMir() : Library("mir") {}
 
 
 std::string LibMir::cacheDir() {
-    static std::string mirCachePath = eckit::PathName(
-                eckit::LibResource<eckit::PathName, LibMir>(
-                    "mir-cache-path;"
-                    "$MIR_CACHE_PATH",
-                    "/tmp/cache" ));
+    static std::string mirCachePath =
+        eckit::PathName(eckit::LibResource<eckit::PathName, LibMir>("mir-cache-path;"
+                                                                    "$MIR_CACHE_PATH",
+                                                                    "/tmp/cache"));
     return mirCachePath;
 }
 
 
 bool LibMir::caching() {
     static bool mirCaching = eckit::LibResource<bool, LibMir>(
-                "mir-caching;"
-                "$MIR_CACHING",
-                true );
+        "mir-caching;"
+        "$MIR_CACHING",
+        true);
     return mirCaching;
 }
 
 
 const LibMir::keywords_t LibMir::postProcess() {
-    static const keywords_t defaultKeywords {
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "compatibility",
-        "edition",
-        "filter",
-        "format",
-        "formula",
-        "frame",
-        "griddef",
-        "latitudes",
-        "longitudes",
-        "packing",
-        "pattern",
-        "vod2uv",
+    static const keywords_t defaultKeywords{
+        "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format", "formula",
+        "frame",    "griddef", "latitudes",    "longitudes",    "packing", "pattern", "vod2uv",
     };
 
-    auto& config = instance().configuration();
+    auto& config                     = instance().configuration();
     static const keywords_t keywords = config.getStringVector("post-process", defaultKeywords);
 
     return keywords;
@@ -99,4 +84,4 @@ std::string LibMir::gitsha1(unsigned int count) const {
 }
 
 
-} // namespace mir
+}  // namespace mir

@@ -21,28 +21,27 @@ namespace netcdf {
 
 class InputVariable : public Variable {
 public:
-
-    InputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions);
+    InputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
     virtual ~InputVariable();
 
 protected:
-
     // Members
     int id_;
 
     // -- Methods
 
-    virtual Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const = 0;
+    virtual Variable* makeOutputVariable(Dataset& owner, const std::string& name,
+                                         const std::vector<Dimension*>& dimensions) const = 0;
 
     // From variable
-    virtual void print(std::ostream &s) const;
-    virtual Variable *clone(Dataset &owner) const;
+    virtual void print(std::ostream& s) const;
+    virtual Variable* clone(Dataset& owner) const;
 
     // From Endowed
 
     virtual int varid() const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

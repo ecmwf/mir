@@ -25,7 +25,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -35,30 +35,24 @@ namespace structured {
 
 class StructuredMethod : public MethodWeighted {
 public:
-
     StructuredMethod(const param::MIRParametrisation&);
     ~StructuredMethod();
 
 protected:
-
     // Utility types
-    using triplet_vector_t = std::vector< WeightMatrix::Triplet >;
+    using triplet_vector_t = std::vector<WeightMatrix::Triplet>;
 
     // Find nearest West-East bounding i indices
-    void left_right_lon_indexes(
-        const Longitude& in,
-        const std::vector<PointLatLon>& coords,
-        size_t start,
-        size_t end,
-        size_t& left,
-        size_t& right) const;
+    void left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start, size_t end,
+                                size_t& left, size_t& right) const;
 
 
     // Normalize weights triplets such that sum(weights) = 1
     void normalise(triplet_vector_t& triplets) const;
 
     // Get lat/lon point coordinates from representation
-    void getRepresentationPoints(const repres::Representation&, std::vector<PointLatLon>&, Latitude& minimum, Latitude& maximum) const;
+    void getRepresentationPoints(const repres::Representation&, std::vector<PointLatLon>&, Latitude& minimum,
+                                 Latitude& maximum) const;
 
     // Get latitudes list from representation
     void getRepresentationLatitudes(const repres::Representation&, std::vector<Latitude>&) const;
@@ -74,10 +68,10 @@ protected:
     virtual void print(std::ostream&) const;
 
 private:
-
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const = 0;
-
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
+    virtual void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
+                                         const repres::Representation& out) const = 0;
 };
 
 
@@ -87,4 +81,3 @@ private:
 
 
 #endif
-

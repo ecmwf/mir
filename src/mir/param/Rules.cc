@@ -49,7 +49,7 @@ SimpleParametrisation& Rules::lookup(long paramId) {
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
         SimpleParametrisation* s = new SimpleParametrisation();
-        rules_[paramId] = s;
+        rules_[paramId]          = s;
         return *s;
     }
 
@@ -78,7 +78,8 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
     if (!s.has(KLASS) && noted_.insert(ruleValue).second) {
         std::string m = msg() + "no class defined";
 
-        static bool abortIfUnknownParameterClass = eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
+        static bool abortIfUnknownParameterClass =
+            eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
         if (abortIfUnknownParameterClass) {
             eckit::Log::error() << m << std::endl;
             throw eckit::UserError(m);
@@ -111,11 +112,9 @@ void Rules::readConfigurationFiles() {
     warning_.clear();
 
     struct ConfigFile : private eckit::PathName {
-        eckit::ValueMap map() {
-            return eckit::YAMLParser::decodeFile(static_cast<PathName>(*this));
-        }
-        using PathName::PathName;
+        eckit::ValueMap map() { return eckit::YAMLParser::decodeFile(static_cast<PathName>(*this)); }
         using PathName::exists;
+        using PathName::PathName;
     };
 
     ConfigFile classes("~mir/etc/mir/classes.yaml");
@@ -124,10 +123,12 @@ void Rules::readConfigurationFiles() {
 
     if (!classes.exists() || !parameterClass.exists() || !parameters.exists()) {
 
-        const std::string msg = "Configuration files not found,"
-                                " post-processing defaults might not be appropriate";
+        const std::string msg =
+            "Configuration files not found,"
+            " post-processing defaults might not be appropriate";
 
-        static bool abortIfConfigurationFilesNotFound = eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
+        static bool abortIfConfigurationFilesNotFound =
+            eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
         if (abortIfConfigurationFilesNotFound) {
             eckit::Log::error() << msg << std::endl;
             throw eckit::UserError(msg);
@@ -161,7 +162,7 @@ void Rules::readConfigurationFiles() {
             pidConfig.set(KLASS, klasses);
 
             for (const auto& j : klassConfig) {
-                const std::string& keyName = j.first;
+                const std::string& keyName  = j.first;
                 const std::string& keyValue = j.second;
 
                 ASSERT(keyName != KLASS);
@@ -173,9 +174,11 @@ void Rules::readConfigurationFiles() {
                 }
 
                 if (pidConfig.has(keyName)) {
-                    throw eckit::UserError("Rules: parameter " + std::to_string(paramId)
-                                           + " has ambigous key '" + keyName + "'"
-                                             " from classes " + klasses);
+                    throw eckit::UserError("Rules: parameter " + std::to_string(paramId) + " has ambigous key '" +
+                                           keyName +
+                                           "'"
+                                           " from classes " +
+                                           klasses);
                 }
 
                 pidConfig.set(keyName, keyValue);
@@ -192,7 +195,7 @@ void Rules::readConfigurationFiles() {
             SimpleParametrisation& pidConfig = *(p.second);
 
             for (const auto& j : defaultConfig) {
-                const std::string& keyName = j.first;
+                const std::string& keyName  = j.first;
                 const std::string& keyValue = j.second;
 
                 if (!pidConfig.has(keyName)) {
@@ -205,13 +208,13 @@ void Rules::readConfigurationFiles() {
 
     for (const auto& i : parameters.map()) {
 
-        long paramId = translate_to_long(i.first);
+        long paramId                  = translate_to_long(i.first);
         SimpleParametrisation& config = Rules::lookup(paramId);
 
         const eckit::ValueList& options = i.second;
         for (const eckit::ValueMap j : options) {
             for (const auto& k : j) {
-                const std::string& name = k.first;
+                const std::string& name  = k.first;
                 const std::string& value = k.second;
                 config.set(name, value);
             }
@@ -222,4 +225,3 @@ void Rules::readConfigurationFiles() {
 
 }  // namespace param
 }  // namespace mir
-

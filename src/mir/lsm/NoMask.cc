@@ -51,4 +51,3 @@ std::string NoMask::cacheName() const {
 
 }  // namespace lsm
 }  // namespace mir
-

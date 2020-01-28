@@ -34,32 +34,24 @@ static void init() {
 
 class ThreadExecutorTask : public eckit::ThreadPoolTask {
     const ThreadExecutor& owner_;
-    context::Context ctx_; // Not a reference, so we have a copy
+    context::Context ctx_;  // Not a reference, so we have a copy
     const ActionNode& node_;
 
     virtual void execute() {
         eckit::Log::info() << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
         eckit::Log::info() << "<=== Done " << node_ << std::endl;
-
     }
 
 public:
-    ThreadExecutorTask(const ThreadExecutor& owner,
-                       context::Context& ctx,
-                       const ActionNode& node):
+    ThreadExecutorTask(const ThreadExecutor& owner, context::Context& ctx, const ActionNode& node) :
         owner_(owner),
         ctx_(ctx),
-        node_(node) {
-
-    }
+        node_(node) {}
 };
 
 
-ThreadExecutor::ThreadExecutor(const std::string& name):
-    Executor(name) {
-
-}
+ThreadExecutor::ThreadExecutor(const std::string& name) : Executor(name) {}
 
 
 ThreadExecutor::~ThreadExecutor() = default;
@@ -82,7 +74,7 @@ void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 }
 
 
-void ThreadExecutor::parametrisation(const param::MIRParametrisation &parametrisation) {
+void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametrisation) {
     pthread_once(&once, init);
     size_t threads;
     if (parametrisation.get("executor.threads", threads)) {
@@ -98,4 +90,3 @@ static ThreadExecutor executor("thread");
 
 }  // namespace action
 }  // namespace mir
-

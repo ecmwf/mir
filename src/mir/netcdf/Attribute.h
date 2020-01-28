@@ -24,50 +24,46 @@ class Value;
 
 class Attribute {
 public:
-
-    Attribute(Endowed &owner, const std::string &name, Value *value);
+    Attribute(Endowed& owner, const std::string& name, Value* value);
     virtual ~Attribute();
 
     // -- Methods
-    virtual bool sameAs(const Attribute &) const;
-    virtual void dump(std::ostream &out) const;
+    virtual bool sameAs(const Attribute&) const;
+    virtual void dump(std::ostream& out) const;
     virtual void create(int nc) const;
-    virtual void clone(Endowed &owner) const;
-    virtual void merge(const Attribute &);
+    virtual void clone(Endowed& owner) const;
+    virtual void merge(const Attribute&);
     virtual void invalidate();
 
     virtual std::string asString() const;
 
-    const std::string &name() const;
+    const std::string& name() const;
     std::string fullName() const;
 
-    const Value &value() const;
+    const Value& value() const;
 
 protected:
     // -- Members
 
-    Endowed &owner_;
+    Endowed& owner_;
     std::string name_;
-    Value *value_;
+    Value* value_;
 
 private:
-
-    Attribute(const Attribute &);
-    Attribute &operator=(const Attribute &);
+    Attribute(const Attribute&);
+    Attribute& operator=(const Attribute&);
 
     // -- Methods
 
-    virtual void print(std::ostream &out) const = 0;
+    virtual void print(std::ostream& out) const = 0;
 
     // Friends
-    friend std::ostream &operator<<(std::ostream &out, const Attribute &v)
-    {
+    friend std::ostream& operator<<(std::ostream& out, const Attribute& v) {
         v.print(out);
         return out;
     }
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

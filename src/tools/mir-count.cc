@@ -34,46 +34,65 @@ class MIRCount : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const {
-        return 0;
-    }
+    int minimumPositionalArguments() const { return 0; }
+
 public:
-    MIRCount(int argc, char **argv) : MIRTool(argc, argv) {
+    MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
         using eckit::option::VectorOption;
 
-        //options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors, default false"));
+        // options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors,
+        // default false"));
         options_.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
         options_.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
         options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
-        options_.push_back(new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
+        options_.push_back(
+            new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
     }
 };
 
 
-void MIRCount::usage(const std::string &tool) const {
-    eckit::Log::info() <<
-            "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
-            "\n"
-            "\nUsage:"
-            "\n\t" << tool << " [--area=N/W/S/E] file.grib [file.grib [...]]"
-            "\n\t" << tool << " [--area=N/W/S/E] --grid=WE/SN"
-            "\n\t" << tool << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
-            "\n\t" << tool << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
-            "\n"
-            "\n" "Examples:"
-            "\n\t" "% " << tool << " 1.grib"
-            "\n\t" "% " << tool << " --area=6/0/0/6 1.grib 2.grib"
-            "\n\t" "% " << tool << " --area=6/0/0/6 --gridname=O1280"
-            "\n\t" "% " << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj"
-            << std::endl;
+void MIRCount::usage(const std::string& tool) const {
+    eckit::Log::info() << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
+                          "\n"
+                          "\nUsage:"
+                          "\n\t"
+                       << tool
+                       << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+                          "\n\t"
+                       << tool
+                       << " [--area=N/W/S/E] --grid=WE/SN"
+                          "\n\t"
+                       << tool
+                       << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
+                          "\n\t"
+                       << tool
+                       << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
+                          "\n"
+                          "\n"
+                          "Examples:"
+                          "\n\t"
+                          "% "
+                       << tool
+                       << " 1.grib"
+                          "\n\t"
+                          "% "
+                       << tool
+                       << " --area=6/0/0/6 1.grib 2.grib"
+                          "\n\t"
+                          "% "
+                       << tool
+                       << " --area=6/0/0/6 --gridname=O1280"
+                          "\n\t"
+                          "% "
+                       << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
 }
 
 
-template<class T>
-std::ostream& operator<<(std::ostream& s, const std::set< std::pair< T, T > >& x) {
+template <class T>
+std::ostream& operator<<(std::ostream& s, const std::set<std::pair<T, T> >& x) {
     size_t i = 0;
-    for (auto e: x) {
+    for (auto e : x) {
         s << ' ' << e.first << " (" << e.second << ")";
         if (++i >= 2) {
             break;
@@ -89,21 +108,17 @@ using DistanceLat = std::pair<Latitude, Latitude>;
 using DistanceLon = std::pair<Longitude, Longitude>;
 
 
-size_t countRepresentationInBoundingBox(
-        const repres::Representation& rep,
-        const util::BoundingBox& bbox,
-        std::set<DistanceLat>& nn,
-        std::set<DistanceLon>& ww,
-        std::set<DistanceLat>& ss,
-        std::set<DistanceLon>& ee) {
-    Latitude n = 0;
-    Latitude s = 0;
+size_t countRepresentationInBoundingBox(const repres::Representation& rep, const util::BoundingBox& bbox,
+                                        std::set<DistanceLat>& nn, std::set<DistanceLon>& ww, std::set<DistanceLat>& ss,
+                                        std::set<DistanceLon>& ee) {
+    Latitude n  = 0;
+    Latitude s  = 0;
     Longitude e = 0;
     Longitude w = 0;
 
-    size_t count = 0;
+    size_t count  = 0;
     size_t values = 0;
-    bool first = true;
+    bool first    = true;
 
     std::unique_ptr<repres::Iterator> iter(rep.iterator());
 
@@ -129,30 +144,44 @@ size_t countRepresentationInBoundingBox(
                 n = s = lat;
                 e = w = lon;
                 first = false;
-            } else {
-                if (n < lat) { n = lat; }
-                if (s > lat) { s = lat; }
-                if (e < lon) { e = lon; }
-                if (w > lon) { w = lon; }
+            }
+            else {
+                if (n < lat) {
+                    n = lat;
+                }
+                if (s > lat) {
+                    s = lat;
+                }
+                if (e < lon) {
+                    e = lon;
+                }
+                if (w > lon) {
+                    w = lon;
+                }
             }
 
 
             count++;
-
         }
     }
 
-    eckit::Log::info()
-            << Pretty(count) << " out of " << Pretty(values)
-            << ", north=" << n << " (bbox.n - n " << bbox.north() - n << ")"
-            << ", west="  << w << " (w - bbox.w " << w - bbox.west()  << ")"
-            << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
-            << ", east="  << e << " (bbox.e - e " << bbox.east() - e  << ")"
-            << "\n" "N " << bbox.north() << ":" << nn
-            << "\n" "W " << bbox.west()  << ":" << ww
-            << "\n" "S " << bbox.south() << ":" << ss
-            << "\n" "E " << bbox.east() << ":" << ee
-            << std::endl;
+    eckit::Log::info() << Pretty(count) << " out of " << Pretty(values) << ", north=" << n << " (bbox.n - n "
+                       << bbox.north() - n << ")"
+                       << ", west=" << w << " (w - bbox.w " << w - bbox.west() << ")"
+                       << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
+                       << ", east=" << e << " (bbox.e - e " << bbox.east() - e << ")"
+                       << "\n"
+                          "N "
+                       << bbox.north() << ":" << nn
+                       << "\n"
+                          "W "
+                       << bbox.west() << ":" << ww
+                       << "\n"
+                          "S "
+                       << bbox.south() << ":" << ss
+                       << "\n"
+                          "E "
+                       << bbox.east() << ":" << ee << std::endl;
 
     return count;
 }
@@ -221,8 +250,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRCount tool(argc, argv);
     return tool.start();
 }
-

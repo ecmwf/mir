@@ -23,7 +23,6 @@ namespace transform {
 
 class InvtransVodTouv {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -89,7 +86,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

@@ -26,14 +26,12 @@
 #include "mir/util/MIRStatistics.h"
 
 
-
 namespace mir {
 namespace action {
 namespace interpolate {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param):
-    Action(param) {
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param) : Action(param) {
 
     ASSERT(param.get("interpolation", interpolation_));
     method_.reset(method::MethodFactory::build(interpolation_, param));
@@ -98,8 +96,12 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
         else if (!input.contains(output)) {
             std::ostringstream msg;
             msg << "Input does not contain output:"
-                << "\n\t" "Input: " << input
-                << "\n\t" "Output: " << outputBoundingBox();
+                << "\n\t"
+                   "Input: "
+                << input
+                << "\n\t"
+                   "Output: "
+                << outputBoundingBox();
             throw eckit::UserError(msg.str());
         }
     }
@@ -119,7 +121,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                     : outputRepresentation());
+                                          : outputRepresentation());
 
     method_->execute(ctx, *in, *out);
 
@@ -129,15 +131,13 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
-    return o && (interpolation_ == o->interpolation_)
-           && method_->sameAs(*o->method_)
-           && (inputIntersectsOutput_ == o->inputIntersectsOutput_);
+    return o && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_) &&
+           (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }
 
 
 void Gridded2GriddedInterpolation::print(std::ostream& out) const {
-    out << "interpolation=" << interpolation_
-        << ",method=" << *method_;
+    out << "interpolation=" << interpolation_ << ",method=" << *method_;
 }
 
 void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
@@ -146,8 +146,7 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
 
     repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                     : outputRepresentation());
-
+                                          : outputRepresentation());
 
 
     estimateNumberOfGridPoints(ctx, estimation, *out);
@@ -157,8 +156,6 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 }
 
 
-
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

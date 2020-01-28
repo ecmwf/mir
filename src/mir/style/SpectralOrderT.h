@@ -24,16 +24,14 @@ namespace mir {
 namespace style {
 
 
-template< int ORDER >
+template <int ORDER>
 class SpectralOrderT : public SpectralOrder {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
-    SpectralOrderT() {
-        ASSERT(ORDER);
-    }
+    SpectralOrderT() { ASSERT(ORDER); }
 
     // -- Destructor
     // None
@@ -51,7 +49,7 @@ public:
     long getTruncationFromGaussianNumber(const long& N) const {
         ASSERT(N);
 
-        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
+        long T = long(ceil(4. / double(ORDER + 1) * N) - 1);
         ASSERT(T);
 
         return T;
@@ -66,9 +64,7 @@ public:
         return N;
     }
 
-    void print(std::ostream& out) const {
-        out << "SpectralOrderT<ORDER=" << ORDER << ">[]";
-    }
+    void print(std::ostream& out) const { out << "SpectralOrderT<ORDER=" << ORDER << ">[]"; }
 
     // -- Class members
     // None
@@ -93,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -119,4 +114,3 @@ private:
 
 
 #endif
-

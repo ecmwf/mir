@@ -23,7 +23,7 @@ class WeightMatrix;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,7 +33,7 @@ namespace caching {
 struct WeightCacheTraits {
 
     using value_type = method::WeightMatrix;
-    using Locker = eckit::CacheManagerFileFlock;
+    using Locker     = eckit::CacheManagerFileFlock;
 
     static const char* name();
     static int version();
@@ -41,14 +41,14 @@ struct WeightCacheTraits {
 
     static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
     static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
-
 };
 
 
 class WeightCache : public eckit::CacheManager<WeightCacheTraits> {
 public:  // methods
     explicit WeightCache(const param::MIRParametrisation&);
-private: // members
+
+private:  // members
     friend WeightCacheTraits;
 };
 

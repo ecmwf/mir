@@ -21,8 +21,7 @@ namespace mir {
 namespace param {
 
 
-ConfigurationWrapper::ConfigurationWrapper(const eckit::Configuration &config) : configuration_(config) {
-}
+ConfigurationWrapper::ConfigurationWrapper(const eckit::Configuration& config) : configuration_(config) {}
 
 const MIRParametrisation& ConfigurationWrapper::userParametrisation() const {
     return *this;

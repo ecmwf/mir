@@ -13,7 +13,7 @@
 #include "mir/output/VectorOutput.h"
 
 #include <iostream>
-#include <typeinfo> // bad_cast exception
+#include <typeinfo>  // bad_cast exception
 
 #include "eckit/exception/Exceptions.h"
 
@@ -26,8 +26,9 @@ namespace mir {
 namespace output {
 
 
-VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2)
-    : component1_(component1), component2_(component2) {}
+VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2) :
+    component1_(component1),
+    component2_(component2) {}
 
 VectorOutput::~VectorOutput() = default;
 
@@ -37,7 +38,7 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
     input::MIRInput& input = ctx.input();
 
     try {
-        auto& v = dynamic_cast<input::VectorInput&>(input);
+        auto& v     = dynamic_cast<input::VectorInput&>(input);
         size_t size = 0;
 
         context::Context ctx1(v.component1_, ctx.statistics());
@@ -47,8 +48,8 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
         size += component2_.copy(param, ctx2);
 
         return size;
-
-    } catch (std::bad_cast&) {
+    }
+    catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::copy() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
@@ -57,14 +58,14 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
 
 
 size_t VectorOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    data::MIRField& field = ctx.field();
+    data::MIRField& field  = ctx.field();
     input::MIRInput& input = ctx.input();
 
     ASSERT(field.dimensions() == 2);
 
     try {
         auto& vectorInput = dynamic_cast<input::VectorInput&>(input);
-        size_t size = 0;
+        size_t size       = 0;
 
         context::Context uCtx(vectorInput.component1_, ctx.statistics());
         data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
@@ -83,8 +84,8 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
         size += component2_.save(param, vCtx);
 
         return size;
-
-    } catch (std::bad_cast&) {
+    }
+    catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::save() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
@@ -109,7 +110,8 @@ bool VectorOutput::printParametrisation(std::ostream& out, const param::MIRParam
 }
 
 
-void VectorOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) {
+void VectorOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
+                           input::MIRInput& input, output::MIROutput& output) {
     component1_.prepare(parametrisation, plan, input, output);
 }
 

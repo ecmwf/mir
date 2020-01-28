@@ -24,7 +24,6 @@ namespace param {
 
 class MIRParametrisation : public eckit::Parametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,16 +54,16 @@ public:
     virtual bool has(const std::string& name) const = 0;
 
     virtual bool get(const std::string& name, std::string& value) const = 0;
-    virtual bool get(const std::string& name, bool& value) const = 0;
-    virtual bool get(const std::string& name, int& value) const = 0;
-    virtual bool get(const std::string& name, long& value) const = 0;
-    virtual bool get(const std::string& name, float& value) const = 0;
-    virtual bool get(const std::string& name, double& value) const = 0;
+    virtual bool get(const std::string& name, bool& value) const        = 0;
+    virtual bool get(const std::string& name, int& value) const         = 0;
+    virtual bool get(const std::string& name, long& value) const        = 0;
+    virtual bool get(const std::string& name, float& value) const       = 0;
+    virtual bool get(const std::string& name, double& value) const      = 0;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<long>& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<float>& value) const = 0;
-    virtual bool get(const std::string& name, std::vector<double>& value) const = 0;
+    virtual bool get(const std::string& name, std::vector<int>& value) const         = 0;
+    virtual bool get(const std::string& name, std::vector<long>& value) const        = 0;
+    virtual bool get(const std::string& name, std::vector<float>& value) const       = 0;
+    virtual bool get(const std::string& name, std::vector<double>& value) const      = 0;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const = 0;
 
     virtual bool get(const std::string& name, size_t& value) const;
@@ -79,13 +78,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -97,7 +95,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -119,7 +116,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -128,4 +124,3 @@ private:
 
 
 #endif
-

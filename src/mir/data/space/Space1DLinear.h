@@ -26,7 +26,6 @@ class Space1DLinear : public SpaceLinear {
     // -- Overridden methods
 
     size_t dimensions() const;
-
 };
 
 
@@ -36,4 +35,3 @@ class Space1DLinear : public SpaceLinear {
 
 
 #endif
-

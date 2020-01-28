@@ -18,19 +18,30 @@ namespace style {
 
 
 namespace {
-static SpectralOrderBuilder< SpectralOrderT<1> > __order1("linear");
-static SpectralOrderBuilder< SpectralOrderT<2> > __order2("quadratic");
-static SpectralOrderBuilder< SpectralOrderT<3> > __order3("cubic");
-static SpectralOrderBuilder< SpectralOrderT<4> > __order4("quartic");
+static SpectralOrderBuilder<SpectralOrderT<1> > __order1("linear");
+static SpectralOrderBuilder<SpectralOrderT<2> > __order2("quadratic");
+static SpectralOrderBuilder<SpectralOrderT<3> > __order3("cubic");
+static SpectralOrderBuilder<SpectralOrderT<4> > __order4("quartic");
+}  // namespace
+
+
+template <>
+void SpectralOrderT<1>::print(std::ostream& out) const {
+    out << "Linear[]";
 }
-
-
-template<> void SpectralOrderT<1>::print(std::ostream& out) const { out << "Linear[]"; }
-template<> void SpectralOrderT<2>::print(std::ostream& out) const { out << "Quadratic[]"; }
-template<> void SpectralOrderT<3>::print(std::ostream& out) const { out << "Cubic[]"; }
-template<> void SpectralOrderT<4>::print(std::ostream& out) const { out << "Quartic[]"; }
+template <>
+void SpectralOrderT<2>::print(std::ostream& out) const {
+    out << "Quadratic[]";
+}
+template <>
+void SpectralOrderT<3>::print(std::ostream& out) const {
+    out << "Cubic[]";
+}
+template <>
+void SpectralOrderT<4>::print(std::ostream& out) const {
+    out << "Quartic[]";
+}
 
 
 }  // namespace style
 }  // namespace mir
-

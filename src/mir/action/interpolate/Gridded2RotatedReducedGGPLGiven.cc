@@ -24,7 +24,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation& parametrisation):
+Gridded2RotatedReducedGGPLGiven::Gridded2RotatedReducedGGPLGiven(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("pl", pl_));
     ASSERT(!pl_.empty());
@@ -42,8 +42,11 @@ bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
 
 void Gridded2RotatedReducedGGPLGiven::print(std::ostream& out) const {
     out << "Gridded2RotatedReducedGGPLGiven["
-        "pl=" << pl_.size() << ","
-        "rotation=" << rotation() << ",";
+           "pl="
+        << pl_.size()
+        << ","
+           "rotation="
+        << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
@@ -61,11 +64,10 @@ const char* Gridded2RotatedReducedGGPLGiven::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedReducedGGPLGiven > grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");
+static ActionBuilder<Gridded2RotatedReducedGGPLGiven> grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

@@ -10,8 +10,8 @@
  */
 
 
-#include <iostream>
 #include "mir/util/FormulaString.h"
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
 
 
@@ -19,11 +19,9 @@ namespace mir {
 namespace util {
 
 
-FormulaString::FormulaString(const param::MIRParametrisation &parametrisation, const std::string& value):
+FormulaString::FormulaString(const param::MIRParametrisation& parametrisation, const std::string& value) :
     Formula(parametrisation),
-    value_(value) {
-
-}
+    value_(value) {}
 
 
 FormulaString::~FormulaString() = default;
@@ -50,5 +48,5 @@ const char* FormulaString::name() const {
 }
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

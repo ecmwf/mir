@@ -21,21 +21,18 @@ namespace netcdf {
 
 class MergeDataMatrix : public Matrix {
 public:
-
-    MergeDataMatrix(Matrix *out, Matrix *in, size_t size);
+    MergeDataMatrix(Matrix* out, Matrix* in, size_t size);
     virtual ~MergeDataMatrix();
 
 private:
+    Matrix* out_;
+    Matrix* in_;
 
-    Matrix *out_;
-    Matrix *in_;
+    virtual void print(std::ostream& out) const;
 
-    virtual void print(std::ostream &out) const;
-
-    virtual void dumpTree(std::ostream &, size_t) const;
-
+    virtual void dumpTree(std::ostream&, size_t) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

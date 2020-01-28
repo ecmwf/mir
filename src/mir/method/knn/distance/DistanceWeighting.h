@@ -31,30 +31,25 @@ namespace distance {
 
 class DistanceWeighting {
 public:
-
     DistanceWeighting();
 
     virtual ~DistanceWeighting();
 
-    virtual void operator()(
-            size_t ip,
-            const Point3& point,
-            const std::vector<search::PointSearch::PointValueType>& neighbours,
-            std::vector<WeightMatrix::Triplet>& triplets) const = 0;
+    virtual void operator()(size_t ip, const Point3& point,
+                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+                            std::vector<WeightMatrix::Triplet>& triplets) const = 0;
 
     virtual bool sameAs(const DistanceWeighting& other) const = 0;
 
     virtual void hash(eckit::MD5&) const = 0;
 
 private:
-
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const DistanceWeighting& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -62,20 +57,21 @@ class DistanceWeightingFactory {
 private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&) = 0;
+
 protected:
     DistanceWeightingFactory(const std::string& name);
     virtual ~DistanceWeightingFactory();
+
 public:
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class DistanceWeightingBuilder : public DistanceWeightingFactory {
-    virtual DistanceWeighting* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual DistanceWeighting* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     DistanceWeightingBuilder(const std::string& name) : DistanceWeightingFactory(name) {}
 };
@@ -88,4 +84,3 @@ public:
 
 
 #endif
-

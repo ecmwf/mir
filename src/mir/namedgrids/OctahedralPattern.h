@@ -21,18 +21,17 @@ namespace namedgrids {
 
 
 class OctahedralPattern : public NamedGridPattern {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    OctahedralPattern(const std::string &name);
+    OctahedralPattern(const std::string& name);
 
     // -- Destructor
 
-    virtual ~OctahedralPattern(); // Change to virtual if base class
+    virtual ~OctahedralPattern();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class OctahedralPattern : public NamedGridPattern {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -69,12 +67,11 @@ class OctahedralPattern : public NamedGridPattern {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    OctahedralPattern(const OctahedralPattern &);
-    OctahedralPattern &operator=(const OctahedralPattern &);
+    OctahedralPattern(const OctahedralPattern&);
+    OctahedralPattern& operator=(const OctahedralPattern&);
 
     // -- Members
     // None
@@ -92,13 +89,9 @@ class OctahedralPattern : public NamedGridPattern {
     virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
 #endif
-

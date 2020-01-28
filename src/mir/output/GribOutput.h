@@ -26,7 +26,6 @@ namespace output {
 
 class GribOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~GribOutput(); // Change to virtual if base class
+    ~GribOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +56,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -75,7 +73,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     unsigned long long total_;
@@ -87,7 +84,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
@@ -102,9 +99,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribOutput& p)
+    // friend ostream& operator<<(ostream& s,const GribOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +109,3 @@ private:
 
 
 #endif
-

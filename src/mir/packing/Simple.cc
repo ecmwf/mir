@@ -11,8 +11,8 @@
 
 
 #include "mir/packing/Simple.h"
-#include "mir/util/Grib.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Grib.h"
 
 #include <iostream>
 
@@ -20,9 +20,7 @@ namespace mir {
 namespace packing {
 
 
-Simple::Simple(const std::string &name):
-    Packer(name) {
-}
+Simple::Simple(const std::string& name) : Packer(name) {}
 
 
 Simple::~Simple() = default;
@@ -45,4 +43,3 @@ static Simple packing("simple");
 
 }  // namespace packing
 }  // namespace mir
-

@@ -27,7 +27,7 @@ class MIRParametrisation;
 namespace action {
 class ActionNode;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

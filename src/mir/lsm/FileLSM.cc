@@ -28,9 +28,7 @@ static FileLSM __lsm_selection("file");
 }
 
 
-FileLSM::FileLSM(const std::string& name) :
-    LSMSelection(name) {
-}
+FileLSM::FileLSM(const std::string& name) : LSMSelection(name) {}
 
 
 FileLSM::~FileLSM() = default;
@@ -55,18 +53,14 @@ std::string FileLSM::path(const param::MIRParametrisation& param, const std::str
 }
 
 
-Mask* FileLSM::create(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+Mask* FileLSM::create(const param::MIRParametrisation& param, const repres::Representation& representation,
+                      const std::string& which) const {
     return new GribFileMaskFromUser(path(param, which), param, representation, which);
 }
 
 
-std::string FileLSM::cacheKey(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+std::string FileLSM::cacheKey(const param::MIRParametrisation& param, const repres::Representation& representation,
+                              const std::string& which) const {
     eckit::MD5 md5;
     GribFileMaskFromUser::hashCacheKey(md5, path(param, which), param, representation, which);
 
@@ -76,4 +70,3 @@ std::string FileLSM::cacheKey(
 
 }  // namespace lsm
 }  // namespace mir
-

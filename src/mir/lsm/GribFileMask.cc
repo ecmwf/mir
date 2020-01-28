@@ -32,10 +32,8 @@ namespace mir {
 namespace lsm {
 
 
-GribFileMask::GribFileMask(const eckit::PathName& path,
-                           const param::MIRParametrisation& parametrisation,
-                           const repres::Representation& representation,
-                           const std::string& which) :
+GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
+                           const repres::Representation& representation, const std::string& which) :
     path_(path) {
 
     // WARNING: don't store the grid, it won't be there later if this
@@ -44,7 +42,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
 
     eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
 
-    mir::input::GribFileInput file( path_ );
+    mir::input::GribFileInput file(path_);
     const mir::input::MIRInput& input = file;
 
     ASSERT(file.next());
@@ -60,7 +58,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
         }
     }
 
-    std::unique_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
+    std::unique_ptr<method::Method> method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
     if (!(field.representation()->isGlobal())) {
@@ -69,7 +67,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
         throw eckit::UserError(oss.str());
     }
 
-    util::MIRStatistics dummy; // TODO: use the global one
+    util::MIRStatistics dummy;  // TODO: use the global one
     context::Context ctx(field, dummy);
     method->execute(ctx, *field.representation(), representation);
 
@@ -116,4 +114,3 @@ const std::vector<bool>& GribFileMask::mask() const {
 
 }  // namespace lsm
 }  // namespace mir
-

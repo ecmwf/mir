@@ -24,8 +24,7 @@ namespace space {
 static SpaceChoice<SpaceLogarithmic> __space("1d.logarithmic");
 
 
-SpaceLogarithmic::SpaceLogarithmic() : Space() {
-}
+SpaceLogarithmic::SpaceLogarithmic() : Space() {}
 
 
 void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
@@ -34,7 +33,8 @@ void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& m
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn[i] == missingValue) {
             matrixOut[i] = missingValue;
-        } else {
+        }
+        else {
             matrixOut[i] = std::exp(matrixIn[i]);
         }
     }
@@ -47,7 +47,8 @@ void SpaceLogarithmic::unlinearise(const Space::Matrix& matrixIn, Space::Matrix&
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn[i] == missingValue) {
             matrixOut[i] = missingValue;
-        } else {
+        }
+        else {
             ASSERT(matrixIn[i] > 0.);
             matrixOut[i] = std::log(matrixIn[i]);
         }
@@ -60,7 +61,6 @@ size_t SpaceLogarithmic::dimensions() const {
 }
 
 
-}  // namespace decompose
-}  // namespace method
+}  // namespace space
+}  // namespace data
 }  // namespace mir
-

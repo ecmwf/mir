@@ -19,9 +19,7 @@ namespace mir {
 namespace action {
 
 
-Noop::Noop(const param::MIRParametrisation& parametrisation):
-    Action(parametrisation) {
-}
+Noop::Noop(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
 
 
 Noop::~Noop() = default;
@@ -38,8 +36,7 @@ void Noop::print(std::ostream& out) const {
 }
 
 
-void Noop::execute(context::Context&) const {
-}
+void Noop::execute(context::Context&) const {}
 
 
 const char* Noop::name() const {
@@ -48,10 +45,9 @@ const char* Noop::name() const {
 
 
 namespace {
-static ActionBuilder< Noop > action("noop");
+static ActionBuilder<Noop> action("noop");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

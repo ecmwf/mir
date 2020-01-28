@@ -23,7 +23,6 @@ namespace transform {
 
 class ShTruncate : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShTruncate(); // Change to virtual if base class
+    virtual ~ShTruncate();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,13 +53,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,7 +70,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     size_t truncation_;
@@ -98,9 +95,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
+    // friend ostream& operator<<(ostream& s,const Sh2ShTransform& p)
     //	{ p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

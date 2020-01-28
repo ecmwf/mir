@@ -25,18 +25,18 @@ namespace reduced {
 
 class RotatedFromPL : public FromPL {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
     RotatedFromPL(const param::MIRParametrisation&);
-    RotatedFromPL(size_t, const std::vector<long>&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    RotatedFromPL(size_t, const std::vector<long>&, const util::Rotation&,
+                  const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~RotatedFromPL(); // Change to virtual if base class
+    virtual ~RotatedFromPL();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,14 +57,13 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -76,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -101,9 +99,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedFromPL& p)
+    // friend ostream& operator<<(ostream& s,const RotatedFromPL& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -114,4 +111,3 @@ private:
 
 
 #endif
-

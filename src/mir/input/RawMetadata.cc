@@ -25,4 +25,3 @@ RawMetadata::~RawMetadata() = default;
 
 }  // namespace input
 }  // namespace mir
-

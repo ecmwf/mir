@@ -23,7 +23,6 @@ namespace input {
 
 class EmptyInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EmptyInput(); // Change to virtual if base class
+    virtual ~EmptyInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -70,7 +68,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     size_t calls_;
@@ -81,18 +78,18 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
 
     virtual bool next();
 
     // virtual bool get(const std::string&, double&) const;
 
-    virtual void latitudes(std::vector<double> &) const;
-    virtual void longitudes(std::vector<double> &) const;
+    virtual void latitudes(std::vector<double>&) const;
+    virtual void longitudes(std::vector<double>&) const;
 
     // -- Class members
     // None
@@ -102,9 +99,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const EmptyInput& p)
+    // friend ostream& operator<<(ostream& s,const EmptyInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +109,3 @@ private:
 
 
 #endif
-

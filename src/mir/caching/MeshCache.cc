@@ -27,15 +27,13 @@ namespace mir {
 namespace caching {
 
 
-MeshCache::MeshCache():
-    eckit::CacheManager<MeshCacheTraits>(
-        "Mesh",  // dummy -- would be used in load() / save() static functions
-        LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_MESH_CACHE_SIZE", 0)) {
-}
+MeshCache::MeshCache() :
+    eckit::CacheManager<MeshCacheTraits>("Mesh",  // dummy -- would be used in load() / save() static functions
+                                         LibMir::cacheDir(),
+                                         eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+                                         eckit::Resource<size_t>("$MIR_MESH_CACHE_SIZE", 0)) {}
 
-const char *MeshCacheTraits::name() {
+const char* MeshCacheTraits::name() {
     return "mir/meshes";
 }
 
@@ -43,7 +41,7 @@ int MeshCacheTraits::version() {
     return 2;
 }
 
-const char *MeshCacheTraits::extension() {
+const char* MeshCacheTraits::extension() {
     return ".mesh";
 }
 
@@ -56,6 +54,5 @@ void MeshCacheTraits::load(const CacheManagerBase&, value_type&, const eckit::Pa
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace caching
-} // namespace mir
-
+}  // namespace caching
+}  // namespace mir

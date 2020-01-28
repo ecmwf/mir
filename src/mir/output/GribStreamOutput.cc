@@ -19,8 +19,7 @@ namespace mir {
 namespace output {
 
 
-GribStreamOutput::GribStreamOutput() {
-}
+GribStreamOutput::GribStreamOutput() {}
 
 
 GribStreamOutput::~GribStreamOutput() = default;
@@ -33,4 +32,3 @@ void GribStreamOutput::out(const void* message, size_t length, bool) {
 
 }  // namespace output
 }  // namespace mir
-

@@ -13,21 +13,17 @@
 #include "mir/netcdf/InputVariable.h"
 
 #include "mir/netcdf/Attribute.h"
+#include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/Dataset.h"
 
 namespace mir {
 namespace netcdf {
 
-InputVariable::InputVariable(Dataset &owner,
-                             const std::string &name,
-                             int id,
-                             const std::vector<Dimension *> &dimensions):
+InputVariable::InputVariable(Dataset& owner, const std::string& name, int id,
+                             const std::vector<Dimension*>& dimensions) :
     Variable(owner, name, dimensions),
-    id_(id)
-{
-}
+    id_(id) {}
 
 InputVariable::~InputVariable() = default;
 
@@ -36,18 +32,17 @@ int InputVariable::varid() const {
     return id_;
 }
 
-Variable *InputVariable::clone(Dataset &owner) const {
+Variable* InputVariable::clone(Dataset& owner) const {
 
-    std::vector<Dimension *> dimensions;
+    std::vector<Dimension*> dimensions;
     for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
         dimensions.push_back(owner.findDimension((*j)->name()));
     }
 
-    Variable *v = makeOutputVariable(owner, name_, dimensions);
+    Variable* v = makeOutputVariable(owner, name_, dimensions);
     v->setMatrix(matrix_);
 
-    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
-    {
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j) {
         (*j).second->clone(*v);
     }
 
@@ -56,7 +51,7 @@ Variable *InputVariable::clone(Dataset &owner) const {
     return v;
 }
 
-void InputVariable::print(std::ostream &out) const {
+void InputVariable::print(std::ostream& out) const {
     out << "InputVariable[name=" << name_ << "]";
 }
 

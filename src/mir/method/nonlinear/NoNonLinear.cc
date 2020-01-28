@@ -23,16 +23,11 @@ namespace method {
 namespace nonlinear {
 
 
-NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool NoNonLinear::treatment(NonLinear::Matrix&,
-                            NonLinear::WeightMatrix&,
-                            NonLinear::Matrix&,
-                            const mir::data::MIRValuesVector&,
-                            const double&) const {
+bool NoNonLinear::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix&, NonLinear::Matrix&,
+                            const mir::data::MIRValuesVector&, const double&) const {
     // no non-linear treatment
     return false;
 }
@@ -62,4 +57,3 @@ static NonLinearBuilder<NoNonLinear> __nonlinear("no");
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

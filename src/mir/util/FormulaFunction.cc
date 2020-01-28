@@ -12,8 +12,8 @@
 
 #include <iostream>
 
-#include "mir/util/FormulaFunction.h"
 #include "mir/action/context/Context.h"
+#include "mir/util/FormulaFunction.h"
 #include "mir/util/Function.h"
 
 
@@ -21,20 +21,23 @@ namespace mir {
 namespace util {
 
 
-FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1):
+FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
+                                 Formula* arg1) :
     Formula(parametrisation),
     function_(Function::lookup(name)) {
     args_.push_back(arg1);
 }
 
-FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, Formula* arg1, Formula *arg2):
+FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
+                                 Formula* arg1, Formula* arg2) :
     Formula(parametrisation),
     function_(Function::lookup(name)) {
     args_.push_back(arg1);
     args_.push_back(arg2);
 }
 
-FormulaFunction::FormulaFunction(const param::MIRParametrisation &parametrisation, const std::string& name, std::vector<Formula*>& args):
+FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
+                                 std::vector<Formula*>& args) :
     Formula(parametrisation),
     function_(Function::lookup(name)) {
     std::swap(args_, args);
@@ -65,7 +68,6 @@ void FormulaFunction::execute(mir::context::Context& ctx) const {
     }
 
     function_.execute(ctx);
-
 }
 
 bool FormulaFunction::sameAs(const mir::action::Action& other) const {
@@ -87,5 +89,5 @@ const char* FormulaFunction::name() const {
 }
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

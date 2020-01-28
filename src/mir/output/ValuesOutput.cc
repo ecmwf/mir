@@ -21,10 +21,7 @@ namespace mir {
 namespace output {
 
 
-ValuesOutput::ValuesOutput():
-    missingValue_(9999),
-    hasMissing_(false) {
-}
+ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
 
 
 ValuesOutput::~ValuesOutput() = default;
@@ -35,8 +32,7 @@ size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
 }
 
 
-bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&,
-                                       const param::MIRParametrisation&) const {
+bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
     return true;
 }
 
@@ -52,7 +48,7 @@ bool ValuesOutput::sameAs(const MIROutput& other) const {
 }
 
 
-void ValuesOutput::print(std::ostream &out) const {
+void ValuesOutput::print(std::ostream& out) const {
     out << "ValuesOutput[]";
 }
 
@@ -63,7 +59,7 @@ size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ct
     ASSERT(field.dimensions() == 1);
 
     missingValue_ = field.missingValue();
-    hasMissing_ = field.hasMissing();
+    hasMissing_   = field.hasMissing();
 
     values_.resize(field.dimensions());
 
@@ -98,4 +94,3 @@ const MIRValuesVector& ValuesOutput::values(size_t which) const {
 
 }  // namespace output
 }  // namespace mir
-

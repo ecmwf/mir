@@ -18,21 +18,19 @@
 namespace mir {
 namespace input {
 
-GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, size_t skip, size_t step)
-    : GribStreamInput(skip, step),
-      handle_(handle) {
+GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, size_t skip, size_t step) :
+    GribStreamInput(skip, step),
+    handle_(handle) {
     handle_.openForRead();
 }
 
-GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, off_t offset)
-    : GribStreamInput(offset),
-      handle_(handle) {
+GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, off_t offset) :
+    GribStreamInput(offset),
+    handle_(handle) {
     handle_.openForRead();
 }
 
-GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle)
-    : GribStreamInput(),
-      handle_(handle) {
+GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle) : GribStreamInput(), handle_(handle) {
     handle_.openForRead();
 }
 

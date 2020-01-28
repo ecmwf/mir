@@ -27,7 +27,6 @@ namespace util {
 
 class Domain : public BoundingBox {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,9 +51,7 @@ public:
     bool includesPoleSouth() const;
 
     /// Check if domain represents the complete globe surface
-    bool isGlobal() const {
-        return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast();
-    }
+    bool isGlobal() const { return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast(); }
 
     // -- Overridden methods
     // None
@@ -66,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -88,7 +84,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -107,15 +102,15 @@ private:
     // -- Friends
 
     /// Output using stream operator
-    friend std::ostream &operator<<(std::ostream &s, const Domain &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Domain& p) {
         p.print(s);
         return s;
     }
 };
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir
 
 
 #endif

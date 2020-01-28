@@ -25,9 +25,7 @@
 
 namespace mir {
 namespace style {
-MIRStyle::MIRStyle(const param::MIRParametrisation &parametrisation):
-    parametrisation_(parametrisation) {
-}
+MIRStyle::MIRStyle(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 
 MIRStyle::~MIRStyle() = default;
@@ -44,12 +42,11 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MIRStyleFactory*>();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
-MIRStyleFactory::MIRStyleFactory(const std::string& name):
-    name_(name) {
-    pthread_once(&once,init);
+MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
@@ -69,7 +66,7 @@ MIRStyleFactory::~MIRStyleFactory() {
 
 
 MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
-    pthread_once(&once,init);
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name;
@@ -103,4 +100,3 @@ void MIRStyleFactory::list(std::ostream& out) {
 
 }  // namespace style
 }  // namespace mir
-

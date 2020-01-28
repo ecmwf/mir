@@ -35,4 +35,3 @@ const std::string& NamedGrid::gridname() const {
 }  // namespace intgrid
 }  // namespace style
 }  // namespace mir
-

@@ -22,10 +22,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToRotatedReducedGG : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedReducedGG(); // Change to virtual if base class
+    ~ShToRotatedReducedGG();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,7 +55,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     size_t N_;
@@ -81,7 +79,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -91,4 +88,3 @@ private:
 
 
 #endif
-

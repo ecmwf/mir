@@ -21,33 +21,30 @@ namespace mir {
 namespace repres {
 
 
-StretchedGG::StretchedGG(const param::MIRParametrisation &parametrisation) {
-}
+StretchedGG::StretchedGG(const param::MIRParametrisation& parametrisation) {}
 
 
-StretchedGG::StretchedGG() {
-}
+StretchedGG::StretchedGG() {}
 
 
 StretchedGG::~StretchedGG() = default;
 
 
-void StretchedGG::print(std::ostream &out) const {
+void StretchedGG::print(std::ostream& out) const {
     out << "StretchedGG["
         << "]";
 }
 
 
-void StretchedGG::fill(grib_info &info) const  {
+void StretchedGG::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<StretchedGG> stretchedGG("stretched_gg"); // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedGG> stretchedGG("stretched_gg");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

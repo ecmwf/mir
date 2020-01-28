@@ -21,7 +21,7 @@ namespace mir {
 namespace data {
 class MIRField;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

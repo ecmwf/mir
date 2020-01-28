@@ -24,18 +24,11 @@ namespace netcdf {
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char *dont_drop[] = {
-    "_FillValue",
-    "missing_value",
-    0
-};
+static const char* dont_drop[] = {"_FillValue", "missing_value", 0};
 
-OutputAttribute::OutputAttribute(Endowed &owner, const std::string &name, Value *value):
+OutputAttribute::OutputAttribute(Endowed& owner, const std::string& name, Value* value) :
     Attribute(owner, name, value),
-    valid_(true)
-{
-
-}
+    valid_(true) {}
 
 OutputAttribute::~OutputAttribute() = default;
 
@@ -45,13 +38,12 @@ void OutputAttribute::create(int nc) const {
     }
 }
 
-void OutputAttribute::clone(Endowed &owner) const {
+void OutputAttribute::clone(Endowed& owner) const {
     owner.add(new OutputAttribute(owner, name_, value_->clone()));
 }
 
 
-void OutputAttribute::merge(const Attribute &other)
-{
+void OutputAttribute::merge(const Attribute& other) {
     if (!value_->sameAs(other.value())) {
         if (valid_) {
             std::cout << "WARNING: dropping attribute " << fullName() << std::endl;
@@ -64,7 +56,6 @@ void OutputAttribute::merge(const Attribute &other)
                 }
                 i++;
             }
-
         }
     }
 }
@@ -74,7 +65,7 @@ void OutputAttribute::invalidate() {
 }
 
 
-void OutputAttribute::print(std::ostream &out) const {
+void OutputAttribute::print(std::ostream& out) const {
     out << "OutputAttribute[name=" << name_ << "]";
 }
 

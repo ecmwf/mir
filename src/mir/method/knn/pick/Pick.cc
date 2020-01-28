@@ -30,18 +30,18 @@ namespace pick {
 namespace {
 
 
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, PickFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex              = nullptr;
+static std::map<std::string, PickFactory*>* m = nullptr;
+static pthread_once_t once                    = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, PickFactory* >();
+    m           = new std::map<std::string, PickFactory*>();
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 Pick::Pick() = default;
@@ -50,10 +50,9 @@ Pick::Pick() = default;
 Pick::~Pick() = default;
 
 
-PickFactory::PickFactory(const std::string& name) :
-    name_(name) {
+PickFactory::PickFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -101,4 +100,3 @@ void PickFactory::list(std::ostream& out) {
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

@@ -30,8 +30,7 @@ struct CroppingCacheEntry {
 
     void print(std::ostream&) const;
 
-    friend std::ostream& operator<<(std::ostream& out,
-                                    const CroppingCacheEntry& e) {
+    friend std::ostream& operator<<(std::ostream& out, const CroppingCacheEntry& e) {
         e.print(out);
         return out;
     }
@@ -41,14 +40,13 @@ struct CroppingCacheEntry {
 
     void save(const eckit::PathName&) const;
     void load(const eckit::PathName&);
-
 };
 
 
 struct CroppingCacheTraits {
 
     using value_type = CroppingCacheEntry;
-    using Locker = eckit::CacheManagerFileFlock;
+    using Locker     = eckit::CacheManagerFileFlock;
 
     static const char* name();
     static int version();
@@ -56,7 +54,6 @@ struct CroppingCacheTraits {
 
     static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
     static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
-
 };
 
 

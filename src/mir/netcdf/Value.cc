@@ -21,14 +21,11 @@
 namespace mir {
 namespace netcdf {
 
-Value::Value(Type &type):
-    type_(type) {
-
-}
+Value::Value(Type& type) : type_(type) {}
 
 Value::~Value() = default;
 
-Value *Value::newFromString(const std::string &s) {
+Value* Value::newFromString(const std::string& s) {
     return new ValueT<std::string>(Type::lookup(NC_CHAR), s);
 }
 

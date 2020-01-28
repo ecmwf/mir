@@ -17,29 +17,18 @@ namespace mir {
 namespace netcdf {
 
 
-static void addLoop2(
-    int         d,
-    size_t      which,
-    size_t      where,
-    size_t      count,
-    size_t      depth,
-    const HyperCube::Dimensions  &dims,
-    HyperCube::Remapping   &remap,
-    const HyperCube::Dimensions  &mul,
-    size_t sum)
-{
-    int k = 0;
-    size_t muld = mul[d];
+static void addLoop2(int d, size_t which, size_t where, size_t count, size_t depth, const HyperCube::Dimensions& dims,
+                     HyperCube::Remapping& remap, const HyperCube::Dimensions& mul, size_t sum) {
+    int k        = 0;
+    size_t muld  = mul[d];
     size_t dimsd = dims[d];
-    for ( size_t i = 0; i < dimsd; i++, k++)
-    {
+    for (size_t i = 0; i < dimsd; i++, k++) {
         if (which == d && i == where) {
             k += count;
         }
 
         size_t s = sum + k * muld;
-        if (d == depth)
-        {
+        if (d == depth) {
             remap.push_back(s);
         }
         else {
@@ -48,16 +37,12 @@ static void addLoop2(
     }
 }
 
-HyperCube HyperCube::addToDimension(size_t which,
-                                    size_t where,
-                                    size_t howMuch,
-                                    Remapping &remap) const
-{
+HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, Remapping& remap) const {
 
     remap.clear();
     remap.reserve(count());
 
-    Dimensions  newdims = dimensions_;
+    Dimensions newdims = dimensions_;
     // Coordinates coord(dimensions_.size());
 
 
@@ -65,21 +50,20 @@ HyperCube HyperCube::addToDimension(size_t which,
 
     HyperCube target(newdims);
 
-    Dimensions  mul(dimensions_.size());
+    Dimensions mul(dimensions_.size());
     size_t n = 1;
-    for (int i = mul.size() - 1; i >= 0; i--)
-    {
+    for (int i = mul.size() - 1; i >= 0; i--) {
         mul[i] = n;
         n *= newdims[i];
     }
-    addLoop2(0, which, where, howMuch,  dimensions_.size() - 1, dimensions_, remap, mul, 0);
+    addLoop2(0, which, where, howMuch, dimensions_.size() - 1, dimensions_, remap, mul, 0);
 
     return target;
 }
 
 
-std::ostream &operator<<(std::ostream &out, const HyperCube &cube) {
-    const HyperCube::Dimensions &dimensions = cube.dimensions();
+std::ostream& operator<<(std::ostream& out, const HyperCube& cube) {
+    const HyperCube::Dimensions& dimensions = cube.dimensions();
     out << "HyperCube[size=" << cube.count() << ",coordinates=";
     char sep = '(';
     for (HyperCube::Dimensions::const_iterator j = dimensions.begin(); j != dimensions.end(); ++j) {
@@ -91,18 +75,16 @@ std::ostream &operator<<(std::ostream &out, const HyperCube &cube) {
     return out;
 }
 
-void HyperCube::coordinates(size_t index, Coordinates& result) const
-{
+void HyperCube::coordinates(size_t index, Coordinates& result) const {
     ASSERT(result.size() == dimensions_.size());
 
-    for (int i = dimensions_.size() - 1; i >= 0; i--)
-    {
+    for (int i = dimensions_.size() - 1; i >= 0; i--) {
         result[i] = (index % dimensions_[i]);
-        index    /= dimensions_[i];
+        index /= dimensions_[i];
     }
 
     ASSERT(index == 0);
 }
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

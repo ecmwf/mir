@@ -24,11 +24,9 @@ namespace repres {
 
 
 Iterator::Iterator(const util::Rotation& rotation) :
-    rotation_(atlas::PointLonLat(
-                  rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
-                  rotation.south_pole_latitude().value() )),
-    valid_(true) {
-}
+    rotation_(atlas::PointLonLat(rotation.south_pole_longitude().normalise(Longitude::GREENWICH).value(),
+                                 rotation.south_pole_latitude().value())),
+    valid_(true) {}
 
 
 Iterator::~Iterator() = default;
@@ -79,13 +77,10 @@ const Point3 Iterator::point3D() const {
 
 void Iterator::print(std::ostream& out) const {
     out << "Iterator["
-            "valid?" << valid_
-        << ",PointLatLon=";
+           "valid?"
+        << valid_ << ",PointLatLon=";
     PointLatLon::print(out);
-    out << ",point=" << point_
-        << ",rotated?" << rotation_.rotated()
-        << ",rotation=" << rotation_
-        << "]";
+    out << ",point=" << point_ << ",rotated?" << rotation_.rotated() << ",rotation=" << rotation_ << "]";
 }
 
 

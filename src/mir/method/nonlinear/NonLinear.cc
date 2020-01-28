@@ -29,22 +29,21 @@ namespace nonlinear {
 namespace {
 
 
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, NonLinearFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                   = nullptr;
+static std::map<std::string, NonLinearFactory*>* m = nullptr;
+static pthread_once_t once                         = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, NonLinearFactory* >();
+    m           = new std::map<std::string, NonLinearFactory*>();
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-NonLinear::NonLinear(const param::MIRParametrisation&) {
-}
+NonLinear::NonLinear(const param::MIRParametrisation&) {}
 
 
 bool NonLinear::canIntroduceMissingValues() const {
@@ -55,10 +54,9 @@ bool NonLinear::canIntroduceMissingValues() const {
 NonLinear::~NonLinear() = default;
 
 
-NonLinearFactory::NonLinearFactory(const std::string& name) :
-    name_(name) {
+NonLinearFactory::NonLinearFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -105,4 +103,3 @@ void NonLinearFactory::list(std::ostream& out) {
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

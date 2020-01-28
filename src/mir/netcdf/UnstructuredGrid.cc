@@ -24,13 +24,11 @@
 namespace mir {
 namespace netcdf {
 
-UnstructuredGrid::UnstructuredGrid(const Variable &variable,
-                                   const std::vector<double>& latitudes,
-                                   const std::vector<double>& longitudes):
+UnstructuredGrid::UnstructuredGrid(const Variable& variable, const std::vector<double>& latitudes,
+                                   const std::vector<double>& longitudes) :
     GridSpec(variable),
     latitudes_(latitudes),
-    longitudes_(longitudes)
-{
+    longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
     ASSERT(latitudes_.size() >= 2);
 
@@ -49,8 +47,7 @@ UnstructuredGrid::UnstructuredGrid(const Variable &variable,
 
 UnstructuredGrid::~UnstructuredGrid() = default;
 
-void UnstructuredGrid::print(std::ostream& s) const
-{
+void UnstructuredGrid::print(std::ostream& s) const {
     s << "UnstructuredGrid[points=" << latitudes_.size() << "]";
 }
 
@@ -66,7 +63,7 @@ bool UnstructuredGrid::has(const std::string& name) const {
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string &name, std::vector<double> &values) const {
+bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values) const {
     // std::cout << "get " << name << std::endl;
 
     if (name == "latitudes") {
@@ -80,10 +77,9 @@ bool UnstructuredGrid::get(const std::string &name, std::vector<double> &values)
     }
 
     return false;
-
 }
 
-bool UnstructuredGrid::get(const std::string&name, long& value) const {
+bool UnstructuredGrid::get(const std::string& name, long& value) const {
     // std::cout << "get " << name << std::endl;
 
     // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
@@ -91,7 +87,7 @@ bool UnstructuredGrid::get(const std::string&name, long& value) const {
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string&name, std::string& value) const {
+bool UnstructuredGrid::get(const std::string& name, std::string& value) const {
     // std::cout << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
@@ -104,7 +100,7 @@ bool UnstructuredGrid::get(const std::string&name, std::string& value) const {
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string &name, double &value) const {
+bool UnstructuredGrid::get(const std::string& name, double& value) const {
 
     if (name == "north") {
         value = north_;
@@ -127,7 +123,6 @@ bool UnstructuredGrid::get(const std::string &name, double &value) const {
     }
 
 
-
     // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
 
@@ -137,22 +132,21 @@ bool UnstructuredGrid::get(const std::string &name, double &value) const {
 
 //================================================================
 
-static bool check_axis(const Variable &variable, const Variable & axis, std::vector<double>& v) {
+static bool check_axis(const Variable& variable, const Variable& axis, std::vector<double>& v) {
 
 
-
-    auto axis_dimensions = axis.dimensions();
+    auto axis_dimensions     = axis.dimensions();
     auto variable_dimensions = variable.dimensions();
 
     if (axis_dimensions.size() != 2) {
         return false;
     }
 
-    if (variable_dimensions[variable_dimensions.size() - 2 ] != axis_dimensions[0]) {
+    if (variable_dimensions[variable_dimensions.size() - 2] != axis_dimensions[0]) {
         return false;
     }
 
-    if (variable_dimensions[variable_dimensions.size() - 1 ] != axis_dimensions[1]) {
+    if (variable_dimensions[variable_dimensions.size() - 1] != axis_dimensions[1]) {
         return false;
     }
 
@@ -162,23 +156,21 @@ static bool check_axis(const Variable &variable, const Variable & axis, std::vec
     return true;
 }
 
-GridSpec* UnstructuredGrid::guess(const Variable &variable,
-                                  const Variable &latitudes,
-                                  const Variable &longitudes) {
+GridSpec* UnstructuredGrid::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     if (variable.numberOfDimensions() < 2) {
         return 0;
     }
 
 
-//  for(auto d: latitudes.dimensions()) {
-//      std::cout << "++++ " << *d << std::endl;
+    //  for(auto d: latitudes.dimensions()) {
+    //      std::cout << "++++ " << *d << std::endl;
 
-//  }
-// for(auto d: longitudes.dimensions()) {
-//      std::cout << "---- " << *d << std::endl;
+    //  }
+    // for(auto d: longitudes.dimensions()) {
+    //      std::cout << "---- " << *d << std::endl;
 
-//  }
+    //  }
 
     // double north, south;
     std::vector<double> lats;
@@ -193,7 +185,6 @@ GridSpec* UnstructuredGrid::guess(const Variable &variable,
 
 
     return new UnstructuredGrid(variable, lats, lons);
-
 }
 
 
@@ -224,4 +215,3 @@ static GridSpecGuesserBuilder<UnstructuredGrid> builder(99);
 
 }  // namespace netcdf
 }  // namespace mir
-

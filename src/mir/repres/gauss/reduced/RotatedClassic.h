@@ -25,17 +25,17 @@ namespace reduced {
 
 class RotatedClassic : public Classic {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RotatedClassic(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    RotatedClassic(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
+                   double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~RotatedClassic(); // Change to virtual if base class
+    virtual ~RotatedClassic();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,14 +56,13 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -75,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -100,9 +98,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedClassic& p)
+    // friend ostream& operator<<(ostream& s,const RotatedClassic& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +110,3 @@ private:
 
 
 #endif
-

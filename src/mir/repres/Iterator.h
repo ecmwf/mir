@@ -26,7 +26,6 @@ namespace repres {
 
 class Iterator : protected PointLatLon {
 public:
-
     // -- Exceptions
     // None
 
@@ -41,17 +40,13 @@ public:
 
     // -- Convertors
 
-    operator bool() {
-        return valid_;
-    }
+    operator bool() { return valid_; }
 
     // -- Operators
 
     void operator=(const Iterator&) = delete;
 
-    inline const Point2& operator*() const {
-        return pointRotated();
-    }
+    inline const Point2& operator*() const { return pointRotated(); }
 
     // -- Methods
 
@@ -71,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     Point2 point_;
@@ -80,7 +74,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const  = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
 
     // -- Overridden methods
@@ -93,7 +87,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -115,7 +108,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 

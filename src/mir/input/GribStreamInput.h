@@ -29,7 +29,6 @@ namespace input {
 
 class GribStreamInput : public GribInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -41,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~GribStreamInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,11 +62,10 @@ public:
     // None
 
 protected:
-
     // -- Members
     size_t skip_;
     size_t step_;
-    off_t  offset_;
+    off_t offset_;
 
     // -- Methods
     // None
@@ -82,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     bool first_;
@@ -91,7 +88,7 @@ private:
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
+    virtual eckit::DataHandle& dataHandle() = 0;
 
     // -- Overridden methods
     // None
@@ -104,9 +101,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    // friend ostream& operator<<(ostream& s,const GribStreamInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -115,4 +111,3 @@ private:
 
 
 #endif
-

@@ -27,8 +27,7 @@ namespace param {
 
 class ConfigurationWrapper : public MIRParametrisation {
 
-public: // methods
-
+public:  // methods
     ConfigurationWrapper(const eckit::Configuration&);
 
     // From MIRParametrisation
@@ -50,15 +49,12 @@ public: // methods
     bool get(const std::string& name, std::vector<double>& value) const;
     bool get(const std::string& name, std::vector<std::string>& value) const;
 
-protected: // methods
-
+protected:  // methods
     virtual void print(std::ostream&) const;
 
-private: // members
-
+private:  // members
     // Store a reference to the configuration, so that the wrapper can mimic a MIRParametrisation
     const eckit::Configuration& configuration_;
-
 };
 
 

@@ -44,7 +44,7 @@ static void init() {
     ml          = new std::map<size_t, std::vector<double> >();
     mw          = new std::map<size_t, std::vector<double> >();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
@@ -113,16 +113,14 @@ bool Gaussian::extendBoundingBoxOnIntersect() const {
 
 
 bool Gaussian::angleApproximatelyEqual(const Latitude& A, const Latitude& B) const {
-    return angularPrecision_ > 0 ?
-           eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-           : A == B;
+    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+                                 : A == B;
 }
 
 
 bool Gaussian::angleApproximatelyEqual(const Longitude& A, const Longitude& B) const {
-    return angularPrecision_ > 0 ?
-           eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
-           : A == B;
+    return angularPrecision_ > 0 ? eckit::types::is_approximately_equal(A.value(), B.value(), angularPrecision_)
+                                 : A == B;
 }
 
 
@@ -135,7 +133,8 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
     const bool same(s == n);
     if (n < lats.back()) {
         n = lats.back();
-    } else if (in) {
+    }
+    else if (in) {
         auto best = std::lower_bound(lats.begin(), lats.end(), n, [this](Latitude l1, Latitude l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
@@ -144,18 +143,22 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         });
         ASSERT(best != lats.end());
         n = *best;
-    } else if (n > lats.front()) {
+    }
+    else if (n > lats.front()) {
         // extend 'outwards': don't change, it's already above the Gaussian latitudes
-    } else {
+    }
+    else {
         auto best = std::lower_bound(lats.rbegin(), lats.rend(), n);
-        n = *best;
+        n         = *best;
     }
 
     if (same && in) {
         s = n;
-    } else if (s > lats.front()) {
+    }
+    else if (s > lats.front()) {
         s = lats.front();
-    } else if (in) {
+    }
+    else if (in) {
         auto best = std::lower_bound(lats.rbegin(), lats.rend(), s, [this](Latitude l1, Latitude l2) {
             if (angleApproximatelyEqual(l1, l2)) {
                 return false;
@@ -164,12 +167,13 @@ void Gaussian::correctSouthNorth(Latitude& s, Latitude& n, bool in) const {
         });
         ASSERT(best != lats.rend());
         s = *best;
-    } else if (s < lats.back()) {
+    }
+    else if (s < lats.back()) {
         // extend 'outwards': don't change, it's already below the Gaussian latitudes
-    } else {
-        auto best = std::lower_bound(lats.begin(), lats.end(), s,
-        [](Latitude l1, Latitude l2) { return l1 > l2; });
-        s = *best;
+    }
+    else {
+        auto best = std::lower_bound(lats.begin(), lats.end(), s, [](Latitude l1, Latitude l2) { return l1 > l2; });
+        s         = *best;
     }
 
     ASSERT(s <= n);
@@ -289,4 +293,3 @@ const std::vector<double>& Gaussian::weights() const {
 
 }  // namespace repres
 }  // namespace mir
-

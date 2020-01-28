@@ -21,7 +21,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,15 +30,12 @@ namespace style {
 
 class Intgrid {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Intgrid(const param::MIRParametrisation& parametrisation) :
-        parametrisation_(parametrisation) {
-    }
+    Intgrid(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
     Intgrid(const Intgrid&) = delete;
 
@@ -67,7 +64,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -85,7 +81,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -103,26 +98,29 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
 class IntgridFactory {
     std::string name_;
     virtual Intgrid* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
+
 protected:
     IntgridFactory(const std::string&);
     virtual ~IntgridFactory();
+
 public:
     static Intgrid* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
 };
 
 
-template <class T> class IntgridBuilder : public IntgridFactory {
+template <class T>
+class IntgridBuilder : public IntgridFactory {
     virtual Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
         return new T(parametrisation, targetGaussianN);
     }
+
 public:
     IntgridBuilder(const std::string& name) : IntgridFactory(name) {}
 };

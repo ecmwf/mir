@@ -24,16 +24,13 @@ namespace util {
 
 class FormulaBinop : public FormulaFunction {
 public:
-
-    FormulaBinop(const param::MIRParametrisation& parametrisation,
-        const std::string& name, Formula* arg1, Formula *arg2);
+    FormulaBinop(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
+                 Formula* arg2);
 
     virtual ~FormulaBinop();
 
 private:
-
     virtual void print(std::ostream&) const;
-
 };
 
 

@@ -23,10 +23,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToRegularLL : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRegularLL(); // Change to virtual if base class
+    ~ShToRegularLL();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +56,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     util::BoundingBox bbox_;
@@ -82,7 +80,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -92,4 +89,3 @@ private:
 
 
 #endif
-

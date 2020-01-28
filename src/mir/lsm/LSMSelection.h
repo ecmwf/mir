@@ -13,8 +13,8 @@
 #ifndef mir_lsm_LSMSelection_h
 #define mir_lsm_LSMSelection_h
 
-#include <string>
 #include <iosfwd>
+#include <string>
 
 
 namespace mir {
@@ -27,7 +27,7 @@ class Representation;
 namespace lsm {
 class Mask;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -36,7 +36,6 @@ namespace lsm {
 
 class LSMSelection {
 public:
-
     // -- Exceptions
     // None
 
@@ -53,12 +52,10 @@ public:
 
     // -- Methods
 
-    virtual Mask *create(const param::MIRParametrisation&,
-                         const repres::Representation&,
+    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
                          const std::string& which) const = 0;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&,
-                                 const repres::Representation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                                  const std::string& which) const = 0;
 
     // -- Overridden methods
@@ -73,7 +70,6 @@ public:
     static void list(std::ostream&);
 
 protected:
-
     // -- Constructors
 
     LSMSelection(const std::string& name);
@@ -101,7 +97,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -123,7 +118,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -132,4 +126,3 @@ private:
 
 
 #endif
-

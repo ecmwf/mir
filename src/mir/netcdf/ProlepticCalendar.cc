@@ -17,22 +17,20 @@
 #include "mir/netcdf/Value.h"
 #include "mir/netcdf/Variable.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
-#include <algorithm>
 
 #include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
-ProlepticCalendar::ProlepticCalendar(const Variable& variable)
-{
-}
+ProlepticCalendar::ProlepticCalendar(const Variable& variable) {}
 
 ProlepticCalendar::~ProlepticCalendar() = default;
 
-void ProlepticCalendar::print(std::ostream &out) const {
+void ProlepticCalendar::print(std::ostream& out) const {
     out << "ProlepticCalendar[]";
 }
 

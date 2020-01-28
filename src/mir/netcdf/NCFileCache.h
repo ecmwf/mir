@@ -13,8 +13,8 @@
 #ifndef mir_netcdf_NCFileCache
 #define mir_netcdf_NCFileCache
 
-#include <string>
 #include <map>
+#include <string>
 
 namespace mir {
 namespace netcdf {
@@ -27,17 +27,16 @@ public:
     NCFileCache();
     ~NCFileCache();
 
-    NCFile &lookUp(const std::string &);
+    NCFile& lookUp(const std::string&);
 
 private:
-
-    NCFileCache(const NCFileCache &);
-    NCFileCache &operator=(const NCFileCache &);
+    NCFileCache(const NCFileCache&);
+    NCFileCache& operator=(const NCFileCache&);
 
     // ------
-    std::map<std::string, NCFile *> files_;
+    std::map<std::string, NCFile*> files_;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

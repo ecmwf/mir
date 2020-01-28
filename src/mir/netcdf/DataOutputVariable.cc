@@ -13,33 +13,29 @@
 #include "mir/netcdf/DataOutputVariable.h"
 
 #include "mir/netcdf/Attribute.h"
+#include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/MergeDataStep.h"
 #include "mir/netcdf/MergePlan.h"
-#include "mir/netcdf/Exceptions.h"
 
 namespace mir {
 namespace netcdf {
 
-DataOutputVariable::DataOutputVariable(Dataset &owner,
-                                       const std::string &name,
-                                       const std::vector<Dimension *> &dimensions):
-    OutputVariable(owner, name, dimensions)
-{
-}
+DataOutputVariable::DataOutputVariable(Dataset& owner, const std::string& name,
+                                       const std::vector<Dimension*>& dimensions) :
+    OutputVariable(owner, name, dimensions) {}
 
 DataOutputVariable::~DataOutputVariable() = default;
 
-void DataOutputVariable::print(std::ostream &out) const {
+void DataOutputVariable::print(std::ostream& out) const {
     out << "DataOutputVariable[name=" << name_ << ",nc=" << ncname() << "]";
 }
 
-void DataOutputVariable::merge(const Variable &other, MergePlan &plan)
-{
+void DataOutputVariable::merge(const Variable& other, MergePlan& plan) {
     Variable::merge(other, plan);
     plan.add(new MergeDataStep(*this, other));
 }
 
-const std::string &DataOutputVariable::ncname() const {
+const std::string& DataOutputVariable::ncname() const {
     auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
         ncname_ = (*j).second->asString();
@@ -49,7 +45,7 @@ const std::string &DataOutputVariable::ncname() const {
 }
 
 
-void DataOutputVariable::collectField(std::vector<Field *>&) const {
+void DataOutputVariable::collectField(std::vector<Field*>&) const {
     NOTIMP;
 }
 

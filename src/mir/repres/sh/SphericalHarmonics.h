@@ -23,8 +23,7 @@ namespace sh {
 
 
 class SphericalHarmonics : public Representation {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -45,29 +44,16 @@ class SphericalHarmonics : public Representation {
 
     // -- Methods
 
-    static void truncate(
-            size_t truncation_from,
-            size_t truncation_to,
-            const MIRValuesVector& in,
-            MIRValuesVector& out);
+    static void truncate(size_t truncation_from, size_t truncation_to, const MIRValuesVector& in, MIRValuesVector& out);
 
-    static size_t number_of_complex_coefficients(size_t truncation) {
-        return (truncation + 1) * (truncation + 2) / 2;
-    }
+    static size_t number_of_complex_coefficients(size_t truncation) { return (truncation + 1) * (truncation + 2) / 2; }
 
-    static void interlace_spectra(
-            MIRValuesVector& interlaced,
-            const MIRValuesVector& spectra,
-            size_t truncation,
-            size_t numberOfComplexCoefficients,
-            size_t index,
-            size_t indexTotal);
+    static void interlace_spectra(MIRValuesVector& interlaced, const MIRValuesVector& spectra, size_t truncation,
+                                  size_t numberOfComplexCoefficients, size_t index, size_t indexTotal);
 
     // -- Overridden methods
 
-    util::Domain domain() const {
-        return util::Domain();
-    }
+    util::Domain domain() const { return util::Domain(); }
 
     // -- Class members
     // None
@@ -75,14 +61,13 @@ class SphericalHarmonics : public Representation {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -93,9 +78,7 @@ class SphericalHarmonics : public Representation {
     // -- Class methods
     // None
 
-  private:
-
-
+private:
     // No copy allowed
 
     SphericalHarmonics(const SphericalHarmonics&);
@@ -112,14 +95,11 @@ class SphericalHarmonics : public Representation {
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(api::MIRJob&) const;
     virtual void estimate(api::MIREstimation&) const;
     virtual std::string factory() const;
 
-    virtual const Representation* truncate(
-            size_t truncation,
-            const MIRValuesVector&,
-            MIRValuesVector&) const;
+    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;
     virtual size_t truncation() const;
 
     virtual void comparison(std::string&) const;
@@ -143,9 +123,8 @@ class SphericalHarmonics : public Representation {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
+    // friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -155,4 +134,3 @@ class SphericalHarmonics : public Representation {
 
 
 #endif
-

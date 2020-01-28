@@ -26,7 +26,6 @@ namespace input {
 
 class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
-
     GribInput();
 
     virtual ~GribInput();
@@ -35,17 +34,15 @@ public:
     void marsRequest(std::ostream&) const;
 
 protected:
-
     bool handle(grib_handle*);
 
 private:
-
     // -- Members
 
     param::CachedParametrisation cache_;
 
     mutable eckit::Mutex mutex_;
-    grib_handle *grib_;
+    grib_handle* grib_;
 
     // For unstructured grids
     std::vector<double> latitudes_;
@@ -60,7 +57,7 @@ private:
     // From MIRInput
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
-    virtual grib_handle *gribHandle(size_t which = 0) const;
+    virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t dimensions() const;
 
@@ -83,7 +80,6 @@ private:
     // From FieldParametrisation
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
-
 };
 
 
@@ -92,4 +88,3 @@ private:
 
 
 #endif
-

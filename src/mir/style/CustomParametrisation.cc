@@ -23,30 +23,28 @@ namespace mir {
 namespace style {
 
 
-CustomParametrisation::CustomParametrisation(
-    const std::string& name,
-    const std::map<std::string, std::vector<std::string> >& params,
-    const param::MIRParametrisation &parametrisation):
+CustomParametrisation::CustomParametrisation(const std::string& name,
+                                             const std::map<std::string, std::vector<std::string> >& params,
+                                             const param::MIRParametrisation& parametrisation) :
     name_(name),
     params_(params),
-    parametrisation_(parametrisation) {
-}
+    parametrisation_(parametrisation) {}
 
 
 CustomParametrisation::~CustomParametrisation() = default;
 
 
-const param::MIRParametrisation&CustomParametrisation::userParametrisation() const {
+const param::MIRParametrisation& CustomParametrisation::userParametrisation() const {
     return *this;
 }
 
 
-const param::MIRParametrisation&CustomParametrisation::fieldParametrisation() const {
+const param::MIRParametrisation& CustomParametrisation::fieldParametrisation() const {
     return *this;
 }
 
 
-template<class T>
+template <class T>
 static void fill(T& value, const std::vector<std::string>& params) {
     eckit::Translator<std::string, T> t;
 
@@ -55,7 +53,7 @@ static void fill(T& value, const std::vector<std::string>& params) {
 }
 
 
-template<class T>
+template <class T>
 static void fill(std::vector<T>& value, const std::vector<std::string>& params) {
     eckit::Translator<std::string, T> t;
 
@@ -66,8 +64,8 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
 }
 
 
-template<class T>
-bool CustomParametrisation::_get(const std::string& name,  T& value) const {
+template <class T>
+bool CustomParametrisation::_get(const std::string& name, T& value) const {
     eckit::Log::debug<LibMir>() << *this << " get('" << name << "')" << std::endl;
 
     auto j = params_.find(name);
@@ -148,10 +146,10 @@ void CustomParametrisation::print(std::ostream& out) const {
 
     out << ",params=[";
     const char* sep = "";
-    for(const auto& p : params_) {
+    for (const auto& p : params_) {
         out << sep << p.first << "=[";
         const char* sepv = "";
-        for(const auto& v : p.second) {
+        for (const auto& v : p.second) {
             out << sepv << v;
             sepv = ",";
         }
@@ -163,6 +161,5 @@ void CustomParametrisation::print(std::ostream& out) const {
 }
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
-

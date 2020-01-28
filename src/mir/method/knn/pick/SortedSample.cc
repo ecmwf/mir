@@ -36,7 +36,9 @@ void SortedSample::pick(const search::PointSearch& tree, const eckit::geometry::
               });
 }
 
-size_t SortedSample::n() const { return sample_.n(); }
+size_t SortedSample::n() const {
+    return sample_.n();
+}
 
 
 bool SortedSample::sameAs(const Pick& other) const {

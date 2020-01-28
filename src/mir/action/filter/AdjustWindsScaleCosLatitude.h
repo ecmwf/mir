@@ -22,7 +22,6 @@ namespace action {
 
 class AdjustWindsScaleCosLatitude : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -70,7 +68,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&);
@@ -96,9 +93,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
+    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
     //	{ p.print(s); return s; }
-
 };
 
 
@@ -107,4 +103,3 @@ private:
 
 
 #endif
-

@@ -38,11 +38,10 @@ struct Choice {
     size_t index_;
 
     bool operator<(const Choice& other) {
-    return sameType_ >  other.sameType_ || (
-           sameType_ == other.sameType_ && (
-           eckit::types::is_strictly_greater    (other.distance_, distance_) || (
-           eckit::types::is_approximately_equal (other.distance_, distance_) &&
-           index_ < other.index_ )));
+        return sameType_ > other.sameType_ ||
+               (sameType_ == other.sameType_ &&
+                (eckit::types::is_strictly_greater(other.distance_, distance_) ||
+                 (eckit::types::is_approximately_equal(other.distance_, distance_) && index_ < other.index_)));
     }
 };
 
@@ -57,11 +56,9 @@ NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisa
 }
 
 
-void NearestLSMWithLowestIndex::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
+                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                           std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
     ASSERT(ip < omask_.size());
@@ -108,4 +105,3 @@ static DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("ne
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

@@ -19,14 +19,13 @@ namespace mir {
 
 
 struct LongitudeIncrement {
-    explicit LongitudeIncrement(const Longitude& increment=Longitude(0)) : increment_(increment) {}
+    explicit LongitudeIncrement(const Longitude& increment = Longitude(0)) : increment_(increment) {}
     const LongitudeIncrement& operator=(const Longitude& l) {
         increment_ = l;
         return *this;
     }
-    const Longitude& longitude() const {
-        return increment_;
-    }
+    const Longitude& longitude() const { return increment_; }
+
 private:
     Longitude increment_;
 };
@@ -36,4 +35,3 @@ private:
 
 
 #endif
-

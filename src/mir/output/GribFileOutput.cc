@@ -18,15 +18,11 @@ namespace mir {
 namespace output {
 
 
-GribFileOutput::GribFileOutput(const eckit::PathName &path, bool append):
-    path_(path),
-    handle_(0),
-    append_(append) {
-}
+GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) : path_(path), handle_(0), append_(append) {}
 
 
 GribFileOutput::~GribFileOutput() {
-    if(handle_) {
+    if (handle_) {
         handle_->close();
         delete handle_;
     }
@@ -39,17 +35,18 @@ bool GribFileOutput::sameAs(const MIROutput& other) const {
 }
 
 
-void GribFileOutput::print(std::ostream &out) const {
+void GribFileOutput::print(std::ostream& out) const {
     out << "GribFileOutput[path=" << path_ << "]";
 }
 
 
 eckit::DataHandle& GribFileOutput::dataHandle() {
-    if(!handle_) {
+    if (!handle_) {
         handle_ = path_.fileHandle();
-        if(append_) {
+        if (append_) {
             handle_->openForAppend(0);
-        } else {
+        }
+        else {
             handle_->openForWrite(0);
         }
     }
@@ -62,4 +59,3 @@ static MIROutputBuilder<GribFileOutput> output("grib");
 
 }  // namespace output
 }  // namespace mir
-

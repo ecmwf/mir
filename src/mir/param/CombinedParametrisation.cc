@@ -19,14 +19,11 @@ namespace mir {
 namespace param {
 
 
-CombinedParametrisation::CombinedParametrisation(
-        const MIRParametrisation& user,
-        const MIRParametrisation& metadata,
-        const MIRParametrisation& defaults):
+CombinedParametrisation::CombinedParametrisation(const MIRParametrisation& user, const MIRParametrisation& metadata,
+                                                 const MIRParametrisation& defaults) :
     user_(user),
     field_(metadata),
-    defaults_(defaults) {
-}
+    defaults_(defaults) {}
 
 
 CombinedParametrisation::~CombinedParametrisation() = default;
@@ -42,7 +39,7 @@ const MIRParametrisation& CombinedParametrisation::fieldParametrisation() const 
 }
 
 
-template<class T>
+template <class T>
 bool CombinedParametrisation::_get(const std::string& name, T& value) const {
 
     // This could be a loop
@@ -52,9 +49,9 @@ bool CombinedParametrisation::_get(const std::string& name, T& value) const {
 
 void CombinedParametrisation::print(std::ostream& out) const {
     out << "CombinedParametrisation["
-//        <<  "user=" << user_
-//        << ",field=" << field_
-//        << ",defaults=" << defaults_
+        //        <<  "user=" << user_
+        //        << ",field=" << field_
+        //        << ",defaults=" << defaults_
         << "]";
 }
 
@@ -121,4 +118,3 @@ bool CombinedParametrisation::get(const std::string& name, std::vector<std::stri
 
 }  // namespace param
 }  // namespace mir
-

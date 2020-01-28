@@ -20,29 +20,23 @@ namespace mir {
 namespace netcdf {
 
 
-
-class PackingCodec : public Codec
-{
+class PackingCodec : public Codec {
 public:
-
     PackingCodec(const Variable& variable);
     virtual ~PackingCodec();
 
 private:
-
     double scale_factor_;
     double add_offset_;
 
     // -- Methods
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
 
 
-    virtual void decode(std::vector<double> &) const ;
-
-
+    virtual void decode(std::vector<double>&) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -22,15 +22,12 @@ namespace knn {
 namespace distance {
 
 
-InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {
-}
+InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {}
 
 
-void InverseDistanceWeightingSquared::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
+                                                 const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                                 std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -46,7 +43,6 @@ void InverseDistanceWeightingSquared::operator()(
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];
-
     }
 
     ASSERT(sum > 0.);
@@ -84,4 +80,3 @@ static DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inv
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

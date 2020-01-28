@@ -23,33 +23,30 @@ class NCFileCache;
 
 class OutputDataset : public Dataset {
 public:
-
-    OutputDataset(const std::string &, NCFileCache &, int format = 0);
+    OutputDataset(const std::string&, NCFileCache&, int format = 0);
     virtual ~OutputDataset();
 
     // -- Methods
 
-    void merge(Dataset &other);
+    void merge(Dataset& other);
     void save() const;
 
 private:
-
-    OutputDataset(const OutputDataset &);
-    OutputDataset &operator=(const OutputDataset &);
+    OutputDataset(const OutputDataset&);
+    OutputDataset& operator=(const OutputDataset&);
 
     // -- Members
 
     int format_;
-    NCFileCache &cache_;
+    NCFileCache& cache_;
 
     // - Methods
 
     // From Dataset
 
-    virtual void print(std::ostream &s) const;
-
+    virtual void print(std::ostream& s) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

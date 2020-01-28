@@ -22,7 +22,6 @@ namespace param {
 
 class SameParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -69,7 +67,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const MIRParametrisation& parametrisation1_;
@@ -78,7 +75,7 @@ private:
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     bool _get(const std::string&, T&) const;
 
     // -- Overridden methods
@@ -109,7 +106,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -118,4 +114,3 @@ private:
 
 
 #endif
-

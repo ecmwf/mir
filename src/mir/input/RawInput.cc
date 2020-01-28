@@ -27,11 +27,10 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(const RawMetadata& metadata, const double *values, size_t count):
+RawInput::RawInput(const RawMetadata& metadata, const double* values, size_t count) :
     metadata_(metadata),
     values_(values),
-    count_(count) {
-}
+    count_(count) {}
 
 
 RawInput::~RawInput() = default;
@@ -72,7 +71,7 @@ void RawInput::print(std::ostream& out) const {
 }
 
 
-size_t RawInput::copy(double *values, size_t size) const {
+size_t RawInput::copy(double* values, size_t size) const {
     ASSERT(count_ <= size);
     std::memcpy(values, values_, sizeof(double) * count_);
     return count_;
@@ -192,7 +191,7 @@ bool RawInput::get(const std::string& name, std::vector<int>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l: v) {
+        for (const long& l : v) {
             ASSERT(long(int(l)) == l);
             value.push_back(int(l));
         }
@@ -219,7 +218,7 @@ bool RawInput::get(const std::string& name, std::vector<float>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const double& l: v) {
+        for (const double& l : v) {
             value.push_back(float(l));
         }
         return true;
@@ -232,10 +231,10 @@ bool RawInput::get(const std::string& name, std::vector<double>& value) const {
 
     if (name == "area") {
         value.resize(4);
-        value[0] = metadata_.bbox().north().value(); // North
-        value[1] = metadata_.bbox().west().value(); // West
-        value[2] = metadata_.bbox().south().value(); // South
-        value[3] = metadata_.bbox().east().value(); // East
+        value[0] = metadata_.bbox().north().value();  // North
+        value[1] = metadata_.bbox().west().value();   // West
+        value[2] = metadata_.bbox().south().value();  // South
+        value[3] = metadata_.bbox().east().value();   // East
         return true;
     }
 
@@ -255,4 +254,3 @@ bool RawInput::get(const std::string&, std::vector<std::string>&) const {
 
 }  // namespace input
 }  // namespace mir
-

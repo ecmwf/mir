@@ -25,7 +25,7 @@ class MIRWatcher;
 namespace action {
 class Action;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,8 +33,7 @@ namespace action {
 
 
 class ActionNode {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -44,7 +43,7 @@ class ActionNode {
 
     // -- Destructor
 
-    ~ActionNode(); // Change to virtual if base class
+    ~ActionNode();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -73,14 +72,13 @@ class ActionNode {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -91,8 +89,7 @@ class ActionNode {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
     ActionNode(const ActionNode&);
     ActionNode& operator=(const ActionNode&);
@@ -121,7 +118,6 @@ class ActionNode {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -130,4 +126,3 @@ class ActionNode {
 
 
 #endif
-

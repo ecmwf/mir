@@ -18,25 +18,24 @@
 namespace mir {
 namespace netcdf {
 
-ScalarCoordinateOutputVariable::ScalarCoordinateOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
-    OutputVariable(owner, name, dimensions) {
-}
+ScalarCoordinateOutputVariable::ScalarCoordinateOutputVariable(Dataset& owner, const std::string& name,
+                                                               const std::vector<Dimension*>& dimensions) :
+    OutputVariable(owner, name, dimensions) {}
 
 ScalarCoordinateOutputVariable::~ScalarCoordinateOutputVariable() = default;
 
-void ScalarCoordinateOutputVariable::print(std::ostream &out) const {
+void ScalarCoordinateOutputVariable::print(std::ostream& out) const {
     out << "ScalarCoordinateOutputVariable[name=" << name_ << "]";
 }
 
 
-void ScalarCoordinateOutputVariable::merge(const Variable &other, MergePlan &plan)
-{
+void ScalarCoordinateOutputVariable::merge(const Variable& other, MergePlan& plan) {
     Variable::merge(other, plan);
 
-    Type &type1 = matrix()->type();
-    Type &type2 = other.matrix()->type();
+    Type& type1 = matrix()->type();
+    Type& type2 = other.matrix()->type();
 
-    Type &common = Type::lookup(type1, type2);
+    Type& common = Type::lookup(type1, type2);
     if (common.coordinateOutputVariableMerge(*this, other, plan)) {
         // Merge done
     }
@@ -48,7 +47,6 @@ void ScalarCoordinateOutputVariable::merge(const Variable &other, MergePlan &pla
         else {
             // NO CHANGE
         }
-
     }
 }
 

@@ -90,7 +90,8 @@ private:
 
     // From MethodWeighted
     void hash(eckit::MD5&) const;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
 

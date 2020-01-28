@@ -43,8 +43,9 @@ public:
         options_.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
         options_.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
 
-        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
-        // options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already
+        // loaded, does nothing.")); options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into
+        // shared memory. If file already loaded, does nothing."));
     }
 };
 

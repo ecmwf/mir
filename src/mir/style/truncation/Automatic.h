@@ -23,7 +23,6 @@ namespace truncation {
 
 class Automatic : public style::Truncation {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     long truncation_;
@@ -73,7 +71,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -83,4 +80,3 @@ private:
 
 
 #endif
-

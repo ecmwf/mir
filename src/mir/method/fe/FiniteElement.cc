@@ -51,9 +51,9 @@ namespace {
 static const double parametricEpsilon = 1e-15;
 
 
-using triplet_vector_t = std::vector< WeightMatrix::Triplet >;
-using element_tree_t = atlas::interpolation::method::ElemIndex3;
-using failed_projection_t = std::pair< size_t, PointLatLon >;
+using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
+using element_tree_t      = atlas::interpolation::method::ElemIndex3;
+using failed_projection_t = std::pair<size_t, PointLatLon>;
 
 
 static void normalise(triplet_vector_t& triplets) {
@@ -72,29 +72,25 @@ static void normalise(triplet_vector_t& triplets) {
         for (auto& t : triplets) {
             t.value() *= invSum;
         }
-
-    } else {
+    }
+    else {
 
         // if no reasonable seight sum is found, distribute equitably
         const double invSum = 1. / triplets.size();
         for (auto& t : triplets) {
             t.value() = invSum;
         }
-
     }
 }
 
 
 /// Find in which element the point is contained by projecting the point with each nearest element
-static triplet_vector_t projectPointTo3DElements(
-    size_t nbInputPoints,
-    const atlas::array::ArrayView<double, 2>& icoords,
-    const atlas::mesh::HybridElements::Connectivity& connectivity,
-    const Point3& p,
-    size_t ip,
-    size_t firstVirtualPoint,
-    size_t& nbProjectionAttempts,
-    const element_tree_t::NodeList& closest ) {
+static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
+                                                 const atlas::array::ArrayView<double, 2>& icoords,
+                                                 const atlas::mesh::HybridElements::Connectivity& connectivity,
+                                                 const Point3& p, size_t ip, size_t firstVirtualPoint,
+                                                 size_t& nbProjectionAttempts,
+                                                 const element_tree_t::NodeList& closest) {
 
     if (closest.empty()) {
         return {};
@@ -105,7 +101,7 @@ static triplet_vector_t projectPointTo3DElements(
     bool mustNormalise = false;
     size_t idx[4];
     double w[4];
-    atlas::interpolation::method::Ray ray( p.data() );
+    atlas::interpolation::method::Ray ray(p.data());
 
     nbProjectionAttempts = 0;
     for (const auto& close : closest) {
@@ -131,9 +127,9 @@ static triplet_vector_t projectPointTo3DElements(
 
             /* triangle */
             atlas::interpolation::element::Triag3D triag(
-                atlas::PointXYZ{ icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2) },
-                atlas::PointXYZ{ icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2) },
-                atlas::PointXYZ{ icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2) });
+                atlas::PointXYZ{icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2)},
+                atlas::PointXYZ{icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2)},
+                atlas::PointXYZ{icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2)});
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
@@ -148,8 +144,7 @@ static triplet_vector_t projectPointTo3DElements(
                 w[1] = is.u;
                 w[2] = is.v;
 
-                for (size_t i = 0; i < 3; ++i)
-                {
+                for (size_t i = 0; i < 3; ++i) {
                     if (idx[i] < firstVirtualPoint) {
                         triplets.push_back(WeightMatrix::Triplet(ip, idx[i], w[i]));
                     }
@@ -158,19 +153,19 @@ static triplet_vector_t projectPointTo3DElements(
                     }
                 }
 
-                break; // stop looking for elements
+                break;  // stop looking for elements
             }
-
-        } else {
+        }
+        else {
 
             /* quadrilateral */
             atlas::interpolation::element::Quad3D quad(
-                atlas::PointXYZ{ icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2) },
-                atlas::PointXYZ{ icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2) },
-                atlas::PointXYZ{ icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2) },
-                atlas::PointXYZ{ icoords(idx[3], 0), icoords(idx[3], 1), icoords(idx[3], 2) });
+                atlas::PointXYZ{icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2)},
+                atlas::PointXYZ{icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2)},
+                atlas::PointXYZ{icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2)},
+                atlas::PointXYZ{icoords(idx[3], 0), icoords(idx[3], 1), icoords(idx[3], 2)});
 
-            if ( !quad.validate() ) { // somewhat expensive sanity check
+            if (!quad.validate()) {  // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
                 throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
@@ -185,9 +180,9 @@ static triplet_vector_t projectPointTo3DElements(
 
                 // weights are the bilinear Lagrange function evaluated at u,v
                 w[0] = (1. - is.u) * (1. - is.v);
-                w[1] =       is.u  * (1. - is.v);
-                w[2] =       is.u  *       is.v ;
-                w[3] = (1. - is.u) *       is.v ;
+                w[1] = is.u * (1. - is.v);
+                w[2] = is.u * is.v;
+                w[3] = (1. - is.u) * is.v;
 
 
                 for (size_t i = 0; i < 4; ++i) {
@@ -199,11 +194,11 @@ static triplet_vector_t projectPointTo3DElements(
                     }
                 }
 
-                break; // stop looking for elements
+                break;  // stop looking for elements
             }
         }
 
-    } // loop over nearest elements
+    }  // loop over nearest elements
 
     // at least one of the nodes of element shouldn't be virtual
     if (!triplets.empty() && mustNormalise) {
@@ -214,11 +209,8 @@ static triplet_vector_t projectPointTo3DElements(
 }
 
 
-static caching::InMemoryCache<atlas::Mesh> mesh_cache(
-    "mirMesh",
-    512 * 1024 * 1024,
-    0,
-    "$MIR_MESH_CACHE_MEMORY_FOOTPRINT" );
+static caching::InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", 512 * 1024 * 1024, 0,
+                                                      "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 
 
 static pthread_once_t once                             = PTHREAD_ONCE_INIT;
@@ -232,7 +224,7 @@ static void init() {
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
@@ -336,8 +328,8 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
         // Some information
         log << "Mesh["
                "cells="
-            << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
-            << meshGeneratorParams << "]" << std::endl;
+            << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << "," << meshGeneratorParams
+            << "]" << std::endl;
 
         // Write file(s)
         if (!meshGeneratorParams.fileLonLat_.empty()) {
@@ -374,7 +366,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
 FiniteElement::~FiniteElement() = default;
 
 
-void FiniteElement::print(std::ostream &out) const {
+void FiniteElement::print(std::ostream& out) const {
     out << "FiniteElement[method=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
@@ -383,9 +375,7 @@ void FiniteElement::print(std::ostream &out) const {
 
 bool FiniteElement::sameAs(const Method& other) const {
     auto o = dynamic_cast<const FiniteElement*>(&other);
-    return o
-            && meshGeneratorParams_.sameAs(o->meshGeneratorParams_)
-            && MethodWeighted::sameAs(other);
+    return o && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) && MethodWeighted::sameAs(other);
 }
 
 
@@ -395,9 +385,7 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 }
 
 
-void FiniteElement::assemble(util::MIRStatistics& statistics,
-                             WeightMatrix& W,
-                             const repres::Representation& in,
+void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
 
@@ -407,11 +395,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
 
-    const atlas::Mesh& inMesh = atlasMesh(statistics, in);
+    const atlas::Mesh& inMesh    = atlasMesh(statistics, in);
     const util::Domain& inDomain = in.domain();
 
-    const atlas::mesh::Nodes& inNodes = inMesh.nodes();
-    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view< double, 2 >( inNodes.field( "xyz" ));
+    const atlas::mesh::Nodes& inNodes          = inMesh.nodes();
+    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (inNodes.metadata().has("NbRealPts")) {
@@ -446,8 +434,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
 
 
     // weights -- one per vertex of element, triangles (3) or quads (4)
-    triplet_vector_t weights_triplets; // structure to fill-in sparse matrix
-    weights_triplets.reserve( nbOutputPoints * 4 );        // preallocate space as if all elements where quads
+    triplet_vector_t weights_triplets;             // structure to fill-in sparse matrix
+    weights_triplets.reserve(nbOutputPoints * 4);  // preallocate space as if all elements where quads
 
     {
         Pretty::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
@@ -472,25 +460,19 @@ void FiniteElement::assemble(util::MIRStatistics& statistics,
                 element_tree_t::NodeList closest = eTree->findInSphere(p, R);
 
                 size_t nbProjectionAttempts = 0;
-                triplet_vector_t triplets = projectPointTo3DElements(
-                                                nbInputPoints,
-                                                icoords,
-                                                connectivity,
-                                                p,
-                                                ip,
-                                                firstVirtualPoint,
-                                                nbProjectionAttempts,
-                                                closest );
+                triplet_vector_t triplets   = projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip,
+                                                                     firstVirtualPoint, nbProjectionAttempts, closest);
 
-                nbMaxElementsSearched = std::max(nbMaxElementsSearched, closest.size());
-                nbMinElementsSearched = std::min(nbMinElementsSearched, closest.size());
+                nbMaxElementsSearched   = std::max(nbMaxElementsSearched, closest.size());
+                nbMinElementsSearched   = std::min(nbMinElementsSearched, closest.size());
                 nbMaxProjectionAttempts = std::max(nbMaxProjectionAttempts, nbProjectionAttempts);
 
                 if (triplets.empty()) {
                     // If this fails, consider lowering parametricEpsilon
                     failures.push_front(failed_projection_t(ip, it->pointUnrotated()));
                     ++nbFailures;
-                } else {
+                }
+                else {
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
                     ++nbProjections;
                 }

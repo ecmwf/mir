@@ -21,9 +21,7 @@ namespace mir {
 namespace action {
 
 
-SimpleExecutor::SimpleExecutor(const std::string& name):
-    Executor(name) {
-}
+SimpleExecutor::SimpleExecutor(const std::string& name) : Executor(name) {}
 
 
 SimpleExecutor::~SimpleExecutor() = default;
@@ -34,8 +32,7 @@ void SimpleExecutor::print(std::ostream& out) const {
 }
 
 
-void SimpleExecutor::wait() const {
-}
+void SimpleExecutor::wait() const {}
 
 
 void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) const {
@@ -43,8 +40,7 @@ void SimpleExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 }
 
 
-void SimpleExecutor::parametrisation(const param::MIRParametrisation&) {
-}
+void SimpleExecutor::parametrisation(const param::MIRParametrisation&) {}
 
 
 namespace {
@@ -54,4 +50,3 @@ static SimpleExecutor executor("simple");
 
 }  // namespace action
 }  // namespace mir
-

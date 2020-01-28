@@ -14,8 +14,8 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/gauss/regular/RegularGG.h"
 
 
 namespace mir {
@@ -41,7 +41,8 @@ bool Gridded2RegularGG::sameAs(const Action& other) const {
 
 void Gridded2RegularGG::print(std::ostream& out) const {
     out << "Gridded2RegularGG["
-           "N=" << N_ << ",";
+           "N="
+        << N_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
@@ -56,11 +57,10 @@ const char* Gridded2RegularGG::name() const {
 }
 
 namespace {
-static ActionBuilder< Gridded2RegularGG > grid2grid("interpolate.grid2regular-gg");
+static ActionBuilder<Gridded2RegularGG> grid2grid("interpolate.grid2regular-gg");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

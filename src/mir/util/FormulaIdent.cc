@@ -10,8 +10,8 @@
  */
 
 
-#include <iostream>
 #include "mir/util/FormulaIdent.h"
+#include <iostream>
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
 
@@ -20,11 +20,9 @@ namespace mir {
 namespace util {
 
 
-FormulaIdent::FormulaIdent(const param::MIRParametrisation &parametrisation, const std::string& name):
+FormulaIdent::FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name) :
     Formula(parametrisation),
-    name_(name) {
-
-}
+    name_(name) {}
 
 
 FormulaIdent::~FormulaIdent() = default;
@@ -39,17 +37,17 @@ void FormulaIdent::execute(mir::context::Context& ctx) const {
 
     // TODO: something better...
 
-    if(name_ == "f1") {
+    if (name_ == "f1") {
         ctx.select(0);
         return;
     }
 
-    if(name_ == "f2") {
+    if (name_ == "f2") {
         ctx.select(1);
         return;
     }
 
-    if(name_ != "f") {
+    if (name_ != "f") {
         std::ostringstream oss;
         oss << "Only variable 'f' is supported (" << name_ << ")";
         throw eckit::UserError(oss.str());
@@ -57,8 +55,6 @@ void FormulaIdent::execute(mir::context::Context& ctx) const {
 
     // Make sure the field is loaded
     ctx.field();
-
-
 }
 
 
@@ -73,5 +69,5 @@ const char* FormulaIdent::name() const {
 }
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

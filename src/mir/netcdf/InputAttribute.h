@@ -18,21 +18,17 @@
 namespace mir {
 namespace netcdf {
 
-class InputAttribute : public Attribute
-{
+class InputAttribute : public Attribute {
 public:
-
-    InputAttribute(Endowed &owner, const std::string &name, Value *value);
+    InputAttribute(Endowed& owner, const std::string& name, Value* value);
     virtual ~InputAttribute();
 
 private:
-
     // From Atttribute
-    virtual void print(std::ostream &out) const;
-    virtual void clone(Endowed &owner) const;
-
+    virtual void print(std::ostream& out) const;
+    virtual void clone(Endowed& owner) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

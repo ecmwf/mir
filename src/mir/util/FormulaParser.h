@@ -25,21 +25,19 @@ class MIRParametrisation;
 namespace util {
 class Formula;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
 namespace util {
 class FormulaParser : public eckit::StreamParser {
 
-public: // methods
-
+public:  // methods
     FormulaParser(std::istream&);
 
     Formula* parse(const param::MIRParametrisation&);
 
-private: // methods
-
+private:  // methods
     Formula* parseAtom(const param::MIRParametrisation&);
     Formula* parseTest(const param::MIRParametrisation&);
     Formula* parsePower(const param::MIRParametrisation&);
@@ -49,7 +47,6 @@ private: // methods
     std::string parseIdent(const param::MIRParametrisation&);
     Formula* parseString(const param::MIRParametrisation&);
     Formula* parseNumber(const param::MIRParametrisation&);
-
 };
 
 

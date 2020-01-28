@@ -22,7 +22,6 @@ namespace param {
 
 class FieldParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FieldParametrisation(); // Change to virtual if base class
+    virtual ~FieldParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     // -- Methods
@@ -85,14 +83,13 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     mutable long paramId_;
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     bool _get(const std::string& name, T& value) const;
 
     virtual void latitudes(std::vector<double>&) const;
@@ -109,7 +106,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -118,4 +114,3 @@ private:
 
 
 #endif
-

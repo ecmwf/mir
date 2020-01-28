@@ -23,16 +23,14 @@ class NCFileCache;
 
 class InputDataset : public Dataset {
 public:
-
-    InputDataset(const std::string &, NCFileCache &);
+    InputDataset(const std::string&, NCFileCache&);
     virtual ~InputDataset();
 
-    virtual std::vector<Field *> fields() const;
+    virtual std::vector<Field*> fields() const;
 
 private:
-
-    InputDataset(const InputDataset &);
-    InputDataset &operator=(const InputDataset &);
+    InputDataset(const InputDataset&);
+    InputDataset& operator=(const InputDataset&);
 
     // -- Members
 
@@ -42,15 +40,14 @@ private:
     int id_of_unlimited_dimension_;
 
     int format_;
-    NCFileCache &cache_;
+    NCFileCache& cache_;
 
     // - Methods
 
 
-    void print(std::ostream &s) const;
-
+    void print(std::ostream& s) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

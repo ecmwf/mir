@@ -50,8 +50,8 @@ public:
         options_.push_back(new eckit::option::SimpleOption<bool>(
             "unload",
             "Unload file from memory. If file is not loaded, or loader does not employ shmem, does nothing."));
-        options_.push_back(new eckit::option::SimpleOption<bool>(
-            "wait", "After load/unload, wait for user input before exiting."));
+        options_.push_back(
+            new eckit::option::SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
         options_.push_back(new eckit::option::FactoryOption<mir::caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
     }
@@ -90,12 +90,18 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
         for (std::string path : args) {
 
             if (!load) {
-                eckit::Log::info() << "---" "\n" "unloadSharedMemory" << std::endl;
+                eckit::Log::info() << "---"
+                                      "\n"
+                                      "unloadSharedMemory"
+                                   << std::endl;
                 SharedMemoryLoader::unloadSharedMemory(path);
                 continue;
             }
 
-            eckit::Log::info() << "---" "\n" "load" << std::endl;
+            eckit::Log::info() << "---"
+                                  "\n"
+                                  "load"
+                               << std::endl;
 
             std::unique_ptr<LegendreLoader> loader(LegendreLoaderFactory::build(param, path));
             display(eckit::Log::info(), loader.get(), path);
@@ -103,7 +109,10 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
             if (unload) {
                 auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader.get());
                 if (shmLoader) {
-                    eckit::Log::info() << "---" "\n" "unload" << std::endl;
+                    eckit::Log::info() << "---"
+                                          "\n"
+                                          "unload"
+                                       << std::endl;
                     shmLoader->unloadSharedMemory(path);
                     display(eckit::Log::info(), loader.get(), path);
                 }

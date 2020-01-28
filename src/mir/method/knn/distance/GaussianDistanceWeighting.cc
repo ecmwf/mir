@@ -35,16 +35,14 @@ GaussianDistanceWeighting::GaussianDistanceWeighting(const param::MIRParametrisa
     ASSERT(stddev_ > 0.);
 
     // exponent factor is used (instead of stddev) to speed weights calculations
-    exponentFactor_ = - 1. / (2. * stddev_ * stddev_);
+    exponentFactor_ = -1. / (2. * stddev_ * stddev_);
     ASSERT(exponentFactor_ < 0.);
 }
 
 
-void GaussianDistanceWeighting::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets) const {
+void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
+                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                           std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
 
@@ -54,7 +52,7 @@ void GaussianDistanceWeighting::operator()(
     // calculate neighbour points weights, and their total (for normalisation)
     double sum = 0.;
     for (auto& n : neighbours) {
-        const double d2 = Point3::distance2(point, n.point());
+        const double d2     = Point3::distance2(point, n.point());
         const double weight = std::exp(d2 * exponentFactor_);
 
         triplets.emplace_back(WeightMatrix::Triplet(ip, n.payload(), weight));
@@ -94,4 +92,3 @@ static DistanceWeightingBuilder<GaussianDistanceWeighting> __distance("gaussian"
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

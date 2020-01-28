@@ -16,58 +16,57 @@
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/param/MIRParametrisation.h"
 
 namespace mir {
 namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation):
+template <class Invtrans>
+ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
-
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToNamedGrid*>(&other);
     return o && (gridname_ == o->gridname_);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToNamedGrid<Invtrans>::print(std::ostream& out) const {
     out << "ShToNamedGrid[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",gridname=" << gridname_
-        << "]";
+    out << ",gridname=" << gridname_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                      const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToNamedGrid<Invtrans>::name() const {
     return "ShToNamedGrid";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation();
@@ -75,12 +74,11 @@ const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() co
 
 
 namespace {
-static ActionBuilder< ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
-static ActionBuilder< ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
-}
+static ActionBuilder<ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
+static ActionBuilder<ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

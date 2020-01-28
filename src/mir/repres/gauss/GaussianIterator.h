@@ -27,7 +27,8 @@ namespace gauss {
 class GaussianIterator : public Iterator {
 public:
     using ni_type = std::function<long(size_t)>;
-    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni, const util::Rotation& = util::Rotation());
+    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni,
+                     const util::Rotation& = util::Rotation());
     ~GaussianIterator();
 
 private:
@@ -58,4 +59,3 @@ protected:
 
 
 #endif
-

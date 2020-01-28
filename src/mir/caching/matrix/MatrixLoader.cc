@@ -25,9 +25,7 @@ namespace caching {
 namespace matrix {
 
 
-MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
-    path_(path.realName()) {
-}
+MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) : path_(path.realName()) {}
 
 
 MatrixLoader::~MatrixLoader() = default;
@@ -58,12 +56,12 @@ eckit::Channel& MatrixLoader::warn() {
 }
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, MatrixLoaderFactory* >* m = nullptr;
+static pthread_once_t once                            = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                      = nullptr;
+static std::map<std::string, MatrixLoaderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, MatrixLoaderFactory* >();
+    m           = new std::map<std::string, MatrixLoaderFactory*>();
 }
 
 
@@ -117,4 +115,3 @@ void MatrixLoaderFactory::list(std::ostream& out) {
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-

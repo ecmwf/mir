@@ -57,8 +57,8 @@ bool ConservativeFiniteElement::sameAs(const Method& other) const {
 }
 
 
-void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
-                            const repres::Representation& out) const {
+void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
+                                         const repres::Representation& in, const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
     log << "ConservativeFiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 

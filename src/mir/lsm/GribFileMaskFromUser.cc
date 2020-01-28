@@ -27,4 +27,3 @@ std::string GribFileMaskFromUser::cacheName() const {
 
 }  // namespace lsm
 }  // namespace mir
-

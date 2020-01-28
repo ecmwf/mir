@@ -21,7 +21,9 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Wind.h"
 
-#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+#define EXPECTV(a)                                \
+    log << "\tEXPECT(" << #a << ")" << std::endl; \
+    EXPECT(a)
 
 
 namespace mir {
@@ -30,14 +32,13 @@ namespace unit {
 
 
 struct FakeInput : public param::RuntimeParametrisation {
-    FakeInput(size_t paramId) : param::RuntimeParametrisation(simple_) {
-        simple_.set("paramId", paramId);
-    }
+    FakeInput(size_t paramId) : param::RuntimeParametrisation(simple_) { simple_.set("paramId", paramId); }
     size_t paramId() const {
         long id = 0;
         ASSERT(simple_.get("paramId", id));
         return size_t(id);
     }
+
 private:
     param::SimpleParametrisation simple_;
 };
@@ -51,9 +52,9 @@ CASE("MIR-324") {
     static const long PARAMID_U = LibMir::instance().configuration().getLong("parameter-id-u", 131);
     static const long PARAMID_V = LibMir::instance().configuration().getLong("parameter-id-v", 132);
 
-    const std::vector<size_t> _table {0, 129, 171, 200};
-    const std::vector<long> _user_u {0, 1, PARAMID_U, 999, 999999};
-    const std::vector<long> _user_v {0, 1, PARAMID_V, 999, 999999};
+    const std::vector<size_t> _table{0, 129, 171, 200};
+    const std::vector<long> _user_u{0, 1, PARAMID_U, 999, 999999};
+    const std::vector<long> _user_v{0, 1, PARAMID_V, 999, 999999};
 
 
     SECTION("Wind: u/v paramId from vorticity/divergence") {
@@ -77,13 +78,10 @@ CASE("MIR-324") {
 
                     static size_t c = 1;
                     log << "Test " << c++ << ":"
-                        << "\n\t   input paramId = " << input.paramId()
-                        << "\n\t + paramId.u " << (user_u ? "(set)" : "(not set)") << " = " << user_u
-                        << "\n\t + paramId.v " << (user_v ? "(set)" : "(not set)") << " = " << user_v
-                        << "\n\t = "
-                        << "\n\t   u = " << u
-                        << "\n\t   v = " << v
-                        << std::endl;
+                        << "\n\t   input paramId = " << input.paramId() << "\n\t + paramId.u "
+                        << (user_u ? "(set)" : "(not set)") << " = " << user_u << "\n\t + paramId.v "
+                        << (user_v ? "(set)" : "(not set)") << " = " << user_v << "\n\t = "
+                        << "\n\t   u = " << u << "\n\t   v = " << v << std::endl;
 
                     EXPECTV(u == (user_u ? size_t(user_u) : PARAMID_U + table * 1000));
                     EXPECTV(v == (user_v ? size_t(user_v) : PARAMID_V + table * 1000));
@@ -99,7 +97,6 @@ CASE("MIR-324") {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
 }
-

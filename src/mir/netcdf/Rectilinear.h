@@ -23,60 +23,48 @@ namespace netcdf {
 
 class Rectilinear : public GridSpec {
 public:
-
-  Rectilinear(const Variable &,
-                  double north,
-                  double south,
-                  const std::vector<double>& latitudes,
-                  double west,
-                  double east,
-                  const std::vector<double>& longitudes);
+    Rectilinear(const Variable&, double north, double south, const std::vector<double>& latitudes, double west,
+                double east, const std::vector<double>& longitudes);
 
 
+    virtual ~Rectilinear();
 
-  virtual ~Rectilinear();
-
-  // -- Methods
+    // -- Methods
 
 
-  static GridSpec* guess(const Variable &variable,
-                         const Variable &latitudes,
-                         const Variable &longitudes);
+    static GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes);
 
 
 protected:
+    // -- Members
 
-  // -- Members
+    bool jScansPositively_;
 
-  bool jScansPositively_;
+    double north_;
+    double south_;
+    std::vector<double> latitudes_;
 
-  double north_;
-  double south_;
-  std::vector<double> latitudes_;
-
-  double west_;
-  double east_;
-  std::vector<double> longitudes_;
+    double west_;
+    double east_;
+    std::vector<double> longitudes_;
 
 private:
+    Rectilinear(const Rectilinear&);
+    Rectilinear& operator=(const Rectilinear&);
 
-  Rectilinear(const Rectilinear &);
-  Rectilinear &operator=(const Rectilinear &);
 
+    // - Methods
 
-  // - Methods
+    virtual void print(std::ostream& s) const;
 
-  virtual void print(std::ostream &s) const;
+    // For MIR
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, long&) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
 
-  // For MIR
-  virtual bool has(const std::string& name) const;
-  virtual bool get(const std::string&, long&) const;
-  virtual bool get(const std::string&, std::string&) const;
-  virtual bool get(const std::string &name, double &value) const;
-  virtual bool get(const std::string &name, std::vector<double> &value) const;
-
-  virtual void reorder(MIRValuesVector& values) const;
-
+    virtual void reorder(MIRValuesVector& values) const;
 };
 
 

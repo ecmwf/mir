@@ -34,7 +34,7 @@ class MIRParametrisation;
 namespace api {
 class MIREstimation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -43,7 +43,6 @@ namespace output {
 
 class MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -65,11 +64,11 @@ public:
 
     // -- Methods
 
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&) = 0;
-    virtual size_t save(const param::MIRParametrisation&, context::Context&) = 0;
-    virtual bool sameAs(const MIROutput& other) const = 0;
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&)                                   = 0;
+    virtual size_t save(const param::MIRParametrisation&, context::Context&)                                   = 0;
+    virtual bool sameAs(const MIROutput& other) const                                                          = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
 
     virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
@@ -84,7 +83,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -102,7 +100,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -124,17 +121,18 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
 class MIROutputFactory {
     const std::string name_;
     const std::vector<std::string>& extensions_;
+
 protected:
     MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions = {});
     virtual ~MIROutputFactory();
     static const std::vector<std::string> no_extensions;
+
 public:
     virtual MIROutput* make(const std::string& path) = 0;
     static MIROutput* build(const std::string& path, const param::MIRParametrisation&);
@@ -142,16 +140,14 @@ public:
 };
 
 
-template<class T>
+template <class T>
 class MIROutputBuilder : public MIROutputFactory {
-    virtual MIROutput* make(const std::string& path) {
-        return new T(path);
-    }
+    virtual MIROutput* make(const std::string& path) { return new T(path); }
+
 public:
     MIROutputBuilder(const std::string& name) : MIROutputFactory(name) {}
     MIROutputBuilder(const std::string& name, const std::vector<std::string>& extensions) :
-        MIROutputFactory(name, extensions) {
-    }
+        MIROutputFactory(name, extensions) {}
 };
 
 
@@ -160,4 +156,3 @@ public:
 
 
 #endif
-

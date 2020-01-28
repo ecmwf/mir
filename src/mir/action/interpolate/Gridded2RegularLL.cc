@@ -37,19 +37,20 @@ Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametris
 
     if (parametrisation_.userParametrisation().get("area", value)) {
         ASSERT(value.size() == 4);
-        bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
+        bbox_      = util::BoundingBox(value[0], value[1], value[2], value[3]);
         reference_ = PointLatLon(bbox_.south(), bbox_.west());
     }
 
     repres::latlon::LatLon::globaliseBoundingBox(bbox_, increments_, reference_);
 
-    eckit::Log::debug<LibMir>()
-            << "Gridded2RegularLL: globalise:"
-            << "\n\t" << increments_
-            << "\n\t" << bbox_
-            << "\n\t" "shifted in latitude? " << increments_.isLatitudeShifted(bbox_)
-            << "\n\t" "shifted in longitude? " << increments_.isLongitudeShifted(bbox_)
-            << std::endl;
+    eckit::Log::debug<LibMir>() << "Gridded2RegularLL: globalise:"
+                                << "\n\t" << increments_ << "\n\t" << bbox_
+                                << "\n\t"
+                                   "shifted in latitude? "
+                                << increments_.isLatitudeShifted(bbox_)
+                                << "\n\t"
+                                   "shifted in longitude? "
+                                << increments_.isLongitudeShifted(bbox_) << std::endl;
 }
 
 
@@ -64,8 +65,11 @@ bool Gridded2RegularLL::sameAs(const Action& other) const {
 
 void Gridded2RegularLL::print(std::ostream& out) const {
     out << "Gridded2RegularLL["
-           "increments=" << increments_ << ","
-           "bbox=" << bbox_ << ",";
+           "increments="
+        << increments_
+        << ","
+           "bbox="
+        << bbox_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
@@ -81,11 +85,10 @@ const char* Gridded2RegularLL::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2RegularLL > grid2grid("interpolate.grid2regular-ll");
+static ActionBuilder<Gridded2RegularLL> grid2grid("interpolate.grid2regular-ll");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

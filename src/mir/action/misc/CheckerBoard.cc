@@ -19,19 +19,17 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace action {
 
 
-CheckerBoard::CheckerBoard(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
-}
+CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
 
 
 CheckerBoard::~CheckerBoard() = default;
@@ -41,12 +39,12 @@ bool CheckerBoard::sameAs(const Action&) const {
     return false;
 }
 
-void CheckerBoard::print(std::ostream &out) const {
+void CheckerBoard::print(std::ostream& out) const {
     out << "CheckerBoard[]";
 }
 
 
-void CheckerBoard::execute(context::Context & ctx) const {
+void CheckerBoard::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle representation(field.representation());
@@ -59,7 +57,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         frequencies.push_back(8);
     }
 
-    bool hasMissing = field.hasMissing();
+    bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();
 
     for (size_t k = 0; k < field.dimensions(); k++) {
@@ -68,7 +66,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         double minvalue = 0;
         double maxvalue = 0;
 
-        size_t first   = 0;
+        size_t first = 0;
         for (; first < values.size(); ++first) {
             if (!hasMissing || values[first] != missingValue) {
                 minvalue = values[first];
@@ -125,7 +123,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         while (iter->next()) {
             const auto& p = iter->pointUnrotated();
 
-            Latitude lat = Latitude::NORTH_POLE - p.lat();
+            Latitude lat  = Latitude::NORTH_POLE - p.lat();
             Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
             size_t c = size_t(lat.value() / dns);
@@ -148,9 +146,8 @@ const char* CheckerBoard::name() const {
 }
 
 
-static ActionBuilder< CheckerBoard > action("misc.checkerboard");
+static ActionBuilder<CheckerBoard> action("misc.checkerboard");
 
 
 }  // namespace action
 }  // namespace mir
-

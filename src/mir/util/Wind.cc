@@ -12,9 +12,9 @@
 
 #include "mir/util/Wind.h"
 
+#include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/config/Configuration.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -69,4 +69,3 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u,
 
 }  // namespace util
 }  // namespace mir
-

@@ -13,12 +13,12 @@
 #ifndef mir_netcdf_Variable
 #define mir_netcdf_Variable
 
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
-#include "mir/netcdf/Endowed.h"
 #include "mir/data/MIRValuesVector.h"
+#include "mir/netcdf/Endowed.h"
 
 
 namespace mir {
@@ -36,12 +36,12 @@ class Field;
 
 class Variable : public Endowed {
 public:
-    Variable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions);
+    Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
     virtual ~Variable();
 
     // -- Methods
 
-    void setMatrix(Matrix *);
+    void setMatrix(Matrix*);
     size_t numberOfValues() const;
     virtual std::vector<std::string> coordinates() const;
     virtual std::vector<std::string> cellMethods() const;
@@ -53,53 +53,52 @@ public:
 
 
     virtual void validate() const;
-    virtual bool sameAs(const Variable &) const;
-    virtual void dump(std::ostream &s) const;
-    virtual void dumpData(std::ostream &s) const;
-    virtual void dumpAttributes(std::ostream &s, const char* prefix) const;
+    virtual bool sameAs(const Variable&) const;
+    virtual void dump(std::ostream& s) const;
+    virtual void dumpData(std::ostream& s) const;
+    virtual void dumpAttributes(std::ostream& s, const char* prefix) const;
 
     virtual void create(int nc) const;
     virtual void save(int nc) const;
-    virtual Variable *clone(Dataset &owner) const;
-    virtual void merge(const Variable &, MergePlan &);
-
+    virtual Variable* clone(Dataset& owner) const;
+    virtual void merge(const Variable&, MergePlan&);
 
 
     // From Endowed
-    virtual const std::string &name() const;
-    virtual const std::string &path() const;
+    virtual const std::string& name() const;
+    virtual const std::string& path() const;
 
-    Matrix *matrix() const;
+    Matrix* matrix() const;
 
-    const std::vector<Dimension *> &dimensions() const;
+    const std::vector<Dimension*>& dimensions() const;
 
     virtual bool dummy() const;
-    virtual bool sameAsDummy(const Variable &) const;
+    virtual bool sameAsDummy(const Variable&) const;
 
     virtual bool timeAxis() const;
 
-    virtual void addVirtualDimension(size_t pos, Dimension *);
-    virtual Dimension *getVirtualDimension();
-    bool sharesDimensions(const Variable &other) const;
+    virtual void addVirtualDimension(size_t pos, Dimension*);
+    virtual Dimension* getVirtualDimension();
+    bool sharesDimensions(const Variable& other) const;
 
-    virtual const std::string &ncname() const;
-    virtual void collectField(std::vector<Field *>&) const;
+    virtual const std::string& ncname() const;
+    virtual void collectField(std::vector<Field*>&) const;
 
     // ==========================================================
     // Used during identtification
 
-    virtual Variable *makeDataVariable();
-    virtual Variable *makeCoordinateVariable();
-    virtual Variable *makeSimpleVariable();
-    virtual Variable *makeCellMethodVariable();
-    virtual Variable *makeScalarCoordinateVariable();
+    virtual Variable* makeDataVariable();
+    virtual Variable* makeCoordinateVariable();
+    virtual Variable* makeSimpleVariable();
+    virtual Variable* makeCellMethodVariable();
+    virtual Variable* makeScalarCoordinateVariable();
     virtual void initCodecs();
 
     virtual void addCoordinateVariable(const Variable*);
     virtual Variable* addMissingCoordinates();
 
 
-    template<class T>
+    template <class T>
     T getAttributeValue(const std::string& name) const {
         T result;
         // std::cout << "getAttributeValue ==> " << name << std::endl;
@@ -122,35 +121,32 @@ public:
     virtual const char* kind() const;
 
     const Dataset& dataset() const;
-    Dataset& dataset() ;
+    Dataset& dataset();
 
 protected:
-
     // -- Members
 
-    Dataset &dataset_;
+    Dataset& dataset_;
     std::string name_;
-    Matrix *matrix_;
+    Matrix* matrix_;
     bool scalar_;
 
-    std::vector<Dimension *> dimensions_;
+    std::vector<Dimension*> dimensions_;
 
 private:
-
-    Variable(const Variable &);
-    Variable &operator=(const Variable &);
+    Variable(const Variable&);
+    Variable& operator=(const Variable&);
 
     // -- Methods
 
     void getAttribute(const std::string& name, std::string& value) const;
     void getAttribute(const std::string& name, double& value) const;
 
-    virtual void print(std::ostream &s) const = 0;
+    virtual void print(std::ostream& s) const = 0;
 
 
     // - Friend
-    friend std::ostream &operator<<(std::ostream &s, const Variable &v)
-    {
+    friend std::ostream& operator<<(std::ostream& s, const Variable& v) {
         v.print(s);
         return s;
     }

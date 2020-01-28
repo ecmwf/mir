@@ -17,10 +17,10 @@
 
 namespace mir {
 
- // Note: no 'log' namespace
+// Note: no 'log' namespace
 
 typedef LibMir MIR;
 
-} // namespace mir
+}  // namespace mir
 
 #endif

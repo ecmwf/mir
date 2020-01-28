@@ -32,19 +32,14 @@ bool Domain::includesPoleSouth() const {
 
 
 Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain(
-        {{west().value(),  east().value()} },
-        {{south().value(), north().value()} } );
+    return atlas::RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
 }
 
 
 void Domain::print(std::ostream& os) const {
     os << "Domain["
-       <<  "north=" << north()
-        << ",west="  << west()
-        << ",south=" << south()
-        << ",east="  << east()
-        << ",isGlobal=" << isGlobal()
+       << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east() << ",isGlobal="
+       << isGlobal()
        // << ",includesPoleNorth=" << includesPoleNorth()
        // << ",includesPoleSouth=" << includesPoleSouth()
        // << ",isPeriodicEastWest=" << isPeriodicEastWest()
@@ -52,5 +47,5 @@ void Domain::print(std::ostream& os) const {
 }
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

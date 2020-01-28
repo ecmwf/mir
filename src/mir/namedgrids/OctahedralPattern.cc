@@ -11,8 +11,8 @@
 
 
 #include "mir/namedgrids/OctahedralPattern.h"
-#include "mir/namedgrids/NamedOctahedral.h"
 #include "eckit/utils/Translator.h"
+#include "mir/namedgrids/NamedOctahedral.h"
 
 #include <iostream>
 
@@ -20,18 +20,16 @@ namespace mir {
 namespace namedgrids {
 
 
-OctahedralPattern::OctahedralPattern(const std::string &name):
-    NamedGridPattern(name) {
-}
+OctahedralPattern::OctahedralPattern(const std::string& name) : NamedGridPattern(name) {}
 
 
 OctahedralPattern::~OctahedralPattern() = default;
 
-void OctahedralPattern::print(std::ostream &out) const {
-    out << "OctahedralPattern[pattern=" <<  pattern_ << "]";
+void OctahedralPattern::print(std::ostream& out) const {
+    out << "OctahedralPattern[pattern=" << pattern_ << "]";
 }
 
-const NamedGrid *OctahedralPattern::make(const std::string& name) const {
+const NamedGrid* OctahedralPattern::make(const std::string& name) const {
     return new NamedOctahedral(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 
@@ -44,4 +42,3 @@ static OctahedralPattern pattern("^[oO][1-9][0-9]*$");
 
 }  // namespace namedgrids
 }  // namespace mir
-

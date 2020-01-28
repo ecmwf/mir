@@ -16,9 +16,9 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
-#include "eckit/parser/YAMLParser.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"

@@ -22,7 +22,6 @@ namespace output {
 
 class RawOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    ~RawOutput(); // Change to virtual if base class
+    ~RawOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     double* values_;
@@ -84,7 +81,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
@@ -99,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RawOutput& p)
+    // friend ostream& operator<<(ostream& s,const RawOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

@@ -13,8 +13,8 @@
 #ifndef SetMetadata_H
 #define SetMetadata_H
 
-#include "mir/action/plan/Action.h"
 #include <map>
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
@@ -23,89 +23,84 @@ namespace action {
 
 class SetMetadata : public Action {
 public:
-
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     SetMetadata(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~SetMetadata(); // Change to virtual if base class
+    virtual ~SetMetadata();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
-
-// -- Members
+    // -- Members
 
     std::map<std::string, long> metadata_;
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
-
-// No copy allowed
+    // No copy allowed
 
     SetMetadata(const SetMetadata&);
     SetMetadata& operator=(const SetMetadata&);
 
-// -- Members
+    // -- Members
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const SetMetadata& p)
+    // friend ostream& operator<<(ostream& s,const SetMetadata& p)
     //  { p.print(s); return s; }
-
 };
 
 
 }  // namespace action
 }  // namespace mir
 #endif
-

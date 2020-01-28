@@ -23,7 +23,6 @@ namespace truncation {
 
 class Ordinal : public style::Truncation {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     const long truncation_;
@@ -73,7 +71,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -83,4 +80,3 @@ private:
 
 
 #endif
-

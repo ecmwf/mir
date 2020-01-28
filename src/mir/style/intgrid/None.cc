@@ -18,13 +18,11 @@ namespace style {
 namespace intgrid {
 
 
-static IntgridBuilder< None > __intgrid1("none");
-static IntgridBuilder< None > __intgrid2("NONE");
+static IntgridBuilder<None> __intgrid1("none");
+static IntgridBuilder<None> __intgrid2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation, long) :
-    style::Intgrid(parametrisation) {
-}
+None::None(const param::MIRParametrisation& parametrisation, long) : style::Intgrid(parametrisation) {}
 
 
 const std::string& None::gridname() const {
@@ -36,4 +34,3 @@ const std::string& None::gridname() const {
 }  // namespace intgrid
 }  // namespace style
 }  // namespace mir
-

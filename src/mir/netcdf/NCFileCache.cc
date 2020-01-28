@@ -16,9 +16,7 @@
 namespace mir {
 namespace netcdf {
 
-NCFileCache::NCFileCache() {
-
-}
+NCFileCache::NCFileCache() {}
 
 NCFileCache::~NCFileCache() {
     for (auto j = files_.begin(); j != files_.end(); ++j) {
@@ -26,10 +24,10 @@ NCFileCache::~NCFileCache() {
     }
 }
 
-NCFile &NCFileCache::lookUp(const std::string &path) {
+NCFile& NCFileCache::lookUp(const std::string& path) {
     auto j = files_.find(path);
     if (j == files_.end()) {
-        NCFile *f = new NCFile(path);
+        NCFile* f    = new NCFile(path);
         files_[path] = f;
         return *f;
     }

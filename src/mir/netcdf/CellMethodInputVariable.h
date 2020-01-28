@@ -21,23 +21,21 @@ namespace netcdf {
 
 class CellMethodInputVariable : public InputVariable {
 public:
-
-    CellMethodInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions);
+    CellMethodInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
     virtual ~CellMethodInputVariable();
 
 private:
-
     // From InputVariable
 
-    Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const ;
+    Variable* makeOutputVariable(Dataset& owner, const std::string& name,
+                                 const std::vector<Dimension*>& dimensions) const;
 
     // From variable
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
     const char* kind() const;
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -21,92 +21,87 @@ namespace action {
 
 
 class FrameFilter : public Action {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     FrameFilter(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~FrameFilter(); // Change to virtual if base class
+    virtual ~FrameFilter();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
-// No copy allowed
+private:
+    // No copy allowed
 
     FrameFilter(const FrameFilter&);
     FrameFilter& operator=(const FrameFilter&);
 
-// -- Members
+    // -- Members
 
     size_t size_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
     virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FrameFilter& p)
+    // friend ostream& operator<<(ostream& s,const FrameFilter& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace action
 }  // namespace mir
 #endif
-

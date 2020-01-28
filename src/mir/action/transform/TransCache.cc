@@ -20,9 +20,7 @@ namespace action {
 namespace transform {
 
 
-TransCache::TransCache() :
-    loader_(nullptr) {
-}
+TransCache::TransCache() : loader_(nullptr) {}
 
 
 TransCache::~TransCache() {
@@ -39,7 +37,7 @@ TransCache& TransCache::operator=(cache_t&& transCache) {
         delete loader_;
     }
 
-    loader_ = nullptr;
+    loader_     = nullptr;
     transCache_ = transCache;
 
     return *this;

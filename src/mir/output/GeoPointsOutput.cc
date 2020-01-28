@@ -10,9 +10,9 @@
  */
 
 
+#include "mir/output/GeoPointsOutput.h"
 #include <sstream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/output/GeoPointsOutput.h"
 
 
 namespace mir {
@@ -21,9 +21,7 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsOutput::GeoPointsOutput():
-    once_(true) {
-}
+GeoPointsOutput::GeoPointsOutput() : once_(true) {}
 
 
 GeoPointsOutput::~GeoPointsOutput() = default;
@@ -41,8 +39,7 @@ bool GeoPointsOutput::once() {
 }
 
 
-bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation&,
-                                          const param::MIRParametrisation&) const {
+bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
     return true;
 }
 
@@ -54,4 +51,3 @@ bool GeoPointsOutput::printParametrisation(std::ostream&, const param::MIRParame
 
 }  // namespace output
 }  // namespace mir
-

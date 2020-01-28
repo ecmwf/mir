@@ -21,89 +21,84 @@ namespace repres {
 
 
 class StretchedGG : public Gridded {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     StretchedGG(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~StretchedGG(); // Change to virtual if base class
+    virtual ~StretchedGG();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
+private:
     StretchedGG();
 
-// No copy allowed
+    // No copy allowed
 
     StretchedGG(const StretchedGG&);
     StretchedGG& operator=(const StretchedGG&);
 
-// -- Members
+    // -- Members
 
 
-// -- Methods
+    // -- Methods
     // None
 
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void fill(grib_info&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const StretchedGG& p)
+    // friend ostream& operator<<(ostream& s,const StretchedGG& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace repres
 }  // namespace mir
 #endif
-

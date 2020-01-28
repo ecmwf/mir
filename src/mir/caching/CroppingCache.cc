@@ -23,19 +23,15 @@ namespace mir {
 namespace caching {
 
 
-CroppingCache::CroppingCache():
+CroppingCache::CroppingCache() :
     eckit::CacheManager<CroppingCacheTraits>(
         "Cropper",  // dummy -- would be used in load() / save() static functions
-        LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {
-}
+        LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+        eckit::Resource<size_t>("$MIR_AREA_CACHE_SIZE", 0)) {}
 
 
 void CroppingCacheEntry::print(std::ostream& out) const {
-    out << "CroppingCacheEntry[size="
-        <<  mapping_.size()
-        << ",bbox=" << bbox_
+    out << "CroppingCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
         << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
 }
 
@@ -67,7 +63,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
 }
 
 
-void CroppingCacheEntry::load(const eckit::PathName& path)  {
+void CroppingCacheEntry::load(const eckit::PathName& path) {
 
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
@@ -102,7 +98,7 @@ void CroppingCacheEntry::load(const eckit::PathName& path)  {
 //--------------------------------------------------------------------------
 
 
-const char *CroppingCacheTraits::name() {
+const char* CroppingCacheTraits::name() {
     return "mir/cropping";
 }
 
@@ -112,7 +108,7 @@ int CroppingCacheTraits::version() {
 }
 
 
-const char *CroppingCacheTraits::extension() {
+const char* CroppingCacheTraits::extension() {
     return ".area";
 }
 
@@ -129,4 +125,3 @@ void CroppingCacheTraits::load(const eckit::CacheManagerBase&, value_type& c, co
 
 }  // namespace caching
 }  // namespace mir
-

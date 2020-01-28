@@ -21,18 +21,15 @@
 namespace mir {
 namespace netcdf {
 
-InputAttribute::InputAttribute(Endowed &owner, const std::string &name, Value *value):
-    Attribute(owner, name, value)
-{
-}
+InputAttribute::InputAttribute(Endowed& owner, const std::string& name, Value* value) : Attribute(owner, name, value) {}
 
 InputAttribute::~InputAttribute() = default;
 
-void InputAttribute::clone(Endowed &owner) const {
+void InputAttribute::clone(Endowed& owner) const {
     owner.add(new OutputAttribute(owner, name_, value_->clone()));
 }
 
-void InputAttribute::print(std::ostream &out) const {
+void InputAttribute::print(std::ostream& out) const {
     out << "InputAttribute[name=" << name_ << "]";
 }
 

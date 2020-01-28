@@ -24,19 +24,17 @@ namespace style {
 
 class CustomParametrisation : public param::MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    CustomParametrisation( const std::string& name,
-                           const std::map<std::string, std::vector<std::string> >& params,
-                           const param::MIRParametrisation &parametrisation);
+    CustomParametrisation(const std::string& name, const std::map<std::string, std::vector<std::string> >& params,
+                          const param::MIRParametrisation& parametrisation);
 
     // -- Destructor
 
-    virtual ~CustomParametrisation(); // Change to virtual if base class
+    virtual ~CustomParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,14 +55,13 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    template<class T>
-    bool _get(const std::string& name,  T& value) const;
+    template <class T>
+    bool _get(const std::string& name, T& value) const;
 
     // -- Overridden methods
 
@@ -87,7 +84,7 @@ protected:
     virtual bool get(const std::string& name, std::vector<double>& value) const;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Class members
     // None
@@ -96,13 +93,11 @@ protected:
     // None
 
 private:
-
-
     // -- Members
 
     std::string name_;
     std::map<std::string, std::vector<std::string> > params_;
-    const param::MIRParametrisation &parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
     // None
@@ -118,11 +113,9 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
 #endif
-

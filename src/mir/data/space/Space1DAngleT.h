@@ -20,10 +20,9 @@ namespace data {
 namespace space {
 
 
-template< int SCALE, int SYMMETRY >
+template <int SCALE, int SYMMETRY>
 class Space1DAngleT : public Space {
 public:
-
     // -- Exceptions
     // None
 
@@ -58,7 +57,6 @@ public:
     // None
 
 private:
-
     // -- Types
     // None
 
@@ -79,7 +77,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -89,4 +86,3 @@ private:
 
 
 #endif
-

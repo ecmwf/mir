@@ -14,7 +14,6 @@
 #define mir_netcdf_Matrix
 
 
-
 #include "eckit/memory/Counted.h"
 
 #include <string>
@@ -29,38 +28,40 @@ class Remapping;
 class Codec;
 
 class Reshape;
-template<class T> class Mapper;
+template <class T>
+class Mapper;
 
 class Matrix : public eckit::Counted {
 public:
+    Matrix(Type& type, const std::string& name, size_t size);
 
-    Matrix(Type &type, const std::string &name, size_t size);
 
+    Type& type() const;
+    void type(Type&);
 
-    Type &type() const;
-    void type(Type &);
-
-    const std::string &name() const;
+    const std::string& name() const;
     size_t size() const;
 
     // =================================================
 
-    virtual void read(std::vector<double> &) const ;
-    virtual void read(std::vector<float> &) const ;
-    virtual void read(std::vector<long> &) const ;
-    virtual void read(std::vector<short> &) const ;
-    virtual void read(std::vector<unsigned char> &) const ;
-    virtual void read(std::vector<long long> &) const ;
-    virtual void read(std::vector<std::string> &) const ;
+    virtual void read(std::vector<double>&) const;
+    virtual void read(std::vector<float>&) const;
+    virtual void read(std::vector<long>&) const;
+    virtual void read(std::vector<short>&) const;
+    virtual void read(std::vector<unsigned char>&) const;
+    virtual void read(std::vector<long long>&) const;
+    virtual void read(std::vector<std::string>&) const;
 
-    virtual void read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<double>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<float>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<short>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<unsigned char>&, const std::vector<size_t>& start,
+                      const std::vector<size_t>& count) const;
+    virtual void read(std::vector<long long>&, const std::vector<size_t>& start,
+                      const std::vector<size_t>& count) const;
 
-    template<class T>
+    template <class T>
     std::vector<T> values() const {
         std::vector<T> result;
         read(result);
@@ -68,38 +69,35 @@ public:
     }
 
 public:
+    void dump(std::ostream&) const;
+    virtual void dumpTree(std::ostream&, size_t) const;
+    void save(int nc, int varid, const std::string& path) const;
 
-    void dump(std::ostream &) const;
-    virtual void dumpTree(std::ostream &, size_t) const;
-    void save(int nc, int varid, const std::string &path) const;
+    void printValues(std::ostream&) const;
+    void missingValue(Value*);
+    Value* missingValue() const;
 
-    void printValues(std::ostream &) const;
-    void missingValue(Value *) ;
-    Value *missingValue() const;
-
-    void codec(Codec *);
-    Codec *codec() const;
+    void codec(Codec*);
+    Codec* codec() const;
 
     // ========================================================
 
     // ========================================================
 
 protected:
-
     virtual ~Matrix();
 
     // -- Members
 
-    Type *type_;
-    Value *missingValue_;
-    Codec *codec_;
+    Type* type_;
+    Value* missingValue_;
+    Codec* codec_;
     std::string name_;
     size_t size_;
 
 private:
-
-    Matrix(const Matrix &);
-    Matrix &operator=(const Matrix &);
+    Matrix(const Matrix&);
+    Matrix& operator=(const Matrix&);
 
     // -- Members
 
@@ -107,19 +105,17 @@ private:
     // -- Methods
 
 
-    virtual void print(std::ostream &out) const = 0;
+    virtual void print(std::ostream& out) const = 0;
 
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &out, const Matrix &v)
-    {
+    friend std::ostream& operator<<(std::ostream& out, const Matrix& v) {
         v.print(out);
         return out;
     }
 };
 
 
-
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

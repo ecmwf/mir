@@ -30,79 +30,79 @@ Codec::Codec() = default;
 
 Codec::~Codec() = default;
 
-void Codec::decode(std::vector<double> &) const {
+void Codec::decode(std::vector<double>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<double> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::decode(std::vector<float> &) const {
+void Codec::decode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::decode(std::vector<long> &) const {
+void Codec::decode(std::vector<long>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::decode(std::vector<short> &) const {
+void Codec::decode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::decode(std::vector<unsigned char> &) const {
+void Codec::decode(std::vector<unsigned char>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<unsigned char> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::decode(std::vector<long long> &) const {
+void Codec::decode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<double> &) const {
+void Codec::encode(std::vector<double>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<double> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<float> &) const {
+void Codec::encode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<long> &) const {
+void Codec::encode(std::vector<long>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<short> &) const {
+void Codec::encode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<unsigned char> &) const {
+void Codec::encode(std::vector<unsigned char>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<unsigned char> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::encode(std::vector<long long> &) const {
+void Codec::encode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Codec::addAttributes(Variable &) const {
+void Codec::addAttributes(Variable&) const {
     std::ostringstream os;
     os << "Variable::addAttributes() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -130,11 +130,10 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, CodecFactory*>();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
-CodecFactory::CodecFactory(const std::string &name):
-    name_(name) {
+CodecFactory::CodecFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -154,7 +153,7 @@ CodecFactory::~CodecFactory() {
 }
 
 
-Codec *CodecFactory::build(const std::string& name, const Variable& variable) {
+Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

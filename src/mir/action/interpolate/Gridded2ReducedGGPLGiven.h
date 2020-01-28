@@ -24,7 +24,6 @@ namespace interpolate {
 
 class Gridded2ReducedGGPLGiven : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -75,7 +73,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<long> pl_;
@@ -99,7 +96,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -109,4 +105,3 @@ private:
 
 
 #endif
-

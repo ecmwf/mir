@@ -21,33 +21,30 @@ namespace mir {
 namespace repres {
 
 
-StretchedLL::StretchedLL(const param::MIRParametrisation &parametrisation) {
-}
+StretchedLL::StretchedLL(const param::MIRParametrisation& parametrisation) {}
 
 
-StretchedLL::StretchedLL() {
-}
+StretchedLL::StretchedLL() {}
 
 
 StretchedLL::~StretchedLL() = default;
 
 
-void StretchedLL::print(std::ostream &out) const {
+void StretchedLL::print(std::ostream& out) const {
     out << "StretchedLL["
         << "]";
 }
 
 
-void StretchedLL::fill(grib_info &info) const  {
+void StretchedLL::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll"); // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

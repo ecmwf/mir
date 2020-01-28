@@ -48,7 +48,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
 
 
         // distance, up to Earth radius
-        double d = 0.;
+        double d          = 0.;
         const double dMax = util::Earth::radius();
 
 
@@ -78,8 +78,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
                     if (i < nbRealPts && j < nbRealPts) {
                         d = std::max(d, util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
-                            eckit::Log::warning()
-                                << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
+                            eckit::Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
                             return dMax;
                         }
                     }

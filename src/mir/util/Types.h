@@ -38,4 +38,3 @@ using eckit::geometry::Point3;
 
 
 #endif
-

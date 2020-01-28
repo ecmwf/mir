@@ -23,16 +23,15 @@ namespace method {
 namespace knn {
 
 
-class NearestLSM: public KNearestNeighbours {
+class NearestLSM : public KNearestNeighbours {
 public:
-
     NearestLSM(const param::MIRParametrisation&);
 
     virtual ~NearestLSM();
 
 private:
-
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
 
     /// Update matrix to account for field masked values
     virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
@@ -47,7 +46,6 @@ private:
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::DistanceWeightingWithLSM distanceWeighting_;
-
 };
 
 
@@ -57,4 +55,3 @@ private:
 
 
 #endif
-

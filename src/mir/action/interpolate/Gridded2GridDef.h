@@ -23,7 +23,6 @@ namespace interpolate {
 
 class Gridded2GridDef : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -74,7 +72,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string griddef_;
@@ -99,7 +96,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -109,4 +105,3 @@ private:
 
 
 #endif
-

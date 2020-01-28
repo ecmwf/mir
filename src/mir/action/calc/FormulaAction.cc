@@ -31,8 +31,7 @@ namespace mir {
 namespace action {
 
 
-FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation):
-    Action(parametrisation) {
+FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     std::string formula;
     ASSERT(parametrisation.get("formula", formula));
@@ -71,7 +70,7 @@ bool FormulaAction::sameAs(const Action& other) const {
 }
 
 
-void FormulaAction::print(std::ostream &out) const {
+void FormulaAction::print(std::ostream& out) const {
     out << "FormulaAction[" << *formula_ << ", metadata=" << metadata_ << "]";
 }
 
@@ -86,7 +85,6 @@ void FormulaAction::execute(context::Context& ctx) const {
     for (size_t i = 0; i < field.dimensions(); i++) {
         field.metadata(i, metadata_);
     }
-
 }
 
 
@@ -95,9 +93,8 @@ const char* FormulaAction::name() const {
 }
 
 
-static ActionBuilder< FormulaAction > __action("calc.formula");
+static ActionBuilder<FormulaAction> __action("calc.formula");
 
 
 }  // namespace action
 }  // namespace mir
-

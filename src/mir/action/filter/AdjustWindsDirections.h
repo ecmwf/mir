@@ -23,7 +23,6 @@ namespace action {
 
 class AdjustWindsDirections : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AdjustWindsDirections(); // Change to virtual if base class
+    virtual ~AdjustWindsDirections();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,13 +53,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,7 +70,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     util::Rotation rotation_;
@@ -82,7 +79,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
@@ -94,9 +91,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const AdjustWinds& p)
+    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
     //	{ p.print(s); return s; }
-
 };
 
 
@@ -105,4 +101,3 @@ private:
 
 
 #endif
-

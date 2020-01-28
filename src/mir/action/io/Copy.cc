@@ -17,9 +17,9 @@
 #include "eckit/log/Statistics.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/output/MIROutput.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -27,10 +27,9 @@ namespace action {
 namespace io {
 
 
-Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output):
+Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
     Action(parametrisation),
-    output_(output) {
-}
+    output_(output) {}
 
 
 Copy::~Copy() = default;
@@ -75,4 +74,3 @@ void Copy::estimate(context::Context&, api::MIREstimation& estimation) const {
 }  // namespace io
 }  // namespace action
 }  // namespace mir
-

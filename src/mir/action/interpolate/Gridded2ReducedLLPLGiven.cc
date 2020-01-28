@@ -21,9 +21,8 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisation& parametrisation):
-    Gridded2UnrotatedGrid(parametrisation) {
-}
+Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisation& parametrisation) :
+    Gridded2UnrotatedGrid(parametrisation) {}
 
 
 Gridded2ReducedLLPLGiven::~Gridded2ReducedLLPLGiven() = default;
@@ -49,11 +48,10 @@ const char* Gridded2ReducedLLPLGiven::name() const {
 }
 
 namespace {
-static ActionBuilder< Gridded2ReducedLLPLGiven > grid2grid("interpolate.grid2reduced-ll-pl-given");
+static ActionBuilder<Gridded2ReducedLLPLGiven> grid2grid("interpolate.grid2reduced-ll-pl-given");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

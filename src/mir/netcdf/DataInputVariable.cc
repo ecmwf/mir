@@ -15,39 +15,34 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
 
-#include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/Attribute.h"
+#include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/DataOutputVariable.h"
+#include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Field.h"
 #include "mir/netcdf/Matrix.h"
-#include "mir/netcdf/Dimension.h"
-#include "mir/netcdf/Dataset.h"
 
 
 namespace mir {
 namespace netcdf {
 
-DataInputVariable::DataInputVariable(Dataset &owner,
-                                     const std::string &name,
-                                     int id,
-                                     const std::vector<Dimension *> &dimensions):
-    InputVariable(owner, name, id, dimensions)
-{
-}
+DataInputVariable::DataInputVariable(Dataset& owner, const std::string& name, int id,
+                                     const std::vector<Dimension*>& dimensions) :
+    InputVariable(owner, name, id, dimensions) {}
 
 DataInputVariable::~DataInputVariable() = default;
 
-Variable *DataInputVariable::makeOutputVariable(Dataset &owner,
-        const std::string &name,
-        const std::vector<Dimension *> &dimensions) const {
+Variable* DataInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
+                                                const std::vector<Dimension*>& dimensions) const {
     return new DataOutputVariable(owner, name, dimensions);
 }
 
-void DataInputVariable::print(std::ostream &out) const {
+void DataInputVariable::print(std::ostream& out) const {
     out << "DataInputVariable[name=" << name_ << ",nc=" << ncname() << "]";
 }
 
-const std::string &DataInputVariable::ncname() const {
+const std::string& DataInputVariable::ncname() const {
     auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
         ncname_ = (*j).second->asString();
@@ -73,24 +68,19 @@ Variable* DataInputVariable::addMissingCoordinates() {
             found = (d->name() == (*c)->name());
         }
         if (!found) {
-            eckit::Log::warning() << "Variable '"
-                                  << name()
-                                  << ": dimension '"
-                                  << d->name()
-                                  << "' not listed in coordinates"
-                                  << std::endl;
+            eckit::Log::warning() << "Variable '" << name() << ": dimension '" << d->name()
+                                  << "' not listed in coordinates" << std::endl;
 
             if (dataset_.hasVariable(d->name())) {
                 addCoordinateVariable(&dataset_.variable(d->name()));
             }
-
         }
     }
     return this;
 }
 
 
-void DataInputVariable::collectField(std::vector<Field *>& fields) const {
+void DataInputVariable::collectField(std::vector<Field*>& fields) const {
     fields.push_back(new Field(*this));
 }
 
@@ -108,7 +98,6 @@ size_t DataInputVariable::count2DValues() const {
 
 
     return std::accumulate(dims.begin(), dims.end(), 1ul, std::multiplies<size_t>());
-
 }
 
 void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const {
@@ -133,12 +122,11 @@ void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const
     dims.pop_back();
     dims.pop_back();
 
-    std::vector<size_t>  coords(dims.size());
-    for (int i = int(dims.size()) - 1; i >= 0; i--)
-    {
-        auto j = size_t(i);
+    std::vector<size_t> coords(dims.size());
+    for (int i = int(dims.size()) - 1; i >= 0; i--) {
+        auto j    = size_t(i);
         coords[j] = (index % dims[j]);
-        index    /= dims[j];
+        index /= dims[j];
     }
 
     for (size_t j = 0; j < coords.size(); ++j) {
@@ -158,8 +146,7 @@ const char* DataInputVariable::kind() const {
 }
 
 
-
-void DataInputVariable::dumpAttributes(std::ostream &s, const char* prefix) const {
+void DataInputVariable::dumpAttributes(std::ostream& s, const char* prefix) const {
     s << prefix << "Coordinates:" << std::endl;
     for (auto c : coordinates_) {
         s << prefix << "    " << *c << std::endl;
@@ -180,4 +167,3 @@ std::vector<std::string> DataInputVariable::coordinates() const {
 
 }  // namespace netcdf
 }  // namespace mir
-

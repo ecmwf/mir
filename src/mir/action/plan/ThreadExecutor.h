@@ -22,7 +22,6 @@ namespace action {
 
 class ThreadExecutor : public Executor {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    ~ThreadExecutor(); // Change to virtual if base class
+    ~ThreadExecutor();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,13 +52,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     ThreadExecutor(const ThreadExecutor&);
     ThreadExecutor& operator=(const ThreadExecutor&);
@@ -96,7 +93,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -105,4 +101,3 @@ private:
 
 
 #endif
-

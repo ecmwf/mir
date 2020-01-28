@@ -21,7 +21,7 @@ namespace mir {
 namespace action {
 class Action;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

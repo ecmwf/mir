@@ -27,11 +27,9 @@ class MIRConfig : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const;
 
-    int minimumPositionalArguments() const {
-        return 0;
-    }
+    int minimumPositionalArguments() const { return 0; }
 
     void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
         using namespace mir ::param;
@@ -51,26 +49,34 @@ class MIRConfig : public mir::tools::MIRTool {
     }
 
 public:
-
     // -- Contructors
 
-    MIRConfig(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRConfig(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
     }
-
 };
 
 
-void MIRConfig::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
-            "\n" "Examples: "
-            "\n" "  % " << tool << ""
-            "\n" "  % " << tool << " --param-id=157"
-            "\n" "  % " << tool << " --key=lsm input1.grib input2.grib"
-            << std::endl;
+void MIRConfig::usage(const std::string& tool) const {
+    eckit::Log::info() << "\n"
+                          "Usage: "
+                       << tool
+                       << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
+                          "\n"
+                          "Examples: "
+                          "\n"
+                          "  % "
+                       << tool
+                       << ""
+                          "\n"
+                          "  % "
+                       << tool
+                       << " --param-id=157"
+                          "\n"
+                          "  % "
+                       << tool << " --key=lsm input1.grib input2.grib" << std::endl;
 }
 
 
@@ -94,13 +100,14 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
                 }
                 return FieldParametrisation::get(name, value);
             }
+
         public:
             DummyField(long paramId) : paramId_(paramId) {}
         };
 
         display(DummyField(paramId), key);
-
-    } else {
+    }
+    else {
 
         for (size_t i = 0; i < args.count(); i++) {
 
@@ -110,14 +117,11 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
                 mir::input::MIRInput& input = grib;
                 display(input.parametrisation(), key);
             }
-
         }
-
     }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRConfig tool(argc, argv);
     return tool.start();
 }
-

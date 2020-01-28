@@ -21,18 +21,17 @@ namespace namedgrids {
 
 
 class NamedOctahedral : public NamedGrid {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    NamedOctahedral(const std::string &name, size_t N);
+    NamedOctahedral(const std::string& name, size_t N);
 
     // -- Destructor
 
-    virtual ~NamedOctahedral(); // Change to virtual if base class
+    virtual ~NamedOctahedral();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class NamedOctahedral : public NamedGrid {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual size_t gaussianNumber() const;
 
     // -- Overridden methods
@@ -70,12 +68,11 @@ class NamedOctahedral : public NamedGrid {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    NamedOctahedral(const NamedOctahedral &);
-    NamedOctahedral &operator=(const NamedOctahedral &);
+    NamedOctahedral(const NamedOctahedral&);
+    NamedOctahedral& operator=(const NamedOctahedral&);
 
     // -- Members
 
@@ -91,18 +88,14 @@ class NamedOctahedral : public NamedGrid {
 
     // -- Class methods
 
-    virtual const repres::Representation *representation() const;
-    virtual const repres::Representation *representation(const util::Rotation& rotation) const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation& rotation) const;
 
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
 #endif
-

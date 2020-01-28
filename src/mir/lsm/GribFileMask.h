@@ -26,7 +26,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -35,15 +35,12 @@ namespace lsm {
 
 class GribFileMask : public Mask {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    GribFileMask(const eckit::PathName&,
-                 const param::MIRParametrisation&,
-                 const repres::Representation&,
+    GribFileMask(const eckit::PathName&, const param::MIRParametrisation&, const repres::Representation&,
                  const std::string& which);
 
     // -- Destructor
@@ -69,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -90,12 +86,10 @@ protected:
     // None
 
 protected:
-
     const eckit::PathName path_;
 
 
 private:
-
     // -- Members
 
     std::vector<bool> mask_;
@@ -115,7 +109,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -124,4 +117,3 @@ private:
 
 
 #endif
-

@@ -30,4 +30,3 @@ size_t Space2DVectorZonalMeridional::dimensions() const {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-

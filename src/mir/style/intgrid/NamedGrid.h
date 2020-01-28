@@ -23,7 +23,6 @@ namespace intgrid {
 
 class NamedGrid : public Intgrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     const std::string gridname_;
@@ -73,7 +71,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -83,4 +80,3 @@ private:
 
 
 #endif
-

@@ -24,7 +24,6 @@ namespace param {
 
 class RuntimeParametrisation : public SimpleParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~RuntimeParametrisation(); // Change to virtual if base class
+    ~RuntimeParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -46,8 +45,8 @@ public:
 
     void unset(const std::string& name);
 
-    MIRParametrisation& set(const std::string& name, const std::string &value);
-    MIRParametrisation& set(const std::string& name, const char *value);
+    MIRParametrisation& set(const std::string& name, const std::string& value);
+    MIRParametrisation& set(const std::string& name, const char* value);
     MIRParametrisation& set(const std::string& name, float value);
     MIRParametrisation& set(const std::string& name, double value);
     MIRParametrisation& set(const std::string& name, int value);
@@ -90,7 +89,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -107,7 +105,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const param::MIRParametrisation& owner_;
@@ -115,13 +112,13 @@ private:
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     void _set(const std::string&, const T&);
 
-    template<class T>
+    template <class T>
     void _set(const std::string&, const std::vector<T>&);
 
-    template<class T>
+    template <class T>
     bool _get(const std::string&, T&) const;
 
     // -- Overridden methods
@@ -139,7 +136,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -148,4 +144,3 @@ private:
 
 
 #endif
-

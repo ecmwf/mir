@@ -18,11 +18,7 @@
 namespace mir {
 namespace netcdf {
 
-NCFile::NCFile(const std::string &path):
-    path_(path),
-    nc_(-1),
-    open_(false) {
-}
+NCFile::NCFile(const std::string& path) : path_(path), nc_(-1), open_(false) {}
 
 NCFile::~NCFile() {
     ASSERT(!open_);
@@ -31,7 +27,7 @@ NCFile::~NCFile() {
     }
 }
 
-void NCFile::print(std::ostream &out) const {
+void NCFile::print(std::ostream& out) const {
     out << "NCFile[path=" << path_ << "]";
 }
 
@@ -49,7 +45,7 @@ void NCFile::close() {
     open_ = false;
 }
 
-const std::string &NCFile::path() const {
+const std::string& NCFile::path() const {
     return path_;
 }
 

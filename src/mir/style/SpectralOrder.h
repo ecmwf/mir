@@ -23,7 +23,6 @@ namespace style {
 
 class SpectralOrder {
 public:
-
     // -- Exceptions
     // None
 
@@ -59,7 +58,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -76,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -103,20 +100,22 @@ private:
 
 class SpectralOrderFactory {
     std::string name_;
-    virtual SpectralOrder *make() = 0;
+    virtual SpectralOrder* make() = 0;
+
 protected:
     SpectralOrderFactory(const std::string&);
     virtual ~SpectralOrderFactory();
+
 public:
-    static SpectralOrder *build(const std::string&);
+    static SpectralOrder* build(const std::string&);
     static void list(std::ostream&);
 };
 
 
-template <class T> class SpectralOrderBuilder : public SpectralOrderFactory {
-    virtual SpectralOrder *make() {
-        return new T();
-    }
+template <class T>
+class SpectralOrderBuilder : public SpectralOrderFactory {
+    virtual SpectralOrder* make() { return new T(); }
+
 public:
     SpectralOrderBuilder(const std::string& name) : SpectralOrderFactory(name) {}
 };

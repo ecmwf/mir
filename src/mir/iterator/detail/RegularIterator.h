@@ -23,15 +23,16 @@ namespace detail {
 
 class RegularIterator {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc, const eckit::Fraction& ref);
+    RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                    const eckit::Fraction& ref);
 
-    RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc, const eckit::Fraction& ref, const eckit::Fraction& period);
+    RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                    const eckit::Fraction& ref, const eckit::Fraction& period);
 
     // -- Destructor
 
@@ -47,21 +48,13 @@ public:
 
     static eckit::Fraction adjust(const eckit::Fraction& target, const eckit::Fraction& inc, bool up);
 
-    const eckit::Fraction& a() const {
-        return a_;
-    }
+    const eckit::Fraction& a() const { return a_; }
 
-    const eckit::Fraction& b() const {
-        return b_;
-    }
+    const eckit::Fraction& b() const { return b_; }
 
-    const eckit::Fraction& inc() const {
-        return inc_;
-    }
+    const eckit::Fraction& inc() const { return inc_; }
 
-    size_t n() const {
-        return n_;
-    }
+    size_t n() const { return n_; }
 
     // -- Overridden methods
     // None
@@ -73,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -90,7 +82,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     eckit::Fraction a_;
@@ -112,7 +103,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -122,4 +112,3 @@ private:
 
 
 #endif
-

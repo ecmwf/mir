@@ -39,16 +39,19 @@ bool Gridded2RotatedRegularGG::sameAs(const Action& other) const {
     return o && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
-void Gridded2RotatedRegularGG::print(std::ostream &out) const {
+void Gridded2RotatedRegularGG::print(std::ostream& out) const {
     out << "Gridded2RotatedRegularGG["
-           "N=" << N_ << ","
-           "rotation=" << rotation() << ",";
+           "N="
+        << N_
+        << ","
+           "rotation="
+        << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
 
-const repres::Representation *Gridded2RotatedRegularGG::outputRepresentation() const {
+const repres::Representation* Gridded2RotatedRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RotatedGG(N_, rotation());
 }
 
@@ -57,11 +60,10 @@ const char* Gridded2RotatedRegularGG::name() const {
 }
 
 namespace {
-static ActionBuilder< Gridded2RotatedRegularGG > grid2grid("interpolate.grid2rotated-regular-gg");
+static ActionBuilder<Gridded2RotatedRegularGG> grid2grid("interpolate.grid2rotated-regular-gg");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

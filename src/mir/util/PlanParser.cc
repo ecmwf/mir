@@ -19,12 +19,10 @@ namespace mir {
 namespace util {
 
 
-PlanParser::PlanParser(std::istream &in) : StreamParser(in, true) {
-}
+PlanParser::PlanParser(std::istream& in) : StreamParser(in, true) {}
 
 
-void PlanParser::parse(action::ActionPlan &plan, const
-                       param::MIRParametrisation &parametrisation) {
+void PlanParser::parse(action::ActionPlan& plan, const param::MIRParametrisation& parametrisation) {
 
     char c = peek();
     while (c != 0) {
@@ -33,20 +31,14 @@ void PlanParser::parse(action::ActionPlan &plan, const
         if (c == ';') {
             consume(c);
         }
-
     }
-
 }
 
 
-void PlanParser::parseAction(action::ActionPlan &plan, const
-                             param::MIRParametrisation &parametrisation) {
+void PlanParser::parseAction(action::ActionPlan& plan, const param::MIRParametrisation& parametrisation) {
 
     std::string name = parseToken();
-    plan.add(name, new style::CustomParametrisation(name,
-             parseArguments(name),
-             parametrisation));
-
+    plan.add(name, new style::CustomParametrisation(name, parseArguments(name), parametrisation));
 }
 
 std::string PlanParser::parseToken() {
@@ -71,7 +63,7 @@ std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(cons
 
 
             std::string name = parseToken();
-            c = peek();
+            c                = peek();
             if (c == '=') {
                 consume('=');
 
@@ -82,7 +74,8 @@ std::map<std::string, std::vector<std::string> > PlanParser::parseArguments(cons
                 else {
                     result[name].push_back(parseToken());
                 }
-            } else {
+            }
+            else {
                 // Implicty name is action
                 // e.g. frame(1) same as frame(frame=1)
                 result[action].push_back(name);
@@ -125,6 +118,5 @@ std::vector<std::string> PlanParser::parseValues() {
 }
 
 
-} // namespace util
-} // namespace mir
-
+}  // namespace util
+}  // namespace mir

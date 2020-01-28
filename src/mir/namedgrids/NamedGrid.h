@@ -24,7 +24,7 @@ class Representation;
 namespace util {
 class Rotation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,7 +32,6 @@ namespace namedgrids {
 
 class NamedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,9 +51,9 @@ public:
 
     // -- Methods
 
-    virtual const repres::Representation* representation() const = 0;
+    virtual const repres::Representation* representation() const                               = 0;
     virtual const repres::Representation* representation(const util::Rotation& rotation) const = 0;
-    virtual size_t gaussianNumber() const = 0;
+    virtual size_t gaussianNumber() const                                                      = 0;
 
     // -- Overridden methods
     // None
@@ -69,7 +68,6 @@ public:
 
 
 protected:
-
     NamedGrid(const std::string& name);
     virtual ~NamedGrid();
 
@@ -91,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -121,4 +118,3 @@ private:
 
 
 #endif
-

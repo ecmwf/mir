@@ -22,14 +22,13 @@ namespace reduced {
 
 
 ReducedClassic::ReducedClassic(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
-    Classic(N, bbox, angularPrecision) {
-}
+    Classic(N, bbox, angularPrecision) {}
 
 
 ReducedClassic::~ReducedClassic() = default;
 
 
-void ReducedClassic::print(std::ostream &out) const {
+void ReducedClassic::print(std::ostream& out) const {
     out << "ReducedClassic[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
 
@@ -59,4 +58,3 @@ bool ReducedClassic::sameAs(const Representation& other) const {
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

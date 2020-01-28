@@ -24,7 +24,6 @@ namespace transform {
 
 class ShVodToUV : public Action {
 public:
-
     // -- Types
 
     using atlas_config_t = atlas::util::Config;
@@ -38,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShVodToUV(); // Change to virtual if base class
+    virtual ~ShVodToUV();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,13 +58,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -77,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     atlas_config_t options_;
@@ -99,7 +96,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -109,4 +105,3 @@ private:
 
 
 #endif
-

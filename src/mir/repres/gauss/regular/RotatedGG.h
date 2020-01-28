@@ -25,18 +25,18 @@ namespace regular {
 
 class RotatedGG : public Regular {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
     RotatedGG(const param::MIRParametrisation&);
-    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    RotatedGG(size_t N, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
+              double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~RotatedGG(); // Change to virtual if base class
+    virtual ~RotatedGG();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,14 +56,13 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -75,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -102,9 +100,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedGG& p)
+    // friend ostream& operator<<(ostream& s,const RotatedGG& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -115,4 +112,3 @@ private:
 
 
 #endif
-

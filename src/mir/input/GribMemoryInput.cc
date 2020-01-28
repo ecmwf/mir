@@ -38,4 +38,3 @@ void GribMemoryInput::print(std::ostream& out) const {
 
 }  // namespace input
 }  // namespace mir
-

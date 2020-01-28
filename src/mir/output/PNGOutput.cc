@@ -125,11 +125,11 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
         png_set_IHDR(png_ptr, info_ptr, Ni, Nj, encoder->bit_depth(), encoder->color_type(), PNG_INTERLACE_NONE,
                      PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-//        png_color_16 trans;
-//        if (hasMissing_) {
-//            trans.gray =
-//            png_set_tRNS(png_ptr, info_ptr, nullptr, 0, &trans);
-//        }
+        //        png_color_16 trans;
+        //        if (hasMissing_) {
+        //            trans.gray =
+        //            png_set_tRNS(png_ptr, info_ptr, nullptr, 0, &trans);
+        //        }
 
         png_write_info(png_ptr, info_ptr);
         call_zero(setjmp(png_jmpbuf(png_ptr)), "write header end");
@@ -209,7 +209,8 @@ PNGEncoderFactory::PNGEncoderFactory(const std::string& name) : name_(name) {
 
 PNGEncoderFactory::~PNGEncoderFactory() = default;
 
-const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param, const data::MIRField& field) {
+const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param,
+                                                      const data::MIRField& field) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -327,8 +328,8 @@ private:
     const bool hasMissing_;
 };
 
-static PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>>  encoder1("8-bit/g");
-static PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>>  encoder2("8-bit/ga");
+static PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>> encoder1("8-bit/g");
+static PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>> encoder2("8-bit/ga");
 static PNGEncoderBuilder<PNGEncoderT<1, 0, 2, uint_fast16_t>> encoder3("16-bit/g");
 static PNGEncoderBuilder<PNGEncoderT<1, 1, 2, uint_fast16_t>> encoder4("16-bit/ga");
 static PNGEncoderBuilder<PNGEncoderT<3, 0, 1, uint_fast32_t>> encoder5("8-bit/rgb");

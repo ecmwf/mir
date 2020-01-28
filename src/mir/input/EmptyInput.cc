@@ -22,7 +22,7 @@ namespace mir {
 namespace input {
 
 
-EmptyInput::EmptyInput(): calls_(0) {
+EmptyInput::EmptyInput() : calls_(0) {
     parametrisation_.set("gridded", true);
     parametrisation_.set("gridType", "none");
 }
@@ -32,7 +32,7 @@ EmptyInput::~EmptyInput() = default;
 
 
 bool EmptyInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const EmptyInput *>(&other);
+    auto o = dynamic_cast<const EmptyInput*>(&other);
     return o;
 }
 
@@ -42,7 +42,7 @@ bool EmptyInput::next() {
 }
 
 
-const param::MIRParametrisation &EmptyInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& EmptyInput::parametrisation(size_t which) const {
     ASSERT(which == 0);
     return parametrisation_;
 }
@@ -53,19 +53,16 @@ data::MIRField EmptyInput::field() const {
 }
 
 
-void EmptyInput::print(std::ostream &out) const {
+void EmptyInput::print(std::ostream& out) const {
     out << "EmptyInput[...]";
 }
 
 
-void EmptyInput::latitudes(std::vector<double>&) const {
-}
+void EmptyInput::latitudes(std::vector<double>&) const {}
 
 
-void EmptyInput::longitudes(std::vector<double>&) const {
-}
+void EmptyInput::longitudes(std::vector<double>&) const {}
 
 
 }  // namespace input
 }  // namespace mir
-

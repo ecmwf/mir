@@ -37,4 +37,3 @@ inline double radian_to_degree(const double& a) {
 
 
 #endif
-

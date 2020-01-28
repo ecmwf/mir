@@ -23,11 +23,9 @@ namespace nonlinear {
 
 struct MissingIfAnyMissing : NonLinear {
     MissingIfAnyMissing(const param::MIRParametrisation&);
+
 private:
-    bool treatment(Matrix& A,
-                   WeightMatrix& W,
-                   Matrix& B,
-                   const data::MIRValuesVector& values,
+    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
                    const double& missingValue) const;
     bool sameAs(const NonLinear&) const;
     void print(std::ostream&) const;
@@ -41,4 +39,3 @@ private:
 
 
 #endif
-

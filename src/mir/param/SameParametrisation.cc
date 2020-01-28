@@ -21,15 +21,13 @@ namespace param {
 
 
 SameParametrisation::SameParametrisation(const MIRParametrisation& parametrisation1,
-                                         const MIRParametrisation& parametrisation2,
-                                         bool strict) :
+                                         const MIRParametrisation& parametrisation2, bool strict) :
     parametrisation1_(parametrisation1),
     parametrisation2_(parametrisation2),
-    strict_(strict) {
-}
+    strict_(strict) {}
 
 
-template<class T>
+template <class T>
 bool SameParametrisation::_get(const std::string& name, T& value) const {
 
     // This could be a loop
@@ -50,9 +48,8 @@ bool SameParametrisation::_get(const std::string& name, T& value) const {
 
 void SameParametrisation::print(std::ostream& out) const {
     out << "SameParametrisation["
-            "parametrisation1=" << parametrisation1_
-        << ",parametrisation2=" << parametrisation2_
-        << "]";
+           "parametrisation1="
+        << parametrisation1_ << ",parametrisation2=" << parametrisation2_ << "]";
 }
 
 
@@ -117,4 +114,3 @@ bool SameParametrisation::get(const std::string& name, std::vector<std::string>&
 
 }  // namespace param
 }  // namespace mir
-

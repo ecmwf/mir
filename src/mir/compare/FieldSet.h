@@ -23,8 +23,7 @@ namespace compare {
 
 
 class FieldSet {
-public: // methods
-
+public:  // methods
     void clear();
     size_t size() const;
 
@@ -38,10 +37,8 @@ public: // methods
     std::set<Field>::const_iterator end() const;
     std::set<Field>::const_iterator begin() const;
 
-private: // members
-
+private:  // members
     std::set<Field> fields_;
-
 };
 
 
@@ -50,4 +47,3 @@ private: // members
 
 
 #endif
-

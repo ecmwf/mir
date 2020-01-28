@@ -13,9 +13,9 @@
 #ifndef mir_netcdf_ValueT
 #define mir_netcdf_ValueT
 
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 #include "eckit/utils/Translator.h"
 
@@ -25,22 +25,19 @@ namespace mir {
 namespace netcdf {
 
 
-template<class T>
+template <class T>
 class ValueT : public Value {
 public:
-    ValueT(Type &type, const T &value) : Value(type), value_(value) {}
-    virtual void createAttribute(int nc, int varid, const std::string &name, const std::string &path);
+    ValueT(Type& type, const T& value) : Value(type), value_(value) {}
+    virtual void createAttribute(int nc, int varid, const std::string& name, const std::string& path);
 
 
 private:
     T value_;
 
-    virtual void print(std::ostream &out) const
-    {
-        out << value_;
-    }
+    virtual void print(std::ostream& out) const { out << value_; }
 
-    virtual void dump(std::ostream &out) const;
+    virtual void dump(std::ostream& out) const;
 
     virtual std::string asString() const {
         std::ostringstream oss;
@@ -48,20 +45,18 @@ private:
         return oss.str();
     }
 
-    virtual ValueT *clone() const {
-        return new ValueT(type_, value_);
-    }
+    virtual ValueT* clone() const { return new ValueT(type_, value_); }
 
-    virtual bool sameAs(const Value &other) const {
-        const ValueT *o = dynamic_cast<const ValueT *>(&other);
+    virtual bool sameAs(const Value& other) const {
+        const ValueT* o = dynamic_cast<const ValueT*>(&other);
         if (o) {
             return o->value_ == value_;
         }
         return false;
     }
 
-    template<class U>
-    void _fill(const std::vector<bool> &set, std::vector<U> &v) {
+    template <class U>
+    void _fill(const std::vector<bool>& set, std::vector<U>& v) {
         U value = eckit::Translator<T, U>()(value_);
 
         for (size_t i = 0; i < set.size(); i++) {
@@ -71,16 +66,16 @@ private:
         }
     }
 
-    virtual void fill(const std::vector<bool> &set, std::vector<double> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<short> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<unsigned char> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<long long> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<long> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<float> &v) { _fill(set, v); }
-    virtual void fill(const std::vector<bool> &set, std::vector<std::string> &v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<double>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<short>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<unsigned char>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<long long>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<long>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<float>& v) { _fill(set, v); }
+    virtual void fill(const std::vector<bool>& set, std::vector<std::string>& v) { _fill(set, v); }
 
-    template<class U>
-    void _clear(std::vector<bool> &set, const std::vector<U> &v)   {
+    template <class U>
+    void _clear(std::vector<bool>& set, const std::vector<U>& v) {
         U value = eckit::Translator<T, U>()(value_);
 
         for (size_t i = 0; i < set.size(); i++) {
@@ -90,45 +85,44 @@ private:
         }
     }
 
-    virtual void clear(std::vector<bool> &set, const std::vector<double> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<short> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<unsigned char> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<long long> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<long> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<float> &v) { _clear(set, v); }
-    virtual void clear(std::vector<bool> &set, const std::vector<std::string> &v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<double>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<short>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<unsigned char>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<long long>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<long>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<float>& v) { _clear(set, v); }
+    virtual void clear(std::vector<bool>& set, const std::vector<std::string>& v) { _clear(set, v); }
 
-    template<class U>
-    void _init(std::vector<U> &v, size_t size) {
+    template <class U>
+    void _init(std::vector<U>& v, size_t size) {
         U value = eckit::Translator<T, U>()(value_);
         std::vector<U> w(size, value);
         std::swap(v, w);
     }
 
-    virtual void init(std::vector<double> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<short> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<unsigned char> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<long long> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<long> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<float> &v, size_t size) { _init(v, size); }
-    virtual void init(std::vector<std::string> &v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<double>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<short>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<unsigned char>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<long long>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<long>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<float>& v, size_t size) { _init(v, size); }
+    virtual void init(std::vector<std::string>& v, size_t size) { _init(v, size); }
 
-    template<class U>
-    void _get(U & v) const {
+    template <class U>
+    void _get(U& v) const {
         U value = eckit::Translator<T, U>()(value_);
-        v = value;
+        v       = value;
     }
 
-    virtual void get(double & v) const { _get(v); }
-    virtual void get(short & v) const { _get(v); }
-    virtual void get(unsigned char &v) const { _get(v); }
-    virtual void get(long long & v) const { _get(v); }
-    virtual void get(long & v) const { _get(v); }
-    virtual void get(float & v) const { _get(v); }
-    virtual void get(std::string & v) const { _get(v); }
-
+    virtual void get(double& v) const { _get(v); }
+    virtual void get(short& v) const { _get(v); }
+    virtual void get(unsigned char& v) const { _get(v); }
+    virtual void get(long long& v) const { _get(v); }
+    virtual void get(long& v) const { _get(v); }
+    virtual void get(float& v) const { _get(v); }
+    virtual void get(std::string& v) const { _get(v); }
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

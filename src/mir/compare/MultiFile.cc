@@ -24,21 +24,14 @@
 namespace mir {
 namespace compare {
 
-MultiFile::MultiFile(const std::string& name, const std::string& from):
-    name_(name),
-    from_(from)
-{
-}
+MultiFile::MultiFile(const std::string& name, const std::string& from) : name_(name), from_(from) {}
 
 
-MultiFile::MultiFile(const std::string& path):
-    name_(path),
-    from_(path)
-{
+MultiFile::MultiFile(const std::string& path) : name_(path), from_(path) {
     add(path);
 }
 
-bool MultiFile::operator<(const MultiFile& other) const  {
+bool MultiFile::operator<(const MultiFile& other) const {
     if (name_ == other.name_) {
         return from_ < other.from_;
     }
@@ -69,7 +62,7 @@ const std::string& MultiFile::from() const {
 void MultiFile::save() const {
     eckit::PathName out(name_ + "." + from_);
     eckit::MultiHandle mh;
-    for (const auto & path : paths_) {
+    for (const auto& path : paths_) {
         eckit::PathName p(path);
         mh += p.fileHandle();
     }
@@ -107,12 +100,12 @@ void MultiFile::encode(eckit::Stream& s) const {
     s << name_;
     s << from_;
     s << paths_.size();
-    for (const auto & path : paths_) {
+    for (const auto& path : paths_) {
         s << path;
     }
 }
 
-void MultiFile::print(std::ostream& out)  const {
+void MultiFile::print(std::ostream& out) const {
     if (name_ == from_) {
         out << name_;
     }
@@ -139,7 +132,7 @@ void MultiFile::whiteListEntries(std::ostream& out) const {
 
 eckit::Length MultiFile::length() const {
     if (length_ == eckit::Length(0)) {
-        for (const auto & path : paths_) {
+        for (const auto& path : paths_) {
             eckit::PathName p(path);
             try {
                 length_ += p.size();
@@ -156,5 +149,5 @@ const std::vector<std::string>& MultiFile::paths() const {
     return paths_;
 }
 
-} // namespace compare
-} // namespace mir
+}  // namespace compare
+}  // namespace mir

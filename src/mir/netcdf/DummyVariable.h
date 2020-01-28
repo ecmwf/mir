@@ -21,29 +21,28 @@ namespace netcdf {
 
 class DummyVariable : public Variable {
 public:
-
-    DummyVariable(const Variable &parent);
+    DummyVariable(const Variable& parent);
     virtual ~DummyVariable();
 
 protected:
-
-    const Variable &parent_;
+    const Variable& parent_;
 
     // -- Methods
 
-    virtual Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const;
+    virtual Variable* makeOutputVariable(Dataset& owner, const std::string& name,
+                                         const std::vector<Dimension*>& dimensions) const;
     virtual bool dummy() const;
-    virtual bool sameAsDummy(const Variable &) const;
+    virtual bool sameAsDummy(const Variable&) const;
 
     // From variable
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
 
     // From Endowed
 
     virtual int varid() const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

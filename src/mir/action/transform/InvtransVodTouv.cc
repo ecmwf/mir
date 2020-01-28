@@ -50,10 +50,11 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
     // get vo/d
     const MIRValuesVector& field_vo = field.values(0);
-    const MIRValuesVector& field_d = field.values(1);
+    const MIRValuesVector& field_d  = field.values(1);
 
     if (field_vo.size() != field_d.size()) {
-        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
+                            << field_d.size() << std::endl;
         ASSERT(field_vo.size() == field_d.size());
     }
 
@@ -83,6 +84,6 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     field.metadata(1, "paramId", id_v);
 }
 
-} // namespace transform
-} // namespace action
-} // namespace mir
+}  // namespace transform
+}  // namespace action
+}  // namespace mir

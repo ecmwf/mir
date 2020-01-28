@@ -13,30 +13,24 @@
 #ifndef mir_netcdf_GregorianDateCodec
 #define mir_netcdf_GregorianDateCodec
 
-#include "mir/netcdf/Calendar.h"
 #include "eckit/types/DateTime.h"
+#include "mir/netcdf/Calendar.h"
 
 namespace mir {
 namespace netcdf {
 
 
-
-class ProlepticCalendar : public Calendar
-{
+class ProlepticCalendar : public Calendar {
 public:
-
     ProlepticCalendar(const Variable& variable);
     virtual ~ProlepticCalendar();
 
 private:
-
-
     // -- Methods
 
-    virtual void print(std::ostream &s) const;
-
+    virtual void print(std::ostream& s) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

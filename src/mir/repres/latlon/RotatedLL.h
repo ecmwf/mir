@@ -24,16 +24,13 @@ namespace latlon {
 
 class RotatedLL : public LatLon {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation&);
-    RotatedLL(const util::Increments&,
-              const util::Rotation&,
-              const util::BoundingBox& = util::BoundingBox(),
+    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
               const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
@@ -59,7 +56,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     util::Rotation rotation_;
@@ -69,7 +65,7 @@ private:
 
     // -- Overridden methods
     Iterator* iterator() const;
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     atlas::Grid atlasGrid() const;
 
@@ -91,9 +87,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    // friend ostream& operator<<(ostream& s,const RegularLL& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -103,4 +98,3 @@ private:
 
 
 #endif
-

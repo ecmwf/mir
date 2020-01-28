@@ -22,7 +22,6 @@ namespace lsm {
 
 class FileLSM : public LSMSelection {
 public:
-
     // -- Exceptions
     // None
 
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -87,17 +84,14 @@ private:
 
     // -- Class methods
 
-    virtual Mask *create(const param::MIRParametrisation&,
-                         const repres::Representation&,
-                         const std::string& which) const ;
+    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
+                         const std::string& which) const;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&,
-                                 const repres::Representation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                                  const std::string& which) const;
 
     // -- Friends
     // None
-
 };
 
 
@@ -106,4 +100,3 @@ private:
 
 
 #endif
-

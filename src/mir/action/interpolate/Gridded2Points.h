@@ -25,7 +25,6 @@ namespace interpolate {
 
 class Gridded2Points : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -76,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<double> latitudes_;
@@ -101,7 +98,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -111,4 +107,3 @@ private:
 
 
 #endif
-

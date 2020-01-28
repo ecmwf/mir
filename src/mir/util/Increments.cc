@@ -34,7 +34,7 @@ static void check(const Increments& inc) {
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 Increments::Increments() = default;
@@ -53,14 +53,11 @@ Increments::Increments(const param::MIRParametrisation& parametrisation) {
 }
 
 
-Increments::Increments(const Increments& other) :
-    Increments(other.west_east_, other.south_north_) {
-}
+Increments::Increments(const Increments& other) : Increments(other.west_east_, other.south_north_) {}
 
 
 Increments::Increments(double westEastIncrement, double southNorthIncrement) :
-    Increments(LongitudeIncrement(westEastIncrement), LatitudeIncrement(southNorthIncrement)) {
-}
+    Increments(LongitudeIncrement(westEastIncrement), LatitudeIncrement(southNorthIncrement)) {}
 
 
 Increments::Increments(const LongitudeIncrement& west_east, const LatitudeIncrement& south_north) :
@@ -74,14 +71,14 @@ Increments::~Increments() = default;
 
 
 bool Increments::operator==(const Increments& other) const {
-    return  (west_east_.longitude() == other.west_east_.longitude()) &&
-            (south_north_.latitude() == other.south_north_.latitude());
+    return (west_east_.longitude() == other.west_east_.longitude()) &&
+           (south_north_.latitude() == other.south_north_.latitude());
 }
 
 
 bool Increments::operator!=(const Increments& other) const {
-    return  (west_east_.longitude() != other.west_east_.longitude()) ||
-            (south_north_.latitude() != other.south_north_.latitude());
+    return (west_east_.longitude() != other.west_east_.longitude()) ||
+           (south_north_.latitude() != other.south_north_.latitude());
 }
 
 
@@ -134,30 +131,26 @@ bool Increments::isLongitudeShifted(const PointLatLon& p) const {
 
 void Increments::print(std::ostream& out) const {
     out << "Increments["
-        << "west_east=" << west_east_.longitude()
-        << ",south_north=" << south_north_.latitude()
-        << "]";
+        << "west_east=" << west_east_.longitude() << ",south_north=" << south_north_.latitude() << "]";
 }
 
 
-void Increments::fill(grib_info& info) const  {
+void Increments::fill(grib_info& info) const {
     // Warning: scanning mode not considered
     info.grid.iDirectionIncrementInDegrees = west_east_.longitude().value();
     info.grid.jDirectionIncrementInDegrees = south_north_.latitude().value();
 }
 
 
-void Increments::fill(api::MIRJob& job) const  {
+void Increments::fill(api::MIRJob& job) const {
     job.set("grid", west_east_.longitude().value(), south_north_.latitude().value());
 }
 
 
 void Increments::makeName(std::ostream& out) const {
-    out << "-" << west_east_.longitude().value()
-        << "x" << south_north_.latitude().value();
+    out << "-" << west_east_.longitude().value() << "x" << south_north_.latitude().value();
 }
 
 
 }  // namespace util
 }  // namespace mir
-

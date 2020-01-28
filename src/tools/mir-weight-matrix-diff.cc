@@ -52,7 +52,8 @@ public:
         using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption<std::string>("matrix-loader", "Matrix loader mechanism"));
         options_.push_back(new SimpleOption<bool>("matrix-validate", "Matrix validation after loading"));
-        options_.push_back(new SimpleOption<double>("absolute-error", "Matrix comparison non-zero maximum allowed error"));
+        options_.push_back(
+            new SimpleOption<double>("absolute-error", "Matrix comparison non-zero maximum allowed error"));
         options_.push_back(new SimpleOption<bool>("counter", "Use statistics counter"));
     }
 };
@@ -76,8 +77,8 @@ struct approximate_diff_t : diff_t {
 
 
 void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
-    using mir::method::WeightMatrix;
     using mir::caching::matrix::MatrixLoaderFactory;
+    using mir::method::WeightMatrix;
     using Plural = mir::Pretty::Plural;
 
     struct shape_t : std::vector<WeightMatrix::Size> {
@@ -122,9 +123,8 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
             }
             else {
                 counter.count(*i, *j, std::numeric_limits<double>::infinity());
-                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i)
-                    << "\n !=" << j.row() << '\t' << j.col() << '\t' << (*j)
-                    << std::endl;
+                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i) << "\n !=" << j.row() << '\t' << j.col()
+                    << '\t' << (*j) << std::endl;
             }
         }
         ASSERT(i == a.end());
@@ -148,9 +148,8 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         auto j = b.begin();
         for (; i != a.end() && j != b.end(); ++i, ++j) {
             if (i.row() != j.row() || i.col() != j.col() || (*diff)(*i, *j)) {
-                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i)
-                    << "\n !=" << j.row() << '\t' << j.col() << '\t' << (*j)
-                    << std::endl;
+                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i) << "\n !=" << j.row() << '\t' << j.col()
+                    << '\t' << (*j) << std::endl;
                 ++d;
             }
         }

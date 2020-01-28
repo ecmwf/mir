@@ -23,33 +23,33 @@ class NCFile;
 
 class InputMatrix : public Matrix {
 public:
-    InputMatrix(Type &type, int varid, const std::string &name, size_t size, NCFile &file);
+    InputMatrix(Type& type, int varid, const std::string& name, size_t size, NCFile& file);
     virtual ~InputMatrix();
 
 private:
     int varid_;
-    NCFile &file_;
+    NCFile& file_;
 
     // Methods
-    virtual void read(std::vector<double> &) const ;
-    virtual void read(std::vector<float> &) const ;
-    virtual void read(std::vector<long> &) const ;
-    virtual void read(std::vector<short> &) const ;
-    virtual void read(std::vector<unsigned char> &) const ;
-    virtual void read(std::vector<long long> &) const ;
+    virtual void read(std::vector<double>&) const;
+    virtual void read(std::vector<float>&) const;
+    virtual void read(std::vector<long>&) const;
+    virtual void read(std::vector<short>&) const;
+    virtual void read(std::vector<unsigned char>&) const;
+    virtual void read(std::vector<long long>&) const;
 
-    virtual void read(std::vector<double> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<float> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<short> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<unsigned char> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
-    virtual void read(std::vector<long long> &, const std::vector<size_t>& start, const std::vector<size_t>& count) const ;
+    virtual void read(std::vector<double>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<float>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<short>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<unsigned char>&, const std::vector<size_t>& start,
+                      const std::vector<size_t>& count) const;
+    virtual void read(std::vector<long long>&, const std::vector<size_t>& start,
+                      const std::vector<size_t>& count) const;
 
-    virtual void print(std::ostream &out)  const;
-
-
+    virtual void print(std::ostream& out) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -34,15 +34,31 @@ public:
 
 
 void MIRInspect::usage(const std::string& tool) const {
-    eckit::Log::info()
-        << "\n" "Usage: " << tool << " [key1 key2 ...] file.grib"
-           "\n" "Examples:"
-           "\n" "% " << tool << " grid area file.grib"
-           "\n" "% " << tool << " reduced file.grib"
-           "\n" "% " << tool << " regular file.grib"
-           "\n" "% " << tool << " truncation file.grib"
-           "\n" "% " << tool << " octahedral file.grib"
-        << std::endl;
+    eckit::Log::info() << "\n"
+                          "Usage: "
+                       << tool
+                       << " [key1 key2 ...] file.grib"
+                          "\n"
+                          "Examples:"
+                          "\n"
+                          "% "
+                       << tool
+                       << " grid area file.grib"
+                          "\n"
+                          "% "
+                       << tool
+                       << " reduced file.grib"
+                          "\n"
+                          "% "
+                       << tool
+                       << " regular file.grib"
+                          "\n"
+                          "% "
+                       << tool
+                       << " truncation file.grib"
+                          "\n"
+                          "% "
+                       << tool << " octahedral file.grib" << std::endl;
 }
 
 void MIRInspect::execute(const eckit::option::CmdArgs&) {

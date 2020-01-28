@@ -31,18 +31,18 @@ namespace lsm {
 namespace {
 
 
-static eckit::Mutex *local_mutex = nullptr;
+static eckit::Mutex* local_mutex = nullptr;
 
-static std::map<std::string, Mask *> *cache = nullptr;
+static std::map<std::string, Mask*>* cache = nullptr;
 
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    cache = new std::map<std::string, Mask *>();
+    cache       = new std::map<std::string, Mask*>();
 }
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 Mask::Mask() = default;
@@ -51,15 +51,11 @@ Mask::Mask() = default;
 Mask::~Mask() = default;
 
 
-void Mask::hash(eckit::MD5&) const {
-}
+void Mask::hash(eckit::MD5&) const {}
 
 
-void Mask::hashCacheKey(eckit::MD5& md5,
-                        const eckit::PathName& path,
-                        const param::MIRParametrisation& parametrisation,
-                        const repres::Representation& representation,
-                        const std::string& which) {
+void Mask::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation, const std::string& which) {
 
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
@@ -74,7 +70,8 @@ void Mask::hashCacheKey(eckit::MD5& md5,
 }
 
 
-Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
+Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation,
+                   const std::string& which) {
 
     // lsm = true is a requirement for lsm processing
     bool lsm = false;
@@ -93,7 +90,7 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     }
 
     const LSMSelection& chooser = LSMSelection::lookup(name);
-    std::string key = chooser.cacheKey(parametrisation, representation, which);
+    std::string key             = chooser.cacheKey(parametrisation, representation, which);
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -104,7 +101,7 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         return *(*j).second;
     }
 
-    Mask *mask = chooser.create(parametrisation, representation, which);
+    Mask* mask = chooser.create(parametrisation, representation, which);
 
     (*cache)[key] = mask;
 
@@ -112,18 +109,19 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
 }
 
 
-Mask& Mask::lookupInput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+Mask& Mask::lookupInput(const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation) {
     return lookup(parametrisation, representation, "input");
 }
 
 
-Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation,
+                         const repres::Representation& representation) {
     return lookup(parametrisation, representation, "output");
 }
 
 
-static bool same(const param::MIRParametrisation& parametrisation1,
-                 const param::MIRParametrisation& parametrisation2,
+static bool same(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2,
                  const std::string& /*which*/) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -178,7 +176,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
 bool Mask::sameInput(const param::MIRParametrisation& parametrisation1,
                      const param::MIRParametrisation& parametrisation2) {
     return same(parametrisation1, parametrisation2, "input");
-
 }
 
 
@@ -190,4 +187,3 @@ bool Mask::sameOutput(const param::MIRParametrisation& parametrisation1,
 
 }  // namespace lsm
 }  // namespace mir
-

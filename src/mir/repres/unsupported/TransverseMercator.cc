@@ -21,33 +21,31 @@ namespace mir {
 namespace repres {
 
 
-TransverseMercator::TransverseMercator(const param::MIRParametrisation &parametrisation) {
-}
+TransverseMercator::TransverseMercator(const param::MIRParametrisation& parametrisation) {}
 
 
-TransverseMercator::TransverseMercator() {
-}
+TransverseMercator::TransverseMercator() {}
 
 
 TransverseMercator::~TransverseMercator() = default;
 
 
-void TransverseMercator::print(std::ostream &out) const {
+void TransverseMercator::print(std::ostream& out) const {
     out << "TransverseMercator["
         << "]";
 }
 
 
-void TransverseMercator::fill(grib_info &info) const  {
+void TransverseMercator::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<TransverseMercator> transverseMercator("transverse_mercator"); // Name is what is returned by grib_api
+static RepresentationBuilder<TransverseMercator> transverseMercator(
+    "transverse_mercator");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

@@ -25,7 +25,7 @@ namespace mir {
 namespace param {
 class Setting;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,7 +34,6 @@ namespace param {
 
 class SimpleParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,8 +55,8 @@ public:
 
     void copyValuesTo(SimpleParametrisation&) const;
 
-    SimpleParametrisation& set(const std::string& name, const std::string &value);
-    SimpleParametrisation& set(const std::string& name, const char *value);
+    SimpleParametrisation& set(const std::string& name, const std::string& value);
+    SimpleParametrisation& set(const std::string& name, const char* value);
     SimpleParametrisation& set(const std::string& name, float value);
     SimpleParametrisation& set(const std::string& name, double value);
     SimpleParametrisation& set(const std::string& name, int value);
@@ -107,7 +106,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -127,7 +125,6 @@ protected:
     // None
 
 private:
-
     // -- Types
 
     using SettingsMap = std::map<std::string, Setting*>;
@@ -138,10 +135,10 @@ private:
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     bool _get(const std::string& name, T& value) const;
 
-    template<class T>
+    template <class T>
     void _set(const std::string& name, const T& value);
 
     // -- Overridden methods
@@ -159,7 +156,6 @@ private:
         p.json(s);
         return s;
     }
-
 };
 
 
@@ -168,4 +164,3 @@ private:
 
 
 #endif
-

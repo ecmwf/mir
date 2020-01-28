@@ -24,7 +24,6 @@ namespace method {
 
 class Cropping {
 public:
-
     Cropping();
 
     ~Cropping();
@@ -33,20 +32,15 @@ public:
 
     bool operator==(const Cropping& other) const;
 
-    operator bool() const {
-        return active_;
-    }
+    operator bool() const { return active_; }
 
     void boundingBox(const util::BoundingBox& bbox);
     const util::BoundingBox& boundingBox() const;
 
 protected:
-
-
     void print(std::ostream&) const;
 
 private:
-
     util::BoundingBox bbox_;
     bool active_;
 
@@ -54,7 +48,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -63,4 +56,3 @@ private:
 
 
 #endif
-

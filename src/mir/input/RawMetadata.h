@@ -21,7 +21,7 @@ namespace mir {
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace input {
 
 class RawMetadata {
 public:
-
     // -- Exceptions
     // None
 
@@ -52,19 +51,19 @@ public:
 
     virtual const std::vector<long>& pl() const = 0;
 
-    virtual size_t N() const = 0;
+    virtual size_t N() const          = 0;
     virtual size_t truncation() const = 0;
 
     virtual const util::BoundingBox& bbox() const = 0;
-    virtual const std::string& gridType() const = 0;
+    virtual const std::string& gridType() const   = 0;
 
-    virtual bool gridded() const = 0;
+    virtual bool gridded() const  = 0;
     virtual bool spectral() const = 0;
 
-    virtual size_t nj() const = 0;
+    virtual size_t nj() const      = 0;
     virtual size_t paramId() const = 0;
 
-    virtual bool hasMissing() const = 0;
+    virtual bool hasMissing() const     = 0;
     virtual double missingValue() const = 0;
 
     // -- Overridden methods
@@ -77,7 +76,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -94,7 +92,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -112,7 +109,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -121,4 +117,3 @@ private:
 
 
 #endif
-

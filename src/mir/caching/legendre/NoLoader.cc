@@ -20,8 +20,8 @@ namespace caching {
 namespace legendre {
 
 
-NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path) {}
+NoLoader::NoLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    LegendreLoader(parametrisation, path) {}
 
 NoLoader::~NoLoader() = default;
 
@@ -54,4 +54,3 @@ static LegendreLoaderBuilder<NoLoader> loader("none");
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

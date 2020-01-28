@@ -13,8 +13,8 @@
 #ifndef Packer_H
 #define Packer_H
 
-#include <string>
 #include <iosfwd>
+#include <string>
 
 struct grib_info;
 
@@ -22,14 +22,13 @@ namespace mir {
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 namespace mir {
 namespace packing {
 
 class Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -47,7 +46,7 @@ class Packer {
 
     // -- Methods
 
-    virtual void fill(grib_info &, const repres::Representation & ) const = 0;
+    virtual void fill(grib_info&, const repres::Representation&) const = 0;
 
     // -- Overridden methods
     // None
@@ -57,14 +56,13 @@ class Packer {
 
     // -- Class methods
 
-    static const Packer &lookup(const std::string &name);
-    static void list(std::ostream &);
+    static const Packer& lookup(const std::string& name);
+    static void list(std::ostream&);
 
 
-  protected:
-
-    Packer(const std::string &name);
-    virtual ~Packer(); // Change to virtual if base class
+protected:
+    Packer(const std::string& name);
+    virtual ~Packer();  // Change to virtual if base class
 
 
     // -- Members
@@ -74,7 +72,7 @@ class Packer {
     // -- Methods
 
 
-    virtual void print(std::ostream &) const = 0; // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -85,12 +83,11 @@ class Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    Packer(const Packer &);
-    Packer &operator=(const Packer &);
+    Packer(const Packer&);
+    Packer& operator=(const Packer&);
 
     // -- Members
     // None
@@ -109,16 +106,13 @@ class Packer {
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Packer &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Packer& p) {
         p.print(s);
         return s;
     }
-
 };
-
 
 
 }  // namespace packing
 }  // namespace mir
 #endif
-

@@ -18,9 +18,9 @@ namespace style {
 namespace intgrid {
 
 
-static IntgridBuilder< Automatic > __intgrid1("automatic");
-static IntgridBuilder< Automatic > __intgrid2("auto");
-static IntgridBuilder< Automatic > __intgrid3("AUTO");
+static IntgridBuilder<Automatic> __intgrid1("automatic");
+static IntgridBuilder<Automatic> __intgrid2("auto");
+static IntgridBuilder<Automatic> __intgrid3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
@@ -39,4 +39,3 @@ const std::string& Automatic::gridname() const {
 }  // namespace intgrid
 }  // namespace style
 }  // namespace mir
-

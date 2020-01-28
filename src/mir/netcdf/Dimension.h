@@ -25,47 +25,44 @@ class Dataset;
 
 class Dimension {
 public:
-    Dimension(Dataset &owner, const std::string &name, size_t len);
+    Dimension(Dataset& owner, const std::string& name, size_t len);
     virtual ~Dimension();
 
     // -- Methods
     virtual int id() const;
 
-    const std::string &name() const;
+    const std::string& name() const;
     size_t count() const;
 
-    virtual bool sameAs(const Dimension &) const;
-    virtual void dump(std::ostream &s) const;
+    virtual bool sameAs(const Dimension&) const;
+    virtual void dump(std::ostream& s) const;
     virtual void create(int nc) const;
-    virtual void clone(Dataset &owner) const;
+    virtual void clone(Dataset& owner) const;
     virtual void grow(size_t n);
     virtual bool inUse() const;
 
     virtual void realDimensions(std::vector<size_t>& dims) const;
 
 protected:
-
     // -- Members
 
-    Dataset &owner_;
+    Dataset& owner_;
     std::string name_;
     size_t len_;
 
 
 private:
-
     // -- Methods
-    virtual void print(std::ostream &s) const = 0;
+    virtual void print(std::ostream& s) const = 0;
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Dimension &v) {
+    friend std::ostream& operator<<(std::ostream& s, const Dimension& v) {
         v.print(s);
         return s;
     }
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

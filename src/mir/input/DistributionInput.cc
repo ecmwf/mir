@@ -28,7 +28,8 @@ namespace input {
 static ArtificialInputBuilder<DistributionInput> __artificial("distribution");
 
 
-DistributionInput::DistributionInput(const param::MIRParametrisation& parametrisation) : ArtificialInput(parametrisation) {
+DistributionInput::DistributionInput(const param::MIRParametrisation& parametrisation) :
+    ArtificialInput(parametrisation) {
 
     std::string distribution;
     parametrisation.get("distribution", distribution);

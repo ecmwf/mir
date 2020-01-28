@@ -41,13 +41,16 @@ namespace {
 static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
-    DeprecatedStyle(const param::MIRParametrisation& p) : ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
+    DeprecatedStyle(const param::MIRParametrisation& p) :
+        ECMWFStyle(p),
+        util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
 
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user, const param::MIRParametrisation& field, bool checkRotation) {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user,
+                                                       const param::MIRParametrisation& field, bool checkRotation) {
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     bool filter = false;
@@ -61,7 +64,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     if (user.has("grid")) {
         std::vector<double> grid;
-        return !same->get("grid", grid) || forced || !repres::latlon::LatLon::samePoints(user, field) ? prefix + "regular-ll" : "";
+        return !same->get("grid", grid) || forced || !repres::latlon::LatLon::samePoints(user, field)
+                   ? prefix + "regular-ll"
+                   : "";
     }
 
     if (user.has("reduced")) {
@@ -118,7 +123,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 }
 
 
-void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param, const std::vector<std::string>&& whens) {
+void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param,
+                 const std::vector<std::string>&& whens) {
     std::string formula;
     for (auto& when : whens) {
         if (param.get("formula." + when, formula)) {
@@ -132,12 +138,10 @@ void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& para
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation):
-    MIRStyle(parametrisation) {
-}
+ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRStyle(parametrisation) {}
 
 
 ECMWFStyle::~ECMWFStyle() = default;
@@ -168,7 +172,7 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    auto& user  = parametrisation_.userParametrisation();
     auto& field = parametrisation_.fieldParametrisation();
 
     add_formula(plan, user, {"spectral", "raw"});
@@ -186,9 +190,9 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && uv);
 
     // completed later
-    const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
+    const std::string transform   = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(user, field, false);
+    const std::string target      = target_gridded_from_parametrisation(user, field, false);
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
@@ -198,8 +202,8 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         if (resol.resultIsSpectral()) {
 
             plan.add(transform + target);
-
-        } else {
+        }
+        else {
 
             resol.prepare(plan);
 
@@ -209,7 +213,6 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
                 plan.add(interpolate + target);
             }
-
         }
 
         if (vod2uv || uv2uv) {
@@ -251,13 +254,13 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-    auto& user = parametrisation_.userParametrisation();
+    auto& user  = parametrisation_.userParametrisation();
     auto& field = parametrisation_.fieldParametrisation();
 
     bool rotation = user.has("rotation");
 
     bool vod2uv = false;
-    bool uv2uv = false;
+    bool uv2uv  = false;
     user.get("vod2uv", vod2uv);
     user.get("uv2uv", uv2uv);
 
@@ -270,7 +273,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     // completed later
     const std::string interpolate = "interpolate.grid2";
-    const std::string target = target_gridded_from_parametrisation(user, field, rotation);
+    const std::string target      = target_gridded_from_parametrisation(user, field, rotation);
 
     if (!target.empty()) {
         plan.add(interpolate + target);
@@ -290,7 +293,7 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
     bool vod2uv = false;
-    bool uv2uv = false;
+    bool uv2uv  = false;
     user.get("vod2uv", vod2uv);
     user.get("uv2uv", uv2uv);
 
@@ -388,7 +391,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     if (field_spectral) {
         if (user_wants_gridded) {
             sh2grid(plan);
-        } else {
+        }
+        else {
             // "user wants spectral"
             sh2sh(plan);
         }
@@ -424,7 +428,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
         if (parametrisation_.userParametrisation().has("unstructured")) {
             plan.add("filter.unstructured");
         }
-
     }
 
 
@@ -437,7 +440,8 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     if (!plan.ended()) {
         if (plan.empty()) {
             plan.add(new action::io::Copy(parametrisation_, output));
-        } else {
+        }
+        else {
             plan.add(new action::io::Save(parametrisation_, input, output));
         }
     }
@@ -447,4 +451,3 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
 }  // namespace style
 }  // namespace mir
-

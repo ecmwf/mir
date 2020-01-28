@@ -14,14 +14,14 @@
 
 #include <iostream>
 
-#include "mir/data/MIRField.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace input {
 
 
-VectorInput::VectorInput(MIRInput &component1, MIRInput &component2):
+VectorInput::VectorInput(MIRInput& component1, MIRInput& component2) :
     component1_(component1),
     component2_(component2) {
 
@@ -33,7 +33,7 @@ VectorInput::VectorInput(MIRInput &component1, MIRInput &component2):
 VectorInput::~VectorInput() = default;
 
 
-const param::MIRParametrisation &VectorInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& VectorInput::parametrisation(size_t which) const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
     ASSERT(which <= 1);
     return (which == 0) ? component1_.parametrisation() : component2_.parametrisation();
@@ -73,7 +73,7 @@ bool VectorInput::sameAs(const MIRInput& other) const {
 }
 
 
-void VectorInput::print(std::ostream &out) const {
+void VectorInput::print(std::ostream& out) const {
     out << "VectorInput[" << component1_ << "," << component2_ << "]";
 }
 
@@ -83,4 +83,3 @@ size_t VectorInput::dimensions() const {
 
 }  // namespace input
 }  // namespace mir
-

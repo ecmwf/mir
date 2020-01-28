@@ -25,7 +25,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,17 +34,13 @@ namespace lsm {
 
 class MappedMask : public Mask {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    MappedMask(const std::string& name,
-               const eckit::PathName&,
-               const param::MIRParametrisation& parametrisation,
-               const repres::Representation &representation,
-               const std::string& which);
+    MappedMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation& parametrisation,
+               const repres::Representation& representation, const std::string& which);
 
     // -- Destructor
 
@@ -69,7 +65,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -91,7 +86,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string name_;
@@ -113,7 +107,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -122,4 +115,3 @@ private:
 
 
 #endif
-

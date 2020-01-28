@@ -18,12 +18,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <sys/types.h>
 #include <sys/ipc.h>
+#include <sys/sem.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/sem.h>
+#include <sys/types.h>
 
 //#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
@@ -47,7 +47,7 @@ namespace matrix {
 
 namespace {
 
-const int MAGIC  =  987654321;
+const int MAGIC        = 987654321;
 const size_t INFO_PATH = 1024;
 
 struct SHMInfoNotPadded {
@@ -58,7 +58,7 @@ struct SHMInfoNotPadded {
 
 using SHMInfo = eckit::Padded<SHMInfoNotPadded, 1280>;  // aligned to 64 bytes
 
-}
+}  // namespace
 
 
 class Unloader {
@@ -131,9 +131,9 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     // Try to get an exclusive lock, we may be waiting for another process
     // to create the memory segment and load it with the file content
-//    GlobalSemaphore gsem(real.dirName());
-//    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-//    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+    //    GlobalSemaphore gsem(real.dirName());
+    //    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+    //    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
 
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
@@ -144,7 +144,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     // NOTE: size is based on file.size() which is assumed to be bigger than the memory footprint. Real size would be:
     // size_t sz = sizeof(SHMInfo) + w.footprint();
 
-    size_t sz = size_t(path.size()) + sizeof(SHMInfo);
+    size_t sz      = size_t(path.size()) + sizeof(SHMInfo);
     long page_size = ::sysconf(_SC_PAGESIZE);
     ASSERT(page_size > 0);
     size_t shmsize = eckit::round(sz, page_size);
@@ -179,7 +179,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
-        struct shmid_ds shm_buf = { 0 };
+        struct shmid_ds shm_buf = {0};
         psize_t psize_64k;
         psize_64k = 64 * 1024;
 
@@ -193,7 +193,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     // Attach shared memory
     address_ = eckit::Shmget::shmat(shmid, NULL, 0);
-    if (address_ == (void*) - 1) {
+    if (address_ == (void*)-1) {
         warn() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
         throw eckit::FailedSystemCall(msg.str());
     }
@@ -228,8 +228,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
             std::strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         }
-
-    } catch (...) {
+    }
+    catch (...) {
         eckit::Shmget::shmdt(address_);
         throw;
     }
@@ -296,7 +296,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 }
 
 
-void SharedMemoryLoader::print(std::ostream &out) const {
+void SharedMemoryLoader::print(std::ostream& out) const {
     out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
@@ -307,7 +307,7 @@ const void* SharedMemoryLoader::address() const {
 
 
 size_t SharedMemoryLoader::size() const {
-    return size_ -  sizeof(SHMInfo);
+    return size_ - sizeof(SHMInfo);
 }
 
 
@@ -321,10 +321,9 @@ static MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader2("shmem");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
-}
+}  // namespace
 
 
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-

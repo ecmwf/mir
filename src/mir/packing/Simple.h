@@ -21,18 +21,17 @@ namespace packing {
 
 
 class Simple : public Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Simple(const std::string &name);
+    Simple(const std::string& name);
 
     // -- Destructor
 
-    virtual ~Simple(); // Change to virtual if base class
+    virtual ~Simple();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class Simple : public Packer {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -69,12 +67,11 @@ class Simple : public Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    Simple(const Simple &);
-    Simple &operator=(const Simple &);
+    Simple(const Simple&);
+    Simple& operator=(const Simple&);
 
     // -- Members
     // None
@@ -89,18 +86,13 @@ class Simple : public Packer {
 
     // -- Class methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const;
-
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace packing
 }  // namespace mir
 #endif
-

@@ -26,18 +26,14 @@ namespace mir {
 namespace caching {
 
 
-template<class T>
+template <class T>
 class InMemoryCache : public InMemoryCacheBase {
 
 public:  // methods
-
     using iterator = T*;
 
-    explicit InMemoryCache(const std::string& name,
-                           size_t memory_capacity,
-                           size_t shared_capacity,
-                           const char* variable,
-                           bool cleanupAtExit = true);
+    explicit InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
+                           const char* variable, bool cleanupAtExit = true);
 
     ~InMemoryCache();
 
@@ -58,13 +54,12 @@ public:  // methods
     void stopUsing(InMemoryCacheStatistics&);
 
 private:
-
     void purge();
     T& create(const std::string& key);
 
     virtual InMemoryCacheUsage footprint() const;
     virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force=false);
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false);
     virtual const std::string& name() const;
 
     std::string name_;
@@ -85,31 +80,25 @@ private:
         double insert_;
         InMemoryCacheUsage footprint_;
 
-        Entry(T* ptr): ptr_(ptr),
-            hits_(1),
-            last_(::time(0)),
-            insert_(::time(0)),
-            footprint_(size_t(1), size_t(0)) {}
+        Entry(T* ptr) : ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;
-
 };
 
-template<class T>
+template <class T>
 class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
     InMemoryCacheStatistics& statistics_;
+
 public:
-    InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics):
+    InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
         cache_(cache),
         statistics_(statistics) {
         cache_.startUsing();
     }
 
-    ~InMemoryCacheUser() {
-        cache_.stopUsing(statistics_);
-    }
+    ~InMemoryCacheUser() { cache_.stopUsing(statistics_); }
 };
 
 

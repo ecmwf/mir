@@ -20,8 +20,7 @@ namespace repres {
 namespace other {
 
 
-None::None(const param::MIRParametrisation&) {
-}
+None::None(const param::MIRParametrisation&) {}
 
 None::None() = default;
 
@@ -33,7 +32,6 @@ void None::print(std::ostream& out) const {
 }
 
 
-
 namespace {
 static RepresentationBuilder<None> builder("none");
 }
@@ -42,4 +40,3 @@ static RepresentationBuilder<None> builder("none");
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
-

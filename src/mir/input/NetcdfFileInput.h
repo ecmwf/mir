@@ -31,12 +31,8 @@ namespace mir {
 namespace input {
 
 
-class NetcdfFileInput :
-        public MIRInput,
-        public param::FieldParametrisation,
-        public mir::netcdf::NCFileCache {
+class NetcdfFileInput : public MIRInput, public param::FieldParametrisation, public mir::netcdf::NCFileCache {
 public:
-
     // -- Exceptions
     // None
 
@@ -46,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NetcdfFileInput(); // Change to virtual if base class
+    virtual ~NetcdfFileInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -67,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -84,7 +79,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     eckit::PathName path_;
@@ -103,13 +97,13 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
     virtual size_t dimensions() const;
-    virtual grib_handle *gribHandle(size_t which) const;
+    virtual grib_handle* gribHandle(size_t which) const;
 
     // From FieldParametrisation
     virtual bool has(const std::string& name) const;
@@ -128,9 +122,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
+    // friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -140,4 +133,3 @@ private:
 
 #endif
 #endif
-

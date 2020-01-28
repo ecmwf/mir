@@ -31,8 +31,7 @@ NClosest::NClosest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosest::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
+void NClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     tree.closestNPoints(p, nClosest_, closest);
     ASSERT(closest.size() == nClosest_);
@@ -67,4 +66,3 @@ static PickBuilder<NClosest> __pick("nclosest");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

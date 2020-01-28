@@ -20,5 +20,5 @@ namespace util {
 Formula::~Formula() = default;
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

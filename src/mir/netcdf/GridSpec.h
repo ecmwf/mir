@@ -24,7 +24,7 @@ namespace netcdf {
 
 class Variable;
 
-class GridSpec  {
+class GridSpec {
 public:
     GridSpec(const Variable&);
     virtual ~GridSpec();
@@ -67,33 +67,24 @@ private:
 
 class GridSpecGuesser {
 public:
-
-    static GridSpec* guess(const Variable &variable);
+    static GridSpec* guess(const Variable& variable);
 
 protected:
-
-
     GridSpecGuesser(size_t priority);
     virtual ~GridSpecGuesser();
 
-    virtual GridSpec* guess(const Variable &variable,
-                            const Variable &latitudes,
-                            const Variable &longitudes) const = 0;
+    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const = 0;
 
 private:
-
     size_t priority_;
-
 };
 
 
-template< class T>
+template <class T>
 class GridSpecGuesserBuilder : public GridSpecGuesser {
 
 
-    virtual GridSpec* guess(const Variable &variable,
-                            const Variable &latitudes,
-                            const Variable &longitudes) const  {
+    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const {
         return T::guess(variable, latitudes, longitudes);
     }
 

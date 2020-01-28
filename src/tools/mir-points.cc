@@ -26,21 +26,19 @@ class MIRPoints : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const;
 
 public:
-
     // -- Contructors
 
-    MIRPoints(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
-
+    MIRPoints(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };
 
 
-void MIRPoints::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool
-            << std::endl;
+void MIRPoints::usage(const std::string& tool) const {
+    eckit::Log::info() << "\n"
+                          "Usage: "
+                       << tool << std::endl;
 }
 
 
@@ -51,8 +49,8 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
 
     mir::api::MIRJob job;
 
-    std::vector<double> latitudes = {50, 30, 20, 10, 0};
-    std::vector<double> longitudes = { -10, 10, 6, 52, 8};
+    std::vector<double> latitudes  = {50, 30, 20, 10, 0};
+    std::vector<double> longitudes = {-10, 10, 6, 52, 8};
 
     job.set("caching", false);
 
@@ -70,14 +68,11 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
         std::cout << "Values " << output.values() << std::endl;
         std::cout << "Has missing " << output.hasMissing() << std::endl;
         std::cout << "Missing " << output.missingValue() << std::endl;
-
     }
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRPoints tool(argc, argv);
     return tool.start();
 }
-
-

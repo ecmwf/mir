@@ -21,18 +21,17 @@ namespace namedgrids {
 
 
 class ClassicPattern : public NamedGridPattern {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    ClassicPattern(const std::string &name);
+    ClassicPattern(const std::string& name);
 
     // -- Destructor
 
-    virtual ~ClassicPattern(); // Change to virtual if base class
+    virtual ~ClassicPattern();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class ClassicPattern : public NamedGridPattern {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -69,12 +67,11 @@ class ClassicPattern : public NamedGridPattern {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    ClassicPattern(const ClassicPattern &);
-    ClassicPattern &operator=(const ClassicPattern &);
+    ClassicPattern(const ClassicPattern&);
+    ClassicPattern& operator=(const ClassicPattern&);
 
     // -- Members
     // None
@@ -92,13 +89,9 @@ class ClassicPattern : public NamedGridPattern {
     virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
 #endif
-

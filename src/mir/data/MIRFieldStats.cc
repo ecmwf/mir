@@ -12,23 +12,15 @@
 
 #include "mir/data/MIRFieldStats.h"
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 
 namespace mir {
 namespace data {
 
 
-MIRFieldStats::MIRFieldStats():
-    count_(0),
-    missing_(0),
-    min_(0),
-    max_(0),
-    mean_(0),
-    sqsum_(0),
-    stdev_(0) {
-}
+MIRFieldStats::MIRFieldStats() : count_(0), missing_(0), min_(0), max_(0), mean_(0), sqsum_(0), stdev_(0) {}
 
 MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
     count_(vs.size()),
@@ -51,23 +43,17 @@ MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
             sqsum_ += v * v;
         }
 
-        mean_ = sum / count_;
+        mean_  = sum / count_;
         stdev_ = std::sqrt(sqsum_ / count_ - mean_ * mean_);
     }
 }
 
 
-void MIRFieldStats::print(std::ostream &s) const {
+void MIRFieldStats::print(std::ostream& s) const {
     s << "["
-          "min=" << min_
-      << ",max=" << max_
-      << ",mean=" << mean_
-      << ",stdev=" << stdev_
-      << ",l2norm=" << std::sqrt(sqsum_)
-      << ",count=" << count_
-      << ",missing=" << missing_
-      << ",total=" << count_ + missing_
-      << "]";
+         "min="
+      << min_ << ",max=" << max_ << ",mean=" << mean_ << ",stdev=" << stdev_ << ",l2norm=" << std::sqrt(sqsum_)
+      << ",count=" << count_ << ",missing=" << missing_ << ",total=" << count_ + missing_ << "]";
 }
 
 
@@ -83,4 +69,3 @@ double MIRFieldStats::minimum() const {
 
 }  // namespace data
 }  // namespace mir
-

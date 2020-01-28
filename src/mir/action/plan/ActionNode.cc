@@ -14,8 +14,8 @@
 
 #include "eckit/log/Log.h"
 
-#include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/Action.h"
+#include "mir/action/plan/ActionNode.h"
 #include "mir/action/plan/Executor.h"
 
 
@@ -23,10 +23,7 @@ namespace mir {
 namespace action {
 
 
-ActionNode::ActionNode(const Action& action, api::MIRWatcher *watcher):
-    action_(action),
-    watcher_(watcher) {
-}
+ActionNode::ActionNode(const Action& action, api::MIRWatcher* watcher) : action_(action), watcher_(watcher) {}
 
 
 ActionNode::~ActionNode() = default;
@@ -43,7 +40,8 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
     try {
         action_.perform(ctx);
         ok = true;
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e) {
 
         eckit::Log::error() << e.what() << " while executing " << action_ << std::endl;
 
@@ -61,12 +59,12 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
 }
 
 
-void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher *watcher, bool& rethrow) const {
+void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher, bool& rethrow) const {
     graph_.notifyFailure(e, action, watcher_, rethrow);
 }
 
 
-const action::Action &ActionNode::action() const {
+const action::Action& ActionNode::action() const {
     return action_;
 }
 
@@ -87,4 +85,3 @@ void ActionNode::dump(std::ostream& out, size_t depth) const {
 
 }  // namespace action
 }  // namespace mir
-

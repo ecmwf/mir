@@ -30,13 +30,10 @@ namespace compare {
 
 class GribField : public FieldBase {
 public:
-
-    static Field field(const char* buffer, size_t size,
-                       const std::string& path, off_t offset,
+    static Field field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore);
 
 private:
-
     GribField(const std::string& path, off_t offset, size_t length);
 
     void insert(const std::string& key, const std::string& value);
@@ -88,24 +85,22 @@ private:
 
     size_t numberOfPoints() const;
 
-    const std::string& format() const ;
+    const std::string& format() const;
 
-    std::ostream& printGrid(std::ostream &out) const;
+    std::ostream& printGrid(std::ostream& out) const;
 
 public:
-
     static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs &args);
+    static void setOptions(const eckit::option::CmdArgs& args);
 
 private:
-
     // virtual bool equal_to(const GribField&) const;
     virtual bool wrapped() const;
     virtual bool less_than(const FieldBase&) const;
     virtual void whiteListEntries(std::ostream&) const;
     virtual size_t differences(const FieldBase&) const;
     virtual std::ostream& printDifference(std::ostream&, const FieldBase&) const;
-    virtual void compareExtra(std::ostream&, const FieldBase&) const ;
+    virtual void compareExtra(std::ostream&, const FieldBase&) const;
     virtual bool same(const FieldBase&) const;
     virtual bool match(const FieldBase&) const;
     virtual void json(eckit::JSON&) const;
@@ -142,16 +137,14 @@ private:
     long numberOfPoints_;
 
 private:
+    void print(std::ostream& out) const;
 
-    void print(std::ostream &out) const;
-
-    static void setGrid(GribField& field, grib_handle *h);
-    static void setArea(GribField& field, grib_handle *h);
-
+    static void setGrid(GribField& field, grib_handle* h);
+    static void setArea(GribField& field, grib_handle* h);
 };
 
 
-} // namespace mir
-} // namespace compare
+}  // namespace compare
+}  // namespace mir
 
 #endif

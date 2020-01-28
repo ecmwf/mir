@@ -23,7 +23,7 @@ namespace mir {
 namespace util {
 class Function;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -31,34 +31,25 @@ namespace util {
 
 class FormulaFunction : public Formula {
 public:
+    FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1);
 
-    FormulaFunction(const param::MIRParametrisation &parametrisation,
-                    const std::string& name,
-                    Formula* arg1);
+    FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
+                    Formula* arg2);
 
-    FormulaFunction(const param::MIRParametrisation &parametrisation,
-                    const std::string& name,
-                    Formula* arg1,
-                    Formula *arg2);
-
-    FormulaFunction(const param::MIRParametrisation &parametrisation,
-                    const std::string& name,
+    FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                     std::vector<Formula*>& args);
 
     virtual ~FormulaFunction();
 
-protected: // members
-
+protected:  // members
     const Function& function_;
     std::vector<Formula*> args_;
 
 private:
-
     virtual void print(std::ostream& s) const;
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
-
 };
 
 

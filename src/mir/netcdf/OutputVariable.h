@@ -20,12 +20,10 @@ namespace netcdf {
 
 class OutputVariable : public Variable {
 public:
-
-    OutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions);
+    OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
     virtual ~OutputVariable();
 
 private:
-
     // -- Members
 
     mutable bool created_;
@@ -33,16 +31,15 @@ private:
 
     // From variable
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
     virtual void create(int nc) const;
     virtual void save(int nc) const;
 
     // From Endowed
 
     virtual int varid() const;
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

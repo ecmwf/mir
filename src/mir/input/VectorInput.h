@@ -20,7 +20,7 @@ namespace mir {
 namespace output {
 class VectorOutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -29,7 +29,6 @@ namespace input {
 
 class VectorInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -39,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorInput(); // Change to virtual if base class
+    virtual ~VectorInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -60,7 +59,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     MIRInput& component1_;
@@ -79,7 +77,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -92,8 +89,8 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
 
@@ -107,9 +104,8 @@ private:
 
     friend class output::VectorOutput;
 
-    //friend ostream& operator<<(ostream& s,const VectorInput& p)
+    // friend ostream& operator<<(ostream& s,const VectorInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -118,4 +114,3 @@ private:
 
 
 #endif
-

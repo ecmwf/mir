@@ -23,7 +23,7 @@ class Job;
 namespace api {
 class MIRJob;
 class MIRWatcher;
-}
+}  // namespace api
 namespace input {
 class MIRInput;
 }
@@ -39,8 +39,7 @@ namespace api {
 
 
 class MIRComplexJob {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -76,8 +75,7 @@ class MIRComplexJob {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
@@ -93,14 +91,13 @@ class MIRComplexJob {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // -- Members
 
-    std::vector< MIRJob* > apis_;
-    std::vector< action::Job* > jobs_;
-    std::vector< output::MIROutput* > outputs_;
-    std::vector< MIRWatcher* > watchers_;
+    std::vector<MIRJob*> apis_;
+    std::vector<action::Job*> jobs_;
+    std::vector<output::MIROutput*> outputs_;
+    std::vector<MIRWatcher*> watchers_;
 
     input::MIRInput* input_;
 
@@ -121,7 +118,6 @@ class MIRComplexJob {
 
     // -- Friends
     // None
-
 };
 
 
@@ -130,4 +126,3 @@ class MIRComplexJob {
 
 
 #endif
-

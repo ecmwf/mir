@@ -37,7 +37,7 @@ protected:
     virtual std::string gitsha1(unsigned int count) const;
 };
 
-} // namespace mir
+}  // namespace mir
 
 
 #endif

@@ -28,7 +28,7 @@ void Cropping::hash(eckit::MD5& md5) const {
 }
 
 void Cropping::boundingBox(const util::BoundingBox& bbox) {
-    bbox_ = bbox;
+    bbox_   = bbox;
     active_ = true;
 }
 
@@ -44,10 +44,11 @@ const util::BoundingBox& Cropping::boundingBox() const {
 void Cropping::print(std::ostream& out) const {
     if (active_) {
         out << bbox_;
-    } else {
+    }
+    else {
         out << "none";
     }
 }
 
-} // namespace method
-} // namespace mir
+}  // namespace method
+}  // namespace mir

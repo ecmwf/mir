@@ -22,21 +22,17 @@ class Variable;
 
 class DummyMatrix : public Matrix {
 public:
-    DummyMatrix(const Variable &);
+    DummyMatrix(const Variable&);
     virtual ~DummyMatrix();
 
 private:
-
-    Matrix *other_;
+    Matrix* other_;
 
     // Methods
 
-    virtual void print(std::ostream &out) const;
-
-
-
+    virtual void print(std::ostream& out) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

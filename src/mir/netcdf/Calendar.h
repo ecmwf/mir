@@ -13,8 +13,8 @@
 #ifndef mir_netcdf_Calendar
 #define mir_netcdf_Calendar
 
-#include "mir/netcdf/Codec.h"
 #include "eckit/types/DateTime.h"
+#include "mir/netcdf/Codec.h"
 
 namespace mir {
 namespace netcdf {
@@ -22,19 +22,15 @@ namespace netcdf {
 class Variable;
 
 
-class Calendar : public Codec
-{
+class Calendar : public Codec {
 public:
-
     Calendar();
     virtual ~Calendar();
 
 private:
-
     virtual bool timeAxis() const;
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

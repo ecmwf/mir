@@ -26,7 +26,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& parametrisation):
+Gridded2GridDef::Gridded2GridDef(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
 }
@@ -43,8 +43,8 @@ bool Gridded2GridDef::sameAs(const Action& other) const {
 
 void Gridded2GridDef::custom(std::ostream& out) const {
     out << "Gridded2GridDef["
-        "griddef=.../" << eckit::PathName(griddef_).baseName()
-        << "]";
+           "griddef=.../"
+        << eckit::PathName(griddef_).baseName() << "]";
 }
 
 void Gridded2GridDef::print(std::ostream& out) const {
@@ -64,11 +64,10 @@ const char* Gridded2GridDef::name() const {
 }
 
 namespace {
-static ActionBuilder< Gridded2GridDef > grid2grid("interpolate.grid2griddef");
+static ActionBuilder<Gridded2GridDef> grid2grid("interpolate.grid2griddef");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

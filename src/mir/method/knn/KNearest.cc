@@ -65,11 +65,10 @@ const char* KNearest::name() const {
 
 
 namespace {
-static MethodBuilder< KNearest > __method("k-nearest");
+static MethodBuilder<KNearest> __method("k-nearest");
 }
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

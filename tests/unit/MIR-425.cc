@@ -26,7 +26,6 @@
 #include "mir/util/MIRStatistics.h"
 
 
-
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
 

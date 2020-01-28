@@ -25,7 +25,6 @@ namespace param {
 
 class CachedParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -60,7 +59,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -93,7 +91,6 @@ protected:
     // None
 
 private:
-
     // -- Types
     // None
 
@@ -104,10 +101,10 @@ private:
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     bool _get(const std::string& name, T& value) const;
 
-    template<class T>
+    template <class T>
     void _set(const std::string& name, const T& value) const;
 
     // -- Overridden methods
@@ -121,7 +118,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -130,4 +126,3 @@ private:
 
 
 #endif
-

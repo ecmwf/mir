@@ -30,18 +30,18 @@ namespace distance {
 namespace {
 
 
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, DistanceWeightingFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                           = nullptr;
+static std::map<std::string, DistanceWeightingFactory*>* m = nullptr;
+static pthread_once_t once                                 = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, DistanceWeightingFactory* >();
+    m           = new std::map<std::string, DistanceWeightingFactory*>();
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 DistanceWeighting::DistanceWeighting() = default;
@@ -50,10 +50,9 @@ DistanceWeighting::DistanceWeighting() = default;
 DistanceWeighting::~DistanceWeighting() = default;
 
 
-DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) :
-    name_(name) {
+DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -69,7 +68,8 @@ DistanceWeightingFactory::~DistanceWeightingFactory() {
 }
 
 
-const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name,
+                                                         const param::MIRParametrisation& param) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -101,4 +101,3 @@ void DistanceWeightingFactory::list(std::ostream& out) {
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

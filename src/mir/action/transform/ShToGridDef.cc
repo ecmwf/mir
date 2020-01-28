@@ -25,60 +25,58 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& parametrisation):
-    ShToGridded(parametrisation) {
+template <class Invtrans>
+ShToGridDef<Invtrans>::ShToGridDef(const param::MIRParametrisation& parametrisation) : ShToGridded(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("griddef", griddef_));
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToGridDef<Invtrans>::~ShToGridDef() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToGridDef<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToGridDef*>(&other);
     return o && (griddef_ == o->griddef_);
 }
 
 
-template<class Invtrans>
-void ShToGridDef<Invtrans>::print(std::ostream &out) const {
+template <class Invtrans>
+void ShToGridDef<Invtrans>::print(std::ostream& out) const {
     out << "ShToGridDef[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",griddef=.../" << eckit::PathName(griddef_).baseName()
-        << "]";
+    out << ",griddef=.../" << eckit::PathName(griddef_).baseName() << "]";
 }
 
 
-template<class Invtrans>
-void ShToGridDef<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToGridDef<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                    const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToGridDef<Invtrans>::ShToGridDef::name() const {
     return "ShToGridDef";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToGridDef<Invtrans>::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(griddef_);
 }
 
 
 namespace {
-static ActionBuilder< ShToGridDef<InvtransScalar> > __action1("transform.sh-scalar-to-griddef");
-static ActionBuilder< ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
-}
+static ActionBuilder<ShToGridDef<InvtransScalar> > __action1("transform.sh-scalar-to-griddef");
+static ActionBuilder<ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

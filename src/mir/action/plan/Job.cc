@@ -32,7 +32,7 @@ namespace action {
 
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
     input_(input),
-    output_(output)  {
+    output_(output) {
 
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;
@@ -57,7 +57,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
             ASSERT(plan_->ended());
 
             if (eckit::Log::debug<LibMir>()) {
-                plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
+                plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:"
+                                                           "\n");
             }
 
             return;
@@ -67,7 +68,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    std::unique_ptr< style::MIRStyle > style(style::MIRStyleFactory::build(*combined_));
+    std::unique_ptr<style::MIRStyle> style(style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_, input_, output_);
     ASSERT(plan_->ended());
 
@@ -76,7 +77,8 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     }
 
     if (eckit::Log::debug<LibMir>()) {
-        plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:" "\n");
+        plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:"
+                                                   "\n");
     }
 }
 
@@ -84,7 +86,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
 Job::~Job() = default;
 
 
-void Job::execute(util::MIRStatistics &statistics) const {
+void Job::execute(util::MIRStatistics& statistics) const {
     ASSERT(plan_);
 
     context::Context ctx(input_, statistics);
@@ -100,7 +102,7 @@ void Job::estimate(api::MIREstimation& estimation) const {
     plan_->estimate(ctx, estimation);
 }
 
-const ActionPlan &Job::plan() const {
+const ActionPlan& Job::plan() const {
     return *plan_;
 }
 
@@ -113,4 +115,3 @@ const param::MIRParametrisation& Job::parametrisation() const {
 
 }  // namespace action
 }  // namespace mir
-

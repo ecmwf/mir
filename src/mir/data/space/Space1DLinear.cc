@@ -29,4 +29,3 @@ size_t Space1DLinear::dimensions() const {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-

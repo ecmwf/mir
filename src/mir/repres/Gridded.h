@@ -23,7 +23,6 @@ namespace repres {
 
 class Gridded : public Representation {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Contructors
 
     Gridded();
@@ -81,7 +79,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -102,9 +99,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gridded& p)
+    // friend ostream& operator<<(ostream& s,const Gridded& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +109,3 @@ private:
 
 
 #endif
-

@@ -27,9 +27,9 @@ class DistanceWeighting;
 namespace pick {
 class Pick;
 }
-}
-}
-}
+}  // namespace knn
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -39,7 +39,6 @@ namespace knn {
 
 class KNearestNeighbours : public MethodWeighted {
 public:
-
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
     virtual ~KNearestNeighbours();
@@ -56,12 +55,11 @@ protected:
     virtual bool sameAs(const Method& other) const = 0;
 
 private:
-
     virtual void print(std::ostream&) const;
 
     virtual bool canIntroduceMissingValues() const;
 
-    virtual const char *name() const = 0;
+    virtual const char* name() const = 0;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
@@ -74,4 +72,3 @@ private:
 
 
 #endif
-

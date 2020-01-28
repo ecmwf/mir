@@ -22,10 +22,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToReducedGGPLGiven : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToReducedGGPLGiven(); // Change to virtual if base class
+    ~ShToReducedGGPLGiven();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,7 +55,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     std::vector<long> pl_;
@@ -80,7 +78,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -90,4 +87,3 @@ private:
 
 
 #endif
-

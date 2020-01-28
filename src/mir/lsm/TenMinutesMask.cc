@@ -29,7 +29,7 @@
 namespace {
 static eckit::Mutex local_mutex;
 static std::vector<std::vector<bool> > ten_minutes_;
-}
+}  // namespace
 
 
 namespace mir {
@@ -47,11 +47,8 @@ From EMOSLIB:
 
     ~mir/share/mir/masks/lsm.10min.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
-TenMinutesMask::TenMinutesMask(const std::string& name,
-                               const eckit::PathName& path,
-                               const param::MIRParametrisation&,
-                               const repres::Representation& representation,
-                               const std::string&):
+TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
+                               const repres::Representation& representation, const std::string&) :
     name_(name),
     path_(path) {
 
@@ -71,16 +68,15 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
         unsigned char c;
 
         for (size_t i = 0; i < ROWS; i++) {
-            size_t k = 0;
-            std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
-            for (size_t j = 0; j < bytes ; j++) {
+            size_t k             = 0;
+            std::vector<bool>& v = ten_minutes_[i] = std::vector<bool>(COLS);
+            for (size_t j = 0; j < bytes; j++) {
                 ASSERT(std::fread(&c, 1, 1, file) == 1);
                 for (size_t b = 0; b < 8 && k < COLS; b++) {
                     v[k++] = (c >> (7 - b)) & 0x1;
                 }
             }
         }
-
     }
 
     eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
@@ -92,7 +88,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
     std::unique_ptr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
         const auto& p = iter->pointUnrotated();
-        Latitude lat = p.lat();
+        Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
@@ -143,4 +139,3 @@ std::string TenMinutesMask::cacheName() const {
 
 }  // namespace lsm
 }  // namespace mir
-

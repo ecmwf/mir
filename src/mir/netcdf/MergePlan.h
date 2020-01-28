@@ -15,8 +15,8 @@
 
 #include "mir/netcdf/Step.h"
 
-#include <queue>
 #include <map>
+#include <queue>
 
 namespace mir {
 namespace netcdf {
@@ -27,32 +27,30 @@ class Dataset;
 
 class MergePlan {
 public:
-    MergePlan(Dataset &);
+    MergePlan(Dataset&);
     ~MergePlan();
 
-    void add(Step *);
+    void add(Step*);
     void execute();
 
-    void link(const Variable &, const Variable &);
-    const Variable &link(const Variable &);
+    void link(const Variable&, const Variable&);
+    const Variable& link(const Variable&);
 
-    Dataset &field() const ;
+    Dataset& field() const;
 
 private:
+    Dataset& field_;
 
-    Dataset &field_;
-
-    MergePlan(const MergePlan &);
-    MergePlan &operator=(const MergePlan &);
+    MergePlan(const MergePlan&);
+    MergePlan& operator=(const MergePlan&);
 
     // ----
 
-    std::priority_queue<Step *, std::deque<Step *>, CompareSteps> queue_;
-    std::vector<Step *> steps_;
-    std::map<const Variable *, const Variable *> link_;
-
+    std::priority_queue<Step*, std::deque<Step*>, CompareSteps> queue_;
+    std::vector<Step*> steps_;
+    std::map<const Variable*, const Variable*> link_;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

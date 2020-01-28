@@ -22,13 +22,12 @@ namespace output {
 
 class GeoPointsFileOutputXYVector : public GeoPointsFileOutput {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    GeoPointsFileOutputXYVector(const::std::string& path, bool binary=false);
+    GeoPointsFileOutputXYVector(const ::std::string& path, bool binary = false);
 
     // -- Destructor
     // None
@@ -52,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,7 +70,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -90,9 +87,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYVector& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYVector& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -101,4 +97,3 @@ private:
 
 
 #endif
-

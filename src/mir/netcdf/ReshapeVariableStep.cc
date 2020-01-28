@@ -25,14 +25,11 @@
 namespace mir {
 namespace netcdf {
 
-ReshapeVariableStep::ReshapeVariableStep(Variable &out, const Dimension &dimension, size_t growth):
+ReshapeVariableStep::ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth) :
     out_(out),
     dimension_(dimension),
     growth_(growth),
-    next_(0)
-{
-
-}
+    next_(0) {}
 
 ReshapeVariableStep::~ReshapeVariableStep() {
     delete next_;
@@ -42,7 +39,7 @@ int ReshapeVariableStep::rank() const {
     return 2;
 }
 
-void ReshapeVariableStep::print(std::ostream &out) const {
+void ReshapeVariableStep::print(std::ostream& out) const {
     out << "ReshapeVariableStep[" << out_ << ", dim=" << dimension_;
 
     if (next_) {
@@ -51,7 +48,7 @@ void ReshapeVariableStep::print(std::ostream &out) const {
     out << "]";
 }
 
-void ReshapeVariableStep::execute(MergePlan &plan) {
+void ReshapeVariableStep::execute(MergePlan& plan) {
     std::cout << "ReshapeVariableStep::execute(): " << out_ << std::endl;
 #if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
@@ -129,15 +126,15 @@ void ReshapeVariableStep::execute(MergePlan &plan) {
 #endif
 }
 
-bool ReshapeVariableStep::merge(Step *other) {
-    ReshapeVariableStep *o = dynamic_cast<ReshapeVariableStep *>(other);
+bool ReshapeVariableStep::merge(Step* other) {
+    ReshapeVariableStep* o = dynamic_cast<ReshapeVariableStep*>(other);
     if (o) {
         // Same variable
         if (&(o->out_) == &(out_)) {
 
-            ReshapeVariableStep *next = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
-            ReshapeVariableStep *prev = 0;
-            ReshapeVariableStep *self = this;
+            ReshapeVariableStep* next = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
+            ReshapeVariableStep* prev = 0;
+            ReshapeVariableStep* self = this;
 
             while (self) {
                 prev = self;

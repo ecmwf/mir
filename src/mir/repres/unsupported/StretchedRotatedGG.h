@@ -21,89 +21,84 @@ namespace repres {
 
 
 class StretchedRotatedGG : public Gridded {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     StretchedRotatedGG(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~StretchedRotatedGG(); // Change to virtual if base class
+    virtual ~StretchedRotatedGG();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
+private:
     StretchedRotatedGG();
 
-// No copy allowed
+    // No copy allowed
 
     StretchedRotatedGG(const StretchedRotatedGG&);
     StretchedRotatedGG& operator=(const StretchedRotatedGG&);
 
-// -- Members
+    // -- Members
 
 
-// -- Methods
+    // -- Methods
     // None
 
 
-// -- Overridden methods
+    // -- Overridden methods
 
     virtual void fill(grib_info&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const StretchedRotatedGG& p)
+    // friend ostream& operator<<(ostream& s,const StretchedRotatedGG& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace repres
 }  // namespace mir
 #endif
-

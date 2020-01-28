@@ -44,9 +44,7 @@ GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& pa
 GlobaliseUnstructured::~GlobaliseUnstructured() = default;
 
 
-size_t GlobaliseUnstructured::appendGlobalPoints(
-        std::vector<double>& latitudes,
-        std::vector<double>& longitudes ) {
+size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes, std::vector<double>& longitudes) {
     if (globaliseGridname_.empty()) {
         return 0;
     }
@@ -74,7 +72,6 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
             latitudes.push_back(unrotated.lat().value());
             longitudes.push_back(unrotated.lon().value());
             ++nbExtraPoints;
-
         }
     }
 
@@ -84,4 +81,3 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
 }  // namespace util
 }  // namespace mir
-

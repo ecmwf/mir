@@ -27,7 +27,7 @@ namespace transform {
 struct TransCache {
 
     using loader_t = caching::legendre::LegendreLoader;
-    using cache_t = atlas::trans::Cache;
+    using cache_t  = atlas::trans::Cache;
 
     loader_t* loader_;
     cache_t transCache_;
@@ -44,7 +44,6 @@ struct TransCache {
         e.print(out);
         return out;
     }
-
 };
 
 

@@ -10,8 +10,8 @@
  */
 
 
-#include <sstream>
 #include "mir/param/MIRParametrisation.h"
+#include <sstream>
 #include "eckit/exception/Exceptions.h"
 
 
@@ -39,7 +39,7 @@ const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
 }
 
 
-bool MIRParametrisation::get(const std::string &name, size_t &value) const {
+bool MIRParametrisation::get(const std::string& name, size_t& value) const {
     long v;
     if (get(name, v)) {
         ASSERT(v >= 0);
@@ -50,7 +50,7 @@ bool MIRParametrisation::get(const std::string &name, size_t &value) const {
 }
 
 
-bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value) const {
+bool MIRParametrisation::get(const std::string& name, std::vector<size_t>& value) const {
     std::vector<long> v;
     if (get(name, v)) {
         value.clear();
@@ -64,7 +64,7 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     return false;
 }
 
-bool MIRParametrisation::get(const std::string &name, long long &value) const {
+bool MIRParametrisation::get(const std::string& name, long long& value) const {
     long v;
     if (get(name, v)) {
         ASSERT(v >= 0);
@@ -75,7 +75,7 @@ bool MIRParametrisation::get(const std::string &name, long long &value) const {
 }
 
 
-bool MIRParametrisation::get(const std::string &name, std::vector<long long> &value) const {
+bool MIRParametrisation::get(const std::string& name, std::vector<long long>& value) const {
     std::vector<long> v;
     if (get(name, v)) {
         value.clear();
@@ -90,4 +90,3 @@ bool MIRParametrisation::get(const std::string &name, std::vector<long long> &va
 
 }  // namespace param
 }  // namespace mir
-

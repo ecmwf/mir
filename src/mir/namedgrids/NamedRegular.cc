@@ -21,10 +21,7 @@ namespace mir {
 namespace namedgrids {
 
 
-NamedRegular::NamedRegular(const std::string& name, size_t N):
-    NamedGrid(name),
-    N_(N) {
-}
+NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
 NamedRegular::~NamedRegular() = default;
@@ -33,11 +30,11 @@ void NamedRegular::print(std::ostream& out) const {
     out << "NamedRegular[name=" << name_ << ",N=" << N_ << "]";
 }
 
-const repres::Representation *NamedRegular::representation() const {
+const repres::Representation* NamedRegular::representation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
-const repres::Representation *NamedRegular::representation(const util::Rotation& rotation) const {
+const repres::Representation* NamedRegular::representation(const util::Rotation& rotation) const {
     return new repres::gauss::regular::RotatedGG(N_, rotation);
 }
 
@@ -47,4 +44,3 @@ size_t NamedRegular::gaussianNumber() const {
 
 }  // namespace namedgrids
 }  // namespace mir
-

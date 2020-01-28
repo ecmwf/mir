@@ -15,16 +15,16 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/param/MIRParametrisation.h"
 #include "mir/action/context/Context.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/util/Bitmap.h"
 
 #include "mir/action/filter/BitmapFilter.h"
-#include "mir/util/MIRStatistics.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
@@ -33,16 +33,12 @@ namespace action {
 
 namespace {
 static eckit::Mutex local_mutex;
-static caching::InMemoryCache<util::Bitmap> cache("mirBitmap",
-        256 * 1024 * 1024,
-        0,
-        "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT",
-        true);
-}
+static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, 0,
+                                                  "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT", true);
+}  // namespace
 
 
-BitmapFilter::BitmapFilter(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
     ASSERT(parametrisation.userParametrisation().get("bitmap", path_));
 }
 
@@ -55,17 +51,17 @@ bool BitmapFilter::sameAs(const Action& other) const {
     return o && (path_ == o->path_);
 }
 
-void BitmapFilter::print(std::ostream &out) const {
+void BitmapFilter::print(std::ostream& out) const {
     out << "BitmapFilter[path=" << path_ << "]";
 }
 
 
 util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    caching::InMemoryCache<util::Bitmap>::iterator j  = cache.find(path_);
+    caching::InMemoryCache<util::Bitmap>::iterator j = cache.find(path_);
     if (j == cache.end()) {
         std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
-        size_t footprint = bitmap->footprint();
+        size_t footprint     = bitmap->footprint();
         util::Bitmap& result = cache.insert(path_, bitmap.release());
         cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));
         return result;
@@ -73,7 +69,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
     return *j;
 }
 
-void BitmapFilter::execute(context::Context & ctx) const {
+void BitmapFilter::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
     caching::InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
@@ -83,28 +79,25 @@ void BitmapFilter::execute(context::Context & ctx) const {
 
     const util::Bitmap& b = bitmap();
 
-    for (size_t f = 0; f < field.dimensions() ; f++) {
+    for (size_t f = 0; f < field.dimensions(); f++) {
 
-        double missingValue = field.missingValue();
+        double missingValue     = field.missingValue();
         MIRValuesVector& values = field.direct(f);
 
         // if (values.size() != b.width() * b.height()) {
-        if (values.size() > b.width() * b.height()) { // TODO: fixe me
+        if (values.size() > b.width() * b.height()) {  // TODO: fixe me
             std::ostringstream os;
-            os << "BitmapFilter::execute size mismatch: values="
-               << values.size()
-               << ", bitmap=" << b.width() << "x" << b.height()
-               << "="
-               <<  b.width() * b.height();
+            os << "BitmapFilter::execute size mismatch: values=" << values.size() << ", bitmap=" << b.width() << "x"
+               << b.height() << "=" << b.width() * b.height();
 
             throw eckit::UserError(os.str());
         }
 
 
         size_t k = 0;
-        for (size_t j = 0; j < b.height() ; j++ ) {
+        for (size_t j = 0; j < b.height(); j++) {
 
-            for (size_t i = 0; i < b.width() ; i++ ) {
+            for (size_t i = 0; i < b.width(); i++) {
 
                 if (k == values.size()) {
                     // Temp fix
@@ -115,8 +108,6 @@ void BitmapFilter::execute(context::Context & ctx) const {
                     values[k] = missingValue;
                 }
                 k++;
-
-
             }
         }
 
@@ -135,8 +126,8 @@ void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimatio
 
     size_t count = 0;
 
-    for (size_t j = 0; j < b.height() ; j++ ) {
-        for (size_t i = 0; i < b.width() ; i++ ) {
+    for (size_t j = 0; j < b.height(); j++) {
+        for (size_t i = 0; i < b.width(); i++) {
             if (!b.on(j, i)) {
                 count++;
             }
@@ -151,10 +142,9 @@ const char* BitmapFilter::name() const {
 }
 
 namespace {
-static ActionBuilder< BitmapFilter > bitmapFilter("filter.bitmap");
+static ActionBuilder<BitmapFilter> bitmapFilter("filter.bitmap");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

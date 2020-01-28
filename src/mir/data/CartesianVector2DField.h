@@ -25,7 +25,7 @@ class Representation;
 namespace util {
 class Rotation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,16 +34,12 @@ namespace data {
 
 class CartesianVector2DField {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    explicit CartesianVector2DField(
-        const repres::Representation*,
-        bool hasMissing = false,
-        double missingValue = 0 );
+    explicit CartesianVector2DField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
@@ -69,13 +65,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -87,7 +82,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     MIRValuesVector valuesX_;
@@ -109,11 +103,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const CartesianVector2DField& p) {
+    friend std::ostream& operator<<(std::ostream& s, const CartesianVector2DField& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -122,4 +115,3 @@ private:
 
 
 #endif
-

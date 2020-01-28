@@ -43,21 +43,18 @@ namespace data {
 #ifdef VEC_IS_SPECIAL_VECTOR
 
 
-template<class T>
-struct is_complex_or_floating_point_t : std::is_floating_point<T> {
-};
+template <class T>
+struct is_complex_or_floating_point_t : std::is_floating_point<T> {};
 
 
-template<class T>
-struct is_complex_or_floating_point_t<std::complex<T>> : std::is_floating_point<T> {
-};
+template <class T>
+struct is_complex_or_floating_point_t<std::complex<T>> : std::is_floating_point<T> {};
 
 
-template<typename T, typename A = std::allocator<T>>
+template <typename T, typename A = std::allocator<T>>
 class MIRValuesVectorT : private A {
 
 public:
-
     static_assert(std::is_standard_layout<T>::value && is_complex_or_floating_point_t<T>::value,
                   "MIRValuesVectorT: supports only trivial floating point types");
 
@@ -78,13 +75,11 @@ public:
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
-
     pointer begin_;
     pointer end_;
     pointer endStorage_;
 
 public:
-
     /// Construct a vector with given amount of elements, without initializing
     explicit MIRValuesVectorT(size_t n = 0);
 
@@ -92,12 +87,12 @@ public:
     MIRValuesVectorT(size_t, const value_type&);
 
     /// Construct a vector by copying element range
-    template<class It>
+    template <class It>
     MIRValuesVectorT(It first, It last) {
-        size_t n = std::distance(first, last);
-        begin_ = allocate(n);
-        end_ = begin_ + n;
-        endStorage_ = begin_ + n;
+        size_t n         = std::distance(first, last);
+        begin_           = allocate(n);
+        end_             = begin_ + n;
+        endStorage_      = begin_ + n;
         pointer destIter = begin_;
         while (first != last) {
             *destIter = *first;
@@ -113,9 +108,7 @@ public:
     MIRValuesVectorT(MIRValuesVectorT<T, A>&&) noexcept;
 
     /// Destructor
-    ~MIRValuesVectorT() noexcept {
-        deallocate();
-    }
+    ~MIRValuesVectorT() noexcept { deallocate(); }
 
     /// Assign operator (copy)
     MIRValuesVectorT& operator=(const MIRValuesVectorT<T, A>& other);
@@ -124,49 +117,41 @@ public:
     MIRValuesVectorT& operator=(MIRValuesVectorT<T, A>&&) noexcept;
 
     // iterators
-    iterator begin() noexcept              { return begin_; }
-    iterator end() noexcept                { return end_; }
-    const_iterator begin() const noexcept  { return begin_; }
-    const_iterator end() const noexcept    { return end_; }
+    iterator begin() noexcept { return begin_; }
+    iterator end() noexcept { return end_; }
+    const_iterator begin() const noexcept { return begin_; }
+    const_iterator end() const noexcept { return end_; }
     const_iterator cbegin() const noexcept { return begin_; }
-    const_iterator cend() const noexcept   { return end_; }
+    const_iterator cend() const noexcept { return end_; }
 
-    reverse_iterator rbegin() noexcept              { return reverse_iterator(end()); }
-    reverse_iterator rend() noexcept                { return reverse_iterator(begin()); }
-    const_reverse_iterator rbegin() const noexcept  { return const_reverse_iterator(end()); }
-    const_reverse_iterator rend() const noexcept    { return const_reverse_iterator(begin()); }
+    reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+    reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+    const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
     const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
-    const_reverse_iterator crend() const noexcept   { return const_reverse_iterator(begin()); }
+    const_reverse_iterator crend() const noexcept { return const_reverse_iterator(begin()); }
 
     // element access
-    value_type&       operator[](size_t index) noexcept       { return begin_[index]; }
+    value_type& operator[](size_t index) noexcept { return begin_[index]; }
     const value_type& operator[](size_t index) const noexcept { return begin_[index]; }
 
-    value_type&       at(size_t);
+    value_type& at(size_t);
     const value_type& at(size_t) const;
 
-    value_type*       data() noexcept       { return begin_; }
+    value_type* data() noexcept { return begin_; }
     const value_type* data() const noexcept { return begin_; }
 
     /// Container number of elements
-    size_t size() const noexcept {
-        return end_ - begin_;
-    }
+    size_t size() const noexcept { return end_ - begin_; }
 
     /// Container capacity
-    size_t capacity() const noexcept {
-        return endStorage_ - begin_;
-    }
+    size_t capacity() const noexcept { return endStorage_ - begin_; }
 
     /// Container empty test
-    bool empty() const noexcept {
-        return begin_ == end_;
-    }
+    bool empty() const noexcept { return begin_ == end_; }
 
     /// Empty container
-    void clear() {
-        end_ = begin_;
-    }
+    void clear() { end_ = begin_; }
 
     /// Resize container, reallocating (without initializing) if new size is above capacity
     /// @note invalidates iterators
@@ -178,15 +163,15 @@ public:
 
     /// Resize container and assign range of values
     /// @note invalidates iterators
-    template<class It>
+    template <class It>
     void assign(It first, It last) {
         size_t n = std::distance(first, last);
         if (n > capacity()) {
             deallocate();
-            begin_ = allocate(n);
+            begin_      = allocate(n);
             endStorage_ = begin_ + n;
         }
-        end_ = begin_ + n;
+        end_             = begin_ + n;
         pointer destIter = begin_;
         while (first != last) {
             *destIter = *first;
@@ -221,14 +206,15 @@ public:
 
     /// Insert range of values at a given position
     /// @note invalidates iterators
-    template<class It>
+    template <class It>
     iterator insert(const_iterator position, It first, It last) {
         size_t n = std::distance(first, last);
         if (capacity() < size() + n) {
             size_t index = position - begin_;
             enlarge_for_insert(enlarge_size(n), index, n);
             position = begin_ + index;
-        } else {
+        }
+        else {
             auto n = size_t(end_ - position);
             std::memmove(const_cast<iterator>(position) + n, position, n * sizeof(value_type));
             end_ += n;
@@ -246,7 +232,6 @@ public:
     void swap(MIRValuesVectorT<value_type, allocator_type>&) noexcept;
 
 private:
-
     pointer allocate(size_t n);
 
     void deallocate() noexcept;
@@ -263,7 +248,6 @@ private:
         p.print(out);
         return out;
     }
-
 };
 
 
@@ -278,7 +262,7 @@ extern template class MIRValuesVectorT<std::complex<MIRValuesVector::value_type>
 
 
 #ifdef VEC_IS_STL_VECTOR
-template<typename T>
+template <typename T>
 using MIRValuesVectorT = std::vector<T>;
 
 // container element definition
@@ -297,4 +281,3 @@ using data::MIRValuesVectorT;
 
 
 #endif
-

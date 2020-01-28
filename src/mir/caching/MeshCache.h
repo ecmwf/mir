@@ -30,7 +30,6 @@ struct MeshCacheTraits {
 
     static void save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&);
     static void load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&);
-
 };
 
 class MeshCache : public eckit::CacheManager<MeshCacheTraits> {
@@ -39,8 +38,8 @@ public:  // methods
 };
 
 
-} // namespace caching
-} // namespace mir
+}  // namespace caching
+}  // namespace mir
 
 
 #endif

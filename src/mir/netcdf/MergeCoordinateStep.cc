@@ -22,10 +22,7 @@
 namespace mir {
 namespace netcdf {
 
-MergeCoordinateStep::MergeCoordinateStep( Variable &out, const Variable &in):
-    out_(out),
-    in_(in) {
-}
+MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
 
 MergeCoordinateStep::~MergeCoordinateStep() = default;
 
@@ -33,11 +30,11 @@ int MergeCoordinateStep::rank() const {
     return 4;
 }
 
-void MergeCoordinateStep::print(std::ostream &out) const {
+void MergeCoordinateStep::print(std::ostream& out) const {
     out << "MergeCoordinateStep[" << out_ << " & " << in_ << "]";
 }
 
-void MergeCoordinateStep::execute(MergePlan &plan) {
+void MergeCoordinateStep::execute(MergePlan& plan) {
 #if 0
     if (!out_.mustMerge()) {
 

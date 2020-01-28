@@ -22,7 +22,6 @@ namespace param {
 
 class DefaultParametrisation : public SimpleParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -50,7 +49,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -67,7 +65,6 @@ protected:
     // None
 
 private:
-
     // -- Types
     // None
 
@@ -88,7 +85,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -97,4 +93,3 @@ private:
 
 
 #endif
-

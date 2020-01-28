@@ -34,16 +34,25 @@ private:
     int minimumPositionalArguments() const { return 1; }
 
     void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n" "Usage: " << tool << " --point=N/W input1.grib [input2.grib [...]]"
-                              "\n" "Examples: "
-                              "\n" "  % " << tool << " --point=1/1 input.grib"
-                              "\n" "  % " << tool << " --pont=\"1/1 2/2\" input.grib"
-                           << std::endl;
+        eckit::Log::info() << "\n"
+                              "Usage: "
+                           << tool
+                           << " --point=N/W input1.grib [input2.grib [...]]"
+                              "\n"
+                              "Examples: "
+                              "\n"
+                              "  % "
+                           << tool
+                           << " --point=1/1 input.grib"
+                              "\n"
+                              "  % "
+                           << tool << " --pont=\"1/1 2/2\" input.grib" << std::endl;
     }
 
 public:
     MIRSpectralTransformPoints(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
+        options_.push_back(
+            new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
     }
 };
 

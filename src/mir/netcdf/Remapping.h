@@ -28,20 +28,18 @@ public:
     void validate() const;
 
 public:
-
     // -- Members
     // -- Methods
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
 
     // - Friend
-    friend std::ostream &operator<<(std::ostream &s, const Remapping &v)
-    {
+    friend std::ostream& operator<<(std::ostream& s, const Remapping& v) {
         v.print(s);
         return s;
     }
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

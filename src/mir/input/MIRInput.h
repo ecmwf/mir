@@ -63,7 +63,7 @@ public:
     virtual bool next();
     virtual size_t dimensions() const;
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
-    virtual data::MIRField field() const = 0;
+    virtual data::MIRField field() const                                             = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t copy(double* values, size_t size) const;

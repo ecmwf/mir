@@ -21,39 +21,36 @@
 namespace mir {
 namespace netcdf {
 
-DummyInputVariable::DummyInputVariable(Dataset &owner, const Variable &parent):
+DummyInputVariable::DummyInputVariable(Dataset& owner, const Variable& parent) :
     Variable(owner, parent.name(), parent.dimensions()),
-    parent_(parent)
-{
+    parent_(parent) {
     std::cout << "DummmyInputVariable " << parent_ << std::endl;
     setMatrix(new DummyMatrix(parent));
 
-    for (auto j = parent.attributes().begin(); j != parent.attributes().end(); ++j)
-    {
+    for (auto j = parent.attributes().begin(); j != parent.attributes().end(); ++j) {
         (*j).second->clone(*this);
     }
-
 }
 
 DummyInputVariable::~DummyInputVariable() = default;
 
-const std::string &DummyInputVariable::ncname() const {
+const std::string& DummyInputVariable::ncname() const {
     return parent_.ncname();
 }
 
 
-int DummyInputVariable::varid() const
-{
+int DummyInputVariable::varid() const {
     NOTIMP;
     return 0;
 }
 
-void DummyInputVariable::print(std::ostream &out) const {
+void DummyInputVariable::print(std::ostream& out) const {
     out << "DummyInputVariable[name=" << name_ << "]";
 }
 
 
-Variable *DummyInputVariable::makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const {
+Variable* DummyInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
+                                                 const std::vector<Dimension*>& dimensions) const {
     NOTIMP;
     return 0;
 }
@@ -62,7 +59,7 @@ bool DummyInputVariable::dummy() const {
     return true;
 }
 
-bool DummyInputVariable::sameAsDummy(const Variable &other) const {
+bool DummyInputVariable::sameAsDummy(const Variable& other) const {
     return &parent_ == &other;
 }
 

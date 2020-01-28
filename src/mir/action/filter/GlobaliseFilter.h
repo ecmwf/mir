@@ -22,7 +22,6 @@ namespace action {
 
 class GlobaliseFilter : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GlobaliseFilter(); // Change to virtual if base class
+    virtual ~GlobaliseFilter();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,7 +70,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     GlobaliseFilter(const GlobaliseFilter&);
@@ -86,7 +83,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
@@ -99,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GlobaliseFilter& p)
+    // friend ostream& operator<<(ostream& s,const GlobaliseFilter& p)
     //	{ p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

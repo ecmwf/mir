@@ -28,21 +28,16 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
-                                         NonLinear::WeightMatrix& W,
-                                         NonLinear::Matrix&,
-                                         const data::MIRValuesVector& values,
-                                         const double& missingValue) const {
+bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+                                         const data::MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     ASSERT(W.cols() == values.size());
 
-    auto data = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -51,11 +46,11 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
         const WeightMatrix::iterator end = W.end(r);
 
         // count missing values, accumulate weights (disregarding missing values) and find maximum weight in row
-        size_t i_missing = i;
-        size_t N_missing = 0;
-        size_t N_entries = 0;
-        double sum = 0.;
-        double heaviest = -1.;
+        size_t i_missing         = i;
+        size_t N_missing         = 0;
+        size_t N_entries         = 0;
+        double sum               = 0.;
+        double heaviest          = -1.;
         bool heaviest_is_missing = false;
 
         WeightMatrix::iterator kt(it);
@@ -67,12 +62,13 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
             if (miss) {
                 ++N_missing;
                 i_missing = i;
-            } else {
+            }
+            else {
                 sum += *it;
             }
 
             if (heaviest < data[i]) {
-                heaviest = data[i];
+                heaviest            = data[i];
                 heaviest_is_missing = miss;
             }
         }
@@ -91,12 +87,11 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&,
                 const double factor = 1. / sum;
                 for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
                     const bool miss = values[kt.col()] == missingValue;
-                    data[j] = miss ? 0. : (factor * data[j]);
+                    data[j]         = miss ? 0. : (factor * data[j]);
                 }
             }
             modif = true;
         }
-
     }
 
     return modif;
@@ -127,4 +122,3 @@ static NonLinearBuilder<MissingIfHeaviestMissing> __nonlinear("missing-if-heavie
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

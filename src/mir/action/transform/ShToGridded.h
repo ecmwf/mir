@@ -25,7 +25,7 @@ class MIRField;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -35,10 +35,9 @@ namespace transform {
 
 class ShToGridded : public Action {
 public:
-
     // -- Types
 
-    using atlas_trans_t = atlas::trans::Trans;
+    using atlas_trans_t  = atlas::trans::Trans;
     using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
@@ -71,7 +70,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -80,7 +78,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const        = 0;
     virtual bool sameAs(const Action& other) const = 0;
     virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
@@ -91,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     method::Cropping cropping_;
@@ -119,9 +116,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
+    // friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
     //  { p.print(s); return s; }
-
 };
 
 

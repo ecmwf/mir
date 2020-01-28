@@ -21,7 +21,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace style {
 
 class Truncation {
 public:
-
     // -- Exceptions
     // None
 
@@ -64,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -82,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -100,26 +97,29 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
 class TruncationFactory {
     std::string name_;
     virtual Truncation* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
+
 protected:
     TruncationFactory(const std::string&);
     virtual ~TruncationFactory();
+
 public:
     static Truncation* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
 };
 
 
-template <class T> class TruncationBuilder : public TruncationFactory {
+template <class T>
+class TruncationBuilder : public TruncationFactory {
     virtual Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
         return new T(parametrisation, targetGaussianN);
     }
+
 public:
     TruncationBuilder(const std::string& name) : TruncationFactory(name) {}
 };

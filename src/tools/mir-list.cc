@@ -10,8 +10,8 @@
  */
 
 
-#include "eckit/log/Log.h"
 #include "eckit/log/JSON.h"
+#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -23,36 +23,30 @@ class MIRList : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs &args);
+    void execute(const eckit::option::CmdArgs& args);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const;
 
-    int minimumPositionalArguments() const {
-        return 1;
-    }
+    int minimumPositionalArguments() const { return 1; }
 
 public:
-
     // -- Contructors
 
-    MIRList(int argc, char **argv) :
-        mir::tools::MIRTool(argc, argv) {
+    MIRList(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<bool>("json", "JSON output"));
 
         mir::compare::FieldComparator::addOptions(options_);
     }
-
 };
 
 
-void MIRList::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" << "Usage: " << tool << " ..."
-            << std::endl;
+void MIRList::usage(const std::string& tool) const {
+    eckit::Log::info() << "\n"
+                       << "Usage: " << tool << " ..." << std::endl;
 }
 
 
-void MIRList::execute(const eckit::option::CmdArgs &args) {
+void MIRList::execute(const eckit::option::CmdArgs& args) {
 
     mir::compare::FieldComparator comparator(args);
 
@@ -74,11 +68,10 @@ void MIRList::execute(const eckit::option::CmdArgs &args) {
             comparator.list(args(i));
         }
     }
-
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRList tool(argc, argv);
     return tool.start();
 }

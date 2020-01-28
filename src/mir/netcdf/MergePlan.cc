@@ -20,11 +20,7 @@
 namespace mir {
 namespace netcdf {
 
-MergePlan::MergePlan(Dataset &field):
-    field_(field)
-{
-
-}
+MergePlan::MergePlan(Dataset& field) : field_(field) {}
 
 MergePlan::~MergePlan() {
     for (auto j = steps_.begin(); j != steps_.end(); ++j) {
@@ -32,7 +28,7 @@ MergePlan::~MergePlan() {
     }
 }
 
-void MergePlan::add(Step *s) {
+void MergePlan::add(Step* s) {
     for (auto j = steps_.begin(); j != steps_.end(); ++j) {
         if ((*j)->merge(s)) {
             delete s;
@@ -45,18 +41,18 @@ void MergePlan::add(Step *s) {
 
 void MergePlan::execute() {
     while (!queue_.empty()) {
-        Step *s = queue_.top();
+        Step* s = queue_.top();
         queue_.pop();
         s->execute(*this);
     }
 }
 
-void MergePlan::link(const Variable &out, const Variable &in) {
+void MergePlan::link(const Variable& out, const Variable& in) {
     ASSERT(link_.find(&out) == link_.end());
     link_[&out] = &in;
 }
 
-const Variable &MergePlan::link(const Variable &out) {
+const Variable& MergePlan::link(const Variable& out) {
     if (link_.find(&out) == link_.end()) {
         std::cout << "MergePlan::link cannot find: " << out << std::endl;
     }
@@ -64,7 +60,7 @@ const Variable &MergePlan::link(const Variable &out) {
     return *link_[&out];
 }
 
-Dataset &MergePlan::field() const {
+Dataset& MergePlan::field() const {
     return field_;
 }
 

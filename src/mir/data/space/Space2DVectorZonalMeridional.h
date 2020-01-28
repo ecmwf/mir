@@ -26,7 +26,6 @@ class Space2DVectorZonalMeridional : public SpaceLinear {
     // -- Overridden methods
 
     size_t dimensions() const;
-
 };
 
 
@@ -36,4 +35,3 @@ class Space2DVectorZonalMeridional : public SpaceLinear {
 
 
 #endif
-

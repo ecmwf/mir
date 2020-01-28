@@ -34,7 +34,7 @@ static eckit::DateTime reference(const std::string& units) {
     return eckit::DateTime();
 }
 
-GregorianCalendar::GregorianCalendar(const Variable& variable):
+GregorianCalendar::GregorianCalendar(const Variable& variable) :
     reference_(reference(variable.getAttributeValue<std::string>("units"))),
     zero_(0),
     units_(variable.getAttributeValue<std::string>("units")),
@@ -45,7 +45,7 @@ GregorianCalendar::GregorianCalendar(const Variable& variable):
     // std::cout << units_ << std::endl;
 
     offset_ = reference_.date().julian() * 24 * 60 * 60 + eckit::Second(reference_.time());
-    if (offset == 0) { // Not thread safe
+    if (offset == 0) {  // Not thread safe
         offset = offset_;
     }
     offset_ -= offset;
@@ -53,45 +53,45 @@ GregorianCalendar::GregorianCalendar(const Variable& variable):
 
 GregorianCalendar::~GregorianCalendar() = default;
 
-void GregorianCalendar::print(std::ostream &out) const {
+void GregorianCalendar::print(std::ostream& out) const {
     out << "GregorianCalendar[reference=" << reference_ << ", calendar=" << calendar_ << ", offset=" << offset_ << "]";
 }
 
-template<class T>
-void GregorianCalendar::_decode(std::vector<T> &v) const {
+template <class T>
+void GregorianCalendar::_decode(std::vector<T>& v) const {
     for (size_t i = 0; i < v.size(); i++) {
         ASSERT(T(v[i] + offset_) - offset_ == v[i]);
         v[i] += offset_;
     }
 }
 
-void GregorianCalendar::decode(std::vector<double> &v) const {
+void GregorianCalendar::decode(std::vector<double>& v) const {
     _decode(v);
 }
 
-void GregorianCalendar::decode(std::vector<float> &v) const {
+void GregorianCalendar::decode(std::vector<float>& v) const {
     _decode(v);
 }
 
-void GregorianCalendar::decode(std::vector<long> &v) const {
+void GregorianCalendar::decode(std::vector<long>& v) const {
     _decode(v);
 }
 
-void GregorianCalendar::decode(std::vector<short> &v) const {
+void GregorianCalendar::decode(std::vector<short>& v) const {
     _decode(v);
 }
 
-void GregorianCalendar::decode(std::vector<unsigned char> &v) const {
+void GregorianCalendar::decode(std::vector<unsigned char>& v) const {
     _decode(v);
 }
 
-void GregorianCalendar::decode(std::vector<long long> &v) const {
+void GregorianCalendar::decode(std::vector<long long>& v) const {
     _decode(v);
 }
 
 
-template<class T>
-static T _encode(std::vector<T> &v) {
+template <class T>
+static T _encode(std::vector<T>& v) {
     ASSERT(v.size());
     T zero = *std::min_element(v.begin(), v.end());
     if (zero != v[0]) {
@@ -104,36 +104,36 @@ static T _encode(std::vector<T> &v) {
     return 0;
 }
 
-void GregorianCalendar::encode(std::vector<double> &v) const {
+void GregorianCalendar::encode(std::vector<double>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<float> &v) const {
+void GregorianCalendar::encode(std::vector<float>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<long> &v) const {
+void GregorianCalendar::encode(std::vector<long>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<short> &v) const {
+void GregorianCalendar::encode(std::vector<short>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<unsigned char> &v) const {
+void GregorianCalendar::encode(std::vector<unsigned char>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<long long> &v) const {
+void GregorianCalendar::encode(std::vector<long long>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::addAttributes(Variable &v) const {
+void GregorianCalendar::addAttributes(Variable& v) const {
     v.add(new OutputAttribute(v, "units", Value::newFromString("seconds since YYYY-MM-DD HH-MM-SS")));
     v.add(new OutputAttribute(v, "calendar", Value::newFromString(calendar_)));
 }
 
-void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &path) {
+void GregorianCalendar::updateAttributes(int nc, int varid, const std::string& path) {
     std::stringstream s;
     eckit::DateTime dt = reference_ + eckit::Second(zero_);
     s << "seconds since " << dt.date() << " " << dt.time();

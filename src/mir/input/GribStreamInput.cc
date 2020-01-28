@@ -31,18 +31,18 @@ static size_t buffer_size() {
     return size;
 }
 
-static long readcb(void *data, void *buffer, long len) {
-    eckit::DataHandle *handle = reinterpret_cast<eckit::DataHandle *>(data);
-    const long l = handle->read(buffer, len);
+static long readcb(void* data, void* buffer, long len) {
+    eckit::DataHandle* handle = reinterpret_cast<eckit::DataHandle*>(data);
+    const long l              = handle->read(buffer, len);
     // ecCodes only interprets a -1 as EOF
     return l == 0 ? -1 : l;
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
-GribStreamInput::GribStreamInput(size_t skip, size_t step):
+GribStreamInput::GribStreamInput(size_t skip, size_t step) :
     skip_(skip),
     step_(step),
     offset_(0),
@@ -52,7 +52,7 @@ GribStreamInput::GribStreamInput(size_t skip, size_t step):
 }
 
 
-GribStreamInput::GribStreamInput(off_t offset):
+GribStreamInput::GribStreamInput(off_t offset) :
     skip_(0),
     step_(1),
     offset_(offset),
@@ -62,12 +62,7 @@ GribStreamInput::GribStreamInput(off_t offset):
 }
 
 
-GribStreamInput::GribStreamInput():
-    skip_(0),
-    step_(1),
-    offset_(0),
-    first_(true),
-    buffer_(buffer_size()) {
+GribStreamInput::GribStreamInput() : skip_(0), step_(1), offset_(0), first_(true), buffer_(buffer_size()) {
     ASSERT(step_ > 0);
 }
 
@@ -82,24 +77,24 @@ bool GribStreamInput::next() {
     size_t advance = step_ - 1;
 
     if (first_) {
-        first_ = false;
+        first_  = false;
         advance = skip_;
 
-        if(offset_) {
+        if (offset_) {
             dataHandle().skip(offset_);
         }
     }
 
     for (size_t i = 0; i < advance; i++) {
         size_t len = buffer_.size();
-        int e  = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
+        int e      = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
         if (e == GRIB_END_OF_FILE) {
             return false;
-
         }
 
         if (e == GRIB_BUFFER_TOO_SMALL) {
-            eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
+            eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes ("
+                                        << eckit::Bytes(len) << ")" << std::endl;
             GRIB_ERROR(e, "wmo_read_any_from_stream");
         }
 
@@ -109,9 +104,9 @@ bool GribStreamInput::next() {
     }
 
     size_t len = buffer_.size();
-    int e    = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
+    int e      = wmo_read_any_from_stream(&dataHandle(), &readcb, buffer_, &len);
 
-    if (e == GRIB_SUCCESS)  {
+    if (e == GRIB_SUCCESS) {
         ASSERT(handle(grib_handle_new_from_message(nullptr, buffer_, len)));
         return true;
     }
@@ -122,8 +117,10 @@ bool GribStreamInput::next() {
 
 
     if (e == GRIB_BUFFER_TOO_SMALL) {
-        eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")" << std::endl;
-        eckit::Log::debug<LibMir>() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size()) << "), rerun with:" << std::endl;
+        eckit::Log::debug<LibMir>() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len)
+                                    << ")" << std::endl;
+        eckit::Log::debug<LibMir>() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size())
+                                    << "), rerun with:" << std::endl;
         eckit::Log::debug<LibMir>() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
         GRIB_ERROR(e, "wmo_read_any_from_stream");
     }
@@ -136,4 +133,3 @@ bool GribStreamInput::next() {
 
 }  // namespace input
 }  // namespace mir
-

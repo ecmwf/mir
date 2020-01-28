@@ -90,4 +90,3 @@ LongitudeDouble LongitudeDouble::distance(const LongitudeDouble& meridian) const
 }
 
 }  // namespace mir
-

@@ -20,7 +20,7 @@ namespace mir {
 namespace context {
 class Context;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -29,7 +29,6 @@ namespace util {
 
 class Function {
 public:
-
     Function(const std::string&);
 
     Function(const Function&) = delete;
@@ -42,20 +41,16 @@ public:
     static const Function& lookup(const std::string&);
 
 private:
-
     virtual void print(std::ostream&) const = 0;
 
 protected:
-
     const std::string name_;
 
 private:
-
-    friend std::ostream &operator<<(std::ostream &s, const Function &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Function& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -64,4 +59,3 @@ private:
 
 
 #endif
-

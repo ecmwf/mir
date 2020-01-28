@@ -24,13 +24,13 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/output/EmptyOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/style/MIRStyle.h"
-#include "mir/output/EmptyOutput.h"
 
-//define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+// define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
 
 namespace mir {
@@ -40,36 +40,28 @@ namespace unit {
 
 bool plan_has_action(const action::ActionPlan& plan, const action::Action& action) {
     return (plan.end() != std::find_if(plan.begin(), plan.end(), [&](const action::Action* test) {
-        ASSERT(test);
-        return test->sameAs(action);
-    }));
+                ASSERT(test);
+                return test->sameAs(action);
+            }));
 }
 
 
 class InputOutput : public param::SimpleParametrisation {
-    const std::vector<double> grid{ 1, 1 };
+    const std::vector<double> grid{1, 1};
+
 protected:
-    InputOutput(bool gridded) {
-        gridded ? set("grid", grid).set("gridded", true) : set("spectral", 1);
-    }
+    InputOutput(bool gridded) { gridded ? set("grid", grid).set("gridded", true) : set("spectral", 1); }
 };
 
 
 struct TestingInput : input::MIRInput, InputOutput {
     TestingInput(bool gridded) : InputOutput(gridded) {}
+
 private:
-    const param::MIRParametrisation& parametrisation(size_t) const override {
-        return *this;
-    }
-    bool sameAs(const MIRInput&) const override {
-        return false;
-    }
-    data::MIRField field() const override {
-        NOTIMP;
-    }
-    void print(std::ostream& out) const override {
-        InputOutput::print(out);
-    }
+    const param::MIRParametrisation& parametrisation(size_t) const override { return *this; }
+    bool sameAs(const MIRInput&) const override { return false; }
+    data::MIRField field() const override { NOTIMP; }
+    void print(std::ostream& out) const override { InputOutput::print(out); }
     friend std::ostream& operator<<(std::ostream& s, const TestingInput& p) {
         p.print(s);
         return s;
@@ -87,25 +79,22 @@ CASE("ECMWFStyle") {
     eckit::Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
-    std::vector<bool> _no_yes {false, true};
-    std::vector<bool> _yes_no {true, false};
-    std::vector<std::string> _when {"prologue", "gridded", "spectral", "raw", "epilogue"};
+    std::vector<bool> _no_yes{false, true};
+    std::vector<bool> _yes_no{true, false};
+    std::vector<std::string> _when{"prologue", "gridded", "spectral", "raw", "epilogue"};
 
 
     SECTION("mir::action::FormulaAction") {
 
-        static const std::string
-                CORRECT_FORMULA  ("1"),
-                WRONG_FORMULA    ("0"),
-                CORRECT_METADATA ("param=1"),
-                WRONG_METADATA   ("param=0");
+        static const std::string CORRECT_FORMULA("1"), WRONG_FORMULA("0"), CORRECT_METADATA("param=1"),
+            WRONG_METADATA("param=0");
 
         param::SimpleParametrisation p1, p2, p3, p4;
-        const action::FormulaAction
-                WRONG_ACTION_1(p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA)),
-                WRONG_ACTION_2(p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA)),
-                WRONG_ACTION_3(p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA)),
-                CORRECT_ACTION(p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA));
+        const action::FormulaAction WRONG_ACTION_1(
+            p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA)),
+            WRONG_ACTION_2(p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA)),
+            WRONG_ACTION_3(p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA)),
+            CORRECT_ACTION(p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA));
 
 
         for (bool input_gridded : _yes_no) {
@@ -125,9 +114,9 @@ CASE("ECMWFStyle") {
 
                     // test correct user formula.<when> and formula.<when>.metadata, then
                     // test extra, inconsistent formula.<when>.metadata options
-                    bool plan_should_have_formula = when == "gridded" ? (input_gridded || output_gridded)
-                                                  : when == "spectral" ? (!input_gridded || !output_gridded)
-                                                  : true;
+                    bool plan_should_have_formula =
+                        when == "gridded" ? (input_gridded || output_gridded)
+                                          : when == "spectral" ? (!input_gridded || !output_gridded) : true;
 
                     for (bool addWrongArguments : _no_yes) {
                         if (addWrongArguments) {
@@ -152,36 +141,43 @@ CASE("ECMWFStyle") {
                         action::ActionPlan plan(combined);
                         style->prepare(plan, in, out);
 
-                        bool plan_has_this_formula = plan_has_action(plan, CORRECT_ACTION);
-                        bool plan_has_wrong_formulae =
-                                plan_has_action(plan, WRONG_ACTION_1) ||
-                                plan_has_action(plan, WRONG_ACTION_2) ||
-                                plan_has_action(plan, WRONG_ACTION_3);
+                        bool plan_has_this_formula   = plan_has_action(plan, CORRECT_ACTION);
+                        bool plan_has_wrong_formulae = plan_has_action(plan, WRONG_ACTION_1) ||
+                                                       plan_has_action(plan, WRONG_ACTION_2) ||
+                                                       plan_has_action(plan, WRONG_ACTION_3);
 
                         static size_t c = 1;
                         eckit::Log::info() << "Test " << c++ << ":"
-                                           << "\n\t" "formula." << when << ", formula." << when << ".metadata"
-                                           << "\n\t" "in:   " << in
-                                           << "\n\t" "user: " << user
-                                           << "\n\t" "plan: " << plan
-                                           << "\n\t" "has " << when << " formula: " << plan_has_this_formula << " (should be " << plan_should_have_formula << ")"
-                                           << std::endl;
+                                           << "\n\t"
+                                              "formula."
+                                           << when << ", formula." << when << ".metadata"
+                                           << "\n\t"
+                                              "in:   "
+                                           << in
+                                           << "\n\t"
+                                              "user: "
+                                           << user
+                                           << "\n\t"
+                                              "plan: "
+                                           << plan
+                                           << "\n\t"
+                                              "has "
+                                           << when << " formula: " << plan_has_this_formula << " (should be "
+                                           << plan_should_have_formula << ")" << std::endl;
 
                         EXPECT(plan_has_this_formula == plan_should_have_formula);
                         EXPECT(!plan_has_wrong_formulae);
                     }
-
                 }
             }
         }
-
     }
 }
 
 
-} // namespace unit
-} // namespace tests
-} // namespace mir
+}  // namespace unit
+}  // namespace tests
+}  // namespace mir
 
 
 int main(int argc, char** argv) {

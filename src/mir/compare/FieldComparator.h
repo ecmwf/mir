@@ -23,8 +23,8 @@ class JSON;
 namespace option {
 class Option;
 class CmdArgs;
-}
-}
+}  // namespace option
+}  // namespace eckit
 
 
 namespace mir {
@@ -32,8 +32,8 @@ namespace compare {
 class Field;
 class FieldSet;
 class MultiFile;
-}
-}
+}  // namespace compare
+}  // namespace mir
 
 
 namespace mir {
@@ -50,28 +50,24 @@ class DefaultWhiteLister : public WhiteLister {
     virtual bool whiteListed(const MultiFile&, const Field&) const { return false; }
     virtual bool ignoreError(const MultiFile&, const Field&) const { return false; }
     virtual ~DefaultWhiteLister();
+
 public:
     static const WhiteLister& instance();
 };
 
 
 class FieldComparator {
-public: // types
-
-    using FieldSet = mir::compare::FieldSet;
+public:  // types
+    using FieldSet  = mir::compare::FieldSet;
     using MultiFile = mir::compare::MultiFile;
 
-public: // methods
-
+public:  // methods
     FieldComparator(const eckit::option::CmdArgs&, const WhiteLister& = DefaultWhiteLister::instance());
     ~FieldComparator();
 
-    void compare(const std::string& path1,
-                 const std::string& path2);
+    void compare(const std::string& path1, const std::string& path2);
 
-    void compare(const std::string& name,
-                 const MultiFile& multi1,
-                 const MultiFile& multi2);
+    void compare(const std::string& name, const MultiFile& multi1, const MultiFile& multi2);
 
 
     size_t list(const std::string& path);
@@ -79,74 +75,35 @@ public: // methods
 
     static void addOptions(std::vector<eckit::option::Option*>&);
 
-protected: // members
+protected:  // members
+    size_t count(const MultiFile& multi, FieldSet& fields);
 
-    size_t count(const MultiFile& multi,
-                 FieldSet& fields);
-
-    void compareCounts(const std::string& name,
-                       const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       FieldSet& fields1,
+    void compareCounts(const std::string& name, const MultiFile& multi1, const MultiFile& multi2, FieldSet& fields1,
                        FieldSet& fields2);
 
-    void getField(const MultiFile& multi,
-                  eckit::Buffer& buffer,
-                  FieldSet& fields,
-                  const std::string& path,
-                  off_t offset,
-                  size_t size,
-                  bool fail,
-                  size_t& duplicates);
+    void getField(const MultiFile& multi, eckit::Buffer& buffer, FieldSet& fields, const std::string& path,
+                  off_t offset, size_t size, bool fail, size_t& duplicates);
 
-    Field getField(eckit::Buffer& buffer,
-                   const std::string& path,
-                   off_t offset,
-                   size_t size);
+    Field getField(eckit::Buffer& buffer, const std::string& path, off_t offset, size_t size);
 
-    void getGribField(const MultiFile& multi,
-                      eckit::Buffer& buffer,
-                      FieldSet& fields,
-                      const std::string& path,
-                      off_t offset,
-                      size_t size,
-                      bool fail);
+    void getGribField(const MultiFile& multi, eckit::Buffer& buffer, FieldSet& fields, const std::string& path,
+                      off_t offset, size_t size, bool fail);
 
-    void getBufrField(const MultiFile& multi,
-                      eckit::Buffer& buffer,
-                      FieldSet& fields,
-                      const std::string& path,
-                      off_t offset,
-                      size_t size,
-                      bool fail);
+    void getBufrField(const MultiFile& multi, eckit::Buffer& buffer, FieldSet& fields, const std::string& path,
+                      off_t offset, size_t size, bool fail);
 
-    void compareFields(const MultiFile& multi1,
-                       const MultiFile& multi2,
-                       const FieldSet& fields1,
-                       const FieldSet& fields2,
-                       bool compareValues,
-                       bool compareMissingValues,
-                       bool compareStatistics);
+    void compareFields(const MultiFile& multi1, const MultiFile& multi2, const FieldSet& fields1,
+                       const FieldSet& fields2, bool compareValues, bool compareMissingValues, bool compareStatistics);
 
-    void compareFieldStatistics(const MultiFile& multi1,
-                                const MultiFile& multi2,
-                                const Field& field1,
+    void compareFieldStatistics(const MultiFile& multi1, const MultiFile& multi2, const Field& field1,
                                 const Field& field2);
 
-    void compareFieldValues(const MultiFile& multi1,
-                            const MultiFile& multi2,
-                            const Field& field1,
-                            const Field& field2);
+    void compareFieldValues(const MultiFile& multi1, const MultiFile& multi2, const Field& field1, const Field& field2);
 
-    void compareFieldMissingValues(const MultiFile& multi1,
-                                   const MultiFile& multi2,
-                                   const Field& field1,
+    void compareFieldMissingValues(const MultiFile& multi1, const MultiFile& multi2, const Field& field1,
                                    const Field& field2);
 
-    void missingField(const MultiFile& multi1,
-                      const MultiFile& multi2,
-                      const Field& field,
-                      const FieldSet& fields,
+    void missingField(const MultiFile& multi1, const MultiFile& multi2, const Field& field, const FieldSet& fields,
                       bool& show);
 
     void error(const char* string);
@@ -155,12 +112,10 @@ protected: // members
     double rounded(double) const;
 
 protected:
-
     mutable size_t fatals_;
     mutable size_t warnings_;
 
 private:
-
     const eckit::option::CmdArgs& args_;
 
     std::vector<std::string> ignore_;
@@ -177,7 +132,6 @@ private:
     bool saveDuplicates_;
 
     void whiteListEntries(const Field&, const MultiFile&) const;
-
 };
 
 

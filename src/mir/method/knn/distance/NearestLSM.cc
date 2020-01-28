@@ -34,17 +34,15 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const l
 }
 
 
-void NearestLSM::operator()(
-        size_t ip,
-        const Point3&,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NearestLSM::operator()(size_t ip, const Point3&,
+                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+                            std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
     ASSERT(ip < omask_.size());
 
     // choose closest neighbour point with the same output mask value
-    size_t jp = 0;
+    size_t jp          = 0;
     bool foundSameType = false;
 
     for (const auto& p : neighbours) {
@@ -90,4 +88,3 @@ static DistanceWeightingWithLSMBuilder<NearestLSM> __distance("nearest-lsm");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

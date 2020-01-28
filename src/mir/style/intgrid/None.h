@@ -23,7 +23,6 @@ namespace intgrid {
 
 class None : public style::Intgrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -72,7 +70,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -82,4 +79,3 @@ private:
 
 
 #endif
-

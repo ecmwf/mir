@@ -10,11 +10,11 @@
  */
 
 
-#include <unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
-#include "eckit/thread/AutoLock.h"
 #include "eckit/config/Resource.h"
+#include "eckit/thread/AutoLock.h"
 
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
@@ -24,20 +24,15 @@ namespace mir {
 namespace method {
 
 
-MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner,
-                                       context::Context& ctx,
-                                       const repres::Representation& in,
-                                       const repres::Representation& out,
-                                       const lsm::LandSeaMasks& masks,
-                                       const Cropping& cropping):
+MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner, context::Context& ctx,
+                                       const repres::Representation& in, const repres::Representation& out,
+                                       const lsm::LandSeaMasks& masks, const Cropping& cropping) :
     owner_(owner),
     ctx_(ctx),
     in_(in),
     out_(out),
     masks_(masks),
-    cropping_(cropping) {
-
-}
+    cropping_(cropping) {}
 
 void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
 
@@ -55,30 +50,27 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
     pid_t pid = ::fork();
     switch (pid) {
 
-    case 0:
-        // child
-        eckit::Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
+        case 0:
+            // child
+            eckit::Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
 
-        try {
+            try {
+                owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
+                W.save(path);
+                ::_exit(0);
+            }
+            catch (std::exception& e) {
+                eckit::Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
+            }
+            ::_exit(1);
+            break;
+
+        case -1:
+            // error
+            eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): " << eckit::Log::syserr << std::endl;
             owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
-            W.save(path);
-            ::_exit(0);
-        }
-        catch (std::exception& e) {
-            eckit::Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
-        }
-        ::_exit(1);
-        break;
-
-    case -1:
-        // error
-        eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): "
-                            << eckit::Log::syserr
-                            << std::endl;
-        owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
-        return;
-        break;
-
+            return;
+            break;
     }
 
     // Parent
@@ -89,9 +81,7 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
     saved = true;
     eckit::Log::info() << "MatrixCacheCreator::create " << pid << " finished with code " << code << std::endl;
     ASSERT(code == 0);
-
 }
 
 }  // namespace method
 }  // namespace mir
-

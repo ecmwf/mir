@@ -13,8 +13,8 @@
 #include "MappedMask.h"
 
 #include <fcntl.h>
-#include <memory>
 #include <sys/mman.h>
+#include <memory>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/TraceTimer.h"
@@ -56,7 +56,7 @@ public:
 
 static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
-} // namespace
+}  // namespace
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -64,8 +64,9 @@ namespace mir {
 namespace lsm {
 
 MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
-                       const repres::Representation& representation, const std::string&)
-    : name_(name), path_(path) {
+                       const repres::Representation& representation, const std::string&) :
+    name_(name),
+    path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
@@ -89,8 +90,8 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
     Unmapper unmap(address, size);
 
     size_t bits = size * 8;
-    size_t Nj = size_t(std::sqrt(bits / 2));
-    size_t Ni = Nj * 2;
+    size_t Nj   = size_t(std::sqrt(bits / 2));
+    size_t Ni   = Nj * 2;
 
     ASSERT(Ni * Nj / 8 == size);
 
@@ -109,7 +110,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
     std::unique_ptr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
         const auto& p = iter->pointUnrotated();
-        Latitude lat = p.lat();
+        Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         if (lat < Latitude::SOUTH_POLE) {
@@ -134,9 +135,9 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
         int col = int(lon.value() * COLS / Longitude::GLOBE.value());
         ASSERT(col >= 0 && col < int(COLS));
 
-        size_t pos = COLS * row + col;
+        size_t pos  = COLS * row + col;
         size_t byte = pos / 8;
-        size_t bit = pos % 8;
+        size_t bit  = pos % 8;
 
         // TODO: Check me
         mask_.push_back((mask[byte] & MASKS[bit]) != 0);
@@ -172,5 +173,5 @@ const std::vector<bool>& MappedMask::mask() const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace lsm
-} // namespace mir
+}  // namespace lsm
+}  // namespace mir

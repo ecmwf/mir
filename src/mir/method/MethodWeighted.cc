@@ -44,7 +44,7 @@ namespace {
 static eckit::Mutex local_mutex;
 static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-}  // (anonymous namespace)
+}  // namespace
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) : Method(parametrisation) {
@@ -483,8 +483,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of "
-        << Pretty(W.rows(), {"output point"}) << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of " << Pretty(W.rows(), {"output point"})
+        << std::endl;
 }
 
 
@@ -523,4 +523,3 @@ bool MethodWeighted::canIntroduceMissingValues() const {
 
 }  // namespace method
 }  // namespace mir
-

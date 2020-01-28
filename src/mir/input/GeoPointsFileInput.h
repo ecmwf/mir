@@ -27,7 +27,6 @@ namespace input {
 
 class GeoPointsFileInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -36,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsFileInput(); // Change to virtual if base class
+    virtual ~GeoPointsFileInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -62,7 +61,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -79,7 +77,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string path_;
@@ -105,10 +102,10 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
 
     virtual bool next();
@@ -122,9 +119,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileInput& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsFileInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -133,4 +129,3 @@ private:
 
 
 #endif
-

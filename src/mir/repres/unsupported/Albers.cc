@@ -21,33 +21,30 @@ namespace mir {
 namespace repres {
 
 
-Albers::Albers(const param::MIRParametrisation &parametrisation) {
-}
+Albers::Albers(const param::MIRParametrisation& parametrisation) {}
 
 
-Albers::Albers() {
-}
+Albers::Albers() {}
 
 
 Albers::~Albers() = default;
 
 
-void Albers::print(std::ostream &out) const {
+void Albers::print(std::ostream& out) const {
     out << "Albers["
         << "]";
 }
 
 
-void Albers::fill(grib_info &info) const  {
+void Albers::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<Albers> albers("albers"); // Name is what is returned by grib_api
+static RepresentationBuilder<Albers> albers("albers");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

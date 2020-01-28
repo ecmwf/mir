@@ -23,7 +23,6 @@ namespace output {
 
 class MultiScalarOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarOutput(); // Change to virtual if base class
+    virtual ~MultiScalarOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,10 +54,9 @@ public:
     // None
 
 protected:
-
     // -- Members
 
-    std::vector< MIROutput* > components_;
+    std::vector<MIROutput*> components_;
 
     // -- Methods
     // None
@@ -73,17 +71,16 @@ protected:
     // None
 
 private:
-
     // -- Members
-    //None
+    // None
 
     // -- Methods
-    //None
+    // None
 
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
@@ -98,7 +95,6 @@ private:
     // None
 
     // -- Friends
-
 };
 
 

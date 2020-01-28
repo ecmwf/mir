@@ -22,7 +22,6 @@ namespace input {
 
 class GribDataHandleInput : public GribStreamInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~GribDataHandleInput(); // Change to virtual if base class
+    ~GribDataHandleInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,7 +70,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     eckit::DataHandle& handle_;
@@ -83,7 +80,7 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput
@@ -97,9 +94,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribDataHandleInput& p)
+    // friend ostream& operator<<(ostream& s,const GribDataHandleInput& p)
     // { p.print(s); return s; }
-
 };
 
 

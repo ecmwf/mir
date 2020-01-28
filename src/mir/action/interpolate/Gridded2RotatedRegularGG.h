@@ -23,7 +23,6 @@ namespace interpolate {
 
 class Gridded2RotatedRegularGG : public Gridded2RotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -76,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     size_t N_;
@@ -100,7 +97,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

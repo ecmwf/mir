@@ -21,19 +21,18 @@ namespace other {
 
 
 class None : public Representation {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
     None();
-    None(const param::MIRParametrisation &);
+    None(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~None(); // Change to virtual if base class
+    virtual ~None();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -53,14 +52,13 @@ class None : public Representation {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -71,12 +69,11 @@ class None : public Representation {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    None(const None &);
-    None &operator=(const None &);
+    None(const None&);
+    None& operator=(const None&);
 
     // -- Members
 
@@ -94,9 +91,8 @@ class None : public Representation {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const None& p)
+    // friend ostream& operator<<(ostream& s,const None& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -106,4 +102,3 @@ class None : public Representation {
 
 
 #endif
-

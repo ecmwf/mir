@@ -18,16 +18,15 @@
 namespace mir {
 namespace netcdf {
 
-class NCFile
-{
+class NCFile {
 public:
-    NCFile(const std::string &path);
+    NCFile(const std::string& path);
     ~NCFile();
 
     int open();
     void close();
 
-    const std::string &path() const;
+    const std::string& path() const;
 
 protected:
     // -- Members
@@ -36,23 +35,21 @@ protected:
     bool open_;
 
 private:
-
-    NCFile(const NCFile &);
-    NCFile &operator=(const NCFile &);
+    NCFile(const NCFile&);
+    NCFile& operator=(const NCFile&);
 
     // -- Methods
-    void print(std::ostream &out) const;
+    void print(std::ostream& out) const;
 
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &out, const NCFile &v)
-    {
+    friend std::ostream& operator<<(std::ostream& out, const NCFile& v) {
         v.print(out);
         return out;
     }
 };
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

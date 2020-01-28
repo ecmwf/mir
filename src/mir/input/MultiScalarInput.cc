@@ -80,13 +80,14 @@ data::MIRField MultiScalarInput::field() const {
 
 bool MultiScalarInput::next() {
     bool first = true;
-    bool next = false;
+    bool next  = false;
 
     for (auto& c : components_) {
         if (first) {
-            next = c->next();
+            next  = c->next();
             first = false;
-        } else {
+        }
+        else {
             ASSERT(next == c->next());
         }
     }
@@ -125,5 +126,5 @@ void MultiScalarInput::print(std::ostream& out) const {
 }
 
 
-} // namespace input
-} // namespace mir
+}  // namespace input
+}  // namespace mir

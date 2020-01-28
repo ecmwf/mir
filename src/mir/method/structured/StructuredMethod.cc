@@ -38,8 +38,8 @@ bool StructuredMethod::sameAs(const Method& other) const {
 void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start,
                                               size_t end, size_t& left, size_t& right) const {
 
-    right = start; // take the first if there's a wrap
-    left = start;
+    right = start;  // take the first if there's a wrap
+    left  = start;
 
     Longitude right_lon = Longitude::GLOBE;
     //    Longitude left_lon  =   0.;
@@ -51,9 +51,10 @@ void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::ve
         if (lon <= in) {
             //            left_lon = val;
             left = i;
-        } else if (lon < right_lon) {
+        }
+        else if (lon < right_lon) {
             right_lon = lon;
-            right = i;
+            right     = i;
         }
     }
 
@@ -184,6 +185,6 @@ void StructuredMethod::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

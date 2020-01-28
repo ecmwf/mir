@@ -21,10 +21,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToOctahedralGG : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToOctahedralGG(); // Change to virtual if base class
+    ~ShToOctahedralGG();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,7 +54,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     size_t N_;
@@ -80,7 +78,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -90,4 +87,3 @@ private:
 
 
 #endif
-

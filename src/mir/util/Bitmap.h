@@ -22,7 +22,7 @@ namespace util {
 
 
 class Bitmap {
-  public:
+public:
     // -- Exceptions
     // None
 
@@ -42,17 +42,11 @@ class Bitmap {
 
     // -- Methods
 
-    size_t width() const {
-        return width_;
-    }
+    size_t width() const { return width_; }
 
-    size_t height() const {
-        return height_;
-    }
+    size_t height() const { return height_; }
 
-    bool on(size_t j, size_t i) const {
-        return bitmap_[j][i];
-    }
+    bool on(size_t j, size_t i) const { return bitmap_[j][i]; }
 
     size_t footprint() const;
 
@@ -65,7 +59,7 @@ class Bitmap {
     // -- Class methods
     // None
 
-  protected:
+protected:
     // -- Members
     // None
 
@@ -82,8 +76,7 @@ class Bitmap {
     // -- Class methods
     // None
 
-  private:
-
+private:
     Bitmap(const Bitmap&);
     Bitmap& operator=(const Bitmap&);
 
@@ -113,7 +106,6 @@ class Bitmap {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -122,4 +114,3 @@ class Bitmap {
 
 
 #endif
-

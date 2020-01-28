@@ -65,4 +65,3 @@ util::BoundingBox Gridded2RotatedGrid::outputBoundingBox() const {
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

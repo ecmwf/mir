@@ -25,7 +25,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation):
+Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.get("latitudes", latitudes_));
     ASSERT(parametrisation_.get("longitudes", longitudes_));
@@ -42,14 +42,16 @@ Gridded2Points::~Gridded2Points() = default;
 
 bool Gridded2Points::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2Points*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) && Gridded2GriddedInterpolation::sameAs(other);
+    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&
+           Gridded2GriddedInterpolation::sameAs(other);
 }
 
 void Gridded2Points::print(std::ostream& out) const {
     out << "Gridded2Points["
-           "points=" << latitudes_.size() << ",";
+           "points="
+        << latitudes_.size() << ",";
     Gridded2UnrotatedGrid::print(out);
-    out  << "]";
+    out << "]";
 }
 
 
@@ -63,11 +65,10 @@ const char* Gridded2Points::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2Points > grid2grid("interpolate.grid2points");
+static ActionBuilder<Gridded2Points> grid2grid("interpolate.grid2points");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

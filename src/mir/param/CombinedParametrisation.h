@@ -22,19 +22,17 @@ namespace param {
 
 class CombinedParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    CombinedParametrisation(const MIRParametrisation& userParametrisation,
-                            const MIRParametrisation& metadata,
+    CombinedParametrisation(const MIRParametrisation& userParametrisation, const MIRParametrisation& metadata,
                             const MIRParametrisation& defaults);
 
     // -- Destructor
 
-    virtual ~CombinedParametrisation(); // Change to virtual if base class
+    virtual ~CombinedParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const MIRParametrisation& user_;
@@ -82,7 +78,7 @@ private:
     // -- Methods
     // None
 
-    template<class T>
+    template <class T>
     bool _get(const std::string&, T&) const;
 
     // -- Overridden methods
@@ -116,7 +112,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -125,4 +120,3 @@ private:
 
 
 #endif
-

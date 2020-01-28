@@ -22,7 +22,7 @@ namespace util {
 
 namespace {
 static std::set<eckit::Hash::digest_t> known_messages;
-}  // (anonymous namespace)
+}  // namespace
 
 
 DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::ostream& out) {

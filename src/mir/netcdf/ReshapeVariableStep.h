@@ -24,26 +24,24 @@ class Dimension;
 
 class ReshapeVariableStep : public Step {
 public:
-
-    ReshapeVariableStep(Variable &out, const Dimension &dimension, size_t growth);
+    ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth);
     virtual ~ReshapeVariableStep();
 
 private:
     // Members
 
-    Variable &out_;
-    const Dimension &dimension_;
+    Variable& out_;
+    const Dimension& dimension_;
     size_t growth_;
-    ReshapeVariableStep *next_;
+    ReshapeVariableStep* next_;
 
     // -- Methods
-    virtual void print(std::ostream &out) const;
+    virtual void print(std::ostream& out) const;
     virtual int rank() const;
-    virtual void execute(MergePlan &plan);
-    virtual bool merge(Step *other);
-
+    virtual void execute(MergePlan& plan);
+    virtual bool merge(Step* other);
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -38,10 +38,9 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, Executor*>();
 }
-}
+}  // namespace
 
-Executor::Executor(const std::string &name):
-    name_(name) {
+Executor::Executor(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -49,13 +48,12 @@ Executor::Executor(const std::string &name):
     (*m)[name] = this;
 }
 
-Executor::~Executor()  {
+Executor::~Executor() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
-
 }
 
 void Executor::list(std::ostream& out) {
@@ -63,7 +61,7 @@ void Executor::list(std::ostream& out) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::set<std::string> seen;
-    const char *sep = "";
+    const char* sep = "";
     for (auto& j : *m) {
         std::string name = j.first.substr(0, j.first.find("."));
         if (seen.find(name) == seen.end()) {
@@ -104,4 +102,3 @@ const Executor& Executor::lookup(const param::MIRParametrisation& params) {
 
 }  // namespace action
 }  // namespace mir
-

@@ -35,16 +35,16 @@ MIROutput::~MIROutput() = default;
 namespace {
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map<std::string, MIROutputFactory* > *m_formats = nullptr;
-static std::map<std::string, MIROutputFactory* > *m_extensions = nullptr;
+static pthread_once_t once                                    = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                              = nullptr;
+static std::map<std::string, MIROutputFactory*>* m_formats    = nullptr;
+static std::map<std::string, MIROutputFactory*>* m_extensions = nullptr;
 
 
 static void init() {
-    local_mutex = new eckit::Mutex();
-    m_formats = new std::map<std::string, MIROutputFactory* >();
-    m_extensions = new std::map<std::string, MIROutputFactory* >();
+    local_mutex  = new eckit::Mutex();
+    m_formats    = new std::map<std::string, MIROutputFactory*>();
+    m_extensions = new std::map<std::string, MIROutputFactory*>();
 }
 
 
@@ -57,7 +57,8 @@ struct OutputFromExtension : public MIROutputFactory {
 
         auto j = m_extensions->find(ext);
         if (j == m_extensions->cend()) {
-            list(eckit::Log::debug<LibMir>() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
+            list(eckit::Log::debug<LibMir>()
+                 << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
             eckit::Log::debug<LibMir>() << ", returning 'grib'" << std::endl;
 
             return new GribFileOutput(p);
@@ -78,17 +79,14 @@ struct OutputFromExtension : public MIROutputFactory {
         }
     }
 
-    OutputFromExtension() : MIROutputFactory("extension") {
-    }
+    OutputFromExtension() : MIROutputFactory("extension") {}
 
-    ~OutputFromExtension() {
-        m_extensions->clear();
-    }
+    ~OutputFromExtension() { m_extensions->clear(); }
 
 } static _extension;
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) :
@@ -128,9 +126,10 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
     std::string format = user.has("dryrun") ? "empty"
-                       : user.has("griddef") ? "geopoints"
-                       : user.has("latitudes") || user.has("longitudes") ? "geopoints"
-                       : "extension"; // maybe "grib"??
+                                            : user.has("griddef") ? "geopoints"
+                                                                  : user.has("latitudes") || user.has("longitudes")
+                                                                        ? "geopoints"
+                                                                        : "extension";  // maybe "grib"??
 
     user.get("format", format);
 
@@ -171,4 +170,3 @@ void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, 
 
 }  // namespace output
 }  // namespace mir
-

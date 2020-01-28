@@ -28,9 +28,7 @@ namespace mir {
 namespace action {
 
 
-ActionPlan::ActionPlan(const param::MIRParametrisation &parametrisation):
-    parametrisation_(parametrisation) {
-}
+ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 
 ActionPlan::~ActionPlan() {
@@ -44,7 +42,7 @@ ActionPlan::~ActionPlan() {
 }
 
 
-void ActionPlan::add(const std::string& name)  {
+void ActionPlan::add(const std::string& name) {
     ASSERT(!ended());
     push_back(ActionFactory::build(name, parametrisation_));
 }
@@ -60,7 +58,7 @@ void ActionPlan::add(const std::string& name, const std::string& param, long val
 }
 
 
-void ActionPlan::add(const std::string& name, const std::string& param, const std::string& value)  {
+void ActionPlan::add(const std::string& name, const std::string& param, const std::string& value) {
     ASSERT(!ended());
 
     auto runtime = new param::RuntimeParametrisation(parametrisation_);
@@ -70,7 +68,8 @@ void ActionPlan::add(const std::string& name, const std::string& param, const st
 }
 
 
-void ActionPlan::add(const std::string& name, const std::string& param1, const std::string& value1, const std::string& param2, long value2) {
+void ActionPlan::add(const std::string& name, const std::string& param1, const std::string& value1,
+                     const std::string& param2, long value2) {
     ASSERT(!ended());
 
     auto runtime = new param::RuntimeParametrisation(parametrisation_);
@@ -81,7 +80,8 @@ void ActionPlan::add(const std::string& name, const std::string& param1, const s
 }
 
 
-void ActionPlan::add(const std::string& name, const std::string& param1,  const std::string& value1, const std::string& param2, const std::string& value2) {
+void ActionPlan::add(const std::string& name, const std::string& param1, const std::string& value1,
+                     const std::string& param2, const std::string& value2) {
     ASSERT(!ended());
 
     auto runtime = new param::RuntimeParametrisation(parametrisation_);
@@ -92,7 +92,7 @@ void ActionPlan::add(const std::string& name, const std::string& param1,  const 
 }
 
 
-void ActionPlan::add(Action* action)  {
+void ActionPlan::add(Action* action) {
     ASSERT(!ended());
 
     push_back(action);
@@ -118,7 +118,8 @@ void ActionPlan::execute(context::Context& ctx) const {
         if (dumpPlanFile == "-") {
             custom(std::cout);
             std::cout << std::endl;
-        } else {
+        }
+        else {
             std::ofstream out(dumpPlanFile, std::ios::app);
             custom(out);
             out << std::endl;
@@ -134,16 +135,16 @@ void ActionPlan::execute(context::Context& ctx) const {
 
     for (const auto& p : *this) {
         eckit::Log::debug<LibMir>() << "Executing:"
-                                    << "\n" << sep
-                                    << "\n" << *p
-                                    << "\n" << sep
-                                    << std::endl;
+                                    << "\n"
+                                    << sep << "\n"
+                                    << *p << "\n"
+                                    << sep << std::endl;
         p->perform(ctx);
         eckit::Log::debug<LibMir>() << "Result:"
-                                    << "\n" << sep
-                                    << "\n" << ctx
-                                    << "\n" << sep
-                                    << std::endl;
+                                    << "\n"
+                                    << sep << "\n"
+                                    << ctx << "\n"
+                                    << sep << std::endl;
     }
 }
 
@@ -163,13 +164,13 @@ void ActionPlan::compress() {
     const char* sep = "#########";
 
     eckit::Log::debug<LibMir>() << "Compress:"
-                                << "\n" << sep
-                                << "\n" << *this
-                                << "\n" << sep
-                                << std::endl;
+                                << "\n"
+                                << sep << "\n"
+                                << *this << "\n"
+                                << sep << std::endl;
 
     bool hasCompressed = false;
-    bool more = true;
+    bool more          = true;
     while (more) {
         more = false;
 
@@ -179,17 +180,15 @@ void ActionPlan::compress() {
 
             if (action(i).mergeWithNext(action(i + 1))) {
 
-                eckit::Log::debug<LibMir>() << "ActionPlan::compress: "
-                                            << "\n   " << oldAction.str()
-                                            << "\n + " << action(i + 1)
-                                            << "\n = " << action(i)
-                                            << std::endl;
+                eckit::Log::debug<LibMir>()
+                    << "ActionPlan::compress: "
+                    << "\n   " << oldAction.str() << "\n + " << action(i + 1) << "\n = " << action(i) << std::endl;
 
                 delete at(i + 1);
                 erase(begin() + i + 1);
 
                 hasCompressed = true;
-                more = true;
+                more          = true;
                 break;
             }
 
@@ -199,23 +198,23 @@ void ActionPlan::compress() {
                 erase(begin() + i);
 
                 hasCompressed = true;
-                more = true;
+                more          = true;
                 break;
             }
         }
-
     }
 
     if (hasCompressed) {
         eckit::Log::debug<LibMir>() << "Compress result:"
-                                    << "\n" << sep
-                                    << "\n" << *this
-                                    << "\n" << sep
-                                    << std::endl;
-    } else {
+                                    << "\n"
+                                    << sep << "\n"
+                                    << *this << "\n"
+                                    << sep << std::endl;
+    }
+    else {
         eckit::Log::debug<LibMir>() << "Compress result: unable to compress"
-                                    << "\n" << sep
-                                    << std::endl;
+                                    << "\n"
+                                    << sep << std::endl;
     }
 }
 
@@ -238,9 +237,9 @@ Action& ActionPlan::action(size_t n) {
 }
 
 
-void ActionPlan::print(std::ostream &out) const {
+void ActionPlan::print(std::ostream& out) const {
     out << "ActionPlan[";
-    const char *arrow = "";
+    const char* arrow = "";
     for (const auto& p : *this) {
         out << arrow << *p;
         arrow = " ==> ";
@@ -249,15 +248,15 @@ void ActionPlan::print(std::ostream &out) const {
 }
 
 
-void ActionPlan::dump(std::ostream &out) const {
+void ActionPlan::dump(std::ostream& out) const {
     for (const auto& p : *this) {
         out << "      ==> " << *p << std::endl;
     }
 }
 
 
-void ActionPlan::custom(std::ostream &out) const {
-    const char *sep = "";
+void ActionPlan::custom(std::ostream& out) const {
+    const char* sep = "";
     for (const auto& p : *this) {
         out << sep;
         p->custom(out);
@@ -268,4 +267,3 @@ void ActionPlan::custom(std::ostream &out) const {
 
 }  // namespace action
 }  // namespace mir
-

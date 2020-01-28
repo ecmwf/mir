@@ -21,20 +21,15 @@ namespace netcdf {
 
 class CoordinateOutputVariable : public OutputVariable {
 public:
-
-    CoordinateOutputVariable(Dataset &owner,
-                             const std::string &name,
-                             const std::vector<Dimension *> &dimensions);
+    CoordinateOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
     virtual ~CoordinateOutputVariable();
 
 private:
-
-    virtual void merge(const Variable &, MergePlan &plan);
-    virtual void print(std::ostream &s) const;
-
+    virtual void merge(const Variable&, MergePlan& plan);
+    virtual void print(std::ostream& s) const;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

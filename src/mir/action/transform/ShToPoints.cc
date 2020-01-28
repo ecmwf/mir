@@ -26,66 +26,64 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisation):
-    ShToGridded(parametrisation) {
-    auto& user = parametrisation_.userParametrisation();
+template <class Invtrans>
+ShToPoints<Invtrans>::ShToPoints(const param::MIRParametrisation& parametrisation) : ShToGridded(parametrisation) {
+    auto& user  = parametrisation_.userParametrisation();
     auto& field = parametrisation_.fieldParametrisation();
 
-    ASSERT(user.has("latitudes")  && field.get("latitudes",  latitudes_));
+    ASSERT(user.has("latitudes") && field.get("latitudes", latitudes_));
     ASSERT(user.has("longitudes") && field.get("longitudes", longitudes_));
 
     ASSERT(latitudes_.size() == longitudes_.size());
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToPoints<Invtrans>::~ShToPoints() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToPoints<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToPoints*>(&other);
     return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
 
-template<class Invtrans>
-void ShToPoints<Invtrans>::print(std::ostream &out) const {
+template <class Invtrans>
+void ShToPoints<Invtrans>::print(std::ostream& out) const {
     out << "ShToPoints[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",points=" << latitudes_.size()
-        << "]";
+    out << ",points=" << latitudes_.size() << "]";
 }
 
 
-template<class Invtrans>
-void ShToPoints<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToPoints<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                   const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToPoints<Invtrans>::name() const {
     return "ShToPoints";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToPoints<Invtrans>::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
 }
 
 
 namespace {
-static ActionBuilder< ShToPoints<InvtransScalar> > __action1("transform.sh-scalar-to-points");
-static ActionBuilder< ShToPoints<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-points");
-}
+static ActionBuilder<ShToPoints<InvtransScalar> > __action1("transform.sh-scalar-to-points");
+static ActionBuilder<ShToPoints<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-points");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

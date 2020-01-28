@@ -23,21 +23,19 @@ class MIRFormula : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const;
 
 public:
-
     // -- Contructors
 
-    MIRFormula(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
-
+    MIRFormula(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };
 
 
-void MIRFormula::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool
-            << std::endl;
+void MIRFormula::usage(const std::string& tool) const {
+    eckit::Log::info() << "\n"
+                          "Usage: "
+                       << tool << std::endl;
 }
 
 
@@ -48,7 +46,7 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
 
     mir::param::SimpleParametrisation param;
 
-    mir::util::Formula * f = p.parse(param);
+    mir::util::Formula* f = p.parse(param);
     eckit::Log::info() << (*f) << std::endl;
 
     mir::context::Context ctx;
@@ -58,9 +56,7 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRFormula tool(argc, argv);
     return tool.start();
 }
-
-

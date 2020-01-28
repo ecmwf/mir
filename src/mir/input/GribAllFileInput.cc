@@ -27,9 +27,7 @@ namespace mir {
 namespace input {
 
 
-GribAllFileInput::GribAllFileInput(const std::string &path):
-    path_(path),
-    count_(0) {
+GribAllFileInput::GribAllFileInput(const std::string& path) : path_(path), count_(0) {
 
     eckit::AutoStdFile f(path);
     eckit::Buffer buffer(64 * 1024 * 1024);
@@ -38,7 +36,7 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
         size_t len = buffer.size();
         off_t here;
         SYSCALL(here = ::ftello(f));
-        int e  = wmo_read_any_from_file(f, buffer, &len);
+        int e = wmo_read_any_from_file(f, buffer, &len);
         if (e == GRIB_END_OF_FILE) {
             break;
         }
@@ -63,13 +61,13 @@ GribAllFileInput::~GribAllFileInput() {
 }
 
 
-const param::MIRParametrisation &GribAllFileInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& GribAllFileInput::parametrisation(size_t which) const {
     ASSERT(which < inputs_.size());
     return inputs_[which]->parametrisation();
 }
 
 
-grib_handle *GribAllFileInput::gribHandle(size_t which) const {
+grib_handle* GribAllFileInput::gribHandle(size_t which) const {
     ASSERT(which < inputs_.size());
     return inputs_[which]->gribHandle();
 }
@@ -101,13 +99,13 @@ bool GribAllFileInput::next() {
 }
 
 
-bool GribAllFileInput::sameAs(const MIRInput &other) const {
-    auto o = dynamic_cast<const GribAllFileInput *>(&other);
+bool GribAllFileInput::sameAs(const MIRInput& other) const {
+    auto o = dynamic_cast<const GribAllFileInput*>(&other);
     return o && path_ == o->path_;
 }
 
 
-void GribAllFileInput::print(std::ostream &out) const {
+void GribAllFileInput::print(std::ostream& out) const {
     out << "GribAllFileInput[" << path_ << ",size=" << inputs_.size() << "]";
 }
 
@@ -119,4 +117,3 @@ size_t GribAllFileInput::dimensions() const {
 
 }  // namespace input
 }  // namespace mir
-

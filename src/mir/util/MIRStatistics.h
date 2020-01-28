@@ -34,8 +34,8 @@ public:
     MIRStatistics();
     MIRStatistics(eckit::Stream&);
 
-    MIRStatistics &operator+=(const MIRStatistics&);
-    MIRStatistics &operator/=(size_t);
+    MIRStatistics& operator+=(const MIRStatistics&);
+    MIRStatistics& operator/=(size_t);
 
     caching::InMemoryCacheStatistics bitmapCache_;
     caching::InMemoryCacheStatistics areaCroppingCache_;
@@ -67,16 +67,15 @@ public:
 
     void encode(eckit::Stream&) const;
 
-    friend eckit::Stream &operator<<(eckit::Stream& s, const MIRStatistics& x) {
+    friend eckit::Stream& operator<<(eckit::Stream& s, const MIRStatistics& x) {
         x.encode(s);
         return s;
     }
 };
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir
 
 
 #endif
-

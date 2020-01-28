@@ -14,22 +14,19 @@
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
 
-#include "mir/input/GribFileInput.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRValuesVector.h"
+#include "mir/input/GribFileInput.h"
 
 
 class LSM : public eckit::Tool {
 
     virtual void run();
 
-    void usage(const std::string &tool);
+    void usage(const std::string& tool);
 
-  public:
-    LSM(int argc, char **argv) :
-        eckit::Tool(argc, argv) {
-    }
-
+public:
+    LSM(int argc, char** argv) : eckit::Tool(argc, argv) {}
 };
 
 // void LSM::grid(const atlas::grid::ReducedGrid &grid) {
@@ -57,7 +54,7 @@ void LSM::run() {
 
     while (file.next()) {
 
-        input.parametrisation(); //
+        input.parametrisation();  //
         mir::data::MIRField field(input.field());
 
         const mir::MIRValuesVector& v = field.values(0);
@@ -66,26 +63,25 @@ void LSM::run() {
         eckit::AutoStdFile f("zzzzz", "w");
 
         unsigned char c = 0;
-        size_t n = 0;
+        size_t n        = 0;
         for (size_t i = 0; i < v.size(); i++) {
 
             p[i] = v[i] >= 0.5 ? 1 : 0;
 
-            c <<=  1;
+            c <<= 1;
             c |= p[i];
 
             n++;
 
-            if(n == 8) {
+            if (n == 8) {
                 fwrite(&c, 1, 1, f);
                 c = 0;
                 n = 0;
             }
-
         }
 
-        while(n < 8) {
-            c <<=  1;
+        while (n < 8) {
+            c <<= 1;
             n++;
         }
         fwrite(&c, 1, 1, f);
@@ -106,18 +102,15 @@ void LSM::run() {
         // eckit::Log::info() << diff.size() << std::endl;
 
 
-
         // std::vector<int32_t> rle;
         // eckit::RLEdecode2(a.begin(), a.end(), std::back_inserter(rle));
         // eckit::Log::info() << a.size() << std::endl;
 
         // eckit::Log::info() << "};" << std::endl;
     }
-
 }
 
-int main( int argc, char **argv ) {
+int main(int argc, char** argv) {
     LSM tool(argc, argv);
     return tool.start();
 }
-

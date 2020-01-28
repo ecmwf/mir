@@ -13,24 +13,22 @@
 #include "mir/netcdf/OutputVariable.h"
 
 #include "mir/netcdf/Attribute.h"
+#include "mir/netcdf/Codec.h"
+#include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
-#include "mir/netcdf/Codec.h"
 
 #include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
-OutputVariable::OutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
+OutputVariable::OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
     Variable(owner, name, dimensions),
     created_(false),
-    id_(-1)
-{
-}
+    id_(-1) {}
 
 OutputVariable::~OutputVariable() = default;
 
@@ -52,16 +50,15 @@ void OutputVariable::create(int nc) const {
 
     NC_CALL(nc_def_var(nc, name.c_str(), matrix_->type().code(), ndims, dims, &id_), dataset_.path());
 
-    Codec *codec = matrix_->codec();
+    Codec* codec = matrix_->codec();
     if (codec) {
-        Variable *self = const_cast<OutputVariable *>(this);
+        Variable* self = const_cast<OutputVariable*>(this);
         codec->addAttributes(*self);
     }
 
     created_ = true;
 
-    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
-    {
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j) {
         (*j).second->create(nc);
     }
 }
@@ -70,13 +67,13 @@ void OutputVariable::save(int nc) const {
     ASSERT(created_);
     matrix_->save(nc, id_, path());
 
-    Codec *codec = matrix_->codec();
+    Codec* codec = matrix_->codec();
     if (codec) {
         codec->updateAttributes(nc, id_, path());
     }
 }
 
-void OutputVariable::print(std::ostream &out) const {
+void OutputVariable::print(std::ostream& out) const {
     out << "OutputVariable[name=" << name_ << "]";
 }
 

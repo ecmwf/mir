@@ -10,9 +10,9 @@
  */
 
 
-#include <iostream>
-#include <functional>
 #include <cmath>
+#include <functional>
+#include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 
@@ -27,31 +27,25 @@ namespace mir {
 namespace util {
 
 
-FormulaBinop::FormulaBinop(const param::MIRParametrisation &parametrisation,
-                           const std::string& name,
-                           Formula* arg1,
-                           Formula *arg2):
-    FormulaFunction(parametrisation, name, arg1, arg2) {
-
-}
+FormulaBinop::FormulaBinop(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
+                           Formula* arg2) :
+    FormulaFunction(parametrisation, name, arg1, arg2) {}
 
 FormulaBinop::~FormulaBinop() = default;
 
 void FormulaBinop::print(std::ostream& out) const {
-    out << '(' << *args_[0] << ") " << function_ << " (" << *args_[1] << ')' ;
+    out << '(' << *args_[0] << ") " << function_ << " (" << *args_[1] << ')';
 }
 
 
-template<typename T>
+template <typename T>
 class Unop : public Function {
 
     T op_;
 
-    virtual void print(std::ostream& s) const {
-        s << name_;
-    }
+    virtual void print(std::ostream& s) const { s << name_; }
 
-    void field(context::Context& ctx,  context::Context& ctx1) const {
+    void field(context::Context& ctx, context::Context& ctx1) const {
 
         eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
 
@@ -61,8 +55,7 @@ class Unop : public Function {
 
         field.dimensions(field1.dimensions());
 
-        for (size_t d = 0; d < field1.dimensions(); ++d)
-        {
+        for (size_t d = 0; d < field1.dimensions(); ++d) {
             const MIRValuesVector& values1 = field1.values(d);
 
             size_t size = values1.size();
@@ -75,7 +68,8 @@ class Unop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     if (values1[i] == missingValue1) {
                         values[i] = missingValue1;
-                    } else {
+                    }
+                    else {
                         values[i] = op_(values1[i]);
                     }
                 }
@@ -83,9 +77,8 @@ class Unop : public Function {
                 field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
-
-            } else
-            {
+            }
+            else {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i]);
                 }
@@ -94,9 +87,7 @@ class Unop : public Function {
         }
     }
 
-    void scalar(context::Context& ctx, context::Context& ctx1) const {
-        ctx.scalar(op_(ctx1.scalar()));
-    }
+    void scalar(context::Context& ctx, context::Context& ctx1) const { ctx.scalar(op_(ctx1.scalar())); }
 
     virtual void execute(context::Context& ctx) const {
 
@@ -113,7 +104,6 @@ class Unop : public Function {
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << a;
         throw new eckit::SeriousBug(oss.str());
-
     }
 
 
@@ -122,14 +112,12 @@ public:
 };
 
 
-template<typename T>
+template <typename T>
 class Binop : public Function {
 
     T op_;
 
-    virtual void print(std::ostream& s) const {
-        s << name_;
-    }
+    virtual void print(std::ostream& s) const { s << name_; }
 
     void fieldField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
 
@@ -143,8 +131,7 @@ class Binop : public Function {
         ASSERT(field1.dimensions() == field2.dimensions());
         field.dimensions(field1.dimensions());
 
-        for (size_t d = 0; d < field1.dimensions(); ++d)
-        {
+        for (size_t d = 0; d < field1.dimensions(); ++d) {
             const MIRValuesVector& values1 = field1.values(d);
             const MIRValuesVector& values2 = field2.values(d);
 
@@ -160,7 +147,8 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     if (values1[i] == missingValue1 || values2[i] == missingValue2) {
                         values[i] = missingValue1;
-                    } else {
+                    }
+                    else {
                         values[i] = op_(values1[i], values2[i]);
                     }
                 }
@@ -168,9 +156,8 @@ class Binop : public Function {
                 field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
-
-            } else
-            {
+            }
+            else {
                 for (size_t i = 0; i < size; i++) {
                     values[i] = op_(values1[i], values2[i]);
                 }
@@ -189,12 +176,11 @@ class Binop : public Function {
         data::MIRField& field = ctx.field();
 
         data::MIRField& field1 = ctx1.field();
-        double scalar2 = ctx2.scalar();
+        double scalar2         = ctx2.scalar();
 
         field.dimensions(field1.dimensions());
 
-        for (size_t d = 0; d < field1.dimensions(); ++d)
-        {
+        for (size_t d = 0; d < field1.dimensions(); ++d) {
             const MIRValuesVector& values1 = field1.values(d);
 
             size_t size = values1.size();
@@ -207,7 +193,8 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     if (values1[i] == missingValue1) {
                         values[i] = missingValue1;
-                    } else {
+                    }
+                    else {
                         values[i] = op_(values1[i], scalar2);
                     }
                 }
@@ -215,7 +202,6 @@ class Binop : public Function {
                 field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue1);
-
             }
             else {
                 for (size_t i = 0; i < size; i++) {
@@ -231,13 +217,12 @@ class Binop : public Function {
 
         data::MIRField& field = ctx.field();
 
-        double scalar1 = ctx1.scalar();
+        double scalar1         = ctx1.scalar();
         data::MIRField& field2 = ctx2.field();
 
         field.dimensions(field2.dimensions());
 
-        for (size_t d = 0; d < field2.dimensions(); ++d)
-        {
+        for (size_t d = 0; d < field2.dimensions(); ++d) {
             const MIRValuesVector& values2 = field2.values(d);
 
             size_t size = values2.size();
@@ -250,7 +235,8 @@ class Binop : public Function {
                 for (size_t i = 0; i < size; i++) {
                     if (values2[i] == missingValue2) {
                         values[i] = missingValue2;
-                    } else {
+                    }
+                    else {
                         values[i] = op_(scalar1, values2[i]);
                     }
                 }
@@ -258,7 +244,6 @@ class Binop : public Function {
                 field.update(values, d);
                 field.hasMissing(true);
                 field.missingValue(missingValue2);
-
             }
             else {
                 for (size_t i = 0; i < size; i++) {
@@ -294,7 +279,6 @@ class Binop : public Function {
         std::ostringstream oss;
         oss << "Cannot compute " << *this << " with " << ctx1 << " and " << ctx2;
         throw new eckit::SeriousBug(oss.str());
-
     }
 
 
@@ -331,62 +315,95 @@ static Binop<std::logical_or<double> > logical_or_2("or");
 
 static Unop<std::logical_not<double> > logical_not("not");
 //=========================================================
-struct round { double operator()(double x) const { return ::round(x); }};
+struct round {
+    double operator()(double x) const { return ::round(x); }
+};
 static Unop<round> _round("round");
 //=========================================================
-struct sqrt { double operator()(double x) const { return ::sqrt(x); }};
+struct sqrt {
+    double operator()(double x) const { return ::sqrt(x); }
+};
 static Unop<sqrt> _sqrt("sqrt");
 
-struct sin { double operator()(double x) const { return ::sin(x); }};
+struct sin {
+    double operator()(double x) const { return ::sin(x); }
+};
 static Unop<sin> _sin("sin");
 
-struct cos { double operator()(double x) const { return ::cos(x); }};
+struct cos {
+    double operator()(double x) const { return ::cos(x); }
+};
 static Unop<cos> _cos("cos");
 
-struct tan { double operator()(double x) const { return ::tan(x); }};
+struct tan {
+    double operator()(double x) const { return ::tan(x); }
+};
 static Unop<tan> _tan("tan");
 
-struct asin { double operator()(double x) const { return ::asin(x); }};
+struct asin {
+    double operator()(double x) const { return ::asin(x); }
+};
 static Unop<asin> _asin("asin");
 
-struct acos { double operator()(double x) const { return ::acos(x); }};
+struct acos {
+    double operator()(double x) const { return ::acos(x); }
+};
 static Unop<acos> _acos("acos");
 
-struct atan { double operator()(double x) const { return ::atan(x); }};
+struct atan {
+    double operator()(double x) const { return ::atan(x); }
+};
 static Unop<atan> _atan("atan");
 
-struct log { double operator()(double x) const { return ::log(x); }};
+struct log {
+    double operator()(double x) const { return ::log(x); }
+};
 static Unop<log> _log("log");
 
-struct log2 { double operator()(double x) const { return ::log2(x); }};
+struct log2 {
+    double operator()(double x) const { return ::log2(x); }
+};
 static Unop<log2> _log2("log2");
 
-struct log10 { double operator()(double x) const { return ::log10(x); }};
+struct log10 {
+    double operator()(double x) const { return ::log10(x); }
+};
 static Unop<log10> _log10("log10");
 
-struct exp { double operator()(double x) const { return ::exp(x); }};
+struct exp {
+    double operator()(double x) const { return ::exp(x); }
+};
 static Unop<exp> _exp("exp");
 
-struct abs { double operator()(double x) const { return ::fabs(x); }};
+struct abs {
+    double operator()(double x) const { return ::fabs(x); }
+};
 static Unop<abs> _abs("abs");
 
 //=========================================================
-struct atan2 { double operator()(double x, double y) const { return ::atan2(x, y); }};
+struct atan2 {
+    double operator()(double x, double y) const { return ::atan2(x, y); }
+};
 static Binop<atan2> _atan2("atan2");
 
 //=========================================================
-struct min { double operator()(double x, double y) const { return std::min(x, y); }};
+struct min {
+    double operator()(double x, double y) const { return std::min(x, y); }
+};
 static Binop<min> _min("min");
 //=========================================================
-struct max { double operator()(double x, double y) const { return std::max(x, y); }};
+struct max {
+    double operator()(double x, double y) const { return std::max(x, y); }
+};
 static Binop<max> _max("max");
 //=========================================================
 
-struct pow { double operator()(double x, double y) const { return ::pow(x, y); }};
+struct pow {
+    double operator()(double x, double y) const { return ::pow(x, y); }
+};
 static Binop<pow> _pow_1("^");
 static Binop<pow> _pow_2("pow");
 
 
-
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir

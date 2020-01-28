@@ -21,33 +21,31 @@ namespace mir {
 namespace repres {
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation &parametrisation) {
-}
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& parametrisation) {}
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {
-}
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {}
 
 
 EquatorialAzimuthalEquidistant::~EquatorialAzimuthalEquidistant() = default;
 
 
-void EquatorialAzimuthalEquidistant::print(std::ostream &out) const {
+void EquatorialAzimuthalEquidistant::print(std::ostream& out) const {
     out << "EquatorialAzimuthalEquidistant["
         << "]";
 }
 
 
-void EquatorialAzimuthalEquidistant::fill(grib_info &info) const  {
+void EquatorialAzimuthalEquidistant::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<EquatorialAzimuthalEquidistant> equatorialAzimuthalEquidistant("equatorial_azimuthal_equidistant"); // Name is what is returned by grib_api
+static RepresentationBuilder<EquatorialAzimuthalEquidistant> equatorialAzimuthalEquidistant(
+    "equatorial_azimuthal_equidistant");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

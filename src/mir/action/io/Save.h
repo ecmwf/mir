@@ -23,7 +23,7 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,7 +33,6 @@ namespace io {
 
 class Save : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -43,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Save(); // Change to virtual if base class
+    virtual ~Save();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -64,13 +63,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -83,16 +81,15 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     Save(const Save&);
-    Save &operator=(const Save&);
+    Save& operator=(const Save&);
 
     // -- Members
 
-    input::MIRInput &input_;
-    output::MIROutput &output_;
+    input::MIRInput& input_;
+    output::MIROutput& output_;
 
     // -- Methods
     // None
@@ -113,9 +110,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Save& p)
+    // friend ostream& operator<<(ostream& s,const Save& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -125,4 +121,3 @@ private:
 
 
 #endif
-

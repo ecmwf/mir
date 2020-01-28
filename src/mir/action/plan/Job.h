@@ -23,7 +23,7 @@ class ActionPlan;
 namespace api {
 class MIRJob;
 class MIREstimation;
-}
+}  // namespace api
 namespace input {
 class MIRInput;
 }
@@ -36,16 +36,15 @@ class MIRParametrisation;
 namespace util {
 class MIRStatistics;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
 namespace action {
 
 
-class Job  {
+class Job {
 public:
-
     // -- Exceptions
     // None
 
@@ -82,7 +81,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -99,13 +97,12 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     input::MIRInput& input_;
     output::MIROutput& output_;
-    std::unique_ptr< const param::MIRParametrisation > combined_;
-    std::unique_ptr< action::ActionPlan > plan_;
+    std::unique_ptr<const param::MIRParametrisation> combined_;
+    std::unique_ptr<action::ActionPlan> plan_;
 
     // -- Methods
     // None
@@ -121,7 +118,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -130,4 +126,3 @@ private:
 
 
 #endif
-

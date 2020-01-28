@@ -32,8 +32,7 @@ Distance::Distance(const param::MIRParametrisation& param) {
 }
 
 
-void Distance::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
+void Distance::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
 }
@@ -68,4 +67,3 @@ static PickBuilder<Distance> __pick("distance");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

@@ -26,15 +26,14 @@ namespace caching {
 //----------------------------------------------------------------------------------------------------------------------
 class InMemoryCacheUsage {
 public:
-
     explicit InMemoryCacheUsage();
     explicit InMemoryCacheUsage(const std::string&);
 
-    explicit InMemoryCacheUsage(size_t memory , size_t shared );
-    explicit InMemoryCacheUsage(eckit::Stream &) ;
+    explicit InMemoryCacheUsage(size_t memory, size_t shared);
+    explicit InMemoryCacheUsage(eckit::Stream&);
 
-    InMemoryCacheUsage &operator+=(const InMemoryCacheUsage &rhs) ;
-    InMemoryCacheUsage &operator/=(size_t) ;
+    InMemoryCacheUsage& operator+=(const InMemoryCacheUsage& rhs);
+    InMemoryCacheUsage& operator/=(size_t);
 
     InMemoryCacheUsage operator+(const InMemoryCacheUsage& other) const;
     InMemoryCacheUsage operator-(const InMemoryCacheUsage& other) const;
@@ -42,7 +41,7 @@ public:
 
 
     bool operator>(const InMemoryCacheUsage& other) const;
-    bool operator !() const;
+    bool operator!() const;
     operator bool() const;
     operator std::string() const;
 
@@ -50,19 +49,18 @@ public:
     size_t shared() const;
 
 private:
-
     size_t memory_;
     size_t shared_;
 
-    void encode(eckit::Stream &) const;
-    void decode(eckit::Stream &);
+    void encode(eckit::Stream&) const;
+    void decode(eckit::Stream&);
 
-    friend eckit::Stream &operator<<(eckit::Stream &s, const InMemoryCacheUsage &x) {
+    friend eckit::Stream& operator<<(eckit::Stream& s, const InMemoryCacheUsage& x) {
         x.encode(s);
         return s;
     }
 
-    friend eckit::Stream &operator>>(eckit::Stream &s,  InMemoryCacheUsage &x) {
+    friend eckit::Stream& operator>>(eckit::Stream& s, InMemoryCacheUsage& x) {
         x.decode(s);
         return s;
     }

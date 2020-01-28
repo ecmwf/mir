@@ -17,23 +17,21 @@
 namespace mir {
 namespace netcdf {
 
-Reshape::Reshape(const HyperCube &cube, size_t which, size_t where, size_t count, char tag):
+Reshape::Reshape(const HyperCube& cube, size_t which, size_t where, size_t count, char tag) :
     cube_(cube.dimensions()),
     mul_(cube_.size()),
     which_(which),
     where_(where),
     count_(count),
     size_(cube_.size() - 1),
-    tag_(tag)
-{
+    tag_(tag) {
     ASSERT(count);
 
-    HyperCube::Dimensions  newdims(cube_);
+    HyperCube::Dimensions newdims(cube_);
     newdims[which_] += count_;
 
     size_t n = 1;
-    for (int i = size_; i >= 0; i--)
-    {
+    for (int i = size_; i >= 0; i--) {
         mul_[i] = n;
         n *= newdims[i];
     }
@@ -48,17 +46,15 @@ bool Reshape::merge(const Reshape& other) {
         if (where_ + count_ == other.where_) {
 
             count_ += other.count_;
-            HyperCube::Dimensions  newdims(cube_);
+            HyperCube::Dimensions newdims(cube_);
             newdims[which_] += count_;
 
             size_t n = 1;
-            for (int i = size_; i >= 0; i--)
-            {
+            for (int i = size_; i >= 0; i--) {
                 mul_[i] = n;
                 n *= newdims[i];
             }
             return true;
-
         }
     }
     return false;
@@ -66,8 +62,8 @@ bool Reshape::merge(const Reshape& other) {
 
 Reshape::~Reshape() = default;
 
-void Reshape::print(std::ostream &out) const {
-    out << "Reshape[which=" << which_ << ",where=" << where_ << ",count=" << count_ ;
+void Reshape::print(std::ostream& out) const {
+    out << "Reshape[which=" << which_ << ",where=" << where_ << ",count=" << count_;
 
     out << ",";
     char sep = '{';
@@ -76,12 +72,11 @@ void Reshape::print(std::ostream &out) const {
         sep = ',';
     }
     out << "}] " << this << " " << tag_;
-
 }
 
 
 size_t Reshape::operator()(size_t idx) const {
-    size_t a  = 0;
+    size_t a = 0;
 
     for (int d = size_; d >= 0; d--) {
         size_t c = cube_[d];

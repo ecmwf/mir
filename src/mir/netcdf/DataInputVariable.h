@@ -21,17 +21,18 @@ namespace netcdf {
 
 class DataInputVariable : public InputVariable {
 public:
-    DataInputVariable(Dataset &owner, const std::string &name, int id, const std::vector<Dimension *> &dimensions);
+    DataInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
     virtual ~DataInputVariable();
-private:
 
+private:
     std::vector<const Variable*> coordinates_;
 
 
-    Variable *makeOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions) const ;
-    virtual void print(std::ostream &s) const;
-    virtual const std::string &ncname() const;
-    virtual void collectField(std::vector<Field *>&) const;
+    Variable* makeOutputVariable(Dataset& owner, const std::string& name,
+                                 const std::vector<Dimension*>& dimensions) const;
+    virtual void print(std::ostream& s) const;
+    virtual const std::string& ncname() const;
+    virtual void collectField(std::vector<Field*>&) const;
 
     virtual size_t count2DValues() const;
     virtual void get2DValues(MIRValuesVector&, size_t i) const;
@@ -40,12 +41,11 @@ private:
     virtual void addCoordinateVariable(const Variable*);
     virtual Variable* addMissingCoordinates();
     const char* kind() const;
-    void dumpAttributes(std::ostream &s, const char* prefix) const;
+    void dumpAttributes(std::ostream& s, const char* prefix) const;
 
     virtual std::vector<std::string> coordinates() const;
 
     mutable std::string ncname_;
-
 };
 
 

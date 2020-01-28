@@ -21,13 +21,11 @@ namespace caching {
 
 LegendreCache::LegendreCache() :
     eckit::CacheManager<LegendreCacheTraits>(
-        "LegendreCache", // dummy -- would be used in load() / save() static functions
-        LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_COEFFS_CACHE_SIZE", 0)) {
-}
+        "LegendreCache",  // dummy -- would be used in load() / save() static functions
+        LibMir::cacheDir(), eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+        eckit::Resource<size_t>("$MIR_COEFFS_CACHE_SIZE", 0)) {}
 
-const char *LegendreCacheTraits::name() {
+const char* LegendreCacheTraits::name() {
     return "mir/legendre";
 }
 
@@ -35,17 +33,16 @@ int LegendreCacheTraits::version() {
     return 4;
 }
 
-const char *LegendreCacheTraits::extension() {
+const char* LegendreCacheTraits::extension() {
     return ".leg";
 }
 
-void LegendreCacheTraits::save(const eckit::CacheManagerBase&, const LegendreCacheTraits::value_type&, const eckit::PathName&) {
-}
+void LegendreCacheTraits::save(const eckit::CacheManagerBase&, const LegendreCacheTraits::value_type&,
+                               const eckit::PathName&) {}
 
-void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type &, const eckit::PathName&) {
-}
+void LegendreCacheTraits::load(const eckit::CacheManagerBase&, LegendreCacheTraits::value_type&,
+                               const eckit::PathName&) {}
 
 
 }  // namespace caching
 }  // namespace mir
-

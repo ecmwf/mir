@@ -32,18 +32,18 @@ namespace distance {
 namespace {
 
 
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, DistanceWeightingWithLSMFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                                  = nullptr;
+static std::map<std::string, DistanceWeightingWithLSMFactory*>* m = nullptr;
+static pthread_once_t once                                        = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, DistanceWeightingWithLSMFactory* >();
+    m           = new std::map<std::string, DistanceWeightingWithLSMFactory*>();
 }
 
 
-}  // (anonymous namespace)
+}  // namespace
 
 
 DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisation& parametrisation) {
@@ -51,7 +51,8 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
     parametrisation.get("distance-weighting-with-lsm", name);
 
     if (!DistanceWeightingWithLSMFactory::has(name)) {
-        DistanceWeightingWithLSMFactory::list(eckit::Log::error() << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
+        DistanceWeightingWithLSMFactory::list(eckit::Log::error()
+                                              << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
         throw eckit::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
     }
 
@@ -59,7 +60,8 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
 }
 
 
-const DistanceWeighting* DistanceWeightingWithLSM::distanceWeighting(const param::MIRParametrisation& parametrisation, const lsm::LandSeaMasks& lsm) const {
+const DistanceWeighting* DistanceWeightingWithLSM::distanceWeighting(const param::MIRParametrisation& parametrisation,
+                                                                     const lsm::LandSeaMasks& lsm) const {
     return DistanceWeightingWithLSMFactory::build(method_, parametrisation, lsm);
 }
 
@@ -84,10 +86,9 @@ void DistanceWeightingWithLSM::hash(eckit::MD5& h) const {
 }
 
 
-DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::string& name) :
-    name_(name) {
+DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name + "'");
@@ -104,7 +105,9 @@ DistanceWeightingWithLSMFactory::~DistanceWeightingWithLSMFactory() {
 }
 
 
-const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::string& name, const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) {
+const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::string& name,
+                                                                const param::MIRParametrisation& param,
+                                                                const lsm::LandSeaMasks& lsm) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -141,4 +144,3 @@ bool DistanceWeightingWithLSMFactory::has(const std::string& name) {
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

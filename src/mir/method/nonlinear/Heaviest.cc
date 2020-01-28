@@ -25,16 +25,11 @@ namespace method {
 namespace nonlinear {
 
 
-Heaviest::Heaviest(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool Heaviest::treatment(NonLinear::Matrix&,
-                         NonLinear::WeightMatrix& W,
-                         NonLinear::Matrix&,
-                         const data::MIRValuesVector&,
-                         const double&) const {
+bool Heaviest::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+                         const data::MIRValuesVector&, const double&) const {
 
     auto data = const_cast<WeightMatrix::Scalar*>(W.data());
 
@@ -42,16 +37,16 @@ bool Heaviest::treatment(NonLinear::Matrix&,
     for (WeightMatrix::Size r = 0, i = 0; r < W.rows(); ++r) {
 
         // find heaviest-weighted column in row
-        auto k = i;
-        auto heaviest_index = i;
+        auto k                 = i;
+        auto heaviest_index    = i;
         double heaviest_weight = -1.;
-        size_t N_entries = 0;
+        size_t N_entries       = 0;
 
         const WeightMatrix::iterator end = W.end(r);
         for (; it != end; ++it, ++i, ++N_entries) {
             if (heaviest_weight < data[i]) {
                 heaviest_weight = data[i];
-                heaviest_index = i;
+                heaviest_index  = i;
             }
         }
 
@@ -89,4 +84,3 @@ static NonLinearBuilder<Heaviest> __nonlinear("heaviest");
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

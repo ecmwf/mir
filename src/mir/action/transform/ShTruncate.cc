@@ -17,10 +17,10 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/api/MIREstimation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 
 
@@ -29,9 +29,7 @@ namespace action {
 namespace transform {
 
 
-ShTruncate::ShTruncate(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation),
-    truncation_(0) {
+ShTruncate::ShTruncate(const param::MIRParametrisation& parametrisation) : Action(parametrisation), truncation_(0) {
     ASSERT(parametrisation.userParametrisation().get("truncation", truncation_));
 
     ASSERT(truncation_ > 0);
@@ -47,10 +45,9 @@ bool ShTruncate::sameAs(const Action& other) const {
 }
 
 
-void ShTruncate::print(std::ostream &out) const {
+void ShTruncate::print(std::ostream& out) const {
     out << "ShTruncate["
-        <<  "truncation=" << truncation_
-        << "]";
+        << "truncation=" << truncation_ << "]";
 }
 
 
@@ -68,8 +65,8 @@ void ShTruncate::execute(context::Context& ctx) const {
 
         const repres::Representation* repres = representation->truncate(truncation_, values, result);
 
-        if (repres) { // NULL if nothing happend
-            field.representation(repres); // Assumes representation will be the same
+        if (repres) {                      // NULL if nothing happend
+            field.representation(repres);  // Assumes representation will be the same
             field.update(result, i);
         }
     }
@@ -87,11 +84,10 @@ const char* ShTruncate::name() const {
 }
 
 namespace {
-static ActionBuilder< ShTruncate > __action("transform.sh-truncate");
+static ActionBuilder<ShTruncate> __action("transform.sh-truncate");
 }
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

@@ -22,8 +22,8 @@ namespace eckit {
 namespace option {
 class CmdArgs;
 class Option;
-}
-}
+}  // namespace option
+}  // namespace eckit
 
 
 namespace mir {
@@ -32,20 +32,15 @@ namespace tools {
 
 class MIRTool : public eckit::Tool {
 protected:
-
     using options_t = std::vector<eckit::option::Option*>;
 
     virtual void run();
 
     virtual void execute(const eckit::option::CmdArgs& args) = 0;
 
-    virtual int numberOfPositionalArguments() const {
-        return -1;
-    }
+    virtual int numberOfPositionalArguments() const { return -1; }
 
-    virtual int minimumPositionalArguments() const {
-        return numberOfPositionalArguments();
-    }
+    virtual int minimumPositionalArguments() const { return numberOfPositionalArguments(); }
 
     virtual void init(const eckit::option::CmdArgs&);
 
@@ -54,11 +49,9 @@ protected:
     options_t options_;
 
 public:
-
     virtual void usage(const std::string& tool) const = 0;
 
-    MIRTool(int argc, char **argv);
-
+    MIRTool(int argc, char** argv);
 };
 
 

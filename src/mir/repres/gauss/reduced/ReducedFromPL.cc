@@ -21,20 +21,18 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedFromPL::ReducedFromPL(const param::MIRParametrisation& parametrisation) :
-    FromPL(parametrisation) {
-}
+ReducedFromPL::ReducedFromPL(const param::MIRParametrisation& parametrisation) : FromPL(parametrisation) {}
 
 
-ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox, double angularPrecision):
-    FromPL(N, pl, bbox, angularPrecision) {
-}
+ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::BoundingBox& bbox,
+                             double angularPrecision) :
+    FromPL(N, pl, bbox, angularPrecision) {}
 
 
 ReducedFromPL::~ReducedFromPL() = default;
 
 
-void ReducedFromPL::print(std::ostream &out) const {
+void ReducedFromPL::print(std::ostream& out) const {
     out << "ReducedFromPL[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
 
@@ -61,7 +59,7 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 
 
 namespace {
-static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg"); // Name is what is returned by grib_api
+static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");  // Name is what is returned by grib_api
 }
 
 
@@ -69,4 +67,3 @@ static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg"); // Name
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

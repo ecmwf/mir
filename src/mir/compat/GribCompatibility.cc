@@ -22,23 +22,21 @@ namespace mir {
 namespace compat {
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = nullptr;
-static std::map< std::string, GribCompatibility* >* m = nullptr;
+static pthread_once_t once                          = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                    = nullptr;
+static std::map<std::string, GribCompatibility*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, GribCompatibility* >();
+    m           = new std::map<std::string, GribCompatibility*>();
 }
 
 
-GribCompatibility::GribCompatibility(const std::string &name):
-    name_(name)  {
+GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
-
 }
 
 
@@ -52,7 +50,6 @@ GribCompatibility::~GribCompatibility() {
 
 
 //=========================================================================
-
 
 
 void GribCompatibility::list(std::ostream& out) {
@@ -70,24 +67,21 @@ class CombinedGribCompatibility : public GribCompatibility {
 
     std::vector<const GribCompatibility*> list_;
 
-    virtual void execute(const output::MIROutput& output,
-                         const param::MIRParametrisation& parametrisation,
-                         grib_handle* h,
-                         grib_info& info) const {
+    virtual void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation,
+                         grib_handle* h, grib_info& info) const {
         for (auto c : list_) {
             c->execute(output, parametrisation, h, info);
         }
     }
 
-    virtual void printParametrisation(std::ostream& out,
-                                      const param::MIRParametrisation &param) const {
+    virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
         for (auto c : list_) {
             c->printParametrisation(out, param);
         }
     }
 
-    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
-                                     const param::MIRParametrisation &param2) const {
+    virtual bool sameParametrisation(const param::MIRParametrisation& param1,
+                                     const param::MIRParametrisation& param2) const {
 
         for (auto c : list_) {
             if (!c->sameParametrisation(param1, param2)) {
@@ -98,8 +92,7 @@ class CombinedGribCompatibility : public GribCompatibility {
         return true;
     }
 
-    virtual void initialise(const metkit::MarsRequest& request,
-                            std::map<std::string, std::string>& postproc) const {
+    virtual void initialise(const metkit::MarsRequest& request, std::map<std::string, std::string>& postproc) const {
         for (auto c : list_) {
             c->initialise(request, postproc);
         }
@@ -117,13 +110,12 @@ class CombinedGribCompatibility : public GribCompatibility {
 
 
 public:
-    CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names):
+    CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
         GribCompatibility(name) {
         for (auto& n : names) {
             list_.push_back(&GribCompatibility::lookup(n));
         }
     }
-
 };
 
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
@@ -149,7 +141,5 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
 }
 
 
-
-}  // namespace method
+}  // namespace compat
 }  // namespace mir
-

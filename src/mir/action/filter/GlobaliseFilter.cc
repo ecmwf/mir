@@ -15,17 +15,16 @@
 #include <iostream>
 
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace action {
 
 
-GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+GlobaliseFilter::GlobaliseFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
     // ASSERT(parametrisation.user().get("global", size_));
 }
 
@@ -39,7 +38,7 @@ bool GlobaliseFilter::sameAs(const Action& other) const {
 }
 
 
-void GlobaliseFilter::print(std::ostream &out) const {
+void GlobaliseFilter::print(std::ostream& out) const {
     out << "GlobaliseFilter[]";
 }
 
@@ -49,14 +48,14 @@ bool GlobaliseFilter::deleteWithNext(const Action& next) {
 }
 
 
-void GlobaliseFilter::execute(context::Context & ctx) const {
+void GlobaliseFilter::execute(context::Context& ctx) const {
 
     eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().globaliseTiming_);
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
     const repres::Representation* out = in->globalise(field);
-    if(out) {
+    if (out) {
         field.representation(out);
     }
     else {
@@ -70,10 +69,9 @@ const char* GlobaliseFilter::name() const {
 
 
 namespace {
-static ActionBuilder< GlobaliseFilter > globaliseFilter("filter.globalise");
+static ActionBuilder<GlobaliseFilter> globaliseFilter("filter.globalise");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

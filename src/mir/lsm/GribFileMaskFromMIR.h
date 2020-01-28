@@ -22,14 +22,11 @@ namespace lsm {
 
 class GribFileMaskFromMIR : public GribFileMask {
 public:
-
-    GribFileMaskFromMIR(const std::string& name,
-                        const eckit::PathName& path,
-                        const param::MIRParametrisation& parametrisation,
-                        const repres::Representation& representation,
+    GribFileMaskFromMIR(const std::string& name, const eckit::PathName& path,
+                        const param::MIRParametrisation& parametrisation, const repres::Representation& representation,
                         const std::string& which);
-private:
 
+private:
     std::string name_;
 
     virtual bool cacheable() const;
@@ -42,4 +39,3 @@ private:
 
 
 #endif
-

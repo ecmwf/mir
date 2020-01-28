@@ -21,14 +21,12 @@ namespace mir {
 namespace repres {
 
 
-RotatedSH::RotatedSH(const param::MIRParametrisation &parametrisation):
-    SphericalHarmonics(parametrisation) {
-}
+RotatedSH::RotatedSH(const param::MIRParametrisation& parametrisation) : SphericalHarmonics(parametrisation) {}
 
 RotatedSH::~RotatedSH() = default;
 
 
-void RotatedSH::print(std::ostream &out) const {
+void RotatedSH::print(std::ostream& out) const {
     out << "RotatedSH["
         << "]";
 }
@@ -42,16 +40,15 @@ bool RotatedSH::sameAs(const Representation& other) const {
     NOTIMP;
 }
 
-void RotatedSH::fill(grib_info &info) const  {
+void RotatedSH::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh"); // Name is what is returned by grib_api
+static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

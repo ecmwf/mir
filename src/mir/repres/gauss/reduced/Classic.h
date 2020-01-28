@@ -25,7 +25,6 @@ namespace reduced {
 
 class Classic : public Reduced {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Classic(); // Change to virtual if base class
+    virtual ~Classic();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -64,8 +62,8 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fill(grib_info &) const;
-    virtual void fill(api::MIRJob &) const;
+    virtual void fill(grib_info&) const;
+    virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
     virtual bool sameAs(const Representation& other) const;
@@ -77,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -95,9 +92,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Classic& p)
+    // friend ostream& operator<<(ostream& s,const Classic& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -108,4 +104,3 @@ private:
 
 
 #endif
-

@@ -23,13 +23,12 @@ namespace structured {
 
 class StructuredBilinearLatLon : public StructuredMethod {
 public:
-
     StructuredBilinearLatLon(const param::MIRParametrisation&);
     ~StructuredBilinearLatLon();
 
 private:
-
-    void assembleStructuredInput(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
+                                 const repres::Representation& out) const;
 
     const char* name() const;
 
@@ -38,8 +37,6 @@ private:
     void print(std::ostream&) const;
 
     virtual bool sameAs(const Method& other) const;
-
-
 };
 
 
@@ -49,4 +46,3 @@ private:
 
 
 #endif
-

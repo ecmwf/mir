@@ -18,28 +18,24 @@
 namespace mir {
 namespace netcdf {
 
-class OutputAttribute : public Attribute
-{
+class OutputAttribute : public Attribute {
 public:
-
-    OutputAttribute(Endowed &owner, const std::string &name, Value *value);
+    OutputAttribute(Endowed& owner, const std::string& name, Value* value);
     virtual ~OutputAttribute();
 
 private:
-
     // -- Members
 
     bool valid_;
 
     // From Atttribute
     virtual void create(int nc) const;
-    virtual void print(std::ostream &out) const;
-    virtual void clone(Endowed &owner) const;
-    virtual void merge(const Attribute &);
+    virtual void print(std::ostream& out) const;
+    virtual void clone(Endowed& owner) const;
+    virtual void merge(const Attribute&);
     virtual void invalidate();
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

@@ -13,7 +13,7 @@
 #include "mir/output/MultiScalarOutput.h"
 
 #include <iostream>
-#include <typeinfo> // bad_cast exception
+#include <typeinfo>  // bad_cast exception
 
 #include "eckit/exception/Exceptions.h"
 #include "mir/action/context/Context.h"
@@ -45,8 +45,8 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
     input::MIRInput& input = ctx.input();
 
     try {
-        auto& multi = dynamic_cast<input::MultiScalarInput&>(input);
-        size_t size = 0;
+        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        size_t size  = 0;
         size_t count = 0;
 
         for (auto& c : components_) {
@@ -55,8 +55,8 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
         }
 
         return size;
-
-    } catch (std::bad_cast&) {
+    }
+    catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::copy() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
@@ -65,14 +65,14 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
 
 
 size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    data::MIRField& field = ctx.field();
+    data::MIRField& field  = ctx.field();
     input::MIRInput& input = ctx.input();
 
     ASSERT(field.dimensions() > 0);
 
     try {
-        auto& multi = dynamic_cast<input::MultiScalarInput&>(input);
-        size_t size = 0;
+        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        size_t size  = 0;
         size_t count = 0;
 
         for (auto& c : components_) {
@@ -88,8 +88,8 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
         }
 
         return size;
-
-    } catch (std::bad_cast&) {
+    }
+    catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::save() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
@@ -133,7 +133,8 @@ bool MultiScalarOutput::printParametrisation(std::ostream& out, const param::MIR
 }
 
 
-void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan, input::MIRInput& input, MIROutput& output) {
+void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
+                                input::MIRInput& input, MIROutput& output) {
     ASSERT(!components_.empty());
     return components_[0]->prepare(parametrisation, plan, input, output);
 }
@@ -152,5 +153,5 @@ void MultiScalarOutput::print(std::ostream& out) const {
 }
 
 
-} // namespace output
-} // namespace mir
+}  // namespace output
+}  // namespace mir

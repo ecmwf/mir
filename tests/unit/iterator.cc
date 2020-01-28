@@ -33,7 +33,9 @@ using util::Increments;
 static auto& log = eckit::Log::info();
 
 
-#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+#define EXPECTV(a)                                \
+    log << "\tEXPECT(" << #a << ")" << std::endl; \
+    EXPECT(a)
 
 
 CASE("MIR-390") {
@@ -59,8 +61,8 @@ CASE("MIR-390") {
         RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
                             reference.lat().fraction()};
 
-        auto n  = lat.b();
-        auto s  = lat.a();
+        auto n = lat.b();
+        auto s = lat.a();
 
         EXPECTV(bbox.south().fraction() == s);
         EXPECTV(bbox.north().fraction() == n);
@@ -69,8 +71,8 @@ CASE("MIR-390") {
         RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
                             reference.lon().fraction(), Longitude::GLOBE.fraction()};
 
-        auto w  = lon.a();
-        auto e  = lon.b();
+        auto w = lon.a();
+        auto e = lon.b();
 
         EXPECTV(bbox.west().fraction() == w);
         EXPECTV(bbox.east().fraction() == e);
@@ -93,7 +95,6 @@ CASE("MIR-390") {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
 }
-

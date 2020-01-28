@@ -21,35 +21,27 @@ namespace netcdf {
 
 class SimpleInputVariable : public InputVariable {
 public:
-
-    SimpleInputVariable(Dataset &owner,
-                        const std::string &name,
-                        int id,
-                        const std::vector<Dimension *> &dimensions);
+    SimpleInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
 
     virtual ~SimpleInputVariable();
 
 private:
+    std::vector<std::string> coordinates() const;
 
-     std::vector<std::string> coordinates() const;
+    Variable* makeOutputVariable(Dataset& owner, const std::string& name,
+                                 const std::vector<Dimension*>& dimensions) const;
 
-    Variable *makeOutputVariable(Dataset &owner,
-                                 const std::string &name,
-                                 const std::vector<Dimension *> &dimensions) const ;
+    virtual Variable* makeDataVariable();
+    virtual Variable* makeCoordinateVariable();
+    virtual Variable* makeCellMethodVariable();
 
-    virtual Variable *makeDataVariable();
-    virtual Variable *makeCoordinateVariable();
-    virtual Variable *makeCellMethodVariable();
-
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
     virtual void validate() const;
     virtual bool identified() const;
 
     Variable* addMissingCoordinates();
-
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

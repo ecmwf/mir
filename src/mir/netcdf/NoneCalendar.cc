@@ -17,22 +17,20 @@
 #include "mir/netcdf/Value.h"
 #include "mir/netcdf/Variable.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
-#include <algorithm>
 
 #include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
-NoneCalendar::NoneCalendar(const Variable& variable)
-{
-}
+NoneCalendar::NoneCalendar(const Variable& variable) {}
 
 NoneCalendar::~NoneCalendar() = default;
 
-void NoneCalendar::print(std::ostream &out) const {
+void NoneCalendar::print(std::ostream& out) const {
     out << "NoneCalendar[]";
 }
 

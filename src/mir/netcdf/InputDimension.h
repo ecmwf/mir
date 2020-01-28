@@ -20,11 +20,10 @@ namespace netcdf {
 
 class InputDimension : public Dimension {
 public:
-    InputDimension(Dataset &owner, const std::string &name, int id, size_t len);
+    InputDimension(Dataset& owner, const std::string& name, int id, size_t len);
     virtual ~InputDimension();
 
 private:
-
     // Members
 
     int id_;
@@ -32,13 +31,12 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream &s) const;
-    virtual void clone(Dataset &owner) const;
+    virtual void print(std::ostream& s) const;
+    virtual void clone(Dataset& owner) const;
     virtual int id() const;
     virtual void realDimensions(std::vector<size_t>& dims) const;
-
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

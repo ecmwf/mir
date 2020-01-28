@@ -78,11 +78,12 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
     // when interpolating, the general case is for single-column values/result vectors
     if (values.cols() == 1) {
         // FIXME: remove this const cast once Vector provides read-only view
-        eckit::linalg::Vector vi(const_cast<double *>(values.data()), values.rows());
+        eckit::linalg::Vector vi(const_cast<double*>(values.data()), values.rows());
         eckit::linalg::Vector vo(result.data(), result.rows());
 
         eckit::linalg::LinearAlgebra::backend().spmv(*this, vi, vo);
-    } else {
+    }
+    else {
         eckit::linalg::LinearAlgebra::backend().spmm(*this, values, result);
     }
 }
@@ -94,7 +95,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
     for (Size i = 0; i < rows(); ++i) {
 
-        double removed = 0;
+        double removed  = 0;
         size_t non_zero = 0;
 
         for (iterator it = begin(i); it != end(i); ++it) {
@@ -105,7 +106,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
                     *it = 0;
                     fixed++;
                 }
-            } else {
+            }
+            else {
                 non_zero++;
             }
             count++;
@@ -123,17 +125,17 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
     }
 
     if (fixed) {
-        size_t r = rows();
-        size_t c = cols();
+        size_t r     = rows();
+        size_t c     = cols();
         size_t total = r * c;
         eckit::Log::debug<LibMir>() << "WeightMatrix::cleanup fixed " << Pretty(fixed, {"value"}) << " out of "
-                                    << Pretty(count) << " (matrix is " << Pretty(r) << "x"
-                                    << Pretty(c) << ", total=" << Pretty(total) << ")" << std::endl;
+                                    << Pretty(count) << " (matrix is " << Pretty(r) << "x" << Pretty(c)
+                                    << ", total=" << Pretty(total) << ")" << std::endl;
     }
     prune(0.0);
 }
 
-void WeightMatrix::validate(const char *when) const {
+void WeightMatrix::validate(const char* when) const {
 
     bool logErrors = (eckit::Log::debug<LibMir>());
 
@@ -143,10 +145,10 @@ void WeightMatrix::validate(const char *when) const {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
-        bool ok  = true;
+        bool ok    = true;
 
         for (const_iterator it = begin(i); it != end(i); ++it) {
-            const double &a = *it;
+            const double& a = *it;
             ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
                   eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
@@ -173,7 +175,8 @@ void WeightMatrix::validate(const char *when) const {
                 }
 
                 eckit::Log::debug<LibMir>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
-            } else if (errors == 50) {
+            }
+            else if (errors == 50) {
                 eckit::Log::debug<LibMir>() << "..." << std::endl;
             }
             errors++;

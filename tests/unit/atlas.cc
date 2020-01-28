@@ -35,15 +35,15 @@ using Handle = repres::RepresentationHandle;
 CASE("Test number of points representation <=> grid") {
     auto& log = eckit::Log::info();
 
-    using repres::latlon::RegularLL;
     using namedgrids::NamedGrid;
+    using repres::latlon::RegularLL;
 
 
-   Handle representations[] = {
-       new RegularLL(util::Increments(1., 1.)),
-       new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
-       NamedGrid::lookup("O16").representation(),
-       NamedGrid::lookup("O1280").representation(),
+    Handle representations[] = {
+        new RegularLL(util::Increments(1., 1.)),
+        new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
+        NamedGrid::lookup("O16").representation(),
+        NamedGrid::lookup("O1280").representation(),
     };
 
     for (const auto& repres : representations) {
@@ -65,17 +65,12 @@ CASE("Test number of points representation <=> cropped grid") {
     using repres::latlon::RegularLL;
 
     const util::Domain domains[] = {
-        {  90,    0,  90,  360 },  // North pole
-        {  90,    0,  89,  360 },
-        {   0,    0,   0,  360 },
-        { -89,    0, -90,  360 },
-        { -90,    0, -90,  360 },  // South pole
-        {  90,    0, -90,    0 },  // Greenwhich
-        {  90,    0, -90,    1 },
-        {  90,  180, -90,  180 },  // date line
-        {  90, -180, -90, -180 },  // date line
-        {  90,   -1, -90,    0 },
-        {  90,   -1, -90,   -1 },
+        {90, 0, 90, 360},                                                                    // North pole
+        {90, 0, 89, 360},      {0, 0, 0, 360},      {-89, 0, -90, 360}, {-90, 0, -90, 360},  // South pole
+        {90, 0, -90, 0},                                                                     // Greenwhich
+        {90, 0, -90, 1},       {90, 180, -90, 180},                                          // date line
+        {90, -180, -90, -180},                                                               // date line
+        {90, -1, -90, 0},      {90, -1, -90, -1},
     };
 
     for (const auto& dom : domains) {
@@ -142,7 +137,6 @@ CASE("MIR-374") {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
 }
-

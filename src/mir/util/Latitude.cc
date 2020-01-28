@@ -70,4 +70,3 @@ void Latitude::decode(eckit::Stream& s) {
 }
 
 }  // namespace mir
-

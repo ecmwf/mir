@@ -17,16 +17,15 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace action {
 
 
-SelectField::SelectField(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+SelectField::SelectField(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     ASSERT(parametrisation_.get("which", which_));
 }
@@ -40,12 +39,12 @@ bool SelectField::sameAs(const Action& other) const {
     return o && (which_ == o->which_);
 }
 
-void SelectField::print(std::ostream &out) const {
+void SelectField::print(std::ostream& out) const {
     out << "SelectField[" << which_ << "]";
 }
 
 
-void SelectField::execute(context::Context & ctx) const {
+void SelectField::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
     field.select(which_);
 }
@@ -56,10 +55,9 @@ const char* SelectField::name() const {
 
 
 namespace {
-static ActionBuilder< SelectField > action("select.field");
+static ActionBuilder<SelectField> action("select.field");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

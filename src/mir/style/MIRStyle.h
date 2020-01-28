@@ -30,7 +30,7 @@ class MIROutput;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -39,7 +39,6 @@ namespace style {
 
 class MIRStyle {
 public:
-
     // -- Exceptions
     // None
 
@@ -73,7 +72,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -92,7 +90,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -110,35 +107,31 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s,const MIRStyle& p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRStyle& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
 class MIRStyleFactory {
     std::string name_;
-    virtual MIRStyle* make(const param::MIRParametrisation&) = 0 ;
+    virtual MIRStyle* make(const param::MIRParametrisation&) = 0;
 
 protected:
-
     MIRStyleFactory(const std::string&);
     virtual ~MIRStyleFactory();
 
 public:
     static MIRStyle* build(const param::MIRParametrisation&);
-    static void list(std::ostream &);
-
+    static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class MIRStyleBuilder : public MIRStyleFactory {
-    virtual MIRStyle* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual MIRStyle* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     MIRStyleBuilder(const std::string& name) : MIRStyleFactory(name) {}
 };
@@ -149,4 +142,3 @@ public:
 
 
 #endif
-

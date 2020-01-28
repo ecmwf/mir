@@ -22,13 +22,12 @@ namespace output {
 
 class GeoPointsFileOutputXYV : public GeoPointsFileOutput {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    GeoPointsFileOutputXYV(const::std::string& path, bool binary=false);
+    GeoPointsFileOutputXYV(const ::std::string& path, bool binary = false);
 
     // -- Destructor
     // None
@@ -52,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,13 +70,12 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
     // -- Methods
-   size_t saveText(const param::MIRParametrisation&, context::Context&);
-   size_t saveBinary(const param::MIRParametrisation&, context::Context&);
+    size_t saveText(const param::MIRParametrisation&, context::Context&);
+    size_t saveBinary(const param::MIRParametrisation&, context::Context&);
 
     // -- Overridden methods
     // None
@@ -91,9 +88,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYV& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYV& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -102,4 +98,3 @@ private:
 
 
 #endif
-

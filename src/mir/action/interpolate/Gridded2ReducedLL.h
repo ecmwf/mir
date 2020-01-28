@@ -23,7 +23,6 @@ namespace interpolate {
 
 class Gridded2ReducedLL : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -74,7 +72,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -97,7 +94,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -107,4 +103,3 @@ private:
 
 
 #endif
-

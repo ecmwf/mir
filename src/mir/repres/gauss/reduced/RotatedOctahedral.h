@@ -23,19 +23,19 @@ namespace gauss {
 namespace reduced {
 
 
-class RotatedOctahedral : public  Octahedral {
+class RotatedOctahedral : public Octahedral {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
+                      double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~RotatedOctahedral(); // Change to virtual if base class
+    virtual ~RotatedOctahedral();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,14 +56,13 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -75,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -100,9 +98,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
+    // friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +110,3 @@ private:
 
 
 #endif
-

@@ -13,23 +13,19 @@
 #ifndef mir_netcdf_GregorianDateCodec
 #define mir_netcdf_GregorianDateCodec
 
-#include "mir/netcdf/Calendar.h"
 #include "eckit/types/DateTime.h"
+#include "mir/netcdf/Calendar.h"
 
 namespace mir {
 namespace netcdf {
 
 
-
-class GregorianCalendar : public Calendar
-{
+class GregorianCalendar : public Calendar {
 public:
-
     GregorianCalendar(const Variable& variable);
     virtual ~GregorianCalendar();
 
 private:
-
     eckit::DateTime reference_;
     long long offset_;
     mutable long long zero_;
@@ -39,31 +35,29 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream& s) const;
 
-    template<class T>
-    void _decode(std::vector<T> &v) const;
+    template <class T>
+    void _decode(std::vector<T>& v) const;
 
-    virtual void decode(std::vector<double> &) const ;
-    virtual void decode(std::vector<float> &) const ;
-    virtual void decode(std::vector<long> &) const ;
-    virtual void decode(std::vector<short> &) const ;
-    virtual void decode(std::vector<unsigned char> &) const ;
-    virtual void decode(std::vector<long long> &) const ;
+    virtual void decode(std::vector<double>&) const;
+    virtual void decode(std::vector<float>&) const;
+    virtual void decode(std::vector<long>&) const;
+    virtual void decode(std::vector<short>&) const;
+    virtual void decode(std::vector<unsigned char>&) const;
+    virtual void decode(std::vector<long long>&) const;
 
-    virtual void encode(std::vector<double> &) const ;
-    virtual void encode(std::vector<float> &) const ;
-    virtual void encode(std::vector<long> &) const ;
-    virtual void encode(std::vector<short> &) const ;
-    virtual void encode(std::vector<unsigned char> &) const ;
-    virtual void encode(std::vector<long long> &) const ;
+    virtual void encode(std::vector<double>&) const;
+    virtual void encode(std::vector<float>&) const;
+    virtual void encode(std::vector<long>&) const;
+    virtual void encode(std::vector<short>&) const;
+    virtual void encode(std::vector<unsigned char>&) const;
+    virtual void encode(std::vector<long long>&) const;
 
-    virtual void addAttributes(Variable &) const;
-    virtual void updateAttributes(int nc, int varid, const std::string &path);
-
-
+    virtual void addAttributes(Variable&) const;
+    virtual void updateAttributes(int nc, int varid, const std::string& path);
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

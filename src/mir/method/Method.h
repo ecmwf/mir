@@ -34,7 +34,7 @@ class Representation;
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -43,7 +43,6 @@ namespace method {
 
 class Method {
 public:
-
     Method(const param::MIRParametrisation&);
     Method(const Method&) = delete;
 
@@ -53,56 +52,48 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
-    virtual void execute(context::Context&,
-                         const repres::Representation& in,
+    virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
 
     virtual bool sameAs(const Method& other) const = 0;
 
     // For optimising plan
-    virtual bool canCrop() const = 0;
-    virtual void setCropping(const util::BoundingBox&) = 0;
-    virtual bool hasCropping() const = 0;
+    virtual bool canCrop() const                         = 0;
+    virtual void setCropping(const util::BoundingBox&)   = 0;
+    virtual bool hasCropping() const                     = 0;
     virtual const util::BoundingBox& getCropping() const = 0;
 
 protected:
-
     const param::MIRParametrisation& parametrisation_;
 
     virtual void print(std::ostream&) const = 0;
 
 private:
-
     friend std::ostream& operator<<(std::ostream& s, const Method& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
 class MethodFactory {
     std::string name_;
-    virtual Method *make(const param::MIRParametrisation&) = 0;
+    virtual Method* make(const param::MIRParametrisation&) = 0;
 
 protected:
-
     MethodFactory(const std::string&);
     virtual ~MethodFactory();
 
 public:
-
     static void list(std::ostream&);
-    static Method *build(const std::string&, const param::MIRParametrisation&);
-
+    static Method* build(const std::string&, const param::MIRParametrisation&);
 };
 
 
-template< class T>
+template <class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method *make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual Method* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}
 };
@@ -113,4 +104,3 @@ public:
 
 
 #endif
-

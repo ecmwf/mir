@@ -21,7 +21,7 @@ namespace mir {
 namespace output {
 class MultiScalarOutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace input {
 
 class MultiScalarInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -40,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarInput(); // Change to virtual if base class
+    virtual ~MultiScalarInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,10 +62,9 @@ public:
     // None
 
 protected:
-
     // -- Members
 
-    std::vector< MIRInput* > components_;
+    std::vector<MIRInput*> components_;
 
     // -- Methods
     // None
@@ -81,7 +79,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -94,8 +91,8 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
 
     // -- Class members
@@ -107,7 +104,6 @@ private:
     // -- Friends
 
     friend class output::MultiScalarOutput;
-
 };
 
 
@@ -116,4 +112,3 @@ private:
 
 
 #endif
-

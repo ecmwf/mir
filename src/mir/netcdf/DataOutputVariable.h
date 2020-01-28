@@ -21,23 +21,19 @@ namespace netcdf {
 
 class DataOutputVariable : public OutputVariable {
 public:
-
-    DataOutputVariable(Dataset &owner,
-                       const std::string &name,
-                       const std::vector<Dimension *> &dimensions);
+    DataOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
     virtual ~DataOutputVariable();
 
 private:
-
-    virtual void merge(const Variable &, MergePlan &plan);
-    virtual void print(std::ostream &s) const;
-    virtual const std::string &ncname() const;
-    virtual void collectField(std::vector<Field *>&) const;
+    virtual void merge(const Variable&, MergePlan& plan);
+    virtual void print(std::ostream& s) const;
+    virtual const std::string& ncname() const;
+    virtual void collectField(std::vector<Field*>&) const;
 
     mutable std::string ncname_;
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

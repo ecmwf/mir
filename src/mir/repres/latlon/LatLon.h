@@ -24,15 +24,13 @@ namespace latlon {
 
 class LatLon : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     LatLon(const param::MIRParametrisation&);
-    LatLon(const util::Increments&,
-           const util::BoundingBox& = util::BoundingBox(),
+    LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),
            const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
@@ -47,17 +45,15 @@ public:
 
     // -- Methods
 
-    size_t Ni() const {
-        return ni_;
-    }
+    size_t Ni() const { return ni_; }
 
-    size_t Nj() const {
-        return nj_;
-    }
+    size_t Nj() const { return nj_; }
 
-    static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
+    static void globaliseBoundingBox(util::BoundingBox&, const util::Increments&,
+                                     const PointLatLon& reference = PointLatLon(0, 0));
 
-    static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&, const PointLatLon& reference = PointLatLon(0, 0));
+    static void correctBoundingBox(util::BoundingBox&, size_t& ni, size_t& nj, const util::Increments&,
+                                   const PointLatLon& reference = PointLatLon(0, 0));
 
     static bool samePoints(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
 
@@ -71,7 +67,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Increments increments_;
@@ -118,10 +113,12 @@ protected:
         Longitude lonValue_;
         eckit::Fraction lat_;
         eckit::Fraction lon_;
+
     protected:
         ~LatLonIterator();
         void print(std::ostream&) const;
         bool next(Latitude&, Longitude&);
+
     public:
         LatLonIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments);
     };
@@ -130,7 +127,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -141,7 +137,7 @@ private:
 
     virtual void fill(util::MeshGeneratorParameters&) const;
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate=false) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const;
 
     virtual void reorder(long scanningMode, MIRValuesVector& values) const;
 
@@ -159,9 +155,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const LatLon& p)
+    // friend ostream& operator<<(ostream& s,const LatLon& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -171,4 +166,3 @@ private:
 
 
 #endif
-

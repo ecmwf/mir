@@ -17,9 +17,9 @@
 #include "mir/netcdf/Value.h"
 #include "mir/netcdf/Variable.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
-#include <algorithm>
 
 #include <netcdf.h>
 
@@ -27,13 +27,11 @@ namespace mir {
 namespace netcdf {
 
 
-ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& variable)
-{
-}
+ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& variable) {}
 
 ThreeSixtyCalendar::~ThreeSixtyCalendar() = default;
 
-void ThreeSixtyCalendar::print(std::ostream &out) const {
+void ThreeSixtyCalendar::print(std::ostream& out) const {
     out << "ThreeSixtyCalendar[]";
 }
 

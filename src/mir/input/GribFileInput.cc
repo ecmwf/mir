@@ -19,20 +19,17 @@ namespace mir {
 namespace input {
 
 
-GribFileInput::GribFileInput(const eckit::PathName &path, size_t skip, size_t step):
+GribFileInput::GribFileInput(const eckit::PathName& path, size_t skip, size_t step) :
     GribStreamInput(skip, step),
-    path_(path), handle_(nullptr) {
-}
+    path_(path),
+    handle_(nullptr) {}
 
-GribFileInput::GribFileInput(const eckit::PathName &path, off_t offset):
+GribFileInput::GribFileInput(const eckit::PathName& path, off_t offset) :
     GribStreamInput(offset),
-    path_(path), handle_(nullptr) {
-}
+    path_(path),
+    handle_(nullptr) {}
 
-GribFileInput::GribFileInput(const eckit::PathName &path):
-    GribStreamInput(),
-    path_(path), handle_(nullptr) {
-}
+GribFileInput::GribFileInput(const eckit::PathName& path) : GribStreamInput(), path_(path), handle_(nullptr) {}
 
 GribFileInput::~GribFileInput() {
     if (handle_) {
@@ -46,11 +43,11 @@ bool GribFileInput::sameAs(const MIRInput& other) const {
     return o && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
 }
 
-void GribFileInput::print(std::ostream &out) const {
+void GribFileInput::print(std::ostream& out) const {
     out << "GribFileInput[path=" << path_ << ",skip=" << skip_ << ", step=" << step_ << "]";
 }
 
-eckit::DataHandle &GribFileInput::dataHandle() {
+eckit::DataHandle& GribFileInput::dataHandle() {
     if (!handle_) {
         handle_ = new eckit::BufferedHandle(path_.fileHandle());
         handle_->openForRead();
@@ -58,9 +55,8 @@ eckit::DataHandle &GribFileInput::dataHandle() {
     return *handle_;
 }
 
-static MIRInputBuilder<GribFileInput> input(0x47524942); // "GRIB"
+static MIRInputBuilder<GribFileInput> input(0x47524942);  // "GRIB"
 
 
 }  // namespace input
 }  // namespace mir
-

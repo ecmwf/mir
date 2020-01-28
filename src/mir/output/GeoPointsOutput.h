@@ -27,7 +27,6 @@ namespace output {
 
 class GeoPointsOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -58,7 +57,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,8 +69,7 @@ protected:
     // -- Overridden methods
 
     // From MIROutput
-    virtual bool sameParametrisation(const param::MIRParametrisation&,
-                                     const param::MIRParametrisation&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
 
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
 
@@ -85,7 +82,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     bool once_;
@@ -104,9 +100,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -115,4 +110,3 @@ private:
 
 
 #endif
-

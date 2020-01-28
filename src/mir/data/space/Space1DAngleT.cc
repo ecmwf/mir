@@ -28,14 +28,22 @@ namespace {
 
 
 // Angles in degrees [0,360[/[-180,180] or radians [0,2π[/[-π,π]
-enum { DEGREE, RADIAN };
-enum { ASYMMETRIC, SYMMETRIC };
+enum
+{
+    DEGREE,
+    RADIAN
+};
+enum
+{
+    ASYMMETRIC,
+    SYMMETRIC
+};
 typedef std::complex<double> complex_t;
 
 
 // Generic types
 
-template< int SCALE, int SYMMETRY >
+template <int SCALE, int SYMMETRY>
 struct NormaliseAngle {
     NormaliseAngle() {
         // ensure specialisation
@@ -45,7 +53,7 @@ struct NormaliseAngle {
         while (a >= MIN + GLOBE) {
             a -= GLOBE;
         }
-        while (a < MIN ) {
+        while (a < MIN) {
             a += GLOBE;
         }
         return a;
@@ -54,57 +62,69 @@ struct NormaliseAngle {
     const double MIN;
 };
 
-template< int SCALE >
-double convert_to_angle(const complex_t&) { NOTIMP; /* ensure specialisation */ }
+template <int SCALE>
+double convert_to_angle(const complex_t&) {
+    NOTIMP; /* ensure specialisation */
+}
 
-template< int SCALE >
-complex_t convert_to_complex(const double&)  { NOTIMP; /* ensure specialisation */ }
+template <int SCALE>
+complex_t convert_to_complex(const double&) {
+    NOTIMP; /* ensure specialisation */
+}
 
 
 // Specialised types
 
-template<> NormaliseAngle< DEGREE, ASYMMETRIC >::NormaliseAngle() : GLOBE(360.),     MIN(   0.) {}
-template<> NormaliseAngle< DEGREE, SYMMETRIC  >::NormaliseAngle() : GLOBE(360.),     MIN(-180.) {}
-template<> NormaliseAngle< RADIAN, ASYMMETRIC >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(   0.) {}
-template<> NormaliseAngle< RADIAN, SYMMETRIC  >::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
+template <>
+NormaliseAngle<DEGREE, ASYMMETRIC>::NormaliseAngle() : GLOBE(360.), MIN(0.) {}
+template <>
+NormaliseAngle<DEGREE, SYMMETRIC>::NormaliseAngle() : GLOBE(360.), MIN(-180.) {}
+template <>
+NormaliseAngle<RADIAN, ASYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2), MIN(0.) {}
+template <>
+NormaliseAngle<RADIAN, SYMMETRIC>::NormaliseAngle() : GLOBE(M_PI * 2), MIN(-M_PI) {}
 
-template<> double convert_to_angle< RADIAN >(const complex_t& c) {
-    if ( eckit::types::is_approximately_equal(std::real(c), 0.) &&
-         eckit::types::is_approximately_equal(std::imag(c), 0.) ) {
+template <>
+double convert_to_angle<RADIAN>(const complex_t& c) {
+    if (eckit::types::is_approximately_equal(std::real(c), 0.) &&
+        eckit::types::is_approximately_equal(std::imag(c), 0.)) {
         return 0.;
     }
     return std::arg(c);
 }
 
-template<> complex_t convert_to_complex< RADIAN >(const double& a) {
+template <>
+complex_t convert_to_complex<RADIAN>(const double& a) {
     return std::polar(1., a);
 }
 
-template<> double convert_to_angle< DEGREE >(const complex_t& c) {
-    return util::radian_to_degree(convert_to_angle< RADIAN >(c));
+template <>
+double convert_to_angle<DEGREE>(const complex_t& c) {
+    return util::radian_to_degree(convert_to_angle<RADIAN>(c));
 }
 
-template<> complex_t convert_to_complex< DEGREE >(const double& a) {
-    return convert_to_complex< RADIAN >(util::degree_to_radian(a));
-}
-
-
-}  // (anonymous namespace)
-
-
-static SpaceChoice< Space1DAngleT< DEGREE, ASYMMETRIC > > __space1("1d.angle.degree.asymmetric");
-static SpaceChoice< Space1DAngleT< DEGREE, SYMMETRIC  > > __space2("1d.angle.degree.symmetric");
-static SpaceChoice< Space1DAngleT< RADIAN, ASYMMETRIC > > __space3("1d.angle.radian.asymmetric");
-static SpaceChoice< Space1DAngleT< RADIAN, SYMMETRIC  > > __space4("1d.angle.radian.symmetric");
-
-
-template< int SCALE, int SYMMETRY >
-Space1DAngleT< SCALE, SYMMETRY >::Space1DAngleT() : Space() {
+template <>
+complex_t convert_to_complex<DEGREE>(const double& a) {
+    return convert_to_complex<RADIAN>(util::degree_to_radian(a));
 }
 
 
-template< int SCALE, int SYMMETRY >
-void Space1DAngleT< SCALE, SYMMETRY >::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
+}  // namespace
+
+
+static SpaceChoice<Space1DAngleT<DEGREE, ASYMMETRIC> > __space1("1d.angle.degree.asymmetric");
+static SpaceChoice<Space1DAngleT<DEGREE, SYMMETRIC> > __space2("1d.angle.degree.symmetric");
+static SpaceChoice<Space1DAngleT<RADIAN, ASYMMETRIC> > __space3("1d.angle.radian.asymmetric");
+static SpaceChoice<Space1DAngleT<RADIAN, SYMMETRIC> > __space4("1d.angle.radian.symmetric");
+
+
+template <int SCALE, int SYMMETRY>
+Space1DAngleT<SCALE, SYMMETRY>::Space1DAngleT() : Space() {}
+
+
+template <int SCALE, int SYMMETRY>
+void Space1DAngleT<SCALE, SYMMETRY>::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut,
+                                               double missingValue) const {
     ASSERT(matrixIn.cols() == 1);
     matrixOut.resize(matrixIn.rows(), 2);  // allocates memory, not initialised
 
@@ -112,8 +132,9 @@ void Space1DAngleT< SCALE, SYMMETRY >::linearise(const Space::Matrix& matrixIn, 
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn(i, 0) == missingValue) {
             matrixOut(i, 0) = matrixOut(i, 1) = missingValue;
-        } else {
-            xy = convert_to_complex< SCALE >(matrixIn[i]);
+        }
+        else {
+            xy              = convert_to_complex<SCALE>(matrixIn[i]);
             matrixOut(i, 0) = xy.real();
             matrixOut(i, 1) = xy.imag();
         }
@@ -121,8 +142,9 @@ void Space1DAngleT< SCALE, SYMMETRY >::linearise(const Space::Matrix& matrixIn, 
 }
 
 
-template< int SCALE, int SYMMETRY >
-void Space1DAngleT< SCALE, SYMMETRY >::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
+template <int SCALE, int SYMMETRY>
+void Space1DAngleT<SCALE, SYMMETRY>::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut,
+                                                 double missingValue) const {
     ASSERT(matrixIn.rows() == matrixOut.rows());
     ASSERT(matrixIn.cols() == 2);
     ASSERT(matrixOut.cols() == 1);
@@ -134,9 +156,10 @@ void Space1DAngleT< SCALE, SYMMETRY >::unlinearise(const Space::Matrix& matrixIn
     for (Matrix::Size i = 0; i < matrixIn.rows(); ++i) {
         if (matrixIn(i, 0) == missingValue || matrixIn(i, 1) == missingValue) {
             matrixOut[i] = missingValue;
-        } else {
-            xy = complex_t(matrixIn(i, 0), matrixIn(i, 1));
-            th = convert_to_angle< SCALE >(xy);
+        }
+        else {
+            xy           = complex_t(matrixIn(i, 0), matrixIn(i, 1));
+            th           = convert_to_angle<SCALE>(xy);
             matrixOut[i] = norm.normalise(th);
             if (matrixOut[i] > 360.) {
                 th = 2.;
@@ -146,8 +169,8 @@ void Space1DAngleT< SCALE, SYMMETRY >::unlinearise(const Space::Matrix& matrixIn
 }
 
 
-template<int SCALE, int SYMMETRY>
-size_t Space1DAngleT< SCALE, SYMMETRY >::dimensions() const {
+template <int SCALE, int SYMMETRY>
+size_t Space1DAngleT<SCALE, SYMMETRY>::dimensions() const {
     return 1;
 }
 
@@ -155,4 +178,3 @@ size_t Space1DAngleT< SCALE, SYMMETRY >::dimensions() const {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-

@@ -18,14 +18,13 @@ namespace mir {
 namespace netcdf {
 
 
-SimpleOutputVariable::SimpleOutputVariable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
-    OutputVariable(owner, name, dimensions)
-{
-}
+SimpleOutputVariable::SimpleOutputVariable(Dataset& owner, const std::string& name,
+                                           const std::vector<Dimension*>& dimensions) :
+    OutputVariable(owner, name, dimensions) {}
 
 SimpleOutputVariable::~SimpleOutputVariable() = default;
 
-void SimpleOutputVariable::print(std::ostream &out) const {
+void SimpleOutputVariable::print(std::ostream& out) const {
     out << "SimpleOutputVariable[name=" << name_ << "]";
 }
 

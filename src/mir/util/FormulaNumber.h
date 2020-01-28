@@ -22,21 +22,17 @@ namespace util {
 
 class FormulaNumber : public Formula {
 public:
-
-    FormulaNumber(const param::MIRParametrisation &parametrisation, double value);
+    FormulaNumber(const param::MIRParametrisation& parametrisation, double value);
     virtual ~FormulaNumber();
 
 private:
-
     virtual void print(std::ostream& s) const;
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
-private: // members
-
+private:  // members
     double value_;
-
 };
 
 

@@ -26,43 +26,39 @@ class MergePlan;
 
 class Type {
 public:
-
     // -- Methods
 
-    int code() const {
-        return code_;
-    }
+    int code() const { return code_; }
 
-    bool operator==(const Type &other) const;
-    bool operator!=(const Type &other) const;
+    bool operator==(const Type& other) const;
+    bool operator!=(const Type& other) const;
 
-    virtual Value *attributeValue(int nc, int id, const char *name, size_t len, const std::string &path) = 0;
+    virtual Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) = 0;
 
     // -----------------
 
-    virtual bool coordinateOutputVariableMerge(Variable &a, const Variable &b, MergePlan &plan) = 0;
-    virtual bool cellMethodOutputVariableMerge(Variable &a, const Variable &b, MergePlan &plan) = 0;
+    virtual bool coordinateOutputVariableMerge(Variable& a, const Variable& b, MergePlan& plan) = 0;
+    virtual bool cellMethodOutputVariableMerge(Variable& a, const Variable& b, MergePlan& plan) = 0;
 
     // ------------------
 
-    virtual void save(const Matrix &, int nc, int varid, const std::string &path) const = 0;
+    virtual void save(const Matrix&, int nc, int varid, const std::string& path) const = 0;
 
     // ------------------
 
-    virtual void dump(std::ostream &out) const;
-    virtual void dump(std::ostream &out, const Matrix &) const = 0;
-    virtual void printValues(std::ostream &out, const Matrix &) const = 0;
+    virtual void dump(std::ostream& out) const;
+    virtual void dump(std::ostream& out, const Matrix&) const        = 0;
+    virtual void printValues(std::ostream& out, const Matrix&) const = 0;
 
 
     // -- Class methods
-    static Type &lookup(int type);
+    static Type& lookup(int type);
 
     // Common type
-    static Type &lookup(Type &type1, Type &type2);
+    static Type& lookup(Type& type1, Type& type2);
 
 protected:
-
-    Type(int type, const std::string &name, const std::string &dump, int super);
+    Type(int type, const std::string& name, const std::string& dump, int super);
 
     // -- Members
     int code_;
@@ -73,22 +69,20 @@ protected:
 
 
 private:
-
-    Type(const Type &);
-    Type &operator=(const Type &);
+    Type(const Type&);
+    Type& operator=(const Type&);
 
     // -- Methods
-    virtual void print(std::ostream &s) const = 0;
+    virtual void print(std::ostream& s) const = 0;
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &s, const Type &v)
-    {
+    friend std::ostream& operator<<(std::ostream& s, const Type& v) {
         v.print(s);
         return s;
     }
 };
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

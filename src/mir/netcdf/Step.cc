@@ -12,15 +12,14 @@
 
 #include "mir/netcdf/Step.h"
 
-namespace mir{
-namespace netcdf{
+namespace mir {
+namespace netcdf {
 
-Step::Step() {
-}
+Step::Step() {}
 
 Step::~Step() = default;
 
-bool Step::merge(Step *other) {
+bool Step::merge(Step* other) {
     return false;
 }
 

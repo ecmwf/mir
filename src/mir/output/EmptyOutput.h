@@ -22,18 +22,17 @@ namespace output {
 
 class EmptyOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     EmptyOutput();
-    EmptyOutput(const::std::string& path);
+    EmptyOutput(const ::std::string& path);
 
     // -- Destructor
 
-    ~EmptyOutput(); // Change to virtual if base class
+    ~EmptyOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -71,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -81,7 +78,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
@@ -97,9 +94,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const EmptyOutput& p)
+    // friend ostream& operator<<(ostream& s,const EmptyOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -108,4 +104,3 @@ private:
 
 
 #endif
-

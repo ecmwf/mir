@@ -13,30 +13,28 @@
 #include "mir/netcdf/Variable.h"
 
 #include "mir/netcdf/Attribute.h"
+#include "mir/netcdf/Codec.h"
+#include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Value.h"
-#include "mir/netcdf/Codec.h"
 
 #include <iostream>
 
 namespace mir {
 namespace netcdf {
 
-Variable::Variable(Dataset &owner, const std::string &name, const std::vector<Dimension *> &dimensions):
+Variable::Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
     dataset_(owner),
     name_(name),
     matrix_(0),
     scalar_(dimensions.size() == 0),
-    dimensions_(dimensions) {
-}
+    dimensions_(dimensions) {}
 
-Variable::~Variable()
-{
+Variable::~Variable() {
     if (matrix_) {
         matrix_->detach();
     }
@@ -52,11 +50,11 @@ const Dataset& Variable::dataset() const {
     return dataset_;
 }
 
-Dataset& Variable::dataset()  {
+Dataset& Variable::dataset() {
     return dataset_;
 }
 
-void Variable::setMatrix(Matrix *matrix) {
+void Variable::setMatrix(Matrix* matrix) {
     if (matrix) {
         matrix->attach();
     }
@@ -68,9 +66,11 @@ void Variable::setMatrix(Matrix *matrix) {
     if (matrix_) {
         auto j = attributes_.find("_FillValue");
         auto k = attributes_.find("missing_value");
-        if (j != attributes_.end() && k !=  attributes_.end()) {
-            eckit::Log::warning() << "Variable '" << name() << "' has both 'missing_value' and '_FillValue' attributes" << std::endl;
-            // throw MergeError(std::string("Variable ") + name() + " has both 'missing_value' and '_FillValue' attributes");
+        if (j != attributes_.end() && k != attributes_.end()) {
+            eckit::Log::warning() << "Variable '" << name() << "' has both 'missing_value' and '_FillValue' attributes"
+                                  << std::endl;
+            // throw MergeError(std::string("Variable ") + name() + " has both 'missing_value' and '_FillValue'
+            // attributes");
         }
         if (j == attributes_.end()) {
             j = k;
@@ -83,8 +83,7 @@ void Variable::setMatrix(Matrix *matrix) {
 
 size_t Variable::numberOfValues() const {
     size_t count = 1;
-    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
-    {
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
         count *= (*j)->count();
     }
     return count;
@@ -107,8 +106,7 @@ std::vector<std::string> Variable::cellMethods() const {
     return result;
 }
 
-void Variable::dump(std::ostream &out) const
-{
+void Variable::dump(std::ostream& out) const {
 
     out << std::endl;
     out << "\t// Kind is " << kind() << std::endl;
@@ -116,39 +114,36 @@ void Variable::dump(std::ostream &out) const
 
     if (matrix_->codec()) {
         out << "\t// Codec is " << *matrix_->codec() << std::endl;
-
     }
 
     dumpAttributes(out, "\t// ");
     out << std::endl;
 
-    out << "\t" ;
+    out << "\t";
     if (matrix_) {
         matrix_->type().dump(out);
     }
     else {
         out << "unknown";
     }
-    out << " " << name_ ;
+    out << " " << name_;
 
     if (dimensions_.size()) {
         std::string sep = "(";
-        for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
-        {
+        for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
             out << sep << (*j)->name();
             sep = ", ";
         }
         out << ")";
     }
-    out << " ;" <<  std::endl;
+    out << " ;" << std::endl;
 
-    for (auto j = attributes_.begin(); j != attributes_.end(); ++j)
-    {
+    for (auto j = attributes_.begin(); j != attributes_.end(); ++j) {
         (*j).second->dump(out);
     }
 }
 
-void Variable::dumpAttributes(std::ostream &s, const char* prefix) const {
+void Variable::dumpAttributes(std::ostream& s, const char* prefix) const {
     // empty
 }
 
@@ -158,13 +153,13 @@ const char* Variable::kind() const {
 }
 
 
-void Variable::dumpData(std::ostream &out) const {
+void Variable::dumpData(std::ostream& out) const {
     out << " " << name_ << " = " << std::endl;
     matrix_->dump(out);
     out << "  ;" << std::endl;
 }
 
-bool Variable::sameAs(const Variable &other) const {
+bool Variable::sameAs(const Variable& other) const {
 
     if (dummy()) {
         return sameAsDummy(other);
@@ -177,15 +172,15 @@ bool Variable::sameAs(const Variable &other) const {
     return ncname() == other.ncname();
 }
 
-const std::string &Variable::path() const {
+const std::string& Variable::path() const {
     return dataset_.path();
 }
 
-const std::string &Variable::name() const {
+const std::string& Variable::name() const {
     return name_;
 }
 
-const std::vector<Dimension *> &Variable::dimensions() const {
+const std::vector<Dimension*>& Variable::dimensions() const {
     return dimensions_;
 }
 
@@ -193,7 +188,7 @@ bool Variable::scalar() const {
     return scalar_;
 }
 
-Matrix *Variable::matrix() const {
+Matrix* Variable::matrix() const {
     if (!matrix_) {
         std::cout << "Variable::matrix " << *this << std::endl;
     }
@@ -207,13 +202,12 @@ bool Variable::coordinate() const {
 }
 
 
-
-void Variable::addVirtualDimension(size_t where, Dimension *dim) {
+void Variable::addVirtualDimension(size_t where, Dimension* dim) {
     where = std::min(where, dimensions_.size());
     dimensions_.insert(dimensions_.begin() + where, dim);
 }
 
-Dimension *Variable::getVirtualDimension() {
+Dimension* Variable::getVirtualDimension() {
     std::ostringstream os;
     os << "Variable::getVirtualDimension() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -231,17 +225,11 @@ Variable* Variable::addMissingCoordinates() {
 }
 
 
-
-
 /*
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char *not_supported[] = {
-    "signedness",
-    "valid_range",
-    0
-};
+static const char* not_supported[] = {"signedness", "valid_range", 0};
 
 
 void Variable::validate() const {
@@ -267,42 +255,42 @@ void Variable::save(int nc) const {
     throw eckit::SeriousBug(os.str());
 }
 
-Variable *Variable::clone(Dataset &owner) const {
+Variable* Variable::clone(Dataset& owner) const {
     std::ostringstream os;
     os << "Variable::clone() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Variable::merge(const Variable &other, MergePlan &plan) {
+void Variable::merge(const Variable& other, MergePlan& plan) {
     plan.link(*this, other);
     mergeAttributes(other);
 }
 
-Variable *Variable::makeDataVariable() {
+Variable* Variable::makeDataVariable() {
     std::ostringstream os;
     os << "Variable::makeDataVariable() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-Variable *Variable::makeCoordinateVariable() {
+Variable* Variable::makeCoordinateVariable() {
     std::ostringstream os;
     os << "Variable::makeCoordinateVariable() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-Variable *Variable::makeSimpleVariable() {
+Variable* Variable::makeSimpleVariable() {
     std::ostringstream os;
     os << "Variable::makeSimpleVariable() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-Variable *Variable::makeCellMethodVariable() {
+Variable* Variable::makeCellMethodVariable() {
     std::ostringstream os;
     os << "Variable::makeCellMethodVariable() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-Variable *Variable::makeScalarCoordinateVariable() {
+Variable* Variable::makeScalarCoordinateVariable() {
     std::ostringstream os;
     os << "Variable::makeScalarCoordinateVariable() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -316,7 +304,8 @@ void Variable::initCodecs() {
         matrix()->codec(CodecFactory::build(calendar, *this));
     }
 
-    if ((attributes_.find("scale_factor") != attributes_.end()) || (attributes_.find("add_offset") != attributes_.end())) {
+    if ((attributes_.find("scale_factor") != attributes_.end()) ||
+        (attributes_.find("add_offset") != attributes_.end())) {
         matrix()->codec(CodecFactory::build("packing", *this));
     }
 }
@@ -326,21 +315,19 @@ bool Variable::dummy() const {
     return false;
 }
 
-bool Variable::sameAsDummy(const Variable &) const {
+bool Variable::sameAsDummy(const Variable&) const {
     std::ostringstream os;
     os << "Variable::sameAsDummy() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-const std::string &Variable::ncname() const {
+const std::string& Variable::ncname() const {
     return name_;
 }
 
-bool Variable::sharesDimensions(const Variable &other) const {
-    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j)
-    {
-        for (auto k = other.dimensions_.begin(); k != other.dimensions_.end(); ++k)
-        {
+bool Variable::sharesDimensions(const Variable& other) const {
+    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
+        for (auto k = other.dimensions_.begin(); k != other.dimensions_.end(); ++k) {
             if (*j == *k) {
                 return true;
             }
@@ -353,7 +340,7 @@ bool Variable::timeAxis() const {
     return (matrix_->codec() && matrix_->codec()->timeAxis());
 }
 
-void Variable::collectField(std::vector<Field *>&) const {
+void Variable::collectField(std::vector<Field*>&) const {
     // Ignore
 }
 

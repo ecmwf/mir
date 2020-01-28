@@ -17,9 +17,9 @@
 namespace mir {
 namespace netcdf {
 
-NCError::NCError(int e, const std::string& call, const std::string &path):
-    eckit::Exception(std::string("NCError: ") + nc_strerror(e) +  + " " + call +  " (" + path + ")") {}
+NCError::NCError(int e, const std::string& call, const std::string& path) :
+    eckit::Exception(std::string("NCError: ") + nc_strerror(e) + +" " + call + " (" + path + ")") {}
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir

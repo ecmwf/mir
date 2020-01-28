@@ -28,7 +28,7 @@ class ActionPlan;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -37,7 +37,6 @@ namespace style {
 
 class Resol {
 public:
-
     // -- Exceptions
     // None
 
@@ -73,7 +72,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -92,7 +90,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     long inputTruncation_;
@@ -127,4 +124,3 @@ private:
 
 
 #endif
-

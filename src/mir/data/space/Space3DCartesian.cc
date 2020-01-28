@@ -31,4 +31,3 @@ size_t Space3DCartesian::dimensions() const {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-

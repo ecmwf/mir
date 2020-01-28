@@ -18,8 +18,8 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/data/MIRField.h"
 #include "mir/data/CartesianVector2DField.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -27,7 +27,7 @@ namespace mir {
 namespace action {
 
 
-AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation &parametrisation):
+AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
 
     std::vector<double> value;
@@ -47,19 +47,19 @@ bool AdjustWindsDirections::sameAs(const Action& other) const {
 }
 
 
-void AdjustWindsDirections::print(std::ostream &out) const {
+void AdjustWindsDirections::print(std::ostream& out) const {
     out << "AdjustWindsDirections[rotation=" << rotation_ << "]";
 }
 
 
-void AdjustWindsDirections::execute(context::Context & ctx) const {
+void AdjustWindsDirections::execute(context::Context& ctx) const {
 
     data::MIRField& field = ctx.field();
     data::CartesianVector2DField cf(field.representation(), field.hasMissing(), field.missingValue());
 
 
     ASSERT((field.dimensions() % 2) == 0);
-    for (size_t i = 0; i < field.dimensions(); i += 2 ) {
+    for (size_t i = 0; i < field.dimensions(); i += 2) {
 
         // set field components directly
         MIRValuesVector& valuesX = field.direct(i);
@@ -77,10 +77,9 @@ const char* AdjustWindsDirections::name() const {
 }
 
 namespace {
-static ActionBuilder< AdjustWindsDirections > filter("filter.adjust-winds-directions");
+static ActionBuilder<AdjustWindsDirections> filter("filter.adjust-winds-directions");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

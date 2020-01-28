@@ -23,89 +23,84 @@ namespace output {
 
 
 class GribFileOutput : public GribStreamOutput {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GribFileOutput(const eckit::PathName&, bool append = false);
 
-// -- Destructor
+    // -- Destructor
 
-    ~GribFileOutput(); // Change to virtual if base class
+    ~GribFileOutput();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
-// -- Members
+private:
+    // -- Members
 
     eckit::PathName path_;
     eckit::DataHandle* handle_;
     bool append_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // From MIROutput
     virtual bool sameAs(const MIROutput& other) const;
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // From GribInput
 
     virtual eckit::DataHandle& dataHandle();
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribFileOutput& p)
+    // friend ostream& operator<<(ostream& s,const GribFileOutput& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace output
 }  // namespace mir
 #endif
-

@@ -25,62 +25,60 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& parametrisation):
+template <class Invtrans>
+ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
-
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToOctahedralGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToOctahedralGG*>(&other);
     return o && (N_ == o->N_);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToOctahedralGG<Invtrans>::~ShToOctahedralGG() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToOctahedralGG<Invtrans>::print(std::ostream& out) const {
     out << "ShToOctahedralGG[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",N=" << N_
-        << "]";
+    out << ",N=" << N_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToOctahedralGG<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                         const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToOctahedralGG<Invtrans>::name() const {
     return "ShToOctahedralGG";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToOctahedralGG<Invtrans>::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
 
 namespace {
-static ActionBuilder< ShToOctahedralGG<InvtransScalar> > __action1("transform.sh-scalar-to-octahedral-gg");
-static ActionBuilder< ShToOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-octahedral-gg");
-}
+static ActionBuilder<ShToOctahedralGG<InvtransScalar> > __action1("transform.sh-scalar-to-octahedral-gg");
+static ActionBuilder<ShToOctahedralGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-octahedral-gg");
+}  // namespace
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

@@ -30,7 +30,7 @@ class MIROutput;
 namespace util {
 class MIRStatistics;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -40,7 +40,6 @@ class MIREstimation;
 
 class MIRJob : public param::SimpleParametrisation, public eckit::Configured {
 public:
-
     // -- Exceptions
     // None
 
@@ -63,10 +62,10 @@ public:
     void execute(input::MIRInput&, output::MIROutput&) const;
     void execute(input::MIRInput&, output::MIROutput&, util::MIRStatistics&) const;
 
-    void estimate(input::MIRInput&, output::MIROutput&, MIREstimation& ) const;
+    void estimate(input::MIRInput&, output::MIROutput&, MIREstimation&) const;
 
-    MIRJob& set(const std::string& name, const std::string &value);
-    MIRJob& set(const std::string& name, const char *value);
+    MIRJob& set(const std::string& name, const std::string& value);
+    MIRJob& set(const std::string& name, const char* value);
     MIRJob& set(const std::string& name, float value);
     MIRJob& set(const std::string& name, double value);
     MIRJob& set(const std::string& name, int value);
@@ -107,7 +106,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -124,16 +122,15 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     MIRJob& _setScalar(const std::string& name, const T& value);
 
-    template<class T>
+    template <class T>
     MIRJob& _setVector(const std::string& name, const T& value, size_t outputCount = 4);
 
     // -- Overridden methods
@@ -149,7 +146,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

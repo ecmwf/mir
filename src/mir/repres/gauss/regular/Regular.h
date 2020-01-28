@@ -24,7 +24,6 @@ namespace regular {
 
 class Regular : public Gaussian {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Regular(); // Change to virtual if base class
+    virtual ~Regular();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Constructors
     // None
 
@@ -89,7 +87,6 @@ protected:
     // None
 
 private:
-
     Regular();
 
     // -- Members
@@ -101,7 +98,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
@@ -113,9 +110,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Regular& p)
+    // friend ostream& operator<<(ostream& s,const Regular& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -126,4 +122,3 @@ private:
 
 
 #endif
-

@@ -21,7 +21,7 @@ namespace mir {
 namespace input {
 class RawMetadata;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace input {
 
 class RawInput : public MIRInput, public param::MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -39,7 +38,7 @@ public:
 
     // -- Destructor
 
-    ~RawInput(); // Change to virtual if base class
+    ~RawInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -60,7 +59,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -77,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const RawMetadata& metadata_;
@@ -89,8 +86,8 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    void print(std::ostream&) const; // Change to virtual if base class
-    const param::MIRParametrisation &parametrisation(size_t which) const;
+    void print(std::ostream&) const;  // Change to virtual if base class
+    const param::MIRParametrisation& parametrisation(size_t which) const;
     data::MIRField field() const;
     bool next();
     size_t copy(double* values, size_t size) const;
@@ -120,7 +117,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

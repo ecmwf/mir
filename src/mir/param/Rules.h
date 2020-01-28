@@ -23,21 +23,19 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 class SimpleParametrisation;
-}
-}
+}  // namespace param
+}  // namespace mir
 
 
 namespace mir {
 namespace param {
 
 
-class Rules  {
+class Rules {
 protected:
-
     // -- Types
 
 public:
-
     // -- Contructors
 
     Rules();
@@ -55,7 +53,6 @@ public:
     void readConfigurationFiles();
 
 private:
-
     // -- Members
 
     eckit::Mutex mutex_;
@@ -75,7 +72,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -84,4 +80,3 @@ private:
 
 
 #endif
-

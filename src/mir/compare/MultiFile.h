@@ -30,20 +30,19 @@ namespace compare {
 
 class MultiFile {
 public:
-
     MultiFile(const std::string& path);
     MultiFile(const std::string& name, const std::string& from);
-    MultiFile(eckit::Stream& s) ;
+    MultiFile(eckit::Stream& s);
 
-    bool operator<(const MultiFile& other) const ;
+    bool operator<(const MultiFile& other) const;
 
     void add(const std::string& path);
 
     const std::vector<std::string>& paths() const;
 
-    void encode(eckit::Stream& s) const ;
+    void encode(eckit::Stream& s) const;
 
-    void print(std::ostream& out)  const;
+    void print(std::ostream& out) const;
 
     void save() const;
 
@@ -57,7 +56,6 @@ public:
 
 
 private:
-
     std::string name_;
     std::string from_;
     std::vector<std::string> paths_;
@@ -65,7 +63,6 @@ private:
     mutable eckit::Length length_;
 
 private:
-
     friend eckit::Stream& operator<<(eckit::Stream& s, const MultiFile& x) {
         x.encode(s);
         return s;
@@ -75,10 +72,6 @@ private:
         x.print(out);
         return out;
     }
-
-
-
-
 };
 
 

@@ -21,20 +21,19 @@ namespace gauss {
 namespace reduced {
 
 
-ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox, double angularPrecision):
-    Octahedral(N, bbox, angularPrecision) {
-}
+ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
+    Octahedral(N, bbox, angularPrecision) {}
 
 
 ReducedOctahedral::~ReducedOctahedral() = default;
 
 
-void ReducedOctahedral::print(std::ostream &out) const {
+void ReducedOctahedral::print(std::ostream& out) const {
     out << "ReducedOctahedral[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
 
 
-Iterator *ReducedOctahedral::iterator() const {
+Iterator* ReducedOctahedral::iterator() const {
     return unrotatedIterator();
 }
 
@@ -59,4 +58,3 @@ bool ReducedOctahedral::sameAs(const Representation& other) const {
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

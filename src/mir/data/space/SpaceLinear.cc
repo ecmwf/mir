@@ -18,8 +18,7 @@ namespace data {
 namespace space {
 
 
-SpaceLinear::SpaceLinear() : Space() {
-}
+SpaceLinear::SpaceLinear() : Space() {}
 
 
 void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
@@ -44,7 +43,6 @@ void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matr
 }
 
 
-}  // namespace decompose
-}  // namespace method
+}  // namespace space
+}  // namespace data
 }  // namespace mir
-

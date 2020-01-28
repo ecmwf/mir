@@ -33,14 +33,14 @@ namespace method {
 namespace nonlinear {
 class NonLinear;
 }
-}
+}  // namespace method
 namespace repres {
 class Representation;
 }
 namespace util {
 class MIRStatistics;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

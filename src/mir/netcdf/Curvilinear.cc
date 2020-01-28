@@ -25,13 +25,11 @@
 namespace mir {
 namespace netcdf {
 
-Curvilinear::Curvilinear(const Variable &variable,
-                         const std::vector<double>& latitudes,
-                         const std::vector<double>& longitudes):
+Curvilinear::Curvilinear(const Variable& variable, const std::vector<double>& latitudes,
+                         const std::vector<double>& longitudes) :
     GridSpec(variable),
     latitudes_(latitudes),
-    longitudes_(longitudes)
-{
+    longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
     ASSERT(latitudes_.size() >= 2);
 
@@ -51,8 +49,7 @@ Curvilinear::Curvilinear(const Variable &variable,
 Curvilinear::~Curvilinear() = default;
 
 
-void Curvilinear::print(std::ostream& s) const
-{
+void Curvilinear::print(std::ostream& s) const {
     s << "Curvilinear[points=" << latitudes_.size() << "]";
 }
 
@@ -68,7 +65,7 @@ bool Curvilinear::has(const std::string& name) const {
     return false;
 }
 
-bool Curvilinear::get(const std::string &name, std::vector<double> &values) const {
+bool Curvilinear::get(const std::string& name, std::vector<double>& values) const {
     // std::cout << "get " << name << std::endl;
 
     if (name == "latitudes") {
@@ -82,10 +79,9 @@ bool Curvilinear::get(const std::string &name, std::vector<double> &values) cons
     }
 
     return false;
-
 }
 
-bool Curvilinear::get(const std::string&name, long& value) const {
+bool Curvilinear::get(const std::string& name, long& value) const {
     // std::cout << "get " << name << std::endl;
 
     // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
@@ -93,7 +89,7 @@ bool Curvilinear::get(const std::string&name, long& value) const {
     return false;
 }
 
-bool Curvilinear::get(const std::string&name, std::string& value) const {
+bool Curvilinear::get(const std::string& name, std::string& value) const {
     // std::cout << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
@@ -106,7 +102,7 @@ bool Curvilinear::get(const std::string&name, std::string& value) const {
     return false;
 }
 
-bool Curvilinear::get(const std::string &name, double &value) const {
+bool Curvilinear::get(const std::string& name, double& value) const {
 
     if (name == "north") {
         value = north_;
@@ -129,7 +125,6 @@ bool Curvilinear::get(const std::string &name, double &value) const {
     }
 
 
-
     // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
 
 
@@ -139,22 +134,21 @@ bool Curvilinear::get(const std::string &name, double &value) const {
 
 //================================================================
 
-static bool check_axis(const Variable &variable, const Variable & axis, std::vector<double>& v) {
+static bool check_axis(const Variable& variable, const Variable& axis, std::vector<double>& v) {
 
 
-
-    auto axis_dimensions = axis.dimensions();
+    auto axis_dimensions     = axis.dimensions();
     auto variable_dimensions = variable.dimensions();
 
     if (axis_dimensions.size() != 2) {
         return false;
     }
 
-    if (variable_dimensions[variable_dimensions.size() - 2 ] != axis_dimensions[0]) {
+    if (variable_dimensions[variable_dimensions.size() - 2] != axis_dimensions[0]) {
         return false;
     }
 
-    if (variable_dimensions[variable_dimensions.size() - 1 ] != axis_dimensions[1]) {
+    if (variable_dimensions[variable_dimensions.size() - 1] != axis_dimensions[1]) {
         return false;
     }
 
@@ -168,9 +162,7 @@ inline double sign(double x) {
     return (x > 0) - (x < 0);
 }
 
-GridSpec* Curvilinear::guess(const Variable &variable,
-                             const Variable &latitudes,
-                             const Variable &longitudes) {
+GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     if (variable.numberOfDimensions() < 2) {
         return 0;
@@ -187,7 +179,7 @@ GridSpec* Curvilinear::guess(const Variable &variable,
         return 0;
     }
 
-//
+    //
 
     auto dimensions = latitudes.dimensions();
     ASSERT(dimensions.size() == 2);
@@ -223,9 +215,9 @@ GridSpec* Curvilinear::guess(const Variable &variable,
     std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
 
     double s;
-        for (size_t i = 0; i < index.ni_ - 1; i++) {
+    for (size_t i = 0; i < index.ni_ - 1; i++) {
 
-    for (size_t j = 0; j < index.nj_ - 1; j++) {
+        for (size_t j = 0; j < index.nj_ - 1; j++) {
 
 
             double x1 = lons[index(i, j)];
@@ -244,13 +236,12 @@ GridSpec* Curvilinear::guess(const Variable &variable,
             double t2 = x1 * y3 - x3 * y1 + x3 * y4 - x4 * y3 + x4 * y1 - x1 * y4;
 
 
-
             if (i == 0 && j == 0) {
                 eckit::Log::info() << "First " << t1 << "  " << t2 << std::endl;
                 eckit::Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
 
-                eckit::Log::info() << x2 << "/" << y2  << " ================ " << x3 << "/" << y3 << std::endl;
-                s = sign(t1?t1:t2);
+                eckit::Log::info() << x2 << "/" << y2 << " ================ " << x3 << "/" << y3 << std::endl;
+                s = sign(t1 ? t1 : t2);
             }
 
             if (sign(t1) != s) {
@@ -271,7 +262,6 @@ GridSpec* Curvilinear::guess(const Variable &variable,
     }
 
     return new Curvilinear(variable, lats, lons);
-
 }
 
 
@@ -302,4 +292,3 @@ static GridSpecGuesserBuilder<Curvilinear> builder(3);
 
 }  // namespace netcdf
 }  // namespace mir
-

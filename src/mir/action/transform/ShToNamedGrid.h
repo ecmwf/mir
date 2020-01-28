@@ -21,10 +21,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToNamedGrid : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToNamedGrid(); // Change to virtual if base class
+    ~ShToNamedGrid();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,7 +54,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     std::string gridname_;
@@ -79,7 +77,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -89,4 +86,3 @@ private:
 
 
 #endif
-

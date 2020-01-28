@@ -27,42 +27,42 @@ namespace tests {
 namespace unit {
 
 
-CASE( "test_spectral_order" ) {
+CASE("test_spectral_order") {
     using namespace style;
 
     // Cases from hsh2gg.F
 
-    const long order1_cases[][2] = {
-        { 2047, 1024 },
-        { 1279,  640 },
-        {  799,  400 },
-        {  639,  320 },
-        {  511,  256 },
-        {  399,  200 },
-        {  319,  160 },
-        {  255,  128 },
-        {  191,   96 },
-        {  159,   80 },
-        {   95,   48 },
-        {0,}
-    };
+    const long order1_cases[][2] = {{2047, 1024},
+                                    {1279, 640},
+                                    {799, 400},
+                                    {639, 320},
+                                    {511, 256},
+                                    {399, 200},
+                                    {319, 160},
+                                    {255, 128},
+                                    {191, 96},
+                                    {159, 80},
+                                    {95, 48},
+                                    {
+                                        0,
+                                    }};
 
-    const long order2_cases[][2] = {
-        {  106,   80 },
-        {   63,   48 },
-        {0,}
-    };
+    const long order2_cases[][2] = {{106, 80},
+                                    {63, 48},
+                                    {
+                                        0,
+                                    }};
 
-    const long order3_cases[][2] = {
-        { 1279, 1280 },
-        {  639,  640 },
-        {0,}
-    };
+    const long order3_cases[][2] = {{1279, 1280},
+                                    {639, 640},
+                                    {
+                                        0,
+                                    }};
 
-    const long unknown_cases[][2] = {
-        {  213,  128 },
-        {0,}
-    };
+    const long unknown_cases[][2] = {{213, 128},
+                                     {
+                                         0,
+                                     }};
 
 
     std::unique_ptr<SpectralOrder> order1(SpectralOrderFactory::build("linear"));
@@ -74,10 +74,10 @@ CASE( "test_spectral_order" ) {
         long T = order1->getTruncationFromGaussianNumber(Nref);
 
         eckit::Log::debug<LibMir>() << "N(T=" << T << ")|linear = " << N << ", expecting N=" << Nref << std::endl;
-        EXPECT( N == Nref );
+        EXPECT(N == Nref);
 
         eckit::Log::debug<LibMir>() << "T(N=" << N << ")|linear = " << T << ", expecting T=" << Tref << std::endl;
-        EXPECT( T == Tref );
+        EXPECT(T == Tref);
     }
 
 
@@ -90,10 +90,10 @@ CASE( "test_spectral_order" ) {
         long T = order2->getTruncationFromGaussianNumber(Nref);
 
         eckit::Log::debug<LibMir>() << "N(T=" << T << ")|quadratic = " << N << ", expecting N=" << Nref << std::endl;
-        EXPECT( N == Nref );
+        EXPECT(N == Nref);
 
         eckit::Log::debug<LibMir>() << "T(N=" << N << ")|quadratic = " << T << ", expecting T=" << Tref << std::endl;
-        EXPECT( T == Tref );
+        EXPECT(T == Tref);
     }
 
 
@@ -106,22 +106,22 @@ CASE( "test_spectral_order" ) {
         long T = order3->getTruncationFromGaussianNumber(Nref);
 
         eckit::Log::debug<LibMir>() << "N(T=" << T << ")|cubic = " << N << ", expecting N=" << Nref << std::endl;
-        EXPECT( N == Nref );
+        EXPECT(N == Nref);
 
         eckit::Log::debug<LibMir>() << "T(N=" << N << ")|cubic = " << T << ", expecting T=" << Tref << std::endl;
-        EXPECT( T == Tref );
+        EXPECT(T == Tref);
     }
 
     for (long T, i = 0; (T = unknown_cases[i][0]); ++i) {
         const long N1 = order1->getGaussianNumberFromTruncation(T);
         const long N2 = order2->getGaussianNumberFromTruncation(T);
-        EXPECT( N1 != unknown_cases[i][1] );
-        EXPECT( N2 != unknown_cases[i][1] );
+        EXPECT(N1 != unknown_cases[i][1]);
+        EXPECT(N2 != unknown_cases[i][1]);
 
         const long T1 = order1->getTruncationFromGaussianNumber(unknown_cases[i][1]);
         const long T2 = order2->getTruncationFromGaussianNumber(unknown_cases[i][1]);
-        EXPECT( T1 != unknown_cases[i][0] );
-        EXPECT( T2 != unknown_cases[i][0] );
+        EXPECT(T1 != unknown_cases[i][0]);
+        EXPECT(T2 != unknown_cases[i][0]);
     }
 }
 
@@ -131,7 +131,6 @@ CASE( "test_spectral_order" ) {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return run_tests(argc, argv, false);
 }
-

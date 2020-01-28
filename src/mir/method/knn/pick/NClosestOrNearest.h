@@ -28,6 +28,7 @@ struct NClosestOrNearest : Pick {
     size_t n() const;
     bool sameAs(const Pick&) const;
     void hash(eckit::MD5&) const;
+
 private:
     void print(std::ostream&) const;
     size_t nClosest_;
@@ -43,4 +44,3 @@ private:
 
 
 #endif
-

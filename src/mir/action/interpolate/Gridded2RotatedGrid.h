@@ -26,7 +26,6 @@ namespace interpolate {
 
 class Gridded2RotatedGrid : public Gridded2GriddedInterpolation {
 public:
-
     // -- Exceptions
     // None
 
@@ -57,7 +56,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -77,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     util::Rotation rotation_;
@@ -99,7 +96,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -109,4 +105,3 @@ private:
 
 
 #endif
-

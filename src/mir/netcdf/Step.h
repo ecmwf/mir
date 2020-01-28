@@ -26,29 +26,26 @@ public:
     Step();
     virtual ~Step();
 
-    virtual int rank() const = 0;
-    virtual void execute(MergePlan &plan) = 0;
-    virtual bool merge(Step *other);
+    virtual int rank() const              = 0;
+    virtual void execute(MergePlan& plan) = 0;
+    virtual bool merge(Step* other);
 
 private:
     // -- Methods
 
-    virtual void print(std::ostream &s) const = 0;
+    virtual void print(std::ostream& s) const = 0;
 
     // - Friend
-    friend std::ostream &operator<<(std::ostream &s, const Step &v)
-    {
+    friend std::ostream& operator<<(std::ostream& s, const Step& v) {
         v.print(s);
         return s;
     }
 };
 
 struct CompareSteps {
-    bool operator()(const Step *a, const Step *b) const {
-        return a->rank() > b->rank();
-    }
+    bool operator()(const Step* a, const Step* b) const { return a->rank() > b->rank(); }
 };
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
 #endif

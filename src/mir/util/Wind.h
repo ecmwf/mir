@@ -20,7 +20,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -29,7 +29,6 @@ namespace util {
 
 class Wind {
 public:
-
     // -- Exceptions
     // None
 
@@ -66,7 +65,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -83,7 +81,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -101,7 +98,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

@@ -40,8 +40,7 @@ NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosestOrNearest::pick(const search::PointSearch& tree,
-                             const eckit::geometry::Point3& p,
+void NClosestOrNearest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
                              Pick::neighbours_t& closest) const {
     tree.closestNPoints(p, nClosest_, closest);
     ASSERT(closest.size() == nClosest_);
@@ -49,7 +48,7 @@ void NClosestOrNearest::pick(const search::PointSearch& tree,
     // if closest and farthest nb. are at the same distance, other points can
     // also be (like near poles), so we return all points inside radius
     if (nClosest_ > 1) {
-        auto nearest2 = Point3::distance2(p, closest.front().point());
+        auto nearest2  = Point3::distance2(p, closest.front().point());
         auto farthest2 = Point3::distance2(p, closest.back().point());
         if (eckit::types::is_approximately_equal(nearest2, farthest2, distanceTolerance2_)) {
             auto radius = std::sqrt(farthest2) + distanceTolerance_;
@@ -67,9 +66,8 @@ size_t NClosestOrNearest::n() const {
 
 bool NClosestOrNearest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NClosestOrNearest*>(&other);
-    return o
-            && nClosest_ == o->nClosest_
-            && eckit::types::is_approximately_equal(distanceTolerance_, o->distanceTolerance_);
+    return o && nClosest_ == o->nClosest_ &&
+           eckit::types::is_approximately_equal(distanceTolerance_, o->distanceTolerance_);
 }
 
 
@@ -92,4 +90,3 @@ static PickBuilder<NClosestOrNearest> __pick2("k");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

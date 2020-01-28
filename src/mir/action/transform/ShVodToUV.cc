@@ -35,8 +35,7 @@ namespace action {
 namespace transform {
 
 
-ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation):
-    Action(parametrisation) {
+ShVodToUV::ShVodToUV(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     // use the 'local' spectral transforms
     std::string type = "local";
@@ -77,21 +76,21 @@ void ShVodToUV::execute(context::Context& ctx) const {
     ASSERT(field.dimensions() == 2);
 
     size_t truncation = field.representation()->truncation();
-    size_t size = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
+    size_t size       = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
     ASSERT(truncation);
     ASSERT(size);
 
 
     // get vo/d, allocate U/V
     const MIRValuesVector& field_vo = field.values(0);
-    const MIRValuesVector& field_d = field.values(1);
+    const MIRValuesVector& field_d  = field.values(1);
 
-    eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation
-                                << ", size=" << size
+    eckit::Log::debug<LibMir>() << "ShVodToUV truncation=" << truncation << ", size=" << size
                                 << ", values=" << field_vo.size() << std::endl;
 
     if (field_vo.size() != field_d.size()) {
-        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
+                            << field_d.size() << std::endl;
         ASSERT(field_vo.size() == field_d.size());
     }
 
@@ -100,8 +99,8 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
 
     // transform
-    const int T = int(truncation);
-    const int nb_coeff = int(size);
+    const int T         = int(truncation);
+    const int nb_coeff  = int(size);
     const int nb_fields = 1;
 
     atlas::trans::VorDivToUV vordiv_to_UV(T, options_);
@@ -129,11 +128,10 @@ const char* ShVodToUV::name() const {
 
 
 namespace {
-static ActionBuilder< ShVodToUV > __action("transform.sh-vod-to-UV");
+static ActionBuilder<ShVodToUV> __action("transform.sh-vod-to-UV");
 }
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

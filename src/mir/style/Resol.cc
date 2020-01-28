@@ -48,7 +48,8 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     // NOTE: truncation can depend on the intermediate grid Gaussian number
     if (forceNoIntermediateGrid) {
         intgrid_.reset(new intgrid::None(parametrisation_, N));
-    } else {
+    }
+    else {
         std::string intgrid = "automatic";
         parametrisation_.get("intgrid", intgrid);
         intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
@@ -66,7 +67,8 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     long T = 0;
     if (parametrisation_.userParametrisation().get("truncation", T) && T > 0) {
         truncation_.reset(new truncation::Ordinal(T, parametrisation_));
-    } else {
+    }
+    else {
         std::string name = "automatic";
         parametrisation_.userParametrisation().get("truncation", name);
         truncation_.reset(TruncationFactory::build(name, parametrisation_, N));
@@ -91,7 +93,8 @@ void Resol::prepare(action::ActionPlan& plan) const {
         bool vod2uv = false;
         parametrisation_.userParametrisation().get("vod2uv", vod2uv);
 
-        const std::string transform = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + "namedgrid";
+        const std::string transform =
+            "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + "namedgrid";
         plan.add(transform, "gridname", gridname);
     }
 }
@@ -144,26 +147,26 @@ long Resol::getTargetGaussianNumber() const {
         eckit::Fraction r = Latitude::GLOBE.fraction() / increments.south_north().latitude().fraction();
 
         N = long(r.integralPart() / 2);
-
-    } else if (parametrisation_.userParametrisation().get("reduced", N) ||
-        parametrisation_.userParametrisation().get("regular", N) ||
-        parametrisation_.userParametrisation().get("octahedral", N)) {
+    }
+    else if (parametrisation_.userParametrisation().get("reduced", N) ||
+             parametrisation_.userParametrisation().get("regular", N) ||
+             parametrisation_.userParametrisation().get("octahedral", N)) {
 
         // get Gaussian N directly
-
-    } else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
+    }
+    else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
 
         // get Gaussian N given a gridname
         N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
-
-    } else if (parametrisation_.userParametrisation().has("griddef") ||
-               parametrisation_.userParametrisation().has("latitudes") ||
-               parametrisation_.userParametrisation().has("longitudes")) {
+    }
+    else if (parametrisation_.userParametrisation().has("griddef") ||
+             parametrisation_.userParametrisation().has("latitudes") ||
+             parametrisation_.userParametrisation().has("longitudes")) {
 
         // hardcoded
         N = 64;
-        eckit::Log::debug<LibMir>() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
-
+        eckit::Log::debug<LibMir>() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)"
+                                    << std::endl;
     }
 
     ASSERT(N >= 0);
@@ -185,4 +188,3 @@ long Resol::getSourceGaussianNumber() const {
 
 }  // namespace style
 }  // namespace mir
-

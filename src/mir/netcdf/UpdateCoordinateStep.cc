@@ -12,8 +12,8 @@
 
 #include "mir/netcdf/UpdateCoordinateStep.h"
 
-#include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/MergeCoordinateStep.h"
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/ReshapeVariableStep.h"
@@ -24,12 +24,10 @@
 namespace mir {
 namespace netcdf {
 
-UpdateCoordinateStep::UpdateCoordinateStep( Variable &out, const Variable &in, size_t growth):
+UpdateCoordinateStep::UpdateCoordinateStep(Variable& out, const Variable& in, size_t growth) :
     out_(out),
     in_(in),
-    growth_(growth)
-{
-}
+    growth_(growth) {}
 
 UpdateCoordinateStep::~UpdateCoordinateStep() = default;
 
@@ -37,11 +35,11 @@ int UpdateCoordinateStep::rank() const {
     return 1;
 }
 
-void UpdateCoordinateStep::print(std::ostream &out) const {
+void UpdateCoordinateStep::print(std::ostream& out) const {
     out << "UpdateCoordinateStep[" << in_ << " & " << out_ << "]";
 }
 
-void UpdateCoordinateStep::execute(MergePlan &plan) {
+void UpdateCoordinateStep::execute(MergePlan& plan) {
 #if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);

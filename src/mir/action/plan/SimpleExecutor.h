@@ -24,7 +24,6 @@ namespace action {
 
 class SimpleExecutor : public Executor {
 public:
-
     // -- Exceptions
     // None
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~SimpleExecutor(); // Change to virtual if base class
+    ~SimpleExecutor();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,13 +54,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -73,7 +71,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     SimpleExecutor(const SimpleExecutor&);
     SimpleExecutor& operator=(const SimpleExecutor&);
@@ -98,7 +95,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -107,4 +103,3 @@ private:
 
 
 #endif
-

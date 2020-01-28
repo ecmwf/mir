@@ -25,14 +25,11 @@ namespace gauss {
 namespace regular {
 
 
-RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) :
-    Regular(parametrisation) {
-}
+RegularGG::RegularGG(const param::MIRParametrisation& parametrisation) : Regular(parametrisation) {}
 
 
-RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, double angularPrecision):
-    Regular(N, bbox, angularPrecision) {
-}
+RegularGG::RegularGG(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
+    Regular(N, bbox, angularPrecision) {}
 
 
 RegularGG::~RegularGG() = default;
@@ -40,11 +37,8 @@ RegularGG::~RegularGG() = default;
 
 void RegularGG::print(std::ostream& out) const {
     out << "RegularGG["
-        "N=" << N_
-        << ",Ni=" << Ni_
-        << ",Nj=" << Nj_
-        << ",bbox=" << bbox_
-        << "]";
+           "N="
+        << N_ << ",Ni=" << Ni_ << ",Nj=" << Nj_ << ",bbox=" << bbox_ << "]";
 }
 
 
@@ -55,7 +49,7 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [ = ](size_t) { return long(4 * N_); };
+    auto Ni = [=](size_t) { return long(4 * N_); };
     return Gaussian::unrotatedIterator(Ni);
 }
 
@@ -114,7 +108,7 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 
 
 namespace {
-static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what is returned by grib_api
+static RepresentationBuilder<RegularGG> reducedGG("regular_gg");  // Name is what is returned by grib_api
 }
 
 
@@ -122,4 +116,3 @@ static RepresentationBuilder<RegularGG> reducedGG("regular_gg"); // Name is what
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

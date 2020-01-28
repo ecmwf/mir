@@ -21,33 +21,30 @@ namespace mir {
 namespace repres {
 
 
-StretchedSH::StretchedSH(const param::MIRParametrisation &parametrisation) {
-}
+StretchedSH::StretchedSH(const param::MIRParametrisation& parametrisation) {}
 
 
-StretchedSH::StretchedSH() {
-}
+StretchedSH::StretchedSH() {}
 
 
 StretchedSH::~StretchedSH() = default;
 
 
-void StretchedSH::print(std::ostream &out) const {
+void StretchedSH::print(std::ostream& out) const {
     out << "StretchedSH["
         << "]";
 }
 
 
-void StretchedSH::fill(grib_info &info) const  {
+void StretchedSH::fill(grib_info& info) const {
     NOTIMP;
 }
 
 
 namespace {
-static RepresentationBuilder<StretchedSH> stretchedSH("stretched_sh"); // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedSH> stretchedSH("stretched_sh");  // Name is what is returned by grib_api
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

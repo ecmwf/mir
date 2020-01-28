@@ -17,13 +17,11 @@ namespace style {
 namespace truncation {
 
 
-static TruncationBuilder< None > __truncation1("none");
-static TruncationBuilder< None > __truncation2("NONE");
+static TruncationBuilder<None> __truncation1("none");
+static TruncationBuilder<None> __truncation2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation, long) :
-    style::Truncation(parametrisation) {
-}
+None::None(const param::MIRParametrisation& parametrisation, long) : style::Truncation(parametrisation) {}
 
 
 bool None::truncation(long&, long) const {
@@ -34,4 +32,3 @@ bool None::truncation(long&, long) const {
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir
-

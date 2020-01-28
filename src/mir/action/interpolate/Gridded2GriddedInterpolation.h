@@ -25,8 +25,8 @@ class Representation;
 namespace method {
 class Cropping;
 class Method;
-}
-}
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -36,7 +36,6 @@ namespace interpolate {
 
 class Gridded2GriddedInterpolation : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -67,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -80,7 +78,7 @@ protected:
     // -- Overridden methods
 
     virtual bool sameAs(const Action&) const = 0;
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const  = 0;
 
     // -- Class members
     // None
@@ -89,7 +87,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string interpolation_;
@@ -116,7 +113,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -126,4 +122,3 @@ private:
 
 
 #endif
-

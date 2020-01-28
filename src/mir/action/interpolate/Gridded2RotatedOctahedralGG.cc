@@ -23,7 +23,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParametrisation &parametrisation):
+Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation),
     N_(0) {
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
@@ -40,16 +40,19 @@ bool Gridded2RotatedOctahedralGG::sameAs(const Action& other) const {
 }
 
 
-void Gridded2RotatedOctahedralGG::print(std::ostream &out) const {
+void Gridded2RotatedOctahedralGG::print(std::ostream& out) const {
     out << "Gridded2RotatedOctahedralGG["
-           "N=" << N_ << ","
-           "rotation=" << rotation() << ",";
+           "N="
+        << N_
+        << ","
+           "rotation="
+        << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
 
-const repres::Representation *Gridded2RotatedOctahedralGG::outputRepresentation() const {
+const repres::Representation* Gridded2RotatedOctahedralGG::outputRepresentation() const {
     return new repres::gauss::reduced::RotatedOctahedral(N_, rotation());
 }
 
@@ -60,11 +63,10 @@ const char* Gridded2RotatedOctahedralGG::name() const {
 
 
 namespace {
-static ActionBuilder< Gridded2RotatedOctahedralGG > grid2grid("interpolate.grid2rotated-octahedral-gg");
+static ActionBuilder<Gridded2RotatedOctahedralGG> grid2grid("interpolate.grid2rotated-octahedral-gg");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

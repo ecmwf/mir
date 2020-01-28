@@ -21,18 +21,17 @@ namespace packing {
 
 
 class Complex : public Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Complex(const std::string &name);
+    Complex(const std::string& name);
 
     // -- Destructor
 
-    virtual ~Complex(); // Change to virtual if base class
+    virtual ~Complex();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -51,14 +50,13 @@ class Complex : public Packer {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -69,12 +67,11 @@ class Complex : public Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    Complex(const Complex &);
-    Complex &operator=(const Complex &);
+    Complex(const Complex&);
+    Complex& operator=(const Complex&);
 
     // -- Members
     // None
@@ -89,18 +86,13 @@ class Complex : public Packer {
 
     // -- Class methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const;
-
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace packing
 }  // namespace mir
 #endif
-

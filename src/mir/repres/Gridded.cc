@@ -12,23 +12,19 @@
 
 #include "mir/repres/Gridded.h"
 
+#include "mir/api/MIREstimation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
-#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
 namespace repres {
 
 
-Gridded::Gridded(const param::MIRParametrisation& parametrisation) :
-    bbox_(parametrisation) {
-}
+Gridded::Gridded(const param::MIRParametrisation& parametrisation) : bbox_(parametrisation) {}
 
 
-Gridded::Gridded(const util::BoundingBox& bbox) :
-    bbox_(bbox) {
-}
+Gridded::Gridded(const util::BoundingBox& bbox) : bbox_(bbox) {}
 
 
 Gridded::~Gridded() = default;
@@ -54,10 +50,10 @@ void Gridded::setGivenPacking(grib_info&) const {
 
 util::Domain Gridded::domain() const {
 
-    const Latitude& n = includesNorthPole()? Latitude::NORTH_POLE : bbox_.north();
-    const Latitude& s = includesSouthPole()? Latitude::SOUTH_POLE : bbox_.south();
+    const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
+    const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();
     const Longitude& w = bbox_.west();
-    const Longitude& e = isPeriodicWestEast()? bbox_.west() + Longitude::GLOBE : bbox_.east();
+    const Longitude& e = isPeriodicWestEast() ? bbox_.west() + Longitude::GLOBE : bbox_.east();
 
     return util::Domain(n, w, s, e);
 }
@@ -73,11 +69,10 @@ bool Gridded::getLongestElementDiagonal(double&) const {
 }
 
 void Gridded::estimate(api::MIREstimation& estimation) const {
-    estimation.packing("grid_simple"); // Will be overriden
+    estimation.packing("grid_simple");  // Will be overriden
     estimation.representation(factory());
 }
 
 
 }  // namespace repres
 }  // namespace mir
-

@@ -31,12 +31,9 @@ namespace method {
 namespace other {
 
 
-PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) :
-    MethodWeighted(param),
-    nclosest_(4) {
+PseudoLaplace::PseudoLaplace(const param::MIRParametrisation& param) : MethodWeighted(param), nclosest_(4) {
 
     param.get("nclosest", nclosest_);
-
 }
 
 
@@ -44,11 +41,11 @@ PseudoLaplace::~PseudoLaplace() = default;
 
 
 const char* PseudoLaplace::name() const {
-    return  "pseudo-laplace";
+    return "pseudo-laplace";
 }
 
 
-void PseudoLaplace::hash( eckit::MD5& md5) const {
+void PseudoLaplace::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     md5 << nclosest_;
 }
@@ -58,7 +55,8 @@ bool PseudoLaplace::sameAs(const Method& other) const {
     return o && (nclosest_ == o->nclosest_) && MethodWeighted::sameAs(other);
 }
 
-void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in, const repres::Representation& out) const {
+void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+                             const repres::Representation& out) const {
     using eckit::geometry::XX;
     using eckit::geometry::YY;
     using eckit::geometry::ZZ;
@@ -72,8 +70,8 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     const size_t out_npts = out.numberOfPoints();
 
     // init structure used to fill in sparse matrix
-    std::vector< WeightMatrix::Triplet > weights_triplets;
-    weights_triplets.reserve( out_npts * nclosest_ );
+    std::vector<WeightMatrix::Triplet> weights_triplets;
+    weights_triplets.reserve(out_npts * nclosest_);
 
     std::vector<search::PointSearch::PointValueType> closest;
 
@@ -103,7 +101,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         double Ixx(0), Ixy(0), Ixz(0), Iyy(0), Iyz(0), Izz(0), Rx(0), Ry(0), Rz(0), Lx, Ly, Lz;
 
         for (size_t j = 0; j < npts; ++j) {
-            Point3 np  = closest[j].point();
+            Point3 np = closest[j].point();
 
             const double dx = np[XX] - p[XX];
             const double dy = np[YY] - p[YY];
@@ -165,11 +163,10 @@ void PseudoLaplace::print(std::ostream& out) const {
 
 
 namespace {
-static MethodBuilder< PseudoLaplace > __method("pseudo-laplace");
+static MethodBuilder<PseudoLaplace> __method("pseudo-laplace");
 }
 
 
 }  // namespace other
 }  // namespace method
 }  // namespace mir
-

@@ -24,7 +24,7 @@ namespace mir {
 namespace lsm {
 class Mask;
 }
-}
+}  // namespace mir
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -32,7 +32,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -41,7 +41,6 @@ namespace lsm {
 
 class LandSeaMasks {
 public:
-
     // -- Exceptions
     // None
 
@@ -78,14 +77,12 @@ public:
 
     // -- Class methods
 
-    static  LandSeaMasks lookup(const param::MIRParametrisation&,
-                                const repres::Representation& in,
-                                const repres::Representation& out);
+    static LandSeaMasks lookup(const param::MIRParametrisation&, const repres::Representation& in,
+                               const repres::Representation& out);
 
     static bool sameLandSeaMasks(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
 protected:
-
     // -- Members
 
     const Mask& input_;
@@ -106,7 +103,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -124,11 +120,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream& s, const LandSeaMasks& p) {
+    friend std::ostream& operator<<(std::ostream& s, const LandSeaMasks& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -137,4 +132,3 @@ private:
 
 
 #endif
-

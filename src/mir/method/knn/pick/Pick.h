@@ -31,7 +31,6 @@ namespace pick {
 
 class Pick {
 public:
-
     using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 
     Pick();
@@ -39,19 +38,17 @@ public:
     virtual ~Pick();
 
     virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
-    virtual size_t n() const = 0;
-    virtual bool sameAs(const Pick& other) const = 0;
-    virtual void hash(eckit::MD5&) const = 0;
+    virtual size_t n() const                                                          = 0;
+    virtual bool sameAs(const Pick& other) const                                      = 0;
+    virtual void hash(eckit::MD5&) const                                              = 0;
 
 private:
-
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const Pick& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -59,20 +56,21 @@ class PickFactory {
 private:
     std::string name_;
     virtual Pick* make(const param::MIRParametrisation&) = 0;
+
 protected:
     PickFactory(const std::string& name);
     virtual ~PickFactory();
+
 public:
     static const Pick* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class PickBuilder : public PickFactory {
-    virtual Pick* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual Pick* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     PickBuilder(const std::string& name) : PickFactory(name) {}
 };
@@ -85,4 +83,3 @@ public:
 
 
 #endif
-

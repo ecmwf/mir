@@ -20,16 +20,15 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace action {
 
 
-SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     std::string metadata;
     ASSERT(parametrisation.get("metadata", metadata));
@@ -49,7 +48,6 @@ SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
 
         metadata_[w[0]] = s2l(w[1]);
     }
-
 }
 
 
@@ -61,14 +59,14 @@ bool SetMetadata::sameAs(const Action& other) const {
     return o && (metadata_ == o->metadata_);
 }
 
-void SetMetadata::print(std::ostream &out) const {
+void SetMetadata::print(std::ostream& out) const {
     out << "SetMetadata[" << metadata_ << "]";
 }
 
 
-void SetMetadata::execute(context::Context & ctx) const {
+void SetMetadata::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
-     for (size_t i = 0; i < field.dimensions(); i++) {
+    for (size_t i = 0; i < field.dimensions(); i++) {
         field.metadata(i, metadata_);
     }
 }
@@ -78,10 +76,9 @@ const char* SetMetadata::name() const {
 }
 
 namespace {
-static ActionBuilder< SetMetadata > action("set.metadata");
+static ActionBuilder<SetMetadata> action("set.metadata");
 }
 
 
 }  // namespace action
 }  // namespace mir
-

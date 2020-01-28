@@ -22,7 +22,7 @@ struct grib_info;
 namespace atlas {
 class Grid;
 class Projection;
-}
+}  // namespace atlas
 namespace mir {
 namespace api {
 class MIRJob;
@@ -33,7 +33,7 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -67,15 +67,14 @@ namespace util {
  */
 class Rotation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(const Latitude& south_pole_latitude = Latitude::SOUTH_POLE,
+    explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
                       const Longitude& south_pole_longitude = Longitude::GREENWICH,
-                      double south_pole_rotation_angle = 0.0);
+                      double south_pole_rotation_angle      = 0.0);
 
     // -- Destructor
     ~Rotation();  // Change to virtual if base class
@@ -92,17 +91,11 @@ public:
     atlas::Grid rotate(const atlas::Grid&) const;
     util::BoundingBox boundingBox(const util::BoundingBox&) const;
 
-    const Latitude& south_pole_latitude() const {
-        return south_pole_latitude_;
-    }
+    const Latitude& south_pole_latitude() const { return south_pole_latitude_; }
 
-    const Longitude& south_pole_longitude() const {
-        return south_pole_longitude_;
-    }
+    const Longitude& south_pole_longitude() const { return south_pole_longitude_; }
 
-    double south_pole_rotation_angle() const {
-        return south_pole_rotation_angle_;
-    }
+    double south_pole_rotation_angle() const { return south_pole_rotation_angle_; }
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;
@@ -118,7 +111,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -137,7 +129,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     Latitude south_pole_latitude_;
@@ -159,11 +150,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const Rotation& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Rotation& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -172,4 +162,3 @@ private:
 
 
 #endif
-

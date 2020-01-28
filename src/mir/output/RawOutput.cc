@@ -12,8 +12,8 @@
 
 #include "mir/output/RawOutput.h"
 
-#include <istream>
 #include <cstring>
+#include <istream>
 
 #include "eckit/exception/Exceptions.h"
 
@@ -26,11 +26,7 @@ namespace mir {
 namespace output {
 
 
-RawOutput::RawOutput(double *values, size_t count):
-    values_(values),
-    count_(count),
-    size_(0) {
-}
+RawOutput::RawOutput(double* values, size_t count) : values_(values), count_(count), size_(0) {}
 
 
 RawOutput::~RawOutput() = default;
@@ -41,24 +37,24 @@ bool RawOutput::sameAs(const MIROutput& other) const {
 }
 
 
-bool RawOutput::sameParametrisation(const param::MIRParametrisation &, const param::MIRParametrisation &) const {
+bool RawOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
     NOTIMP;
 }
 
 
-bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation &param) const {
+bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     NOTIMP;
 }
 
 
-size_t RawOutput::copy(const param::MIRParametrisation &param, context::Context &ctx) {
+size_t RawOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
     NOTIMP;
     // size_ = input.copy(values_, count_);
     // return size_ * sizeof(double);
 }
 
 
-size_t RawOutput::save(const param::MIRParametrisation &param, context::Context& ctx) {
+size_t RawOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     const data::MIRField& field = ctx.field();
 
     field.validate();
@@ -79,7 +75,7 @@ size_t RawOutput::save(const param::MIRParametrisation &param, context::Context&
 }
 
 
-void RawOutput::print(std::ostream &out) const {
+void RawOutput::print(std::ostream& out) const {
     out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
 }
 
@@ -91,4 +87,3 @@ size_t RawOutput::size() const {
 
 }  // namespace output
 }  // namespace mir
-

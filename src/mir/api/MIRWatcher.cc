@@ -25,4 +25,3 @@ MIRWatcher::~MIRWatcher() = default;
 
 }  // namespace api
 }  // namespace mir
-

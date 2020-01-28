@@ -23,15 +23,13 @@ namespace method {
 namespace knn {
 
 
-class KNearest: public KNearestNeighbours {
+class KNearest : public KNearestNeighbours {
 public:
-
     KNearest(const param::MIRParametrisation&);
 
     virtual ~KNearest();
 
 private:
-
     virtual const char* name() const;
     virtual bool sameAs(const Method& other) const;
     virtual const pick::Pick& pick() const;
@@ -39,7 +37,6 @@ private:
 
     std::unique_ptr<const pick::Pick> pick_;
     std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;
-
 };
 
 
@@ -49,4 +46,3 @@ private:
 
 
 #endif
-

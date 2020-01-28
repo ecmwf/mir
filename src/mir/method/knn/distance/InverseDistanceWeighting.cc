@@ -37,11 +37,9 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 }
 
 
-void InverseDistanceWeighting::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
+                                          const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                          std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -58,13 +56,12 @@ void InverseDistanceWeighting::operator()(
 
             weights[j] = 1. / std::pow(d2, halfPower_);
             sum += weights[j];
-
-        } else {
+        }
+        else {
 
             // exact match found, use this neighbour only (inverse distance tends to infinity)
             triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
             return;
-
         }
     }
 
@@ -104,4 +101,3 @@ static DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard")
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

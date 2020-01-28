@@ -24,7 +24,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,18 +32,13 @@ namespace lsm {
 
 class TenMinutesMask : public Mask {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    TenMinutesMask(
-        const std::string& name,
-        const eckit::PathName&,
-        const param::MIRParametrisation&,
-        const repres::Representation&,
-        const std::string& which);
+    TenMinutesMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation&,
+                   const repres::Representation&, const std::string& which);
 
     // -- Destructor
 
@@ -68,7 +63,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     std::string name_;
@@ -95,7 +89,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -104,4 +97,3 @@ private:
 
 
 #endif
-

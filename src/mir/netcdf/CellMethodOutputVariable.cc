@@ -21,21 +21,17 @@
 namespace mir {
 namespace netcdf {
 
-CellMethodOutputVariable::CellMethodOutputVariable(Dataset &owner,
-        const std::string &name,
-        const std::vector<Dimension *> &dimensions):
-    OutputVariable(owner, name, dimensions)
-{
-}
+CellMethodOutputVariable::CellMethodOutputVariable(Dataset& owner, const std::string& name,
+                                                   const std::vector<Dimension*>& dimensions) :
+    OutputVariable(owner, name, dimensions) {}
 
 CellMethodOutputVariable::~CellMethodOutputVariable() = default;
 
-void CellMethodOutputVariable::print(std::ostream &out) const {
+void CellMethodOutputVariable::print(std::ostream& out) const {
     out << "CellMethodOutputVariable[name=" << name_ << "]";
 }
 
-void CellMethodOutputVariable::merge(const Variable &other, MergePlan &plan)
-{
+void CellMethodOutputVariable::merge(const Variable& other, MergePlan& plan) {
     Variable::merge(other, plan);
     plan.add(new MergeDataStep(*this, other));
 }

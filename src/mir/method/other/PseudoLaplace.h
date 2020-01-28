@@ -21,28 +21,24 @@ namespace method {
 namespace other {
 
 
-class PseudoLaplace: public MethodWeighted {
+class PseudoLaplace : public MethodWeighted {
 
     size_t nclosest_;  ///< Number of closest points to search for
 
 public:
-
     PseudoLaplace(const param::MIRParametrisation&);
 
     virtual ~PseudoLaplace();
 
 protected:
-
-    virtual void hash( eckit::MD5& ) const;
+    virtual void hash(eckit::MD5&) const;
 
 private:
-
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                          const repres::Representation& out) const;
     virtual void print(std::ostream&) const;
     virtual const char* name() const;
     virtual bool sameAs(const Method& other) const;
-
-
 };
 
 
@@ -52,4 +48,3 @@ private:
 
 
 #endif
-

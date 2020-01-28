@@ -19,11 +19,10 @@ namespace mir {
 namespace util {
 
 
-MIRStatistics::MIRStatistics() {
-}
+MIRStatistics::MIRStatistics() {}
 
 
-MIRStatistics::MIRStatistics(eckit::Stream& s):
+MIRStatistics::MIRStatistics(eckit::Stream& s) :
     bitmapCache_(s),
     areaCroppingCache_(s),
     transHandleCache_(s),
@@ -121,7 +120,7 @@ MIRStatistics& MIRStatistics::operator/=(size_t n) {
 }
 
 
-void MIRStatistics::report(std::ostream& out, const char *indent) const {
+void MIRStatistics::report(std::ostream& out, const char* indent) const {
 
     bitmapCache_.report("Bitmap cache", out, indent);
     areaCroppingCache_.report("Area cache", out, indent);
@@ -158,21 +157,10 @@ void MIRStatistics::csvHeader(std::ostream& out) const {
 
 
 void MIRStatistics::csvRow(std::ostream& out) const {
-    out << grid2gridTiming_ << ","
-        << sh2gridTiming_ << ","
-        << coefficientTiming_ << ","
-        << vod2uvTiming_ << ","
-        << calcTiming_ << ","
-        << cropTiming_ << ","
-        << frameTiming_ << ","
-        << globaliseTiming_ << ","
-        << bitmapTiming_ << ","
-        << computeMatrixTiming_ << ","
-        << matrixTiming_ << ","
-        << createCoeffTiming_ << ","
-        << loadCoeffTiming_ << ","
-        << gribEncodingTiming_ << ","
-        << saveTiming_;
+    out << grid2gridTiming_ << "," << sh2gridTiming_ << "," << coefficientTiming_ << "," << vod2uvTiming_ << ","
+        << calcTiming_ << "," << cropTiming_ << "," << frameTiming_ << "," << globaliseTiming_ << "," << bitmapTiming_
+        << "," << computeMatrixTiming_ << "," << matrixTiming_ << "," << createCoeffTiming_ << "," << loadCoeffTiming_
+        << "," << gribEncodingTiming_ << "," << saveTiming_;
 }
 
 

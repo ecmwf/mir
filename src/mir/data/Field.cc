@@ -10,23 +10,23 @@
  */
 
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
 
-#include "mir/data/Field.h"
-#include "mir/repres/Representation.h"
-#include "mir/data/MIRFieldStats.h"
 #include "eckit/thread/AutoLock.h"
+#include "mir/data/Field.h"
+#include "mir/data/MIRFieldStats.h"
+#include "mir/repres/Representation.h"
 
 
 namespace mir {
 namespace data {
 
 
-Field::Field(const param::MIRParametrisation &param, bool hasMissing, double missingValue):
+Field::Field(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
     values_(),
     recomputeHasMissing_(false),
     hasMissing_(hasMissing),
@@ -39,7 +39,7 @@ Field::Field(const param::MIRParametrisation &param, bool hasMissing, double mis
 }
 
 
-Field::Field(const repres::Representation *repres, bool hasMissing, double missingValue):
+Field::Field(const repres::Representation* repres, bool hasMissing, double missingValue) :
     values_(),
     recomputeHasMissing_(false),
     hasMissing_(hasMissing),
@@ -51,14 +51,13 @@ Field::Field(const repres::Representation *repres, bool hasMissing, double missi
     }
 }
 
-Field::Field(const Field& other):
+Field::Field(const Field& other) :
     values_(other.values_),
     metadata_(other.metadata_),
     recomputeHasMissing_(other.recomputeHasMissing_),
     hasMissing_(other.hasMissing_),
     missingValue_(other.missingValue_),
-    representation_(other.representation_)
-{
+    representation_(other.representation_) {
 
     // eckit::Log::info() << "Field::Field => " << values_.size() << std::endl;
 
@@ -67,7 +66,7 @@ Field::Field(const Field& other):
     }
 }
 
-Field *Field::clone() const {
+Field* Field::clone() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     return new Field(*this);
@@ -91,14 +90,14 @@ size_t Field::dimensions() const {
     return values_.size();
 }
 
-void Field::dimensions(size_t size)  {
+void Field::dimensions(size_t size) {
     eckit::AutoLock<const eckit::Counted> lock(this);
     metadata_.resize(size);
     values_.resize(size);
 }
 
 
-void Field::select(size_t which)  {
+void Field::select(size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
     ASSERT(which < values_.size());
 
@@ -108,7 +107,6 @@ void Field::select(size_t which)  {
     if (which != 0) {
         std::swap(metadata_[0], metadata_[which]);
         std::swap(values_[0], values_[which]);
-
     }
 
     metadata_.resize(1);
@@ -121,7 +119,7 @@ Field::~Field() {
     }
 }
 
-void Field::print(std::ostream &out) const {
+void Field::print(std::ostream& out) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
 
@@ -149,7 +147,7 @@ void Field::print(std::ostream &out) const {
 }
 
 
-const repres::Representation *Field::representation() const {
+const repres::Representation* Field::representation() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     ASSERT(representation_);
@@ -180,7 +178,8 @@ MIRFieldStats Field::statistics(size_t i) const {
         for (auto& value : vals) {
             if (value != missingValue_) {
                 tmp.push_back(value);
-            } else {
+            }
+            else {
                 missing++;
             }
         }
@@ -189,7 +188,7 @@ MIRFieldStats Field::statistics(size_t i) const {
     return MIRFieldStats(values(i), 0);
 }
 
-void Field::representation(const repres::Representation *representation) {
+void Field::representation(const repres::Representation* representation) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     if (representation) {
@@ -208,7 +207,7 @@ const MIRValuesVector& Field::values(size_t which) const {
     return values_[which];
 }
 
-MIRValuesVector& Field::direct(size_t which)  {
+MIRValuesVector& Field::direct(size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     // eckit::Log::info() << "Field::direct => " << values_.size() << std::endl;
@@ -278,10 +277,10 @@ void Field::hasMissing(bool on) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     recomputeHasMissing_ = false;
-    hasMissing_ = on;
+    hasMissing_          = on;
 }
 
-void Field::missingValue(double value)  {
+void Field::missingValue(double value) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     missingValue_ = value;
@@ -289,4 +288,3 @@ void Field::missingValue(double value)  {
 
 }  // namespace data
 }  // namespace mir
-

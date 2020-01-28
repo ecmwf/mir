@@ -46,15 +46,15 @@ static eckit::Mutex* local_mutex                       = nullptr;
 static std::map<std::string, SpectralOrderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, SpectralOrderFactory* >();
+    m           = new std::map<std::string, SpectralOrderFactory*>();
 }
-}  // (anonymous namespace)
+}  // namespace
 
 
 SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
@@ -66,7 +66,7 @@ SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name
 
 
 SpectralOrderFactory::~SpectralOrderFactory() {
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     m->erase(name_);
 }
@@ -74,7 +74,7 @@ SpectralOrderFactory::~SpectralOrderFactory() {
 
 SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
 
@@ -90,7 +90,7 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
 
 void SpectralOrderFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

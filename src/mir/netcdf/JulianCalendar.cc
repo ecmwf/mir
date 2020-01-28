@@ -17,9 +17,9 @@
 #include "mir/netcdf/Value.h"
 #include "mir/netcdf/Variable.h"
 
+#include <algorithm>
 #include <ostream>
 #include <sstream>
-#include <algorithm>
 
 #include <netcdf.h>
 
@@ -27,13 +27,11 @@ namespace mir {
 namespace netcdf {
 
 
-JulianCalendar::JulianCalendar(const Variable& variable)
-{
-}
+JulianCalendar::JulianCalendar(const Variable& variable) {}
 
 JulianCalendar::~JulianCalendar() = default;
 
-void JulianCalendar::print(std::ostream &out) const {
+void JulianCalendar::print(std::ostream& out) const {
     out << "JulianCalendar[]";
 }
 

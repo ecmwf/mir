@@ -22,7 +22,6 @@ namespace repres {
 
 class IrregularLatlon : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon(); // Change to virtual if base class
+    virtual ~IrregularLatlon();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -52,13 +51,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -70,7 +68,6 @@ protected:
     // None
 
 private:
-
     IrregularLatlon();
 
     // -- Members
@@ -114,9 +111,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
+    // friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -125,4 +121,3 @@ private:
 
 
 #endif
-

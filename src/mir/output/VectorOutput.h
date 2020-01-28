@@ -22,7 +22,6 @@ namespace output {
 
 class VectorOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorOutput(); // Change to virtual if base class
+    virtual ~VectorOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -46,7 +45,7 @@ public:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     // -- Class members
@@ -56,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     MIROutput& component1_;
@@ -75,7 +73,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -99,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VectorOutput& p)
+    // friend ostream& operator<<(ostream& s,const VectorOutput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -110,4 +106,3 @@ private:
 
 
 #endif
-

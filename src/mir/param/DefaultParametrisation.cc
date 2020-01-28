@@ -23,7 +23,7 @@ DefaultParametrisation::DefaultParametrisation() {
     set("style", "ecmwf");
     set("executor", "simple");
 
-    set("interpolation", "linear"); // The word 'method' is used in grib
+    set("interpolation", "linear");  // The word 'method' is used in grib
     set("space", "1d.linear");
 
     bool caching = LibMir::caching();
@@ -53,4 +53,3 @@ DefaultParametrisation::~DefaultParametrisation() = default;
 
 }  // namespace param
 }  // namespace mir
-

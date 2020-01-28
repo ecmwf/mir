@@ -20,11 +20,10 @@
 namespace mir {
 namespace netcdf {
 
-MergeCoordinateMatrix::MergeCoordinateMatrix(Matrix *out, Matrix *in, size_t size):
+MergeCoordinateMatrix::MergeCoordinateMatrix(Matrix* out, Matrix* in, size_t size) :
     Matrix(Type::lookup(out->type(), in->type()), out->name(), size),
     out_(out),
-    in_(in)
-{
+    in_(in) {
     out_->attach();
     in_->attach();
 }
@@ -34,15 +33,13 @@ MergeCoordinateMatrix::~MergeCoordinateMatrix() {
     in_->detach();
 }
 
-void MergeCoordinateMatrix::print(std::ostream &out) const {
-    out << "MergeCoordinateMatrix[name=" << name_
-        << ", ptr=" << this
-        << ", size=" << size_
-        << "]";
+void MergeCoordinateMatrix::print(std::ostream& out) const {
+    out << "MergeCoordinateMatrix[name=" << name_ << ", ptr=" << this << ", size=" << size_ << "]";
 }
 
-void MergeCoordinateMatrix::dumpTree(std::ostream &out, size_t depth) const {
-    for (size_t i = 0; i < depth; i++) out << " ";
+void MergeCoordinateMatrix::dumpTree(std::ostream& out, size_t depth) const {
+    for (size_t i = 0; i < depth; i++)
+        out << " ";
     out << *this;
     out << std::endl;
     out_->dumpTree(out, depth + 1);

@@ -23,7 +23,7 @@ namespace mir {
 namespace namedgrids {
 class NamedGrid;
 }
-}
+}  // namespace mir
 
 
 namespace mir {

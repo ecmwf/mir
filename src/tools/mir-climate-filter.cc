@@ -70,13 +70,20 @@ private:
 public:
     MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::linalg::LinearAlgebra;
-        options_.push_back(new eckit::option::VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
-        options_.push_back(new eckit::option::SimpleOption<double>("distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>("delta", "Climate filter width of filter edge [m], must be greater than 'distance' (default 1000.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>("weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
-        options_.push_back(new eckit::option::SimpleOption<bool>("no-backend", "No linear algebra backend (minimum memory requirements)"));
-        options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>("backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
-        options_.push_back(new eckit::option::FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+        options_.push_back(new eckit::option::VectorOption<size_t>(
+            "k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
+        options_.push_back(new eckit::option::SimpleOption<double>(
+            "distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
+        options_.push_back(new eckit::option::SimpleOption<double>(
+            "delta", "Climate filter width of filter edge [m], must be greater than 'distance' (default 1000.)"));
+        options_.push_back(new eckit::option::SimpleOption<double>(
+            "weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
+        options_.push_back(new eckit::option::SimpleOption<bool>(
+            "no-backend", "No linear algebra backend (minimum memory requirements)"));
+        options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>(
+            "backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
+        options_.push_back(
+            new eckit::option::FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
     }
 };
 
@@ -201,11 +208,10 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 if (++progress) {
                     log << "   latitude: " << lat[j] << " degree"
                         << "\n   farthest: " << farthest << " m"
-                        << "\n   closest: " << eckit::Seconds(tClosest)
-                        << "\n   matrix A: " << eckit::Seconds(tMatrixA)
+                        << "\n   closest: " << eckit::Seconds(tClosest) << "\n   matrix A: " << eckit::Seconds(tMatrixA)
                         << "\n   vector Y: " << eckit::Seconds(tVectorY)
-                        << "\n   vector X: " << eckit::Seconds(tVectorX)
-                        << "\n" << tree << std::endl;
+                        << "\n   vector X: " << eckit::Seconds(tVectorX) << "\n"
+                        << tree << std::endl;
                     tClosest = tMatrixA = tVectorY = tVectorX = farthest = 0;
                 }
 

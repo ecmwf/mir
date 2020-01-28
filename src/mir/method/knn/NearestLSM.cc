@@ -24,9 +24,7 @@ namespace method {
 namespace knn {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    distanceWeighting_(param) {
+NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param), distanceWeighting_(param) {
 
     std::string nearestMethod = "nclosest";
     param.get("nearest-method", nearestMethod);
@@ -37,15 +35,12 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
 NearestLSM::~NearestLSM() = default;
 
 
-void NearestLSM::assemble(
-    util::MIRStatistics& stats,
-    WeightMatrix& W,
-    const repres::Representation& in,
-    const repres::Representation& out) const {
+void NearestLSM::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                          const repres::Representation& out) const {
 
     // get distance weighting method
     std::unique_ptr<const distance::DistanceWeighting> method(
-                distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)) );
+        distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)));
     ASSERT(method);
 
     // assemble with specific distance weighting method
@@ -74,7 +69,8 @@ lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const r
 }
 
 
-static bool sameLsm(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2) {
+static bool sameLsm(const param::MIRParametrisation& parametrisation1,
+                    const param::MIRParametrisation& parametrisation2) {
     param::RuntimeParametrisation runtime1(parametrisation1);
     setParametrisation(parametrisation1, runtime1);
 
@@ -108,11 +104,10 @@ const char* NearestLSM::name() const {
 
 
 namespace {
-static MethodBuilder< NearestLSM > __method("nearest-lsm");
+static MethodBuilder<NearestLSM> __method("nearest-lsm");
 }
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

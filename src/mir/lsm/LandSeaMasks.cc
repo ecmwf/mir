@@ -18,25 +18,20 @@
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/lsm/Mask.h"
 #include "mir/config/LibMir.h"
+#include "mir/lsm/Mask.h"
 
 
 namespace mir {
 namespace lsm {
 
 
-LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) :
-    input_(input),
-    output_(output) {
+LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) : input_(input), output_(output) {
     ASSERT(input_.active() == output_.active());
 }
 
 
-LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) :
-    input_(other.input_),
-    output_(other.output_) {
-}
+LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) : input_(other.input_), output_(other.output_) {}
 
 
 void LandSeaMasks::print(std::ostream& out) const {
@@ -53,8 +48,7 @@ std::string LandSeaMasks::cacheName() const {
 }
 
 
-LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation,
-                                  const repres::Representation& in,
+LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& in,
                                   const repres::Representation& out) {
     eckit::TraceTimer<LibMir>("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
@@ -63,8 +57,7 @@ LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisati
 
 bool LandSeaMasks::sameLandSeaMasks(const param::MIRParametrisation& parametrisation1,
                                     const param::MIRParametrisation& parametrisation2) {
-    return Mask::sameInput(parametrisation1, parametrisation2)
-           && Mask::sameOutput(parametrisation1, parametrisation2);
+    return Mask::sameInput(parametrisation1, parametrisation2) && Mask::sameOutput(parametrisation1, parametrisation2);
 }
 
 
@@ -90,4 +83,3 @@ bool LandSeaMasks::active() const {
 
 }  // namespace lsm
 }  // namespace mir
-

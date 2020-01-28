@@ -29,6 +29,7 @@ struct SortedSample : Pick {
     virtual size_t n() const;
     virtual bool sameAs(const Pick&) const;
     virtual void hash(eckit::MD5&) const;
+
 private:
     virtual void print(std::ostream&) const;
     Sample sample_;
@@ -42,4 +43,3 @@ private:
 
 
 #endif
-

@@ -14,8 +14,8 @@
 
 #include <iostream>
 #include "eckit/exception/Exceptions.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/namedgrids/NamedGrid.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -23,7 +23,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametrisation):
+Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
 }
@@ -39,7 +39,8 @@ bool Gridded2NamedGrid::sameAs(const Action& other) const {
 
 void Gridded2NamedGrid::print(std::ostream& out) const {
     out << "Gridded2NamedGrid["
-           "gridname=" << gridname_ << ",";
+           "gridname="
+        << gridname_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
@@ -55,13 +56,11 @@ const char* Gridded2NamedGrid::name() const {
 }
 
 
-
 namespace {
-static ActionBuilder< Gridded2NamedGrid > grid2grid("interpolate.grid2namedgrid");
+static ActionBuilder<Gridded2NamedGrid> grid2grid("interpolate.grid2namedgrid");
 }
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

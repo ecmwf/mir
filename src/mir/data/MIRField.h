@@ -14,8 +14,8 @@
 #define mir_data_MIRField_h
 
 #include <iosfwd>
-#include <string>
 #include <map>
+#include <string>
 
 #include "eckit/thread/Mutex.h"
 
@@ -26,14 +26,14 @@ namespace mir {
 namespace data {
 class Field;
 class MIRFieldStats;
-}
+}  // namespace data
 namespace param {
 class MIRParametrisation;
 }
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -42,7 +42,6 @@ namespace data {
 
 class MIRField {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,7 +54,7 @@ public:
 
     // -- Destructor
 
-    ~MIRField(); // Change to virtual if base class
+    ~MIRField();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -73,14 +72,14 @@ public:
     /// Resize to one, and keep only which
     void select(size_t which);
 
-    void representation(const repres::Representation *);
-    const repres::Representation *representation() const;
+    void representation(const repres::Representation*);
+    const repres::Representation* representation() const;
 
     /// @warning Takes ownership of the vector
     void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
 
     const MIRValuesVector& values(size_t which) const;
-    MIRValuesVector& direct(size_t which);   // Non-const version for direct update (Filter)
+    MIRValuesVector& direct(size_t which);  // Non-const version for direct update (Filter)
 
     void metadata(size_t which, const std::map<std::string, long>&);
     void metadata(size_t which, const std::string& name, long value);
@@ -106,13 +105,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -124,11 +122,10 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     mutable eckit::Mutex mutex_;
-    Field *field_;
+    Field* field_;
 
     // -- Methods
 
@@ -146,31 +143,34 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const MIRField &p) {
+    friend std::ostream& operator<<(std::ostream& s, const MIRField& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
 class FieldFactory {
     std::string name_;
     virtual MIRField* make(const param::MIRParametrisation&, bool hasMissing, double missingValue) = 0;
+
 protected:
     FieldFactory(const std::string&);
     virtual ~FieldFactory();
+
 public:
     static void list(std::ostream&);
-    static MIRField* build(const std::string& name, const param::MIRParametrisation&, bool hasMissing, double missingValue);
+    static MIRField* build(const std::string& name, const param::MIRParametrisation&, bool hasMissing,
+                           double missingValue);
 };
 
 
-template<class T>
+template <class T>
 class FieldBuilder : public FieldFactory {
     virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) {
         return new T(param, hasMissing, missingValue);
     }
+
 public:
     FieldBuilder(const std::string& name) : FieldFactory(name) {}
 };

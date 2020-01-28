@@ -10,27 +10,22 @@
  */
 
 
-#include "mir/tools/MIRTool.h"
 #include "eckit/log/Log.h"
-#include "mir/compare/FieldComparator.h"
 #include "eckit/option/CmdArgs.h"
+#include "mir/compare/FieldComparator.h"
+#include "mir/tools/MIRTool.h"
 
 
 class MIRCompare : public mir::tools::MIRTool {
 protected:
-
     virtual void execute(const eckit::option::CmdArgs& args);
 
-    virtual int numberOfPositionalArguments() const {
-        return 2;
-    }
+    virtual int numberOfPositionalArguments() const { return 2; }
 
     virtual void usage(const std::string& tool) const;
 
 public:
-
-    MIRCompare(int argc, char **argv);
-
+    MIRCompare(int argc, char** argv);
 };
 
 
@@ -40,9 +35,8 @@ MIRCompare::MIRCompare(int argc, char** argv) : mir::tools::MIRTool(argc, argv) 
 
 
 void MIRCompare::usage(const std::string& tool) const {
-    eckit::Log::info()
-            << "\n" << "Usage: " << tool << " [options] file1 file2"
-            << std::endl;
+    eckit::Log::info() << "\n"
+                       << "Usage: " << tool << " [options] file1 file2" << std::endl;
 }
 
 void MIRCompare::execute(const eckit::option::CmdArgs& args) {
@@ -53,8 +47,7 @@ void MIRCompare::execute(const eckit::option::CmdArgs& args) {
     c.compare(args(0), args(1));
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRCompare tool(argc, argv);
     return tool.start();
 }
-

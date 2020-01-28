@@ -15,17 +15,17 @@
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
-#include "mir/config/LibMir.h"
-#include "mir/action/plan/Action.h"
-#include "mir/action/plan/ActionNode.h"
-#include "mir/action/plan/ActionGraph.h"
-#include "mir/action/plan/ActionPlan.h"
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/action/plan/Action.h"
+#include "mir/action/plan/ActionGraph.h"
+#include "mir/action/plan/ActionNode.h"
+#include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRWatcher.h"
-#include "mir/param/RuntimeParametrisation.h"
+#include "mir/config/LibMir.h"
 #include "mir/param/DefaultParametrisation.h"
+#include "mir/param/RuntimeParametrisation.h"
 
-//define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+// define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
 
 namespace mir {
@@ -34,8 +34,7 @@ namespace unit {
 
 
 struct TestWatcher : api::MIRWatcher {
-    void print(std::ostream&) const {
-    }
+    void print(std::ostream&) const {}
     bool failure(std::exception& e, const mir::action::Action& action) {
         eckit::Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
         throw;
@@ -110,9 +109,9 @@ CASE("ActionGraph") {
 }
 
 
-} // namespace unit
-} // namespace tests
-} // namespace mir
+}  // namespace unit
+}  // namespace tests
+}  // namespace mir
 
 
 int main(int argc, char** argv) {

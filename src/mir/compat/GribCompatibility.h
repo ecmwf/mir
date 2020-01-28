@@ -14,8 +14,8 @@
 #define mir_compat_GribCompatibility_h
 
 #include <iosfwd>
-#include <string>
 #include <map>
+#include <string>
 
 
 struct grib_info;
@@ -32,7 +32,7 @@ class MIRParametrisation;
 namespace output {
 class MIROutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -41,13 +41,10 @@ namespace compat {
 
 class GribCompatibility {
 public:
-
     GribCompatibility(const GribCompatibility&) = delete;
     void operator=(const GribCompatibility&) = delete;
 
-    virtual void execute(const output::MIROutput&,
-                         const param::MIRParametrisation&,
-                         grib_handle*,
+    virtual void execute(const output::MIROutput&, const param::MIRParametrisation&, grib_handle*,
                          grib_info&) const = 0;
 
     virtual void printParametrisation(std::ostream&, const param::MIRParametrisation&) const = 0;
@@ -61,21 +58,18 @@ public:
     static void list(std::ostream& out);
 
 protected:
-
     GribCompatibility(const std::string&);
     virtual ~GribCompatibility();
 
     virtual void print(std::ostream&) const = 0;
 
 private:
-
     std::string name_;
 
     friend std::ostream& operator<<(std::ostream& s, const GribCompatibility& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -84,4 +78,3 @@ private:
 
 
 #endif
-

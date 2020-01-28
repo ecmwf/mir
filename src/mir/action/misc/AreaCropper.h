@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -30,7 +30,6 @@ namespace action {
 
 class AreaCropper : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -41,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper(); // Change to virtual if base class
+    virtual ~AreaCropper();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -64,13 +63,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -82,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     util::BoundingBox bbox_;
@@ -108,9 +105,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const AreaCropper& p)
+    // friend ostream& operator<<(ostream& s,const AreaCropper& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -119,4 +115,3 @@ private:
 
 
 #endif
-

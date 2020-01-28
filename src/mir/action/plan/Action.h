@@ -33,7 +33,7 @@ class MIREstimation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -42,7 +42,6 @@ namespace action {
 
 class Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -86,14 +85,15 @@ public:
     // -- Class members
     // Helper function for estimate()
 
-    static void estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
-    static void estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation, const repres::Representation&);
+    static void estimateNumberOfGridPoints(context::Context& ctx, api::MIREstimation& estimation,
+                                           const repres::Representation&);
+    static void estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation,
+                                      const repres::Representation&);
 
     // -- Class methods
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -112,7 +112,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -136,7 +135,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -147,25 +145,21 @@ class ActionFactory {
     virtual Action* make(const param::MIRParametrisation&) = 0;
 
 protected:
-
     ActionFactory(const std::string&);
 
     virtual ~ActionFactory();
 
 public:
-
     static Action* build(const std::string&, const param::MIRParametrisation&, bool exact = true);
 
     static void list(std::ostream&);
-
 };
 
 
-template<class T>
+template <class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual Action* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
     ActionBuilder(const std::string& name) : ActionFactory(name) {}
 };

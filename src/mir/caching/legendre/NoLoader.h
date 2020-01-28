@@ -25,19 +25,17 @@ class NoLoader : public LegendreLoader {
 public:
     NoLoader(const param::MIRParametrisation&, const eckit::PathName& path);
 
-    ~NoLoader(); // Change to virtual if base class
+    ~NoLoader();  // Change to virtual if base class
 
     static bool shared();
 
 protected:
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
 private:
-
     virtual const void* address() const;
     virtual size_t size() const;
     virtual bool inSharedMemory() const;
-
 };
 
 
@@ -47,4 +45,3 @@ private:
 
 
 #endif
-

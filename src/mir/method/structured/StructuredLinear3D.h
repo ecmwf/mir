@@ -23,13 +23,12 @@ namespace structured {
 
 class StructuredLinear3D : public StructuredMethod {
 public:
-
     StructuredLinear3D(const param::MIRParametrisation&);
     ~StructuredLinear3D();
 
 private:
-
-    void assembleStructuredInput(WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
+                                 const repres::Representation& out) const;
 
     const char* name() const;
 
@@ -47,4 +46,3 @@ private:
 
 
 #endif
-

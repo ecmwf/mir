@@ -23,7 +23,6 @@ namespace latlon {
 
 class ReducedLL : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
@@ -33,7 +32,7 @@ public:
 
     // -- Destructor
 
-    ~ReducedLL(); // Change to virtual if base class
+    ~ReducedLL();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -69,7 +67,7 @@ protected:
     bool includesNorthPole() const;
     bool includesSouthPole() const;
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Class members
     // None
@@ -78,7 +76,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<long> pl_;
@@ -89,7 +86,7 @@ private:
     // -- Overridden methods
 
     void fill(grib_info&) const;
-    void fill(api::MIRJob &) const;
+    void fill(api::MIRJob&) const;
     void fill(util::MeshGeneratorParameters&) const;
 
     void validate(const MIRValuesVector&) const;
@@ -113,9 +110,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ReducedLL& p)
+    // friend ostream& operator<<(ostream& s,const ReducedLL& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -125,4 +121,3 @@ private:
 
 
 #endif
-

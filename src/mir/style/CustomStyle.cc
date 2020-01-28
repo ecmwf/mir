@@ -27,7 +27,8 @@ namespace mir {
 namespace style {
 
 
-void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) {
+void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametrisation& parametrisation,
+           input::MIRInput& input, output::MIROutput& output) {
 
     util::PlanParser parser(str);
     parser.parse(plan, parametrisation);
@@ -36,15 +37,14 @@ void parse(std::istream& str, action::ActionPlan& plan, const param::MIRParametr
 
     if (plan.empty()) {
         plan.add(new action::io::Copy(parametrisation, output));
-    } else {
+    }
+    else {
         plan.add(new action::io::Save(parametrisation, input, output));
     }
 }
 
 
-CustomStyle::CustomStyle(const param::MIRParametrisation& parametrisation):
-    MIRStyle(parametrisation) {
-}
+CustomStyle::CustomStyle(const param::MIRParametrisation& parametrisation) : MIRStyle(parametrisation) {}
 
 
 CustomStyle::~CustomStyle() = default;
@@ -83,4 +83,3 @@ static MIRStyleBuilder<CustomStyle> __style("custom");
 
 }  // namespace style
 }  // namespace mir
-

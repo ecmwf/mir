@@ -81,11 +81,12 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
             field.update(output_field, i);
             here += int(Ngp);
         }
-    } else {
+    }
+    else {
         field.update(output, 0);
     }
 }
 
-} // namespace transform
-} // namespace action
-} // namespace mir
+}  // namespace transform
+}  // namespace action
+}  // namespace mir

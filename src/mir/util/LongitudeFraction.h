@@ -19,25 +19,24 @@
 namespace eckit {
 class MD5;
 class Stream;
-}
+}  // namespace eckit
 
 namespace mir {
 
 class LongitudeFraction {
 public:
-
-    static LongitudeFraction GLOBE; // 360
-    static LongitudeFraction DATE_LINE; // 180
-    static LongitudeFraction MINUS_DATE_LINE; // -180
-    static LongitudeFraction GREENWICH; // 0
+    static LongitudeFraction GLOBE;            // 360
+    static LongitudeFraction DATE_LINE;        // 180
+    static LongitudeFraction MINUS_DATE_LINE;  // -180
+    static LongitudeFraction GREENWICH;        // 0
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    LongitudeFraction(double value = 0): value_(value) {}
-    LongitudeFraction(const eckit::Fraction& value): value_(value) {}
+    LongitudeFraction(double value = 0) : value_(value) {}
+    LongitudeFraction(const eckit::Fraction& value) : value_(value) {}
 
     // -- Operators
 
@@ -73,21 +72,13 @@ public:
         return *this;
     }
 
-    LongitudeFraction operator+(double value) const {
-        return {value_ + value};
-    }
+    LongitudeFraction operator+(double value) const { return {value_ + value}; }
 
-    LongitudeFraction operator-(double value) const {
-        return {value_ - value};
-    }
+    LongitudeFraction operator-(double value) const { return {value_ - value}; }
 
-    LongitudeFraction operator/(double value) const {
-        return {value_ / value};
-    }
+    LongitudeFraction operator/(double value) const { return {value_ / value}; }
 
-    LongitudeFraction operator*(double value) const {
-        return {value_ * value};
-    }
+    LongitudeFraction operator*(double value) const { return {value_ * value}; }
 
     //======================================
 
@@ -101,21 +92,13 @@ public:
         return *this;
     }
 
-    LongitudeFraction operator+(const eckit::Fraction& value) const {
-        return {value_ + value};
-    }
+    LongitudeFraction operator+(const eckit::Fraction& value) const { return {value_ + value}; }
 
-    LongitudeFraction operator-(const eckit::Fraction& value) const {
-        return {value_ - value};
-    }
+    LongitudeFraction operator-(const eckit::Fraction& value) const { return {value_ - value}; }
 
-    LongitudeFraction operator/(const eckit::Fraction& value) const {
-        return {value_ / value};
-    }
+    LongitudeFraction operator/(const eckit::Fraction& value) const { return {value_ / value}; }
 
-    LongitudeFraction operator*(const eckit::Fraction& value) const {
-        return {value_ * value};
-    }
+    LongitudeFraction operator*(const eckit::Fraction& value) const { return {value_ * value}; }
 
     //======================================
 
@@ -129,13 +112,9 @@ public:
         return *this;
     }
 
-    LongitudeFraction operator+(const LongitudeFraction& other) const {
-        return {value_ + other.value_};
-    }
+    LongitudeFraction operator+(const LongitudeFraction& other) const { return {value_ + other.value_}; }
 
-    LongitudeFraction operator-(const LongitudeFraction& other) const {
-        return {value_ - other.value_};
-    }
+    LongitudeFraction operator-(const LongitudeFraction& other) const { return {value_ - other.value_}; }
 
     //======================================
 
@@ -161,7 +140,6 @@ public:
     LongitudeFraction distance(const LongitudeFraction& meridian) const;
 
 protected:
-
     // -- Methods
 
     void print(std::ostream&) const;
@@ -169,7 +147,6 @@ protected:
     void decode(eckit::Stream&);
 
 private:
-
     // -- Members
 
     eckit::Fraction value_;
@@ -208,19 +185,13 @@ private:
 
     friend bool operator>=(double, const LongitudeFraction&);
 
-    friend bool operator<=(double value, const LongitudeFraction& x) {
-        return value <= x.value();
-    }
+    friend bool operator<=(double value, const LongitudeFraction& x) { return value <= x.value(); }
 
     friend LongitudeFraction operator+(double, const LongitudeFraction&);
 
-    friend LongitudeFraction operator-(double value, const LongitudeFraction& x) {
-        return {value - x.value_};
-    }
-
+    friend LongitudeFraction operator-(double value, const LongitudeFraction& x) { return {value - x.value_}; }
 };
 
 }  // namespace mir
 
 #endif
-

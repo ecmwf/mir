@@ -22,15 +22,12 @@ namespace knn {
 namespace distance {
 
 
-NearestNeighbour::NearestNeighbour(const param::MIRParametrisation&) {
-}
+NearestNeighbour::NearestNeighbour(const param::MIRParametrisation&) {}
 
 
-void NearestNeighbour::operator()(
-        size_t ip,
-        const Point3&,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NearestNeighbour::operator()(size_t ip, const Point3&,
+                                  const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                  std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
     triplets.assign(1, WeightMatrix::Triplet(ip, neighbours.front().payload(), 1.));
@@ -62,4 +59,3 @@ static DistanceWeightingBuilder<NearestNeighbour> __distance("nearest-neighbour"
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

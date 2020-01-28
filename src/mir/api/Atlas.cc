@@ -17,88 +17,71 @@
 #ifndef HAVE_ATLAS
 namespace atlas {
 
-PointLonLat::PointLonLat()
-{
+PointLonLat::PointLonLat() {
     NOTIMP;
 }
 
-PointLonLat::PointLonLat(double, double)
-{
+PointLonLat::PointLonLat(double, double) {
     NOTIMP;
 }
 
-double PointLonLat::lat() const
-{
+double PointLonLat::lat() const {
     NOTIMP;
 }
 
-double PointLonLat::lon() const
-{
+double PointLonLat::lon() const {
     NOTIMP;
 }
 
-void util::gaussian_latitudes_npole_spole(int, double*)
-{
+void util::gaussian_latitudes_npole_spole(int, double*) {
     NOTIMP;
 }
 
-double util::Earth::radius()
-{
+double util::Earth::radius() {
     NOTIMP;
 }
 
-double util::Earth::distance(const PointLonLat&, const PointLonLat&)
-{
+double util::Earth::distance(const PointLonLat&, const PointLonLat&) {
     NOTIMP;
 }
 
-double util::Earth::distance(const PointXYZ&, const PointXYZ&)
-{
+double util::Earth::distance(const PointXYZ&, const PointXYZ&) {
     NOTIMP;
 }
 
-void util::Earth::convertSphericalToCartesian(const double&, const Point2&, Point3&, double)
-{
+void util::Earth::convertSphericalToCartesian(const double&, const Point2&, Point3&, double) {
     NOTIMP;
 }
 
-util::Rotation::Rotation(const PointLonLat&)
-{
+util::Rotation::Rotation(const PointLonLat&) {
     NOTIMP;
 }
 
-bool util::Rotation::rotated() const
-{
+bool util::Rotation::rotated() const {
     NOTIMP;
 }
 
-void util::Rotation::rotate(double[]) const
-{
+void util::Rotation::rotate(double[]) const {
     NOTIMP;
 }
 
-Projection::operator bool() const
-{
+Projection::operator bool() const {
     NOTIMP;
 }
 
-Projection Grid::projection() const
-{
+Projection Grid::projection() const {
     NOTIMP;
 }
 
-const std::vector<long>& Grid::nx() const
-{
+const std::vector<long>& Grid::nx() const {
     NOTIMP;
 }
 
-util::Config Grid::spec() const
-{
+util::Config Grid::spec() const {
     NOTIMP;
 }
 
-Grid::operator bool() const
-{
+Grid::operator bool() const {
     NOTIMP;
 }
 
