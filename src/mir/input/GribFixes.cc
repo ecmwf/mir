@@ -99,10 +99,13 @@ void GribFixes::readConfigurationFiles() {
 
         for (eckit::ValueMap fixes : static_cast<const eckit::ValueList&>(rule.second)) {
             for (const auto& keyValue : fixes) {
-                auto key   = StringTools::trim(keyValue.first);
-                auto value = StringTools::trim(keyValue.second);
+                auto key = StringTools::trim(keyValue.first);
 
-                fix->set(key, value);
+                // value type checking prevents lossy conversions (eg. string > double > string > double)
+                keyValue.second.isDouble()
+                    ? fix->set(key, keyValue.second.as<double>())
+                    : keyValue.second.isNumber() ? fix->set(key, keyValue.second.as<long long>())
+                                                 : fix->set(key, keyValue.second.as<std::string>());
             }
         }
 
