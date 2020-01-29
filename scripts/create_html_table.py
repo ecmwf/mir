@@ -24,33 +24,37 @@ names = [
     ("Comment", None),
     ("Who", None),
     ("Request", "mars",),
-    ]
+]
 
 with open("/perm/ma/mab/gribs/params.json") as f:
     params = json.loads(f.read())
 
-print """
+print(
+    """
 <table>
 <tbody>
 """
+)
 
-print "<tr>"
+print("<tr>")
 for n in names:
-    print "<th>%s</th>" % (n[0],)
+    print("<th>%s</th>" % (n[0],))
 
-print "</tr>"
+print("</tr>")
 
 for k in sorted(params.keys(), key=lambda a: params[a]["name"]):
     p = params[k]
-    print "<tr>"
+    print("<tr>")
     for n in names:
-        v = p.get(n[1], '')
-        print "<td>%s</td>" % (v),
-    print
-    print "</tr>"
+        v = p.get(n[1], "")
+        print("<td>%s</td>" % (v),)
+    print()
+    print("</tr>")
 
-print """
+print(
+    """
 </tbody>
 </table>
 
 """
+)
