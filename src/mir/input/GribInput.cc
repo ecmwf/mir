@@ -697,7 +697,13 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    data::MIRField field(*this, missingValuesPresent != 0, missing);
+    // apply user-defined fixes, if any
+    static GribFixes gribFixes;
+    if (gribFixes.fix(*this, cache_.cache_)) {
+        wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
+    }
+
+    data::MIRField field(cache_, missingValuesPresent != 0, missing);
 
     long scanningMode = 0;
     if (grib_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
@@ -1012,10 +1018,6 @@ bool GribInput::handle(grib_handle* h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(grib_get_long(h, "7777", &value));
-
-        static GribFixes gribFixes;
-        gribFixes.fix(*this, cache_.cache_);
-
         return true;
     }
 
