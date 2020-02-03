@@ -32,22 +32,19 @@ inline static double utime() {
 
 template <class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
-                                const char* variable, bool cleanupAtExit) :
+                                const char* variable) :
     name_(name),
     capacity_(name + "InMemoryCacheCapacity;" + variable, InMemoryCacheUsage(memory_capacity, shared_capacity)),
-    cleanupAtExit_(cleanupAtExit),
     users_(0) {}
 
 
 template <class T>
 InMemoryCache<T>::~InMemoryCache() {
-    if (cleanupAtExit_) {
-        // std::cerr << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
-        // cache_.size() << std::endl;
-        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-            // std::cerr << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
-            delete (*j).second;
-        }
+    // std::cerr << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
+    // cache_.size() << std::endl;
+    for (auto& j : cache_) {
+        // std::cerr << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
+        delete j.second;
     }
 
     // std::string title = "InMemoryCache(" + name_ + ")";

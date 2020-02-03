@@ -183,7 +183,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    caching::InMemoryCache<caching::CroppingCacheEntry>::iterator a = cache.find(key);
+    auto a = cache.find(key);
     if (a != cache.end()) {
         return *a;
     }

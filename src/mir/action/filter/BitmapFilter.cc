@@ -34,7 +34,7 @@ namespace action {
 namespace {
 static eckit::Mutex local_mutex;
 static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, 0,
-                                                  "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT", true);
+                                                  "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
 }  // namespace
 
 
@@ -58,7 +58,7 @@ void BitmapFilter::print(std::ostream& out) const {
 
 util::Bitmap& BitmapFilter::bitmap() const {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    caching::InMemoryCache<util::Bitmap>::iterator j = cache.find(path_);
+    auto j = cache.find(path_);
     if (j == cache.end()) {
         std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
         size_t footprint     = bitmap->footprint();

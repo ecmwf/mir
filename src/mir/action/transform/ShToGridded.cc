@@ -46,15 +46,14 @@ static eckit::Mutex amutex;
 
 
 static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", 8L * 1024 * 1024 * 1024,
-                                                      8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE",
-                                                      false);  // Don't cleanup at exit: the Fortran part will dump core
+                                                      8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
 
 
 static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& creator, const std::string& key,
                                          const param::MIRParametrisation& parametrisation, context::Context& ctx) {
 
 
-    caching::InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+    auto j = trans_cache.find(key);
     if (j != trans_cache.end()) {
         ASSERT(j->transCache_);
         return j->transCache_;
