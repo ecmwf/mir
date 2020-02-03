@@ -120,8 +120,7 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
     method::Cropping crop = cropping(ctx);
 
     repres::RepresentationHandle output(outputRepresentation());
-    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox())
-                                          : output.operator->());
+    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox()) : output.operator->());
 
     method_->execute(ctx, *in, *out);
 
@@ -144,10 +143,8 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 
     method::Cropping crop = cropping(ctx);
 
-
-    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                          : outputRepresentation());
-
+    repres::RepresentationHandle output(outputRepresentation());
+    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox()) : output.operator->());
 
     estimateNumberOfGridPoints(ctx, estimation, *out);
     estimateMissingValues(ctx, estimation, *out);
