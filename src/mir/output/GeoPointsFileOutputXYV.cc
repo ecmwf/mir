@@ -118,6 +118,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
 
     repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
 
+    delete out.rdbuf();
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
