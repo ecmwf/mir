@@ -551,8 +551,8 @@ CASE("MIR-309") {
             corrected(correct_),
             allowLatitudeShift(allowLatitudeShift_),
             allowLongitudeShift(allowLongitudeShift_) {}
-        const BoundingBox& bbox;
-        const Increments& increments;
+        const BoundingBox bbox;
+        const Increments increments;
         const BoundingBox corrected;
         const bool allowLatitudeShift;
         const bool allowLongitudeShift;

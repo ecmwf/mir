@@ -119,9 +119,9 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
     method::Cropping crop = cropping(ctx);
 
-
-    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                          : outputRepresentation());
+    repres::RepresentationHandle output(outputRepresentation());
+    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox())
+                                          : output.operator->());
 
     method_->execute(ctx, *in, *out);
 
