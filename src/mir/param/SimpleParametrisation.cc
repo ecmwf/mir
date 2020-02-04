@@ -12,6 +12,7 @@
 
 #include "mir/param/SimpleParametrisation.h"
 
+#include <algorithm>
 #include <ios>
 #include <iostream>
 #include <sstream>
@@ -246,6 +247,19 @@ void TSettings<std::vector<long>>::print(std::ostream& out) const {
 template <>
 void TSettings<std::vector<double>>::print(std::ostream& out) const {
     _put(out, value_);
+}
+
+
+template <class T>
+bool any_of(const std::vector<T>& values, const T& value) {
+    return std::find(values.begin(), values.end(), value) != values.end();
+}
+
+template <>
+bool TSettings<std::vector<std::string>>::match(const std::string& name, const MIRParametrisation& other) const {
+    // if any of "these values" matches "other value"
+    std::string value;
+    return other.get(name, value) && any_of(value_, value);
 }
 
 

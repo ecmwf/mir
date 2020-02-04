@@ -12,6 +12,8 @@
 
 #include "mir/input/GribFixes.h"
 
+#include <string>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
@@ -93,7 +95,13 @@ void GribFixes::readConfigurationFiles() {
             auto key   = StringTools::trim(keyValue[0]);
             auto value = StringTools::trim(keyValue[1]);
 
-            id->set(key, value);
+            if (value.find("/") != std::string::npos) {
+                auto values = StringTools::split("/", value);
+                id->set(key, values);
+            }
+            else {
+                id->set(key, value);
+            }
         }
 
         // how the input is to be corrected
