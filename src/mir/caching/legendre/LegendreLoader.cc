@@ -46,6 +46,12 @@ eckit::Channel& LegendreLoader::log() {
 }
 
 
+eckit::Channel& LegendreLoader::info() {
+    static auto& channel = eckit::Log::info();
+    return channel;
+}
+
+
 eckit::Channel& LegendreLoader::warn() {
     static auto& channel = eckit::Log::warning();
     return channel;
