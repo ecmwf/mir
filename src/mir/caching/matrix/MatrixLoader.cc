@@ -50,6 +50,12 @@ eckit::Channel& MatrixLoader::log() {
     return channel;
 }
 
+eckit::Channel& MatrixLoader::info() {
+    static auto& channel = eckit::Log::info();
+    return channel;
+}
+
+
 eckit::Channel& MatrixLoader::warn() {
     static auto& channel = eckit::Log::warning();
     return channel;

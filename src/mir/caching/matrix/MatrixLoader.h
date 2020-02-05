@@ -43,6 +43,7 @@ public:
     virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape);
 
     static eckit::Channel& log();
+    static eckit::Channel& info();
     static eckit::Channel& warn();
 
 protected:
@@ -62,6 +63,7 @@ public:
     static MatrixLoader* build(const std::string&, const eckit::PathName&);
     static void list(std::ostream&);
 };
+
 
 template <class T>
 class MatrixLoaderBuilder : public MatrixLoaderFactory {

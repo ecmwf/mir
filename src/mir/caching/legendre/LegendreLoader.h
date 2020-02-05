@@ -49,6 +49,7 @@ public:
     atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
 
     static eckit::Channel& log();
+    static eckit::Channel& info();
     static eckit::Channel& warn();
 
 protected:
