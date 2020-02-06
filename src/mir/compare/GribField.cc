@@ -118,6 +118,12 @@ const std::string& GribField::format() const {
     return format_;
 }
 
+
+bool GribField::canCompareFieldValues() const {
+    return true;
+}
+
+
 // double GribField::compare(const GribField& other) const {
 //     return compareExtra(other);
 // }
@@ -1021,8 +1027,6 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 Field GribField::field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
 
@@ -1342,7 +1346,5 @@ void GribField::setGrid(GribField& field, grib_handle* h) {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
 }  // namespace compare
-
 }  // namespace mir

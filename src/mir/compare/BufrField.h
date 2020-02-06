@@ -106,6 +106,7 @@ private:
     virtual bool match(const std::string&, const std::string&) const;
     virtual size_t numberOfPoints() const;
     virtual const std::string& format() const;
+    virtual bool canCompareFieldValues() const;
     virtual void json(eckit::JSON& json) const;
 };
 

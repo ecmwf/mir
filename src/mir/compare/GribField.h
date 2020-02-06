@@ -49,16 +49,16 @@ private:
     void gridtype(const std::string&);
     void gridname(const std::string&);
 
-    void resol(size_t resol);
-    void numberOfPoints(long n);
+    void resol(size_t);
+    void numberOfPoints(long);
 
-    void param(long n);
-    void accuracy(long n);
-    void decimalScaleFactor(long n);
-    void packing(const std::string& packing);
+    void param(long);
+    void accuracy(long);
+    void decimalScaleFactor(long);
+    void packing(const std::string&);
 
 
-    void missingValuesPresent(bool on);
+    void missingValuesPresent(bool);
 
     std::map<std::string, std::string>::const_iterator begin() const;
 
@@ -86,8 +86,9 @@ private:
     size_t numberOfPoints() const;
 
     const std::string& format() const;
+    bool canCompareFieldValues() const;
 
-    std::ostream& printGrid(std::ostream& out) const;
+    std::ostream& printGrid(std::ostream&) const;
 
 public:
     static void addOptions(std::vector<eckit::option::Option*>& options);
@@ -139,8 +140,8 @@ private:
 private:
     void print(std::ostream& out) const;
 
-    static void setGrid(GribField& field, grib_handle* h);
-    static void setArea(GribField& field, grib_handle* h);
+    static void setGrid(GribField&, grib_handle*);
+    static void setArea(GribField&, grib_handle*);
 };
 
 

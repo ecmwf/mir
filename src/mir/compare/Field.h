@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "eckit/memory/Counted.h"
+
 #include "mir/compare/FieldInfo.h"
 
 
@@ -31,11 +32,13 @@ class CmdArgs;
 
 namespace mir {
 namespace compare {
-
 class FieldSet;
+}
+}  // namespace mir
 
-//----------------------------------------------------------------------------------------------------------------------
-//
+
+namespace mir {
+namespace compare {
 
 class FieldBase : public eckit::Counted {
 public:
@@ -58,6 +61,7 @@ public:
     virtual bool match(const std::string&, const std::string&) const                   = 0;
     virtual size_t numberOfPoints() const                                              = 0;
     virtual const std::string& format() const                                          = 0;
+    virtual bool canCompareFieldValues() const                                         = 0;
 
     static double normaliseLongitude(double longitude);
 
@@ -114,6 +118,7 @@ public:
     bool match(const std::string&, const std::string&) const;
     size_t numberOfPoints() const;
     const std::string& format() const;
+    bool canCompareFieldValues() const;
 
     bool wrapped() const;
     void compareExtra(std::ostream&, const Field& other) const;
@@ -140,9 +145,5 @@ private:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
 }  // namespace compare
 }  // namespace mir
-
-#endif

@@ -212,8 +212,10 @@ const std::string& Field::format() const {
     return field_->format();
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
+bool Field::canCompareFieldValues() const {
+    ASSERT(field_);
+    return field_->canCompareFieldValues();
+}
 
 
 FieldBase::FieldBase(const std::string& path, off_t offset, size_t length) : info_(path, offset, length) {}
@@ -250,7 +252,6 @@ double FieldBase::normaliseLongitude(double longitude) {
     return longitude;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-}  // namespace compare
 
+}  // namespace compare
 }  // namespace mir
