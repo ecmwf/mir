@@ -147,3 +147,6 @@ private:
 
 }  // namespace compare
 }  // namespace mir
+
+
+#endif
