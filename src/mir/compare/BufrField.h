@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date   May 2016
 
 
 #ifndef mir_compare_BufrField_H
@@ -42,60 +38,45 @@ class BufrEntry {
     bool ignore_;
 
 public:
-
-    BufrEntry(const std::string& full,
-              const std::vector<long>& l,
-              const std::vector<double>& d,
-              const std::string& s,
+    BufrEntry(const std::string& full, const std::vector<long>& l, const std::vector<double>& d, const std::string& s,
               int type);
 
-    void print(std::ostream &out) const;
-    void printValue(std::ostream &out) const;
+    void print(std::ostream& out) const;
+    void printValue(std::ostream& out) const;
     void json(eckit::JSON& json) const;
 
-    friend eckit::JSON &operator<<(eckit::JSON &s, const BufrEntry &x) {
+    friend eckit::JSON& operator<<(eckit::JSON& s, const BufrEntry& x) {
         x.json(s);
         return s;
     }
 
-    friend std::ostream &operator<<(std::ostream &s, const BufrEntry &x) {
+    friend std::ostream& operator<<(std::ostream& s, const BufrEntry& x) {
         x.print(s);
         return s;
     }
 
-    const std::string& full() const {
-        return full_;
-    }
+    const std::string& full() const { return full_; }
 
-    const std::string& name() const {
-        return name_;
-    }
+    const std::string& name() const { return name_; }
 
-    bool ignore() const {
-        return ignore_;
-    }
+    bool ignore() const { return ignore_; }
 
-    bool operator==(const BufrEntry &other) const;
-    bool operator!=(const BufrEntry &other) const;
-    bool operator<(const BufrEntry &other) const;
-
+    bool operator==(const BufrEntry& other) const;
+    bool operator!=(const BufrEntry& other) const;
+    bool operator<(const BufrEntry& other) const;
 };
 
 class BufrField : public FieldBase {
 public:
-
-    static Field field(const char* buffer, size_t size,
-                       const std::string& path, off_t offset,
+    static Field field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore);
+
 public:
-
-
     static void addOptions(std::vector<eckit::option::Option*>& options);
-    static void setOptions(const eckit::option::CmdArgs &args);
+    static void setOptions(const eckit::option::CmdArgs& args);
 
 private:
-    BufrField(const char* buffer, size_t size,
-              const std::string& path, off_t offset,
+    BufrField(const char* buffer, size_t size, const std::string& path, off_t offset,
               const std::vector<std::string>& ignore);
     ~BufrField();
 
@@ -103,7 +84,6 @@ private:
 
 
 private:
-
     std::vector<long> descriptors_;
 
     std::vector<BufrEntry> activeEntries_;
@@ -113,13 +93,13 @@ private:
     std::set<std::string> ignored_;
 
 
-    virtual void print(std::ostream &out) const;
+    virtual void print(std::ostream& out) const;
     virtual bool wrapped() const;
     virtual bool less_than(const FieldBase& other) const;
     virtual void whiteListEntries(std::ostream&) const;
     virtual size_t differences(const FieldBase& other) const;
     virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
-    virtual void compareExtra(std::ostream&, const FieldBase& other) const ;
+    virtual void compareExtra(std::ostream&, const FieldBase& other) const;
     virtual bool same(const FieldBase& other) const;
     virtual bool match(const FieldBase& other) const;
     virtual std::ostream& printGrid(std::ostream&) const;
@@ -128,13 +108,11 @@ private:
     virtual const std::string& format() const;
     virtual bool canCompareFieldValues() const;
     virtual void json(eckit::JSON& json) const;
-
-
 };
 
 
-} // namespace mir
-} // namespace compare
+}  // namespace compare
+}  // namespace mir
 
 
 #endif
