@@ -93,6 +93,7 @@ private:
     size_t numberOfPoints() const;
 
     const std::string& format() const ;
+    bool canCompareFieldValues() const;
 
     std::ostream& printGrid(std::ostream &out) const;
 

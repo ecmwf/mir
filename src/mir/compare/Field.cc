@@ -222,8 +222,10 @@ const std::string& Field::format()  const {
     return field_->format();
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
+bool Field::canCompareFieldValues() const {
+    ASSERT(field_);
+    return field_->canCompareFieldValues();
+}
 
 
 FieldBase::FieldBase(const std::string& path, off_t offset, size_t length):

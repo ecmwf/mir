@@ -109,13 +109,13 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new Separator("Field values"));
 
     options.push_back(new SimpleOption<bool>("compare-values",
-                      "Compare field values"));
+                      "Compare field values (GRIB only)"));
 
     options.push_back(new SimpleOption<bool>("compare-missing-values",
-                      "Compare field bitmap"));
+                      "Compare field bitmap (GRIB only)"));
 
     options.push_back(new SimpleOption<bool>("compare-statistics",
-                      "Compare field statistics"));
+                      "Compare field statistics (GRIB only)"));
 
     options.push_back(new SimpleOption<bool>("white-list-entries",
                       "Output lines that can be used in white-list files"));
@@ -893,7 +893,10 @@ void FieldComparator::compareFields(const MultiFile & multi1,
 
     for (const auto & j : fields1) {
         auto other = fields2.same(j);
-        if (other != fields2.end()) {
+        if (other == fields2.end()) {
+            missingField(multi1, multi2, j, fields2, show);
+        }
+        else if (j.canCompareFieldValues()) {
             if (compareValues) {
                 compareFieldValues(multi1, multi2, j, *other);
             }
@@ -903,8 +906,6 @@ void FieldComparator::compareFields(const MultiFile & multi1,
             if (compareStatistics) {
                 compareFieldStatistics(multi1, multi2, j, *other);
             }
-        } else {
-            missingField(multi1, multi2, j, fields2, show);
         }
     }
 }

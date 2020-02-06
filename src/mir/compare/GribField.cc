@@ -122,6 +122,12 @@ const std::string& GribField::format() const {
     return format_;
 }
 
+
+bool GribField::canCompareFieldValues() const {
+    return true;
+}
+
+
 // double GribField::compare(const GribField& other) const {
 //     return compareExtra(other);
 // }
