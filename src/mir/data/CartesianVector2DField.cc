@@ -49,7 +49,10 @@ CartesianVector2DField::CartesianVector2DField(const repres::Representation* rep
 }
 
 
-CartesianVector2DField::~CartesianVector2DField() = default;
+CartesianVector2DField::~CartesianVector2DField() {
+    ASSERT(representation_);
+    representation_->detach();
+}
 
 
 void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVector& valuesX,
