@@ -115,7 +115,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
         }
     }
 
-    bool on = s.find("values=on") == s.npos;
+    bool on = s.find("values=on") == std::string::npos;
 
     size_t pos = s.find("size=");
     ASSERT(pos != s.npos);

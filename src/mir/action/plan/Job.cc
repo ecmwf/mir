@@ -43,7 +43,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // input is already what was specified
 
     bool postProcessingRequested = false;
-    for (auto& keyword : LibMir::instance().postProcess()) {
+    for (auto& keyword : LibMir::postProcess()) {
         if (job.has(keyword)) {
             postProcessingRequested = true;
             break;

@@ -113,7 +113,7 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
                                           "\n"
                                           "unload"
                                        << std::endl;
-                    shmLoader->unloadSharedMemory(path);
+                    SharedMemoryLoader::unloadSharedMemory(path);
                     display(eckit::Log::info(), loader.get(), path);
                 }
             }
