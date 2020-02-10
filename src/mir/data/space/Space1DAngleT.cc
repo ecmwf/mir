@@ -38,7 +38,9 @@ enum
     ASYMMETRIC,
     SYMMETRIC
 };
-typedef std::complex<double> complex_t;
+
+
+using complex_t = std::complex<double>;
 
 
 // Generic types
