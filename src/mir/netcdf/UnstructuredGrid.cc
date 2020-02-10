@@ -53,14 +53,9 @@ void UnstructuredGrid::print(std::ostream& s) const {
 
 bool UnstructuredGrid::has(const std::string& name) const {
     // std::cout << "has " << name << std::endl;
-    if (name == "gridded") {
-        return true;
-    }
 
-    // std::cout << "UnstructuredGrid::has " << name << " failed" << std::endl;
-
-
-    return false;
+    // Note: only "gridded" is supported
+    return (name == "gridded");
 }
 
 bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values) const {

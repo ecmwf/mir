@@ -48,14 +48,9 @@ void Rectilinear::print(std::ostream& s) const {
 
 bool Rectilinear::has(const std::string& name) const {
     // std::cout << "has " << name << std::endl;
-    if (name == "gridded") {
-        return true;
-    }
 
-    // std::cout << "Rectilinear::has " << name << " failed" << std::endl;
-
-
-    return false;
+    // Note: only "gridded" is supported
+    return (name == "gridded");
 }
 
 bool Rectilinear::get(const std::string& name, std::vector<double>& values) const {

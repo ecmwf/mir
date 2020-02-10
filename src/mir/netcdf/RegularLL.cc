@@ -53,14 +53,9 @@ void RegularLL::print(std::ostream& s) const {
 
 bool RegularLL::has(const std::string& name) const {
     // std::cout << "has " << name << std::endl;
-    if (name == "gridded") {
-        return true;
-    }
 
-    // std::cout << "RegularLL::has " << name << " failed" << std::endl;
-
-
-    return false;
+    // Note: only "gridded" is supported
+    return (name == "gridded");
 }
 
 bool RegularLL::get(const std::string& name, long& value) const {
