@@ -25,16 +25,10 @@ namespace mir {
 namespace util {
 
 
-namespace {
-
-
 static void check(const Increments& inc) {
     ASSERT(inc.west_east().longitude() >= 0);
     ASSERT(inc.south_north().latitude() >= 0);
 }
-
-
-}  // namespace
 
 
 Increments::Increments() = default;

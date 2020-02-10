@@ -29,13 +29,14 @@
 
 using eckit::MMap;
 
+
 // On CRAY/Brodwell, the rounding of areas is incorrect
 // 90 is actually 90 +- 1e-14
 // #pragma GCC target ("no-fma")
 
-//----------------------------------------------------------------------------------------------------------------------
 
 namespace {
+
 
 class FDClose {
     int fd_;
@@ -54,11 +55,12 @@ public:
     ~Unmapper() { SYSCALL(MMap::munmap(address_, size_)); }
 };
 
-static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
 
 }  // namespace
 
-//----------------------------------------------------------------------------------------------------------------------
+
+static const unsigned int MASKS[] = {1 << 7, 1 << 6, 1 << 5, 1 << 4, 1 << 3, 1 << 2, 1 << 1, 1 << 0};
+
 
 namespace mir {
 namespace lsm {

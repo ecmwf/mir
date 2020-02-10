@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2ReducedGG.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 
@@ -37,6 +39,7 @@ bool Gridded2ReducedGG::sameAs(const Action& other) const {
     return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
+
 void Gridded2ReducedGG::print(std::ostream& out) const {
     out << "Gridded2ReducedGG["
            "N="
@@ -50,14 +53,13 @@ const repres::Representation* Gridded2ReducedGG::outputRepresentation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
+
 const char* Gridded2ReducedGG::name() const {
     return "Gridded2ReducedGG";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2ReducedGG> grid2grid("interpolate.grid2reduced-gg");
-}
 
 
 }  // namespace interpolate

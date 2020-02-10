@@ -24,16 +24,13 @@
 namespace mir {
 namespace method {
 
+
 Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {}
 
 
 Method::~Method() = default;
 
 
-//=========================================================================
-
-
-namespace {
 static pthread_once_t once                      = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                = nullptr;
 static std::map<std::string, MethodFactory*>* m = nullptr;
@@ -41,7 +38,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MethodFactory*>();
 }
-}  // namespace
 
 
 MethodFactory::MethodFactory(const std::string& name) : name_(name) {

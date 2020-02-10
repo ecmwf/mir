@@ -34,7 +34,6 @@ namespace mir {
 namespace repres {
 
 
-namespace {
 static pthread_once_t once                        = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                  = nullptr;
 static std::map<size_t, std::vector<double> >* ml = nullptr;
@@ -44,7 +43,6 @@ static void init() {
     ml          = new std::map<size_t, std::vector<double> >();
     mw          = new std::map<size_t, std::vector<double> >();
 }
-}  // namespace
 
 
 Gaussian::Gaussian(size_t N, const util::BoundingBox& bbox, double angularPrecision) :

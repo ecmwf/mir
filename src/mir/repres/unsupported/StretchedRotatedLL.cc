@@ -41,10 +41,8 @@ void StretchedRotatedLL::fill(grib_info& info) const {
 }
 
 
-namespace {
 static RepresentationBuilder<StretchedRotatedLL> stretchedRotatedLL(
     "stretched_rotated_ll");  // Name is what is returned by grib_api
-}
 
 
 }  // namespace repres

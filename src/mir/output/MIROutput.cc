@@ -32,15 +32,10 @@ MIROutput::MIROutput() = default;
 MIROutput::~MIROutput() = default;
 
 
-namespace {
-
-
 static pthread_once_t once                                    = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                              = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_formats    = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_extensions = nullptr;
-
-
 static void init() {
     local_mutex  = new eckit::Mutex();
     m_formats    = new std::map<std::string, MIROutputFactory*>();
@@ -84,9 +79,6 @@ struct OutputFromExtension : public MIROutputFactory {
     ~OutputFromExtension() { m_extensions->clear(); }
 
 } static _extension;
-
-
-}  // namespace
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) :

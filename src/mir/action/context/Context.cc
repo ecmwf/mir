@@ -41,13 +41,11 @@ public:
     MissingInput()  = default;
     ~MissingInput() = default;
 };
+}  // namespace
 
 
 static MissingInput missing;
 static util::MIRStatistics stats;
-
-
-}  // namespace
 
 
 class Content {

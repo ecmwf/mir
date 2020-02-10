@@ -27,7 +27,6 @@
 
 namespace mir {
 namespace util {
-namespace {
 
 static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::string& line, bool on, long& prev) {
 
@@ -78,9 +77,6 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
         }
     }
 }
-
-
-}  // namespace
 
 
 Bitmap::Bitmap(const std::string& path) : path_(path), width_(0), height_(0) {

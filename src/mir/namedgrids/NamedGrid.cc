@@ -28,17 +28,17 @@ namespace mir {
 namespace namedgrids {
 
 
-namespace {
-
 static std::map<std::string, NamedGrid*>* m = nullptr;
-
-static pthread_once_t once       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-
+static pthread_once_t once                  = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex            = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, NamedGrid*>();
 }
+
+
+namespace {
+
 
 void read_configuration_files() {
 

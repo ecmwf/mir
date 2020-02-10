@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2RotatedRegularGG.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
@@ -39,6 +41,7 @@ bool Gridded2RotatedRegularGG::sameAs(const Action& other) const {
     return o && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
+
 void Gridded2RotatedRegularGG::print(std::ostream& out) const {
     out << "Gridded2RotatedRegularGG["
            "N="
@@ -55,13 +58,13 @@ const repres::Representation* Gridded2RotatedRegularGG::outputRepresentation() c
     return new repres::gauss::regular::RotatedGG(N_, rotation());
 }
 
+
 const char* Gridded2RotatedRegularGG::name() const {
     return "Gridded2RotatedRegularGG";
 }
 
-namespace {
+
 static ActionBuilder<Gridded2RotatedRegularGG> grid2grid("interpolate.grid2rotated-regular-gg");
-}
 
 
 }  // namespace interpolate

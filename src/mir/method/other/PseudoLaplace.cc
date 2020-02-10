@@ -162,9 +162,7 @@ void PseudoLaplace::print(std::ostream& out) const {
 }
 
 
-namespace {
 static MethodBuilder<PseudoLaplace> __method("pseudo-laplace");
-}
 
 
 }  // namespace other

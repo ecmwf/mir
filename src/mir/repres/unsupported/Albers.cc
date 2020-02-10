@@ -41,9 +41,7 @@ void Albers::fill(grib_info& info) const {
 }
 
 
-namespace {
 static RepresentationBuilder<Albers> albers("albers");  // Name is what is returned by grib_api
-}
 
 
 }  // namespace repres

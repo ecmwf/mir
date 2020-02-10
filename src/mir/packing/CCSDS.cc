@@ -21,9 +21,7 @@ namespace mir {
 namespace packing {
 
 
-namespace {
 static CCSDS packing("ccsds");
-}
 
 
 CCSDS::CCSDS(const std::string& name) : Packer(name) {}

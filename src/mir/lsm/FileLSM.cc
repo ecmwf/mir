@@ -23,9 +23,7 @@ namespace mir {
 namespace lsm {
 
 
-namespace {
 static FileLSM __lsm_selection("file");
-}
 
 
 FileLSM::FileLSM(const std::string& name) : LSMSelection(name) {}

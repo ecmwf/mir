@@ -38,13 +38,18 @@ namespace style {
 
 namespace {
 
-static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
     DeprecatedStyle(const param::MIRParametrisation& p) :
         ECMWFStyle(p),
         util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
+
+
+}  // namespace
+
+
+static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
@@ -123,8 +128,8 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 }
 
 
-void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param,
-                 const std::vector<std::string>&& whens) {
+static void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& param,
+                        const std::vector<std::string>&& whens) {
     std::string formula;
     for (auto& when : whens) {
         if (param.get("formula." + when, formula)) {
@@ -136,9 +141,6 @@ void add_formula(action::ActionPlan& plan, const param::MIRParametrisation& para
         }
     }
 }
-
-
-}  // namespace
 
 
 ECMWFStyle::ECMWFStyle(const param::MIRParametrisation& parametrisation) : MIRStyle(parametrisation) {}

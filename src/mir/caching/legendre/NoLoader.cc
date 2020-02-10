@@ -46,9 +46,7 @@ bool NoLoader::shared() {
 }
 
 
-namespace {
 static LegendreLoaderBuilder<NoLoader> loader("none");
-}
 
 
 }  // namespace legendre

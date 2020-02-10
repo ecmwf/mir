@@ -25,16 +25,14 @@
 
 namespace mir {
 namespace style {
+
+
 MIRStyle::MIRStyle(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 
 MIRStyle::~MIRStyle() = default;
 
 
-//=========================================================================
-
-
-namespace {
 static pthread_once_t once                        = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                  = nullptr;
 static std::map<std::string, MIRStyleFactory*>* m = nullptr;
@@ -42,7 +40,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MIRStyleFactory*>();
 }
-}  // namespace
 
 
 MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {

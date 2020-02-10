@@ -15,12 +15,14 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+
 
 namespace mir {
 namespace action {
@@ -38,6 +40,7 @@ bool FrameFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const FrameFilter*>(&other);
     return o && (size_ == o->size_);
 }
+
 
 void FrameFilter::print(std::ostream& out) const {
     out << "FrameFilter[size=" << size_ << "]";
@@ -67,9 +70,11 @@ void FrameFilter::execute(context::Context& ctx) const {
     }
 }
 
+
 const char* FrameFilter::name() const {
     return "FrameFilter";
 }
+
 
 void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
     const data::MIRField& field = ctx.field();
@@ -83,9 +88,7 @@ void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation
 }
 
 
-namespace {
 static ActionBuilder<FrameFilter> frameFilter("filter.frame");
-}
 
 
 }  // namespace action

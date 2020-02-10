@@ -77,10 +77,8 @@ const repres::Representation* ShToRotatedRegularGG<Invtrans>::outputRepresentati
 }
 
 
-namespace {
 static ActionBuilder<ShToRotatedRegularGG<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-gg");
 static ActionBuilder<ShToRotatedRegularGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-gg");
-}  // namespace
 
 
 }  // namespace transform

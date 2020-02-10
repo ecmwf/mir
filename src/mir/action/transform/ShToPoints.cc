@@ -78,10 +78,8 @@ const repres::Representation* ShToPoints<Invtrans>::outputRepresentation() const
 }
 
 
-namespace {
 static ActionBuilder<ShToPoints<InvtransScalar> > __action1("transform.sh-scalar-to-points");
 static ActionBuilder<ShToPoints<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-points");
-}  // namespace
 
 
 }  // namespace transform

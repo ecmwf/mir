@@ -14,7 +14,9 @@
 
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
 
@@ -63,9 +65,7 @@ const char* Gridded2RotatedReducedGGPLGiven::name() const {
 }
 
 
-namespace {
 static ActionBuilder<Gridded2RotatedReducedGGPLGiven> grid2grid("interpolate.grid2rotated-reduced-gg-pl-given");
-}
 
 
 }  // namespace interpolate

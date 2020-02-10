@@ -24,20 +24,13 @@ namespace mir {
 namespace util {
 
 
-namespace {
-
-
 static eckit::Mutex* local_mutex           = nullptr;
 static std::map<std::string, Function*>* m = nullptr;
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static pthread_once_t once                 = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, Function*>();
 }
-
-}  // namespace
 
 
 Function::Function(const std::string& name) : name_(name) {

@@ -318,12 +318,10 @@ bool SharedMemoryLoader::shared() {
 }
 
 
-namespace {
 static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
-}  // namespace
 
 
 }  // namespace legendre

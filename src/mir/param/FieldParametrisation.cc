@@ -23,21 +23,13 @@ namespace mir {
 namespace param {
 
 
-namespace {
-
-
 static Rules fileRules;
-
-
 static pthread_once_t once       = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     fileRules.readConfigurationFiles();
 }
-
-
-}  // namespace
 
 
 FieldParametrisation::FieldParametrisation() : paramId_(-1) {}

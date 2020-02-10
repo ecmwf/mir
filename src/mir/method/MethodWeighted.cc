@@ -40,11 +40,9 @@ namespace mir {
 namespace method {
 
 
-namespace {
 static eckit::Mutex local_mutex;
 static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-}  // namespace
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) : Method(parametrisation) {

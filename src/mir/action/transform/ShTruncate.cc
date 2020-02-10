@@ -72,6 +72,7 @@ void ShTruncate::execute(context::Context& ctx) const {
     }
 }
 
+
 void ShTruncate::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
     data::MIRField& field = ctx.field();
     estimation.truncation(truncation_);
@@ -83,9 +84,8 @@ const char* ShTruncate::name() const {
     return "ShTruncate";
 }
 
-namespace {
+
 static ActionBuilder<ShTruncate> __action("transform.sh-truncate");
-}
 
 
 }  // namespace transform

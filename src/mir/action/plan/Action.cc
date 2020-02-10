@@ -133,7 +133,6 @@ void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& es
 //----------------------------------------------------------------------------------------------------------------------
 
 
-namespace {
 static pthread_once_t once                      = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                = nullptr;
 static std::map<std::string, ActionFactory*>* m = nullptr;
@@ -142,7 +141,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, ActionFactory*>();
 }
-}  // namespace
 
 
 ActionFactory::ActionFactory(const std::string& name) : name_(name) {

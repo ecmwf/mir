@@ -78,10 +78,8 @@ const repres::Representation* ShToRotatedNamedGrid<Invtrans>::outputRepresentati
 }
 
 
-namespace {
 static ActionBuilder<ShToRotatedNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-namedgrid");
 static ActionBuilder<ShToRotatedNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-namedgrid");
-}  // namespace
 
 
 }  // namespace transform

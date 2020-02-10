@@ -58,11 +58,9 @@ const char* NearestNeighbour::name() const {
 }
 
 
-namespace {
 static MethodBuilder<NearestNeighbour> __method1("nearest-neighbour");
 static MethodBuilder<NearestNeighbour> __method2("nearest-neighbor");  // For the americans
 static MethodBuilder<NearestNeighbour> __method3("nn");                // For the lazy
-}  // namespace
 
 
 }  // namespace knn

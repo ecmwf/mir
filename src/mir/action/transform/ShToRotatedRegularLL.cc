@@ -92,10 +92,8 @@ const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentati
 }
 
 
-namespace {
 static ActionBuilder<ShToRotatedRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-ll");
 static ActionBuilder<ShToRotatedRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-ll");
-}  // namespace
 
 
 }  // namespace transform

@@ -71,10 +71,8 @@ const repres::Representation* ShToGridDef<Invtrans>::outputRepresentation() cons
 }
 
 
-namespace {
 static ActionBuilder<ShToGridDef<InvtransScalar> > __action1("transform.sh-scalar-to-griddef");
 static ActionBuilder<ShToGridDef<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-griddef");
-}  // namespace
 
 
 }  // namespace transform

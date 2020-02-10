@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2OctahedralGG.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
@@ -51,14 +53,13 @@ const repres::Representation* Gridded2OctahedralGG::outputRepresentation() const
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
+
 const char* Gridded2OctahedralGG::name() const {
     return "Gridded2OctahedralGG";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2OctahedralGG> grid2grid("interpolate.grid2octahedral-gg");
-}
 
 
 }  // namespace interpolate

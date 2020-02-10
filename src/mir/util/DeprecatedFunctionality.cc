@@ -20,9 +20,7 @@ namespace mir {
 namespace util {
 
 
-namespace {
 static std::set<eckit::Hash::digest_t> known_messages;
-}  // namespace
 
 
 DeprecatedFunctionality::DeprecatedFunctionality(const std::string& msg, std::ostream& out) {

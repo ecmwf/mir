@@ -26,10 +26,8 @@
 #include "mir/repres/Representation.h"
 
 
-namespace {
 static eckit::Mutex local_mutex;
 static std::vector<std::vector<bool> > ten_minutes_;
-}  // namespace
 
 
 namespace mir {

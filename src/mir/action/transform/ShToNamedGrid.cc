@@ -73,10 +73,8 @@ const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() co
 }
 
 
-namespace {
 static ActionBuilder<ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
 static ActionBuilder<ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
-}  // namespace
 
 
 }  // namespace transform

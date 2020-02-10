@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+
 namespace mir {
 namespace namedgrids {
 
@@ -25,19 +26,18 @@ ClassicPattern::ClassicPattern(const std::string& name) : NamedGridPattern(name)
 
 ClassicPattern::~ClassicPattern() = default;
 
+
 void ClassicPattern::print(std::ostream& out) const {
     out << "ClassicPattern[pattern=" << pattern_ << "]";
 }
+
 
 const NamedGrid* ClassicPattern::make(const std::string& name) const {
     return new NamedClassic(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 
 
-namespace {
 static ClassicPattern pattern("^[nN][1-9][0-9]*$");
-
-}
 
 
 }  // namespace namedgrids

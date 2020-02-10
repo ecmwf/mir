@@ -23,7 +23,6 @@
 
 namespace mir {
 namespace input {
-namespace {
 
 
 static size_t buffer_size() {
@@ -37,9 +36,6 @@ static long readcb(void* data, void* buffer, long len) {
     // ecCodes only interprets a -1 as EOF
     return l == 0 ? -1 : l;
 }
-
-
-}  // namespace
 
 
 GribStreamInput::GribStreamInput(size_t skip, size_t step) :

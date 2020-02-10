@@ -63,14 +63,13 @@ void GlobaliseFilter::execute(context::Context& ctx) const {
     }
 }
 
+
 const char* GlobaliseFilter::name() const {
     return "GlobaliseFilter";
 }
 
 
-namespace {
 static ActionBuilder<GlobaliseFilter> globaliseFilter("filter.globalise");
-}
 
 
 }  // namespace action

@@ -317,9 +317,7 @@ bool AreaCropper::canCrop() const {
 }
 
 
-namespace {
 static ActionBuilder<AreaCropper> subAreaCropper("crop.area");
-}
 
 
 }  // namespace action

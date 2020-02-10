@@ -47,6 +47,7 @@ void Gridded2GridDef::custom(std::ostream& out) const {
         << eckit::PathName(griddef_).baseName() << "]";
 }
 
+
 void Gridded2GridDef::print(std::ostream& out) const {
     out << "Gridded2GridDef["
         << "griddef=" << griddef_ << ",";
@@ -59,13 +60,13 @@ const repres::Representation* Gridded2GridDef::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(griddef_);
 }
 
+
 const char* Gridded2GridDef::name() const {
     return "Gridded2GridDef";
 }
 
-namespace {
+
 static ActionBuilder<Gridded2GridDef> grid2grid("interpolate.grid2griddef");
-}
 
 
 }  // namespace interpolate

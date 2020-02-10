@@ -127,9 +127,7 @@ const char* ShVodToUV::name() const {
 }
 
 
-namespace {
 static ActionBuilder<ShVodToUV> __action("transform.sh-vod-to-UV");
-}
 
 
 }  // namespace transform

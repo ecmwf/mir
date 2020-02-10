@@ -31,9 +31,6 @@ namespace mir {
 namespace lsm {
 
 
-namespace {
-
-
 static NamedLSM __lsm_selection("named");
 
 
@@ -56,9 +53,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, NamedMaskFactory*>();
 }
-
-
-}  // namespace
 
 
 NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}

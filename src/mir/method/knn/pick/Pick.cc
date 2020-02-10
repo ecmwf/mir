@@ -27,21 +27,13 @@ namespace knn {
 namespace pick {
 
 
-namespace {
-
-
 static eckit::Mutex* local_mutex              = nullptr;
 static std::map<std::string, PickFactory*>* m = nullptr;
 static pthread_once_t once                    = PTHREAD_ONCE_INIT;
-
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, PickFactory*>();
 }
-
-
-}  // namespace
 
 
 Pick::Pick() = default;

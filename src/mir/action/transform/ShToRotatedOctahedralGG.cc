@@ -78,12 +78,10 @@ const repres::Representation* ShToRotatedOctahedralGG<Invtrans>::outputRepresent
 }
 
 
-namespace {
 static ActionBuilder<ShToRotatedOctahedralGG<InvtransScalar> > __action1(
     "transform.sh-scalar-to-rotated-octahedral-gg");
 static ActionBuilder<ShToRotatedOctahedralGG<InvtransVodTouv> > __action2(
     "transform.sh-vod-to-uv-rotated-octahedral-gg");
-}  // namespace
 
 
 }  // namespace transform

@@ -83,9 +83,7 @@ const char* AdjustWindsScaleCosLatitude::name() const {
 }
 
 
-namespace {
 static ActionBuilder<AdjustWindsScaleCosLatitude> filter("filter.adjust-winds-scale-cos-latitude");
-}
 
 
 }  // namespace action

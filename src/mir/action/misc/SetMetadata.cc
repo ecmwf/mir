@@ -59,6 +59,7 @@ bool SetMetadata::sameAs(const Action& other) const {
     return o && (metadata_ == o->metadata_);
 }
 
+
 void SetMetadata::print(std::ostream& out) const {
     out << "SetMetadata[" << metadata_ << "]";
 }
@@ -71,13 +72,13 @@ void SetMetadata::execute(context::Context& ctx) const {
     }
 }
 
+
 const char* SetMetadata::name() const {
     return "SetMetadata";
 }
 
-namespace {
+
 static ActionBuilder<SetMetadata> action("set.metadata");
-}
 
 
 }  // namespace action

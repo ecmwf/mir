@@ -27,21 +27,13 @@ namespace knn {
 namespace distance {
 
 
-namespace {
-
-
 static eckit::Mutex* local_mutex                           = nullptr;
 static std::map<std::string, DistanceWeightingFactory*>* m = nullptr;
 static pthread_once_t once                                 = PTHREAD_ONCE_INIT;
-
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, DistanceWeightingFactory*>();
 }
-
-
-}  // namespace
 
 
 DistanceWeighting::DistanceWeighting() = default;

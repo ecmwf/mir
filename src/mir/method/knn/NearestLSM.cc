@@ -103,9 +103,7 @@ const char* NearestLSM::name() const {
 }
 
 
-namespace {
 static MethodBuilder<NearestLSM> __method("nearest-lsm");
-}
 
 
 }  // namespace knn

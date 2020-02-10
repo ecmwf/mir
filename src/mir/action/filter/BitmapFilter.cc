@@ -31,11 +31,9 @@ namespace mir {
 namespace action {
 
 
-namespace {
 static eckit::Mutex local_mutex;
 static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, 0,
                                                   "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
-}  // namespace
 
 
 BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
@@ -137,13 +135,13 @@ void BitmapFilter::estimate(context::Context& ctx, api::MIREstimation& estimatio
     estimation.missingValues(count);
 }
 
+
 const char* BitmapFilter::name() const {
     return "BitmapFilter";
 }
 
-namespace {
+
 static ActionBuilder<BitmapFilter> bitmapFilter("filter.bitmap");
-}
 
 
 }  // namespace action

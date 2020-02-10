@@ -13,6 +13,7 @@
 #include "mir/action/interpolate/Gridded2ReducedLL.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 
 
@@ -32,6 +33,7 @@ bool Gridded2ReducedLL::sameAs(const Action& other) const {
     NOTIMP;
 }
 
+
 void Gridded2ReducedLL::print(std::ostream& out) const {
     out << "Gridded2ReducedLL[";
     Gridded2UnrotatedGrid::print(out);
@@ -43,14 +45,13 @@ const repres::Representation* Gridded2ReducedLL::outputRepresentation() const {
     NOTIMP;
 }
 
+
 const char* Gridded2ReducedLL::name() const {
     return "Gridded2ReducedLL";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2ReducedLL> grid2grid("interpolate.grid2reduced-ll");
-}
 
 
 }  // namespace interpolate

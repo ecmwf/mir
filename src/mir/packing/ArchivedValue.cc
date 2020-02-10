@@ -35,10 +35,8 @@ void ArchivedValue::fill(grib_info&, const repres::Representation&) const {
 }
 
 
-namespace {
 static ArchivedValue packing1("archived-value");
 static ArchivedValue packing2("av");  // For the lazy
-}  // namespace
 
 
 }  // namespace packing

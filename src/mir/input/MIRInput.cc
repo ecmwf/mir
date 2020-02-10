@@ -75,10 +75,10 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 //=========================================================================
 
 
-namespace {
 static pthread_once_t once                          = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                    = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
@@ -86,7 +86,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<unsigned long, MIRInputFactory*>();
 }
-}  // namespace
 
 
 MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {

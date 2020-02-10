@@ -122,7 +122,6 @@ bool Codec::timeAxis() const {
 //=========================================================================
 
 
-namespace {
 static pthread_once_t once                     = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex               = nullptr;
 static std::map<std::string, CodecFactory*>* m = nullptr;
@@ -130,7 +129,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, CodecFactory*>();
 }
-}  // namespace
 
 
 CodecFactory::CodecFactory(const std::string& name) : name_(name) {

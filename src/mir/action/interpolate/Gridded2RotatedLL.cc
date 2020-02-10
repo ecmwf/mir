@@ -14,7 +14,9 @@
 
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
@@ -88,9 +90,7 @@ const char* Gridded2RotatedLL::name() const {
 }
 
 
-namespace {
 static ActionBuilder<Gridded2RotatedLL> grid2grid("interpolate.grid2rotated-regular-ll");
-}
 
 
 }  // namespace interpolate

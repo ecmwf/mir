@@ -29,7 +29,6 @@ namespace mir {
 namespace input {
 
 
-namespace {
 static const param::SimpleParametrisation empty;
 static pthread_once_t once                               = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                         = nullptr;
@@ -38,7 +37,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, ArtificialInputFactory*>();
 }
-}  // namespace
 
 
 ArtificialInput::ArtificialInput(const param::MIRParametrisation& /*ignored*/) : calls_(0) {}

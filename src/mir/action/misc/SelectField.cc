@@ -39,6 +39,7 @@ bool SelectField::sameAs(const Action& other) const {
     return o && (which_ == o->which_);
 }
 
+
 void SelectField::print(std::ostream& out) const {
     out << "SelectField[" << which_ << "]";
 }
@@ -49,14 +50,13 @@ void SelectField::execute(context::Context& ctx) const {
     field.select(which_);
 }
 
+
 const char* SelectField::name() const {
     return "SelectField";
 }
 
 
-namespace {
 static ActionBuilder<SelectField> action("select.field");
-}
 
 
 }  // namespace action

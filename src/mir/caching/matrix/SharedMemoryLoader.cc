@@ -316,12 +316,10 @@ bool SharedMemoryLoader::inSharedMemory() const {
 }
 
 
-namespace {
 static MatrixLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader2("shmem");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static MatrixLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
-}  // namespace
 
 
 }  // namespace matrix

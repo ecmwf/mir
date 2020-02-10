@@ -73,10 +73,8 @@ const repres::Representation* ShToReducedGGPLGiven<Invtrans>::outputRepresentati
 }
 
 
-namespace {
 static ActionBuilder<ShToReducedGGPLGiven<InvtransScalar> > __action1("transform.sh-scalar-to-reduced-gg-pl-given");
 static ActionBuilder<ShToReducedGGPLGiven<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-reduced-gg-pl-given");
-}  // namespace
 
 
 }  // namespace transform

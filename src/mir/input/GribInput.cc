@@ -61,6 +61,7 @@ public:
     ConditionT(const char* key, const T& value) : key_(key), value_(value) {}
 };
 
+
 template <>
 bool ConditionT<long>::eval(grib_handle* h) const {
     long value;
@@ -144,6 +145,10 @@ class ConditionNOT : public Condition {
 public:
     ConditionNOT(const Condition* c) : c_(c) {}
 };
+
+
+}  // namespace
+
 
 template <class T>
 static Condition* is(const char* key, const T& value) {
@@ -265,6 +270,10 @@ static const char* get_key(const std::string& name, grib_handle* h) {
     return key;
 }
 
+
+namespace {
+
+
 struct Processing {
     Processing()          = default;
     virtual ~Processing() = default;
@@ -284,6 +293,10 @@ struct ProcessingT : Processing {
     ProcessingT(fun_t&& fun) : fun_(fun) {}
     bool eval(grib_handle* h, T& v) const override { return fun_(h, v); }
 };
+
+
+}  // namespace
+
 
 static ProcessingT<long>* is_wind_component_uv() {
     return new ProcessingT<long>([=](grib_handle* h, long& value) {
@@ -516,6 +529,10 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
 
     return false;
 }
+
+
+namespace {
+
 
 void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
     ASSERT(values.size());

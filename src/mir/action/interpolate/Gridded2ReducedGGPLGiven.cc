@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2ReducedGGPLGiven.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
 
@@ -37,6 +39,7 @@ bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
     return o && (pl_ == o->pl_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
+
 void Gridded2ReducedGGPLGiven::print(std::ostream& out) const {
     out << "Gridded2ReducedGGPLGiven["
            "pl="
@@ -51,13 +54,13 @@ const repres::Representation* Gridded2ReducedGGPLGiven::outputRepresentation() c
     return new repres::gauss::reduced::ReducedFromPL(N, pl_);
 }
 
+
 const char* Gridded2ReducedGGPLGiven::name() const {
     return "Gridded2ReducedGGPLGiven";
 }
 
-namespace {
+
 static ActionBuilder<Gridded2ReducedGGPLGiven> grid2grid("interpolate.grid2reduced-gg-pl-given");
-}
 
 
 }  // namespace interpolate

@@ -26,21 +26,13 @@ namespace method {
 namespace nonlinear {
 
 
-namespace {
-
-
 static eckit::Mutex* local_mutex                   = nullptr;
 static std::map<std::string, NonLinearFactory*>* m = nullptr;
 static pthread_once_t once                         = PTHREAD_ONCE_INIT;
-
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, NonLinearFactory*>();
 }
-
-
-}  // namespace
 
 
 NonLinear::NonLinear(const param::MIRParametrisation&) {}

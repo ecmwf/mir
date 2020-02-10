@@ -11,9 +11,11 @@
 
 
 #include "mir/packing/SecondOrder.h"
-#include "mir/util/Grib.h"
 
 #include <iostream>
+
+#include "mir/util/Grib.h"
+
 
 namespace mir {
 namespace packing {
@@ -24,9 +26,11 @@ SecondOrder::SecondOrder(const std::string& name) : Packer(name) {}
 
 SecondOrder::~SecondOrder() = default;
 
+
 void SecondOrder::print(std::ostream& out) const {
     out << "SecondOrder[]";
 }
+
 
 void SecondOrder::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = GRIB_UTIL_PACKING_USE_PROVIDED;
@@ -34,11 +38,8 @@ void SecondOrder::fill(grib_info& info, const repres::Representation&) const {
 }
 
 
-namespace {
 static SecondOrder packing1("second-order");
 static SecondOrder packing2("so");  // For the lazy
-
-}  // namespace
 
 
 }  // namespace packing

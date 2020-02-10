@@ -13,7 +13,9 @@
 #include "mir/lsm/NoneLSM.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/lsm/NoMask.h"
 
 
@@ -21,9 +23,7 @@ namespace mir {
 namespace lsm {
 
 
-namespace {
 static NoneLSM __lsm_selection("none");
-}
 
 
 NoneLSM::NoneLSM(const std::string& name) : LSMSelection(name) {}

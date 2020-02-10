@@ -81,10 +81,9 @@ bool MappedMemoryLoader::shared() {
     return true;
 }
 
-namespace {
+
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
-}  // namespace
 
 
 }  // namespace legendre

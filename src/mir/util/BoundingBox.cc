@@ -29,9 +29,6 @@ namespace mir {
 namespace util {
 
 
-namespace {
-
-
 static void check(const BoundingBox& bbox) {
     ASSERT(bbox.north() >= bbox.south());
     ASSERT(bbox.north() <= Latitude::NORTH_POLE);
@@ -40,9 +37,6 @@ static void check(const BoundingBox& bbox) {
     ASSERT(bbox.east() - bbox.west() >= 0);
     ASSERT(bbox.east() - bbox.west() <= Longitude::GLOBE);
 }
-
-
-}  // namespace
 
 
 BoundingBox::BoundingBox() :

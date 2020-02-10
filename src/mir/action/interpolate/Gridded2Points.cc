@@ -46,6 +46,7 @@ bool Gridded2Points::sameAs(const Action& other) const {
            Gridded2GriddedInterpolation::sameAs(other);
 }
 
+
 void Gridded2Points::print(std::ostream& out) const {
     out << "Gridded2Points["
            "points="
@@ -59,14 +60,13 @@ const repres::Representation* Gridded2Points::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
 }
 
+
 const char* Gridded2Points::name() const {
     return "Gridded2Points";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2Points> grid2grid("interpolate.grid2points");
-}
 
 
 }  // namespace interpolate

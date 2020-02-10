@@ -88,10 +88,8 @@ const repres::Representation* ShToRegularLL<Invtrans>::outputRepresentation() co
 }
 
 
-namespace {
 static ActionBuilder<ShToRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-regular-ll");
 static ActionBuilder<ShToRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-regular-ll");
-}  // namespace
 
 
 }  // namespace transform

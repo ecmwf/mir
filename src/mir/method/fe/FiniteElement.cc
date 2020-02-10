@@ -44,16 +44,19 @@ namespace method {
 namespace fe {
 
 
-namespace {
-
-
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-15;
+
+
+namespace {
 
 
 using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
 using failed_projection_t = std::pair<size_t, PointLatLon>;
+
+
+}  // namespace
 
 
 static void normalise(triplet_vector_t& triplets) {
@@ -216,15 +219,10 @@ static caching::InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", 512 * 1024 * 10
 static pthread_once_t once                             = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                       = nullptr;
 static std::map<std::string, FiniteElementFactory*>* m = nullptr;
-
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, FiniteElementFactory*>();
 }
-
-
-}  // namespace
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :

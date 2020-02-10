@@ -45,9 +45,7 @@ void RotatedSH::fill(grib_info& info) const {
 }
 
 
-namespace {
 static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh");  // Name is what is returned by grib_api
-}
 
 
 }  // namespace repres

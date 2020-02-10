@@ -14,7 +14,9 @@
 
 #include <iostream>
 #include <vector>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -79,14 +81,13 @@ const repres::Representation* Gridded2RegularLL::outputRepresentation() const {
     return new repres::latlon::RegularLL(increments_, bbox_, reference_);
 }
 
+
 const char* Gridded2RegularLL::name() const {
     return "Gridded2RegularLL";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2RegularLL> grid2grid("interpolate.grid2regular-ll");
-}
 
 
 }  // namespace interpolate

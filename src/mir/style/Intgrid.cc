@@ -29,7 +29,6 @@ namespace mir {
 namespace style {
 
 
-namespace {
 static pthread_once_t once                       = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                 = nullptr;
 static std::map<std::string, IntgridFactory*>* m = nullptr;
@@ -37,7 +36,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, IntgridFactory*>();
 }
-}  // namespace
 
 
 IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {

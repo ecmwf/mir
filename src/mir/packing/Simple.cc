@@ -25,9 +25,11 @@ Simple::Simple(const std::string& name) : Packer(name) {}
 
 Simple::~Simple() = default;
 
+
 void Simple::print(std::ostream& out) const {
     out << "Simple[]";
 }
+
 
 void Simple::fill(grib_info& info, const repres::Representation& repres) const {
     info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
@@ -35,10 +37,7 @@ void Simple::fill(grib_info& info, const repres::Representation& repres) const {
 }
 
 
-namespace {
 static Simple packing("simple");
-
-}
 
 
 }  // namespace packing

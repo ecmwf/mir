@@ -31,7 +31,6 @@ Space::Space() = default;
 Space::~Space() = default;
 
 
-namespace {
 static pthread_once_t once                     = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex               = nullptr;
 static std::map<std::string, SpaceChooser*>* m = nullptr;
@@ -39,7 +38,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, SpaceChooser*>();
 }
-}  // namespace
 
 
 SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :

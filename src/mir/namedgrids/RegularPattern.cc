@@ -11,10 +11,13 @@
 
 
 #include "mir/namedgrids/RegularPattern.h"
-#include "eckit/utils/Translator.h"
-#include "mir/namedgrids/NamedRegular.h"
 
 #include <iostream>
+
+#include "eckit/utils/Translator.h"
+
+#include "mir/namedgrids/NamedRegular.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,18 +28,18 @@ RegularPattern::RegularPattern(const std::string& name) : NamedGridPattern(name)
 
 RegularPattern::~RegularPattern() = default;
 
+
 void RegularPattern::print(std::ostream& out) const {
     out << "RegularPattern[pattern=" << pattern_ << "]";
 }
+
 
 const NamedGrid* RegularPattern::make(const std::string& name) const {
     return new NamedRegular(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 
-namespace {
-static RegularPattern pattern("^[fF][1-9][0-9]*$");
 
-}
+static RegularPattern pattern("^[fF][1-9][0-9]*$");
 
 
 }  // namespace namedgrids

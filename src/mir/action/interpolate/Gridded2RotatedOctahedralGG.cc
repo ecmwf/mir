@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2RotatedOctahedralGG.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 
@@ -62,9 +64,7 @@ const char* Gridded2RotatedOctahedralGG::name() const {
 }
 
 
-namespace {
 static ActionBuilder<Gridded2RotatedOctahedralGG> grid2grid("interpolate.grid2rotated-octahedral-gg");
-}
 
 
 }  // namespace interpolate

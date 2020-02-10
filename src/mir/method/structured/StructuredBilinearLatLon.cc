@@ -29,18 +29,21 @@ namespace mir {
 namespace method {
 namespace structured {
 
-namespace {
+
 static MethodBuilder<StructuredBilinearLatLon> __method("structured-bilinear-latlon");
-}
+
 
 StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
+
 StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
+
 
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
     return o && StructuredMethod::sameAs(other);
 }
+
 
 void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in,
                                                        const repres::Representation& out) const {
@@ -279,19 +282,23 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     W.setFromTriplets(triplets);
 }
 
+
 const char* StructuredBilinearLatLon::name() const {
     return "structured-bilinear-latlon";
 }
 
+
 void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
     StructuredMethod::hash(md5);
 }
+
 
 void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "StructuredBilinearLatLon[";
     StructuredMethod::print(out);
     out << "]";
 }
+
 
 }  // namespace structured
 }  // namespace method

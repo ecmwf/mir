@@ -58,9 +58,8 @@ bool FileLoader::shared() {
     return false;
 }
 
-namespace {
+
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
-}
 
 
 }  // namespace legendre

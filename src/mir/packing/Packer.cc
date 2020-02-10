@@ -22,22 +22,15 @@
 
 namespace mir {
 namespace packing {
-namespace {
 
 
 static eckit::Mutex* local_mutex         = nullptr;
 static std::map<std::string, Packer*>* m = nullptr;
-
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static pthread_once_t once               = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, Packer*>();
 }
-
-
-}  // namespace
 
 
 Packer::Packer(const std::string& name) : name_(name) {

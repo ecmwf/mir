@@ -13,7 +13,9 @@
 #include "mir/action/interpolate/Gridded2RotatedNamedGrid.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -38,6 +40,7 @@ bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
     return o && (gridname_ == o->gridname_) && Gridded2RotatedGrid::sameAs(other);
 }
 
+
 void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
     out << "Gridded2RotatedNamedGrid["
            "gridname="
@@ -49,19 +52,19 @@ void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
     out << "]";
 }
 
+
 const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
     const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
     return ng.representation(rotation());
 }
+
 
 const char* Gridded2RotatedNamedGrid::name() const {
     return "Gridded2RotatedNamedGrid";
 }
 
 
-namespace {
 static ActionBuilder<Gridded2RotatedNamedGrid> grid2grid("interpolate.grid2rotated-namedgrid");
-}
 
 
 }  // namespace interpolate

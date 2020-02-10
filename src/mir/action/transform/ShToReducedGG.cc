@@ -73,10 +73,8 @@ const repres::Representation* ShToReducedGG<Invtrans>::outputRepresentation() co
 }
 
 
-namespace {
 static ActionBuilder<ShToReducedGG<InvtransScalar> > __action1("transform.sh-scalar-to-reduced-gg");
 static ActionBuilder<ShToReducedGG<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-reduced-gg");
-}  // namespace
 
 
 }  // namespace transform
