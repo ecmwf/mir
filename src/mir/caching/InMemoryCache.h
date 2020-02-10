@@ -90,6 +90,9 @@ class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
     InMemoryCacheStatistics& statistics_;
 
+    InMemoryCacheUser(const InMemoryCacheUser&) = delete;
+    InMemoryCacheUser& operator=(const InMemoryCacheUser&) = delete;
+
 public:
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
         cache_(cache),

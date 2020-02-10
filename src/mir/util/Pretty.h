@@ -31,6 +31,7 @@ public:
         Plural(std::string one) : Plural(one, one + "s") {}
         Plural(std::string one, std::string notOne) : s_{one, notOne} {}
         Plural(const Plural& other) : s_{other.s_[0], other.s_[1]} {}
+        ~Plural() = default;
 
         const std::string& operator()(int count) const { return s_[count != 1]; }
         const std::string& operator()(size_t count) const { return s_[count != 1]; }

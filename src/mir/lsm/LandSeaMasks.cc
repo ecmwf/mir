@@ -34,6 +34,9 @@ LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) : input_(input
 LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) : input_(other.input_), output_(other.output_) {}
 
 
+LandSeaMasks::~LandSeaMasks() = default;
+
+
 void LandSeaMasks::print(std::ostream& out) const {
     out << "LandSeaMasks[in=" << input_ << ",output=" << output_ << "]";
 }

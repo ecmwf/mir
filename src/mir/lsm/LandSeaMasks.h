@@ -50,7 +50,8 @@ public:
     LandSeaMasks(const LandSeaMasks&);
 
     // -- Destructor
-    // None
+
+    ~LandSeaMasks();
 
     // -- Convertors
     // None
@@ -88,8 +89,13 @@ protected:
     const Mask& input_;
     const Mask& output_;
 
-    // -- Methods
+    // -- Convertors
+    // None
 
+    // -- Operators
+    // None
+
+    // -- Methods
 
     void print(std::ostream&) const;
 
@@ -105,6 +111,13 @@ protected:
 private:
     // -- Members
     // None
+
+    // -- Convertors
+    // None
+
+    // -- Operators
+
+    LandSeaMasks& operator=(const LandSeaMasks&) = delete;
 
     // -- Methods
     // None

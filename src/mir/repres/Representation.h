@@ -197,10 +197,14 @@ class RepresentationHandle {
     const Representation* representation_;
 
 public:
-    RepresentationHandle(const Representation* r);
+    RepresentationHandle(const Representation*);
+    RepresentationHandle(const RepresentationHandle&);
     ~RepresentationHandle();
     const Representation* operator->() const { return representation_; }
     operator const Representation*() const { return representation_; }
+
+private:
+    RepresentationHandle& operator=(const RepresentationHandle&) = delete;
 };
 
 

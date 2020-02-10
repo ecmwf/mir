@@ -33,8 +33,10 @@ struct TransCache {
     cache_t transCache_;
 
     TransCache();
-
+    TransCache(const TransCache&) = delete;
     ~TransCache();
+
+    TransCache& operator=(const TransCache&) = delete;
 
     TransCache& operator=(cache_t&&);
 

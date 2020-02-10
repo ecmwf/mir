@@ -26,6 +26,9 @@ public:
     ~TraceResourceUsage();
 
 private:
+    TraceResourceUsage(const TraceResourceUsage&) = delete;
+    TraceResourceUsage& operator=(const TraceResourceUsage&) = delete;
+
     eckit::ResourceUsage* info_ = nullptr;
 };
 

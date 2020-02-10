@@ -65,6 +65,8 @@ class Unloader {
 
     std::vector<eckit::PathName> paths_;
 
+    Unloader() = default;
+
 public:
     /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
     static Unloader& instance() {
@@ -73,6 +75,9 @@ public:
     }
 
     void add(const eckit::PathName& path) { paths_.push_back(path); }
+
+    Unloader(const Unloader&) = delete;
+    Unloader& operator=(const Unloader&) = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {

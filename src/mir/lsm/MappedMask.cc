@@ -43,6 +43,8 @@ class FDClose {
 
 public:
     FDClose(int fd) : fd_(fd) {}
+    FDClose(const FDClose&) = delete;
+    FDClose& operator=(const FDClose&) = delete;
     ~FDClose() { SYSCALL(::close(fd_)); }
 };
 
@@ -52,6 +54,8 @@ class Unmapper {
 
 public:
     Unmapper(void* address, size_t size) : address_(address), size_(size) {}
+    Unmapper(const Unmapper&) = delete;
+    Unmapper& operator=(const Unmapper&) = delete;
     ~Unmapper() { SYSCALL(MMap::munmap(address_, size_)); }
 };
 

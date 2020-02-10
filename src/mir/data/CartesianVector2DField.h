@@ -40,16 +40,18 @@ public:
     // -- Contructors
 
     explicit CartesianVector2DField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
+    CartesianVector2DField(const CartesianVector2DField&) = delete;
 
     // -- Destructor
 
-    ~CartesianVector2DField();  // Change to virtual if base class
+    ~CartesianVector2DField();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    CartesianVector2DField& operator=(const CartesianVector2DField&) = delete;
 
     // -- Methods
 
