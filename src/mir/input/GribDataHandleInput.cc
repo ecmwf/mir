@@ -30,7 +30,7 @@ GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle, off_t offset
     handle_.openForRead();
 }
 
-GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle) : GribStreamInput(), handle_(handle) {
+GribDataHandleInput::GribDataHandleInput(eckit::DataHandle& handle) : handle_(handle) {
     handle_.openForRead();
 }
 

@@ -24,7 +24,7 @@ namespace space {
 static SpaceChoice<SpaceLogarithmic> __space("1d.logarithmic");
 
 
-SpaceLogarithmic::SpaceLogarithmic() : Space() {}
+SpaceLogarithmic::SpaceLogarithmic() = default;
 
 
 void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {

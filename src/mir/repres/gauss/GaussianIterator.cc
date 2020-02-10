@@ -29,8 +29,6 @@ GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const u
     N_(N),
     pl_(Ni),
     Ni_(0),
-    lon_(),
-    inc_(),
     i_(0),
     j_(0),
     count_(0) {

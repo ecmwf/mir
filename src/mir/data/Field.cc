@@ -27,7 +27,6 @@ namespace data {
 
 
 Field::Field(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
-    values_(),
     recomputeHasMissing_(false),
     hasMissing_(hasMissing),
     missingValue_(missingValue),
@@ -40,7 +39,6 @@ Field::Field(const param::MIRParametrisation& param, bool hasMissing, double mis
 
 
 Field::Field(const repres::Representation* repres, bool hasMissing, double missingValue) :
-    values_(),
     recomputeHasMissing_(false),
     hasMissing_(hasMissing),
     missingValue_(missingValue),

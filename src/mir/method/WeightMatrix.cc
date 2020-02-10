@@ -27,16 +27,16 @@ namespace mir {
 namespace method {
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 WeightMatrix::WeightMatrix(SparseMatrix::Allocator* alloc) : SparseMatrix(alloc) {}
 
-WeightMatrix::WeightMatrix(const eckit::PathName& path) : SparseMatrix() {
+
+WeightMatrix::WeightMatrix(const eckit::PathName& path) {
     load(path);
 }
 
+
 WeightMatrix::WeightMatrix(WeightMatrix::Size rows, WeightMatrix::Size cols) : SparseMatrix(rows, cols) {}
+
 
 void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& triplets) {
     ASSERT(rows());
@@ -47,17 +47,20 @@ void WeightMatrix::setFromTriplets(const std::vector<WeightMatrix::Triplet>& tri
     swap(M);
 }
 
+
 void WeightMatrix::print(std::ostream& os) const {
     os << "WeightMatrix[";
     SparseMatrix::print(os);
     os << "]";
 }
 
+
 void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
 
     /// @todo linear algebra backend should depend on parametrisation
     eckit::linalg::LinearAlgebra::backend().spmv(*this, values, result);
 }
+
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
 
@@ -87,6 +90,7 @@ void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Ma
         eckit::linalg::LinearAlgebra::backend().spmm(*this, values, result);
     }
 }
+
 
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
@@ -134,6 +138,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
     }
     prune(0.0);
 }
+
 
 void WeightMatrix::validate(const char* when) const {
 

@@ -18,7 +18,7 @@ namespace data {
 namespace space {
 
 
-SpaceLinear::SpaceLinear() : Space() {}
+SpaceLinear::SpaceLinear() = default;
 
 
 void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {

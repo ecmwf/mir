@@ -39,8 +39,6 @@ inline double normalise(double x) {
 
 CartesianVector2DField::CartesianVector2DField(const repres::Representation* representation, bool hasMissing,
                                                double missingValue) :
-    valuesX_(),
-    valuesY_(),
     missingValue_(missingValue),
     representation_(representation) {
 

@@ -27,10 +27,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics() :
     insertions_(0),
     oldest_(0),
     youngest_(0),
-    capacity_(),
-    footprint_(),
-    unique_(0),
-    required_() {}
+    unique_(0) {}
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {
     s >> insertions_;

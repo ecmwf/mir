@@ -54,10 +54,7 @@ static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 
                                                                  "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
-AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) :
-    Action(parametrisation),
-    bbox_(),
-    caching_(true) {
+AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {
 
     std::vector<double> value;
     ASSERT(parametrisation.userParametrisation().get("area", value));

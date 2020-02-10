@@ -29,7 +29,7 @@ GribFileInput::GribFileInput(const eckit::PathName& path, off_t offset) :
     path_(path),
     handle_(nullptr) {}
 
-GribFileInput::GribFileInput(const eckit::PathName& path) : GribStreamInput(), path_(path), handle_(nullptr) {}
+GribFileInput::GribFileInput(const eckit::PathName& path) : path_(path), handle_(nullptr) {}
 
 GribFileInput::~GribFileInput() {
     if (handle_) {
