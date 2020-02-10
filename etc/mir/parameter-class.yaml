@@ -1849,6 +1849,8 @@ intensity:
 - 260629  # Zonal momentum flux by short gravity wave
 - 260637  # Vertical diffusion zonal acceleration
 - 260638  # Vertical diffusion meridional acceleration
+- 261001  # Universal thermal climate index
+- 261002  # Mean radiant temperature
 - 300001  # Pressure
 - 300002  # Pressure reduced to msl
 - 300003  # Pressure tendency
