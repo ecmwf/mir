@@ -112,6 +112,7 @@ class CombinedGribCompatibility : public GribCompatibility {
 public:
     CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
         GribCompatibility(name) {
+        list_.reserve(names.size());
         for (auto& n : names) {
             list_.push_back(&GribCompatibility::lookup(n));
         }

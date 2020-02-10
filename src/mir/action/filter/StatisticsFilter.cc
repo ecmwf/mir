@@ -38,7 +38,10 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
     std::string statistics = "scalar";
     ASSERT(param.get(which + "-statistics", statistics) || param.get("statistics", statistics));
 
-    for (auto& s : eckit::StringTools::split("/", statistics)) {
+    auto stats(eckit::StringTools::split("/", statistics));
+    statistics_.reserve(stats.size());
+
+    for (auto& s : stats) {
         statistics_.push_back(std::unique_ptr<stats::Statistics>(stats::StatisticsFactory::build(s, param)));
         ASSERT(statistics_.back());
     }

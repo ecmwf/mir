@@ -12,6 +12,10 @@
 
 #include "mir/netcdf/InputDataset.h"
 
+#include <netcdf.h>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/InputDimension.h"
 #include "mir/netcdf/InputMatrix.h"
@@ -20,10 +24,10 @@
 #include "mir/netcdf/SimpleInputVariable.h"
 #include "mir/netcdf/Type.h"
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
+
 
 InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Dataset(path), cache_(cache) {
     std::cout << "Dataset: pass1..." << std::endl;
@@ -53,11 +57,14 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
         int dims[NC_MAX_VAR_DIMS];
 
         NC_CALL(nc_inq_var(nc, i, name, &type, &ndims, dims, &nattr), path_);
+        ASSERT(ndims >= 0);
 
         Type& kind = Type::lookup(type);
 
         std::vector<Dimension*> dimensions;
-        for (size_t j = 0; j < ndims; j++) {
+        dimensions.reserve(ndims);
+
+        for (int j = 0; j < ndims; j++) {
             dimensions.push_back(findDimension(dims[j]));
         }
 

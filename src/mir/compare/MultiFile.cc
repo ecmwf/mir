@@ -39,10 +39,12 @@ bool MultiFile::operator<(const MultiFile& other) const {
 }
 
 MultiFile::MultiFile(eckit::Stream& s) {
+    size_t n;
     s >> name_;
     s >> from_;
-    size_t n;
     s >> n;
+    paths_.reserve(n);
+
     for (size_t i = 0; i < n; i++) {
         std::string tmp;
         s >> tmp;

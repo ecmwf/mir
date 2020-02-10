@@ -62,9 +62,12 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
     eckit::Translator<std::string, double> to_double;
 
     std::string point = args.getString("point");
+    auto points       = eckit::StringTools::split(" ", point);
 
     auto pts = new std::vector<atlas::PointXY>;  // pointer, to transfer ownership to UnstructuredGrid
-    for (auto& pt : eckit::StringTools::split(" ", point)) {
+    pts->reserve(points.size());
+
+    for (auto& pt : points) {
         auto ll = eckit::StringTools::split("/", pt);
         if (ll.size() != 2) {
             throw eckit::UserError("Expecting lat/lon, got '" + pt + "'");
