@@ -278,10 +278,8 @@ MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
 
 
 void MIRJob::mirToolCall(std::ostream& out) const {
-    int fmt = eckit::format(out);
-    eckit::setformat(out, eckit::Log::applicationFormat);
-    out << *this;
-    eckit::setformat(out, fmt);
+    auto fmt = eckit::format(out);
+    out << eckit::setformat(eckit::Log::applicationFormat) << *this << eckit::setformat(fmt);
 }
 
 
