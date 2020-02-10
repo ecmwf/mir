@@ -87,7 +87,8 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
 
         void appendFieldWrapped(data::MIRValuesVector& values) {
             ASSERT(n == values.size());
-            fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n))).set_functionspace(fs);
+            auto field = fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n)));
+            field.set_functionspace(fs);
         }
 
         const atlas::Grid grid;
