@@ -106,7 +106,7 @@ protected:  // members
     void missingField(const MultiFile& multi1, const MultiFile& multi2, const Field& field, const FieldSet& fields,
                       bool& show);
 
-    void error(const char* string);
+    void error(const char* what);
 
     double normalised(double) const;
     double rounded(double) const;

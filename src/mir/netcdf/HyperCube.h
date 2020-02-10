@@ -60,10 +60,10 @@ public:
     size_t dimensions(size_t n) const { return dimensions_[n]; }
     size_t size() const { return dimensions_.size(); }
 
-    // Return the 'remapping' std::vector needing to add 'count' labels
+    // Return the 'remapping' std::vector needing to add 'count' (howMuch) labels
     // for the dimension 'which' at position 'where'
 
-    HyperCube addToDimension(size_t which, size_t where, size_t count, Remapping&) const;
+    HyperCube addToDimension(size_t which, size_t where, size_t howMuch, Remapping&) const;
 
     // Combine two 'remapping' vectors
 

@@ -40,7 +40,7 @@ GribFixes::~GribFixes() {
 }
 
 
-bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixes) {
+bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     auto& log = eckit::Log::warning();
 
@@ -48,7 +48,7 @@ bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParamet
         if ((f.first)->matches(input)) {
             ASSERT(f.second);
             log << "GribFixes: applying fixes " << *(f.second) << std::endl;
-            f.second->copyValuesTo(fixes);
+            f.second->copyValuesTo(fixed);
             return true;
         }
     }

@@ -16,21 +16,24 @@
 #include "eckit/types/DateTime.h"
 #include "mir/netcdf/Calendar.h"
 
+
 namespace mir {
 namespace netcdf {
 
 
 class ThreeSixtyCalendar : public Calendar {
 public:
-    ThreeSixtyCalendar(const Variable& variable);
+    ThreeSixtyCalendar(const Variable&);
     virtual ~ThreeSixtyCalendar();
 
 private:
     // -- Methods
-
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
+
 
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

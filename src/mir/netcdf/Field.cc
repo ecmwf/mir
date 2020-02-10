@@ -97,7 +97,7 @@ static void init() {
     standard_names.dump(std::cout) << std::endl;
 }
 
-void Field::setMetadata(data::MIRField& mirField, size_t i) const {
+void Field::setMetadata(data::MIRField& mirField, size_t which) const {
 
     pthread_once(&once, init);
 
@@ -107,7 +107,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t i) const {
     if (s.isMap()) {
         eckit::ValueMap m = s;
         for (const auto& k : m) {
-            mirField.metadata(i, k.first, k.second);
+            mirField.metadata(which, k.first, k.second);
         }
     }
     else {

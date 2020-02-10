@@ -163,8 +163,8 @@ public:
 private:
     virtual Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path);
 
-    virtual bool coordinateOutputVariableMerge(Variable&, const Variable& other, MergePlan& plan);
-    virtual bool cellMethodOutputVariableMerge(Variable& a, const Variable& b, MergePlan& plan);
+    virtual bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
+    virtual bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
     virtual void save(const Matrix&, int nc, int varid, const std::string& path) const;
 
     virtual void print(std::ostream& out) const;
@@ -227,12 +227,7 @@ bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, 
     const std::vector<T>& a = out.matrix()->values<T>();
     const std::vector<T>& b = in.matrix()->values<T>();
 
-    if (a != b) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return (a != b);
 }
 
 //=======================================================================================================

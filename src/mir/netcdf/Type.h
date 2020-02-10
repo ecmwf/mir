@@ -58,7 +58,7 @@ public:
     static Type& lookup(Type& type1, Type& type2);
 
 protected:
-    Type(int type, const std::string& name, const std::string& dump, int super);
+    Type(int code, const std::string& name, const std::string& dump, int super);
 
     // -- Members
     int code_;

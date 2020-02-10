@@ -32,7 +32,7 @@ private:
     virtual Variable* makeScalarCoordinateVariable();
     const char* kind() const;
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
 
 }  // namespace netcdf

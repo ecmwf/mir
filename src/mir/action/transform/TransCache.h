@@ -36,7 +36,7 @@ struct TransCache {
 
     ~TransCache();
 
-    TransCache& operator=(cache_t&& other);
+    TransCache& operator=(cache_t&&);
 
     void print(std::ostream&) const;
 

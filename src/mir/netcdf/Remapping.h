@@ -31,7 +31,7 @@ public:
     // -- Members
     // -- Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 
     // - Friend
     friend std::ostream& operator<<(std::ostream& s, const Remapping& v) {

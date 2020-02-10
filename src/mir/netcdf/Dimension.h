@@ -35,7 +35,7 @@ public:
     size_t count() const;
 
     virtual bool sameAs(const Dimension&) const;
-    virtual void dump(std::ostream& s) const;
+    virtual void dump(std::ostream&) const;
     virtual void create(int nc) const;
     virtual void clone(Dataset& owner) const;
     virtual void grow(size_t n);

@@ -29,7 +29,7 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
     virtual void clone(Dataset& owner) const;
     virtual int id() const;
     virtual void realDimensions(std::vector<size_t>& dims) const;

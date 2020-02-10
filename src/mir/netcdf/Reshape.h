@@ -44,7 +44,7 @@ private:
 
     // -- Methods
 
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
     // - Friend
     friend std::ostream& operator<<(std::ostream& s, const Reshape& v) {

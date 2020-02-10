@@ -54,9 +54,9 @@ public:
 
     virtual void validate() const;
     virtual bool sameAs(const Variable&) const;
-    virtual void dump(std::ostream& s) const;
-    virtual void dumpData(std::ostream& s) const;
-    virtual void dumpAttributes(std::ostream& s, const char* prefix) const;
+    virtual void dump(std::ostream&) const;
+    virtual void dumpData(std::ostream&) const;
+    virtual void dumpAttributes(std::ostream&, const char* prefix) const;
 
     virtual void create(int nc) const;
     virtual void save(int nc) const;
@@ -77,9 +77,9 @@ public:
 
     virtual bool timeAxis() const;
 
-    virtual void addVirtualDimension(size_t pos, Dimension*);
+    virtual void addVirtualDimension(size_t where, Dimension*);
     virtual Dimension* getVirtualDimension();
-    bool sharesDimensions(const Variable& other) const;
+    bool sharesDimensions(const Variable&) const;
 
     virtual const std::string& ncname() const;
     virtual void collectField(std::vector<Field*>&) const;

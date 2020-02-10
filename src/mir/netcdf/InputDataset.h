@@ -45,7 +45,7 @@ private:
     // - Methods
 
 
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 };
 
 }  // namespace netcdf

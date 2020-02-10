@@ -44,7 +44,7 @@ public:
 
     // -- Overridden methods
 
-    bool truncation(long&, long inputTrucation) const;
+    bool truncation(long&, long inputTruncation) const;
 
     // -- Class members
     // None

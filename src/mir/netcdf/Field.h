@@ -79,7 +79,7 @@ private:
     const GridSpec& gridSpec() const;
 
 
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& s, const Field& v) {

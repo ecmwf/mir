@@ -22,13 +22,13 @@ namespace netcdf {
 
 class NoLeapCalendar : public Calendar {
 public:
-    NoLeapCalendar(const Variable& variable);
+    NoLeapCalendar(const Variable&);
     virtual ~NoLeapCalendar();
 
 private:
     // -- Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
 
 }  // namespace netcdf

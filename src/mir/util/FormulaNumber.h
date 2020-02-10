@@ -26,9 +26,9 @@ public:
     virtual ~FormulaNumber();
 
 private:
-    virtual void print(std::ostream& s) const;
-    virtual void execute(context::Context& ctx) const;
-    virtual bool sameAs(const Action& other) const;
+    virtual void print(std::ostream&) const;
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
 
 private:  // members

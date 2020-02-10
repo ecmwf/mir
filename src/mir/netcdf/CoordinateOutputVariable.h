@@ -27,7 +27,7 @@ public:
 
 private:
     virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
 
 }  // namespace netcdf

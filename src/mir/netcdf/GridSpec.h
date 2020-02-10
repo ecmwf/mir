@@ -34,7 +34,7 @@ public:
 
     // -- Methods
 
-    static GridSpec* create(const Variable& variable);
+    static GridSpec* create(const Variable&);
 
     // For MIR
     virtual bool has(const std::string& name) const                             = 0;
@@ -67,7 +67,7 @@ private:
 
 class GridSpecGuesser {
 public:
-    static GridSpec* guess(const Variable& variable);
+    static GridSpec* guess(const Variable&);
 
 protected:
     GridSpecGuesser(size_t priority);

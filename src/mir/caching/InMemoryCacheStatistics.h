@@ -33,7 +33,7 @@ public:
     InMemoryCacheStatistics();
     InMemoryCacheStatistics(eckit::Stream&);
 
-    InMemoryCacheStatistics& operator+=(const InMemoryCacheStatistics& rhs);
+    InMemoryCacheStatistics& operator+=(const InMemoryCacheStatistics&);
     InMemoryCacheStatistics& operator/=(size_t);
 
 

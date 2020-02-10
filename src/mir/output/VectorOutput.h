@@ -27,7 +27,7 @@ public:
 
     // -- Contructors
 
-    VectorOutput(MIROutput& component1, MIROutput& v_component);
+    VectorOutput(MIROutput& component1, MIROutput& component2);
 
     // -- Destructor
 

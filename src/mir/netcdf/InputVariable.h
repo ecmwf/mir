@@ -34,7 +34,7 @@ protected:
                                          const std::vector<Dimension*>& dimensions) const = 0;
 
     // From variable
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
     virtual Variable* clone(Dataset& owner) const;
 
     // From Endowed

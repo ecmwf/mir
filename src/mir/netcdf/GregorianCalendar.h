@@ -22,7 +22,7 @@ namespace netcdf {
 
 class GregorianCalendar : public Calendar {
 public:
-    GregorianCalendar(const Variable& variable);
+    GregorianCalendar(const Variable&);
     virtual ~GregorianCalendar();
 
 private:
@@ -35,7 +35,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 
     template <class T>
     void _decode(std::vector<T>& v) const;

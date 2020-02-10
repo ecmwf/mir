@@ -32,7 +32,7 @@ private:
 
     // From variable
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
     const char* kind() const;
 };
 

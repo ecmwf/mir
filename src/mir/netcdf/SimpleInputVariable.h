@@ -35,7 +35,7 @@ private:
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeCellMethodVariable();
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
     virtual void validate() const;
     virtual bool identified() const;
 

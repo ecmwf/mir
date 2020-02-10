@@ -22,7 +22,7 @@ namespace netcdf {
 
 class PackingCodec : public Codec {
 public:
-    PackingCodec(const Variable& variable);
+    PackingCodec(const Variable&);
     virtual ~PackingCodec();
 
 private:
@@ -30,13 +30,13 @@ private:
     double add_offset_;
 
     // -- Methods
-
-    virtual void print(std::ostream& s) const;
-
-
+    virtual void print(std::ostream&) const;
     virtual void decode(std::vector<double>&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

@@ -31,10 +31,10 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
     virtual void create(int nc) const;
     virtual int id() const;
-    virtual void grow(size_t n);
+    virtual void grow(size_t);
 };
 
 }  // namespace netcdf

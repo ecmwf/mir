@@ -346,23 +346,23 @@ void Variable::collectField(std::vector<Field*>&) const {
 
 // CF part ------------------------
 
-void Variable::getAttribute(const std::string& name, std::string& s) const {
+void Variable::getAttribute(const std::string& name, std::string& value) const {
     auto j = attributes_.find(name);
     if (j == attributes_.end()) {
-        s = "<UNDEFINED>";
+        value = "<UNDEFINED>";
         return;
     }
 
-    (*j).second->value().get(s);
+    (*j).second->value().get(value);
 }
 
-void Variable::getAttribute(const std::string& name, double& s) const {
+void Variable::getAttribute(const std::string& name, double& value) const {
     auto j = attributes_.find(name);
     if (j == attributes_.end()) {
-        s = 0;
+        value = 0;
     }
 
-    (*j).second->value().get(s);
+    (*j).second->value().get(value);
 }
 
 size_t Variable::numberOfDimensions() const {

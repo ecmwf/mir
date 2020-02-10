@@ -31,7 +31,7 @@ private:
     virtual Dimension* getVirtualDimension();
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeScalarCoordinateVariable();
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
 
 }  // namespace netcdf

@@ -15,15 +15,16 @@
 
 #include <iosfwd>
 
+
 namespace eckit {
 class Stream;
 }
+
 
 namespace mir {
 namespace caching {
 
 
-//----------------------------------------------------------------------------------------------------------------------
 class InMemoryCacheUsage {
 public:
     explicit InMemoryCacheUsage();
@@ -32,15 +33,15 @@ public:
     explicit InMemoryCacheUsage(size_t memory, size_t shared);
     explicit InMemoryCacheUsage(eckit::Stream&);
 
-    InMemoryCacheUsage& operator+=(const InMemoryCacheUsage& rhs);
+    InMemoryCacheUsage& operator+=(const InMemoryCacheUsage&);
     InMemoryCacheUsage& operator/=(size_t);
 
-    InMemoryCacheUsage operator+(const InMemoryCacheUsage& other) const;
-    InMemoryCacheUsage operator-(const InMemoryCacheUsage& other) const;
-    InMemoryCacheUsage operator/(size_t other) const;
+    InMemoryCacheUsage operator+(const InMemoryCacheUsage&) const;
+    InMemoryCacheUsage operator-(const InMemoryCacheUsage&) const;
+    InMemoryCacheUsage operator/(size_t) const;
 
 
-    bool operator>(const InMemoryCacheUsage& other) const;
+    bool operator>(const InMemoryCacheUsage&) const;
     bool operator!() const;
     operator bool() const;
     operator std::string() const;
@@ -74,7 +75,6 @@ private:
     }
 };
 
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace caching
 }  // namespace mir

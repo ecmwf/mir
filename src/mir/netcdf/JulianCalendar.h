@@ -22,13 +22,13 @@ namespace netcdf {
 
 class JulianCalendar : public Calendar {
 public:
-    JulianCalendar(const Variable& variable);
+    JulianCalendar(const Variable&);
     virtual ~JulianCalendar();
 
 private:
     // -- Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream&) const;
 };
 
 }  // namespace netcdf
