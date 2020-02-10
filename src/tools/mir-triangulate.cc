@@ -300,7 +300,8 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             const auto coord = array::make_view<double, 2, atlas::array::Intent::ReadOnly>(mesh.nodes().lonlat());
 
 
-            eckit::geometry::Point2 pa, pb;
+            eckit::geometry::Point2 pa;
+            eckit::geometry::Point2 pb;
 
             std::map<eckit::geometry::Point2, std::set<Segment> > ends;
 

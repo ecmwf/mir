@@ -204,14 +204,15 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
         ASSERT(format == "XYV");
 
         for (;;) {
-            std::string k, v;
-            s >> k;
-            if (k == "-") {
+            std::string key;
+            std::string value;
+            s >> key;
+            if (key == "-") {
                 break;
             }
-            s >> v;
+            s >> value;
 
-            fieldParametrisation_.set(k, v);
+            fieldParametrisation_.set(key, value);
         }
 
         size_t n;

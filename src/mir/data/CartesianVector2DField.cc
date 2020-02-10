@@ -65,8 +65,9 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
     // https://en.wikipedia.org/wiki/Spherical_law_of_cosines
     // NOTE: uses spherical (not geodetic) coordinates: C = θ = π / 2 - latitude
     ASSERT(rotation.south_pole_rotation_angle() == 0.);  // For now
-    const double C = util::degree_to_radian(90. - rotation.south_pole_latitude().value()), cos_C = std::cos(C),
-                 sin_C = std::sin(C);
+    const double C     = util::degree_to_radian(90. - rotation.south_pole_latitude().value());
+    const double cos_C = std::cos(C);
+    const double sin_C = std::sin(C);
 
     std::unique_ptr<repres::Iterator> it(representation_->iterator());
     size_t i = 0;
@@ -81,19 +82,21 @@ void CartesianVector2DField::rotate(const util::Rotation& rotation, MIRValuesVec
         }
 
         const LongitudeDouble lonRotated = rotation.south_pole_longitude().value() - (*(*it))[1];
-        const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value(),
-                     lon_unrotated       = it->pointUnrotated().lon().value(),
+        const double lon_rotated         = lonRotated.normalise(LongitudeDouble::MINUS_DATE_LINE).value();
+        const double lon_unrotated       = it->pointUnrotated().lon().value();
 
-                     a = util::degree_to_radian(lon_rotated), b = util::degree_to_radian(lon_unrotated),
-                     q = (sin_C * lon_rotated < 0.) ? 1. : -1.,  // correct quadrant
+        const double a = util::degree_to_radian(lon_rotated);
+        const double b = util::degree_to_radian(lon_unrotated);
+        const double q = (sin_C * lon_rotated < 0.) ? 1. : -1.;  // correct quadrant
 
-            cos_c          = normalise(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C),
-                     sin_c = q * std::sqrt(1. - cos_c * cos_c);
+        const double cos_c = normalise(std::cos(a) * std::cos(b) + std::sin(a) * std::sin(b) * cos_C);
+        const double sin_c = q * std::sqrt(1. - cos_c * cos_c);
 
         // TODO: use matrix multiplication
-        const double x = cos_c * valuesX[i] - sin_c * valuesY[i], y = sin_c * valuesX[i] + cos_c * valuesY[i];
-        valuesX[i] = x;
-        valuesY[i] = y;
+        const double x = cos_c * valuesX[i] - sin_c * valuesY[i];
+        const double y = sin_c * valuesX[i] + cos_c * valuesY[i];
+        valuesX[i]     = x;
+        valuesY[i]     = y;
         ++i;
     }
 }

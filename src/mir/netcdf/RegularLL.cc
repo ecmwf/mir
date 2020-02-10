@@ -170,12 +170,16 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
 
 GridSpec* RegularLL::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
-    double north, south, south_north_increment;
+    double north;
+    double south;
+    double south_north_increment;
     if (!check_axis(latitudes, north, south, south_north_increment)) {
         return 0;
     }
 
-    double west, east, west_east_increment;
+    double west;
+    double east;
+    double west_east_increment;
     if (!check_axis(longitudes, west, east, west_east_increment)) {
         return 0;
     }

@@ -148,13 +148,15 @@ static bool check_axis(const Variable& axis, double& first, double& last, std::v
 
 GridSpec* Rectilinear::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
-    double north, south;
+    double north;
+    double south;
     std::vector<double> lats;
     if (!check_axis(latitudes, north, south, lats)) {
         return 0;
     }
 
-    double west, east;
+    double west;
+    double east;
     std::vector<double> lons;
     if (!check_axis(longitudes, west, east, lons)) {
         return 0;

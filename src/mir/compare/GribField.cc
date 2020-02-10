@@ -1101,16 +1101,17 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
             s >> tmp;  // verb
             s >> count;
             for (int i = 0; i < count; i++) {
-                std::string keyword, value;
+                std::string key;
+                std::string value;
                 int n;
-                s >> keyword;
-                std::transform(keyword.begin(), keyword.end(), keyword.begin(), tolower);
+                s >> key;
+                std::transform(key.begin(), key.end(), key.begin(), tolower);
                 s >> n;  // Number of values
                 ASSERT(n == 1);
                 s >> value;
                 std::transform(value.begin(), value.end(), value.begin(), tolower);
-                field->insert(keyword, value);
-                req[keyword] = value;
+                field->insert(key, value);
+                req[key] = value;
             }
         }
     }
@@ -1133,7 +1134,8 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                 setGrid(*field, h);
                 setArea(*field, h);
                 {
-                    double lat, lon;
+                    double lat;
+                    double lon;
                     GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
                     GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon));
                     field->rotation(lat, lon);
@@ -1305,7 +1307,10 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
 
 void GribField::setArea(GribField& field, grib_handle* h) {
-    double n = -99999, w = -99999, s = -99999, e = -99999;
+    double n = -99999;
+    double w = -99999;
+    double s = -99999;
+    double e = -99999;
     GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
     GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
     GRIB_CALL(grib_get_double(h, "latitudeOfLastGridPointInDegrees", &s));
@@ -1315,8 +1320,6 @@ void GribField::setArea(GribField& field, grib_handle* h) {
     GRIB_CALL(grib_get_long(h, "scanningMode", &scanningMode));
 
     switch (scanningMode) {
-
-
         case 0:
             break;
 
@@ -1337,9 +1340,8 @@ void GribField::setArea(GribField& field, grib_handle* h) {
 
 
 void GribField::setGrid(GribField& field, grib_handle* h) {
-
-
-    double we = -99999, ns = -99999;
+    double we = -99999;
+    double ns = -99999;
     GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
     GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
     field.grid(ns, we);

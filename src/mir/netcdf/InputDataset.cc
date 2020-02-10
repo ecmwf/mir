@@ -48,7 +48,8 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
 
     for (size_t i = 0; i < number_of_variables_; i++) {
         int type;
-        int ndims, nattr;
+        int ndims;
+        int nattr;
         int dims[NC_MAX_VAR_DIMS];
 
         NC_CALL(nc_inq_var(nc, i, name, &type, &ndims, dims, &nattr), path_);

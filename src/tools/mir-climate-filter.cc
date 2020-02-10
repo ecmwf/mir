@@ -178,7 +178,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
             param->get("scanningMode", scan);
             ASSERT(scan == 0L);
 
-            double max, min;
+            double max;
+            double min;
             ASSERT(param->get("south", min = 0));
             ASSERT(param->get("north", max = 0));
             ASSERT(min < max);

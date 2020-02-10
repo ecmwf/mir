@@ -98,7 +98,18 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         // then calculate the nearest neighbour weights
         weights.resize(npts, 0.0);
 
-        double Ixx(0), Ixy(0), Ixz(0), Iyy(0), Iyz(0), Izz(0), Rx(0), Ry(0), Rz(0), Lx, Ly, Lz;
+        double Ixx(0);
+        double Ixy(0);
+        double Ixz(0);
+        double Iyy(0);
+        double Iyz(0);
+        double Izz(0);
+        double Rx(0);
+        double Ry(0);
+        double Rz(0);
+        double Lx;
+        double Ly;
+        double Lz;
 
         for (size_t j = 0; j < npts; ++j) {
             Point3 np = closest[j].point();

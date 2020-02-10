@@ -66,7 +66,8 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
 }
 
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
-    eckit::MD5 a, b;
+    eckit::MD5 a;
+    eckit::MD5 b;
     hash(a);
     other.hash(b);
 

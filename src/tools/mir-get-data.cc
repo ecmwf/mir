@@ -184,12 +184,16 @@ size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const
     ASSERT(coord1.size() == coord2.size());
     size_t N = coord1.size();
 
-    const coord_t &lat1 = coord1.latitudes(), &lon1 = coord1.longitudes(), &lat2 = coord2.latitudes(),
-                  &lon2 = coord2.longitudes();
+    const coord_t& lat1 = coord1.latitudes();
+    const coord_t& lon1 = coord1.longitudes();
+    const coord_t& lat2 = coord2.latitudes();
+    const coord_t& lon2 = coord2.longitudes();
 
     mir::param::SimpleParametrisation empty;
 
-    mir::stats::detail::Counter statsLat(empty), statsLon(empty);
+    mir::stats::detail::Counter statsLat(empty);
+    mir::stats::detail::Counter statsLon(empty);
+
     auto showPointAt = [&](std::ostream& out, size_t n) -> std::ostream& {
         return out << "\n\t@[0]=" << n << '\t' << mir::Point2(lat1[n], lon1[n]) << '\t'
                    << mir::Point2(lat2[n], lon2[n]);
