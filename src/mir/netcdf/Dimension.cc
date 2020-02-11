@@ -71,7 +71,7 @@ int Dimension::id() const {
 }
 
 
-void Dimension::realDimensions(std::vector<size_t>& dims) const {
+void Dimension::realDimensions(std::vector<size_t>& /*dims*/) const {
     std::ostringstream os;
     os << "Dimension::realDimensions() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

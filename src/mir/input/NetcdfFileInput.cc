@@ -42,7 +42,7 @@ NetcdfFileInput::~NetcdfFileInput() {
 }
 
 
-grib_handle* NetcdfFileInput::gribHandle(size_t which) const {
+grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {

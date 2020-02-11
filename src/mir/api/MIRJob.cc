@@ -109,7 +109,7 @@ static const std::string& resolveAliases(const std::string& name) {
 
 
 template <class T>
-static const T& resolveAliases(const std::string& name, const T& value) {
+static const T& resolveAliases(const std::string& /*name*/, const T& value) {
     return value;
 }
 

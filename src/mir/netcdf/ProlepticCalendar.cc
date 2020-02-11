@@ -26,7 +26,7 @@
 namespace mir {
 namespace netcdf {
 
-ProlepticCalendar::ProlepticCalendar(const Variable& variable) {}
+ProlepticCalendar::ProlepticCalendar(const Variable& /*variable*/) {}
 
 ProlepticCalendar::~ProlepticCalendar() = default;
 

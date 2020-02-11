@@ -134,7 +134,7 @@ T& InMemoryCache<T>::operator[](const std::string& key) {
     return create(key);
 }
 
-static inline double score(size_t count, double recent, double age) {
+static inline double score(size_t /*count*/, double recent, double /*age*/) {
     // count: number of accesses
     // age: age in seconds since creation
     // recent: age in seconds since last access

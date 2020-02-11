@@ -80,7 +80,7 @@ util::BoundingBox Action::outputBoundingBox() const {
     NOTIMP;
 }
 
-void Action::estimate(context::Context&, api::MIREstimation& estimation) const {
+void Action::estimate(context::Context&, api::MIREstimation& /*estimation*/) const {
     std::ostringstream oss;
     oss << "Action::estimate not implemented for " << *this;
     throw eckit::SeriousBug(oss.str());
@@ -94,8 +94,8 @@ void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& e
 }
 
 
-void Action::estimateMissingValues(context::Context& ctx, api::MIREstimation& estimation,
-                                   const repres::Representation& out) {
+void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation& /*estimation*/,
+                                   const repres::Representation& /*out*/) {
 #if 0
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);

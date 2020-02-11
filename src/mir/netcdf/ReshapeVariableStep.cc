@@ -48,7 +48,7 @@ void ReshapeVariableStep::print(std::ostream& out) const {
     out << "]";
 }
 
-void ReshapeVariableStep::execute(MergePlan& plan) {
+void ReshapeVariableStep::execute(MergePlan& /*plan*/) {
     std::cout << "ReshapeVariableStep::execute(): " << out_ << std::endl;
 #if 0
     const std::vector<Dimension *> &dims = out_.dimensions();

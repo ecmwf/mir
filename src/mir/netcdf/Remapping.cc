@@ -28,7 +28,7 @@ Remapping::Remapping(size_t s) {
 
 Remapping::~Remapping() = default;
 
-void Remapping::print(std::ostream& out) const {
+void Remapping::print(std::ostream& /*out*/) const {
     size_t i = 0;
     for (HyperCube::Remapping::const_iterator j = begin(); j != end(); ++j, ++i) {
 

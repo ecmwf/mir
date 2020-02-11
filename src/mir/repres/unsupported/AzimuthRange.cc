@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-AzimuthRange::AzimuthRange(const param::MIRParametrisation& parametrisation) {}
+AzimuthRange::AzimuthRange(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 AzimuthRange::AzimuthRange() {}
@@ -36,7 +36,7 @@ void AzimuthRange::print(std::ostream& out) const {
 }
 
 
-void AzimuthRange::fill(grib_info& info) const {
+void AzimuthRange::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

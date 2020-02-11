@@ -42,19 +42,19 @@ bool RawOutput::sameParametrisation(const param::MIRParametrisation&, const para
 }
 
 
-bool RawOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
+bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRParametrisation& /*param*/) const {
     NOTIMP;
 }
 
 
-size_t RawOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t RawOutput::copy(const param::MIRParametrisation& /*param*/, context::Context& /*ctx*/) {
     NOTIMP;
     // size_ = input.copy(values_, count_);
     // return size_ * sizeof(double);
 }
 
 
-size_t RawOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Context& ctx) {
     const data::MIRField& field = ctx.field();
 
     field.validate();

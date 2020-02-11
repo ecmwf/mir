@@ -299,7 +299,7 @@ bool BufrEntry::operator<(const BufrEntry& other) const {
 }
 
 BufrField::BufrField(const char* buffer, size_t size, const std::string& path, off_t offset,
-                     const std::vector<std::string>& ignore) :
+                     const std::vector<std::string>& /*ignore*/) :
     FieldBase(path, offset, size) {
 
     grib_handle* h = grib_handle_new_from_message(0, buffer, size);

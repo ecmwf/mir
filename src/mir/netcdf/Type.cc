@@ -216,14 +216,14 @@ void TypeT<T>::printValues(std::ostream& out, const Matrix& matrix) const {
 
 //=======================================================================================================
 template <>
-bool TypeT<std::string>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) {
+bool TypeT<std::string>::cellMethodOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
     std::ostringstream os;
     os << "TypeT<std::string>::cellMethodOutputVariableMerge() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 template <class T>
-bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) {
+bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& /*plan*/) {
     const std::vector<T>& a = out.matrix()->values<T>();
     const std::vector<T>& b = in.matrix()->values<T>();
 
@@ -254,7 +254,7 @@ static void save_values(const Matrix& matrix, int nc, int varid, const std::stri
 }
 
 template <>
-void TypeT<std::string>::save(const Matrix&, int nc, int varid, const std::string& path) const {
+void TypeT<std::string>::save(const Matrix&, int /*nc*/, int /*varid*/, const std::string& /*path*/) const {
     std::ostringstream os;
     os << "TypeT<std::string>::save() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -292,14 +292,14 @@ void TypeT<short>::save(const Matrix& m, int out, int varid, const std::string& 
 
 //=======================================================================================================
 template <>
-bool TypeT<std::string>::coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) {
+bool TypeT<std::string>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
     std::cout << __func__ << " " << *this << std::endl;
     NOTIMP;
     return false;
 }
 
 template <class T>
-bool TypeT<T>::coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) {
+bool TypeT<T>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
 #if 0
     const std::vector<T> &a = out.matrix()->values<T>();
     const std::vector<T> &b = in.matrix()->values<T>();

@@ -126,7 +126,8 @@ const char* TNamed<std::vector<std::string>>() {
 
 
 template <class T>
-static void conversion_warning(const char* from, const char* to, const std::string& name, const T& value) {
+static void conversion_warning(const char* /*from*/, const char* /*to*/, const std::string& /*name*/,
+                               const T& /*value*/) {
     // eckit::Log::warning() << "   +++ WARNING: Converting " << value << " from " << from << " to " << to << "
     // (requesting " << name << ")" << std::endl;
 }

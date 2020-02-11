@@ -27,7 +27,7 @@ namespace mir {
 namespace netcdf {
 
 
-ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& variable) {}
+ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& /*variable*/) {}
 
 ThreeSixtyCalendar::~ThreeSixtyCalendar() = default;
 

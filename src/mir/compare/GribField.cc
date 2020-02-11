@@ -303,7 +303,7 @@ bool GribField::sameNumberOfPoints(const GribField& other) const {
     return numberOfPoints_ == other.numberOfPoints_;
 }
 
-bool GribField::sameBitmap(const GribField& other) const {
+bool GribField::sameBitmap(const GribField& /*other*/) const {
     return true;
 }
 

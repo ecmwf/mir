@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-TransverseMercator::TransverseMercator(const param::MIRParametrisation& parametrisation) {}
+TransverseMercator::TransverseMercator(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 TransverseMercator::TransverseMercator() {}
@@ -36,7 +36,7 @@ void TransverseMercator::print(std::ostream& out) const {
 }
 
 
-void TransverseMercator::fill(grib_info& info) const {
+void TransverseMercator::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

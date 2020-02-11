@@ -37,7 +37,7 @@ inline double normalise(double x) {
 }  // namespace
 
 
-CartesianVector2DField::CartesianVector2DField(const repres::Representation* representation, bool hasMissing,
+CartesianVector2DField::CartesianVector2DField(const repres::Representation* representation, bool /*hasMissing*/,
                                                double missingValue) :
     missingValue_(missingValue),
     representation_(representation) {

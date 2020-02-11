@@ -32,15 +32,15 @@ void RotatedSH::print(std::ostream& out) const {
 }
 
 
-void RotatedSH::makeName(std::ostream& out) const {
+void RotatedSH::makeName(std::ostream& /*out*/) const {
     NOTIMP;
 }
 
-bool RotatedSH::sameAs(const Representation& other) const {
+bool RotatedSH::sameAs(const Representation& /*other*/) const {
     NOTIMP;
 }
 
-void RotatedSH::fill(grib_info& info) const {
+void RotatedSH::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

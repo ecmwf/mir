@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedGG::StretchedGG(const param::MIRParametrisation& parametrisation) {}
+StretchedGG::StretchedGG(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 StretchedGG::StretchedGG() {}
@@ -36,7 +36,7 @@ void StretchedGG::print(std::ostream& out) const {
 }
 
 
-void StretchedGG::fill(grib_info& info) const {
+void StretchedGG::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

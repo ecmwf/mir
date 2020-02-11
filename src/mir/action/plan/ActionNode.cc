@@ -59,7 +59,8 @@ void ActionNode::execute(context::Context& ctx, const Executor& executor) const 
 }
 
 
-void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher, bool& rethrow) const {
+void ActionNode::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* /*watcher*/,
+                               bool& rethrow) const {
     graph_.notifyFailure(e, action, watcher_, rethrow);
 }
 

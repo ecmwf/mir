@@ -26,16 +26,21 @@
 namespace mir {
 namespace netcdf {
 
-AllLeapCalendar::AllLeapCalendar(const Variable& variable) {}
+
+AllLeapCalendar::AllLeapCalendar(const Variable& /*variable*/) {}
+
 
 AllLeapCalendar::~AllLeapCalendar() = default;
+
 
 void AllLeapCalendar::print(std::ostream& out) const {
     out << "AllLeapCalendar[]";
 }
 
+
 static CodecBuilder<AllLeapCalendar> builder1("all_leap");
 static CodecBuilder<AllLeapCalendar> builder3("366_day");
+
 
 }  // namespace netcdf
 }  // namespace mir

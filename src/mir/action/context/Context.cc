@@ -29,7 +29,7 @@ namespace context {
 
 namespace {
 class MissingInput : public input::MIRInput {
-    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const { NOTIMP; }
+    virtual const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const { NOTIMP; }
 
     virtual bool sameAs(const MIRInput&) const { NOTIMP; }
 

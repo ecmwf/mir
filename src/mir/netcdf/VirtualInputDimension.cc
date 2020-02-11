@@ -36,7 +36,7 @@ int VirtualInputDimension::id() const {
     return -1;
 }
 
-void VirtualInputDimension::realDimensions(std::vector<size_t>& dims) const {
+void VirtualInputDimension::realDimensions(std::vector<size_t>& /*dims*/) const {
     // empty
 }
 

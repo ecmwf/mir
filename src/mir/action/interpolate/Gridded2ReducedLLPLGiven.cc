@@ -29,7 +29,7 @@ Gridded2ReducedLLPLGiven::Gridded2ReducedLLPLGiven(const param::MIRParametrisati
 Gridded2ReducedLLPLGiven::~Gridded2ReducedLLPLGiven() = default;
 
 
-bool Gridded2ReducedLLPLGiven::sameAs(const Action& other) const {
+bool Gridded2ReducedLLPLGiven::sameAs(const Action& /*other*/) const {
     NOTIMP;
 }
 

@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedRotatedLL::StretchedRotatedLL(const param::MIRParametrisation& parametrisation) {}
+StretchedRotatedLL::StretchedRotatedLL(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 StretchedRotatedLL::StretchedRotatedLL() {}
@@ -36,7 +36,7 @@ void StretchedRotatedLL::print(std::ostream& out) const {
 }
 
 
-void StretchedRotatedLL::fill(grib_info& info) const {
+void StretchedRotatedLL::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

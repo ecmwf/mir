@@ -27,7 +27,7 @@ namespace mir {
 namespace netcdf {
 
 
-JulianCalendar::JulianCalendar(const Variable& variable) {}
+JulianCalendar::JulianCalendar(const Variable& /*variable*/) {}
 
 JulianCalendar::~JulianCalendar() = default;
 

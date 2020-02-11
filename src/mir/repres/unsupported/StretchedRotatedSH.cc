@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedRotatedSH::StretchedRotatedSH(const param::MIRParametrisation& parametrisation) {}
+StretchedRotatedSH::StretchedRotatedSH(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 StretchedRotatedSH::StretchedRotatedSH() {}
@@ -36,7 +36,7 @@ void StretchedRotatedSH::print(std::ostream& out) const {
 }
 
 
-void StretchedRotatedSH::fill(grib_info& info) const {
+void StretchedRotatedSH::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

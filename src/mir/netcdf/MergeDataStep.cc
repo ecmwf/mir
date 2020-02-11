@@ -34,7 +34,7 @@ void MergeDataStep::print(std::ostream& out) const {
     out << "MergeDataStep[" << out_ << " & " << in_ << "]";
 }
 
-void MergeDataStep::execute(MergePlan& plan) {
+void MergeDataStep::execute(MergePlan& /*plan*/) {
 #if 0
     if (!out_.mustMerge()) {
 

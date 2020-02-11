@@ -49,8 +49,8 @@ void DummyInputVariable::print(std::ostream& out) const {
 }
 
 
-Variable* DummyInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
-                                                 const std::vector<Dimension*>& dimensions) const {
+Variable* DummyInputVariable::makeOutputVariable(Dataset& /*owner*/, const std::string& /*name*/,
+                                                 const std::vector<Dimension*>& /*dimensions*/) const {
     NOTIMP;
     return 0;
 }

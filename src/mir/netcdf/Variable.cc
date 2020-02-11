@@ -143,7 +143,7 @@ void Variable::dump(std::ostream& out) const {
     }
 }
 
-void Variable::dumpAttributes(std::ostream& s, const char* prefix) const {
+void Variable::dumpAttributes(std::ostream& /*s*/, const char* /*prefix*/) const {
     // empty
 }
 
@@ -241,19 +241,19 @@ void Variable::validate() const {
     }
 }
 
-void Variable::create(int nc) const {
+void Variable::create(int /*nc*/) const {
     std::ostringstream os;
     os << "Variable::create() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Variable::save(int nc) const {
+void Variable::save(int /*nc*/) const {
     std::ostringstream os;
     os << "Variable::save() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-Variable* Variable::clone(Dataset& owner) const {
+Variable* Variable::clone(Dataset& /*owner*/) const {
     std::ostringstream os;
     os << "Variable::clone() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

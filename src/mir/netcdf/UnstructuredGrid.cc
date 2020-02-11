@@ -74,7 +74,7 @@ bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values)
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string& name, long& value) const {
+bool UnstructuredGrid::get(const std::string& /*name*/, long& /*value*/) const {
     // std::cout << "get " << name << std::endl;
 
     // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
@@ -183,7 +183,7 @@ GridSpec* UnstructuredGrid::guess(const Variable& variable, const Variable& lati
 }
 
 
-void UnstructuredGrid::reorder(MIRValuesVector& values) const {
+void UnstructuredGrid::reorder(MIRValuesVector& /*values*/) const {
     // size_t ni = latitudes_.size();
     // size_t nj = longitudes_.size();
 

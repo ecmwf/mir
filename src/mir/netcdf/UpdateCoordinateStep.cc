@@ -39,7 +39,7 @@ void UpdateCoordinateStep::print(std::ostream& out) const {
     out << "UpdateCoordinateStep[" << in_ << " & " << out_ << "]";
 }
 
-void UpdateCoordinateStep::execute(MergePlan& plan) {
+void UpdateCoordinateStep::execute(MergePlan& /*plan*/) {
 #if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);

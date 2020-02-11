@@ -26,7 +26,7 @@
 namespace mir {
 namespace netcdf {
 
-NoneCalendar::NoneCalendar(const Variable& variable) {}
+NoneCalendar::NoneCalendar(const Variable& /*variable*/) {}
 
 NoneCalendar::~NoneCalendar() = default;
 

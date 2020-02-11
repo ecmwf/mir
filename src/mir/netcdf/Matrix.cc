@@ -149,38 +149,43 @@ void Matrix::read(std::vector<std::string>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<double>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<double>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<float>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<float>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<long>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<short>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<short>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<unsigned char>&, const std::vector<size_t>& start,
-                  const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<unsigned char>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
-void Matrix::read(std::vector<long long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const {
+void Matrix::read(std::vector<long long>&, const std::vector<size_t>& /*start*/,
+                  const std::vector<size_t>& /*count*/) const {
     std::ostringstream os;
     os << "Matrix::read() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());

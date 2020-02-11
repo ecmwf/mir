@@ -69,7 +69,7 @@ bool Rectilinear::get(const std::string& name, std::vector<double>& values) cons
     return false;
 }
 
-bool Rectilinear::get(const std::string& name, long& value) const {
+bool Rectilinear::get(const std::string& /*name*/, long& /*value*/) const {
     // std::cout << "get " << name << std::endl;
 
     // std::cout << "Rectilinear::get " << name << " failed" << std::endl;

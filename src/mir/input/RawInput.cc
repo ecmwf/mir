@@ -105,7 +105,7 @@ bool RawInput::get(const std::string& name, std::string& value) const {
 }
 
 
-bool RawInput::get(const std::string& name, bool& value) const {
+bool RawInput::get(const std::string& name, bool& /*value*/) const {
     eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
     return false;
 }

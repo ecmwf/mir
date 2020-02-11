@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& parametrisation) {}
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {}
@@ -36,7 +36,7 @@ void EquatorialAzimuthalEquidistant::print(std::ostream& out) const {
 }
 
 
-void EquatorialAzimuthalEquidistant::fill(grib_info& info) const {
+void EquatorialAzimuthalEquidistant::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

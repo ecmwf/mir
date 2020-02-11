@@ -89,7 +89,7 @@ bool RegularLL::get(const std::string& name, std::string& value) const {
     return false;
 }
 
-bool RegularLL::get(const std::string& name, std::vector<double>& value) const {
+bool RegularLL::get(const std::string& /*name*/, std::vector<double>& /*value*/) const {
     return false;
 }
 

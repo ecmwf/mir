@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-StretchedSH::StretchedSH(const param::MIRParametrisation& parametrisation) {}
+StretchedSH::StretchedSH(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 StretchedSH::StretchedSH() {}
@@ -36,7 +36,7 @@ void StretchedSH::print(std::ostream& out) const {
 }
 
 
-void StretchedSH::fill(grib_info& info) const {
+void StretchedSH::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

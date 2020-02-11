@@ -34,7 +34,7 @@ void MergeCoordinateStep::print(std::ostream& out) const {
     out << "MergeCoordinateStep[" << out_ << " & " << in_ << "]";
 }
 
-void MergeCoordinateStep::execute(MergePlan& plan) {
+void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
 #if 0
     if (!out_.mustMerge()) {
 

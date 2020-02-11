@@ -76,7 +76,7 @@ bool Curvilinear::get(const std::string& name, std::vector<double>& values) cons
     return false;
 }
 
-bool Curvilinear::get(const std::string& name, long& value) const {
+bool Curvilinear::get(const std::string& /*name*/, long& /*value*/) const {
     // std::cout << "get " << name << std::endl;
 
     // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
@@ -260,7 +260,7 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
 }
 
 
-void Curvilinear::reorder(MIRValuesVector& values) const {
+void Curvilinear::reorder(MIRValuesVector& /*values*/) const {
     // size_t ni = latitudes_.size();
     // size_t nj = longitudes_.size();
 

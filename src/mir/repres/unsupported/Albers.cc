@@ -21,7 +21,7 @@ namespace mir {
 namespace repres {
 
 
-Albers::Albers(const param::MIRParametrisation& parametrisation) {}
+Albers::Albers(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
 Albers::Albers() {}
@@ -36,7 +36,7 @@ void Albers::print(std::ostream& out) const {
 }
 
 
-void Albers::fill(grib_info& info) const {
+void Albers::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 

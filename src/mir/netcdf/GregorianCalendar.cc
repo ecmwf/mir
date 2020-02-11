@@ -29,7 +29,7 @@ namespace netcdf {
 
 static long long offset = 0;
 
-static eckit::DateTime reference(const std::string& units) {
+static eckit::DateTime reference(const std::string& /*units*/) {
     // std::cout << "===== " << units << std::endl;
     return eckit::DateTime();
 }

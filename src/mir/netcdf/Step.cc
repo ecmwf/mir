@@ -19,7 +19,7 @@ Step::Step() {}
 
 Step::~Step() = default;
 
-bool Step::merge(Step* other) {
+bool Step::merge(Step* /*other*/) {
     return false;
 }
 
