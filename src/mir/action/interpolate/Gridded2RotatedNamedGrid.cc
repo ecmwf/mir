@@ -37,7 +37,7 @@ Gridded2RotatedNamedGrid::~Gridded2RotatedNamedGrid() = default;
 
 bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
-    return o && (gridname_ == o->gridname_) && Gridded2RotatedGrid::sameAs(other);
+    return (o != nullptr) && (gridname_ == o->gridname_) && Gridded2RotatedGrid::sameAs(other);
 }
 
 

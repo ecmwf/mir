@@ -100,7 +100,7 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
 bool MultiScalarOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const MultiScalarOutput*>(&other);
 
-    if (!o || components_.size() != o->components_.size()) {
+    if ((o == nullptr) || (components_.size() != o->components_.size())) {
         return false;
     }
 

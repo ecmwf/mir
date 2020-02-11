@@ -58,7 +58,7 @@ ShVodToUV::~ShVodToUV() = default;
 
 bool ShVodToUV::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShVodToUV*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

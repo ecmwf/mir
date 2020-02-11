@@ -96,7 +96,7 @@ void ActionGraph::print(std::ostream& out) const {
 void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher,
                                 bool& rethrow) const {
     if (empty()) {
-        if (watcher) {
+        if (watcher != nullptr) {
             rethrow = watcher->failure(e, action) && rethrow;
         }
     }

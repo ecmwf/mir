@@ -38,7 +38,7 @@ ShToGridDef<Invtrans>::~ShToGridDef() = default;
 template <class Invtrans>
 bool ShToGridDef<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToGridDef*>(&other);
-    return o && (griddef_ == o->griddef_);
+    return (o != nullptr) && (griddef_ == o->griddef_);
 }
 
 

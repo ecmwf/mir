@@ -44,7 +44,7 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 
 bool ValuesOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const ValuesOutput*>(&other);
-    return o && this == o;
+    return (o != nullptr) && this == o;
 }
 
 

@@ -39,7 +39,7 @@ MIRInput::~MIRInput() = default;
 grib_handle* MIRInput::gribHandle(size_t) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
-    if (!handle) {
+    if (handle == nullptr) {
         handle = grib_handle_new_from_samples(nullptr, "GRIB1");
         grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
@@ -119,7 +119,7 @@ static void put(std::ostream& out, unsigned long magic) {
     for (int i = 3; i >= 0; i--) {
         unsigned char c = magic & 0xff;
         magic >>= 8;
-        p[i] = isprint(c) ? c : '.';
+        p[i] = isprint(c) != 0 ? c : '.';
     }
 
     out << " (" << p << ")";
@@ -156,10 +156,10 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     for (size_t i = 0; i < 4; i++) {
         unsigned char c;
-        if (std::fread(&c, 1, 1, f)) {
+        if (std::fread(&c, 1, 1, f) > 0) {
             magic <<= 8;
             magic |= c;
-            p[i] = isprint(c) ? c : '.';
+            p[i] = isprint(c) != 0 ? c : '.';
         }
     }
 

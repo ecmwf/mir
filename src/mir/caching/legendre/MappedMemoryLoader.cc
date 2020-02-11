@@ -55,10 +55,12 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 }
 
 MappedMemoryLoader::~MappedMemoryLoader() {
-    if (address_)
+    if (address_ != nullptr) {
         SYSCALL(eckit::MMap::munmap(address_, size_));
-    if (fd_ >= 0)
+    }
+    if (fd_ >= 0) {
         SYSCALL(::close(fd_));
+    }
 }
 
 void MappedMemoryLoader::print(std::ostream& out) const {

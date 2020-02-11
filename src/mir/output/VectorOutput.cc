@@ -95,7 +95,7 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
 
 bool VectorOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const VectorOutput*>(&other);
-    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+    return (o != nullptr) && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 
 

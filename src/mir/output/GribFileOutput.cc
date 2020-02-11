@@ -22,7 +22,7 @@ GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) : path_
 
 
 GribFileOutput::~GribFileOutput() {
-    if (handle_) {
+    if (handle_ != nullptr) {
         handle_->close();
         delete handle_;
     }
@@ -31,7 +31,7 @@ GribFileOutput::~GribFileOutput() {
 
 bool GribFileOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const GribFileOutput*>(&other);
-    return o && (path_ == o->path_) && (append_ == o->append_);
+    return (o != nullptr) && (path_ == o->path_) && (append_ == o->append_);
 }
 
 
@@ -41,7 +41,7 @@ void GribFileOutput::print(std::ostream& out) const {
 
 
 eckit::DataHandle& GribFileOutput::dataHandle() {
-    if (!handle_) {
+    if (handle_ == nullptr) {
         handle_ = path_.fileHandle();
         if (append_) {
             handle_->openForAppend(0);

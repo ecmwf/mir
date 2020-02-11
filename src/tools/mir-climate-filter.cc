@@ -147,7 +147,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         repres::RepresentationHandle rep(ctx.field().representation());
         {
             auto ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
-            if (!ll || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
+            if ((ll == nullptr) || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
                 throw eckit::UserError("MIRClimateFilter: input field should be global regular_ll, no missing values");
             }
             Ni = ll->Ni();
@@ -278,7 +278,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                         auto c = n % Ni;
 
                         for (size_t i = 0, i0 = j * Ni, c0 = r * Ni; i < Ni; ++i) {
-                            if (!w) {
+                            if (w == 0) {
                                 output[i0 + i] = a * input[c0 + (c + i) % Ni];
                             }
                             else {

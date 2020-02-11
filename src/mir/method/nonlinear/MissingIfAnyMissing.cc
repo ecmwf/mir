@@ -77,7 +77,7 @@ bool MissingIfAnyMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix&
 
 bool MissingIfAnyMissing::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const MissingIfAnyMissing*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

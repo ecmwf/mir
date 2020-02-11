@@ -169,7 +169,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
             continue;
         }
 
-        if (isalpha(s[pos])) {
+        if (isalpha(s[pos]) != 0) {
             break;
         }
 
@@ -204,7 +204,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
 
         size_t size = 0;
         for (const char* c = line + 10; c != line + 20; ++c) {
-            if (::isdigit(*c)) {
+            if (::isdigit(*c) != 0) {
                 size *= 10;
                 size += *c - '0';
             }
@@ -224,7 +224,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
             if (ok) {
                 const char* p = line;
 
-                while (*p) {
+                while (*p != 0) {
                     bitmap[k++] = (*p == '1');
                     p++;
                 }

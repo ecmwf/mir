@@ -65,7 +65,7 @@ void NearestLSM::operator()(size_t ip, const Point3&,
 
 bool NearestLSM::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

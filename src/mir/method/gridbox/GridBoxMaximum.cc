@@ -68,9 +68,14 @@ struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     }
 
 private:
-    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxMaximum*>(&other); }
+    bool sameAs(const NonLinear& other) const {
+        auto o = dynamic_cast<const GridBoxMaximum*>(&other);
+        return o != nullptr;
+    }
+
     void print(std::ostream& out) const { out << "GridBoxMaximum[]"; }
     bool canIntroduceMissingValues() const { return true; }
+
     void hash(eckit::MD5& h) const {
         std::ostringstream s;
         s << *this;

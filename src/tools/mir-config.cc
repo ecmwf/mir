@@ -88,7 +88,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     // Display configuration for a paramId
     long paramId = 0;
-    if (args.get("param-id", paramId) || !args.count()) {
+    if (args.get("param-id", paramId) || args.count() == 0) {
 
         class DummyField : public mir::param::FieldParametrisation {
             long paramId_;

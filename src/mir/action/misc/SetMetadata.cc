@@ -56,7 +56,7 @@ SetMetadata::~SetMetadata() = default;
 
 bool SetMetadata::sameAs(const Action& other) const {
     auto o = dynamic_cast<const SetMetadata*>(&other);
-    return o && (metadata_ == o->metadata_);
+    return (o != nullptr) && (metadata_ == o->metadata_);
 }
 
 

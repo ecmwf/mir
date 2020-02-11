@@ -108,7 +108,7 @@ bool InMemoryCacheUsage::operator!() const {
 }
 
 InMemoryCacheUsage::operator bool() const {
-    return memory_ || shared_;
+    return (memory_ != 0) || (shared_ != 0);
 }
 
 

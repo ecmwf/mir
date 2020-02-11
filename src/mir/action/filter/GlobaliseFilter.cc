@@ -34,7 +34,7 @@ GlobaliseFilter::~GlobaliseFilter() = default;
 
 bool GlobaliseFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const GlobaliseFilter*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -54,12 +54,12 @@ void GlobaliseFilter::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle in(field.representation());
-    const repres::Representation* out = in->globalise(field);
-    if (out) {
-        field.representation(out);
+    auto out = in->globalise(field);
+    if (out == nullptr) {
+        eckit::Log::warning() << "Globalise has no effect" << std::endl;
     }
     else {
-        eckit::Log::warning() << "Globalise has no effect" << std::endl;
+        field.representation(out);
     }
 }
 

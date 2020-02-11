@@ -71,7 +71,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
             for (size_t j = 0; j < bytes; j++) {
                 ASSERT(std::fread(&c, 1, 1, file) == 1);
                 for (size_t b = 0; b < 8 && k < COLS; b++) {
-                    v[k++] = (c >> (7 - b)) & 0x1;
+                    v[k++] = ((c >> (7 - b)) & 0x1) != 0;
                 }
             }
         }

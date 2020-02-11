@@ -24,7 +24,7 @@ namespace netcdf {
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char* dont_drop[] = {"_FillValue", "missing_value", 0};
+static const char* dont_drop[] = {"_FillValue", "missing_value", nullptr};
 
 OutputAttribute::OutputAttribute(Endowed& owner, const std::string& name, Value* value) :
     Attribute(owner, name, value),
@@ -49,12 +49,10 @@ void OutputAttribute::merge(const Attribute& other) {
             std::cout << "WARNING: dropping attribute " << fullName() << std::endl;
             valid_ = false;
 
-            size_t i = 0;
-            while (dont_drop[i]) {
+            for (size_t i = 0; dont_drop[i] != nullptr; ++i) {
                 if (name_ == dont_drop[i]) {
-                    throw MergeError(std::string("Attempt to drop attribute ") + name_);
+                    throw MergeError("Attempt to drop attribute " + name_);
                 }
-                i++;
             }
         }
     }

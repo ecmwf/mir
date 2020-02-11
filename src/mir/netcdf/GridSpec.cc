@@ -44,9 +44,8 @@ GridSpec::~GridSpec() = default;
 
 GridSpec* GridSpec::create(const Variable& variable) {
 
-    GridSpec* spec = GridSpecGuesser::guess(variable);
-
-    if (!spec) {
+    auto spec = GridSpecGuesser::guess(variable);
+    if (spec == nullptr) {
         std::ostringstream oss;
         oss << "Cannot guess GridSpec for " << variable;
         throw eckit::SeriousBug(oss.str());
@@ -110,8 +109,8 @@ GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     const Variable& longitudes = find_variable(variable, "longitude", "degrees_east", 1);
 
     for (auto& j : *m) {
-        GridSpec* spec = j.second->guess(variable, latitudes, longitudes);
-        if (spec) {
+        auto spec = j.second->guess(variable, latitudes, longitudes);
+        if (spec != nullptr) {
             eckit::Log::info() << "GRIDSPEC is " << *spec << std::endl;
             return spec;
         }

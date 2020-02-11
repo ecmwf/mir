@@ -99,7 +99,7 @@ bool MultiScalarInput::next() {
 bool MultiScalarInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const MultiScalarInput*>(&other);
 
-    if (!o || dimensions() != o->dimensions()) {
+    if ((o == nullptr) || dimensions() != o->dimensions()) {
         return false;
     }
 

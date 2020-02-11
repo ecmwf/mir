@@ -108,7 +108,7 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
 
             if (unload) {
                 auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader.get());
-                if (shmLoader) {
+                if (shmLoader != nullptr) {
                     eckit::Log::info() << "---"
                                           "\n"
                                           "unload"

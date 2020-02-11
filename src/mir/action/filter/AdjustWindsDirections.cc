@@ -43,7 +43,7 @@ AdjustWindsDirections::~AdjustWindsDirections() = default;
 
 bool AdjustWindsDirections::sameAs(const Action& other) const {
     auto o = dynamic_cast<const AdjustWindsDirections*>(&other);
-    return o && (rotation_ == o->rotation_);
+    return (o != nullptr) && (rotation_ == o->rotation_);
 }
 
 

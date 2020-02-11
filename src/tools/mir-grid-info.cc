@@ -77,7 +77,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     using namespace mir;
     auto& log = eckit::Log::info();
 
-    if (args.count()) {
+    if (args.count() > 0) {
         const param::ConfigurationWrapper args_wrap(args);
 
         for (size_t i = 0, j = 0; i < args.count(); ++i) {

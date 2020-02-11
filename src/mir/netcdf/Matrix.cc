@@ -36,7 +36,7 @@ Matrix::Matrix(Type& type, const std::string& name, size_t size) :
 Matrix::~Matrix() {
     delete missingValue_;
 
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->detach();
     }
 }
@@ -92,10 +92,10 @@ size_t Matrix::size() const {
 void Matrix::codec(Codec* codec) {
 
     ASSERT(!codec_);
-    if (codec) {
+    if (codec != nullptr) {
         codec->attach();
     }
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->detach();
     }
     codec_ = codec;

@@ -329,7 +329,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
 
     codes_set_long(h, "unpack", 1);
 
-    while (codes_bufr_keys_iterator_next(ks)) {
+    while (codes_bufr_keys_iterator_next(ks) != 0) {
         const char* name = codes_bufr_keys_iterator_get_name(ks);
 
 
@@ -416,7 +416,7 @@ void BufrField::json(eckit::JSON& json) const {
     }
     json.endList();
 
-    if (ignored_.size()) {
+    if (!ignored_.empty()) {
         json << "ignored" << ignored_;
     }
 

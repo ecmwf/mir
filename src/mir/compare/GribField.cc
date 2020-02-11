@@ -292,7 +292,7 @@ bool GribField::sameAccuracy(const GribField& other) const {
         return true;
     }
 
-    if (decimalScaleFactor_ || other.decimalScaleFactor_) {
+    if ((decimalScaleFactor_ != 0) || (other.decimalScaleFactor_ != 0)) {
         return decimalScaleFactor_ == other.decimalScaleFactor_;
     }
 
@@ -410,8 +410,8 @@ bool GribField::less_than(const FieldBase& o) const {
     //     return false;
     // }
 
-    long this_accuracy  = accuracy_ ? accuracy_ : other.accuracy_;
-    long other_accuracy = other.accuracy_ ? other.accuracy_ : accuracy_;
+    long this_accuracy  = (accuracy_ != 0) ? accuracy_ : other.accuracy_;
+    long other_accuracy = (other.accuracy_ != 0) ? other.accuracy_ : accuracy_;
 
 
     if (this_accuracy < other_accuracy) {
@@ -422,12 +422,8 @@ bool GribField::less_than(const FieldBase& o) const {
         return false;
     }
 
-    if (hasMissing_ < other.hasMissing_) {
-        return true;
-    }
-
-    if (hasMissing_ > other.hasMissing_) {
-        return false;
+    if (hasMissing_ != other.hasMissing_) {
+        return other.hasMissing_;
     }
 
     if (numberOfPoints_ < other.numberOfPoints_) {
@@ -438,14 +434,8 @@ bool GribField::less_than(const FieldBase& o) const {
         return false;
     }
 
-
-    if (grid_ < other.grid_) {
-        return true;
-    }
-
-
-    if (grid_ > other.grid_) {
-        return false;
+    if (grid_ != other.grid_) {
+        return other.grid_;
     }
 
     if (grid_) {
@@ -467,12 +457,8 @@ bool GribField::less_than(const FieldBase& o) const {
         }
     }
 
-    if (area_ < other.area_) {
-        return true;
-    }
-
-    if (area_ > other.area_) {
-        return false;
+    if (area_ != other.area_) {
+        return other.area_;
     }
 
     if (area_) {
@@ -510,12 +496,8 @@ bool GribField::less_than(const FieldBase& o) const {
         }
     }
 
-    if (rotation_ < other.rotation_) {
-        return true;
-    }
-
-    if (rotation_ > other.rotation_) {
-        return false;
+    if (rotation_ != other.rotation_) {
+        return other.rotation_;
     }
 
     if (rotation_) {
@@ -624,7 +606,7 @@ void GribField::print(std::ostream& out) const {
         out << ",accuracy=" << accuracy_;
     }
 
-    if (decimalScaleFactor_) {
+    if (decimalScaleFactor_ != 0) {
         out << ",decimal_scale_factor=" << decimalScaleFactor_;
     }
 
@@ -778,19 +760,19 @@ void GribField::whiteListEntries(std::ostream& out) const {
     const char* sep = "";
 
     if (whiteListAccuracyPacking_) {
-        if (param_) {
+        if (param_ != 0) {
             out << sep << "param=" << param_;
             sep = ",";
         }
-        if (format_.length()) {
+        if (!format_.empty()) {
             out << sep << "format=" << format_;
             sep = ",";
         }
-        if (packing_.length()) {
+        if (!packing_.empty()) {
             out << sep << "packing=" << packing_;
             sep = ",";
         }
-        if (gridtype_.length()) {
+        if (!gridtype_.empty()) {
             out << sep << "gridtype=" << gridtype_;
             sep = ",";
         }
@@ -798,7 +780,7 @@ void GribField::whiteListEntries(std::ostream& out) const {
             out << sep << "accuracy=" << accuracy_;
             sep = ",";
         }
-        if (decimalScaleFactor_) {
+        if (decimalScaleFactor_ != 0) {
             out << sep << "decimal_scale_factor=" << decimalScaleFactor_;
             // sep = ",";
         }
@@ -1049,7 +1031,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
     std::map<std::string, std::string> req;
 
-    while (grib_keys_iterator_next(ks)) {
+    while (grib_keys_iterator_next(ks) != 0) {
         const char* name = grib_keys_iterator_get_name(ks);
         ASSERT(name);
 
@@ -1158,10 +1140,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
                     GRIB_CALL(grib_get_long(h, "isOctahedral", &n));
 
-                    if (n) {
-                        oss << "O";
-                    }
-                    else {
+                    if (n == 0) {
 
                         // Don't trust eccodes
                         size_t pl_size = 0;
@@ -1179,12 +1158,10 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                             }
                         }
 
-                        if (isOctahedral) {
-                            oss << "O";
-                        }
-                        else {
-                            oss << "N";
-                        }
+                        oss << (isOctahedral ? "O" : "N");
+                    }
+                    else {
+                        oss << "O";
                     }
 
                     GRIB_CALL(grib_get_long(h, "N", &n));
@@ -1266,7 +1243,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
     long missingValuesPresent;
     if (grib_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
-        if (missingValuesPresent) {
+        if (missingValuesPresent != 0) {
             field->missingValuesPresent(true);
         }
     }

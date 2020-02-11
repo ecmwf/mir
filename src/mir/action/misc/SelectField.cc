@@ -36,7 +36,7 @@ SelectField::~SelectField() = default;
 
 bool SelectField::sameAs(const Action& other) const {
     auto o = dynamic_cast<const SelectField*>(&other);
-    return o && (which_ == o->which_);
+    return (o != nullptr) && (which_ == o->which_);
 }
 
 

@@ -189,7 +189,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     user.get("uv2uv", uv2uv);
 
     long uv = 0;
-    uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && uv);
+    uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && (uv != 0));
 
     // completed later
     const std::string transform   = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
@@ -391,7 +391,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
 
     if (field_spectral) {
-        if (user_wants_gridded) {
+        if (user_wants_gridded > 0) {
             sh2grid(plan);
         }
         else {
@@ -406,7 +406,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     }
 
 
-    if (field_gridded || user_wants_gridded) {
+    if (field_gridded || (user_wants_gridded > 0)) {
 
         bool globalise = false;
         parametrisation_.userParametrisation().get("globalise", globalise);

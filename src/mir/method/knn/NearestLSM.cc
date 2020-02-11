@@ -83,7 +83,7 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1,
 
 bool NearestLSM::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
+    return (o != nullptr) && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
 }
 
 

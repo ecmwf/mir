@@ -37,7 +37,7 @@ Gridded2GridDef::~Gridded2GridDef() = default;
 
 bool Gridded2GridDef::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GridDef*>(&other);
-    return o && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (griddef_ == o->griddef_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 

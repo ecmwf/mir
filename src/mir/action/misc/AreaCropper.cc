@@ -149,7 +149,7 @@ AreaCropper::~AreaCropper() = default;
 
 bool AreaCropper::sameAs(const Action& other) const {
     auto o = dynamic_cast<const AreaCropper*>(&other);
-    return o && (bbox_ == o->bbox_);
+    return (o != nullptr) && (bbox_ == o->bbox_);
 }
 
 

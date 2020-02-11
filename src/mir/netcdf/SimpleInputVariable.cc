@@ -96,17 +96,17 @@ std::vector<std::string> SimpleInputVariable::coordinates() const {
         std::string s = (*j).second->asString();
         std::string t;
 
-        for (std::string::const_iterator k = s.begin(); k != s.end(); ++k) {
-            if (*k == ' ') {
+        for (auto& k : s) {
+            if (k == ' ') {
                 result.push_back(t);
                 t.clear();
             }
             else {
-                t.push_back(*k);
+                t.push_back(k);
             }
         }
 
-        if (t.size()) {
+        if (!t.empty()) {
             result.push_back(t);
         }
     }

@@ -41,7 +41,7 @@ ShTruncate::~ShTruncate() = default;
 
 bool ShTruncate::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShTruncate*>(&other);
-    return o && (truncation_ == o->truncation_);
+    return (o != nullptr) && (truncation_ == o->truncation_);
 }
 
 
@@ -63,9 +63,8 @@ void ShTruncate::execute(context::Context& ctx) const {
         const MIRValuesVector& values = field.values(i);
         MIRValuesVector result;
 
-        const repres::Representation* repres = representation->truncate(truncation_, values, result);
-
-        if (repres) {                      // NULL if nothing happend
+        auto* repres = representation->truncate(truncation_, values, result);
+        if (repres != nullptr) {           // NULL if nothing happend
             field.representation(repres);  // Assumes representation will be the same
             field.update(result, i);
         }

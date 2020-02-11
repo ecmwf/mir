@@ -61,7 +61,7 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
 
     static size_t matrixMaxFootprint = eckit::Resource<size_t>("$MIR_MATRIX_MAX_FOOTPRINT", 0);
-    if (matrixMaxFootprint) {
+    if (matrixMaxFootprint > 0) {
         size_t size = W.footprint();
         if (size > matrixMaxFootprint) {
             std::ostringstream oss;

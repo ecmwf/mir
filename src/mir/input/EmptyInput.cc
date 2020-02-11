@@ -33,7 +33,7 @@ EmptyInput::~EmptyInput() = default;
 
 bool EmptyInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const EmptyInput*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

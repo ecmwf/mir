@@ -52,7 +52,7 @@ void PseudoLaplace::hash(eckit::MD5& md5) const {
 
 bool PseudoLaplace::sameAs(const Method& other) const {
     auto o = dynamic_cast<const PseudoLaplace*>(&other);
-    return o && (nclosest_ == o->nclosest_) && MethodWeighted::sameAs(other);
+    return (o != nullptr) && (nclosest_ == o->nclosest_) && MethodWeighted::sameAs(other);
 }
 
 void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,

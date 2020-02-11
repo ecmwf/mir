@@ -210,7 +210,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
         SHMInfo* nfo = reinterpret_cast<SHMInfo*>(addr);
 
         // Check if the file has been loaded in memory
-        if (nfo->ready) {
+        if (nfo->ready != 0) {
             log() << msg.str() << ", already loaded" << std::endl;
 
             if (nfo->magic != MAGIC) {
@@ -254,7 +254,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
 
 SharedMemoryLoader::~SharedMemoryLoader() {
-    if (address_) {
+    if (address_ != nullptr) {
         SYSCALL(eckit::Shmget::shmdt(address_));
     }
     if (unload_) {

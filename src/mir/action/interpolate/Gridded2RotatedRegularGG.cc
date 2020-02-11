@@ -38,7 +38,7 @@ Gridded2RotatedRegularGG::~Gridded2RotatedRegularGG() = default;
 
 bool Gridded2RotatedRegularGG::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedRegularGG*>(&other);
-    return o && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
+    return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
 

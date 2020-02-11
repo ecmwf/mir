@@ -23,7 +23,7 @@ namespace util {
 
 void Error::print(std::ostream& s) const {
     int n = errno;
-    if (n) {
+    if (n != 0) {
         s << "errno=" << n << ", strerror='" << std::strerror(n) << "'";
     }
 }

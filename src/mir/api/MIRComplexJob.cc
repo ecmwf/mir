@@ -72,7 +72,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         graph.add((*j)->plan(), watchers_[i]);
     }
 
-    if (!input_) {
+    if (input_ == nullptr) {
         return;
     }
 
@@ -118,11 +118,11 @@ void MIRComplexJob::print(std::ostream& out) const {
 MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, output::MIROutput& output,
                                   api::MIRWatcher* watcher) {
 
-    if (!job) {
+    if (job == nullptr) {
         return *this;
     }
 
-    if (!input_) {
+    if (input_ == nullptr) {
         input_ = &input;
     }
 

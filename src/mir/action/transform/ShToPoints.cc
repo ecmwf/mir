@@ -45,7 +45,7 @@ ShToPoints<Invtrans>::~ShToPoints() = default;
 template <class Invtrans>
 bool ShToPoints<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToPoints*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
+    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
 

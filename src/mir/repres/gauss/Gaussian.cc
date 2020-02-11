@@ -72,7 +72,7 @@ Gaussian::~Gaussian() = default;
 
 bool Gaussian::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const Gaussian*>(&other);
-    return o && (N_ == o->N_) && (domain() == o->domain());
+    return (o != nullptr) && (N_ == o->N_) && (domain() == o->domain());
 }
 
 

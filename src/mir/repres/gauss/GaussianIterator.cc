@@ -93,11 +93,11 @@ void GaussianIterator::print(std::ostream& out) const {
 
 
 bool GaussianIterator::next(Latitude& lat, Longitude& lon) {
-    while (!Ni_ && j_ < Nj_) {
+    while (Ni_ == 0 && j_ < Nj_) {
         Ni_ = resetToRow(k_ + j_++);
     }
 
-    if (Nj_ && i_ < Ni_) {
+    if (0 < Nj_ && i_ < Ni_) {
 
         lat = lat_;
         lon = lon_;

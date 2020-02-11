@@ -44,7 +44,7 @@ ShToRotatedNamedGrid<Invtrans>::~ShToRotatedNamedGrid() = default;
 template <class Invtrans>
 bool ShToRotatedNamedGrid<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedNamedGrid*>(&other);
-    return o && (gridname_ == o->gridname_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
+    return (o != nullptr) && (gridname_ == o->gridname_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
 

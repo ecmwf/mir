@@ -38,7 +38,7 @@ Gridded2RotatedReducedGGPLGiven::~Gridded2RotatedReducedGGPLGiven() = default;
 
 bool Gridded2RotatedReducedGGPLGiven::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_) && Gridded2RotatedGrid::sameAs(other);
+    return (o != nullptr) && (pl_ == o->pl_) && Gridded2RotatedGrid::sameAs(other);
 }
 
 

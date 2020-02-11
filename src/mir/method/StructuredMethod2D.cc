@@ -134,7 +134,7 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
 
 bool StructuredMethod2D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod2D*>(&other);
-    return o && method_ == o->method_;
+    return (o != nullptr) && method_ == o->method_;
 }
 
 

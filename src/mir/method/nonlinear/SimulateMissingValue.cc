@@ -109,7 +109,7 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
 
 bool SimulateMissingValue::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const SimulateMissingValue*>(&other);
-    return o && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
+    return (o != nullptr) && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
            eckit::types::is_approximately_equal(epsilon_, o->epsilon_);
 }
 

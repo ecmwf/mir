@@ -48,11 +48,8 @@ private:
     virtual ValueT* clone() const { return new ValueT(type_, value_); }
 
     virtual bool sameAs(const Value& other) const {
-        const ValueT* o = dynamic_cast<const ValueT*>(&other);
-        if (o) {
-            return o->value_ == value_;
-        }
-        return false;
+        auto o = dynamic_cast<const ValueT*>(&other);
+        return (o != nullptr) && (o->value_ == value_);
     }
 
     template <class U>

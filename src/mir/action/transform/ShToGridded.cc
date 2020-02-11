@@ -328,7 +328,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 bool ShToGridded::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToGridded*>(&other);
-    return o && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 
 

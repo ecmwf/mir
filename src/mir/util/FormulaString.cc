@@ -39,7 +39,7 @@ void FormulaString::execute(mir::context::Context&) const {
 
 bool FormulaString::sameAs(const mir::action::Action& other) const {
     auto o = dynamic_cast<const FormulaString*>(&other);
-    return o && (value_ == o->value_);
+    return (o != nullptr) && (value_ == o->value_);
 }
 
 

@@ -136,7 +136,7 @@ struct CoordinatesFromGRIB : Coordinates {
         }
 
         size_t n = 0;
-        for (double lat, lon, value; grib_iterator_next(it, &lat, &lon, &value);) {
+        for (double lat, lon, value; grib_iterator_next(it, &lat, &lon, &value) != 0;) {
             ASSERT(n < N);
             lats_[n] = lat;
             lons_[n] = lon;
@@ -221,15 +221,17 @@ size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const
 
     log << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
 
-    if (Ndiff && statsLat.max() > toleranceLat) {
-        showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
-        showCoordMinMax(log, coord1.name() + " latitude", coord1.latitudes());
-        showCoordMinMax(log, coord2.name() + " latitude", coord2.latitudes());
-    }
-    if (Ndiff && statsLon.max() > toleranceLon) {
-        showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
-        showCoordMinMax(log, coord1.name() + " longitude", coord1.longitudes());
-        showCoordMinMax(log, coord2.name() + " longitude", coord2.longitudes());
+    if (Ndiff > 0) {
+        if (statsLat.max() > toleranceLat) {
+            showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
+            showCoordMinMax(log, coord1.name() + " latitude", coord1.latitudes());
+            showCoordMinMax(log, coord2.name() + " latitude", coord2.latitudes());
+        }
+        if (statsLon.max() > toleranceLon) {
+            showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
+            showCoordMinMax(log, coord1.name() + " longitude", coord1.longitudes());
+            showCoordMinMax(log, coord2.name() + " longitude", coord2.longitudes());
+        }
     }
     log << std::endl;
 
@@ -320,7 +322,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             mir::repres::RepresentationHandle rep(field.representation());
 
-            if (!atlas && !ecc && !nclosest) {
+            if (!atlas && !ecc && (nclosest == 0)) {
                 std::unique_ptr<Iterator> it(rep->iterator());
                 for (const double& v : values) {
                     ASSERT(it->next());
@@ -336,7 +338,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
             std::unique_ptr<Coordinates> crd(new CoordinatesFromRepresentation(*rep));
 
-            if (nclosest) {
+            if (nclosest > 0) {
                 size_t c = 1;
                 for (auto& n : getNeighbours(p, nclosest, *rep, args_wrap)) {
                     size_t i = n.payload();
@@ -353,12 +355,12 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
             bool err = false;
             if (atlas) {
                 std::unique_ptr<Coordinates> atl(new CoordinatesFromAtlas(rep->atlasGrid()));
-                err = diff(log, toleranceLat, toleranceLon, *crd, *atl);
+                err = diff(log, toleranceLat, toleranceLon, *crd, *atl) != 0;
             }
 
             if (ecc) {
                 std::unique_ptr<Coordinates> ecd(new CoordinatesFromGRIB(input.gribHandle()));
-                err = diff(log, toleranceLat, toleranceLon, *crd, *ecd) || err;
+                err = diff(log, toleranceLat, toleranceLon, *crd, *ecd) != 0 || err;
             }
 
             if (err) {

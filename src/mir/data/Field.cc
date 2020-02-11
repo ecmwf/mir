@@ -32,7 +32,7 @@ Field::Field(const param::MIRParametrisation& param, bool hasMissing, double mis
     missingValue_(missingValue),
     representation_(repres::RepresentationFactory::build(param)) {
 
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->attach();
     }
 }
@@ -44,7 +44,7 @@ Field::Field(const repres::Representation* repres, bool hasMissing, double missi
     missingValue_(missingValue),
     representation_(repres) {
 
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->attach();
     }
 }
@@ -59,7 +59,7 @@ Field::Field(const Field& other) :
 
     // eckit::Log::info() << "Field::Field => " << values_.size() << std::endl;
 
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->attach();
     }
 }
@@ -112,7 +112,7 @@ void Field::select(size_t which) {
 }
 
 Field::~Field() {
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->detach();
     }
 }
@@ -127,7 +127,7 @@ void Field::print(std::ostream& out) const {
         out << ",missingValue=" << missingValue_;
     }
 
-    if (representation_) {
+    if (representation_ != nullptr) {
         out << ",representation=" << *representation_;
     }
 
@@ -155,8 +155,7 @@ const repres::Representation* Field::representation() const {
 void Field::validate() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-
-    if (representation_) {
+    if (representation_ != nullptr) {
         for (size_t i = 0; i < values_.size(); i++) {
             representation_->validate(values(i));
         }
@@ -165,7 +164,6 @@ void Field::validate() const {
 
 MIRFieldStats Field::statistics(size_t i) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
 
     if (hasMissing()) {
         const MIRValuesVector& vals = values(i);
@@ -189,10 +187,10 @@ MIRFieldStats Field::statistics(size_t i) const {
 void Field::representation(const repres::Representation* representation) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    if (representation) {
+    if (representation != nullptr) {
         representation->attach();
     }
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->detach();
     }
     representation_ = representation;
@@ -236,7 +234,6 @@ void Field::metadata(size_t which, const std::string& name, long value) {
 
 const std::map<std::string, long>& Field::metadata(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
 
     if (metadata_.size() <= which) {
         static std::map<std::string, long> empty;

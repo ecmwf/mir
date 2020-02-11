@@ -46,7 +46,7 @@ BitmapFilter::~BitmapFilter() = default;
 
 bool BitmapFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const BitmapFilter*>(&other);
-    return o && (path_ == o->path_);
+    return (o != nullptr) && (path_ == o->path_);
 }
 
 void BitmapFilter::print(std::ostream& out) const {

@@ -62,7 +62,7 @@ bool DistanceWeightingWithLSM::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const DistanceWeightingWithLSM*>(&other);
 
     // Note: LSM's themselves are not used for this distinction!
-    return o && method_ == o->method_;
+    return (o != nullptr) && method_ == o->method_;
 }
 
 

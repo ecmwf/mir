@@ -51,7 +51,7 @@ void OutputVariable::create(int nc) const {
     NC_CALL(nc_def_var(nc, name.c_str(), matrix_->type().code(), ndims, dims, &id_), dataset_.path());
 
     Codec* codec = matrix_->codec();
-    if (codec) {
+    if (codec != nullptr) {
         Variable* self = const_cast<OutputVariable*>(this);
         codec->addAttributes(*self);
     }
@@ -68,7 +68,7 @@ void OutputVariable::save(int nc) const {
     matrix_->save(nc, id_, path());
 
     Codec* codec = matrix_->codec();
-    if (codec) {
+    if (codec != nullptr) {
         codec->updateAttributes(nc, id_, path());
     }
 }

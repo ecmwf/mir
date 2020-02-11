@@ -72,7 +72,7 @@ void FormulaFunction::execute(mir::context::Context& ctx) const {
 
 bool FormulaFunction::sameAs(const mir::action::Action& other) const {
     auto o = dynamic_cast<const FormulaFunction*>(&other);
-    if (o && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
+    if ((o != nullptr) && (&function_ == &(o->function_)) && (args_.size() == o->args_.size())) {
         for (size_t i = 0; i < args_.size(); ++i) {
             if (!args_[i]->sameAs(*(o->args_[i]))) {
                 return false;

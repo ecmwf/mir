@@ -24,19 +24,14 @@ TransCache::TransCache() : loader_(nullptr) {}
 
 
 TransCache::~TransCache() {
-    if (loader_) {
-        delete loader_;
-    }
+    delete loader_;
 }
 
 
 TransCache& TransCache::operator=(cache_t&& transCache) {
 
     // on assignment, loader is discarded
-    if (loader_) {
-        delete loader_;
-    }
-
+    delete loader_;
     loader_     = nullptr;
     transCache_ = transCache;
 
@@ -46,7 +41,7 @@ TransCache& TransCache::operator=(cache_t&& transCache) {
 
 void TransCache::print(std::ostream& s) const {
     s << "TransCache[";
-    if (loader_) {
+    if (loader_ != nullptr) {
         s << *loader_;
     }
     s << "]";

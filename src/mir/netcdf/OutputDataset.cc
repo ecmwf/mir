@@ -29,7 +29,7 @@ namespace netcdf {
 
 OutputDataset::OutputDataset(const std::string& path, NCFileCache& cache, int format) :
     Dataset(path),
-    format_(format ? format : NC_FORMAT_NETCDF4_CLASSIC),
+    format_(format != 0 ? format : NC_FORMAT_NETCDF4_CLASSIC),
     cache_(cache) {}
 
 OutputDataset::~OutputDataset() = default;

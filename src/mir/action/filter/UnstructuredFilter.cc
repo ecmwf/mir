@@ -37,7 +37,8 @@ UnstructuredFilter::~UnstructuredFilter() = default;
 
 
 bool UnstructuredFilter::sameAs(const Action& other) const {
-    return dynamic_cast<const UnstructuredFilter*>(&other);
+    auto o = dynamic_cast<const UnstructuredFilter*>(&other);
+    return (o != nullptr);
 }
 
 

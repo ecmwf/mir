@@ -32,7 +32,7 @@ StructuredMethod::~StructuredMethod() = default;
 
 bool StructuredMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod*>(&other);
-    return o && MethodWeighted::sameAs(other);
+    return (o != nullptr) && MethodWeighted::sameAs(other);
 }
 
 void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start,
@@ -88,24 +88,23 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     maximum = 0;
 
     std::unique_ptr<repres::Iterator> it(r.iterator());
-    size_t i = 0;
+    for (size_t i = 0; it->next(); ++i) {
 
-    while (it->next()) {
         ASSERT(i < N);
         const auto& p = it->pointUnrotated();
 
-        points[i++] = PointLatLon(p.lat(), p.lon());
+        points[i] = PointLatLon(p.lat(), p.lon());
 
-        if (!i || p.lat() < minimum) {
+        if (i == 0 || p.lat() < minimum) {
             minimum = p.lat();
         }
 
-        if (!i || p.lat() > maximum) {
+        if (i == 0 || p.lat() > maximum) {
             maximum = p.lat();
         }
     }
 
-    ASSERT(minimum < maximum);
+    ASSERT(minimum <= maximum);
 }
 
 void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r,

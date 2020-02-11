@@ -154,7 +154,7 @@ static bool check_axis(const Variable& variable, const Variable& axis, std::vect
 }
 
 inline double sign(double x) {
-    return (x > 0) - (x < 0);
+    return (x > 0. ? 1. : (x < 0. ? -1. : 0.));
 }
 
 GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
@@ -236,7 +236,7 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
                 eckit::Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
 
                 eckit::Log::info() << x2 << "/" << y2 << " ================ " << x3 << "/" << y3 << std::endl;
-                s = sign(t1 ? t1 : t2);
+                s = sign(t1 != 0. ? t1 : t2);
             }
 
             if (sign(t1) != s) {

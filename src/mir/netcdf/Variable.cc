@@ -35,7 +35,7 @@ Variable::Variable(Dataset& owner, const std::string& name, const std::vector<Di
     dimensions_(dimensions) {}
 
 Variable::~Variable() {
-    if (matrix_) {
+    if (matrix_ != nullptr) {
         matrix_->detach();
     }
 }
@@ -55,15 +55,15 @@ Dataset& Variable::dataset() {
 }
 
 void Variable::setMatrix(Matrix* matrix) {
-    if (matrix) {
+    if (matrix != nullptr) {
         matrix->attach();
     }
-    if (matrix_) {
+    if (matrix_ != nullptr) {
         matrix_->detach();
     }
     matrix_ = matrix;
 
-    if (matrix_) {
+    if (matrix_ != nullptr) {
         auto j = attributes_.find("_FillValue");
         auto k = attributes_.find("missing_value");
         if (j != attributes_.end() && k != attributes_.end()) {
@@ -112,7 +112,7 @@ void Variable::dump(std::ostream& out) const {
     out << "\t// Kind is " << kind() << std::endl;
     out << "\t// Class is " << *this << std::endl;
 
-    if (matrix_->codec()) {
+    if (matrix_->codec() != nullptr) {
         out << "\t// Codec is " << *matrix_->codec() << std::endl;
     }
 
@@ -120,7 +120,7 @@ void Variable::dump(std::ostream& out) const {
     out << std::endl;
 
     out << "\t";
-    if (matrix_) {
+    if (matrix_ != nullptr) {
         matrix_->type().dump(out);
     }
     else {
@@ -128,10 +128,10 @@ void Variable::dump(std::ostream& out) const {
     }
     out << " " << name_;
 
-    if (dimensions_.size()) {
+    if (!dimensions_.empty()) {
         std::string sep = "(";
-        for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
-            out << sep << (*j)->name();
+        for (auto j : dimensions_) {
+            out << sep << j->name();
             sep = ", ";
         }
         out << ")";
@@ -189,10 +189,10 @@ bool Variable::scalar() const {
 }
 
 Matrix* Variable::matrix() const {
-    if (!matrix_) {
-        std::cout << "Variable::matrix " << *this << std::endl;
+    if (matrix_ == nullptr) {
+        eckit::Log::warning() << "Variable::matrix '" << *this << std::endl;
     }
-    ASSERT(matrix_ != 0);
+    ASSERT(matrix_ != nullptr);
     return matrix_;
 }
 
@@ -229,17 +229,15 @@ Variable* Variable::addMissingCoordinates() {
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
-static const char* not_supported[] = {"signedness", "valid_range", 0};
+static const char* not_supported[] = {"signedness", "valid_range", nullptr};
 
 
 void Variable::validate() const {
-    size_t i = 0;
-    while (not_supported[i]) {
+    for (size_t i = 0; not_supported[i] != nullptr; ++i) {
         auto j = attributes_.find(not_supported[i]);
         if (j != attributes_.end()) {
-            throw MergeError(std::string("Variable ") + name_ + " has an unsupported attribute: " + not_supported[i]);
+            throw MergeError("Variable " + name_ + " has an unsupported attribute: " + not_supported[i]);
         }
-        i++;
     }
 }
 
@@ -337,7 +335,7 @@ bool Variable::sharesDimensions(const Variable& other) const {
 }
 
 bool Variable::timeAxis() const {
-    return (matrix_->codec() && matrix_->codec()->timeAxis());
+    return (matrix_->codec() != nullptr) && matrix_->codec()->timeAxis();
 }
 
 void Variable::collectField(std::vector<Field*>&) const {
@@ -391,7 +389,7 @@ bool Variable::hasMissing() const {
 
 double Variable::missingValue() const {
     double v = 9999;
-    if (matrix_->missingValue()) {
+    if (matrix_->missingValue() != nullptr) {
         matrix_->missingValue()->get(v);
     }
     return v;

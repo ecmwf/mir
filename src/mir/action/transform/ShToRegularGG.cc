@@ -39,7 +39,7 @@ ShToRegularGG<Invtrans>::~ShToRegularGG() = default;
 template <class Invtrans>
 bool ShToRegularGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRegularGG*>(&other);
-    return o && (N_ == o->N_);
+    return (o != nullptr) && (N_ == o->N_);
 }
 
 

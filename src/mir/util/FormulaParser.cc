@@ -25,14 +25,14 @@
 namespace mir {
 namespace util {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 FormulaParser::FormulaParser(std::istream& in) : StreamParser(in, true) {}
 
-std::string FormulaParser::parseIdent(const param::MIRParametrisation& parametrisation) {
+
+std::string FormulaParser::parseIdent(const param::MIRParametrisation& /*parametrisation*/) {
     std::string s;
     char c = peek();
-    while (isalnum(c)) {
+    while (isalnum(c) != 0) {
         s += next();
         c = peek();
     }
@@ -43,18 +43,18 @@ std::string FormulaParser::parseIdent(const param::MIRParametrisation& parametri
 Formula* FormulaParser::parseNumber(const param::MIRParametrisation& parametrisation) {
     std::string s;
 
-    while (isdigit(peek())) {
+    while (isdigit(peek()) != 0) {
         s += next();
     }
 
     if (peek() == '.') {
         s += next();
         char c = next();
-        if (!isdigit(c)) {
+        if (isdigit(c) == 0) {
             throw StreamParser::Error(std::string("FormulaParser::parseNumber invalid char '") + c + "'");
         }
         s += c;
-        while (isdigit(peek())) {
+        while (isdigit(peek()) != 0) {
             s += next();
         }
     }
@@ -69,11 +69,11 @@ Formula* FormulaParser::parseNumber(const param::MIRParametrisation& parametrisa
             c = next();
         }
 
-        if (!isdigit(c)) {
+        if (isdigit(c) == 0) {
             throw StreamParser::Error(std::string("FormulaParser::parseNumber invalid char '") + c + "'");
         }
         s += c;
-        while (isdigit(peek())) {
+        while (isdigit(peek()) != 0) {
             s += next();
         }
     }
@@ -81,6 +81,7 @@ Formula* FormulaParser::parseNumber(const param::MIRParametrisation& parametrisa
     eckit::Translator<std::string, double> s2d;
     return new FormulaNumber(parametrisation, s2d(s));
 }
+
 
 Formula* FormulaParser::parseString(const param::MIRParametrisation& parametrisation) {
     char quote = peek();
@@ -96,6 +97,7 @@ Formula* FormulaParser::parseString(const param::MIRParametrisation& parametrisa
 
     return new FormulaString(parametrisation, s);
 }
+
 
 Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisation) {
     std::unique_ptr<Formula> f;
@@ -123,7 +125,7 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisati
             break;
 
         default:
-            if (isalpha(c) || c == '_') {
+            if (isalpha(c) != 0 || c == '_') {
                 std::string name = parseIdent(parametrisation);
                 if (peek() == '(') {
                     std::vector<Formula*> args = parseList(parametrisation);
@@ -133,7 +135,7 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisati
                     return new FormulaIdent(parametrisation, name);
                 }
             }
-            else if (isdigit(c)) {
+            else if (isdigit(c) != 0) {
                 return parseNumber(parametrisation);
             }
             break;
@@ -142,6 +144,7 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisati
     throw StreamParser::Error(std::string("FormulaParser::parseAtom invalid char '") + c + "'");
     return NULL;
 }
+
 
 Formula* FormulaParser::parsePower(const param::MIRParametrisation& parametrisation) {
     char name[2] = {
@@ -159,6 +162,7 @@ Formula* FormulaParser::parsePower(const param::MIRParametrisation& parametrisat
 
     return result;
 }
+
 
 std::vector<Formula*> FormulaParser::parseList(const param::MIRParametrisation& parametrisation) {
     std::vector<Formula*> v;
@@ -191,6 +195,7 @@ Formula* FormulaParser::parseFactor(const param::MIRParametrisation& parametrisa
     return result;
 }
 
+
 Formula* FormulaParser::parseTerm(const param::MIRParametrisation& parametrisation) {
     char name[2] = {
         0,
@@ -206,6 +211,7 @@ Formula* FormulaParser::parseTerm(const param::MIRParametrisation& parametrisati
     }
     return result;
 }
+
 
 Formula* FormulaParser::parseTest(const param::MIRParametrisation& parametrisation) {
     char name[3] = {
@@ -231,17 +237,16 @@ Formula* FormulaParser::parseTest(const param::MIRParametrisation& parametrisati
     return result;
 }
 
+
 Formula* FormulaParser::parse(const param::MIRParametrisation& parametrisation) {
     std::unique_ptr<Formula> f(parseTest(parametrisation));
-    char c;
-    if ((c = peek())) {
+    char c = peek();
+    if (c != 0) {
         throw StreamParser::Error(std::string("Error parsing rules: remaining char: ") + c);
     }
     return f.release();
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
 
 }  // namespace util
 }  // namespace mir

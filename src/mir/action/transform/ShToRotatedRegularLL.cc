@@ -53,7 +53,8 @@ ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() = default;
 template <class Invtrans>
 bool ShToRotatedRegularLL<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
-    return o && (increments_ == o->increments_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
+    return (o != nullptr) && (increments_ == o->increments_) && (rotation_ == o->rotation_) &&
+           ShToGridded::sameAs(other);
 }
 
 

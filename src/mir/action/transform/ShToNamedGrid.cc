@@ -39,7 +39,7 @@ ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
 template <class Invtrans>
 bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToNamedGrid*>(&other);
-    return o && (gridname_ == o->gridname_);
+    return (o != nullptr) && (gridname_ == o->gridname_);
 }
 
 

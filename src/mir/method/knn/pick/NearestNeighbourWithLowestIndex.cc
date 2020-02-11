@@ -71,7 +71,7 @@ size_t NearestNeighbourWithLowestIndex::n() const {
 
 bool NearestNeighbourWithLowestIndex::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NearestNeighbourWithLowestIndex*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

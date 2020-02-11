@@ -61,7 +61,7 @@ Gridded2RotatedLL::~Gridded2RotatedLL() = default;
 
 bool Gridded2RotatedLL::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedLL*>(&other);
-    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2RotatedGrid::sameAs(*o);
+    return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2RotatedGrid::sameAs(*o);
 }
 
 

@@ -52,7 +52,7 @@ ConservativeFiniteElement::~ConservativeFiniteElement() = default;
 
 bool ConservativeFiniteElement::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ConservativeFiniteElement*>(&other);
-    return o && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
+    return (o != nullptr) && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
            MethodWeighted::sameAs(*o);
 }
 

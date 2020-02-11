@@ -108,7 +108,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
 
 MIROutputFactory::~MIROutputFactory() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    if (m_formats) {
+    if (m_formats != nullptr) {
         m_formats->erase(name_);
     }
 }

@@ -72,7 +72,7 @@ bool ConditionT<long>::eval(grib_handle* h) const {
         return false;
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key_);
@@ -91,7 +91,7 @@ bool ConditionT<double>::eval(grib_handle* h) const {
         return false;
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key_);
@@ -111,7 +111,7 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
         return false;
     }
 
-    if (err) {
+    if (err != 0) {
         eckit::Log::debug<LibMir>() << "ConditionT<std::string>::eval("
                                     << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
@@ -257,16 +257,15 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {nullptr, nullptr, nullptr},
     };
 
-    const char* key = name.c_str();
-    size_t i        = 0;
-    while (mappings[i].name) {
+    for (size_t i = 0; mappings[i].name != nullptr; ++i) {
         if (name == mappings[i].name) {
             if (mappings[i].condition == nullptr || mappings[i].condition->eval(h)) {
                 return mappings[i].key;
             }
         }
-        i++;
     }
+
+    auto key = name.c_str();
     return key;
 }
 
@@ -335,7 +334,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
         Lon2 = 0;
         GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &Lon2));
 
-        if (grib_is_defined(h, "pl")) {
+        if (grib_is_defined(h, "pl") != 0) {
 
             double Lon1 = 0;
             GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &Lon1));
@@ -472,7 +471,7 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
         values.assign(keys_.size(), 0);
         size_t i = 0;
         for (auto& key : keys_) {
-            if (!grib_is_defined(h, key.c_str())) {
+            if (grib_is_defined(h, key.c_str()) == 0) {
                 return false;
             }
             GRIB_CALL(grib_get_double(h, key.c_str(), &values[i++]));
@@ -666,7 +665,7 @@ data::MIRField GribInput::field() const {
         if (std::find(pl.rbegin(), pl.rend(), 0) != pl.rend()) {
 
             // if there are no missing values yet, set them
-            if (!missingValuesPresent) {
+            if (missingValuesPresent == 0) {
                 eckit::Log::debug<LibMir>()
                     << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
                 missingValuesPresent = 1;
@@ -751,7 +750,7 @@ bool GribInput::has(const std::string& name) const {
         return false;
     }
 
-    bool ok = grib_is_defined(grib_, key);
+    bool ok = grib_is_defined(grib_, key) != 0;
 
     // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") <<
     // std::endl;
@@ -775,7 +774,7 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "grib_get_bool(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
@@ -814,7 +813,7 @@ bool GribInput::get(const std::string& name, long& value) const {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         eckit::Log::debug<LibMir>() << "grib_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
@@ -850,7 +849,7 @@ bool GribInput::get(const std::string& name, double& value) const {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "grib_get_double(" << name << ",key=" << key << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key);
@@ -892,7 +891,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
         return FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         eckit::Log::debug<LibMir>() << "grib_get_long_array(" << name << ",key=" << key << ") failed " << err
                                     << " count=" << count << std::endl;
         GRIB_ERROR(err, key);
@@ -954,7 +953,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
         return FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "grib_get_string(" << name << ",key=" << key << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key);
@@ -996,7 +995,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         return FieldParametrisation::get(name, value);
     }
 
-    if (err) {
+    if (err != 0) {
         // eckit::Log::debug<LibMir>() << "grib_get_double_array(" << name << ",key=" << key << ") failed " << err << "
         // count=" << count << std::endl;
         GRIB_ERROR(err, key);
@@ -1126,13 +1125,12 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    grib_keys_iterator* keys =
-        grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    auto keys = grib_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     try {
         const char* sep = "";
-        while (grib_keys_iterator_next(keys)) {
+        while (grib_keys_iterator_next(keys) != 0) {
 
             char value[1024];
             size_t size = sizeof(value);
@@ -1188,7 +1186,7 @@ void GribInput::marsRequest(std::ostream& out) const {
         }
     }
     catch (...) {
-        if (keys) {
+        if (keys != nullptr) {
             grib_keys_iterator_delete(keys);
         }
         throw;

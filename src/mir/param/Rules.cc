@@ -98,7 +98,7 @@ void Rules::print(std::ostream& s) const {
 
     json.startObject();
     for (const auto& rule : rules_) {
-        json << rule.first << rule.second;
+        json << rule.first << (*rule.second);
     }
     json.endObject();
 }

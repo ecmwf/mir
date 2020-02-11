@@ -44,7 +44,7 @@ void RegularGG::print(std::ostream& out) const {
 
 bool RegularGG::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const RegularGG*>(&other);
-    return o && Regular::sameAs(other);
+    return (o != nullptr) && Regular::sameAs(other);
 }
 
 

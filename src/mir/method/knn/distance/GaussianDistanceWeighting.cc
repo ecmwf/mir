@@ -69,7 +69,7 @@ void GaussianDistanceWeighting::operator()(size_t ip, const Point3& point,
 
 bool GaussianDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const GaussianDistanceWeighting*>(&other);
-    return o && eckit::types::is_approximately_equal(stddev_, o->stddev_);
+    return (o != nullptr) && eckit::types::is_approximately_equal(stddev_, o->stddev_);
 }
 
 

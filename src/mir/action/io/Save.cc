@@ -38,7 +38,7 @@ Save::~Save() = default;
 
 bool Save::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Save*>(&other);
-    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
+    return (o != nullptr) && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
            o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 

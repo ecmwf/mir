@@ -44,7 +44,7 @@ ShToRotatedReducedGGPLGiven<Invtrans>::~ShToRotatedReducedGGPLGiven() = default;
 template <class Invtrans>
 bool ShToRotatedReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
+    return (o != nullptr) && (pl_ == o->pl_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
 }
 
 

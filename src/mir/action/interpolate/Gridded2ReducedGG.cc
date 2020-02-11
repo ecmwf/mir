@@ -36,7 +36,7 @@ Gridded2ReducedGG::~Gridded2ReducedGG() = default;
 
 bool Gridded2ReducedGG::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2ReducedGG*>(&other);
-    return o && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (N_ == o->N_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 

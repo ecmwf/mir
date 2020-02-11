@@ -117,18 +117,18 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
             count++;
         }
 
-        if (removed && non_zero) {
+        if ((removed != 0.) && (non_zero > 0)) {
             double d = removed / non_zero;
             for (iterator it = begin(i); it != end(i); ++it) {
                 const double a = *it;
-                if (a) {
+                if (a != 0.) {
                     *it = a + d;
                 }
             }
         }
     }
 
-    if (fixed) {
+    if (fixed > 0) {
         size_t r     = rows();
         size_t c     = cols();
         size_t total = r * c;
@@ -136,7 +136,8 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
                                     << Pretty(count) << " (matrix is " << Pretty(r) << "x" << Pretty(c)
                                     << ", total=" << Pretty(total) << ")" << std::endl;
     }
-    prune(0.0);
+
+    prune(0.);
 }
 
 
@@ -165,7 +166,7 @@ void WeightMatrix::validate(const char* when) const {
         if (!ok && logErrors) {
 
             if (errors < 50) {
-                if (!errors) {
+                if (errors == 0) {
                     eckit::Log::debug<LibMir>() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
                 }
 

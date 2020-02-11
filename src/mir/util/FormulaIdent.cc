@@ -60,7 +60,7 @@ void FormulaIdent::execute(mir::context::Context& ctx) const {
 
 bool FormulaIdent::sameAs(const mir::action::Action& other) const {
     auto o = dynamic_cast<const FormulaIdent*>(&other);
-    return o && (name_ == o->name_);
+    return (o != nullptr) && (name_ == o->name_);
 }
 
 

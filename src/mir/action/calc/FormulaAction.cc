@@ -66,7 +66,7 @@ FormulaAction::~FormulaAction() = default;
 
 bool FormulaAction::sameAs(const Action& other) const {
     auto o = dynamic_cast<const FormulaAction*>(&other);
-    return o && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
+    return (o != nullptr) && (formula_->sameAs(*o->formula_)) && (metadata_ == o->metadata_);
 }
 
 

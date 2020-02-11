@@ -45,7 +45,7 @@ size_t NClosest::n() const {
 
 bool NClosest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NClosest*>(&other);
-    return o && nClosest_ == o->nClosest_;
+    return (o != nullptr) && nClosest_ == o->nClosest_;
 }
 
 

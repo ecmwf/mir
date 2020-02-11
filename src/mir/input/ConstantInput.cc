@@ -31,7 +31,7 @@ ConstantInput::ConstantInput(const param::MIRParametrisation& parametrisation) :
 
 bool ConstantInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const ConstantInput*>(&other);
-    return o && constant_ == constant_ && ArtificialInput::sameAs(other);
+    return (o != nullptr) && constant_ == constant_ && ArtificialInput::sameAs(other);
 }
 
 

@@ -44,7 +44,7 @@ void NoDistanceWeighting::operator()(size_t ip, const Point3&,
 
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NoDistanceWeighting*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

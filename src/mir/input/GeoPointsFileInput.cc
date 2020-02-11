@@ -274,7 +274,7 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
 bool GeoPointsFileInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const GeoPointsFileInput*>(&other);
-    return o && (path_ == o->path_);
+    return (o != nullptr) && (path_ == o->path_);
 }
 
 

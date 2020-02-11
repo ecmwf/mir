@@ -27,7 +27,7 @@ Noop::~Noop() = default;
 
 bool Noop::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Noop*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

@@ -139,7 +139,7 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
         // Look for pattern matchings
         // This will automatically add the new NamedGrid to the map
         auto ng = NamedGridPattern::build(name);
-        if (ng) {
+        if (ng != nullptr) {
             return *ng;
         }
 

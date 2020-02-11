@@ -31,7 +31,7 @@ MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
     sqsum_(0),
     stdev_(0) {
 
-    if (count_) {
+    if (count_ > 0) {
 
         min_ = max_ = vs[0];
 

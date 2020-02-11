@@ -38,7 +38,7 @@ NearestNeighbour::~NearestNeighbour() = default;
 
 bool NearestNeighbour::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestNeighbour*>(&other);
-    return o && KNearestNeighbours::sameAs(other);
+    return (o != nullptr) && KNearestNeighbours::sameAs(other);
 }
 
 

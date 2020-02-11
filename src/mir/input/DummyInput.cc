@@ -51,7 +51,7 @@ DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : Artificia
 
 bool DummyInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const DummyInput*>(&other);
-    return o && ArtificialInput::sameAs(other);
+    return (o != nullptr) && ArtificialInput::sameAs(other);
 }
 
 

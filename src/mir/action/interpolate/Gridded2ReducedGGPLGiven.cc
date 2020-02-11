@@ -36,7 +36,7 @@ Gridded2ReducedGGPLGiven::~Gridded2ReducedGGPLGiven() = default;
 
 bool Gridded2ReducedGGPLGiven::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2ReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (pl_ == o->pl_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 

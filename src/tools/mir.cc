@@ -232,8 +232,8 @@ public:
                                                     "LSM interpolation weight adjustment factor (default 0.2)"));
 
         for (const std::string& io : {"", "input", "output"}) {
-            const std::string which = io.length() ? io : "both input and output";
-            const std::string key   = (io.length() ? "-" : "") + io;
+            const std::string which = io.empty() ? "both input and output" : io;
+            const std::string key   = (io.empty() ? "" : "-") + io;
             options_.push_back(new FactoryOption<method::MethodFactory>(
                 "lsm-interpolation" + key, "LSM interpolation method for " + which + ", default nearest-neighbour"));
             options_.push_back(

@@ -45,7 +45,7 @@ NetcdfFileInput::~NetcdfFileInput() {
 grib_handle* NetcdfFileInput::gribHandle(size_t which) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
-    if (!handle) {
+    if (handle == nullptr) {
         handle = grib_handle_new_from_samples(nullptr, "GRIB1");
         grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
@@ -147,7 +147,7 @@ bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) c
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const NetcdfFileInput*>(&other);
-    return o && (path_ == o->path_);
+    return (o != nullptr) && (path_ == o->path_);
 }
 
 size_t NetcdfFileInput::dimensions() const {

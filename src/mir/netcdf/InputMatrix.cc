@@ -47,42 +47,42 @@ static void _get(V& v, size_t size, int varid, NCFile& file, G get) {
 
 void InputMatrix::read(std::vector<double>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_double);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<float>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_float);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<long>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_long);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<short>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_short);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<unsigned char>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_ubyte);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
 
 void InputMatrix::read(std::vector<long long>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_longlong);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
@@ -104,7 +104,7 @@ static void _get_slab(V& v, const std::vector<size_t>& start, const std::vector<
 void InputMatrix::read(std::vector<double>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_double);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }
@@ -112,7 +112,7 @@ void InputMatrix::read(std::vector<double>& values, const std::vector<size_t>& s
 void InputMatrix::read(std::vector<float>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_float);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }
@@ -120,7 +120,7 @@ void InputMatrix::read(std::vector<float>& values, const std::vector<size_t>& st
 void InputMatrix::read(std::vector<long>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_long);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }
@@ -128,7 +128,7 @@ void InputMatrix::read(std::vector<long>& values, const std::vector<size_t>& sta
 void InputMatrix::read(std::vector<short>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_short);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }
@@ -136,7 +136,7 @@ void InputMatrix::read(std::vector<short>& values, const std::vector<size_t>& st
 void InputMatrix::read(std::vector<unsigned char>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_uchar);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }
@@ -144,7 +144,7 @@ void InputMatrix::read(std::vector<unsigned char>& values, const std::vector<siz
 void InputMatrix::read(std::vector<long long>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_longlong);
-    if (codec_) {
+    if (codec_ != nullptr) {
         codec_->decode(values);
     }
 }

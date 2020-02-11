@@ -100,7 +100,7 @@ bool MissingIfHeaviestMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMa
 
 bool MissingIfHeaviestMissing::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const MissingIfHeaviestMissing*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

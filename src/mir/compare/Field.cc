@@ -52,20 +52,20 @@ void Field::setOptions(const eckit::option::CmdArgs& args) {
 
 
 Field::Field(FieldBase* field) : field_(field) {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
 
 
 Field::Field(const Field& other) : field_(other.field_) {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
 
 Field::~Field() {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->detach();
     }
 }
@@ -73,11 +73,11 @@ Field::~Field() {
 
 Field& Field::operator=(const Field& other) {
     if (field_ != other.field_) {
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
         field_ = other.field_;
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
     }
@@ -86,7 +86,7 @@ Field& Field::operator=(const Field& other) {
 }
 
 void Field::print(std::ostream& out) const {
-    if (field_) {
+    if (field_ != nullptr) {
         out << *field_;
     }
     else {

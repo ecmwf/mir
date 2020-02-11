@@ -38,7 +38,7 @@ FrameFilter::~FrameFilter() = default;
 
 bool FrameFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const FrameFilter*>(&other);
-    return o && (size_ == o->size_);
+    return (o != nullptr) && (size_ == o->size_);
 }
 
 
@@ -58,14 +58,12 @@ void FrameFilter::execute(context::Context& ctx) const {
 
         MIRValuesVector& values = field.direct(i);
 
-        const repres::Representation* representation = field.representation();
-        size_t count                                 = representation->frame(values, size_, missingValue);
-
-        if (count) {
-            field.hasMissing(true);
+        auto* representation = field.representation();
+        if (representation->frame(values, size_, missingValue) == 0) {
+            eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
         }
         else {
-            eckit::Log::warning() << "Frame " << size_ << " has no effect" << std::endl;
+            field.hasMissing(true);
         }
     }
 }

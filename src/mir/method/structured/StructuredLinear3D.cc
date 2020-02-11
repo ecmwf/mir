@@ -47,7 +47,7 @@ StructuredLinear3D::~StructuredLinear3D() = default;
 
 bool StructuredLinear3D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredLinear3D*>(&other);
-    return o && StructuredMethod::sameAs(other);
+    return (o != nullptr) && StructuredMethod::sameAs(other);
 }
 
 

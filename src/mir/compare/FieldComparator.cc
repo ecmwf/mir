@@ -522,7 +522,7 @@ static void getStats(const Field& field, Statistics& stats) {
 
     size_t first = 0;
     for (size_t i = 0; i < size; i++) {
-        if (missingValuesPresent && values[i] == missingValue) {
+        if ((missingValuesPresent != 0) && (values[i] == missingValue)) {
             stats.missing_++;
         }
         else {
@@ -540,7 +540,7 @@ static void getStats(const Field& field, Statistics& stats) {
     }
 
     for (size_t i = first; i < size; i++) {
-        if (missingValuesPresent && values[i] == missingValue) {
+        if ((missingValuesPresent != 0) && (values[i] == missingValue)) {
             stats.missing_++;
         }
         else {
@@ -766,7 +766,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
                 cnt++;
             }
         }
-        if (!cnt) {
+        if (cnt == 0) {
             for (const auto& other : flds) {
 
                 if (cnt >= 5) {

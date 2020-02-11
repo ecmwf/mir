@@ -37,7 +37,7 @@ Copy::~Copy() = default;
 
 bool Copy::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Copy*>(&other);
-    return o && output_.sameAs(o->output_);
+    return (o != nullptr) && output_.sameAs(o->output_);
 }
 
 

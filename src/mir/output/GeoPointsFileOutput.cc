@@ -38,7 +38,7 @@ eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
 
 bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const GeoPointsFileOutput*>(&other);
-    return o && (path_ == o->path_) && (binary_ == o->binary_);
+    return (o != nullptr) && (path_ == o->path_) && (binary_ == o->binary_);
 }
 
 

@@ -52,7 +52,7 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
 
 bool StatisticsFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const StatisticsFilter*>(&other);
-    if (!o || statistics_.size() != o->statistics_.size()) {
+    if ((o == nullptr) || (statistics_.size() != o->statistics_.size())) {
         return false;
     }
 

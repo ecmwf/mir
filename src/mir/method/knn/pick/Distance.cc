@@ -46,7 +46,7 @@ size_t Distance::n() const {
 
 bool Distance::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const Distance*>(&other);
-    return o && eckit::types::is_approximately_equal(distance_, o->distance_);
+    return (o != nullptr) && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
 

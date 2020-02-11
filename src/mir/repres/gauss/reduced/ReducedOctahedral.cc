@@ -50,7 +50,7 @@ void ReducedOctahedral::makeName(std::ostream& out) const {
 
 bool ReducedOctahedral::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const ReducedOctahedral*>(&other);
-    return o && Octahedral::sameAs(other);
+    return (o != nullptr) && Octahedral::sameAs(other);
 }
 
 

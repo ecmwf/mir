@@ -40,7 +40,7 @@ ShToReducedGG<Invtrans>::~ShToReducedGG() = default;
 template <class Invtrans>
 bool ShToReducedGG<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToReducedGG*>(&other);
-    return o && (N_ == o->N_);
+    return (o != nullptr) && (N_ == o->N_);
 }
 
 

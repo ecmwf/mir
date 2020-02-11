@@ -36,7 +36,7 @@ void NearestNeighbour::operator()(size_t ip, const Point3&,
 
 bool NearestNeighbour::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NearestNeighbour*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

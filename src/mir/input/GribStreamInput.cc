@@ -76,7 +76,7 @@ bool GribStreamInput::next() {
         first_  = false;
         advance = skip_;
 
-        if (offset_) {
+        if (offset_ != 0) {
             dataHandle().skip(offset_);
         }
     }

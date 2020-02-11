@@ -47,14 +47,14 @@ namespace mir {
 namespace output {
 
 void call_zero(int bad, const std::string& msg) {
-    if (bad) {
+    if (bad != 0) {
         eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
         throw eckit::SeriousBug(msg);
     }
 }
 
 void call_nonzero(void* ok, const std::string& msg) {
-    call_zero(!ok, msg);
+    call_zero(ok == nullptr ? 1 : 0, msg);
 }
 
 struct PNGOutput::PNGEncoder {
@@ -304,7 +304,7 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
 
         // set alpha channel
-        if (N_A_CHANNELS) {
+        if (N_A_CHANNELS != 0) {
             for (int i = 0; i < N_BYTES_PER_CHANNEL; ++i) {
                 *(p++) = 0xFF;
             }
@@ -315,8 +315,8 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
 
     int color_type() const {
         return N_C_CHANNELS == 1
-                   ? (N_A_CHANNELS ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
-                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
+                   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
+                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
     }
 
 private:

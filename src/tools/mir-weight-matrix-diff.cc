@@ -156,7 +156,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         ASSERT(i == a.end());
         ASSERT(j == b.end());
 
-        if (d) {
+        if (d > 0) {
             throw eckit::BadValue(std::to_string(d) + " " + Plural{"difference"}(d));
         }
     }

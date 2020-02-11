@@ -66,7 +66,7 @@ size_t NClosestOrNearest::n() const {
 
 bool NClosestOrNearest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NClosestOrNearest*>(&other);
-    return o && nClosest_ == o->nClosest_ &&
+    return (o != nullptr) && nClosest_ == o->nClosest_ &&
            eckit::types::is_approximately_equal(distanceTolerance_, o->distanceTolerance_);
 }
 

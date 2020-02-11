@@ -39,7 +39,7 @@ ShToReducedGGPLGiven<Invtrans>::~ShToReducedGGPLGiven() = default;
 template <class Invtrans>
 bool ShToReducedGGPLGiven<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToReducedGGPLGiven*>(&other);
-    return o && (pl_ == o->pl_);
+    return (o != nullptr) && (pl_ == o->pl_);
 }
 
 

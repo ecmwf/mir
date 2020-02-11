@@ -41,7 +41,7 @@ StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
 
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
-    return o && StructuredMethod::sameAs(other);
+    return (o != nullptr) && StructuredMethod::sameAs(other);
 }
 
 

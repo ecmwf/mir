@@ -62,7 +62,7 @@ bool Heaviest::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLine
 
 bool Heaviest::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const Heaviest*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

@@ -49,7 +49,7 @@ ShToRegularLL<Invtrans>::~ShToRegularLL() = default;
 template <class Invtrans>
 bool ShToRegularLL<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRegularLL*>(&other);
-    return o && (increments_ == o->increments_);
+    return (o != nullptr) && (increments_ == o->increments_);
 }
 
 

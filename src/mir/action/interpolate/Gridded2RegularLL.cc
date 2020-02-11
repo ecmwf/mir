@@ -61,7 +61,8 @@ Gridded2RegularLL::~Gridded2RegularLL() = default;
 
 bool Gridded2RegularLL::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RegularLL*>(&other);
-    return o && (increments_ == o->increments_) && (bbox_ == o->bbox_) && Gridded2GriddedInterpolation::sameAs(*o);
+    return (o != nullptr) && (increments_ == o->increments_) && (bbox_ == o->bbox_) &&
+           Gridded2GriddedInterpolation::sameAs(*o);
 }
 
 

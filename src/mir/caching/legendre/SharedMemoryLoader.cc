@@ -205,7 +205,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
         SHMInfo* nfo = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
 
         // Check if the file has been loaded in memory
-        if (nfo->ready) {
+        if (nfo->ready != 0) {
             log() << msg.str() << ", already loaded" << std::endl;
 
             if (nfo->magic != MAGIC) {
@@ -250,7 +250,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
 
 SharedMemoryLoader::~SharedMemoryLoader() {
-    if (address_) {
+    if (address_ != nullptr) {
         SYSCALL(eckit::Shmget::shmdt(address_));
     }
     if (unload_) {

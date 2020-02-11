@@ -373,7 +373,7 @@ void FiniteElement::print(std::ostream& out) const {
 
 bool FiniteElement::sameAs(const Method& other) const {
     auto o = dynamic_cast<const FiniteElement*>(&other);
-    return o && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) && MethodWeighted::sameAs(other);
+    return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_) && MethodWeighted::sameAs(other);
 }
 
 
@@ -486,7 +486,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         << Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
         << Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
 
-    if (nbFailures && !failuresAreMissingValues) {
+    if ((nbFailures > 0) && !failuresAreMissingValues) {
         std::stringstream msg;
         msg << "Failed to project " << Pretty(nbFailures, {"point"});
         log << msg.str() << ":";

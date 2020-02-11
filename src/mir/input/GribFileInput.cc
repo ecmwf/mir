@@ -32,7 +32,7 @@ GribFileInput::GribFileInput(const eckit::PathName& path, off_t offset) :
 GribFileInput::GribFileInput(const eckit::PathName& path) : path_(path), handle_(nullptr) {}
 
 GribFileInput::~GribFileInput() {
-    if (handle_) {
+    if (handle_ != nullptr) {
         handle_->close();
         delete handle_;
     }
@@ -40,7 +40,7 @@ GribFileInput::~GribFileInput() {
 
 bool GribFileInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const GribFileInput*>(&other);
-    return o && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
+    return (o != nullptr) && (skip_ == o->skip_) && (step_ == o->step_) && (path_ == o->path_);
 }
 
 void GribFileInput::print(std::ostream& out) const {
@@ -48,7 +48,7 @@ void GribFileInput::print(std::ostream& out) const {
 }
 
 eckit::DataHandle& GribFileInput::dataHandle() {
-    if (!handle_) {
+    if (handle_ == nullptr) {
         handle_ = new eckit::BufferedHandle(path_.fileHandle());
         handle_->openForRead();
     }

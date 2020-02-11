@@ -42,7 +42,7 @@ int ReshapeVariableStep::rank() const {
 void ReshapeVariableStep::print(std::ostream& out) const {
     out << "ReshapeVariableStep[" << out_ << ", dim=" << dimension_;
 
-    if (next_) {
+    if (next_ != nullptr) {
         out << ", next=" << *next_;
     }
     out << "]";
@@ -127,21 +127,21 @@ void ReshapeVariableStep::execute(MergePlan& plan) {
 }
 
 bool ReshapeVariableStep::merge(Step* other) {
-    ReshapeVariableStep* o = dynamic_cast<ReshapeVariableStep*>(other);
-    if (o) {
+    auto o = dynamic_cast<ReshapeVariableStep*>(other);
+    if (o != nullptr) {
         // Same variable
         if (&(o->out_) == &(out_)) {
 
-            ReshapeVariableStep* next = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
-            ReshapeVariableStep* prev = 0;
+            auto next                 = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
+            ReshapeVariableStep* prev = nullptr;
             ReshapeVariableStep* self = this;
 
-            while (self) {
+            while (self != nullptr) {
                 prev = self;
                 self = self->next_;
             }
 
-            if (prev) {
+            if (prev != nullptr) {
                 prev->next_ = next;
             }
             else {

@@ -43,7 +43,7 @@ KNearest::~KNearest() = default;
 
 bool KNearest::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearest*>(&other);
-    return o && KNearestNeighbours::sameAs(other);
+    return (o != nullptr) && KNearestNeighbours::sameAs(other);
 }
 
 

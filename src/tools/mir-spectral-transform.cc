@@ -215,7 +215,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                                "] ('multi-scalar')");
     }
 
-    if (args.has("grid") + args.has("gridname") + args.has("griddef") != 1) {
+    if ((args.has("grid") ? 1 : 0) + (args.has("gridname") ? 1 : 0) + (args.has("griddef") ? 1 : 0) != 1) {
         throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
     }
 

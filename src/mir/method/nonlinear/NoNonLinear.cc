@@ -35,7 +35,7 @@ bool NoNonLinear::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix&, NonLin
 
 bool NoNonLinear::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const NoNonLinear*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 

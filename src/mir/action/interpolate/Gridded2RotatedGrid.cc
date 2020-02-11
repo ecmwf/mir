@@ -48,7 +48,7 @@ const util::Rotation& Gridded2RotatedGrid::rotation() const {
 
 bool Gridded2RotatedGrid::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedGrid*>(&other);
-    return o && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
