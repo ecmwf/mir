@@ -31,10 +31,9 @@ static bool normaliseLongitudes_ = false;
 
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
 
     options.push_back(new SimpleOption<bool>("normalise-longitudes", "Normalise longitudes between 0 and 360"));
-
 
     GribField::addOptions(options);
     BufrField::addOptions(options);
@@ -42,9 +41,7 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
 
 void Field::setOptions(const eckit::option::CmdArgs& args) {
-
     args.get("normalise-longitudes", normaliseLongitudes_);
-
 
     GribField::setOptions(args);
     BufrField::setOptions(args);
@@ -63,6 +60,7 @@ Field::Field(const Field& other) : field_(other.field_) {
         field_->attach();
     }
 }
+
 
 Field::~Field() {
     if (field_ != nullptr) {

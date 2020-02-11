@@ -42,7 +42,7 @@ static double areaPrecisionE_ = 0.;
 
 
 void GribField::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
 
     options.push_back(
         new SimpleOption<double>("compare-areas-threshold", "Threshold when comparing areas with Jaccard distance"));

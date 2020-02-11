@@ -67,7 +67,7 @@ static std::set<std::string> headerKeys = {
 
 
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
     options.push_back(new SimpleOption<bool>("bufr-print-all-values", "Print all BUFR values"));
     options.push_back(
         new SimpleOption<double>("bufr-relative-error", "Relative when comparing BUFR floating pooint values"));

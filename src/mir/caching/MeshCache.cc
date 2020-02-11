@@ -12,16 +12,8 @@
 
 #include "mir/caching/MeshCache.h"
 
-// #include "eckit/filesystem/PathName.h"
-// #include "eckit/serialisation/FileStream.h"
-// #include "eckit/config/Resource.h"
-
-// #include "atlas/mesh/Mesh.h"
-
 #include "mir/config/LibMir.h"
-// #include "eckit/config/Resource.h"
 
-using namespace eckit;
 
 namespace mir {
 namespace caching {
@@ -33,26 +25,31 @@ MeshCache::MeshCache() :
                                          eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
                                          eckit::Resource<size_t>("$MIR_MESH_CACHE_SIZE", 0)) {}
 
+
 const char* MeshCacheTraits::name() {
     return "mir/meshes";
 }
+
 
 int MeshCacheTraits::version() {
     return 2;
 }
 
+
 const char* MeshCacheTraits::extension() {
     return ".mesh";
 }
 
-void MeshCacheTraits::save(const CacheManagerBase&, const value_type&, const eckit::PathName&) {
+
+void MeshCacheTraits::save(const eckit::CacheManagerBase&, const value_type&, const eckit::PathName&) {
     NOTIMP;
 }
 
-void MeshCacheTraits::load(const CacheManagerBase&, value_type&, const eckit::PathName&) {
+
+void MeshCacheTraits::load(const eckit::CacheManagerBase&, value_type&, const eckit::PathName&) {
     NOTIMP;
 }
-//----------------------------------------------------------------------------------------------------------------------
+
 
 }  // namespace caching
 }  // namespace mir
