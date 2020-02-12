@@ -191,7 +191,7 @@ static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const e
     //     cache[Segment(p2, p1)] = q;
     //     j = cache.find(s);
     // }
-    // return (*j).second;
+    // return j->second;
 }
 
 static bool connect(const eckit::geometry::Point2& q, Segment& line,
@@ -199,7 +199,7 @@ static bool connect(const eckit::geometry::Point2& q, Segment& line,
 
     auto j = ends.find(q);
     if (j != ends.end()) {
-        const std::set<Segment>& q = (*j).second;
+        const std::set<Segment>& q = j->second;
 
         std::set<Segment> i;
         std::set_intersection(q.begin(), q.end(), segments.begin(), segments.end(), std::inserter(i, i.begin()));

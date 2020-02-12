@@ -23,7 +23,12 @@ namespace api {
 
 class MIREstimation {
 public:
-    virtual ~MIREstimation()                                       = default;
+    MIREstimation()          = default;
+    virtual ~MIREstimation() = default;
+
+    MIREstimation(const MIREstimation&) = delete;
+    MIREstimation& operator=(const MIREstimation&) = delete;
+
     virtual void numberOfGridPoints(size_t count)                  = 0;
     virtual void missingValues(size_t count)                       = 0;
     virtual void pl(size_t count)                                  = 0;

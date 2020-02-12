@@ -30,7 +30,7 @@ namespace netcdf {
 
 
 InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Dataset(path), cache_(cache) {
-    std::cout << "Dataset: pass1..." << std::endl;
+    eckit::Log::info() << "Dataset: pass1..." << std::endl;
 
 
     char name[NC_MAX_NAME + 1];
@@ -44,13 +44,13 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
 
     NC_CALL(nc_inq_format(nc, &format_), path_);
 
-    for (size_t i = 0; i < number_of_dimensions_; i++) {
+    for (int i = 0; i < number_of_dimensions_; ++i) {
         size_t count;
         NC_CALL(nc_inq_dim(nc, i, name, &count), path_);
         add(new InputDimension(*this, name, i, count));
     }
 
-    for (size_t i = 0; i < number_of_variables_; i++) {
+    for (int i = 0; i < number_of_variables_; ++i) {
         int type;
         int ndims;
         int nattr;
@@ -62,7 +62,7 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
         Type& kind = Type::lookup(type);
 
         std::vector<Dimension*> dimensions;
-        dimensions.reserve(ndims);
+        dimensions.reserve(size_t(ndims));
 
         for (int j = 0; j < ndims; j++) {
             dimensions.push_back(findDimension(dims[j]));
@@ -78,76 +78,71 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
 
     file.close();
 
-    std::cout << "Dataset: pass1 done" << std::endl;
-    std::cout << "Dataset: pass2..." << std::endl;
+    eckit::Log::info() << "Dataset: pass1 done" << std::endl;
+    eckit::Log::info() << "Dataset: pass2..." << std::endl;
 
-    // Finalise...
+    // Finalise...  mark coordinate and cell methods
 
-
-    //-----------------------------------------------------------------------
-    // Mark coordinate and cell methods
-
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        Variable* v = (*j).second;
+    for (auto& j : variables_) {
+        Variable* v = j.second;
 
         if (v->identified()) {
             continue;
         }
 
-        auto coordinates = (*j).second->coordinates();
+        auto coordinates = (j.second)->coordinates();
 
         if (!coordinates.empty()) {
             Variable* w = v->makeDataVariable();
             if (w != v) {
                 delete v;
-                (*j).second = w;
+                j.second = w;
             }
             v = w;
         }
 
-        for (auto k = coordinates.begin(); k != coordinates.end(); ++k) {
+        for (auto& k : coordinates) {
             // This is a coordinate variable
-            auto m = variables_.find(*k);
+            auto m = variables_.find(k);
             if (m == variables_.end()) {
-                eckit::Log::error() << "Coordinate '" << *k << "' of " << *v << "has no corresponding variable"
+                eckit::Log::error() << "Coordinate '" << k << "' of " << *v << "has no corresponding variable"
                                     << std::endl;
 
                 continue;
             }
-            Variable* t = (*m).second;
+            Variable* t = m->second;
             Variable* w = t->makeCoordinateVariable();
             if (w != t) {
                 delete t;
-                (*m).second = w;
+                m->second = w;
             }
             v->addCoordinateVariable(w);
         }
 
 
-        auto cellMethods = (*j).second->cellMethods();
-        for (auto k = cellMethods.begin(); k != cellMethods.end(); ++k) {
+        auto cellMethods = (j.second)->cellMethods();
+        for (auto& k : cellMethods) {
             // This is a coordinate variable
-            auto m = variables_.find(*k);
+            auto m = variables_.find(k);
             if (m == variables_.end()) {
-                eckit::Log::error() << "Cell method '" << *k << "' of " << *v << "has no corresponding variable"
+                eckit::Log::error() << "Cell method '" << k << "' of " << *v << "has no corresponding variable"
                                     << std::endl;
 
                 continue;
             }
-            Variable* t = (*m).second;
+            Variable* t = m->second;
             Variable* w = t->makeCellMethodVariable();
             if (w != t) {
                 delete t;
-                (*m).second = w;
+                m->second = w;
             }
         }
     }
 
 
     // Check the variables which name is the same as the dimension name
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-
-        Variable* v = (*j).second;
+    for (auto& j : variables_) {
+        Variable* v = j.second;
 
         if (v->identified()) {
             continue;
@@ -161,39 +156,39 @@ InputDataset::InputDataset(const std::string& path, NCFileCache& cache) : Datase
             Variable* w = v->makeCoordinateVariable();
             if (w != v) {
                 delete v;
-                (*j).second = w;
+                j.second = w;
             }
         }
     }
 
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        Variable* v = (*j).second;
+    for (auto& j : variables_) {
+        Variable* v = j.second;
         Variable* w = v->addMissingCoordinates();
         if (w != v) {
             delete v;
-            (*j).second = w;
+            j.second = w;
         }
     }
 
-    std::cout << "Dataset: pass2..." << std::endl;
+    eckit::Log::info() << "Dataset: pass2..." << std::endl;
 
     // Check is the variable needs a special codec (calendar or scale_factor/add_offset)
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        (*j).second->initCodecs();
+    for (auto& j : variables_) {
+        (j.second)->initCodecs();
     }
 
 
-    std::cout << "Dataset: pass4..." << std::endl;
+    eckit::Log::info() << "Dataset: pass4..." << std::endl;
 
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        Variable* v = (*j).second;
-        v->validate();
+    for (auto& j : variables_) {
+        (j.second)->validate();
     }
 
 
-    std::cout << "Dataset: pass4 done" << std::endl;
-    dump(std::cout, false);
+    eckit::Log::info() << "Dataset: pass4 done" << std::endl;
+    dump(eckit::Log::info(), false);
 }
+
 
 InputDataset::~InputDataset() = default;
 
@@ -204,12 +199,10 @@ void InputDataset::print(std::ostream& out) const {
 
 
 std::vector<Field*> InputDataset::fields() const {
-
     std::vector<Field*> result;
 
-    for (auto j = variables_.begin(); j != variables_.end(); ++j) {
-        Variable* v = (*j).second;
-        v->collectField(result);
+    for (auto& j : variables_) {
+        (j.second)->collectField(result);
     }
 
     return result;

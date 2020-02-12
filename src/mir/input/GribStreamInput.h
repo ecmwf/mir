@@ -82,8 +82,8 @@ protected:
 private:
     // -- Members
 
-    bool first_;
     eckit::Buffer buffer_;
+    bool first_;
 
 
     // -- Methods

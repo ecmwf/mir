@@ -27,6 +27,7 @@ public:
     PointLatLonT()                        = default;
     PointLatLonT(const PointLatLonT&)     = default;
     PointLatLonT(PointLatLonT&&) noexcept = default;
+    virtual ~PointLatLonT()               = default;
 
     PointLatLonT& operator=(const PointLatLonT&) = default;
 

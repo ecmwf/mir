@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-#include "eckit/log/Statistics.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/output/MIROutput.h"
@@ -52,7 +50,7 @@ void Copy::custom(std::ostream& out) const {
 
 
 void Copy::execute(context::Context& ctx) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
+    auto timing(ctx.statistics().saveTimer());
     output_.copy(parametrisation_, ctx);
 }
 
@@ -65,6 +63,7 @@ const char* Copy::name() const {
 bool Copy::isEndAction() const {
     return true;
 }
+
 
 void Copy::estimate(context::Context&, api::MIREstimation& estimation) const {
     estimation.sameAsInput();

@@ -26,8 +26,8 @@ public:
 private:
     // -- Members
 
-    mutable bool created_;
     mutable int id_;
+    mutable bool created_;
 
     // From variable
 

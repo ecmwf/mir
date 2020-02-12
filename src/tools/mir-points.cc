@@ -12,7 +12,6 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
-#include "eckit/types/Types.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
@@ -26,20 +25,17 @@ class MIRPoints : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const {
+        eckit::Log::info() << "\n"
+                              "Usage: "
+                           << tool << std::endl;
+    }
 
 public:
     // -- Contructors
 
-    MIRPoints(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
+    using MIRTool::MIRTool;
 };
-
-
-void MIRPoints::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool << std::endl;
-}
 
 
 void MIRPoints::execute(const eckit::option::CmdArgs& args) {
@@ -64,10 +60,10 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
     while (input.next()) {
         job.execute(input, output);
 
-        std::cout << "Number of fields: " << output.dimensions() << std::endl;
-        std::cout << "Values " << output.values() << std::endl;
-        std::cout << "Has missing " << output.hasMissing() << std::endl;
-        std::cout << "Missing " << output.missingValue() << std::endl;
+        eckit::Log::info() << "Number of fields: " << output.dimensions() << std::endl;
+        eckit::Log::info() << "Values " << output.values() << std::endl;
+        eckit::Log::info() << "Has missing " << output.hasMissing() << std::endl;
+        eckit::Log::info() << "Missing " << output.missingValue() << std::endl;
     }
 }
 

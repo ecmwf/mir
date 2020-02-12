@@ -58,7 +58,12 @@ void call_nonzero(void* ok, const std::string& msg) {
 }
 
 struct PNGOutput::PNGEncoder {
-    virtual ~PNGEncoder()                                = default;
+    PNGEncoder()          = default;
+    virtual ~PNGEncoder() = default;
+
+    PNGEncoder(const PNGEncoder&) = delete;
+    PNGEncoder& operator=(const PNGEncoder&) = delete;
+
     virtual void encode(png_bytep&, const double&) const = 0;
     virtual int bit_depth() const                        = 0;
     virtual int color_type() const                       = 0;
@@ -74,7 +79,7 @@ size_t PNGOutput::copy(const param::MIRParametrisation&, context::Context&) {
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     eckit::TraceResourceUsage<LibMir> usage("PNGOutput::save");
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
+    auto timing(ctx.statistics().saveTimer());
 
     const auto& field = ctx.field();
     field.validate();
@@ -229,7 +234,7 @@ const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametris
         throw eckit::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(param, field);
+    return j->second->make(param, field);
 }
 
 void PNGEncoderFactory::list(std::ostream& out) {

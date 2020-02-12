@@ -10,11 +10,11 @@
  */
 
 
-#ifndef mir_netcdf_GregorianDateCodec
-#define mir_netcdf_GregorianDateCodec
+#ifndef mir_netcdf_GregorianDateCodec_h
+#define mir_netcdf_GregorianDateCodec_h
 
-#include "eckit/types/DateTime.h"
 #include "mir/netcdf/Calendar.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -26,11 +26,12 @@ public:
     virtual ~JulianCalendar();
 
 private:
-    // -- Methods
-
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

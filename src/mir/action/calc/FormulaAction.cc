@@ -47,9 +47,9 @@ FormulaAction::FormulaAction(const param::MIRParametrisation& parametrisation) :
     std::vector<std::string> v;
     parse1(metadata, v);
 
-    for (auto j = v.begin(); j != v.end(); ++j) {
+    for (auto& j : v) {
         std::vector<std::string> w;
-        parse2(*j, w);
+        parse2(j, w);
         ASSERT(w.size() == 2);
 
         metadata_[w[0]] = s2l(w[1]);
@@ -76,12 +76,11 @@ void FormulaAction::print(std::ostream& out) const {
 
 
 void FormulaAction::execute(context::Context& ctx) const {
-
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
+    auto timing(ctx.statistics().calcTimer());
 
     formula_->perform(ctx);
 
-    data::MIRField& field = ctx.field();
+    auto& field = ctx.field();
     for (size_t i = 0; i < field.dimensions(); i++) {
         field.metadata(i, metadata_);
     }

@@ -23,6 +23,7 @@
 
 #include <netcdf.h>
 
+
 namespace mir {
 namespace netcdf {
 
@@ -31,7 +32,9 @@ PackingCodec::PackingCodec(const Variable& variable) :
     scale_factor_(variable.getAttributeValue<double>("scale_factor")),
     add_offset_(variable.getAttributeValue<double>("add_offset")) {}
 
+
 PackingCodec::~PackingCodec() = default;
+
 
 void PackingCodec::print(std::ostream& out) const {
     out << "PackingCodec[scale_factor=" << scale_factor_ << ", add_offset=" << add_offset_ << "]";
@@ -39,13 +42,14 @@ void PackingCodec::print(std::ostream& out) const {
 
 
 void PackingCodec::decode(std::vector<double>& v) const {
-    for (size_t i = 0; i < v.size(); i++) {
-        v[i] = v[i] * scale_factor_ + add_offset_;
+    for (auto& i : v) {
+        i = i * scale_factor_ + add_offset_;
     }
 }
 
 
 static CodecBuilder<PackingCodec> builder("packing");
+
 
 }  // namespace netcdf
 }  // namespace mir

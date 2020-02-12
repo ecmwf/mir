@@ -40,7 +40,10 @@ namespace context {
 
 class Extension {
 public:
-    virtual ~Extension() {}
+    Extension(const Extension&) = delete;
+    Extension& operator=(const Extension&) = delete;
+
+    virtual ~Extension() = default;
 
     virtual Extension* clone() const        = 0;
     virtual void print(std::ostream&) const = 0;

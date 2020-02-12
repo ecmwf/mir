@@ -109,20 +109,20 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisati
             f.reset(parseTest(parametrisation));
             consume(')');
             return f.release();
-            break;
+            // break;
 
         case '-':
             consume('-');
             return new FormulaFunction(parametrisation, "neg", parseAtom(parametrisation));
-            break;
+            // break;
 
         case '\'':
             return parseString(parametrisation);
-            break;
+            // break;
 
         case '"':
             return parseString(parametrisation);
-            break;
+            // break;
 
         default:
             if (isalpha(c) != 0 || c == '_') {
@@ -131,18 +131,16 @@ Formula* FormulaParser::parseAtom(const param::MIRParametrisation& parametrisati
                     std::vector<Formula*> args = parseList(parametrisation);
                     return new FormulaFunction(parametrisation, name, args);
                 }
-                else {
-                    return new FormulaIdent(parametrisation, name);
-                }
+                return new FormulaIdent(parametrisation, name);
             }
-            else if (isdigit(c) != 0) {
+
+            if (isdigit(c) != 0) {
                 return parseNumber(parametrisation);
             }
             break;
     }
 
     throw StreamParser::Error(std::string("FormulaParser::parseAtom invalid char '") + c + "'");
-    return NULL;
 }
 
 

@@ -112,10 +112,11 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
     Cropping cropping_;
-    bool matrixValidate_;
-    bool matrixAssemble_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
+
+    bool matrixValidate_;
+    bool matrixAssemble_;
 
     // -- Methods
 

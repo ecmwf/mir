@@ -77,12 +77,12 @@ bool Gaussian::sameAs(const Representation& other) const {
 
 
 Iterator* Gaussian::unrotatedIterator(gauss::GaussianIterator::ni_type Ni) const {
-    return new gauss::GaussianIterator(latitudes(), bbox_, N_, Ni);
+    return new gauss::GaussianIterator(latitudes(), bbox_, N_, std::move(Ni));
 }
 
 
 Iterator* Gaussian::rotatedIterator(gauss::GaussianIterator::ni_type Ni, const util::Rotation& rotation) const {
-    return new gauss::GaussianIterator(latitudes(), bbox_, N_, Ni, rotation);
+    return new gauss::GaussianIterator(latitudes(), bbox_, N_, std::move(Ni), rotation);
 }
 
 
@@ -230,8 +230,8 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(N);
-    auto latitudesIt = ml->find(N);
-    if (latitudesIt == ml->end()) {
+    auto j = ml->find(N);
+    if (j == ml->end()) {
         eckit::Timer timer("Gaussian latitudes " + std::to_string(N), eckit::Log::debug<LibMir>());
 
         // calculate latitudes and insert in known-N-latitudes map
@@ -239,13 +239,13 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
         atlas::util::gaussian_latitudes_npole_spole(N, latitudes.data());
 
         ml->operator[](N) = latitudes;
-        latitudesIt       = ml->find(N);
+        j                 = ml->find(N);
     }
-    ASSERT(latitudesIt != ml->end());
+    ASSERT(j != ml->end());
 
 
     // these are the assumptions we expect from the Gaussian latitudes values
-    auto& lats = latitudesIt->second;
+    auto& lats = j->second;
     ASSERT(2 * N == lats.size());
     ASSERT(std::is_sorted(lats.begin(), lats.end(), [](double a, double b) { return a > b; }));
 
@@ -258,8 +258,8 @@ const std::vector<double>& Gaussian::weights(size_t N) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(N);
-    auto weightsIt = mw->find(N);
-    if (weightsIt == mw->end()) {
+    auto j = mw->find(N);
+    if (j == mw->end()) {
         eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), eckit::Log::debug<LibMir>());
 
         // calculate quadrature weights and insert in known-N-weights map
@@ -270,12 +270,12 @@ const std::vector<double>& Gaussian::weights(size_t N) {
 
         atlas::util::gaussian_quadrature_npole_spole(N, latitudes.data(), weights.data());
 
-        weightsIt = mw->find(N);
+        j = mw->find(N);
     }
-    ASSERT(weightsIt != mw->end());
-    ASSERT(weightsIt->second.size() == 2 * N);
+    ASSERT(j != mw->end());
+    ASSERT(j->second.size() == 2 * N);
 
-    return (*weightsIt).second;
+    return j->second;
 }
 
 

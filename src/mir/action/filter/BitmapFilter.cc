@@ -72,15 +72,15 @@ void BitmapFilter::execute(context::Context& ctx) const {
     // Make sure another thread to no evict anything from the cache while we are using it
     caching::InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().bitmapTiming_);
-    data::MIRField& field = ctx.field();
+    auto timing(ctx.statistics().bitmapTimer());
 
-    const util::Bitmap& b = bitmap();
+    auto& field = ctx.field();
+    auto& b     = bitmap();
 
     for (size_t f = 0; f < field.dimensions(); f++) {
 
-        double missingValue     = field.missingValue();
-        MIRValuesVector& values = field.direct(f);
+        auto missingValue = field.missingValue();
+        auto& values      = field.direct(f);
 
         // if (values.size() != b.width() * b.height()) {
         if (values.size() > b.width() * b.height()) {  // TODO: fixe me
@@ -94,8 +94,7 @@ void BitmapFilter::execute(context::Context& ctx) const {
 
         size_t k = 0;
         for (size_t j = 0; j < b.height(); j++) {
-
-            for (size_t i = 0; i < b.width(); i++) {
+            for (size_t i = 0; i < b.width(); ++i, ++k) {
 
                 if (k == values.size()) {
                     // Temp fix
@@ -105,7 +104,6 @@ void BitmapFilter::execute(context::Context& ctx) const {
                 if (!b.on(j, i)) {
                     values[k] = missingValue;
                 }
-                k++;
             }
         }
 

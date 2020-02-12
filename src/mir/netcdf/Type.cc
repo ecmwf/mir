@@ -32,9 +32,11 @@
 namespace mir {
 namespace netcdf {
 
+
 static Type* types_[NC_MAX_ATOMIC_TYPE + 1] = {
-    0,
+    nullptr,
 };
+
 
 Type::Type(int code, const std::string& name, const std::string& dump, int super) :
     code_(code),
@@ -44,10 +46,11 @@ Type::Type(int code, const std::string& name, const std::string& dump, int super
     types_[code] = this;
 }
 
+
 Type& Type::lookup(int type) {
     ASSERT(type >= 0 && type <= NC_MAX_ATOMIC_TYPE);
 
-    if (types_[type] == 0) {
+    if (types_[type] == nullptr) {
         eckit::Log::error() << "Type::lookup " << type << " is unknown: ";
 
         switch (type) {
@@ -93,15 +96,15 @@ Type& Type::lookup(int type) {
         }
     }
 
-    ASSERT(types_[type] != 0);
+    ASSERT(types_[type] != nullptr);
     return *types_[type];
 }
+
 
 Type& Type::lookup(Type& type1, Type& type2) {
     if (type1 == type2) {
         return type1;
     }
-
 
     Type* t1 = &type1;
     Type* t2 = &type2;
@@ -111,15 +114,17 @@ Type& Type::lookup(Type& type1, Type& type2) {
 
     while (t1->code_ != -1) {
         s1.push_back(t1->code_);
-        if (t1->super_ < 0)
+        if (t1->super_ < 0) {
             break;
+        }
         t1 = &lookup(t1->super_);
     }
 
     while (t2->code_ != -1) {
         s2.push_back(t2->code_);
-        if (t2->super_ < 0)
+        if (t2->super_ < 0) {
             break;
+        }
         t2 = &lookup(t2->super_);
     }
 
@@ -128,7 +133,8 @@ Type& Type::lookup(Type& type1, Type& type2) {
         if (k != s2.end()) {
 
             if (type1 != type2) {
-                std::cout << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(*j) << std::endl;
+                eckit::Log::info() << "Common super-type for " << type1 << " and " << type2 << " is " << lookup(*j)
+                                   << std::endl;
             }
 
             return lookup(*j);
@@ -140,25 +146,28 @@ Type& Type::lookup(Type& type1, Type& type2) {
     throw MergeError(s.str());
 }
 
+
 void Type::dump(std::ostream& out) const {
     out << dump_;
 }
+
 
 bool Type::operator==(const Type& other) const {
     return code_ == other.code_;
 }
 
+
 bool Type::operator!=(const Type& other) const {
     return code_ != other.code_;
 }
 
-//===============================================================================================
 
 template <class T>
 class TypeT : public Type {
 
 public:
     TypeT(int code, const std::string& name, const std::string& dump, int super) : Type(code, name, dump, super) {}
+    virtual ~TypeT() = default;
 
 private:
     virtual Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path);
@@ -177,12 +186,13 @@ void TypeT<T>::print(std::ostream& out) const {
     out << name_;
 }
 
+
 template <class T>
 void TypeT<T>::dump(std::ostream& out, const Matrix& matrix) const {
-    const typename std::vector<T>& v = matrix.values<T>();
-    size_t i                         = 0;
-    for (typename std::vector<T>::const_iterator k = v.begin(); k != v.end(); ++k) {
-        out << ' ' << *k;
+    const auto& v = matrix.values<T>();
+    size_t i      = 0;
+    for (auto& k : v) {
+        out << ' ' << k;
         i++;
         if (i < v.size()) {
             out << ',';
@@ -201,12 +211,13 @@ void TypeT<T>::dump(std::ostream& out, const Matrix& matrix) const {
     }
 }
 
+
 template <class T>
 void TypeT<T>::printValues(std::ostream& out, const Matrix& matrix) const {
     const typename std::vector<T> v = matrix.values<T>();
     size_t i                        = 0;
-    for (typename std::vector<T>::const_iterator k = v.begin(); k != v.end(); ++k) {
-        out << *k;
+    for (auto& k : v) {
+        out << k;
         i++;
         if (i < v.size()) {
             out << ',';
@@ -214,13 +225,14 @@ void TypeT<T>::printValues(std::ostream& out, const Matrix& matrix) const {
     }
 }
 
-//=======================================================================================================
+
 template <>
 bool TypeT<std::string>::cellMethodOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
     std::ostringstream os;
     os << "TypeT<std::string>::cellMethodOutputVariableMerge() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 template <class T>
 bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& /*plan*/) {
@@ -230,13 +242,12 @@ bool TypeT<T>::cellMethodOutputVariableMerge(Variable& out, const Variable& in, 
     return (a != b);
 }
 
-//=======================================================================================================
 
 template <class T, class Q>
 static void save_values(const Matrix& matrix, int nc, int varid, const std::string& path, Q put) {
 
-    // std::cout << "Save " << matrix << std::endl;
-    // matrix.dumpTree(std::cout, 0);
+    // eckit::Log::info() << "Save " << matrix << std::endl;
+    // matrix.dumpTree(eckit::Log::info(), 0);
     Codec* codec = matrix.codec();
     if (codec) {
         std::vector<T> values = matrix.values<T>();
@@ -253,6 +264,7 @@ static void save_values(const Matrix& matrix, int nc, int varid, const std::stri
     }
 }
 
+
 template <>
 void TypeT<std::string>::save(const Matrix&, int /*nc*/, int /*varid*/, const std::string& /*path*/) const {
     std::ostringstream os;
@@ -260,43 +272,49 @@ void TypeT<std::string>::save(const Matrix&, int /*nc*/, int /*varid*/, const st
     throw eckit::SeriousBug(os.str());
 }
 
+
 template <>
 void TypeT<double>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<double>(m, out, varid, path, &nc_put_var_double);
 }
+
 
 template <>
 void TypeT<float>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<float>(m, out, varid, path, &nc_put_var_float);
 }
 
+
 template <>
 void TypeT<unsigned char>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<unsigned char>(m, out, varid, path, &nc_put_var_ubyte);
 }
+
 
 template <>
 void TypeT<long>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<long>(m, out, varid, path, &nc_put_var_long);
 }
 
+
 template <>
 void TypeT<long long>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<long long>(m, out, varid, path, &nc_put_var_longlong);
 }
+
 
 template <>
 void TypeT<short>::save(const Matrix& m, int out, int varid, const std::string& path) const {
     save_values<short>(m, out, varid, path, &nc_put_var_short);
 }
 
-//=======================================================================================================
+
 template <>
 bool TypeT<std::string>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
-    std::cout << __func__ << " " << *this << std::endl;
+    eckit::Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
-    return false;
 }
+
 
 template <class T>
 bool TypeT<T>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& /*in*/, MergePlan& /*plan*/) {
@@ -345,7 +363,6 @@ bool TypeT<T>::coordinateOutputVariableMerge(Variable& /*out*/, const Variable& 
 #endif
 }
 
-//=======================================================================================================
 
 template <>
 Value* TypeT<unsigned char>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
@@ -355,6 +372,7 @@ Value* TypeT<unsigned char>::attributeValue(int nc, int id, const char* name, si
     return new ValueT<unsigned char>(*this, value);
 }
 
+
 template <>
 Value* TypeT<short>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
     short value;
@@ -362,6 +380,7 @@ Value* TypeT<short>::attributeValue(int nc, int id, const char* name, size_t len
     NC_CALL(nc_get_att_short(nc, id, name, &value), path);
     return new ValueT<short>(*this, value);
 }
+
 
 template <>
 Value* TypeT<long>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
@@ -380,23 +399,23 @@ Value* TypeT<long long>::attributeValue(int nc, int id, const char* name, size_t
     return new ValueT<long long>(*this, value);
 }
 
+
 template <>
 Value* TypeT<std::string>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
 
-
     if (code_ == NC_STRING) {
-        char* value = 0;
+        char* value = nullptr;
         NC_CALL(nc_get_att_string(nc, id, name, &value), path);
         ASSERT(value);
         return new ValueT<std::string>(*this, value);
     }
-    else {
-        char value[len + 1];
-        memset(value, 0, sizeof(value));
-        NC_CALL(nc_get_att_text(nc, id, name, value), path);
-        return new ValueT<std::string>(*this, value);
-    }
+
+    char value[len + 1];
+    memset(value, 0, sizeof(value));
+    NC_CALL(nc_get_att_text(nc, id, name, value), path);
+    return new ValueT<std::string>(*this, value);
 }
+
 
 template <>
 Value* TypeT<double>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
@@ -406,6 +425,7 @@ Value* TypeT<double>::attributeValue(int nc, int id, const char* name, size_t le
     return new ValueT<double>(*this, value);
 }
 
+
 template <>
 Value* TypeT<float>::attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) {
     float value;
@@ -413,8 +433,6 @@ Value* TypeT<float>::attributeValue(int nc, int id, const char* name, size_t len
     NC_CALL(nc_get_att_float(nc, id, name, &value), path);
     return new ValueT<float>(*this, value);
 }
-
-//=============================
 
 
 #define T(a, b, c) static TypeT<a> TYPE_##b(b, #b, #a, c)

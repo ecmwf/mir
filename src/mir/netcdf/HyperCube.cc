@@ -19,16 +19,19 @@ namespace netcdf {
 
 static void addLoop2(int d, size_t which, size_t where, size_t count, size_t depth, const HyperCube::Dimensions& dims,
                      HyperCube::Remapping& remap, const HyperCube::Dimensions& mul, size_t sum) {
-    int k        = 0;
+    size_t k = 0;
+    auto du  = size_t(d);
+
     size_t muld  = mul[d];
     size_t dimsd = dims[d];
+
     for (size_t i = 0; i < dimsd; i++, k++) {
-        if (which == d && i == where) {
+        if (which == du && i == where) {
             k += count;
         }
 
         size_t s = sum + k * muld;
-        if (d == depth) {
+        if (du == depth) {
             remap.push_back(s);
         }
         else {
@@ -36,6 +39,7 @@ static void addLoop2(int d, size_t which, size_t where, size_t count, size_t dep
         }
     }
 }
+
 
 HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, Remapping& remap) const {
 
@@ -53,8 +57,9 @@ HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, 
     Dimensions mul(dimensions_.size());
     size_t n = 1;
     for (int i = mul.size() - 1; i >= 0; i--) {
-        mul[i] = n;
-        n *= newdims[i];
+        auto iu = size_t(i);
+        mul[iu] = n;
+        n *= newdims[iu];
     }
     addLoop2(0, which, where, howMuch, dimensions_.size() - 1, dimensions_, remap, mul, 0);
 
@@ -63,11 +68,10 @@ HyperCube HyperCube::addToDimension(size_t which, size_t where, size_t howMuch, 
 
 
 std::ostream& operator<<(std::ostream& out, const HyperCube& cube) {
-    const HyperCube::Dimensions& dimensions = cube.dimensions();
     out << "HyperCube[size=" << cube.count() << ",coordinates=";
     char sep = '(';
-    for (HyperCube::Dimensions::const_iterator j = dimensions.begin(); j != dimensions.end(); ++j) {
-        out << sep << *j;
+    for (auto& j : cube.dimensions()) {
+        out << sep << j;
         sep = ',';
     }
     out << ')';
@@ -75,16 +79,19 @@ std::ostream& operator<<(std::ostream& out, const HyperCube& cube) {
     return out;
 }
 
+
 void HyperCube::coordinates(size_t index, Coordinates& result) const {
     ASSERT(result.size() == dimensions_.size());
 
     for (int i = dimensions_.size() - 1; i >= 0; i--) {
-        result[i] = (index % dimensions_[i]);
-        index /= dimensions_[i];
+        auto iu    = size_t(i);
+        result[iu] = (index % dimensions_[iu]);
+        index /= dimensions_[iu];
     }
 
     ASSERT(index == 0);
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

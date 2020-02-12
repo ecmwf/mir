@@ -19,7 +19,6 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
-#include "eckit/types/Types.h"
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Variable.h"
@@ -28,10 +27,10 @@
 namespace mir {
 namespace netcdf {
 
+
 static eckit::Mutex* local_mutex             = nullptr;
 static std::map<size_t, GridSpecGuesser*>* m = nullptr;
 static pthread_once_t once                   = PTHREAD_ONCE_INIT;
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<size_t, GridSpecGuesser*>();
@@ -40,7 +39,9 @@ static void init() {
 
 GridSpec::GridSpec(const Variable& variable) : variable_(variable) {}
 
+
 GridSpec::~GridSpec() = default;
+
 
 GridSpec* GridSpec::create(const Variable& variable) {
 
@@ -65,10 +66,12 @@ GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
     (*m)[priority] = this;
 }
 
+
 GridSpecGuesser::~GridSpecGuesser() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     m->erase(priority_);
 }
+
 
 static const Variable& find_variable(const Variable& variable, const std::string& standardName,
                                      const std::string& units, size_t n) {
@@ -78,7 +81,7 @@ static const Variable& find_variable(const Variable& variable, const std::string
     for (const auto& k : dataset.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("standard_name") == standardName) {
-            std::cout << "XXXXX find_variable" << v << " has standard_name " << standardName << std::endl;
+            eckit::Log::info() << "XXXXX find_variable" << v << " has standard_name " << standardName << std::endl;
             return v;
         }
     }
@@ -86,7 +89,7 @@ static const Variable& find_variable(const Variable& variable, const std::string
     for (const auto& k : dataset.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("units") == units) {
-            std::cout << "XXXXX find_variable" << v << " has units " << units << std::endl;
+            eckit::Log::info() << "XXXXX find_variable" << v << " has units " << units << std::endl;
             return v;
         }
     }
@@ -95,7 +98,7 @@ static const Variable& find_variable(const Variable& variable, const std::string
     ASSERT(coordinates.size() >= n);
 
     const Variable& v = dataset.variable(coordinates[coordinates.size() - n]);
-    std::cout << "XXXXX find_variable" << v << "is number " << coordinates.size() - n << std::endl;
+    eckit::Log::info() << "XXXXX find_variable" << v << " is number " << coordinates.size() - n << std::endl;
     return v;
 }
 

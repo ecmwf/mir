@@ -19,14 +19,14 @@ namespace mir {
 namespace output {
 
 
-GribStreamOutput::GribStreamOutput() {}
+GribStreamOutput::GribStreamOutput() = default;
 
 
 GribStreamOutput::~GribStreamOutput() = default;
 
 
 void GribStreamOutput::out(const void* message, size_t length, bool) {
-    dataHandle().write(message, length);
+    dataHandle().write(message, long(length));
 }
 
 

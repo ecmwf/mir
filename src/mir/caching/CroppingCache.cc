@@ -45,7 +45,6 @@ size_t CroppingCacheEntry::footprint() const {
 
 
 void CroppingCacheEntry::save(const eckit::PathName& path) const {
-
     eckit::TraceTimer<LibMir> timer("Saving cropping to cache");
 
     eckit::FileStream f(path, "w");
@@ -57,14 +56,13 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
     f << bbox_.east();
 
     f << mapping_.size();
-    for (size_t i = 0; i < mapping_.size(); ++i) {
-        f << mapping_[i];
+    for (auto& i : mapping_) {
+        f << i;
     }
 }
 
 
 void CroppingCacheEntry::load(const eckit::PathName& path) {
-
     eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
@@ -93,9 +91,6 @@ void CroppingCacheEntry::load(const eckit::PathName& path) {
         mapping_.push_back(j);
     }
 }
-
-
-//--------------------------------------------------------------------------
 
 
 const char* CroppingCacheTraits::name() {

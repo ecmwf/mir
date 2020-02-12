@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-#include "eckit/log/Statistics.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
 #include "mir/output/MIROutput.h"
@@ -62,7 +60,7 @@ void Save::custom(std::ostream& out) const {
 
 
 void Save::execute(context::Context& ctx) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
+    auto timing(ctx.statistics().saveTimer());
     output_.save(parametrisation_, ctx);
 }
 

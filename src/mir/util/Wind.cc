@@ -36,7 +36,7 @@ Wind::Defaults::Defaults() :
 }
 
 
-void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u, size_t& v) {
+void Wind::paramIds(const param::MIRParametrisation& parametrisation, long& u, long& v) {
 
     // User input if given
     bool need_u = !parametrisation.userParametrisation().get("paramId.u", u);
@@ -45,21 +45,21 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, size_t& u,
     if (need_u || need_v) {
 
         // assumes the same input parameter table for the defaults
-        size_t id = 0;
+        long id = 0;
         if (parametrisation.fieldParametrisation().get("paramId", id)) {
             ASSERT(id > 0);
         }
 
-        size_t table = id / 1000;
+        long table = id / 1000;
 
         static const Defaults def;
 
         if (need_u) {
-            u = size_t(def.u) + table * 1000;
+            u = def.u + table * 1000;
         }
 
         if (need_v) {
-            v = size_t(def.v) + table * 1000;
+            v = def.v + table * 1000;
         }
     }
 

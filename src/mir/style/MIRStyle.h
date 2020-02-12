@@ -118,6 +118,9 @@ class MIRStyleFactory {
     std::string name_;
     virtual MIRStyle* make(const param::MIRParametrisation&) = 0;
 
+    MIRStyleFactory(const MIRStyleFactory&) = delete;
+    MIRStyleFactory& operator=(const MIRStyleFactory&) = delete;
+
 protected:
     MIRStyleFactory(const std::string&);
     virtual ~MIRStyleFactory();

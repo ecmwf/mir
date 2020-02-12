@@ -133,7 +133,7 @@ size_t countRepresentationInBoundingBox(const repres::Representation& rep, const
         ee.insert(DistanceLon(bbox.east().distance(point.lon()), point.lon()));
         ww.insert(DistanceLon(bbox.west().distance(point.lon()), point.lon()));
 
-        // std::cout << point.lat << " " << point.lon << " ====> " << bbox.contains(point.lat, point.lon) << std::endl;
+        // std::cout << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
 
         if (bbox.contains(point)) {
 

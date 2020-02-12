@@ -34,8 +34,10 @@ public:
     using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 
     Pick();
-
     virtual ~Pick();
+
+    Pick(const Pick&) = delete;
+    Pick& operator=(const Pick&) = delete;
 
     virtual void pick(const search::PointSearch&, const Point3&, neighbours_t&) const = 0;
     virtual size_t n() const                                                          = 0;
@@ -56,6 +58,9 @@ class PickFactory {
 private:
     std::string name_;
     virtual Pick* make(const param::MIRParametrisation&) = 0;
+
+    PickFactory(const PickFactory&) = default;
+    PickFactory& operator=(const PickFactory&) = default;
 
 protected:
     PickFactory(const std::string& name);

@@ -126,22 +126,22 @@ bool RawInput::get(const std::string& name, long& value) const {
     eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
 
     if (name == "N") {
-        value = metadata_.N();
+        value = long(metadata_.N());
         return true;
     }
 
     if (name == "Nj") {
-        value = metadata_.nj();
+        value = long(metadata_.nj());
         return true;
     }
 
     if (name == "truncation") {
-        value = metadata_.truncation();
+        value = long(metadata_.truncation());
         return true;
     }
 
     if (name == "paramId") {
-        value = metadata_.paramId();
+        value = long(metadata_.paramId());
         return true;
     }
 

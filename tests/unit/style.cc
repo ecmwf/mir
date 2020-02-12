@@ -86,15 +86,25 @@ CASE("ECMWFStyle") {
 
     SECTION("mir::action::FormulaAction") {
 
-        static const std::string CORRECT_FORMULA("1"), WRONG_FORMULA("0"), CORRECT_METADATA("param=1"),
-            WRONG_METADATA("param=0");
+        const std::string CORRECT_FORMULA("1");
+        const std::string WRONG_FORMULA("0");
+        const std::string CORRECT_METADATA("param=1");
+        const std::string WRONG_METADATA("param=0");
 
-        param::SimpleParametrisation p1, p2, p3, p4;
-        const action::FormulaAction WRONG_ACTION_1(
-            p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA)),
-            WRONG_ACTION_2(p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA)),
-            WRONG_ACTION_3(p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA)),
-            CORRECT_ACTION(p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA));
+        param::SimpleParametrisation p1;
+        param::SimpleParametrisation p2;
+        param::SimpleParametrisation p3;
+        param::SimpleParametrisation p4;
+
+        p1.set("formula", CORRECT_FORMULA).set("formula.metadata", WRONG_METADATA);
+        p2.set("formula", WRONG_FORMULA).set("formula.metadata", CORRECT_METADATA);
+        p3.set("formula", WRONG_FORMULA).set("formula.metadata", WRONG_METADATA);
+        p4.set("formula", CORRECT_FORMULA).set("formula.metadata", CORRECT_METADATA);
+
+        const action::FormulaAction WRONG_ACTION_1(p1);
+        const action::FormulaAction WRONG_ACTION_2(p2);
+        const action::FormulaAction WRONG_ACTION_3(p3);
+        const action::FormulaAction CORRECT_ACTION(p4);
 
 
         for (bool input_gridded : _yes_no) {

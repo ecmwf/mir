@@ -58,12 +58,12 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
         const auto& connectivity = mesh.cells().node_connectivity();
 
         for (idx_t e = 0; e < connectivity.rows(); ++e) {
-            auto nb_cols = connectivity.cols(e);
+            auto nb_cols = size_t(connectivity.cols(e));
             ASSERT(nb_cols == 3 || nb_cols == 4);
 
             std::vector<idx_t> idx(nb_cols);
-            for (idx_t n = 0; n < nb_cols; ++n) {
-                idx[size_t(n)] = connectivity(e, n);
+            for (size_t n = 0; n < nb_cols; ++n) {
+                idx[size_t(n)] = connectivity(e, idx_t(n));
             }
 
             static const double oneThird  = 1. / 3.;

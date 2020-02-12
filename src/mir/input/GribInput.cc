@@ -47,6 +47,11 @@ namespace {
 
 class Condition {
 public:
+    Condition() = default;
+
+    Condition(const Condition&) = delete;
+    Condition& operator=(const Condition&) = delete;
+
     virtual ~Condition()                  = default;
     virtual bool eval(grib_handle*) const = 0;
 };
@@ -176,15 +181,15 @@ static Condition *_not(const Condition *c) {
 */
 
 
-void wrongly_encoded_grib(std::string msg) {
+void wrongly_encoded_grib(const std::string& msg) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
+
     if (abortIfWronglyEncodedGRIB) {
         eckit::Log::error() << msg << std::endl;
         throw eckit::UserError(msg);
     }
-    else {
-        eckit::Log::warning() << msg << std::endl;
-    }
+
+    eckit::Log::warning() << msg << std::endl;
 }
 
 
@@ -690,12 +695,11 @@ data::MIRField GribInput::field() const {
             for (auto p1 = pl.begin(), p2 = pl_fixed.begin(); p1 != pl.end(); ++p1, ++p2) {
                 if (*p1 == 0) {
                     ASSERT(*p2 > 0);
-                    size_t Ni = size_t(*p2);
-
+                    auto Ni = size_t(*p2);
                     values_extended.insert(values_extended.end(), Ni, missing);
                 }
                 else {
-                    size_t Ni = size_t(*p1);
+                    auto Ni = size_t(*p1);
                     ASSERT(i + Ni <= count);
 
                     values_extended.insert(values_extended.end(), &values[i], &values[i + Ni]);

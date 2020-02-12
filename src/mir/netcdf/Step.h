@@ -22,30 +22,33 @@ class MergePlan;
 
 
 class Step {
+    Step(const Step&) = delete;
+    Step& operator=(const Step&) = delete;
+
 public:
-    Step();
-    virtual ~Step();
+    Step()          = default;
+    virtual ~Step() = default;
 
     virtual int rank() const              = 0;
     virtual void execute(MergePlan& plan) = 0;
     virtual bool merge(Step* other);
 
 private:
-    // -- Methods
-
     virtual void print(std::ostream& s) const = 0;
-
-    // - Friend
     friend std::ostream& operator<<(std::ostream& s, const Step& v) {
         v.print(s);
         return s;
     }
 };
 
+
 struct CompareSteps {
     bool operator()(const Step* a, const Step* b) const { return a->rank() > b->rank(); }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

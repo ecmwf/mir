@@ -44,7 +44,7 @@ public:
     };
 
     struct PrettyProgress : public eckit::Timer {
-        PrettyProgress(const std::string& name, size_t limit, Plural units, std::ostream&);
+        PrettyProgress(const std::string& name, size_t limit, const Plural& units, std::ostream&);
         virtual ~PrettyProgress() = default;
         bool operator++();
 
@@ -65,8 +65,8 @@ public:
         /// @param units unit/units
         /// @param time how often to output progress, based on elapsed time
         /// @param o output stream
-        ProgressTimer(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
-                      double time = 5.);
+        ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
+                      std::ostream& o = eckit::Log::info(), double time = 5.);
 
     private:
         bool hasOutput();
@@ -80,8 +80,8 @@ public:
         /// @param units unit/units
         /// @param count how often to output progress, based on total counter
         /// @param o output stream
-        ProgressCounter(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
-                        size_t count = 10000);
+        ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
+                        std::ostream& o = eckit::Log::info(), size_t count = 10000);
 
     private:
         bool hasOutput();

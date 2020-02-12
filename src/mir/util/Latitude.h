@@ -16,12 +16,15 @@
 #include <iosfwd>
 #include "eckit/types/Fraction.h"
 
+
 namespace eckit {
 class MD5;
 class Stream;
 }  // namespace eckit
 
+
 namespace mir {
+
 
 class Latitude {
 public:
@@ -51,8 +54,6 @@ public:
     bool operator>=(double) const;
     bool operator<=(double) const;
 
-    //======================================
-
     Latitude& operator+=(double value) {
         value_ += value;
         return *this;
@@ -69,8 +70,6 @@ public:
 
     Latitude operator/(double value) const { return {value_ / value}; }
 
-    //======================================
-
     Latitude& operator+=(const eckit::Fraction& value) {
         value_ += double(value);
         return *this;
@@ -84,8 +83,6 @@ public:
     Latitude operator+(const eckit::Fraction& value) const { return {value_ + double(value)}; }
 
     Latitude operator-(const eckit::Fraction& value) const { return {value_ - double(value)}; }
-
-    //======================================
 
     Latitude& operator+=(const Latitude& other) {
         value_ += other.value_;
@@ -171,6 +168,8 @@ private:
     friend Latitude operator-(double value, const Latitude& x) { return {value - x.value_}; }
 };
 
+
 }  // namespace mir
+
 
 #endif

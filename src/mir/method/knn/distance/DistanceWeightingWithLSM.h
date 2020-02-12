@@ -55,6 +55,9 @@ private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&, const lsm::LandSeaMasks&) = 0;
 
+    DistanceWeightingWithLSMFactory(const DistanceWeightingWithLSMFactory&) = delete;
+    DistanceWeightingWithLSMFactory& operator=(const DistanceWeightingWithLSMFactory&) = delete;
+
 protected:
     DistanceWeightingWithLSMFactory(const std::string& name);
     virtual ~DistanceWeightingWithLSMFactory();

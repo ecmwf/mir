@@ -103,6 +103,9 @@ private:
 
 class SpaceChooser {
 private:
+    SpaceChooser(const SpaceChooser&) = delete;
+    SpaceChooser& operator=(const SpaceChooser&) = delete;
+
     std::string name_;
     Space* choice_;
     const size_t component_;

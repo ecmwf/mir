@@ -14,14 +14,18 @@
 #define mir_util_LongitudeDouble_h
 
 #include <iosfwd>
+
 #include "eckit/types/Fraction.h"
+
 
 namespace eckit {
 class MD5;
 class Stream;
 }  // namespace eckit
 
+
 namespace mir {
+
 
 class LongitudeDouble {
 public:
@@ -49,8 +53,6 @@ public:
     bool operator>=(double) const;
     bool operator<=(double) const;
 
-    //======================================
-
     LongitudeDouble& operator+=(double value) {
         value_ += value;
         return *this;
@@ -69,8 +71,6 @@ public:
 
     LongitudeDouble operator*(double value) const { return {value_ * value}; }
 
-    //======================================
-
     LongitudeDouble& operator+=(const eckit::Fraction& value) {
         value_ += double(value);
         return *this;
@@ -84,8 +84,6 @@ public:
     LongitudeDouble operator+(const eckit::Fraction& value) const { return {value_ + double(value)}; }
 
     LongitudeDouble operator-(const eckit::Fraction& value) const { return {value_ - double(value)}; }
-
-    //======================================
 
     LongitudeDouble& operator+=(const LongitudeDouble& other) {
         value_ += other.value_;
@@ -178,6 +176,8 @@ private:
     friend LongitudeDouble operator-(double value, const LongitudeDouble& x) { return {value - x.value_}; }
 };
 
+
 }  // namespace mir
+
 
 #endif

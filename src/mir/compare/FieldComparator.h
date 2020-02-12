@@ -40,10 +40,15 @@ namespace mir {
 namespace compare {
 
 class WhiteLister {
+    WhiteLister(const WhiteLister&) = delete;
+    WhiteLister& operator=(const WhiteLister&) = delete;
+
 public:
+    WhiteLister() = default;
+    virtual ~WhiteLister();
+
     virtual bool whiteListed(const MultiFile&, const Field&) const = 0;
     virtual bool ignoreError(const MultiFile&, const Field&) const = 0;
-    virtual ~WhiteLister();
 };
 
 class DefaultWhiteLister : public WhiteLister {

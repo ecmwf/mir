@@ -17,33 +17,40 @@
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 InputVariable::InputVariable(Dataset& owner, const std::string& name, int id,
                              const std::vector<Dimension*>& dimensions) :
     Variable(owner, name, dimensions),
     id_(id) {}
 
+
 InputVariable::~InputVariable() = default;
+
 
 int InputVariable::varid() const {
     ASSERT(id_ >= 0);
     return id_;
 }
 
+
 Variable* InputVariable::clone(Dataset& owner) const {
 
     std::vector<Dimension*> dimensions;
-    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
-        dimensions.push_back(owner.findDimension((*j)->name()));
+    dimensions.reserve(dimensions_.size());
+
+    for (auto& j : dimensions_) {
+        dimensions.push_back(owner.findDimension(j->name()));
     }
 
     Variable* v = makeOutputVariable(owner, name_, dimensions);
     v->setMatrix(matrix_);
 
-    for (auto j = attributes_.begin(); j != attributes_.end(); ++j) {
-        (*j).second->clone(*v);
+    for (auto& j : attributes_) {
+        (j.second)->clone(*v);
     }
 
     owner.add(v);
@@ -51,9 +58,11 @@ Variable* InputVariable::clone(Dataset& owner) const {
     return v;
 }
 
+
 void InputVariable::print(std::ostream& out) const {
     out << "InputVariable[name=" << name_ << "]";
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

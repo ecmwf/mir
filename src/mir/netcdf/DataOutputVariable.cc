@@ -38,7 +38,7 @@ void DataOutputVariable::merge(const Variable& other, MergePlan& plan) {
 const std::string& DataOutputVariable::ncname() const {
     auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
-        ncname_ = (*j).second->asString();
+        ncname_ = j->second->asString();
         return ncname_;
     }
     return name();

@@ -53,7 +53,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
     const size_t ROWS = 1080;
     const size_t COLS = 2160;
 
-    if (ten_minutes_.size() == 0) {
+    if (ten_minutes_.empty()) {
 
         eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -92,13 +92,13 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
-        ASSERT(row >= 0 && row < int(ROWS));
+        auto row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
+        ASSERT(0 <= row && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
-        ASSERT(col >= 0 && col < int(COLS));
+        auto col = int(lon.value() * COLS / Longitude::GLOBE.value());
+        ASSERT(0 <= col && col < int(COLS));
 
-        mask_.push_back(ten_minutes_[row][col]);
+        mask_.push_back(ten_minutes_[size_t(row)][size_t(col)]);
     }
 }
 

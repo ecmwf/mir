@@ -45,7 +45,8 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(path.localPath(), &s));
 
-    size_ = s.st_size;
+    ASSERT(s.st_size > 0);
+    size_ = size_t(s.st_size);
 
     address_ = eckit::MMap::mmap(nullptr, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {

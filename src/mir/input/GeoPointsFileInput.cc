@@ -37,26 +37,15 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     next_(0),
     hasMissing_(false),
     missingValue_(3e38),
-    footprint_(0) {
-
-    // For now, this should give an ovwerestimate of the memory footprint
-    footprint_ = eckit::PathName(path).size();
-
+    footprint_(size_t(eckit::PathName(path).size())) {  // For now, this should overestimate the memory footprint
 
     std::ifstream in(path_.c_str());
     if (!in) {
         throw eckit::CantOpenFile(path_);
     }
 
-    char magic   = in.peek();
-    size_t count = 0;
-
-    if (magic == '#') {
-        count = readText(in);
-    }
-    else {
-        count = readBinary(in);
-    }
+    auto magic   = char(in.peek());
+    size_t count = (magic == '#' ? readText(in) : readBinary(in));
 
     if (count == 0) {
         std::ostringstream oss;
@@ -146,12 +135,7 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
         }
 
         if (!data && std::strncmp(line, "#DATA", 5) == 0) {
-            if (which_ < 0) {
-                data = true;
-            }
-            else {
-                data = (count == which_ + 1);
-            }
+            data = (which_ < 0) || (count == which_ + 1);
             continue;
         }
 
@@ -166,7 +150,7 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
         }
     }
 
-    return count;
+    return size_t(count);
 }
 
 
@@ -243,8 +227,9 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
         ASSERT(v <= missingValue);
         if (v != missingValue) {
             allMissing = false;
-            if (max == missingValue || max < v)
+            if (max == missingValue || max < v) {
                 max = v;
+            }
         }
     }
 
@@ -260,8 +245,9 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
     if (hasMissing) {
         for (double& v : values_) {
-            if (v == missingValue)
+            if (v == missingValue) {
                 v = tempMissingValue;
+            }
         }
     }
 

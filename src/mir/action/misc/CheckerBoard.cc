@@ -87,8 +87,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             }
         }
 
-        size_t we = frequencies[0];
-        size_t ns = frequencies[1];
+        auto we = size_t(frequencies[0]);
+        auto ns = size_t(frequencies[1]);
 
         double dwe = Longitude::GLOBE.value() / we;
         double dns = Latitude::GLOBE.value() / ns;
@@ -126,8 +126,8 @@ void CheckerBoard::execute(context::Context& ctx) const {
             Latitude lat  = Latitude::NORTH_POLE - p.lat();
             Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-            size_t c = size_t(lat.value() / dns);
-            size_t r = size_t(lon.value() / dwe);
+            auto c = size_t(lat.value() / dns);
+            auto r = size_t(lon.value() / dwe);
 
             if (!hasMissing || values[j] != missingValue) {
                 values[j] = boxes[std::make_pair(r, c)];

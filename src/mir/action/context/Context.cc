@@ -53,7 +53,11 @@ class Content {
     virtual void print(std::ostream&) const = 0;
 
 public:
+    Content()          = default;
     virtual ~Content() = default;
+
+    Content(const Content&) = delete;
+    Content& operator=(const Content&) = delete;
 
     virtual data::MIRField& field() {
         std::ostringstream oss;
@@ -136,7 +140,7 @@ class ExtensionContent : public Content {
 public:
     ExtensionContent(Extension* extension) : extension_(extension) { ASSERT(extension_); }
 
-    ~ExtensionContent() {}
+    ~ExtensionContent() = default;
 };
 
 

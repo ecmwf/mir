@@ -49,11 +49,11 @@ bool GlobaliseFilter::deleteWithNext(const Action& next) {
 
 
 void GlobaliseFilter::execute(context::Context& ctx) const {
+    auto timing(ctx.statistics().globaliseTimer());
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().globaliseTiming_);
-    data::MIRField& field = ctx.field();
-
+    auto& field = ctx.field();
     repres::RepresentationHandle in(field.representation());
+
     auto out = in->globalise(field);
     if (out == nullptr) {
         eckit::Log::warning() << "Globalise has no effect" << std::endl;

@@ -108,8 +108,8 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
 
-                const size_t Ni     = size_t(too_much_north ? pl.front() : pl.back());
-                const size_t iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
+                auto Ni     = size_t(too_much_north ? pl.front() : pl.back());
+                auto iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
 
                 size_t l[2];
                 boundWestEast(p.lon(), Ni, iStart, l[0], l[1]);

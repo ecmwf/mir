@@ -185,7 +185,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
         return *a;
     }
 
-    caching::CroppingCacheEntry& c = cache[key];
+    auto& c = cache[key];
     if (caching) {
         static caching::CroppingCache disk;
 
@@ -202,6 +202,9 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
             CroppingCacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
                 representation_(representation),
                 bbox_(bbox) {}
+
+            CroppingCacheCreator(const CroppingCacheCreator&) = delete;
+            CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;
         };
 
         CroppingCacheCreator creator(representation, bbox);
@@ -242,21 +245,14 @@ void AreaCropper::execute(context::Context& ctx) const {
     // Make sure another thread to no evict anything from the cache while we are using it
     caching::InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
 
-
-    data::MIRField& field = ctx.field();
+    auto timing(ctx.statistics().cropTimer());
 
     // Keep a pointer on the original representation, as the one in the field will
     // be changed in the loop
+    auto& field = ctx.field();
     repres::RepresentationHandle representation(field.representation());
     const caching::CroppingCacheEntry& c = getMapping(representation, bbox_, caching_);
-
     ASSERT(c.mapping_.size());
-
-    // eckit::Log::debug<LibMir>() << "CROP resulting bbox is: " << c.bbox_ <<
-    //                    ", size=" << c.mapping_.size() << std::endl;
-
-
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
 
     for (size_t i = 0; i < field.dimensions(); i++) {
         const MIRValuesVector& values = field.values(i);

@@ -58,8 +58,8 @@ static void fill(std::vector<T>& value, const std::vector<std::string>& params) 
     eckit::Translator<std::string, T> t;
 
     value.clear();
-    for (auto j = params.begin(); j != params.end(); ++j) {
-        value.push_back(t(*j));
+    for (auto& j : params) {
+        value.push_back(t(j));
     }
 }
 
@@ -70,7 +70,7 @@ bool CustomParametrisation::_get(const std::string& name, T& value) const {
 
     auto j = params_.find(name);
     if (j != params_.end()) {
-        fill(value, (*j).second);
+        fill(value, j->second);
         return true;
     }
 

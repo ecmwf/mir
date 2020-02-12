@@ -55,8 +55,8 @@ GribAllFileInput::GribAllFileInput(const std::string& path) : path_(path), count
 
 
 GribAllFileInput::~GribAllFileInput() {
-    for (auto j = inputs_.begin(); j != inputs_.end(); ++j) {
-        delete (*j);
+    for (auto& j : inputs_) {
+        delete j;
     }
 }
 
@@ -89,9 +89,9 @@ data::MIRField GribAllFileInput::field() const {
 
 bool GribAllFileInput::next() {
     if (count_ == 0) {
-        for (auto j = inputs_.begin(); j != inputs_.end(); ++j) {
+        for (auto& j : inputs_) {
             // eckit::Log::info() << *(*j) << std::endl;
-            ASSERT((*j)->next());
+            ASSERT(j->next());
         }
         return true;
     }

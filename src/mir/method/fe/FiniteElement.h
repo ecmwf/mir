@@ -110,13 +110,13 @@ private:
 };
 
 
-//=========================================================================
-
-
 class FiniteElementFactory : public MethodFactory {
     std::string name_;
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
     virtual FiniteElement* make(const param::MIRParametrisation&)                           = 0;
+
+    FiniteElementFactory(const FiniteElementFactory&) = delete;
+    FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;
 
 protected:
     FiniteElementFactory(const std::string&);

@@ -40,10 +40,10 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity,
 
 template <class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // std::cerr << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
+    // log() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
     // cache_.size() << std::endl;
     for (auto& j : cache_) {
-        // std::cerr << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
+        // log() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
         delete j.second;
     }
 
@@ -60,9 +60,9 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     if (j != cache_.end()) {
         statistics_.hits_++;
 
-        (*j).second->hits_++;
-        (*j).second->last_ = utime();
-        return (*j).second->ptr_.get();
+        j->second->hits_++;
+        j->second->last_ = utime();
+        return j->second->ptr_.get();
     }
     // if (statistics_) {
     //     statistics_.misses_++;
@@ -87,7 +87,7 @@ void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsag
 
     InMemoryCacheUsage result;
     for (auto j = keys_.begin(); j != keys_.end(); ++j) {
-        result += (*j).second;
+        result += j->second;
     }
 
     statistics_.required_ = result;
@@ -160,9 +160,9 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     auto k = cache_.find(key);
     if (k != cache_.end()) {
         NOTIMP;  // Needs to think more about it
-        delete (*k).second;
-        (*k).second = new Entry(ptr);
-        keys_[key]  = InMemoryCacheUsage(size_t(1), size_t(0));
+        delete k->second;
+        k->second  = new Entry(ptr);
+        keys_[key] = InMemoryCacheUsage(size_t(1), size_t(0));
         return *ptr;
     }
 
@@ -192,7 +192,7 @@ template <class T>
 InMemoryCacheUsage InMemoryCache<T>::footprint() const {
     InMemoryCacheUsage result;
     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-        result += (*j).second->footprint_;
+        result += j->second->footprint_;
     }
     if (result > statistics_.footprint_) {
         statistics_.footprint_ = result;
@@ -232,7 +232,7 @@ void InMemoryCache<T>::erase(const std::string& key) {
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
-        delete (*j).second;
+        delete j->second;
         cache_.erase(j);
     }
 }
@@ -272,7 +272,7 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         double m   = 0;
 
         for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-            double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
+            double s = score(j->second->hits_, now - j->second->last_, now - j->second->insert_);
             if (s > m) {
                 m    = s;
                 best = j;
@@ -290,10 +290,10 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         statistics_.evictions_++;
 
 
-        purged += (*best).second->footprint_;
+        purged += best->second->footprint_;
 
-        log() << "CACHE " << name_ << " decache " << (*best).first << std::endl;
-        delete (*best).second;
+        log() << "CACHE " << name_ << " decache " << best->first << std::endl;
+        delete best->second;
         cache_.erase(best);
 
         log() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;

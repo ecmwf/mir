@@ -52,12 +52,11 @@ void ScalarCoordinateInputVariable::print(std::ostream& out) const {
 
 
 Dimension* ScalarCoordinateInputVariable::getVirtualDimension() {
-    if (dimensions_.size() == 0) {
-        Dimension* dim = new VirtualInputDimension(dataset_, name_);
-        dataset_.add(dim);
-        dimensions_.push_back(dim);
+    if (dimensions_.empty()) {
+        dimensions_.emplace_back(new VirtualInputDimension(dataset_, name_));
+        dataset_.add(dimensions_.back());
     }
-    return dimensions_[0];
+    return dimensions_.front();
 }
 
 

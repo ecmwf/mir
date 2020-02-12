@@ -18,25 +18,31 @@
 
 #include <iostream>
 
+
 namespace mir {
 namespace netcdf {
 /*
 See http://www.unidata.ucar.edu/software/netcdf/docs/netcdf/Attribute-Conventions.html
 */
 
+
 static const char* dont_drop[] = {"_FillValue", "missing_value", nullptr};
+
 
 OutputAttribute::OutputAttribute(Endowed& owner, const std::string& name, Value* value) :
     Attribute(owner, name, value),
     valid_(true) {}
 
+
 OutputAttribute::~OutputAttribute() = default;
+
 
 void OutputAttribute::create(int nc) const {
     if (valid_) {
         value_->createAttribute(nc, owner_.varid(), name_, owner_.path());
     }
 }
+
 
 void OutputAttribute::clone(Endowed& owner) const {
     owner.add(new OutputAttribute(owner, name_, value_->clone()));
@@ -46,7 +52,7 @@ void OutputAttribute::clone(Endowed& owner) const {
 void OutputAttribute::merge(const Attribute& other) {
     if (!value_->sameAs(other.value())) {
         if (valid_) {
-            std::cout << "WARNING: dropping attribute " << fullName() << std::endl;
+            eckit::Log::warning() << "WARNING: dropping attribute " << fullName() << std::endl;
             valid_ = false;
 
             for (size_t i = 0; dont_drop[i] != nullptr; ++i) {
@@ -57,6 +63,7 @@ void OutputAttribute::merge(const Attribute& other) {
         }
     }
 }
+
 
 void OutputAttribute::invalidate() {
     valid_ = false;

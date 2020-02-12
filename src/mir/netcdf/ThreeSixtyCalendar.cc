@@ -12,16 +12,8 @@
 
 #include "mir/netcdf/ThreeSixtyCalendar.h"
 
-#include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/OutputAttribute.h"
-#include "mir/netcdf/Value.h"
-#include "mir/netcdf/Variable.h"
-
-#include <algorithm>
 #include <ostream>
-#include <sstream>
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
@@ -29,13 +21,17 @@ namespace netcdf {
 
 ThreeSixtyCalendar::ThreeSixtyCalendar(const Variable& /*variable*/) {}
 
+
 ThreeSixtyCalendar::~ThreeSixtyCalendar() = default;
+
 
 void ThreeSixtyCalendar::print(std::ostream& out) const {
     out << "ThreeSixtyCalendar[]";
 }
 
+
 static CodecBuilder<ThreeSixtyCalendar> builder("360_day");
+
 
 }  // namespace netcdf
 }  // namespace mir

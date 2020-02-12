@@ -23,10 +23,9 @@
 namespace mir {
 namespace action {
 
-static eckit::ThreadPool* pool = 0;
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static eckit::ThreadPool* pool = nullptr;
+static pthread_once_t once     = PTHREAD_ONCE_INIT;
 static void init() {
     pool = new eckit::ThreadPool("executor", 2);
 }
@@ -48,6 +47,9 @@ public:
         owner_(owner),
         ctx_(ctx),
         node_(node) {}
+
+    ThreadExecutorTask(const ThreadExecutorTask&) = delete;
+    ThreadExecutorTask& operator=(const ThreadExecutorTask&) = delete;
 };
 
 

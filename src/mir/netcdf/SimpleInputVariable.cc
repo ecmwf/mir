@@ -93,7 +93,7 @@ std::vector<std::string> SimpleInputVariable::coordinates() const {
 
     auto j = attributes_.find("coordinates");
     if (j != attributes_.end()) {
-        std::string s = (*j).second->asString();
+        std::string s = j->second->asString();
         std::string t;
 
         for (auto& k : s) {

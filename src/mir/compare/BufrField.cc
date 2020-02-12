@@ -15,12 +15,12 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
+#include <ostream>
 
 #include "eckit/log/Colour.h"
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/util/Grib.h"
@@ -128,7 +128,7 @@ BufrEntry::BufrEntry(const std::string& full, const std::vector<long>& l, const 
 
         default:
             NOTIMP;
-            break;
+            // break;
     }
 }
 
@@ -209,9 +209,8 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
     if (m > 0) {
         return std::abs(a - b) / m <= e;
     }
-    else {
-        return std::abs(a - b) <= e;
-    }
+
+    return std::abs(a - b) <= e;
 }
 
 template <class T>
@@ -302,7 +301,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
                      const std::vector<std::string>& /*ignore*/) :
     FieldBase(path, offset, size) {
 
-    grib_handle* h = grib_handle_new_from_message(0, buffer, size);
+    auto h = grib_handle_new_from_message(nullptr, buffer, size);
     ASSERT(h);
     HandleDeleter delh(h);
 
@@ -388,7 +387,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
         ASSERT(entriesByName_.find(name) == entriesByName_.end());
         entriesByName_[name] = allEntries_.size();
 
-        allEntries_.push_back(BufrEntry(name, l, d, s, t));
+        allEntries_.emplace_back(BufrEntry(name, l, d, s, t));
         if (allEntries_.back().ignore()) {
             ignored_.insert(allEntries_.back().name());
         }
@@ -398,20 +397,22 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
     }
 }
 
-BufrField::~BufrField() {}
+
+BufrField::~BufrField() = default;
+
 
 void BufrField::json(eckit::JSON& json) const {
     json.startObject();
     FieldBase::json(json);
 
 
-    for (auto j : activeEntries_) {
+    for (auto& j : activeEntries_) {
         json << j;
     }
 
     json << "descriptors";
     json.startList();
-    for (auto j : descriptors_) {
+    for (auto& j : descriptors_) {
         json << j;
     }
     json.endList();
@@ -424,21 +425,19 @@ void BufrField::json(eckit::JSON& json) const {
     json.endObject();
 }
 
+
 Field BufrField::field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
-
-
-    BufrField* field = new BufrField(buffer, size, path, offset, ignore);
-
-    Field result(field);
+    Field result(new BufrField(buffer, size, path, offset, ignore));
     return result;
 }
+
 
 void BufrField::print(std::ostream& out) const {
 
     out << '[';
     const char* sep = "";
-    for (auto j : activeEntries_) {
+    for (auto& j : activeEntries_) {
         out << sep;
 
         if (!bufrFullLists) {
@@ -463,7 +462,7 @@ bool BufrField::wrapped() const {
 }
 
 bool BufrField::less_than(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     if (ignored_ == other.ignored_) {
         return activeEntries_ < other.activeEntries_;
     }
@@ -475,8 +474,8 @@ void BufrField::whiteListEntries(std::ostream& out) const {
 }
 
 size_t BufrField::differences(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
-    size_t count           = 0;
+    auto& other  = dynamic_cast<const BufrField&>(o);
+    size_t count = 0;
 
 
     size_t n = std::min(activeEntries_.size(), other.activeEntries_.size());
@@ -495,7 +494,7 @@ size_t BufrField::differences(const FieldBase& o) const {
 
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
 
     const std::vector<BufrEntry>& ei = activeEntries_;
     const std::vector<BufrEntry>& ej = other.activeEntries_;
@@ -592,7 +591,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
 }
 
 void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     // out << "bufr(area)";
     size_t n        = std::min(descriptors_.size(), other.descriptors_.size());
     const char* sep = "";
@@ -611,13 +610,13 @@ void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
 }
 
 bool BufrField::same(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     return (activeEntries_ == other.activeEntries_) && (ignored_ == other.ignored_);
 }
 
 bool BufrField::match(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
-    size_t n               = std::min(descriptors_.size(), other.descriptors_.size());
+    auto& other = dynamic_cast<const BufrField&>(o);
+    size_t n    = std::min(descriptors_.size(), other.descriptors_.size());
     for (size_t i = 0; i < n; ++i) {
         if (descriptors_[i] != other.descriptors_[i]) {
             bool loop1 = (descriptors_[i] > 100000);
@@ -637,7 +636,6 @@ std::ostream& BufrField::printGrid(std::ostream& out) const {
 
 bool BufrField::match(const std::string&, const std::string&) const {
     NOTIMP;
-    return false;
 }
 
 size_t BufrField::numberOfPoints() const {

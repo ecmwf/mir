@@ -26,7 +26,7 @@ public:
 
 private:
     std::vector<const Variable*> coordinates_;
-
+    mutable std::string ncname_;
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                  const std::vector<Dimension*>& dimensions) const;
@@ -44,8 +44,6 @@ private:
     void dumpAttributes(std::ostream& s, const char* prefix) const;
 
     virtual std::vector<std::string> coordinates() const;
-
-    mutable std::string ncname_;
 };
 
 

@@ -10,10 +10,9 @@
  */
 
 
-#ifndef mir_netcdf_RegularLL
-#define mir_netcdf_RegularLL
+#ifndef mir_netcdf_Curvilinear_h
+#define mir_netcdf_Curvilinear_h
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/netcdf/GridSpec.h"
 
 
@@ -25,18 +24,15 @@ class Curvilinear : public GridSpec {
 public:
     Curvilinear(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-
     virtual ~Curvilinear();
 
     // -- Methods
-
 
     static GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes);
 
 
 protected:
     // -- Members
-
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
@@ -55,13 +51,12 @@ private:
 
     virtual void print(std::ostream& s) const;
 
-    // For MIR
+    // From GridSpec
     virtual bool has(const std::string& name) const;
     virtual bool get(const std::string&, long&) const;
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string& name, double& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
-
     virtual void reorder(MIRValuesVector& values) const;
 };
 

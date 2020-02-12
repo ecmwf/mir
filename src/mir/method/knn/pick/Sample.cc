@@ -47,7 +47,7 @@ void Sample::pick(const search::PointSearch& tree, const eckit::geometry::Point3
 
     // reservoir sampling in-place (output not ordered by distance)
     for (size_t n = nClosest_; n < closest.size(); ++n) {
-        auto r = static_cast<size_t>(std::rand() % n);
+        auto r = size_t(std::rand()) % n;
         if (r < nClosest_) {
             closest[r] = closest[n];
         }

@@ -140,6 +140,9 @@ public:
         delete grib2Input_;
     }
 
+    EncodeTest(const EncodeTest&) = delete;
+    EncodeTest& operator=(const EncodeTest&) = delete;
+
     virtual size_t numberOfValues() const = 0;
 
     size_t numberOfValuesEncodedInGrib(long edition) {
@@ -162,7 +165,7 @@ public:
         }
 
         long n = 0;
-        for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
+        for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value) != 0; ++n) {
         }
 
         grib_iterator_delete(iter);
@@ -183,7 +186,7 @@ public:
         }
 
         long n = 0;
-        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value); ++n) {
+        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n) {
             ASSERT(iter_m->next());
 
             double dlat = mir::Latitude(iter_m->pointRotated()[0]).distance(lat).value();

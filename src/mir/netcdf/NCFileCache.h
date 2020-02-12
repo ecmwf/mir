@@ -16,10 +16,16 @@
 #include <map>
 #include <string>
 
+
 namespace mir {
 namespace netcdf {
-
 class NCFile;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class NCFileCache {
@@ -33,10 +39,12 @@ private:
     NCFileCache(const NCFileCache&);
     NCFileCache& operator=(const NCFileCache&);
 
-    // ------
     std::map<std::string, NCFile*> files_;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

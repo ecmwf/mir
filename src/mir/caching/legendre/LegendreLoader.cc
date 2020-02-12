@@ -54,9 +54,6 @@ eckit::Channel& LegendreLoader::warn() {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
 static pthread_once_t once                              = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                        = nullptr;
 static std::map<std::string, LegendreLoaderFactory*>* m = nullptr;
@@ -101,7 +98,7 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
         throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params, path);
+    return j->second->make(params, path);
 }
 
 
@@ -120,7 +117,7 @@ bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& para
         throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->shared();
+    return j->second->shared();
 }
 
 

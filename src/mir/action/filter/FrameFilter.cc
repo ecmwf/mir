@@ -48,11 +48,10 @@ void FrameFilter::print(std::ostream& out) const {
 
 
 void FrameFilter::execute(context::Context& ctx) const {
+    auto timing(ctx.statistics().frameTimer());
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().frameTiming_);
     data::MIRField& field = ctx.field();
-
-    double missingValue = field.missingValue();
+    double missingValue   = field.missingValue();
 
     for (size_t i = 0; i < field.dimensions(); i++) {
 

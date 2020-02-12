@@ -24,7 +24,7 @@ namespace repres {
 EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() {}
+EquatorialAzimuthalEquidistant::EquatorialAzimuthalEquidistant() = default;
 
 
 EquatorialAzimuthalEquidistant::~EquatorialAzimuthalEquidistant() = default;

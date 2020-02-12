@@ -103,11 +103,9 @@ public:
 }  // namespace
 
 std::vector<Field> Field::bestMatches(const FieldSet& fields) const {
+
     std::vector<Field> matches;
-
-    for (auto k = fields.begin(); k != fields.end(); ++k) {
-        const auto& other = *k;
-
+    for (auto& other : fields) {
         if (match(other)) {
             matches.push_back(other);
         }
@@ -152,7 +150,7 @@ std::ostream& Field::printDifference(std::ostream& out, const Field& other) cons
 }
 
 Field::operator bool() const {
-    return field_ != 0;
+    return field_ != nullptr;
 }
 
 bool Field::operator<(const Field& other) const {

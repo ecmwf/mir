@@ -87,7 +87,7 @@ void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
     param.get("wait", wait);
 
     if (load || unload) {
-        for (std::string path : args) {
+        for (const std::string& path : args) {
 
             if (!load) {
                 eckit::Log::info() << "---"

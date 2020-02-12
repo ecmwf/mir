@@ -28,6 +28,7 @@ FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisatio
     args_.push_back(arg1);
 }
 
+
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                                  Formula* arg1, Formula* arg2) :
     Formula(parametrisation),
@@ -36,6 +37,7 @@ FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisatio
     args_.push_back(arg2);
 }
 
+
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                                  std::vector<Formula*>& args) :
     Formula(parametrisation),
@@ -43,32 +45,32 @@ FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisatio
     std::swap(args_, args);
 }
 
+
 FormulaFunction::~FormulaFunction() {
-    for (auto j = args_.begin(); j != args_.end(); ++j) {
-        delete (*j);
+    for (auto& j : args_) {
+        delete j;
     }
 }
+
 
 void FormulaFunction::print(std::ostream& out) const {
     out << function_ << "(";
-    const char* sep = "";
-    for (auto j = args_.begin(); j != args_.end(); ++j) {
-        out << sep << *(*j);
+    auto sep = "";
+    for (auto& j : args_) {
+        out << sep << *j;
         sep = ",";
     }
-
     out << ")";
 }
 
+
 void FormulaFunction::execute(mir::context::Context& ctx) const {
-
-    size_t i = 0;
-    for (auto j = args_.begin(); j != args_.end(); ++j, ++i) {
-        (*j)->perform(ctx.push());
+    for (auto& j : args_) {
+        j->perform(ctx.push());
     }
-
     function_.execute(ctx);
 }
+
 
 bool FormulaFunction::sameAs(const mir::action::Action& other) const {
     auto o = dynamic_cast<const FormulaFunction*>(&other);

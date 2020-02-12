@@ -89,7 +89,7 @@ void Action::estimate(context::Context&, api::MIREstimation& /*estimation*/) con
 
 void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation,
                                         const repres::Representation& out) {
-    // eckit::Timer timer("estimateNumberOfGridPoints", std::cerr);
+    // eckit::Timer timer("estimateNumberOfGridPoints", eckit::Log::error());
     estimation.numberOfGridPoints(out.numberOfPoints());
 }
 
@@ -100,9 +100,7 @@ void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
     if (field.hasMissing()) {
-
-
-        eckit::Timer timer("estimateMissingValues", std::cerr);
+        eckit::Timer timer("estimateMissingValues", eckit::Log::error());
 
         param::DefaultParametrisation runtime;
         param::CombinedParametrisation combined(runtime, runtime, runtime);
@@ -128,9 +126,6 @@ void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation
     }
 #endif
 }
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 static pthread_once_t once                      = PTHREAD_ONCE_INIT;
@@ -177,18 +172,18 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
 
             auto k = aliases.find(name);
             if (k != aliases.end()) {
-                j = m->find((*k).second);
+                j = m->find(k->second);
             }
             else {
                 for (auto p = m->begin(); p != m->end(); ++p) {
-                    if ((*p).first.find(name) != std::string::npos) {
+                    if (p->first.find(name) != std::string::npos) {
 
                         if (j != m->end()) {
                             std::ostringstream oss;
                             oss << "ActionFactory: ambiguous '" << name << "'"
-                                << ", could be '" << (*j).first << "'"
-                                << " or '" << (*p).first << "'";
-                            eckit::Log::error() << "   " << (*j).first << std::endl;
+                                << ", could be '" << j->first << "'"
+                                << " or '" << p->first << "'";
+                            eckit::Log::error() << "   " << j->first << std::endl;
                             throw eckit::SeriousBug(oss.str());
                         }
 
@@ -197,7 +192,7 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
                 }
 
                 if (j != m->end()) {
-                    aliases[name] = (*j).first;
+                    aliases[name] = j->first;
                 }
             }
         }
@@ -207,7 +202,7 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
         }
     }
 
-    return (*j).second->make(params);
+    return j->second->make(params);
 }
 
 

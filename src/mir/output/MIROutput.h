@@ -128,6 +128,9 @@ class MIROutputFactory {
     const std::string name_;
     const std::vector<std::string>& extensions_;
 
+    MIROutputFactory(const MIROutputFactory&) = delete;
+    MIROutputFactory& operator=(const MIROutputFactory&) = delete;
+
 protected:
     MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions = {});
     virtual ~MIROutputFactory();

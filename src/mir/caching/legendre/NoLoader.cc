@@ -30,7 +30,7 @@ void NoLoader::print(std::ostream& out) const {
 }
 
 const void* NoLoader::address() const {
-    return 0;
+    return nullptr;
 }
 
 size_t NoLoader::size() const {

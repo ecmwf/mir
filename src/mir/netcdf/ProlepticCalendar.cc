@@ -12,29 +12,26 @@
 
 #include "mir/netcdf/ProlepticCalendar.h"
 
-#include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/OutputAttribute.h"
-#include "mir/netcdf/Value.h"
-#include "mir/netcdf/Variable.h"
-
-#include <algorithm>
 #include <ostream>
-#include <sstream>
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
+
 ProlepticCalendar::ProlepticCalendar(const Variable& /*variable*/) {}
 
+
 ProlepticCalendar::~ProlepticCalendar() = default;
+
 
 void ProlepticCalendar::print(std::ostream& out) const {
     out << "ProlepticCalendar[]";
 }
 
+
 static CodecBuilder<ProlepticCalendar> builder("proleptic_gregorian");
+
 
 }  // namespace netcdf
 }  // namespace mir

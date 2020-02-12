@@ -31,7 +31,9 @@ FormulaBinop::FormulaBinop(const param::MIRParametrisation& parametrisation, con
                            Formula* arg2) :
     FormulaFunction(parametrisation, name, arg1, arg2) {}
 
+
 FormulaBinop::~FormulaBinop() = default;
+
 
 void FormulaBinop::print(std::ostream& out) const {
     out << '(' << *args_[0] << ") " << function_ << " (" << *args_[1] << ')';
@@ -46,12 +48,10 @@ class Unop : public Function {
     virtual void print(std::ostream& s) const { s << name_; }
 
     void field(context::Context& ctx, context::Context& ctx1) const {
+        auto timing(ctx.statistics().calcTimer());
 
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
-
-        data::MIRField& field = ctx.field();
-
-        data::MIRField& field1 = ctx1.field();
+        auto& field  = ctx.field();
+        auto& field1 = ctx1.field();
 
         field.dimensions(field1.dimensions());
 
@@ -120,13 +120,11 @@ class Binop : public Function {
     virtual void print(std::ostream& s) const { s << name_; }
 
     void fieldField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
+        auto timing(ctx.statistics().calcTimer());
 
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
-
-        data::MIRField& field = ctx.field();
-
-        data::MIRField& field1 = ctx1.field();
-        data::MIRField& field2 = ctx2.field();
+        auto& field  = ctx.field();
+        auto& field1 = ctx1.field();
+        auto& field2 = ctx2.field();
 
         ASSERT(field1.dimensions() == field2.dimensions());
         field.dimensions(field1.dimensions());
@@ -171,12 +169,11 @@ class Binop : public Function {
     }
 
     void fieldScalar(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
+        auto timing(ctx.statistics().calcTimer());
 
-        data::MIRField& field = ctx.field();
-
-        data::MIRField& field1 = ctx1.field();
-        double scalar2         = ctx2.scalar();
+        auto& field    = ctx.field();
+        auto& field1   = ctx1.field();
+        double scalar2 = ctx2.scalar();
 
         field.dimensions(field1.dimensions());
 
@@ -213,12 +210,11 @@ class Binop : public Function {
     }
 
     void scalarField(context::Context& ctx, context::Context& ctx1, context::Context& ctx2) const {
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().calcTiming_);
+        auto timing(ctx.statistics().calcTimer());
 
-        data::MIRField& field = ctx.field();
-
-        double scalar1         = ctx1.scalar();
-        data::MIRField& field2 = ctx2.field();
+        double scalar1 = ctx1.scalar();
+        auto& field    = ctx.field();
+        auto& field2   = ctx2.field();
 
         field.dimensions(field2.dimensions());
 
@@ -287,120 +283,128 @@ public:
 };
 
 
+struct round {
+    double operator()(double x) const { return ::round(x); }
+};
+
+
+struct sqrt {
+    double operator()(double x) const { return ::sqrt(x); }
+};
+
+
+struct sin {
+    double operator()(double x) const { return ::sin(x); }
+};
+
+
+struct cos {
+    double operator()(double x) const { return ::cos(x); }
+};
+
+
+struct tan {
+    double operator()(double x) const { return ::tan(x); }
+};
+
+
+struct asin {
+    double operator()(double x) const { return ::asin(x); }
+};
+
+
+struct acos {
+    double operator()(double x) const { return ::acos(x); }
+};
+
+
+struct atan {
+    double operator()(double x) const { return ::atan(x); }
+};
+
+
+struct log {
+    double operator()(double x) const { return ::log(x); }
+};
+
+
+struct log2 {
+    double operator()(double x) const { return ::log2(x); }
+};
+
+
+struct log10 {
+    double operator()(double x) const { return ::log10(x); }
+};
+
+
+struct exp {
+    double operator()(double x) const { return ::exp(x); }
+};
+
+
+struct abs {
+    double operator()(double x) const { return ::fabs(x); }
+};
+
+
+struct atan2 {
+    double operator()(double x, double y) const { return ::atan2(x, y); }
+};
+
+
+struct min {
+    double operator()(double x, double y) const { return std::min(x, y); }
+};
+
+
+struct max {
+    double operator()(double x, double y) const { return std::max(x, y); }
+};
+
+
+struct pow {
+    double operator()(double x, double y) const { return ::pow(x, y); }
+};
+
+
+static Unop<std::negate<double> > negate("neg");
+static Unop<std::logical_not<double> > logical_not("not");
+
+static Unop<log2> _log2("log2");
+static Unop<round> _round("round");
+static Unop<sqrt> _sqrt("sqrt");
+static Unop<sin> _sin("sin");
+static Unop<cos> _cos("cos");
+static Unop<tan> _tan("tan");
+static Unop<asin> _asin("asin");
+static Unop<acos> _acos("acos");
+static Unop<atan> _atan("atan");
+static Unop<log> _log("log");
+static Unop<log10> _log10("log10");
+static Unop<exp> _exp("exp");
+static Unop<abs> _abs("abs");
+
 static Binop<std::plus<double> > plus("+");
 static Binop<std::minus<double> > minus("-");
 static Binop<std::multiplies<double> > multiplies("*");
 static Binop<std::divides<double> > divides("/");
 // static Binop<std::modulus<double> > modulus1("%");
 // static Binop<std::modulus<double> > modulus2("mod");
-
-static Unop<std::negate<double> > negate("neg");
-
-
 static Binop<std::equal_to<double> > equal_to("=");
 static Binop<std::not_equal_to<double> > not_equal_to("!=");
-
 static Binop<std::greater<double> > greater(">");
 static Binop<std::less<double> > less("<");
-
 static Binop<std::greater_equal<double> > greater_equal(">=");
 static Binop<std::less_equal<double> > less_equal("<=");
-
 static Binop<std::logical_and<double> > logical_and_1("&&");
 static Binop<std::logical_or<double> > logical_or_1("||");
-
 static Binop<std::logical_and<double> > logical_and_2("and");
 static Binop<std::logical_or<double> > logical_or_2("or");
 
-
-static Unop<std::logical_not<double> > logical_not("not");
-//=========================================================
-struct round {
-    double operator()(double x) const { return ::round(x); }
-};
-static Unop<round> _round("round");
-//=========================================================
-struct sqrt {
-    double operator()(double x) const { return ::sqrt(x); }
-};
-static Unop<sqrt> _sqrt("sqrt");
-
-struct sin {
-    double operator()(double x) const { return ::sin(x); }
-};
-static Unop<sin> _sin("sin");
-
-struct cos {
-    double operator()(double x) const { return ::cos(x); }
-};
-static Unop<cos> _cos("cos");
-
-struct tan {
-    double operator()(double x) const { return ::tan(x); }
-};
-static Unop<tan> _tan("tan");
-
-struct asin {
-    double operator()(double x) const { return ::asin(x); }
-};
-static Unop<asin> _asin("asin");
-
-struct acos {
-    double operator()(double x) const { return ::acos(x); }
-};
-static Unop<acos> _acos("acos");
-
-struct atan {
-    double operator()(double x) const { return ::atan(x); }
-};
-static Unop<atan> _atan("atan");
-
-struct log {
-    double operator()(double x) const { return ::log(x); }
-};
-static Unop<log> _log("log");
-
-struct log2 {
-    double operator()(double x) const { return ::log2(x); }
-};
-static Unop<log2> _log2("log2");
-
-struct log10 {
-    double operator()(double x) const { return ::log10(x); }
-};
-static Unop<log10> _log10("log10");
-
-struct exp {
-    double operator()(double x) const { return ::exp(x); }
-};
-static Unop<exp> _exp("exp");
-
-struct abs {
-    double operator()(double x) const { return ::fabs(x); }
-};
-static Unop<abs> _abs("abs");
-
-//=========================================================
-struct atan2 {
-    double operator()(double x, double y) const { return ::atan2(x, y); }
-};
 static Binop<atan2> _atan2("atan2");
-
-//=========================================================
-struct min {
-    double operator()(double x, double y) const { return std::min(x, y); }
-};
 static Binop<min> _min("min");
-//=========================================================
-struct max {
-    double operator()(double x, double y) const { return std::max(x, y); }
-};
 static Binop<max> _max("max");
-//=========================================================
-
-struct pow {
-    double operator()(double x, double y) const { return ::pow(x, y); }
-};
 static Binop<pow> _pow_1("^");
 static Binop<pow> _pow_2("pow");
 

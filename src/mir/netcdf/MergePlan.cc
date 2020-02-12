@@ -12,25 +12,29 @@
 
 #include "mir/netcdf/MergePlan.h"
 
+#include <iostream>
+
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
 
+
 MergePlan::MergePlan(Dataset& field) : field_(field) {}
 
+
 MergePlan::~MergePlan() {
-    for (auto j = steps_.begin(); j != steps_.end(); ++j) {
-        delete (*j);
+    for (auto& j : steps_) {
+        delete j;
     }
 }
 
+
 void MergePlan::add(Step* s) {
-    for (auto j = steps_.begin(); j != steps_.end(); ++j) {
-        if ((*j)->merge(s)) {
+    for (auto& j : steps_) {
+        if (j->merge(s)) {
             delete s;
             return;
         }
@@ -38,6 +42,7 @@ void MergePlan::add(Step* s) {
     queue_.push(s);
     steps_.push_back(s);
 }
+
 
 void MergePlan::execute() {
     while (!queue_.empty()) {
@@ -47,22 +52,26 @@ void MergePlan::execute() {
     }
 }
 
+
 void MergePlan::link(const Variable& out, const Variable& in) {
     ASSERT(link_.find(&out) == link_.end());
     link_[&out] = &in;
 }
 
+
 const Variable& MergePlan::link(const Variable& out) {
     if (link_.find(&out) == link_.end()) {
-        std::cout << "MergePlan::link cannot find: " << out << std::endl;
+        eckit::Log::info() << "MergePlan::link cannot find: " << out << std::endl;
     }
     ASSERT(link_.find(&out) != link_.end());
     return *link_[&out];
 }
 
+
 Dataset& MergePlan::field() const {
     return field_;
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

@@ -11,28 +11,32 @@
 
 
 #include "mir/netcdf/NCFileCache.h"
+
 #include "mir/netcdf/NCFile.h"
+
 
 namespace mir {
 namespace netcdf {
 
-NCFileCache::NCFileCache() {}
+
+NCFileCache::NCFileCache() = default;
+
 
 NCFileCache::~NCFileCache() {
-    for (auto j = files_.begin(); j != files_.end(); ++j) {
-        delete (*j).second;
+    for (auto& j : files_) {
+        delete j.second;
     }
 }
+
 
 NCFile& NCFileCache::lookUp(const std::string& path) {
     auto j = files_.find(path);
     if (j == files_.end()) {
-        NCFile* f    = new NCFile(path);
-        files_[path] = f;
-        return *f;
+        return *(files_[path] = new NCFile(path));
     }
-    return *((*j).second);
+    return *(j->second);
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

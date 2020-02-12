@@ -81,9 +81,6 @@ public:
 
     // -- Methods
 
-
-    // --------------------
-
     virtual const std::string& uniqueName() const;
     virtual bool sameAs(const Representation&) const;
 
@@ -211,6 +208,9 @@ private:
 class RepresentationFactory {
     std::string name_;
     virtual Representation* make(const param::MIRParametrisation&) = 0;
+
+    RepresentationFactory(const RepresentationFactory&) = delete;
+    RepresentationFactory& operator=(const RepresentationFactory&) = delete;
 
 protected:
     RepresentationFactory(const std::string&);

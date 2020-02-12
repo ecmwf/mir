@@ -122,7 +122,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 
@@ -202,7 +202,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 

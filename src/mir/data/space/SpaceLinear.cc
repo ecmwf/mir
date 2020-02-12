@@ -24,8 +24,7 @@ SpaceLinear::SpaceLinear() = default;
 void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
-    using eckit::linalg::Scalar;
-    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);
@@ -35,8 +34,7 @@ void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrix
 void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
-    using eckit::linalg::Scalar;
-    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);

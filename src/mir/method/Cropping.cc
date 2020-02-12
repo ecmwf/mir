@@ -15,31 +15,45 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
+
 namespace mir {
 namespace method {
 
+
 Cropping::Cropping() : active_(false) {}
 
+
+Cropping::Cropping(const Cropping&) = default;
+
+
 Cropping::~Cropping() = default;
+
+
+Cropping& Cropping::operator=(const Cropping&) = default;
+
 
 void Cropping::hash(eckit::MD5& md5) const {
     md5.add(bbox_);
     md5.add(active_);
 }
 
+
 void Cropping::boundingBox(const util::BoundingBox& bbox) {
     bbox_   = bbox;
     active_ = true;
 }
 
+
 bool Cropping::operator==(const Cropping& other) const {
     return (active_ == other.active_) && (bbox_ == other.bbox_);
 }
+
 
 const util::BoundingBox& Cropping::boundingBox() const {
     ASSERT(active_);
     return bbox_;
 }
+
 
 void Cropping::print(std::ostream& out) const {
     if (active_) {
@@ -49,6 +63,7 @@ void Cropping::print(std::ostream& out) const {
         out << "none";
     }
 }
+
 
 }  // namespace method
 }  // namespace mir

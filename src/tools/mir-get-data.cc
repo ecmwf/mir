@@ -81,7 +81,11 @@ using coord_t = std::vector<double>;
 
 struct Coordinates {
     Coordinates(const std::string&& name) : name_(name) {}
-    virtual ~Coordinates()                    = default;
+    virtual ~Coordinates() = default;
+
+    Coordinates(const Coordinates&) = delete;
+    Coordinates& operator=(const Coordinates&) = delete;
+
     virtual const coord_t& latitudes() const  = 0;
     virtual const coord_t& longitudes() const = 0;
     const std::string& name() const { return name_; }
@@ -89,6 +93,7 @@ struct Coordinates {
         ASSERT(latitudes().size() == longitudes().size());
         return latitudes().size();
     }
+
     const std::string name_;
 };
 
@@ -124,7 +129,7 @@ struct CoordinatesFromGRIB : Coordinates {
         long Nl = 0;
         grib_get_long(h, "numberOfDataPoints", &Nl);
         ASSERT(Nl > 0);
-        const size_t N = size_t(Nl);
+        auto N = size_t(Nl);
 
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
@@ -157,7 +162,7 @@ private:
 struct CoordinatesFromAtlas : Coordinates {
     CoordinatesFromAtlas(const atlas::Grid& grid) : Coordinates("atlas") {
 
-        const size_t N = grid.size();
+        auto N = size_t(grid.size());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 

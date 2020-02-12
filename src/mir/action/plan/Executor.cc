@@ -89,10 +89,8 @@ const Executor& Executor::lookup(const param::MIRParametrisation& params) {
         throw eckit::SeriousBug("No Executor called " + name);
     }
 
-
-    (*j).second->parametrisation(params);
-
-    return *(*j).second;
+    j->second->parametrisation(params);
+    return *(j->second);
 }
 
 

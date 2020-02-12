@@ -49,9 +49,6 @@ GribCompatibility::~GribCompatibility() {
 }
 
 
-//=========================================================================
-
-
 void GribCompatibility::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -138,7 +135,7 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
         throw eckit::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
 
-    return *(*j).second;
+    return *(j->second);
 }
 
 

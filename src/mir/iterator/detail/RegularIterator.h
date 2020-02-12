@@ -34,6 +34,8 @@ public:
     RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
                     const eckit::Fraction& ref, const eckit::Fraction& period);
 
+    RegularIterator(const RegularIterator&) = delete;
+
     // -- Destructor
 
     virtual ~RegularIterator() = default;
@@ -42,7 +44,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    RegularIterator& operator=(const RegularIterator&) = delete;
 
     // -- Methods
 

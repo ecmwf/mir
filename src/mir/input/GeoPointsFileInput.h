@@ -81,16 +81,17 @@ private:
 
     std::string path_;
     param::SimpleParametrisation fieldParametrisation_;
-    int which_;
     size_t dimensions_;
     size_t next_;
-    bool hasMissing_;
-    double missingValue_;
     size_t footprint_;
+    double missingValue_;
 
     std::vector<double> latitudes_;
     std::vector<double> longitudes_;
     MIRValuesVector values_;
+
+    int which_;
+    bool hasMissing_;
 
     // -- Methods
 

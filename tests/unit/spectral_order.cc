@@ -67,7 +67,7 @@ CASE("test_spectral_order") {
 
     std::unique_ptr<SpectralOrder> order1(SpectralOrderFactory::build("linear"));
 
-    for (long Tref, Nref, i = 0; (Tref = order1_cases[i][0]); ++i) {
+    for (long Tref, Nref, i = 0; (Tref = order1_cases[i][0]) != 0; ++i) {
         Nref = order1_cases[i][1];
 
         long N = order1->getGaussianNumberFromTruncation(Tref);
@@ -83,7 +83,7 @@ CASE("test_spectral_order") {
 
     std::unique_ptr<SpectralOrder> order2(SpectralOrderFactory::build("quadratic"));
 
-    for (long Tref, Nref, i = 0; (Tref = order2_cases[i][0]); ++i) {
+    for (long Tref, Nref, i = 0; (Tref = order2_cases[i][0]) != 0; ++i) {
         Nref = order2_cases[i][1];
 
         long N = order2->getGaussianNumberFromTruncation(Tref);
@@ -99,7 +99,7 @@ CASE("test_spectral_order") {
 
     std::unique_ptr<SpectralOrder> order3(SpectralOrderFactory::build("cubic"));
 
-    for (long Tref, Nref, i = 0; (Tref = order3_cases[i][0]); ++i) {
+    for (long Tref, Nref, i = 0; (Tref = order3_cases[i][0]) != 0; ++i) {
         Nref = order3_cases[i][1];
 
         long N = order3->getGaussianNumberFromTruncation(Tref);
@@ -112,7 +112,7 @@ CASE("test_spectral_order") {
         EXPECT(T == Tref);
     }
 
-    for (long T, i = 0; (T = unknown_cases[i][0]); ++i) {
+    for (long T, i = 0; (T = unknown_cases[i][0]) != 0; ++i) {
         const long N1 = order1->getGaussianNumberFromTruncation(T);
         const long N2 = order2->getGaussianNumberFromTruncation(T);
         EXPECT(N1 != unknown_cases[i][1]);

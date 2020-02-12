@@ -10,11 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_GregorianDateCodec
-#define mir_netcdf_GregorianDateCodec
+#ifndef mir_netcdf_GregorianDateCodec_h
+#define mir_netcdf_GregorianDateCodec_h
+
+#include <string>
 
 #include "eckit/types/DateTime.h"
+
 #include "mir/netcdf/Calendar.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -58,6 +62,9 @@ private:
     virtual void updateAttributes(int nc, int varid, const std::string& path);
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

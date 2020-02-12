@@ -63,14 +63,14 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
                 eckit::Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
             }
             ::_exit(1);
-            break;
+            // break;
 
         case -1:
             // error
             eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): " << eckit::Log::syserr << std::endl;
             owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
             return;
-            break;
+            // break;
     }
 
     // Parent

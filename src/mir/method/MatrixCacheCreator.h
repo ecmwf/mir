@@ -21,33 +21,37 @@ class PathName;
 }
 
 namespace mir {
-
 namespace context {
 class Context;
 }
-
 namespace repres {
 class Representation;
 }
-
 namespace lsm {
 class LandSeaMasks;
 }
-
 namespace method {
-
 class Cropping;
 class MethodWeighted;
+}  // namespace method
+}  // namespace mir
+
+
+namespace mir {
+namespace method {
+
 
 class MatrixCacheCreator : public caching::WeightCache::CacheContentCreator {
 
-public:
-    MatrixCacheCreator(const MethodWeighted& owner, context::Context& ctx, const repres::Representation& in,
-                       const repres::Representation& out, const lsm::LandSeaMasks& masks, const Cropping& cropping);
-
-
-private:
     virtual void create(const eckit::PathName& path, WeightMatrix& W, bool& saved);
+
+public:
+    MatrixCacheCreator(const MethodWeighted& owner, context::Context&, const repres::Representation& in,
+                       const repres::Representation& out, const lsm::LandSeaMasks&, const Cropping&);
+
+    MatrixCacheCreator(const MatrixCacheCreator&) = delete;
+    MatrixCacheCreator& operator=(const MatrixCacheCreator&) = delete;
+    virtual ~MatrixCacheCreator()                            = default;
 
 private:
     const MethodWeighted& owner_;

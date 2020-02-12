@@ -13,36 +13,38 @@
 #ifndef mir_netcdf_Matrix
 #define mir_netcdf_Matrix
 
-
 #include "eckit/memory/Counted.h"
 
 #include <string>
 #include <vector>
 
+
 namespace mir {
 namespace netcdf {
-
 class Type;
 class Value;
 class Remapping;
 class Codec;
-
 class Reshape;
 template <class T>
 class Mapper;
+}  // namespace netcdf
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
+
 
 class Matrix : public eckit::Counted {
 public:
     Matrix(Type& type, const std::string& name, size_t size);
-
 
     Type& type() const;
     void type(Type&);
 
     const std::string& name() const;
     size_t size() const;
-
-    // =================================================
 
     virtual void read(std::vector<double>&) const;
     virtual void read(std::vector<float>&) const;
@@ -80,10 +82,6 @@ public:
     void codec(Codec*);
     Codec* codec() const;
 
-    // ========================================================
-
-    // ========================================================
-
 protected:
     virtual ~Matrix();
 
@@ -99,14 +97,9 @@ private:
     Matrix(const Matrix&);
     Matrix& operator=(const Matrix&);
 
-    // -- Members
-
-
     // -- Methods
 
-
     virtual void print(std::ostream& out) const = 0;
-
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& out, const Matrix& v) {
@@ -118,4 +111,6 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

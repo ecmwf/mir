@@ -13,7 +13,6 @@
 #include <numeric>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/types/Types.h"
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/DataInputVariable.h"
@@ -27,25 +26,30 @@
 namespace mir {
 namespace netcdf {
 
+
 DataInputVariable::DataInputVariable(Dataset& owner, const std::string& name, int id,
                                      const std::vector<Dimension*>& dimensions) :
     InputVariable(owner, name, id, dimensions) {}
 
+
 DataInputVariable::~DataInputVariable() = default;
+
 
 Variable* DataInputVariable::makeOutputVariable(Dataset& owner, const std::string& name,
                                                 const std::vector<Dimension*>& dimensions) const {
     return new DataOutputVariable(owner, name, dimensions);
 }
 
+
 void DataInputVariable::print(std::ostream& out) const {
     out << "DataInputVariable[name=" << name_ << ",nc=" << ncname() << "]";
 }
 
+
 const std::string& DataInputVariable::ncname() const {
     auto j = attributes_.find("standard_name");
     if (j != attributes_.end()) {
-        ncname_ = (*j).second->asString();
+        ncname_ = j->second->asString();
         return ncname_;
     }
     return name();
@@ -60,6 +64,7 @@ void DataInputVariable::addCoordinateVariable(const Variable* v) {
     }
     coordinates_.push_back(v);
 }
+
 
 Variable* DataInputVariable::addMissingCoordinates() {
     for (auto d : dimensions_) {
@@ -84,6 +89,7 @@ void DataInputVariable::collectField(std::vector<Field*>& fields) const {
     fields.push_back(new Field(*this));
 }
 
+
 size_t DataInputVariable::count2DValues() const {
 
     std::vector<size_t> dims;
@@ -97,8 +103,9 @@ size_t DataInputVariable::count2DValues() const {
     dims.pop_back();
 
 
-    return std::accumulate(dims.begin(), dims.end(), 1ul, std::multiplies<size_t>());
+    return std::accumulate(dims.begin(), dims.end(), size_t(1), std::multiplies<size_t>());
 }
+
 
 void DataInputVariable::get2DValues(MIRValuesVector& values, size_t index) const {
 

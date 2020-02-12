@@ -29,7 +29,7 @@ public:
 
     static std::string cacheDir();
     static bool caching();
-    static const keywords_t postProcess();
+    static keywords_t postProcess();
 
 protected:
     const void* addr() const;

@@ -68,7 +68,7 @@ void ShVodToUV::print(std::ostream& out) const {
 
 
 void ShVodToUV::execute(context::Context& ctx) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().vod2uvTiming_);
+    auto timing(ctx.statistics().vod2uvTimer());
 
     // get field properties
     data::MIRField& field = ctx.field();
@@ -110,8 +110,8 @@ void ShVodToUV::execute(context::Context& ctx) const {
 
 
     // configure paramIds for U/V
-    size_t id_u = 0;
-    size_t id_v = 0;
+    long id_u = 0;
+    long id_v = 0;
     util::Wind::paramIds(parametrisation_, id_u, id_v);
 
 

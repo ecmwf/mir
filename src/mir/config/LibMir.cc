@@ -45,7 +45,7 @@ bool LibMir::caching() {
 }
 
 
-const LibMir::keywords_t LibMir::postProcess() {
+LibMir::keywords_t LibMir::postProcess() {
     static const keywords_t defaultKeywords{
         "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format", "formula",
         "frame",    "griddef", "latitudes",    "longitudes",    "packing", "pattern", "vod2uv",
@@ -80,7 +80,7 @@ std::string LibMir::gitsha1(unsigned int count) const {
         return "not available";
     }
 
-    return sha1.substr(0, std::min(count, 40u));
+    return sha1.substr(0, std::min(count, 40U));
 }
 
 

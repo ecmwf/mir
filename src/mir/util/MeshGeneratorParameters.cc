@@ -50,10 +50,10 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
 
-    for (std::string key :
-         {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
-        bool value = false;
-        if (user.get(label + "-mesh-generator-" + key, value)) {
+    for (auto& k : {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
+        auto key   = label + "-mesh-generator-" + std::string(k);
+        auto value = false;
+        if (user.get(key, value)) {
             std::replace(key.begin(), key.end(), '-', '_');
             set(key, value);
         }

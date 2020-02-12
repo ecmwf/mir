@@ -73,8 +73,10 @@ private:
 class CodecFactory {
 
     std::string name_;
-
     virtual Codec* make(const Variable&) = 0;
+
+    CodecFactory(const CodecFactory&) = delete;
+    CodecFactory& operator=(const CodecFactory&) = delete;
 
 protected:
     CodecFactory(const std::string&);

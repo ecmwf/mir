@@ -46,7 +46,7 @@ public:
 
     // -- Methods
 
-    static void paramIds(const param::MIRParametrisation&, size_t& u, size_t& v);
+    static void paramIds(const param::MIRParametrisation&, long& u, long& v);
 
     // -- Overridden methods
     // None

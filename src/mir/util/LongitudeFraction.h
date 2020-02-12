@@ -14,14 +14,18 @@
 #define mir_util_LongitudeFraction_h
 
 #include <iosfwd>
+
 #include "eckit/types/Fraction.h"
+
 
 namespace eckit {
 class MD5;
 class Stream;
 }  // namespace eckit
 
+
 namespace mir {
+
 
 class LongitudeFraction {
 public:
@@ -49,8 +53,6 @@ public:
     bool operator>=(double) const;
     bool operator<=(double) const;
 
-    //======================================
-
     bool operator==(const eckit::Fraction&) const;
     bool operator!=(const eckit::Fraction&) const;
 
@@ -59,8 +61,6 @@ public:
 
     bool operator>=(const eckit::Fraction&) const;
     bool operator<=(const eckit::Fraction&) const;
-
-    //======================================
 
     LongitudeFraction& operator+=(double value) {
         value_ += value;
@@ -80,8 +80,6 @@ public:
 
     LongitudeFraction operator*(double value) const { return {value_ * value}; }
 
-    //======================================
-
     LongitudeFraction& operator+=(const eckit::Fraction& value) {
         value_ += value;
         return *this;
@@ -100,8 +98,6 @@ public:
 
     LongitudeFraction operator*(const eckit::Fraction& value) const { return {value_ * value}; }
 
-    //======================================
-
     LongitudeFraction& operator+=(const LongitudeFraction& other) {
         value_ += other.value_;
         return *this;
@@ -115,8 +111,6 @@ public:
     LongitudeFraction operator+(const LongitudeFraction& other) const { return {value_ + other.value_}; }
 
     LongitudeFraction operator-(const LongitudeFraction& other) const { return {value_ - other.value_}; }
-
-    //======================================
 
     bool operator==(const LongitudeFraction&) const;
     bool operator!=(const LongitudeFraction&) const;
@@ -192,6 +186,8 @@ private:
     friend LongitudeFraction operator-(double value, const LongitudeFraction& x) { return {value - x.value_}; }
 };
 
+
 }  // namespace mir
+
 
 #endif

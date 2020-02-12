@@ -24,7 +24,7 @@ namespace repres {
 Albers::Albers(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-Albers::Albers() {}
+Albers::Albers() = default;
 
 
 Albers::~Albers() = default;

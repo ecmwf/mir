@@ -12,16 +12,8 @@
 
 #include "mir/netcdf/JulianCalendar.h"
 
-#include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/OutputAttribute.h"
-#include "mir/netcdf/Value.h"
-#include "mir/netcdf/Variable.h"
-
-#include <algorithm>
 #include <ostream>
-#include <sstream>
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
@@ -29,13 +21,17 @@ namespace netcdf {
 
 JulianCalendar::JulianCalendar(const Variable& /*variable*/) {}
 
+
 JulianCalendar::~JulianCalendar() = default;
+
 
 void JulianCalendar::print(std::ostream& out) const {
     out << "JulianCalendar[]";
 }
 
+
 static CodecBuilder<JulianCalendar> builder("julian");
+
 
 }  // namespace netcdf
 }  // namespace mir

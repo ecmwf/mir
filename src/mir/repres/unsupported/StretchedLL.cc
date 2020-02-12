@@ -24,7 +24,7 @@ namespace repres {
 StretchedLL::StretchedLL(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedLL::StretchedLL() {}
+StretchedLL::StretchedLL() = default;
 
 
 StretchedLL::~StretchedLL() = default;

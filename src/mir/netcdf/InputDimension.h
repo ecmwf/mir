@@ -15,10 +15,15 @@
 
 #include "mir/netcdf/Dimension.h"
 
+
 namespace mir {
 namespace netcdf {
 
+
 class InputDimension : public Dimension {
+    InputDimension(const InputDimension&) = delete;
+    InputDimension& operator=(const InputDimension&) = delete;
+
 public:
     InputDimension(Dataset& owner, const std::string& name, int id, size_t len);
     virtual ~InputDimension();
@@ -37,6 +42,9 @@ private:
     virtual void realDimensions(std::vector<size_t>& dims) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

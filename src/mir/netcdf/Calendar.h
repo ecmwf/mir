@@ -10,27 +10,35 @@
  */
 
 
-#ifndef mir_netcdf_Calendar
-#define mir_netcdf_Calendar
+#ifndef mir_netcdf_Calendar_h
+#define mir_netcdf_Calendar_h
 
-#include "eckit/types/DateTime.h"
 #include "mir/netcdf/Codec.h"
+
+
+namespace mir {
+namespace netcdf {
+class Variable;
+}
+}  // namespace mir
+
 
 namespace mir {
 namespace netcdf {
 
-class Variable;
-
 
 class Calendar : public Codec {
 public:
-    Calendar();
-    virtual ~Calendar();
+    Calendar()          = default;
+    virtual ~Calendar() = default;
 
 private:
     virtual bool timeAxis() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

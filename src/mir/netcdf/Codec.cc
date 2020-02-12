@@ -26,9 +26,12 @@
 namespace mir {
 namespace netcdf {
 
+
 Codec::Codec() = default;
 
+
 Codec::~Codec() = default;
+
 
 void Codec::decode(std::vector<double>&) const {
     std::ostringstream os;
@@ -36,11 +39,13 @@ void Codec::decode(std::vector<double>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::decode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::decode(std::vector<long>&) const {
     std::ostringstream os;
@@ -48,11 +53,13 @@ void Codec::decode(std::vector<long>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::decode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::decode(std::vector<unsigned char>&) const {
     std::ostringstream os;
@@ -60,11 +67,13 @@ void Codec::decode(std::vector<unsigned char>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::decode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::encode(std::vector<double>&) const {
     std::ostringstream os;
@@ -72,11 +81,13 @@ void Codec::encode(std::vector<double>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::encode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<float> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::encode(std::vector<long>&) const {
     std::ostringstream os;
@@ -84,11 +95,13 @@ void Codec::encode(std::vector<long>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::encode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<short> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::encode(std::vector<unsigned char>&) const {
     std::ostringstream os;
@@ -96,11 +109,13 @@ void Codec::encode(std::vector<unsigned char>&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::encode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long long> &) not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
+
 
 void Codec::addAttributes(Variable&) const {
     std::ostringstream os;
@@ -108,18 +123,17 @@ void Codec::addAttributes(Variable&) const {
     throw eckit::SeriousBug(os.str());
 }
 
+
 void Codec::updateAttributes(int /*nc*/, int /*varid*/, const std::string& /*path*/) {
     std::ostringstream os;
     os << "Variable::updateAttributes() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
+
 bool Codec::timeAxis() const {
     return false;
 }
-
-
-//=========================================================================
 
 
 static pthread_once_t once                     = PTHREAD_ONCE_INIT;
@@ -163,7 +177,7 @@ Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
         throw eckit::SeriousBug("CodecFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(variable);
+    return j->second->make(variable);
 }
 
 

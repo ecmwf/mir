@@ -21,8 +21,14 @@
 
 namespace mir {
 namespace netcdf {
-
 class Variable;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
+
 
 class GridSpec {
 public:
@@ -66,6 +72,9 @@ private:
 
 
 class GridSpecGuesser {
+    GridSpecGuesser(const GridSpecGuesser&) = delete;
+    GridSpecGuesser& operator=(const GridSpecGuesser&) = delete;
+
 public:
     static GridSpec* guess(const Variable&);
 

@@ -42,6 +42,7 @@ public:
 
     MeshGeneratorParameters();
     MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    MeshGeneratorParameters(const MeshGeneratorParameters&) = default;
 
     // -- Destructor
 
@@ -51,18 +52,19 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    MeshGeneratorParameters& operator=(const MeshGeneratorParameters&) = default;
 
     // -- Members
 
     std::string meshGenerator_;
+    std::string fileLonLat_;
+    std::string fileXY_;
+    std::string fileXYZ_;
     bool meshCellCentres_;
     bool meshCellLongestDiagonal_;
     bool meshNodeLumpedMassMatrix_;
     bool meshNodeToCellConnectivity_;
-    std::string fileLonLat_;
-    std::string fileXY_;
-    std::string fileXYZ_;
 
     // -- Methods
 

@@ -79,7 +79,7 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
         throw eckit::SeriousBug("MIRStyleFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params);
+    return j->second->make(params);
 }
 
 

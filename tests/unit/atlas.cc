@@ -51,7 +51,7 @@ CASE("Test number of points representation <=> grid") {
         log << "#=" << n1 << "\tfrom " << *repres << std::endl;
 
         auto grid = repres->atlasGrid();
-        size_t n2 = grid.size();
+        auto n2   = size_t(grid.size());
         log << "#=" << n2 << "\tfrom " << grid.spec() << std::endl;
 
         EXPECT(n1 == n2);
@@ -65,12 +65,17 @@ CASE("Test number of points representation <=> cropped grid") {
     using repres::latlon::RegularLL;
 
     const util::Domain domains[] = {
-        {90, 0, 90, 360},                                                                    // North pole
-        {90, 0, 89, 360},      {0, 0, 0, 360},      {-89, 0, -90, 360}, {-90, 0, -90, 360},  // South pole
-        {90, 0, -90, 0},                                                                     // Greenwhich
-        {90, 0, -90, 1},       {90, 180, -90, 180},                                          // date line
-        {90, -180, -90, -180},                                                               // date line
-        {90, -1, -90, 0},      {90, -1, -90, -1},
+        {90, 0, 90, 360},       // North pole
+        {90, 0, 89, 360},       //
+        {0, 0, 0, 360},         // equator
+        {-89, 0, -90, 360},     //
+        {-90, 0, -90, 360},     // South pole
+        {90, 0, -90, 0},        // Greenwhich
+        {90, 0, -90, 1},        //
+        {90, 180, -90, 180},    // date line
+        {90, -180, -90, -180},  // date line
+        {90, -1, -90, 0},       //
+        {90, -1, -90, -1},      //
     };
 
     for (const auto& dom : domains) {
@@ -88,7 +93,7 @@ CASE("Test number of points representation <=> cropped grid") {
         auto gridCropped = atlas::Grid(grid, dom);
         ASSERT(!gridCropped.domain().global());
 
-        size_t n2 = gridCropped.size();
+        auto n2 = size_t(gridCropped.size());
         log << "#=" << n2 << "\tfrom " << gridCropped.spec() << std::endl;
 
         EXPECT(n1 == n2);

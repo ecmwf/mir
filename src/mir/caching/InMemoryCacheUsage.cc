@@ -35,7 +35,7 @@ InMemoryCacheUsage::InMemoryCacheUsage(const std::string& s) : memory_(0), share
     std::vector<std::string> v;
     parse(s, v);
 
-    if (v.size() >= 1) {
+    if (!v.empty()) {
         memory_ = s2l(v[0]);
     }
 

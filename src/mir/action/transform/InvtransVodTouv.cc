@@ -67,8 +67,8 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
 
     // configure paramIds for u/v
-    size_t id_u = 0;
-    size_t id_v = 0;
+    long id_u = 0;
+    long id_v = 0;
     util::Wind::paramIds(parametrisation, id_u, id_v);
 
 

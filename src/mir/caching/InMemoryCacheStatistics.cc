@@ -18,7 +18,6 @@
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
 InMemoryCacheStatistics::InMemoryCacheStatistics() :
     hits_(0),
@@ -28,6 +27,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics() :
     oldest_(0),
     youngest_(0),
     unique_(0) {}
+
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {
     s >> insertions_;
@@ -42,6 +42,7 @@ InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {
     s >> required_;
 }
 
+
 void InMemoryCacheStatistics::encode(eckit::Stream& s) const {
     s << insertions_;
     s << evictions_;
@@ -54,6 +55,7 @@ void InMemoryCacheStatistics::encode(eckit::Stream& s) const {
     s << unique_;
     s << required_;
 }
+
 
 InMemoryCacheStatistics& InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics& other) {
     insertions_ += other.insertions_;
@@ -83,6 +85,7 @@ InMemoryCacheStatistics& InMemoryCacheStatistics::operator/=(size_t n) {
     required_ /= n;
     return *this;
 }
+
 
 void InMemoryCacheStatistics::report(const char* title, std::ostream& out, const char* indent) const {
 

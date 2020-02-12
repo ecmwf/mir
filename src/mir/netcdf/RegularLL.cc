@@ -11,23 +11,28 @@
 
 
 #include "mir/netcdf/RegularLL.h"
-#include "mir/netcdf/Variable.h"
 
 #include <iostream>
+
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/netcdf/Variable.h"
+
 
 namespace mir {
 namespace netcdf {
 
+
 RegularLL::RegularLL(const Variable& variable, double north, double south, double south_north_increment, double west,
                      double east, double west_east_increment) :
     GridSpec(variable),
-    jScansPositively_(false),
     north_(north),
     south_(south),
     south_north_increments_(south_north_increment),
     west_(west),
     east_(east),
-    west_east_increment_(west_east_increment) {
+    west_east_increment_(west_east_increment),
+    jScansPositively_(false) {
 
     if (north_ < south_) {
         std::swap(north_, south_);
@@ -40,58 +45,64 @@ RegularLL::RegularLL(const Variable& variable, double north, double south, doubl
 
     // TODO: use Fractions
 
-    nj_ = (north_ - south_) / south_north_increments_ + 1;
-    ni_ = (east_ - west_) / west_east_increment_ + 1;
+    nj_ = size_t((north_ - south_) / south_north_increments_ + 1);
+    ni_ = size_t((east_ - west_) / west_east_increment_ + 1);
 }
 
+
 RegularLL::~RegularLL() = default;
+
 
 void RegularLL::print(std::ostream& s) const {
     s << "RegularLL[bbox=" << north_ << "/" << west_ << "/" << south_ << "/" << east_
       << ",grid=" << west_east_increment_ << "/" << south_north_increments_ << ",ni=" << ni_ << ",nj=" << nj_ << "]";
 }
 
+
 bool RegularLL::has(const std::string& name) const {
-    // std::cout << "has " << name << std::endl;
+    // eckit::Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
 }
 
+
 bool RegularLL::get(const std::string& name, long& value) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
 
     if (name == "Nj") {
-        value = nj_;
+        value = long(nj_);
         return true;
     }
 
     if (name == "Ni") {
-        value = ni_;
+        value = long(ni_);
         return true;
     }
 
-    // std::cout << "RegularLL::get " << name << " failed" << std::endl;
+    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
     return false;
 }
 
+
 bool RegularLL::get(const std::string& name, std::string& value) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "regular_ll";
         return true;
     }
 
-    // std::cout << "RegularLL::get " << name << " failed" << std::endl;
-
+    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
     return false;
 }
+
 
 bool RegularLL::get(const std::string& /*name*/, std::vector<double>& /*value*/) const {
     return false;
 }
+
 
 bool RegularLL::get(const std::string& name, double& value) const {
 
@@ -125,14 +136,12 @@ bool RegularLL::get(const std::string& name, double& value) const {
         return true;
     }
 
-    // std::cout << "RegularLL::get " << name << " failed" << std::endl;
+    // eckit::Log::info() << "RegularLL::get " << name << " failed" << std::endl;
 
 
     return false;
 }
 
-
-//================================================================
 
 static bool check_axis(const Variable& axis, double& first, double& last, double& increment) {
 
@@ -163,20 +172,21 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
     return true;
 }
 
+
 GridSpec* RegularLL::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     double north;
     double south;
     double south_north_increment;
     if (!check_axis(latitudes, north, south, south_north_increment)) {
-        return 0;
+        return nullptr;
     }
 
     double west;
     double east;
     double west_east_increment;
     if (!check_axis(longitudes, west, east, west_east_increment)) {
-        return 0;
+        return nullptr;
     }
 
     return new RegularLL(variable, north, south, south_north_increment, west, east, west_east_increment);
@@ -190,9 +200,10 @@ void RegularLL::reorder(MIRValuesVector& values) const {
         MIRValuesVector out(values.size());
 
         size_t count = 0;
-        for (int j = nj_ - 1; j >= 0; --j) {
+        for (int j = int(nj_) - 1; j >= 0; --j) {
+            auto ju = size_t(j);
             for (size_t i = 0; i < ni_; ++i) {
-                out[count++] = values[j * ni_ + i];
+                out[count++] = values[ju * ni_ + i];
             }
         }
         ASSERT(count == out.size());

@@ -185,7 +185,7 @@ void ActionPlan::compress() {
                     << "\n   " << oldAction.str() << "\n + " << action(i + 1) << "\n = " << action(i) << std::endl;
 
                 delete at(i + 1);
-                erase(begin() + i + 1);
+                erase(begin() + long(i + 1));
 
                 hasCompressed = true;
                 more          = true;
@@ -195,7 +195,7 @@ void ActionPlan::compress() {
             if (action(i).deleteWithNext(action(i + 1))) {
 
                 delete at(i);
-                erase(begin() + i);
+                erase(begin() + long(i));
 
                 hasCompressed = true;
                 more          = true;

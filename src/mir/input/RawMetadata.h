@@ -36,6 +36,7 @@ public:
     // -- Contructors
 
     RawMetadata();
+    RawMetadata(const RawMetadata&) = delete;
 
     // -- Destructor
 
@@ -45,7 +46,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    RawMetadata& operator=(const RawMetadata&) = delete;
 
     // -- Methods
 

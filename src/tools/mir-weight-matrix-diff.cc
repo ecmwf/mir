@@ -60,7 +60,11 @@ public:
 
 
 struct diff_t {
+    diff_t()                                          = default;
     virtual bool operator()(double a, double b) const = 0;
+
+    diff_t(const diff_t&) = delete;
+    diff_t& operator=(const diff_t&) = delete;
 };
 
 

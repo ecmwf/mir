@@ -76,9 +76,6 @@ size_t MIRInput::dimensions() const {
 }
 
 
-//=========================================================================
-
-
 static pthread_once_t once                          = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                    = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
@@ -176,7 +173,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
         return aux(new GribFileInput(path));
     }
 
-    return aux((*j).second->make(path));
+    return aux(j->second->make(path));
 }
 
 

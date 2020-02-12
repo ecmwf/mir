@@ -15,7 +15,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "eckit/types/Types.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/HyperCube.h"
@@ -24,6 +24,7 @@
 
 namespace mir {
 namespace netcdf {
+
 
 Curvilinear::Curvilinear(const Variable& variable, const std::vector<double>& latitudes,
                          const std::vector<double>& longitudes) :
@@ -46,6 +47,7 @@ Curvilinear::Curvilinear(const Variable& variable, const std::vector<double>& la
     }
 }
 
+
 Curvilinear::~Curvilinear() = default;
 
 
@@ -53,15 +55,17 @@ void Curvilinear::print(std::ostream& s) const {
     s << "Curvilinear[points=" << latitudes_.size() << "]";
 }
 
+
 bool Curvilinear::has(const std::string& name) const {
-    // std::cout << "has " << name << std::endl;
+    // eckit::Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
 }
 
+
 bool Curvilinear::get(const std::string& name, std::vector<double>& values) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -76,26 +80,29 @@ bool Curvilinear::get(const std::string& name, std::vector<double>& values) cons
     return false;
 }
 
-bool Curvilinear::get(const std::string& /*name*/, long& /*value*/) const {
-    // std::cout << "get " << name << std::endl;
 
-    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
+bool Curvilinear::get(const std::string& /*name*/, long& /*value*/) const {
+    // eckit::Log::info() << "get " << name << std::endl;
+
+    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
     return false;
 }
 
+
 bool Curvilinear::get(const std::string& name, std::string& value) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
         return true;
     }
 
-    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
+    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
 }
+
 
 bool Curvilinear::get(const std::string& name, double& value) const {
 
@@ -120,14 +127,12 @@ bool Curvilinear::get(const std::string& name, double& value) const {
     }
 
 
-    // std::cout << "Curvilinear::get " << name << " failed" << std::endl;
+    // eckit::Log::info() << "Curvilinear::get " << name << " failed" << std::endl;
 
 
     return false;
 }
 
-
-//================================================================
 
 static bool check_axis(const Variable& variable, const Variable& axis, std::vector<double>& v) {
 
@@ -153,42 +158,30 @@ static bool check_axis(const Variable& variable, const Variable& axis, std::vect
     return true;
 }
 
+
 inline double sign(double x) {
     return (x > 0. ? 1. : (x < 0. ? -1. : 0.));
 }
 
+
 GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     if (variable.numberOfDimensions() < 2) {
-        return 0;
+        return nullptr;
     }
-
 
     std::vector<double> lats;
-    if (!check_axis(variable, latitudes, lats)) {
-        return 0;
-    }
-
     std::vector<double> lons;
-    if (!check_axis(variable, longitudes, lons)) {
-        return 0;
+    if (!check_axis(variable, latitudes, lats) || !check_axis(variable, longitudes, lons)) {
+        return nullptr;
     }
-
-    //
 
     auto dimensions = latitudes.dimensions();
     ASSERT(dimensions.size() == 2);
 
-
-    // for(size_t i = 0; i < lats.size(); i++) {
-    //     std::cout << lats[i] << ' ' << lons[i] << std::endl;
-    // }
-
-
     struct Index {
         size_t ni_;
         size_t nj_;
-
         size_t operator()(size_t i, size_t j) { return i + j * ni_; }
     };
 
@@ -197,7 +190,6 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
     index.nj_ = dimensions[0]->count();
 
     /*
-
         (x1, y1) --------------- (x4, y4)
             |                        |
             |                        |
@@ -206,10 +198,9 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
         (x2, y2) --------------- (x3, y3)
     */
 
+    eckit::Log::info() << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
 
-    std::cout << "Curvilinear " << index.ni_ << " " << index.nj_ << std::endl;
-
-    double s;
+    double s = 0.;
     for (size_t i = 0; i < index.ni_ - 1; i++) {
 
         for (size_t j = 0; j < index.nj_ - 1; j++) {
@@ -234,25 +225,24 @@ GridSpec* Curvilinear::guess(const Variable& variable, const Variable& latitudes
             if (i == 0 && j == 0) {
                 eckit::Log::info() << "First " << t1 << "  " << t2 << std::endl;
                 eckit::Log::info() << x1 << "/" << y1 << " ================ " << x4 << "/" << y4 << std::endl;
-
                 eckit::Log::info() << x2 << "/" << y2 << " ================ " << x3 << "/" << y3 << std::endl;
                 s = sign(t1 != 0. ? t1 : t2);
             }
 
             if (sign(t1) != s) {
                 eckit::Log::info() << "Sign of " << t1 << " is not " << s << std::endl;
-                return 0;
+                return nullptr;
             }
 
             if (sign(t2) != s) {
                 eckit::Log::info() << "Sign of " << t2 << " is not " << s << std::endl;
-                return 0;
+                return nullptr;
             }
 
             // double t3 = x1 * y2 - x2 * y1 + x2 * y4 - x4 * y2 + x4 * y1 - x1 * y4;
             // double t4 = * y3 - x3 * y2 + x3 * y4 - x4 * y3 + x4 * y2 - x2 * y4;
 
-            // std::cout << a << std::endl;
+            // eckit::Log::info() << a << std::endl;
         }
     }
 

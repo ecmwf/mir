@@ -51,8 +51,8 @@
 
 namespace atlas {
 
-typedef eckit::geometry::Point2 PointXY;
-typedef eckit::geometry::Point3 PointXYZ;
+using PointXY  = eckit::geometry::Point2;
+using PointXYZ = eckit::geometry::Point3;
 
 struct PointLonLat : eckit::geometry::Point2 {
     PointLonLat();
@@ -122,7 +122,6 @@ struct ReducedGaussianGrid : public Grid {
     template <class T, class U>
     ReducedGaussianGrid(T, U) {}
 };
-
 struct RegularGaussianGrid : public Grid {
     template <class T>
     RegularGaussianGrid(T) {}
@@ -142,7 +141,7 @@ struct LinearSpacing {
 
 struct StructuredGrid : public Grid {
 
-    typedef Projection Projection;
+    using Projection = Projection;
 
     struct XSpace {
         template <class T>

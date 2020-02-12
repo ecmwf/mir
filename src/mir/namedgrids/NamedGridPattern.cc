@@ -37,8 +37,8 @@ static void init() {
 
 NamedGridPattern::NamedGridPattern(const std::string& pattern) : pattern_(pattern) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(m->find(pattern) == m->end());
     (*m)[pattern] = this;
 }
@@ -46,8 +46,8 @@ NamedGridPattern::NamedGridPattern(const std::string& pattern) : pattern_(patter
 
 NamedGridPattern::~NamedGridPattern() {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
     ASSERT(m->find(pattern_) != m->end());
     m->erase(pattern_);
 }
@@ -55,12 +55,11 @@ NamedGridPattern::~NamedGridPattern() {
 
 void NamedGridPattern::list(std::ostream& out) {
     pthread_once(&once, init);
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    const char* sep = "";
-    for (std::map<std::string, NamedGridPattern*>::const_iterator j = m->begin(); j != m->end(); ++j) {
-        out << sep << (*j).first;
+    auto sep = "";
+    for (auto& j : *m) {
+        out << sep << j.first;
         sep = ", ";
     }
 }

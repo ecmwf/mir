@@ -24,7 +24,7 @@ namespace repres {
 TransverseMercator::TransverseMercator(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-TransverseMercator::TransverseMercator() {}
+TransverseMercator::TransverseMercator() = default;
 
 
 TransverseMercator::~TransverseMercator() = default;

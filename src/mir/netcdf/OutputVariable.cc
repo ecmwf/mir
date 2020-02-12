@@ -25,10 +25,12 @@
 namespace mir {
 namespace netcdf {
 
+
 OutputVariable::OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
     Variable(owner, name, dimensions),
-    created_(false),
-    id_(-1) {}
+    id_(-1),
+    created_(false) {}
+
 
 OutputVariable::~OutputVariable() = default;
 
@@ -36,13 +38,13 @@ OutputVariable::~OutputVariable() = default;
 void OutputVariable::create(int nc) const {
 
     ASSERT(!created_);
-    ASSERT(matrix_ != 0);
+    ASSERT(matrix_ != nullptr);
 
     int dims[NC_MAX_VAR_DIMS];
     int ndims = 0;
-    for (auto j = dimensions_.begin(); j != dimensions_.end(); ++j) {
-        if ((*j)->inUse()) {
-            dims[ndims++] = (*j)->id();
+    for (auto& j : dimensions_) {
+        if (j->inUse()) {
+            dims[ndims++] = j->id();
         }
     }
 
@@ -58,8 +60,8 @@ void OutputVariable::create(int nc) const {
 
     created_ = true;
 
-    for (auto j = attributes_.begin(); j != attributes_.end(); ++j) {
-        (*j).second->create(nc);
+    for (auto& j : attributes_) {
+        (j.second)->create(nc);
     }
 }
 

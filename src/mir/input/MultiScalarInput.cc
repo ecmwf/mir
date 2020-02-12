@@ -21,7 +21,7 @@ namespace mir {
 namespace input {
 
 
-MultiScalarInput::MultiScalarInput() {}
+MultiScalarInput::MultiScalarInput() = default;
 
 
 MultiScalarInput::~MultiScalarInput() {

@@ -18,8 +18,14 @@
 
 namespace mir {
 namespace netcdf {
-
 class Attribute;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
+
 
 class Endowed {
 public:
@@ -39,10 +45,7 @@ public:
 
     const std::map<std::string, Attribute*>& attributes() const;
 
-    //=============================================
-
     const Attribute& getAttribute(const std::string& name) const;
-
 
 protected:
     // -- Members
@@ -54,6 +57,9 @@ private:
     Endowed& operator=(const Endowed&);
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

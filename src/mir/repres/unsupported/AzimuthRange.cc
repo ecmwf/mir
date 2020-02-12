@@ -24,7 +24,7 @@ namespace repres {
 AzimuthRange::AzimuthRange(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-AzimuthRange::AzimuthRange() {}
+AzimuthRange::AzimuthRange() = default;
 
 
 AzimuthRange::~AzimuthRange() = default;

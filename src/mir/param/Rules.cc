@@ -48,9 +48,7 @@ SimpleParametrisation& Rules::lookup(long paramId) {
 
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
-        SimpleParametrisation* s = new SimpleParametrisation();
-        rules_[paramId]          = s;
-        return *s;
+        return *(rules_[paramId] = new SimpleParametrisation());
     }
 
     return *(p->second);

@@ -92,7 +92,7 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
     auto j = cache->find(key);
     if (j != cache->end()) {
-        return *(*j).second;
+        return *(j->second);
     }
 
     Mask* mask = chooser.create(parametrisation, representation, which);

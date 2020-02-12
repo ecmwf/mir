@@ -102,6 +102,9 @@ class SpectralOrderFactory {
     std::string name_;
     virtual SpectralOrder* make() = 0;
 
+    SpectralOrderFactory(const SpectralOrderFactory&) = delete;
+    SpectralOrderFactory& operator=(const SpectralOrderFactory&) = delete;
+
 protected:
     SpectralOrderFactory(const std::string&);
     virtual ~SpectralOrderFactory();

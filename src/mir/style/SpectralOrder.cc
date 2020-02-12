@@ -82,7 +82,7 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
         throw eckit::SeriousBug("SpectralOrderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make();
+    return j->second->make();
 }
 
 

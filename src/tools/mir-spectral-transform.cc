@@ -175,7 +175,7 @@ atlas::Grid output_grid(const param::MIRParametrisation& parametrisation,
     if (parametrisation.has("griddef") || parametrisation.has("unstructured")) {
         std::unique_ptr<repres::Iterator> it(representation.iterator());
 
-        std::vector<atlas::PointXY>* coordinates = new std::vector<atlas::PointXY>;
+        auto coordinates = new std::vector<atlas::PointXY>;
         coordinates->reserve(representation.count());
 
         while (it->next()) {
@@ -196,8 +196,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     static param::DefaultParametrisation defaults;
     const param::ConfigurationWrapper commandLine(args);
 
-    size_t paramIdu = 0;
-    size_t paramIdv = 0;
+    long paramIdu = 0;
+    long paramIdv = 0;
     util::Wind::paramIds(commandLine, paramIdu, paramIdv);
 
     const bool vod2uv   = args.getBool("vod2uv", false);
@@ -353,7 +353,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     }
 
                     // set output working area
-                    const size_t Ngp = size_t(outputGrid.size());
+                    auto Ngp = size_t(outputGrid.size());
                     std::vector<double> out(F * Ngp * 2);
 
                     // inverse transform
@@ -370,8 +370,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     {
                         eckit::Timer timer("time on copying grid-point values", log);
 
-                        long u = long(paramIdu);
-                        long v = long(paramIdv);
+                        auto u = paramIdu;
+                        auto v = paramIdv;
 
                         auto here = out.cbegin();
                         for (size_t f = 0; f < F; ++f) {

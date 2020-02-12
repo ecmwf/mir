@@ -47,16 +47,9 @@ namespace fe {
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-15;
 
-
-namespace {
-
-
 using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
 using failed_projection_t = std::pair<size_t, PointLatLon>;
-
-
-}  // namespace
 
 
 static void normalise(triplet_vector_t& triplets) {
@@ -506,9 +499,6 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     // fill sparse matrix
     W.setFromTriplets(weights_triplets);
 }
-
-
-//=========================================================================
 
 
 FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {

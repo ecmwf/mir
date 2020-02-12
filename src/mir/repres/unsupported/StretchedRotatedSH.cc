@@ -24,7 +24,7 @@ namespace repres {
 StretchedRotatedSH::StretchedRotatedSH(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedRotatedSH::StretchedRotatedSH() {}
+StretchedRotatedSH::StretchedRotatedSH() = default;
 
 
 StretchedRotatedSH::~StretchedRotatedSH() = default;

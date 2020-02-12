@@ -353,7 +353,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         ASSERT(mo.rows() == npts_out);
 
         {
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+            auto timing(ctx.statistics().matrixTimer());
 
             if (matrixCopy) {
                 WeightMatrix M(W);  // modifiable matrix copy
@@ -408,7 +408,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
                                           const repres::Representation& out, WeightMatrix& W, bool validate) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
+    auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
         eckit::Log::debug<LibMir>() << "Matrix is identity" << std::endl;
@@ -432,7 +432,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
     auto& log = eckit::Log::debug<LibMir>();
 
-    log << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 

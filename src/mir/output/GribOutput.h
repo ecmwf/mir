@@ -74,8 +74,7 @@ protected:
 
 private:
     // -- Members
-
-    unsigned long long total_;
+    // None
 
     // -- Methods
 

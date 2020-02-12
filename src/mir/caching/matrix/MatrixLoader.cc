@@ -102,7 +102,7 @@ MatrixLoader* MatrixLoaderFactory::build(const std::string& name, const eckit::P
         throw eckit::SeriousBug("MatrixLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(name, path);
+    return j->second->make(name, path);
 }
 
 

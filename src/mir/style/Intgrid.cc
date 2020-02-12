@@ -69,7 +69,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return (*j).second->make(parametrisation, targetGaussianN);
+        return j->second->make(parametrisation, targetGaussianN);
     }
 
     // Look for NamedGrid pattern matching

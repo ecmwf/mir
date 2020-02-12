@@ -11,7 +11,7 @@
 
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
@@ -27,48 +27,41 @@ namespace data {
 
 
 Field::Field(const param::MIRParametrisation& param, bool hasMissing, double missingValue) :
-    recomputeHasMissing_(false),
-    hasMissing_(hasMissing),
-    missingValue_(missingValue),
-    representation_(repres::RepresentationFactory::build(param)) {
-
-    if (representation_ != nullptr) {
-        representation_->attach();
-    }
-}
+    Field(repres::RepresentationFactory::build(param), hasMissing, missingValue) {}
 
 
 Field::Field(const repres::Representation* repres, bool hasMissing, double missingValue) :
-    recomputeHasMissing_(false),
-    hasMissing_(hasMissing),
     missingValue_(missingValue),
-    representation_(repres) {
+    representation_(repres),
+    recomputeHasMissing_(false),
+    hasMissing_(hasMissing) {
 
     if (representation_ != nullptr) {
         representation_->attach();
     }
 }
+
 
 Field::Field(const Field& other) :
     values_(other.values_),
     metadata_(other.metadata_),
-    recomputeHasMissing_(other.recomputeHasMissing_),
-    hasMissing_(other.hasMissing_),
     missingValue_(other.missingValue_),
-    representation_(other.representation_) {
-
-    // eckit::Log::info() << "Field::Field => " << values_.size() << std::endl;
+    representation_(other.representation_),
+    recomputeHasMissing_(other.recomputeHasMissing_),
+    hasMissing_(other.hasMissing_) {
 
     if (representation_ != nullptr) {
         representation_->attach();
     }
 }
+
 
 Field* Field::clone() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     return new Field(*this);
 }
+
 
 // Warning: take ownership of values
 void Field::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
@@ -82,11 +75,13 @@ void Field::update(MIRValuesVector& values, size_t which, bool recomputeHasMissi
     std::swap(values_[which], values);
 }
 
+
 size_t Field::dimensions() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     return values_.size();
 }
+
 
 void Field::dimensions(size_t size) {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -111,11 +106,13 @@ void Field::select(size_t which) {
     values_.resize(1);
 }
 
+
 Field::~Field() {
     if (representation_ != nullptr) {
         representation_->detach();
     }
 }
+
 
 void Field::print(std::ostream& out) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -152,6 +149,7 @@ const repres::Representation* Field::representation() const {
     return representation_;
 }
 
+
 void Field::validate() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
@@ -161,6 +159,7 @@ void Field::validate() const {
         }
     }
 }
+
 
 MIRFieldStats Field::statistics(size_t i) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -179,10 +178,11 @@ MIRFieldStats Field::statistics(size_t i) const {
                 missing++;
             }
         }
-        return MIRFieldStats(tmp, missing);
+        return {tmp, missing};
     }
-    return MIRFieldStats(values(i), 0);
+    return {values(i), 0};
 }
+
 
 void Field::representation(const repres::Representation* representation) {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -196,12 +196,14 @@ void Field::representation(const repres::Representation* representation) {
     representation_ = representation;
 }
 
+
 const MIRValuesVector& Field::values(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     ASSERT(which < values_.size());
     return values_[which];
 }
+
 
 MIRValuesVector& Field::direct(size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -223,6 +225,7 @@ void Field::metadata(size_t which, const std::map<std::string, long>& md) {
     metadata_[which] = md;
 }
 
+
 void Field::metadata(size_t which, const std::string& name, long value) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
@@ -231,6 +234,7 @@ void Field::metadata(size_t which, const std::string& name, long value) {
     }
     metadata_[which][name] = value;
 }
+
 
 const std::map<std::string, long>& Field::metadata(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -242,6 +246,7 @@ const std::map<std::string, long>& Field::metadata(size_t which) const {
 
     return metadata_[which];
 }
+
 
 bool Field::hasMissing() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -262,11 +267,13 @@ bool Field::hasMissing() const {
     return hasMissing_;
 }
 
+
 double Field::missingValue() const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     return missingValue_;
 }
+
 
 void Field::hasMissing(bool on) {
     eckit::AutoLock<const eckit::Counted> lock(this);
@@ -275,11 +282,13 @@ void Field::hasMissing(bool on) {
     hasMissing_          = on;
 }
 
+
 void Field::missingValue(double value) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
     missingValue_ = value;
 }
+
 
 }  // namespace data
 }  // namespace mir

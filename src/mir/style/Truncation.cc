@@ -73,7 +73,7 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return (*j).second->make(parametrisation, targetGaussianN);
+        return j->second->make(parametrisation, targetGaussianN);
     }
 
     // Look for a plain number

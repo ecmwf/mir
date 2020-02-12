@@ -18,10 +18,6 @@
 #include <ostream>
 #include <vector>
 
-//-----------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
 
 // Helper class to handle multi-dimension objects
 // The first dimension should be the one most likely to change
@@ -31,9 +27,11 @@ namespace netcdf {
 
 class HyperCube {
 public:
-    typedef std::vector<size_t> Dimensions;
-    typedef std::vector<size_t> Coordinates;
-    typedef std::vector<size_t> Remapping;
+    // -- Types
+
+    using Dimensions  = std::vector<size_t>;
+    using Coordinates = std::vector<size_t>;
+    using Remapping   = std::vector<size_t>;
 
     // -- Contructors
 
@@ -42,19 +40,15 @@ public:
     // -- Methods
 
     // Translate coordinates into an index to a 1 dimension array.
-
     size_t index(const Coordinates&) const;
 
     // Return the number of elemets
-
     size_t count() const;
 
     // Translate index to coordinates
-
     void coordinates(size_t index, Coordinates&) const;
 
     // Accessors
-
     const Dimensions& dimensions() const { return dimensions_; }
     Dimensions& dimensions() { return dimensions_; }
     size_t dimensions(size_t n) const { return dimensions_[n]; }
@@ -62,11 +56,9 @@ public:
 
     // Return the 'remapping' std::vector needing to add 'count' (howMuch) labels
     // for the dimension 'which' at position 'where'
-
     HyperCube addToDimension(size_t which, size_t where, size_t howMuch, Remapping&) const;
 
     // Combine two 'remapping' vectors
-
     static void combine(Remapping&, Remapping&);
 
 private:
@@ -78,7 +70,7 @@ private:
 inline  // For speed
     size_t
     HyperCube::count() const {
-    return std::accumulate(dimensions_.begin(), dimensions_.end(), 1, std::multiplies<size_t>());
+    return std::accumulate(dimensions_.begin(), dimensions_.end(), size_t(1), std::multiplies<size_t>());
 }
 
 
@@ -92,10 +84,11 @@ inline  // For speed
 
     // The fact that this is in reverse is important for addToDimension
 
-    for (int i = coord.size() - 1; i >= 0; i--) {
+    for (int i = int(coord.size()) - 1; i >= 0; i--) {
         // ASSERT(coord[i] >= 0 && coord[i] < dimensions_[i]);
-        a += coord[i] * n;
-        n *= dimensions_[i];
+        auto iu = size_t(i);
+        a += coord[iu] * n;
+        n *= dimensions_[iu];
     }
 
     return a;
@@ -116,11 +109,12 @@ inline  // For speed
     }
 }
 
-std::ostream& operator<<(std::ostream& out, const HyperCube& cube);
 
-//-----------------------------------------------------------------------------
+std::ostream& operator<<(std::ostream& out, const HyperCube& cube);
 
 
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

@@ -24,7 +24,7 @@ namespace repres {
 StretchedRotatedGG::StretchedRotatedGG(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedRotatedGG::StretchedRotatedGG() {}
+StretchedRotatedGG::StretchedRotatedGG() = default;
 
 
 StretchedRotatedGG::~StretchedRotatedGG() = default;

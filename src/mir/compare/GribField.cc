@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <iomanip>
 
 #include "eckit/config/Resource.h"
@@ -130,7 +131,7 @@ bool GribField::canCompareFieldValues() const {
 
 
 void GribField::compareExtra(std::ostream& out, const FieldBase& o) const {
-    const GribField& other = dynamic_cast<const GribField&>(o);
+    auto& other = dynamic_cast<const GribField&>(o);
 
     if (!area_ || !other.area_) {
         return;
@@ -160,11 +161,13 @@ inline bool sameLatLon(double a, double b, double e) {
 
 bool GribField::sameArea(const GribField& other) const {
 
-    if (!area_ && !other.area_)
+    if (!area_ && !other.area_) {
         return true;
+    }
 
-    if (area_ != other.area_)
+    if (area_ != other.area_) {
         return false;
+    }
 
     double w1 = normaliseLongitude(west_);
     double e1 = normaliseLongitude(east_);
@@ -202,7 +205,7 @@ void GribField::missingValuesPresent(bool on) {
     hasMissing_ = on;
 }
 
-void GribField::resol(size_t resol) {
+void GribField::resol(long resol) {
     resol_ = resol;
 }
 
@@ -338,7 +341,7 @@ bool GribField::sameRotation(const GribField& other) const {
 }
 
 bool GribField::less_than(const FieldBase& o) const {
-    const GribField& other = dynamic_cast<const GribField&>(o);
+    auto& other = dynamic_cast<const GribField&>(o);
 
     if (param_ < other.param_) {
         return true;
@@ -626,8 +629,8 @@ void GribField::print(std::ostream& out) const {
         out << ",rotation=" << rotation_latitude_ << "/" << rotation_longitude_;
     }
 
-    for (auto j = values_.begin(); j != values_.end(); ++j) {
-        out << "," << (*j).first << "=" << (*j).second;
+    for (auto& j : values_) {
+        out << "," << j.first << "=" << j.second;
     }
     // out << " - " << info_;
     out << "]";
@@ -701,42 +704,17 @@ bool GribField::match(const FieldBase& o) const {
 
 
 bool GribField::same(const FieldBase& o) const {
-    const GribField& other = dynamic_cast<const GribField&>(o);
-
-    return sameParam(other) && sameField(other) && sameNumberOfPoints(other) && sameGrid(other) &&
-           sameAccuracy(other) && samePacking(other) && sameRotation(other) && sameResol(other) &&
-           sameGridname(other) && sameGridtype(other) && sameFormat(other) && sameArea(other);
+    return differences(o) == 0;
 }
 
 size_t GribField::differences(const FieldBase& o) const {
+    auto& other = dynamic_cast<const GribField&>(o);
 
-    const GribField& other = dynamic_cast<const GribField&>(o);
+    size_t result = (sameParam(other) ? 0 : 100) + (sameField(other) ? 0 : 1) + (sameNumberOfPoints(other) ? 0 : 1) +
+                    (sameGrid(other) ? 0 : 1) + (sameAccuracy(other) ? 0 : 1) + (samePacking(other) ? 0 : 1) +
+                    (sameRotation(other) ? 0 : 1) + (sameResol(other) ? 0 : 1) + (sameGridname(other) ? 0 : 1) +
+                    (sameGridtype(other) ? 0 : 1) + (sameFormat(other) ? 0 : 1) + (sameArea(other) ? 0 : 1);
 
-    size_t result = 0;
-    if (!sameParam(other))
-        result += 100;
-    if (!sameField(other))
-        result++;
-    if (!sameNumberOfPoints(other))
-        result++;
-    if (!sameGrid(other))
-        result++;
-    if (!sameAccuracy(other))
-        result++;
-    if (!samePacking(other))
-        result++;
-    if (!sameRotation(other))
-        result++;
-    if (!sameResol(other))
-        result++;
-    if (!sameGridname(other))
-        result++;
-    if (!sameGridtype(other))
-        result++;
-    if (!sameFormat(other))
-        result++;
-    if (!sameArea(other))
-        result++;
     return result;
 }
 
@@ -810,8 +788,7 @@ std::ostream& GribField::printDifference(std::ostream& out, const FieldBase& o) 
 
     out << std::setprecision(12);
 
-
-    const GribField& other = dynamic_cast<const GribField&>(o);
+    auto& other = dynamic_cast<const GribField&>(o);
 
     out << "[param=";
     pdiff(out, param_, other.param_);
@@ -884,18 +861,12 @@ std::ostream& GribField::printDifference(std::ostream& out, const FieldBase& o) 
         pdiff(out, rotation_longitude_, other.rotation_longitude_);
     }
 
-    for (auto j = values_.begin(); j != values_.end(); ++j) {
-        out << "," << (*j).first << "=";
-
-        auto k = other.values_.find((*j).first);
-
-        if (k == other.values_.end()) {
-            pdiff(out, (*j).second, std::string());
-        }
-        else {
-            pdiff(out, (*j).second, (*k).second);
-        }
+    for (auto& j : values_) {
+        out << "," << j.first << "=";
+        auto k = other.values_.find(j.first);
+        pdiff(out, j.second, k == other.values_.end() ? std::string() : k->second);
     }
+
     out << ",wrapped=" << wrapped();
     // out << " - " << info_;
     out << "]";
@@ -917,13 +888,13 @@ bool GribField::wrapped() const {
 
 
 size_t GribField::numberOfPoints() const {
-    return numberOfPoints_;
+    return size_t(numberOfPoints_);
 }
 
 bool GribField::match(const std::string& name, const std::string& value) const {
     auto j = values_.find(name);
     if (j != values_.end()) {
-        return (*j).second == value;
+        return j->second == value;
     }
 
     if (name == "area") {
@@ -1012,10 +983,10 @@ bool GribField::match(const std::string& name, const std::string& value) const {
 Field GribField::field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
 
-    GribField* field = new GribField(path, offset, size);
+    auto field = new GribField(path, offset, size);
     Field result(field);
 
-    grib_handle* h = grib_handle_new_from_message(0, buffer, size);
+    grib_handle* h = grib_handle_new_from_message(nullptr, buffer, size);
     ASSERT(h);
     HandleDeleter delh(h);
 
@@ -1032,13 +1003,12 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     std::map<std::string, std::string> req;
 
     while (grib_keys_iterator_next(ks) != 0) {
-        const char* name = grib_keys_iterator_get_name(ks);
+        auto name = grib_keys_iterator_get_name(ks);
         ASSERT(name);
 
-        if (name[0] == '_')
+        if ((name[0] == '_') || (::strcmp(name, "param") == 0)) {
             continue;
-        if (::strcmp(name, "param") == 0)
-            continue;
+        }
 
         char val[1024];
         size_t len = sizeof(val);
@@ -1071,10 +1041,10 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         size_t dataSize;
         /* TODO: Not grib2 compatible, but speed-up process */
         if (grib_get_size(h, "freeFormData", &dataSize) == 0 && dataSize != 0) {
-            unsigned char data[dataSize];
-            GRIB_CALL(grib_get_bytes(h, "freeFormData", data, &dataSize));
+            std::vector<unsigned char> data(dataSize);
+            GRIB_CALL(grib_get_bytes(h, "freeFormData", data.data(), &dataSize));
 
-            eckit::MemoryStream s(data, dataSize);
+            eckit::MemoryStream s(data.data(), dataSize);
 
             int count;
             s >> count;  // Number of requests
@@ -1104,78 +1074,75 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     {
         char value[1024];
         size_t len = sizeof(value);
+
         if (grib_get_string(h, "gridType", value, &len) == 0) {
-            field->gridtype(value);
+            std::string v(value);
+            field->gridtype(v);
 
 
-            if (strcmp(value, "regular_ll") == 0) {
+            if (v == "regular_ll") {
                 setGrid(*field, h);
                 setArea(*field, h);
             }
-            else if (strcmp(value, "rotated_ll") == 0) {
+            else if (v == "rotated_ll") {
                 setGrid(*field, h);
                 setArea(*field, h);
-                {
-                    double lat;
-                    double lon;
-                    GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
-                    GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon));
-                    field->rotation(lat, lon);
-                }
+
+                double lat;
+                double lon;
+                GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
+                GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon));
+                field->rotation(lat, lon);
             }
-            else if (strcmp(value, "sh") == 0) {
+            else if (v == "sh") {
 
-                // double d;
-                {
-                    long n = -1;
-                    GRIB_CALL(grib_get_long(h, "pentagonalResolutionParameterJ", &n));
-                    field->resol(n);
-                }
+                long n = -1;
+                GRIB_CALL(grib_get_long(h, "pentagonalResolutionParameterJ", &n));
+                field->resol(n);
             }
-            else if (strcmp(value, "reduced_gg") == 0) {
-                {
-                    long n = 0;
-                    std::ostringstream oss;
+            else if (v == "reduced_gg") {
 
+                long n = 0;
+                std::ostringstream oss;
 
-                    GRIB_CALL(grib_get_long(h, "isOctahedral", &n));
+                GRIB_CALL(grib_get_long(h, "isOctahedral", &n));
 
-                    if (n == 0) {
+                if (n == 0) {
 
-                        // Don't trust eccodes
-                        size_t pl_size = 0;
-                        GRIB_CALL(grib_get_size(h, "pl", &pl_size));
-                        long pl[pl_size];
+                    // Don't trust eccodes
+                    size_t pl_size = 0;
+                    GRIB_CALL(grib_get_size(h, "pl", &pl_size));
+                    std::vector<long> pl(pl_size);
 
-                        GRIB_CALL(grib_get_long_array(h, "pl", pl, &pl_size));
+                    GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &pl_size));
 
-                        bool isOctahedral = true;
-                        for (size_t i = 1; i < pl_size; i++) {
-                            long diff = std::abs(pl[i] - pl[i - 1]);
-                            if (diff != 4 && diff != 0) {
-                                isOctahedral = false;
-                                break;
-                            }
+                    bool isOctahedral = true;
+                    for (size_t i = 1; i < pl_size; i++) {
+                        long diff = std::abs(pl[i] - pl[i - 1]);
+                        if (diff != 4 && diff != 0) {
+                            isOctahedral = false;
+                            break;
                         }
-
-                        oss << (isOctahedral ? "O" : "N");
-                    }
-                    else {
-                        oss << "O";
                     }
 
-                    GRIB_CALL(grib_get_long(h, "N", &n));
-                    oss << n;
-
-
-                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
-                    // oss << '/' << rounded(d);
-                    field->gridname(oss.str());
+                    oss << (isOctahedral ? "O" : "N");
                 }
+                else {
+                    oss << "O";
+                }
+
+                GRIB_CALL(grib_get_long(h, "N", &n));
+                oss << n;
+
+
+                // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                // oss << '/' << rounded(d);
+                field->gridname(oss.str());
+
 
                 setArea(*field, h);
             }
-            else if (strcmp(value, "reduced_ll") == 0) {
+            else if (v == "reduced_ll") {
 
                 // Don't trust eccodes
                 size_t pl_size = 0;
@@ -1196,29 +1163,26 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
                 setArea(*field, h);
             }
-
-            else if (strcmp(value, "regular_gg") == 0) {
+            else if (v == "regular_gg") {
                 long n;
-                {
-                    std::ostringstream oss;
+                std::ostringstream oss;
 
+                GRIB_CALL(grib_get_long(h, "N", &n));
+                oss << "F" << n;
 
-                    GRIB_CALL(grib_get_long(h, "N", &n));
-                    oss << "F" << n;
+                // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                // oss << '/' << rounded(d);
+                field->gridname(oss.str());
 
-                    // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
-                    // oss << '/' << rounded(d);
-                    field->gridname(oss.str());
-                }
                 setArea(*field, h);
             }
-            else if (strcmp(value, "polar_stereographic") == 0) {
+            else if (v == "polar_stereographic") {
                 eckit::Log::warning() << "Ignoring polar_stereographic in " << path << std::endl;
                 return result;
             }
             else {
                 std::ostringstream oss;
-                oss << path << ": Unknown grid [" << value << "]";
+                oss << path << ": Unknown grid [" << v << "]";
                 throw eckit::SeriousBug(oss.str());
             }
         }
@@ -1275,8 +1239,8 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
-    for (auto j = ignore.begin(); j != ignore.end(); ++j) {
-        field->erase(*j);
+    for (auto& j : ignore) {
+        field->erase(j);
     }
 
     return result;
@@ -1308,7 +1272,7 @@ void GribField::setArea(GribField& field, grib_handle* h) {
             std::ostringstream oss;
             oss << "Invalid scanning mode " << scanningMode;
             throw eckit::SeriousBug(oss.str());
-        } break;
+        } /*break;*/
     }
 
 

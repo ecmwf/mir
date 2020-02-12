@@ -24,10 +24,7 @@
 namespace mir {
 namespace netcdf {
 
-UpdateCoordinateStep::UpdateCoordinateStep(Variable& out, const Variable& in, size_t growth) :
-    out_(out),
-    in_(in),
-    growth_(growth) {}
+UpdateCoordinateStep::UpdateCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
 
 UpdateCoordinateStep::~UpdateCoordinateStep() = default;
 
@@ -41,14 +38,16 @@ void UpdateCoordinateStep::print(std::ostream& out) const {
 
 void UpdateCoordinateStep::execute(MergePlan& /*plan*/) {
 #if 0
+    size_t growth_;
+
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);
 
-    std::cout << *this << std::endl;
+    eckit::Log::info() << *this << std::endl;
 
     std::vector<Variable *> v = plan.field().variablesForDimension(*dims[0]);
     for (std::vector<Variable *>::iterator j = v.begin(); j != v.end(); ++j) {
-        std::cout << "Affects: " << **j << std::endl;
+        eckit::Log::info() << "Affects: " << **j << std::endl;
         (*j)->mustMerge(true);
         plan.add(new ReshapeVariableStep(**j, *dims[0], growth_));
     }

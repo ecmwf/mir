@@ -113,7 +113,7 @@ public:
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path),
     address_(nullptr),
-    size_(path.size()),
+    size_(size_t(path.size())),
     unload_(false) {
 
     eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", log());
@@ -192,7 +192,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 #endif
 
     // Attach shared memory
-    address_ = eckit::Shmget::shmat(shmid, NULL, 0);
+    address_ = eckit::Shmget::shmat(shmid, nullptr, 0);
     if (address_ == (void*)-1) {
         warn() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
         throw eckit::FailedSystemCall(msg.str());
@@ -201,8 +201,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     try {
 
-        char* addr   = reinterpret_cast<char*>(address_);
-        SHMInfo* nfo = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
+        auto addr = reinterpret_cast<char*>(address_);
+        auto nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
 
         // Check if the file has been loaded in memory
         if (nfo->ready != 0) {
@@ -284,7 +284,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     }
 
     // FIXME: add to eckit::Shmget interface
-    if (::shmctl(shmid, IPC_RMID, 0) < 0) {
+    if (::shmctl(shmid, IPC_RMID, nullptr) < 0) {
         warn() << "SharedMemoryLoader: ::shmctl: cannot delete '" << path << "'" << std::endl;
     }
 

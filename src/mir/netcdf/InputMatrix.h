@@ -17,8 +17,13 @@
 
 namespace mir {
 namespace netcdf {
-
 class NCFile;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class InputMatrix : public Matrix {
@@ -27,8 +32,8 @@ public:
     virtual ~InputMatrix();
 
 private:
-    int varid_;
     NCFile& file_;
+    int varid_;
 
     // Methods
     virtual void read(std::vector<double>&) const;
@@ -50,6 +55,9 @@ private:
     virtual void print(std::ostream& out) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

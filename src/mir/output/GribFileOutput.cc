@@ -18,7 +18,10 @@ namespace mir {
 namespace output {
 
 
-GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) : path_(path), handle_(0), append_(append) {}
+GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) :
+    path_(path),
+    handle_(nullptr),
+    append_(append) {}
 
 
 GribFileOutput::~GribFileOutput() {

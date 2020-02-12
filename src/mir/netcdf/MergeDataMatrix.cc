@@ -12,13 +12,15 @@
 
 #include "mir/netcdf/MergeDataMatrix.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Mapper.h"
 #include "mir/netcdf/Type.h"
 
-#include <ostream>
 
 namespace mir {
 namespace netcdf {
+
 
 MergeDataMatrix::MergeDataMatrix(Matrix* out, Matrix* in, size_t size) :
     Matrix(Type::lookup(out->type(), in->type()), out->name(), size),
@@ -28,23 +30,24 @@ MergeDataMatrix::MergeDataMatrix(Matrix* out, Matrix* in, size_t size) :
     in_->attach();
 }
 
+
 MergeDataMatrix::~MergeDataMatrix() {
     out_->detach();
     in_->detach();
 }
 
+
 void MergeDataMatrix::print(std::ostream& out) const {
     out << "MergeDataMatrix[" << name() << "]";
 }
 
+
 void MergeDataMatrix::dumpTree(std::ostream& out, size_t depth) const {
-    for (size_t i = 0; i < depth; i++)
-        out << " ";
-    out << *this;
-    out << std::endl;
+    out << std::string(depth, ' ') << *this << std::endl;
     out_->dumpTree(out, depth + 1);
     in_->dumpTree(out, depth + 1);
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

@@ -28,9 +28,14 @@
 namespace mir {
 namespace param {
 
+
 class Setting {
 public:
+    Setting()          = default;
     virtual ~Setting() = default;
+
+    Setting(const Setting&) = delete;
+    Setting& operator=(const Setting&) = delete;
 
     virtual void get(const std::string& name, std::string& value) const = 0;
     virtual void get(const std::string& name, bool& value) const        = 0;
@@ -64,61 +69,85 @@ public:
     }
 };
 
-//================================================================================
 
 template <class T>
 const char* TNamed() {
     NOTIMP;
 }
 
+
 template <>
 const char* TNamed<std::string>() {
     return "string";
 }
+
+
 template <>
 const char* TNamed<bool>() {
     return "bool";
 }
+
+
 template <>
 const char* TNamed<int>() {
     return "int";
 }
+
+
 template <>
 const char* TNamed<long>() {
     return "long";
 }
+
+
 template <>
 const char* TNamed<size_t>() {
     return "size_t";
 }
+
+
 template <>
 const char* TNamed<float>() {
     return "float";
 }
+
+
 template <>
 const char* TNamed<double>() {
     return "double";
 }
+
+
 template <>
 const char* TNamed<std::vector<int>>() {
     return "vector<int>";
 }
+
+
 template <>
 const char* TNamed<std::vector<long>>() {
     return "vector<long>";
 }
+
+
 template <>
 const char* TNamed<std::vector<size_t>>() {
     return "vector<size_t>";
 }
+
+
 template <>
 const char* TNamed<std::vector<float>>() {
     return "vector<float>";
 }
+
+
 template <>
 const char* TNamed<std::vector<double>>() {
     return "vector<double>";
 }
+
+
 template <>
 const char* TNamed<std::vector<std::string>>() {
     return "vector<string>";
@@ -193,6 +222,7 @@ public:
     void json(eckit::JSON& out) const { out << value_; }
 };
 
+
 template <class T>
 static void _put(std::ostream& out, const std::vector<T>& v) {
     const char* sep   = "";
@@ -206,20 +236,20 @@ static void _put(std::ostream& out, const std::vector<T>& v) {
     }
 }
 
+
 template <>
 void TSettings<std::vector<long>>::print(std::ostream& out) const {
     _put(out, value_);
 }
+
 
 template <>
 void TSettings<std::vector<double>>::print(std::ostream& out) const {
     _put(out, value_);
 }
 
-//==========================================================
 
-// We will implement conversion as needed
-
+// implement conversion as needed
 template <>
 void TSettings<bool>::get(const std::string&, std::string& value) const {
     std::ostringstream ss;
@@ -227,35 +257,42 @@ void TSettings<bool>::get(const std::string&, std::string& value) const {
     value = ss.str();
 }
 
+
 template <>
 void TSettings<bool>::get(const std::string&, bool& value) const {
     value = value_;
 }
+
 
 template <>
 void TSettings<long>::get(const std::string&, long& value) const {
     value = value_;
 }
 
+
 template <>
 void TSettings<long>::get(const std::string&, int& value) const {
-    value = value_;
+    value = int(value_);
 }
+
 
 template <>
 void TSettings<int>::get(const std::string&, long& value) const {
     value = value_;
 }
 
+
 template <>
 void TSettings<double>::get(const std::string&, double& value) const {
     value = value_;
 }
 
+
 template <>
 void TSettings<std::string>::get(const std::string&, std::string& value) const {
     value = value_;
 }
+
 
 template <>
 void TSettings<std::string>::get(const std::string& name, bool& value) const {
@@ -264,12 +301,14 @@ void TSettings<std::string>::get(const std::string& name, bool& value) const {
     value = translate(value_) != 0;
 }
 
+
 template <>
 void TSettings<std::string>::get(const std::string& name, int& value) const {
     conversion_warning("string", "int", name, value_);
     eckit::Translator<std::string, int> translate;
     value = translate(value_);
 }
+
 
 template <>
 void TSettings<std::string>::get(const std::string& name, long& value) const {
@@ -278,12 +317,14 @@ void TSettings<std::string>::get(const std::string& name, long& value) const {
     value = translate(value_);
 }
 
+
 template <>
 void TSettings<std::string>::get(const std::string& name, size_t& value) const {
     conversion_warning("string", "size_t", name, value_);
     eckit::Translator<std::string, size_t> translate;
     value = translate(value_);
 }
+
 
 template <>
 void TSettings<std::string>::get(const std::string& name, float& value) const {
@@ -292,12 +333,14 @@ void TSettings<std::string>::get(const std::string& name, float& value) const {
     value = translate(value_);
 }
 
+
 template <>
 void TSettings<std::string>::get(const std::string& name, double& value) const {
     conversion_warning("string", "double", name, value_);
     eckit::Translator<std::string, double> translate;
     value = translate(value_);
 }
+
 
 template <>
 void TSettings<std::string>::get(const std::string& name, std::vector<double>& value) const {
@@ -314,15 +357,18 @@ void TSettings<std::string>::get(const std::string& name, std::vector<double>& v
     }
 }
 
+
 template <>
 void TSettings<std::vector<long>>::get(const std::string&, std::vector<long>& value) const {
     value = value_;
 }
 
+
 template <>
 void TSettings<std::vector<double>>::get(const std::string&, std::vector<double>& value) const {
     value = value_;
 }
+
 
 template <>
 void TSettings<int>::get(const std::string& name, std::string& value) const {
@@ -330,11 +376,13 @@ void TSettings<int>::get(const std::string& name, std::string& value) const {
     value = std::to_string(value_);
 }
 
+
 template <>
 void TSettings<long>::get(const std::string& name, std::string& value) const {
     conversion_warning("long", "string", name, value_);
     value = std::to_string(value_);
 }
+
 
 template <>
 void TSettings<size_t>::get(const std::string& name, std::string& value) const {
@@ -342,17 +390,20 @@ void TSettings<size_t>::get(const std::string& name, std::string& value) const {
     value = std::to_string(value_);
 }
 
+
 template <>
 void TSettings<float>::get(const std::string& name, std::string& value) const {
     conversion_warning("float", "string", name, value_);
     value = std::to_string(value_);
 }
 
+
 template <>
 void TSettings<double>::get(const std::string& name, std::string& value) const {
     conversion_warning("double", "string", name, value_);
     value = std::to_string(value_);
 }
+
 
 template <>
 void TSettings<std::vector<int>>::get(const std::string& name, std::string& value) const {
@@ -366,6 +417,7 @@ void TSettings<std::vector<int>>::get(const std::string& name, std::string& valu
     }
 }
 
+
 template <>
 void TSettings<std::vector<long>>::get(const std::string& name, std::string& value) const {
     conversion_warning("vector<long>", "string", name, value_);
@@ -377,6 +429,7 @@ void TSettings<std::vector<long>>::get(const std::string& name, std::string& val
         sep = "/";
     }
 }
+
 
 template <>
 void TSettings<std::vector<size_t>>::get(const std::string& name, std::string& value) const {
@@ -390,6 +443,7 @@ void TSettings<std::vector<size_t>>::get(const std::string& name, std::string& v
     }
 }
 
+
 template <>
 void TSettings<std::vector<float>>::get(const std::string& name, std::string& value) const {
     conversion_warning("vector<float>", "string", name, value_);
@@ -401,6 +455,7 @@ void TSettings<std::vector<float>>::get(const std::string& name, std::string& va
         sep = "/";
     }
 }
+
 
 template <>
 void TSettings<std::vector<double>>::get(const std::string& name, std::string& value) const {
@@ -414,6 +469,7 @@ void TSettings<std::vector<double>>::get(const std::string& name, std::string& v
     }
 }
 
+
 template <>
 void TSettings<std::vector<std::string>>::get(const std::string& name, std::string& value) const {
     conversion_warning("vector<string>", "string", name, value_);
@@ -425,7 +481,6 @@ void TSettings<std::vector<std::string>>::get(const std::string& name, std::stri
     }
 }
 
-//==========================================================
 
 SimpleParametrisation::SimpleParametrisation() = default;
 
@@ -434,19 +489,23 @@ SimpleParametrisation::~SimpleParametrisation() {
     reset();
 }
 
+
 void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
     for (const auto& j : settings_) {
         j.second->copyValueTo(j.first, other);
     }
 }
 
+
 bool SimpleParametrisation::has(const std::string& name) const {
     return settings_.find(name) != settings_.end();
 }
 
+
 size_t SimpleParametrisation::size() const {
     return settings_.size();
 }
+
 
 template <class T>
 bool SimpleParametrisation::_get(const std::string& name, T& value) const {
@@ -459,49 +518,61 @@ bool SimpleParametrisation::_get(const std::string& name, T& value) const {
     return true;
 }
 
+
 bool SimpleParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
 }
+
 
 bool SimpleParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
 }
 
+
 bool SimpleParametrisation::get(const std::string& name, int& value) const {
     return _get(name, value);
 }
+
 
 bool SimpleParametrisation::get(const std::string& name, long& value) const {
     return _get(name, value);
 }
 
+
 bool SimpleParametrisation::get(const std::string& name, float& value) const {
     return _get(name, value);
 }
+
 
 bool SimpleParametrisation::get(const std::string& name, double& value) const {
     return _get(name, value);
 }
 
+
 bool SimpleParametrisation::get(const std::string& name, std::vector<int>& value) const {
     return _get(name, value);
 }
+
 
 bool SimpleParametrisation::get(const std::string& name, std::vector<long>& value) const {
     return _get(name, value);
 }
 
+
 bool SimpleParametrisation::get(const std::string& name, std::vector<float>& value) const {
     return _get(name, value);
 }
+
 
 bool SimpleParametrisation::get(const std::string& name, std::vector<double>& value) const {
     return _get(name, value);
 }
 
+
 bool SimpleParametrisation::get(const std::string&, std::vector<std::string>&) const {
     NOTIMP;
 }
+
 
 template <class T>
 void SimpleParametrisation::_set(const std::string& name, const T& value) {
@@ -512,35 +583,42 @@ void SimpleParametrisation::_set(const std::string& name, const T& value) {
     settings_[name] = new TSettings<T>(value);
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const char* value) {
     _set(name, std::string(value));
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, float value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::string& value) {
     _set(name, value);
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, bool value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, long long value) {
     _set(name, long(value));
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, size_t value) {
     // TODO: Support unsigned properly
@@ -549,20 +627,24 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string& name, size_
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<int>& value) {
     _set(name, value);
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, double value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, int value) {
     _set(name, value);
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::clear(const std::string& name) {
     auto j = settings_.find(name);
@@ -573,6 +655,7 @@ SimpleParametrisation& SimpleParametrisation::clear(const std::string& name) {
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::reset() {
     for (const auto& j : settings_) {
         delete j.second;
@@ -581,10 +664,12 @@ SimpleParametrisation& SimpleParametrisation::reset() {
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long>& value) {
     _set(name, value);
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<long long>& value) {
     std::vector<long> value_long(value.begin(), value.end());
@@ -592,25 +677,30 @@ SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<size_t>& value) {
     _set(name, value);
     return *this;
 }
+
 
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<float>& value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<double>& value) {
     _set(name, value);
     return *this;
 }
 
+
 SimpleParametrisation& SimpleParametrisation::set(const std::string& name, const std::vector<std::string>& value) {
     _set(name, value);
     return *this;
 }
+
 
 void SimpleParametrisation::print(std::ostream& out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
@@ -626,6 +716,7 @@ void SimpleParametrisation::print(std::ostream& out) const {
     json(j);
 }
 
+
 void SimpleParametrisation::json(eckit::JSON& s) const {
     s.startObject();
     for (const auto& j : settings_) {
@@ -634,9 +725,11 @@ void SimpleParametrisation::json(eckit::JSON& s) const {
     s.endObject();
 }
 
+
 bool SimpleParametrisation::empty() const {
     return size() == 0;
 }
+
 
 bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
     for (const auto& j : settings_) {

@@ -49,7 +49,7 @@ private:
 
     struct PerPointStatistics {
         static void list(std::ostream& out) { out << eckit::StringTools::join(", ", perPointStats()) << std::endl; }
-        static const std::vector<std::string> perPointStats() { return {"mean", "variance", "stddev"}; }
+        static std::vector<std::string> perPointStats() { return {"mean", "variance", "stddev"}; }
     };
 
 public:

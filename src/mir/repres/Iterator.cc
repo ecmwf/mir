@@ -62,7 +62,7 @@ Iterator& Iterator::next() {
 }
 
 
-const Point3 Iterator::point3D() const {
+Point3 Iterator::point3D() const {
     ASSERT(valid_);
 
     // notice the order

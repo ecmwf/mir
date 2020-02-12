@@ -68,7 +68,7 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
     eckit::PathName path;
     {
         // Block for timers
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
+        auto timing(ctx.statistics().coefficientTimer());
 
         class LegendreCacheCreator final : public caching::LegendreCache::CacheContentCreator {
 
@@ -77,8 +77,8 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
 
             void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/,
                         bool& saved) override {
-                mir::util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
-                eckit::AutoTiming timer(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
+                util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
+                auto timing(ctx_.statistics().createCoeffTimer());
 
                 // This will create the cache
                 eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
@@ -91,6 +91,9 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
             LegendreCacheCreator(atlas::trans::LegendreCacheCreator& creator, context::Context& ctx) :
                 creator_(creator),
                 ctx_(ctx) {}
+
+            LegendreCacheCreator(const LegendreCacheCreator&) = delete;
+            LegendreCacheCreator& operator=(const LegendreCacheCreator&) = delete;
         };
 
         static caching::LegendreCache cache;
@@ -105,8 +108,8 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        mir::util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+        util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
+        auto timing(ctx.statistics().loadCoeffTimer());
 
         eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
 
@@ -217,7 +220,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     try {
 
-        eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+        auto time(ctx.statistics().sh2gridTimer());
         sh2grid(field, trans, parametrisation_);
     }
     catch (std::exception& e) {
@@ -270,8 +273,8 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
-        mir::util::TraceResourceUsage usage("ShToGridded: cropping");
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
+        util::TraceResourceUsage usage("ShToGridded: cropping");
+        auto timing(ctx.statistics().cropTimer());
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
         ctx.field().representation(out->croppedRepresentation(bbox));

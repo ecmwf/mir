@@ -10,10 +10,9 @@
  */
 
 
-#ifndef mir_netcdf_RegularLL
-#define mir_netcdf_RegularLL
+#ifndef mir_netcdf_RegularLL_h
+#define mir_netcdf_RegularLL_h
 
-#include "eckit/exception/Exceptions.h"
 #include "mir/netcdf/GridSpec.h"
 
 
@@ -26,19 +25,15 @@ public:
     RegularLL(const Variable&, double north, double south, double south_north_increment, double west, double east,
               double west_east_increment);
 
-
     virtual ~RegularLL();
 
     // -- Methods
-
 
     static GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes);
 
 
 protected:
     // -- Members
-
-    bool jScansPositively_;
 
     double north_;
     double south_;
@@ -51,23 +46,22 @@ protected:
     size_t ni_;
     size_t nj_;
 
+    bool jScansPositively_;
 
 private:
     RegularLL(const RegularLL&);
     RegularLL& operator=(const RegularLL&);
 
-
     // - Methods
 
     virtual void print(std::ostream& s) const;
 
-    // For MIR
+    // From GridSpec
     virtual bool has(const std::string& name) const;
     virtual bool get(const std::string&, long&) const;
     virtual bool get(const std::string&, std::string&) const;
     virtual bool get(const std::string& name, double& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
-
     virtual void reorder(MIRValuesVector& values) const;
 };
 

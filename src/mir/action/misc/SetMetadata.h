@@ -10,10 +10,11 @@
  */
 
 
-#ifndef SetMetadata_H
-#define SetMetadata_H
+#ifndef mir_action_misc_SetMetadata_h
+#define mir_action_misc_SetMetadata_h
 
 #include <map>
+
 #include "mir/action/plan/Action.h"
 
 
@@ -46,7 +47,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const;
+    virtual void execute(context::Context&) const;
 
     // -- Class members
     // None
@@ -74,7 +75,6 @@ protected:
 
 private:
     // No copy allowed
-
     SetMetadata(const SetMetadata&);
     SetMetadata& operator=(const SetMetadata&);
 
@@ -85,7 +85,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
 
     // -- Class members
@@ -103,4 +103,6 @@ private:
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif

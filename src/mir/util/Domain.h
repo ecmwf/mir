@@ -39,7 +39,10 @@ public:
     operator atlas::RectangularDomain() const;
 
     // -- Operators
-    // None
+
+    using BoundingBox::operator=;
+    using BoundingBox::operator==;
+    using BoundingBox::operator!=;
 
     // -- Methods
     // None

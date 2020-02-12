@@ -84,7 +84,7 @@ Method* MethodFactory::build(const std::string& name, const param::MIRParametris
         throw eckit::SeriousBug("MethodFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(param);
+    return j->second->make(param);
 }
 
 

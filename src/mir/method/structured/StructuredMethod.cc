@@ -138,7 +138,7 @@ void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<La
     ASSERT(Nj > 1);
 
     // locate latitude indices just North and South of given latitude
-    std::vector<Latitude>::const_reverse_iterator above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
+    auto above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
 
     jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
     jSouth = jNorth + 1;

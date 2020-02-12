@@ -85,7 +85,7 @@ protected:
 
 class Field {
 public:
-    Field(FieldBase* field = 0);
+    Field(FieldBase* field = nullptr);
     Field(const Field& other);
 
     ~Field();

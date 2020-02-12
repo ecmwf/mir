@@ -19,7 +19,7 @@ namespace mir {
 namespace util {
 
 
-MIRStatistics::MIRStatistics() {}
+MIRStatistics::MIRStatistics() = default;
 
 
 MIRStatistics::MIRStatistics(eckit::Stream& s) :

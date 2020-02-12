@@ -33,8 +33,9 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
     ASSERT(row >= 0);
 
     if (prev >= 0) {
-        for (long i = prev + 1; i < row; i++) {
-            bitmap[i] = bitmap[prev];
+        auto prevu = size_t(prev);
+        for (auto i = prevu + 1; i < size_t(row); i++) {
+            bitmap[i] = bitmap[prevu];
         }
     }
 
@@ -50,13 +51,13 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
     t1(line, r);
 
 
-    ASSERT(row >= 0 && row < long(bitmap.size()));
-    std::vector<bool>& v = bitmap[row];
+    ASSERT(0 <= row && row < long(bitmap.size()));
+    auto& v = bitmap[size_t(row)];
 
-    for (size_t i = 0; i < r.size(); i++) {
+    for (auto& i : r) {
 
         std::vector<std::string> s;
-        t2(r[i], s);
+        t2(i, s);
         ASSERT(s.size() == 1 || s.size() == 2);
         if (s.size() == 1) {
             s.push_back(s[0]);
@@ -66,12 +67,10 @@ static void out(std::vector<std::vector<bool> >& bitmap, long row, const std::st
         long b = s2l(s[1]) - 1;
 
         if (a >= 0) {
+            ASSERT(a < long(v.size()));
+            ASSERT(0 <= b && b < long(v.size()));
 
-
-            ASSERT(a >= 0 && a < long(v.size()));
-            ASSERT(b >= 0 && b < long(v.size()));
-
-            for (int j = a; j <= b; j++) {
+            for (auto j = size_t(a); j <= size_t(b); j++) {
                 v[j] = on;
             }
         }
@@ -120,7 +119,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     size_t pos = s.find("size=");
     ASSERT(pos != s.npos);
     pos += 5;
-    int n = 0;
+    size_t n = 0;
     while (pos < s.size()) {
         if (s[pos] == ':') {
             height_ = n;
@@ -178,7 +177,7 @@ void Bitmap::disseminationBitmap(const std::string& path) {
     }
 
     out(bitmap, row, t, on, prev);
-    out(bitmap, height_ - 1, t, on, prev);
+    out(bitmap, long(height_ - 1), t, on, prev);
 
     // out(bitmap);
 
@@ -263,8 +262,8 @@ size_t Bitmap::footprint() const {
     result += path_.capacity();
     result += bitmap_.capacity() * sizeof(std::vector<bool>);
 
-    for (auto j = bitmap_.begin(); j != bitmap_.end(); ++j) {
-        result += (*j).capacity() * sizeof(bool);
+    for (auto& j : bitmap_) {
+        result += j.capacity() * sizeof(bool);
     }
 
     return result;

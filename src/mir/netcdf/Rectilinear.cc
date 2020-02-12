@@ -11,24 +11,28 @@
 
 
 #include "mir/netcdf/Rectilinear.h"
-#include "eckit/types/Types.h"
+
+#include <ostream>
+
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
 
+
 Rectilinear::Rectilinear(const Variable& variable, double north, double south, const std::vector<double>& latitudes,
                          double west, double east, const std::vector<double>& longitudes) :
     GridSpec(variable),
-    jScansPositively_(false),
     north_(north),
     south_(south),
     latitudes_(latitudes),
     west_(west),
     east_(east),
-    longitudes_(longitudes) {
+    longitudes_(longitudes),
+    jScansPositively_(false) {
 
     if (north_ < south_) {
         std::swap(north_, south_);
@@ -39,6 +43,7 @@ Rectilinear::Rectilinear(const Variable& variable, double north, double south, c
     }
 }
 
+
 Rectilinear::~Rectilinear() = default;
 
 
@@ -46,15 +51,17 @@ void Rectilinear::print(std::ostream& s) const {
     s << "Rectilinear[bbox=" << north_ << "/" << west_ << "/" << south_ << "/" << east_ << "]";
 }
 
+
 bool Rectilinear::has(const std::string& name) const {
-    // std::cout << "has " << name << std::endl;
+    // eckit::Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
 }
 
+
 bool Rectilinear::get(const std::string& name, std::vector<double>& values) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -69,26 +76,24 @@ bool Rectilinear::get(const std::string& name, std::vector<double>& values) cons
     return false;
 }
 
-bool Rectilinear::get(const std::string& /*name*/, long& /*value*/) const {
-    // std::cout << "get " << name << std::endl;
 
-    // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
+bool Rectilinear::get(const std::string& /*name*/, long& /*value*/) const {
+    // eckit::Log::info() << "get " << name << std::endl;
 
     return false;
 }
 
+
 bool Rectilinear::get(const std::string& name, std::string& value) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "irregular_latlon";
         return true;
     }
 
-    // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
-
-
     return false;
 }
+
 
 bool Rectilinear::get(const std::string& name, double& value) const {
 
@@ -112,15 +117,9 @@ bool Rectilinear::get(const std::string& name, double& value) const {
         return true;
     }
 
-
-    // std::cout << "Rectilinear::get " << name << " failed" << std::endl;
-
-
     return false;
 }
 
-
-//================================================================
 
 static bool check_axis(const Variable& axis, double& first, double& last, std::vector<double>& v) {
 
@@ -141,20 +140,21 @@ static bool check_axis(const Variable& axis, double& first, double& last, std::v
     return true;
 }
 
+
 GridSpec* Rectilinear::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     double north;
     double south;
     std::vector<double> lats;
     if (!check_axis(latitudes, north, south, lats)) {
-        return 0;
+        return nullptr;
     }
 
     double west;
     double east;
     std::vector<double> lons;
     if (!check_axis(longitudes, west, east, lons)) {
-        return 0;
+        return nullptr;
     }
 
 
@@ -172,9 +172,10 @@ void Rectilinear::reorder(MIRValuesVector& values) const {
         MIRValuesVector out(values.size());
 
         size_t count = 0;
-        for (int j = nj - 1; j >= 0; --j) {
+        for (int j = int(nj) - 1; j >= 0; --j) {
+            auto ju = size_t(j);
             for (size_t i = 0; i < ni; ++i) {
-                out[count++] = values[j * ni + i];
+                out[count++] = values[ju * ni + i];
             }
         }
         ASSERT(count == out.size());

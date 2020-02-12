@@ -52,7 +52,7 @@ public:
 
     const Point2& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
-    const Point3 point3D() const;
+    Point3 point3D() const;
 
     Iterator& next();
 

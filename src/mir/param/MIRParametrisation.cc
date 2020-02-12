@@ -43,7 +43,7 @@ bool MIRParametrisation::get(const std::string& name, size_t& value) const {
     long v;
     if (get(name, v)) {
         ASSERT(v >= 0);
-        value = v;
+        value = size_t(v);
         return true;
     }
     return false;

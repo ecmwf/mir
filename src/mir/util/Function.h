@@ -13,6 +13,7 @@
 #ifndef mir_util_Function_h
 #define mir_util_Function_h
 
+#include <iosfwd>
 #include <string>
 
 
@@ -39,6 +40,8 @@ public:
     virtual void execute(context::Context&) const = 0;
 
     static const Function& lookup(const std::string&);
+
+    static void list(std::ostream&);
 
 private:
     virtual void print(std::ostream&) const = 0;

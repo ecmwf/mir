@@ -23,8 +23,6 @@
 
 namespace mir {
 namespace netcdf {
-
-
 class Dataset;
 class Type;
 class Attribute;
@@ -32,6 +30,12 @@ class Dimension;
 class Matrix;
 class MergePlan;
 class Field;
+}  // namespace netcdf
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class Variable : public Endowed {
@@ -84,9 +88,14 @@ public:
     virtual const std::string& ncname() const;
     virtual void collectField(std::vector<Field*>&) const;
 
-    // ==========================================================
-    // Used during identtification
+    virtual void values(std::vector<double>& values) const;
 
+    virtual const char* kind() const;
+
+    const Dataset& dataset() const;
+    Dataset& dataset();
+
+    // Used during identtification
     virtual Variable* makeDataVariable();
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeSimpleVariable();
@@ -97,31 +106,21 @@ public:
     virtual void addCoordinateVariable(const Variable*);
     virtual Variable* addMissingCoordinates();
 
-
     template <class T>
     T getAttributeValue(const std::string& name) const {
         T result;
-        // std::cout << "getAttributeValue ==> " << name << std::endl;
+        // eckit::Log::info() << "getAttributeValue ==> " << name << std::endl;
         getAttribute(name, result);
-        // std::cout << "getAttributeValue <== " << result << std::endl;
+        // eckit::Log::info() << "getAttributeValue <== " << result << std::endl;
         return result;
     }
 
+    // CF
     virtual size_t numberOfDimensions() const;
-
     virtual size_t count2DValues() const;
     virtual void get2DValues(MIRValuesVector& values, size_t i) const;
     virtual bool hasMissing() const;
     virtual double missingValue() const;
-
-    // ====================================================
-
-    virtual void values(std::vector<double>& values) const;
-
-    virtual const char* kind() const;
-
-    const Dataset& dataset() const;
-    Dataset& dataset();
 
 protected:
     // -- Members
@@ -129,9 +128,8 @@ protected:
     Dataset& dataset_;
     std::string name_;
     Matrix* matrix_;
-    bool scalar_;
-
     std::vector<Dimension*> dimensions_;
+    bool scalar_;
 
 private:
     Variable(const Variable&);
@@ -139,13 +137,14 @@ private:
 
     // -- Methods
 
+    // CF
     void getAttribute(const std::string& name, std::string& value) const;
     void getAttribute(const std::string& name, double& value) const;
 
     virtual void print(std::ostream& s) const = 0;
 
-
-    // - Friend
+    // -- Friends
+    //
     friend std::ostream& operator<<(std::ostream& s, const Variable& v) {
         v.print(s);
         return s;

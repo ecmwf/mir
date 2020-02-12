@@ -31,7 +31,7 @@ namespace mir {
 namespace input {
 
 
-class NetcdfFileInput : public MIRInput, public param::FieldParametrisation, public mir::netcdf::NCFileCache {
+class NetcdfFileInput : public MIRInput, public param::FieldParametrisation, public netcdf::NCFileCache {
 public:
     // -- Exceptions
     // None
@@ -84,15 +84,16 @@ private:
     eckit::PathName path_;
     param::CachedParametrisation cache_;
 
-    mir::netcdf::InputDataset dataset_;
-    std::vector<mir::netcdf::Field*> fields_;
+    netcdf::InputDataset dataset_;
+    std::vector<netcdf::Field*> fields_;
     int current_;
 
     // mutable std::vector<double> latitude_;
     // mutable std::vector<double> longitude_;
 
     // -- Methods
-    // None
+
+    const netcdf::Field& currentField() const;
 
     // -- Overridden methods
 

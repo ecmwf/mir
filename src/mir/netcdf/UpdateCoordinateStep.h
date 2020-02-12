@@ -23,7 +23,7 @@ class Variable;
 
 class UpdateCoordinateStep : public Step {
 public:
-    UpdateCoordinateStep(Variable& out, const Variable& in, size_t growth);
+    UpdateCoordinateStep(Variable& out, const Variable& in);
     ~UpdateCoordinateStep();
 
 private:
@@ -31,7 +31,6 @@ private:
 
     Variable& out_;
     const Variable& in_;
-    size_t growth_;
 
     // -- Methods
     virtual void print(std::ostream& out) const;

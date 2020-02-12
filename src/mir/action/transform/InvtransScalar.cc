@@ -47,10 +47,10 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     if (F > 1) {
         eckit::Timer timer("InvtransScalar: interlacing spectra", log);
 
-        size_t T = size_t(trans.truncation());
+        auto T = size_t(trans.truncation());
         ASSERT(T > 0);
 
-        size_t N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+        auto N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
         ASSERT(N > 0);
 
         input.resize(F * N * 2);
@@ -61,7 +61,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     }
 
     // set output working area
-    const size_t Ngp = trans.grid().size();
+    auto Ngp = size_t(trans.grid().size());
     MIRValuesVector output(F * Ngp);
 
     // inverse transform

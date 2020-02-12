@@ -10,8 +10,8 @@
  */
 
 
-#ifndef FormulaAction_H
-#define FormulaAction_H
+#ifndef mir_action_calcl_FormulaAction_h
+#define mir_action_calcl_FormulaAction_h
 
 #include <map>
 #include <memory>
@@ -20,11 +20,13 @@
 
 
 namespace mir {
-
 namespace util {
 class Formula;
 }
+}  // namespace mir
 
+
+namespace mir {
 namespace action {
 
 

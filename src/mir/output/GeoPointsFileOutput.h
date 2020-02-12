@@ -57,9 +57,8 @@ protected:
     // -- Members
 
     std::string path_;
-    bool binary_;
-
     mutable std::unique_ptr<eckit::DataHandle> handle_;
+    bool binary_;
 
     // -- Methods
     // None

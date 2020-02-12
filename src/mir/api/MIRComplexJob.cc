@@ -29,7 +29,7 @@ namespace mir {
 namespace api {
 
 
-MIRComplexJob::MIRComplexJob() : input_(0) {}
+MIRComplexJob::MIRComplexJob() : input_(nullptr) {}
 
 
 MIRComplexJob::~MIRComplexJob() {
@@ -85,9 +85,9 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     context::Context ctx(*input_, statistics);
 
     if (printActionGraph) {
-        eckit::Log::info() << ">>>>>>>>>>>> ====== " << std::endl;
-
-        eckit::Log::info() << *input_ << std::endl;
+        eckit::Log::info() << ">>>>>>>>>>>>"
+                              "\n"
+                           << *input_ << std::endl;
     }
 
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
@@ -100,7 +100,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     executor.wait();
 
     if (printActionGraph) {
-        eckit::Log::info() << "<<<<<<<<<<< ======" << std::endl;
+        eckit::Log::info() << "<<<<<<<<<<<" << std::endl;
     }
 }
 

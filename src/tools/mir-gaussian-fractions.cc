@@ -56,7 +56,7 @@ statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisa
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    statistics_t* stats = new statistics_t;
+    auto stats = new statistics_t;
     for (const double& l : latitudes) {
         const double f = double(eckit::Fraction(l));
         stats->operator()(f - l);

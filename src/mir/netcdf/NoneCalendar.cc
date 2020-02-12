@@ -12,29 +12,26 @@
 
 #include "mir/netcdf/NoneCalendar.h"
 
-#include "mir/netcdf/Exceptions.h"
-#include "mir/netcdf/OutputAttribute.h"
-#include "mir/netcdf/Value.h"
-#include "mir/netcdf/Variable.h"
-
-#include <algorithm>
 #include <ostream>
-#include <sstream>
 
-#include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
+
 NoneCalendar::NoneCalendar(const Variable& /*variable*/) {}
 
+
 NoneCalendar::~NoneCalendar() = default;
+
 
 void NoneCalendar::print(std::ostream& out) const {
     out << "NoneCalendar[]";
 }
 
+
 static CodecBuilder<NoneCalendar> builder("none");
+
 
 }  // namespace netcdf
 }  // namespace mir

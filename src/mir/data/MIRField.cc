@@ -208,9 +208,6 @@ void MIRField::missingValue(double value) {
 }
 
 
-//=========================================================================
-
-
 static pthread_once_t once                     = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex               = nullptr;
 static std::map<std::string, FieldFactory*>* m = nullptr;
@@ -261,7 +258,7 @@ MIRField* FieldFactory::build(const std::string& name, const param::MIRParametri
         throw eckit::SeriousBug("FieldFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params, hasMissing, missingValue);
+    return j->second->make(params, hasMissing, missingValue);
 }
 
 

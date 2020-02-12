@@ -53,27 +53,27 @@ const std::string& Attribute::name() const {
 }
 
 const Value& Attribute::value() const {
-    ASSERT(value_ != 0);
+    ASSERT(value_ != nullptr);
     return *value_;
 }
 
 void Attribute::invalidate() {
-    std::cout << __func__ << " " << *this << std::endl;
+    eckit::Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::merge(const Attribute&) {
-    std::cout << __func__ << " " << *this << std::endl;
+    eckit::Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::clone(Endowed&) const {
-    std::cout << __func__ << " " << *this << std::endl;
+    eckit::Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 
 void Attribute::create(int) const {
-    std::cout << __func__ << " " << *this << std::endl;
+    eckit::Log::info() << __func__ << " " << *this << std::endl;
     NOTIMP;
 }
 

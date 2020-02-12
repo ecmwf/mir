@@ -13,9 +13,9 @@
 #include "mir/netcdf/UnstructuredGrid.h"
 
 #include <cmath>
-#include <iostream>
+#include <ostream>
 
-#include "eckit/types/Types.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Variable.h"
@@ -23,6 +23,7 @@
 
 namespace mir {
 namespace netcdf {
+
 
 UnstructuredGrid::UnstructuredGrid(const Variable& variable, const std::vector<double>& latitudes,
                                    const std::vector<double>& longitudes) :
@@ -45,21 +46,25 @@ UnstructuredGrid::UnstructuredGrid(const Variable& variable, const std::vector<d
     }
 }
 
+
 UnstructuredGrid::~UnstructuredGrid() = default;
+
 
 void UnstructuredGrid::print(std::ostream& s) const {
     s << "UnstructuredGrid[points=" << latitudes_.size() << "]";
 }
 
+
 bool UnstructuredGrid::has(const std::string& name) const {
-    // std::cout << "has " << name << std::endl;
+    // eckit::Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
 }
 
+
 bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -74,26 +79,29 @@ bool UnstructuredGrid::get(const std::string& name, std::vector<double>& values)
     return false;
 }
 
-bool UnstructuredGrid::get(const std::string& /*name*/, long& /*value*/) const {
-    // std::cout << "get " << name << std::endl;
 
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
+bool UnstructuredGrid::get(const std::string& /*name*/, long& /*value*/) const {
+    // eckit::Log::info() << "get " << name << std::endl;
+
+    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
     return false;
 }
 
+
 bool UnstructuredGrid::get(const std::string& name, std::string& value) const {
-    // std::cout << "get " << name << std::endl;
+    // eckit::Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "unstructured_grid";
         return true;
     }
 
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
+    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
 
     return false;
 }
+
 
 bool UnstructuredGrid::get(const std::string& name, double& value) const {
 
@@ -117,67 +125,46 @@ bool UnstructuredGrid::get(const std::string& name, double& value) const {
         return true;
     }
 
-
-    // std::cout << "UnstructuredGrid::get " << name << " failed" << std::endl;
-
+    // eckit::Log::info() << "UnstructuredGrid::get " << name << " failed" << std::endl;
 
     return false;
 }
 
 
-//================================================================
-
 static bool check_axis(const Variable& variable, const Variable& axis, std::vector<double>& v) {
-
 
     auto axis_dimensions     = axis.dimensions();
     auto variable_dimensions = variable.dimensions();
 
-    if (axis_dimensions.size() != 2) {
+    if (axis_dimensions.size() != 2 || variable_dimensions.size() < 2) {
         return false;
     }
 
-    if (variable_dimensions[variable_dimensions.size() - 2] != axis_dimensions[0]) {
+    Dimension* vars[] = {variable_dimensions[variable_dimensions.size() - 2], variable_dimensions.back()};
+    if (vars[0] != axis_dimensions[0] || vars[1] != axis_dimensions[1]) {
         return false;
     }
-
-    if (variable_dimensions[variable_dimensions.size() - 1] != axis_dimensions[1]) {
-        return false;
-    }
-
 
     axis.values(v);
-
     return true;
 }
+
 
 GridSpec* UnstructuredGrid::guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) {
 
     if (variable.numberOfDimensions() < 2) {
-        return 0;
+        return nullptr;
     }
 
-
-    //  for(auto d: latitudes.dimensions()) {
-    //      std::cout << "++++ " << *d << std::endl;
-
-    //  }
-    // for(auto d: longitudes.dimensions()) {
-    //      std::cout << "---- " << *d << std::endl;
-
-    //  }
-
-    // double north, south;
     std::vector<double> lats;
     if (!check_axis(variable, latitudes, lats)) {
-        return 0;
+        return nullptr;
     }
 
     std::vector<double> lons;
     if (!check_axis(variable, longitudes, lons)) {
-        return 0;
+        return nullptr;
     }
-
 
     return new UnstructuredGrid(variable, lats, lons);
 }

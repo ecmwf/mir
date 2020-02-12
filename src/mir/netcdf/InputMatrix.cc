@@ -12,6 +12,8 @@
 
 #include "mir/netcdf/InputMatrix.h"
 
+#include <ostream>
+
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Mapper.h"
@@ -19,23 +21,24 @@
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Value.h"
 
-#include <ostream>
-
 #include <netcdf.h>
+
 
 namespace mir {
 namespace netcdf {
 
+
 InputMatrix::InputMatrix(Type& type, int varid, const std::string& name, size_t size, NCFile& file) :
     Matrix(type, name, size),
-    varid_(varid),
-    file_(file) {}
+    file_(file),
+    varid_(varid) {}
 
 InputMatrix::~InputMatrix() = default;
 
 void InputMatrix::print(std::ostream& out) const {
     out << "InputMatrix[name=" << name_ << ",type=" << *type_ << ", size=" << size_ << "]";
 }
+
 
 template <class V, class G>
 static void _get(V& v, size_t size, int varid, NCFile& file, G get) {
@@ -45,12 +48,14 @@ static void _get(V& v, size_t size, int varid, NCFile& file, G get) {
     file.close();
 }
 
+
 void InputMatrix::read(std::vector<double>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_double);
     if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
+
 
 void InputMatrix::read(std::vector<float>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_float);
@@ -59,12 +64,14 @@ void InputMatrix::read(std::vector<float>& v) const {
     }
 }
 
+
 void InputMatrix::read(std::vector<long>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_long);
     if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
+
 
 void InputMatrix::read(std::vector<short>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_short);
@@ -73,12 +80,14 @@ void InputMatrix::read(std::vector<short>& v) const {
     }
 }
 
+
 void InputMatrix::read(std::vector<unsigned char>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_ubyte);
     if (codec_ != nullptr) {
         codec_->decode(v);
     }
 }
+
 
 void InputMatrix::read(std::vector<long long>& v) const {
     _get(v, size_, varid_, file_, &nc_get_var_longlong);
@@ -87,12 +96,11 @@ void InputMatrix::read(std::vector<long long>& v) const {
     }
 }
 
-// ========================================================================
 
 template <class V, class G>
 static void _get_slab(V& v, const std::vector<size_t>& start, const std::vector<size_t>& count, int varid, NCFile& file,
                       G get) {
-    size_t size = std::accumulate(count.begin(), count.end(), 1, std::multiplies<size_t>());
+    size_t size = std::accumulate(count.begin(), count.end(), size_t(1), std::multiplies<size_t>());
 
     v.resize(size);
     int nc = file.open();
@@ -109,6 +117,7 @@ void InputMatrix::read(std::vector<double>& values, const std::vector<size_t>& s
     }
 }
 
+
 void InputMatrix::read(std::vector<float>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_float);
@@ -116,6 +125,7 @@ void InputMatrix::read(std::vector<float>& values, const std::vector<size_t>& st
         codec_->decode(values);
     }
 }
+
 
 void InputMatrix::read(std::vector<long>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
@@ -125,6 +135,7 @@ void InputMatrix::read(std::vector<long>& values, const std::vector<size_t>& sta
     }
 }
 
+
 void InputMatrix::read(std::vector<short>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_short);
@@ -132,6 +143,7 @@ void InputMatrix::read(std::vector<short>& values, const std::vector<size_t>& st
         codec_->decode(values);
     }
 }
+
 
 void InputMatrix::read(std::vector<unsigned char>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
@@ -141,6 +153,7 @@ void InputMatrix::read(std::vector<unsigned char>& values, const std::vector<siz
     }
 }
 
+
 void InputMatrix::read(std::vector<long long>& values, const std::vector<size_t>& start,
                        const std::vector<size_t>& count) const {
     _get_slab(values, start, count, varid_, file_, &nc_get_vara_longlong);
@@ -148,8 +161,6 @@ void InputMatrix::read(std::vector<long long>& values, const std::vector<size_t>
         codec_->decode(values);
     }
 }
-
-// ========================================================================
 
 
 }  // namespace netcdf

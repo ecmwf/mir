@@ -29,16 +29,22 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
     fields_(dataset_.fields()),
     current_(-1) {
 
-    for (auto& field : fields_) {
-        std::cout << "NC " << *field << std::endl;
+    for (auto field : fields_) {
+        eckit::Log::info() << "NC " << *field << std::endl;
     }
 }
 
 
 NetcdfFileInput::~NetcdfFileInput() {
-    for (auto& field : fields_) {
+    for (auto field : fields_) {
         delete field;
     }
+}
+
+
+const netcdf::Field& NetcdfFileInput::currentField() const {
+    ASSERT(0 <= current_ && current_ < int(fields_.size()));
+    return *fields_[size_t(current_)];
 }
 
 
@@ -64,58 +70,47 @@ const param::MIRParametrisation& NetcdfFileInput::parametrisation(size_t which) 
     return cache_;
 }
 
+
 bool NetcdfFileInput::next() {
     cache_.reset();
     FieldParametrisation::reset();
 
     current_++;
 
-    return current_ < int(fields_.size());
+    return size_t(current_) < fields_.size();
 }
 
 
 data::MIRField NetcdfFileInput::field() const {
-    ASSERT(current_ >= 0 && (current_ < int(fields_.size())));
 
-    auto& ncField = *fields_[current_];
-
+    auto& ncField = currentField();
     data::MIRField field(*this, ncField.hasMissing(), ncField.missingValue());
 
-    size_t n = ncField.count2DValues();
-    for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < ncField.count2DValues(); ++i) {
         MIRValuesVector values;
         ncField.get2DValues(values, i);
-        field.update(values, i);
-
         ncField.setMetadata(field, i);
+        field.update(values, i);
     }
 
     return field;
 }
 
-bool NetcdfFileInput::get(const std::string& name, long& value) const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
-}
 
 bool NetcdfFileInput::has(const std::string& name) const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->has(name)) {
-        return true;
-    }
-    return FieldParametrisation::has(name);
+    return currentField().has(name) || FieldParametrisation::has(name);
 }
 
-bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
+
+bool NetcdfFileInput::get(const std::string& name, long& value) const {
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
 }
+
+
+bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
+}
+
 
 bool NetcdfFileInput::get(const std::string& name, bool& value) const {
 
@@ -128,31 +123,25 @@ bool NetcdfFileInput::get(const std::string& name, bool& value) const {
     return false;
 }
 
+
 bool NetcdfFileInput::get(const std::string& name, double& value) const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
 }
 
 
 bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    if (fields_[current_]->get(name, value)) {
-        return true;
-    }
-    return FieldParametrisation::get(name, value);
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
 }
+
 
 bool NetcdfFileInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const NetcdfFileInput*>(&other);
     return (o != nullptr) && (path_ == o->path_);
 }
 
+
 size_t NetcdfFileInput::dimensions() const {
-    ASSERT(current_ >= 0 && current_ < fields_.size());
-    return fields_[current_]->count2DValues();
+    return currentField().count2DValues();
 }
 
 

@@ -80,7 +80,7 @@ MIRJob& MIRJob::set(const std::string& args) {
         parseEquals(a, nameValue);
 
         if (nameValue.size() == 1) {
-            nameValue.push_back("true");
+            nameValue.emplace_back("true");
         }
 
         if (nameValue[0].find("--") != 0) {
@@ -101,8 +101,8 @@ static const std::map<std::string, std::string> aliases{
 static const std::string& resolveAliases(const std::string& name) {
     auto j = aliases.find(name);
     if (j != aliases.end()) {
-        eckit::Log::debug<LibMir>() << "MIRJob: changing [" << name << "] to [" << (*j).second << "]" << std::endl;
-        return (*j).second;
+        eckit::Log::debug<LibMir>() << "MIRJob: changing [" << name << "] to [" << j->second << "]" << std::endl;
+        return j->second;
     }
     return name;
 }
@@ -115,7 +115,7 @@ static const T& resolveAliases(const std::string& /*name*/, const T& value) {
 
 
 MIRJob& MIRJob::clear(const std::string& name) {
-    const std::string rName = resolveAliases(name);
+    auto& rName = resolveAliases(name);
     eckit::Log::debug<LibMir>() << "MIRJob: clear '" << rName << "'" << std::endl;
     SimpleParametrisation::clear(rName);
     return *this;

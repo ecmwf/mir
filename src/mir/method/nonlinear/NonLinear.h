@@ -78,6 +78,9 @@ private:
     std::string name_;
     virtual NonLinear* make(const param::MIRParametrisation&) = 0;
 
+    NonLinearFactory(const NonLinearFactory&) = delete;
+    NonLinearFactory& operator=(const NonLinearFactory&) = delete;
+
 protected:
     NonLinearFactory(const std::string& name);
     virtual ~NonLinearFactory();

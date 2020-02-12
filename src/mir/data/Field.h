@@ -14,9 +14,11 @@
 #define mir_data_Field_h
 
 #include <iosfwd>
+#include <map>
 #include <vector>
 
 #include "eckit/memory/Counted.h"
+
 #include "mir/data/MIRValuesVector.h"
 
 
@@ -119,21 +121,20 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Field(const Field& other);
-    Field& operator=(const Field& other);
+    // No copy allowed (except with "clone")
+    Field(const Field&);
+    Field& operator=(const Field&);
 
     // -- Members
 
     std::vector<MIRValuesVector> values_;
     std::vector<std::map<std::string, long> > metadata_;
 
-    mutable bool recomputeHasMissing_;
-    mutable bool hasMissing_;
-
     double missingValue_;
     const repres::Representation* representation_;
+
+    mutable bool recomputeHasMissing_;
+    mutable bool hasMissing_;
 
     // -- Methods
 

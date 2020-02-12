@@ -93,7 +93,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 
     // eckit::Log::info() << "GeoPointsFileOutputXYVector::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 

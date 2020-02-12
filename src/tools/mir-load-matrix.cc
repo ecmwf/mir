@@ -70,7 +70,7 @@ public:
 };
 
 
-void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, std::string path) {
+void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off
@@ -106,7 +106,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
     if (load || unload) {
         bool written = false;
 
-        for (std::string path : args) {
+        for (const std::string& path : args) {
 
             if (!load) {
                 eckit::Log::info() << "---"

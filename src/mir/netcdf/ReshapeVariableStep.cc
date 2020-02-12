@@ -12,6 +12,8 @@
 
 #include "mir/netcdf/ReshapeVariableStep.h"
 
+#include <iostream>
+
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Matrix.h"
@@ -20,16 +22,16 @@
 #include "mir/netcdf/Reshape.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
+
 
 ReshapeVariableStep::ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth) :
     out_(out),
     dimension_(dimension),
     growth_(growth),
-    next_(0) {}
+    next_(nullptr) {}
 
 ReshapeVariableStep::~ReshapeVariableStep() {
     delete next_;
@@ -49,7 +51,7 @@ void ReshapeVariableStep::print(std::ostream& out) const {
 }
 
 void ReshapeVariableStep::execute(MergePlan& /*plan*/) {
-    std::cout << "ReshapeVariableStep::execute(): " << out_ << std::endl;
+    eckit::Log::info() << "ReshapeVariableStep::execute(): " << out_ << std::endl;
 #if 0
     const std::vector<Dimension *> &dims = out_.dimensions();
 
@@ -86,13 +88,13 @@ void ReshapeVariableStep::execute(MergePlan& /*plan*/) {
         size_t idx = indexes[i];
 
         const Remapping &dimremap = (*j)->remapping();
-        std::cout << "ReshapeVariableStep::execute() - dimremap " << (*j)->name() << ": " << dimremap << std::endl;
+        eckit::Log::info() << "ReshapeVariableStep::execute() - dimremap " << (*j)->name() << ": " << dimremap << std::endl;
 
         size_t gap = 0;
         for (size_t k = 0; k < dimremap.size(); k++) {
             size_t g = dimremap[k] - k;
             if (g != gap) {
-                std::cout << "ReshapeVariableStep::execute() - where=" << k << " gap=" << g << std::endl;
+                eckit::Log::info() << "ReshapeVariableStep::execute() - where=" << k << " gap=" << g << std::endl;
 
                 in.matrix()->reshape(new Reshape(incube, idx, k, g - gap, 'I'));
 
@@ -116,13 +118,13 @@ void ReshapeVariableStep::execute(MergePlan& /*plan*/) {
     }
 
 
-    std::cout << "ReshapeVariableStep::execute() - Remapping out " << std::endl;
+    eckit::Log::info() << "ReshapeVariableStep::execute() - Remapping out " << std::endl;
     const std::vector<Reshape *> a = out_.matrix()->reshape();
-    for (auto j = a.begin(); j != a.end(); ++j) std::cout << *(*j) << std::endl;
+    for (auto j = a.begin(); j != a.end(); ++j) eckit::Log::info() << *(*j) << std::endl;
 
-    std::cout << "ReshapeVariableStep::execute() - Remapping in " << std::endl;
+    eckit::Log::info() << "ReshapeVariableStep::execute() - Remapping in " << std::endl;
     const std::vector<Reshape *> b = in.matrix()->reshape();
-    for (auto j = b.begin(); j != b.end(); ++j) std::cout << *(*j) << std::endl;
+    for (auto j = b.begin(); j != b.end(); ++j) eckit::Log::info() << *(*j) << std::endl;
 #endif
 }
 
@@ -133,8 +135,8 @@ bool ReshapeVariableStep::merge(Step* other) {
         if (&(o->out_) == &(out_)) {
 
             auto next                 = new ReshapeVariableStep(o->out_, o->dimension_, o->growth_);
+            auto self                 = this;
             ReshapeVariableStep* prev = nullptr;
-            ReshapeVariableStep* self = this;
 
             while (self != nullptr) {
                 prev = self;

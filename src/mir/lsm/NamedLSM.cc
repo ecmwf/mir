@@ -114,7 +114,7 @@ Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repr
         throw eckit::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(param, representation, which);
+    return j->second->make(param, representation, which);
 }
 
 
@@ -138,7 +138,7 @@ std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
     j->second->hashCacheKey(md5, param, representation, which);
     return "named." + name + "." + md5.digest();
 
-    //    return (*j).second->cacheKey(param, representation, which);
+    //    return j->second->cacheKey(param, representation, which);
 }
 
 

@@ -25,16 +25,16 @@ namespace method {
 class Cropping {
 public:
     Cropping();
-
+    Cropping(const Cropping&);
     ~Cropping();
 
-    void hash(eckit::MD5&) const;
-
-    bool operator==(const Cropping& other) const;
+    Cropping& operator=(const Cropping&);
+    bool operator==(const Cropping&) const;
 
     operator bool() const { return active_; }
 
-    void boundingBox(const util::BoundingBox& bbox);
+    void hash(eckit::MD5&) const;
+    void boundingBox(const util::BoundingBox&);
     const util::BoundingBox& boundingBox() const;
 
 protected:

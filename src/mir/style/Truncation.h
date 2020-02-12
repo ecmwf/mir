@@ -104,6 +104,9 @@ class TruncationFactory {
     std::string name_;
     virtual Truncation* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
 
+    TruncationFactory(const TruncationFactory&) = delete;
+    TruncationFactory& operator=(const TruncationFactory&) = delete;
+
 protected:
     TruncationFactory(const std::string&);
     virtual ~TruncationFactory();

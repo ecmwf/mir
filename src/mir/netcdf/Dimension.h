@@ -28,19 +28,19 @@ public:
     Dimension(Dataset& owner, const std::string& name, size_t len);
     virtual ~Dimension();
 
-    // -- Methods
-    virtual int id() const;
+    Dimension(const Dimension&) = delete;
+    Dimension& operator=(const Dimension&) = delete;
 
     const std::string& name() const;
     size_t count() const;
 
+    virtual int id() const;
     virtual bool sameAs(const Dimension&) const;
     virtual void dump(std::ostream&) const;
     virtual void create(int nc) const;
     virtual void clone(Dataset& owner) const;
     virtual void grow(size_t n);
     virtual bool inUse() const;
-
     virtual void realDimensions(std::vector<size_t>& dims) const;
 
 protected:
