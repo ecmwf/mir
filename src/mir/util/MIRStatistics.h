@@ -34,8 +34,8 @@ public:
     MIRStatistics();
     MIRStatistics(eckit::Stream&);
 
-    MIRStatistics(const MIRStatistics&) = delete;
-    MIRStatistics& operator=(const MIRStatistics&) = delete;
+    MIRStatistics(const MIRStatistics&) = default;
+    MIRStatistics& operator=(const MIRStatistics&) = default;
 
     MIRStatistics& operator+=(const MIRStatistics&);
     MIRStatistics& operator/=(size_t);
