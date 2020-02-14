@@ -19,12 +19,12 @@
 #include <vector>
 
 
-// Helper class to handle multi-dimension objects
-// The first dimension should be the one most likely to change
-
 namespace mir {
 namespace netcdf {
 
+
+// Helper class to handle multi-dimension objects
+// The first dimension should be the one most likely to change
 class HyperCube {
 public:
     // -- Types

@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_MergeDataMatrix
-#define mir_netcdf_MergeDataMatrix
+#ifndef mir_netcdf_MergeDataMatrix_h
+#define mir_netcdf_MergeDataMatrix_h
 
 #include "mir/netcdf/Matrix.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class MergeDataMatrix : public Matrix {
 public:
@@ -33,6 +34,9 @@ private:
     virtual void dumpTree(std::ostream&, size_t) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

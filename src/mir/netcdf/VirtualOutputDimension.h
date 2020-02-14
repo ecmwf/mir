@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_VirtualOutputDimension
-#define mir_netcdf_VirtualOutputDimension
+#ifndef mir_netcdf_VirtualOutputDimension_h
+#define mir_netcdf_VirtualOutputDimension_h
 
 #include "mir/netcdf/Dimension.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class VirtualOutputDimension : public Dimension {
 public:
@@ -38,6 +40,9 @@ private:
     virtual bool inUse() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

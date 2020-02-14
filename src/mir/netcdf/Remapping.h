@@ -10,14 +10,16 @@
  */
 
 
-#ifndef mir_netcdf_Remapping
-#define mir_netcdf_Remapping
+#ifndef mir_netcdf_Remapping_h
+#define mir_netcdf_Remapping_h
 
 #include "eckit/memory/Counted.h"
 #include "mir/netcdf/HyperCube.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class Remapping : public HyperCube::Remapping, public eckit::Counted {
 
@@ -40,6 +42,9 @@ public:
     }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

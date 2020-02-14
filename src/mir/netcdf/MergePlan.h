@@ -10,20 +10,26 @@
  */
 
 
-#ifndef mir_netcdf_MergePlan
-#define mir_netcdf_MergePlan
+#ifndef mir_netcdf_MergePlan_h
+#define mir_netcdf_MergePlan_h
 
 #include "mir/netcdf/Step.h"
 
 #include <map>
 #include <queue>
 
+
+namespace mir {
+namespace netcdf {
+class Variable;
+class Dataset;
+}  // namespace netcdf
+}  // namespace mir
+
+
 namespace mir {
 namespace netcdf {
 
-class Variable;
-class Dimension;
-class Dataset;
 
 class MergePlan {
 public:
@@ -51,6 +57,9 @@ private:
     std::map<const Variable*, const Variable*> link_;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

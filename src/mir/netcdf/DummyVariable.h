@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_DummyVariable
-#define mir_netcdf_DummyVariable
+#ifndef mir_netcdf_DummyVariable_h
+#define mir_netcdf_DummyVariable_h
 
 #include "mir/netcdf/Variable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class DummyVariable : public Variable {
 public:
@@ -43,6 +44,9 @@ protected:
     virtual int varid() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

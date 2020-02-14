@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_DataInputVariable
-#define mir_netcdf_DataInputVariable
+#ifndef mir_netcdf_DataInputVariable_h
+#define mir_netcdf_DataInputVariable_h
 
 #include "mir/netcdf/InputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class DataInputVariable : public InputVariable {
 public:

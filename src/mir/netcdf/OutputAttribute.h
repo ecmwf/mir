@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_OutputAttribute
-#define mir_netcdf_OutputAttribute
+#ifndef mir_netcdf_OutputAttribute_h
+#define mir_netcdf_OutputAttribute_h
 
 #include "mir/netcdf/Attribute.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class OutputAttribute : public Attribute {
 public:
@@ -36,6 +38,9 @@ private:
     virtual void invalidate();
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

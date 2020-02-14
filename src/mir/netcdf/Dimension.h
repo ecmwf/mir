@@ -10,17 +10,23 @@
  */
 
 
-#ifndef mir_netcdf_Dimension
-#define mir_netcdf_Dimension
+#ifndef mir_netcdf_Dimension_h
+#define mir_netcdf_Dimension_h
 
 #include <iosfwd>
 #include <string>
 #include <vector>
 
+
 namespace mir {
 namespace netcdf {
-
 class Dataset;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class Dimension {
@@ -50,7 +56,6 @@ protected:
     std::string name_;
     size_t len_;
 
-
 private:
     // -- Methods
     virtual void print(std::ostream& s) const = 0;
@@ -63,6 +68,9 @@ private:
     }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

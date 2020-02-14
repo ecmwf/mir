@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_DataOutputVariable
-#define mir_netcdf_DataOutputVariable
+#ifndef mir_netcdf_DataOutputVariable_h
+#define mir_netcdf_DataOutputVariable_h
 
 #include "mir/netcdf/OutputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class DataOutputVariable : public OutputVariable {
 public:
@@ -34,6 +35,9 @@ private:
     mutable std::string ncname_;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

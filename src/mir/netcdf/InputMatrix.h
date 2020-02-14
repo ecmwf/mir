@@ -10,10 +10,11 @@
  */
 
 
-#ifndef mir_netcdf_InputMatrix
-#define mir_netcdf_InputMatrix
+#ifndef mir_netcdf_InputMatrix_h
+#define mir_netcdf_InputMatrix_h
 
 #include "mir/netcdf/Matrix.h"
+
 
 namespace mir {
 namespace netcdf {

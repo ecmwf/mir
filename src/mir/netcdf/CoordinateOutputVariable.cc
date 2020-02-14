@@ -11,17 +11,22 @@
 
 
 #include "mir/netcdf/CoordinateOutputVariable.h"
+
 #include "mir/netcdf/Matrix.h"
 #include "mir/netcdf/Type.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 CoordinateOutputVariable::CoordinateOutputVariable(Dataset& owner, const std::string& name,
                                                    const std::vector<Dimension*>& dimensions) :
     OutputVariable(owner, name, dimensions) {}
 
+
 CoordinateOutputVariable::~CoordinateOutputVariable() = default;
+
 
 void CoordinateOutputVariable::print(std::ostream& out) const {
     out << "CoordinateOutputVariable[name=" << name_ << "]";
@@ -49,6 +54,7 @@ void CoordinateOutputVariable::merge(const Variable& other, MergePlan& plan) {
         }
     }
 }
+
 
 }  // namespace netcdf
 }  // namespace mir

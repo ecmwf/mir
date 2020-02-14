@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_SimpleInputVariable
-#define mir_netcdf_SimpleInputVariable
+#ifndef mir_netcdf_SimpleInputVariable_h
+#define mir_netcdf_SimpleInputVariable_h
 
 #include "mir/netcdf/InputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class SimpleInputVariable : public InputVariable {
 public:
@@ -42,6 +43,9 @@ private:
     Variable* addMissingCoordinates();
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

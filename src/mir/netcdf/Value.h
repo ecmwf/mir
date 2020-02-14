@@ -10,16 +10,23 @@
  */
 
 
-#ifndef mir_netcdf_Value
-#define mir_netcdf_Value
+#ifndef mir_netcdf_Value_h
+#define mir_netcdf_Value_h
 
 #include <string>
 #include <vector>
 
+
+namespace mir {
+namespace netcdf {
+class Type;
+}
+}  // namespace mir
+
+
 namespace mir {
 namespace netcdf {
 
-class Type;
 
 class Value {
 public:
@@ -77,7 +84,6 @@ private:
     // -- Methods
     virtual void print(std::ostream& out) const = 0;
 
-
     // -- Friends
     friend std::ostream& operator<<(std::ostream& out, const Value& v) {
         v.print(out);
@@ -85,6 +91,9 @@ private:
     }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_InputAttribute
-#define mir_netcdf_InputAttribute
+#ifndef mir_netcdf_InputAttribute_h
+#define mir_netcdf_InputAttribute_h
 
 #include "mir/netcdf/Attribute.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class InputAttribute : public Attribute {
 public:
@@ -29,6 +31,9 @@ private:
     virtual void clone(Endowed& owner) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

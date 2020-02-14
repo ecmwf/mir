@@ -10,15 +10,22 @@
  */
 
 
-#ifndef mir_netcdf_DummyMatrix
-#define mir_netcdf_DummyMatrix
+#ifndef mir_netcdf_DummyMatrix_h
+#define mir_netcdf_DummyMatrix_h
 
 #include "mir/netcdf/Matrix.h"
+
+
+namespace mir {
+namespace netcdf {
+class Variable;
+}
+}  // namespace mir
+
 
 namespace mir {
 namespace netcdf {
 
-class Variable;
 
 class DummyMatrix : public Matrix {
 public:
@@ -33,6 +40,9 @@ private:
     virtual void print(std::ostream& out) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

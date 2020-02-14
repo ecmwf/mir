@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_MergeCoordinateMatrix
-#define mir_netcdf_MergeCoordinateMatrix
+#ifndef mir_netcdf_MergeCoordinateMatrix_h
+#define mir_netcdf_MergeCoordinateMatrix_h
 
 #include "mir/netcdf/Matrix.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class MergeCoordinateMatrix : public Matrix {
 public:
@@ -33,6 +34,9 @@ private:
     virtual void dumpTree(std::ostream&, size_t) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_ScalarCoordinateOutputVariable
-#define mir_netcdf_ScalarCoordinateOutputVariable
+#ifndef mir_netcdf_ScalarCoordinateOutputVariable_h
+#define mir_netcdf_ScalarCoordinateOutputVariable_h
 
 #include "mir/netcdf/OutputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class ScalarCoordinateOutputVariable : public OutputVariable {
 public:
@@ -29,6 +30,9 @@ private:
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

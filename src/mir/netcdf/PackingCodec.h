@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_PackingCodec
-#define mir_netcdf_PackingCodec
+#ifndef mir_netcdf_PackingCodec_h
+#define mir_netcdf_PackingCodec_h
 
 #include "mir/netcdf/Codec.h"
 

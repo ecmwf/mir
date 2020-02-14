@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_InputDimension
-#define mir_netcdf_InputDimension
+#ifndef mir_netcdf_InputDimension_h
+#define mir_netcdf_InputDimension_h
 
 #include "mir/netcdf/Dimension.h"
 

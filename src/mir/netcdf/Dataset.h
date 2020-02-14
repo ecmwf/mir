@@ -10,20 +10,26 @@
  */
 
 
-#ifndef mir_netcdf_Dataset
-#define mir_netcdf_Dataset
+#ifndef mir_netcdf_Dataset_h
+#define mir_netcdf_Dataset_h
 
 #include "mir/netcdf/Endowed.h"
 
 #include <string>
 #include <vector>
 
+
 namespace mir {
 namespace netcdf {
-
 class Dimension;
 class Variable;
 class Field;
+}  // namespace netcdf
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class Dataset : public Endowed {
@@ -45,7 +51,6 @@ public:
     const std::map<std::string, Dimension*>& dimensions() const;
     const std::map<std::string, Variable*>& variables() const;
 
-
     //
     bool hasVariable(const std::string& name) const;
     const Variable& variable(const std::string& name) const;
@@ -60,7 +65,6 @@ protected:
     std::string path_;
     std::map<std::string, Dimension*> dimensions_;
     std::map<std::string, Variable*> variables_;
-
 
 private:
     Dataset(const Dataset&);
@@ -82,6 +86,9 @@ private:
     }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

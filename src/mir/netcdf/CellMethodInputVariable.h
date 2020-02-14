@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodInputVariable
-#define mir_netcdf_CellMethodInputVariable
+#ifndef mir_netcdf_CellMethodInputVariable_h
+#define mir_netcdf_CellMethodInputVariable_h
 
 #include "mir/netcdf/InputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class CellMethodInputVariable : public InputVariable {
 public:
@@ -36,6 +37,9 @@ private:
     const char* kind() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

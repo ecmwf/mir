@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_ValueT
-#define mir_netcdf_ValueT
+#ifndef mir_netcdf_ValueT_h
+#define mir_netcdf_ValueT_h
 
 #include <sstream>
 #include <string>
@@ -20,6 +20,7 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/netcdf/Value.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -120,6 +121,9 @@ private:
     virtual void get(std::string& v) const { _get(v); }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

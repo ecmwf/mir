@@ -10,24 +10,20 @@
  */
 
 
-#ifndef mir_netcdf_Matrix
-#define mir_netcdf_Matrix
-
-#include "eckit/memory/Counted.h"
+#ifndef mir_netcdf_Matrix_h
+#define mir_netcdf_Matrix_h
 
 #include <string>
 #include <vector>
+
+#include "eckit/memory/Counted.h"
 
 
 namespace mir {
 namespace netcdf {
 class Type;
 class Value;
-class Remapping;
 class Codec;
-class Reshape;
-template <class T>
-class Mapper;
 }  // namespace netcdf
 }  // namespace mir
 

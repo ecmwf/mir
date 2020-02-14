@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_NCFileCache
-#define mir_netcdf_NCFileCache
+#ifndef mir_netcdf_NCFileCache_h
+#define mir_netcdf_NCFileCache_h
 
 #include <map>
 #include <string>

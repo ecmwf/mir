@@ -10,15 +10,21 @@
  */
 
 
-#ifndef mir_netcdf_OutputField
-#define mir_netcdf_OutputField
+#ifndef mir_netcdf_OutputField_h
+#define mir_netcdf_OutputField_h
 
 #include "mir/netcdf/Dataset.h"
 
+
 namespace mir {
 namespace netcdf {
-
 class NCFileCache;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class OutputDataset : public Dataset {
@@ -47,6 +53,9 @@ private:
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

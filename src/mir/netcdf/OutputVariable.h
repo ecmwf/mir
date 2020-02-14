@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_OutputVariable
-#define mir_netcdf_OutputVariable
+#ifndef mir_netcdf_OutputVariable_h
+#define mir_netcdf_OutputVariable_h
 
 #include "mir/netcdf/Variable.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class OutputVariable : public Variable {
 public:
@@ -40,6 +42,9 @@ private:
     virtual int varid() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

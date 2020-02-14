@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_Exceptions
-#define mir_netcdf_Exceptions
+#ifndef mir_netcdf_Exceptions_h
+#define mir_netcdf_Exceptions_h
 
 #include "eckit/exception/Exceptions.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class NCError : public eckit::Exception {
 public:
@@ -40,6 +42,9 @@ inline int _nc_call(int e, const char* call, const std::string& path) {
 
 #define NC_CALL(a, path) _nc_call(a, #a, path)
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

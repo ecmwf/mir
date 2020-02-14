@@ -10,15 +10,21 @@
  */
 
 
-#ifndef mir_netcdf_InputField
-#define mir_netcdf_InputField
+#ifndef mir_netcdf_InputField_h
+#define mir_netcdf_InputField_h
 
 #include "mir/netcdf/Dataset.h"
 
+
 namespace mir {
 namespace netcdf {
-
 class NCFileCache;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class InputDataset : public Dataset {
@@ -44,10 +50,12 @@ private:
 
     // - Methods
 
-
     void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

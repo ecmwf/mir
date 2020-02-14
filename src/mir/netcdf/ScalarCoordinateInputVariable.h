@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_ScalarCoordinateInputVariable
-#define mir_netcdf_ScalarCoordinateInputVariable
+#ifndef mir_netcdf_ScalarCoordinateInputVariable_h
+#define mir_netcdf_ScalarCoordinateInputVariable_h
 
 #include "mir/netcdf/InputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class ScalarCoordinateInputVariable : public InputVariable {
 public:
@@ -34,6 +35,9 @@ private:
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

@@ -10,17 +10,24 @@
  */
 
 
-#ifndef mir_netcdf_Attribute
-#define mir_netcdf_Attribute
+#ifndef mir_netcdf_Attribute_h
+#define mir_netcdf_Attribute_h
 
 #include <iosfwd>
 #include <string>
 
+
+namespace mir {
+namespace netcdf {
+class Endowed;
+class Value;
+}  // namespace netcdf
+}  // namespace mir
+
+
 namespace mir {
 namespace netcdf {
 
-class Endowed;
-class Value;
 
 class Attribute {
 public:
@@ -64,6 +71,9 @@ private:
     }
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

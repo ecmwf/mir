@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_InputVariable
-#define mir_netcdf_InputVariable
+#ifndef mir_netcdf_InputVariable_h
+#define mir_netcdf_InputVariable_h
 
 #include "mir/netcdf/Variable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class InputVariable : public Variable {
 public:
@@ -42,6 +43,9 @@ protected:
     virtual int varid() const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

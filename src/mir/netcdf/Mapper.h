@@ -10,19 +10,20 @@
  */
 
 
-#ifndef mir_netcdf_Mapper
-#define mir_netcdf_Mapper
+#ifndef mir_netcdf_Mapper_h
+#define mir_netcdf_Mapper_h
+
+#include <iostream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Reshape.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
 
-template <class T>
 
+template <class T>
 class Mapper {
 public:
     Mapper(std::vector<T>& v, std::vector<bool>& set, bool& overlap);
@@ -76,12 +77,14 @@ Mapper<T>::Mapper(Mapper<T>& parent, const std::vector<Reshape*>& reshapes) :
     }
 }
 
+
 template <class T>
 Mapper<T>::~Mapper() {
     for (std::vector<Reshape*>::iterator j = reshapes_.begin(); j != reshapes_.end(); ++j) {
         (*j)->detach();
     }
 }
+
 
 template <class T>
 void Mapper<T>::set(size_t i, T v) {
@@ -105,6 +108,9 @@ void Mapper<T>::set(size_t i, T v) {
     v_[i] = v;
 }
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

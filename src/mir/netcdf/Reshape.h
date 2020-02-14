@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_Reshape
-#define mir_netcdf_Reshape
+#ifndef mir_netcdf_Reshape_h
+#define mir_netcdf_Reshape_h
 
 #include "eckit/memory/Counted.h"
 #include "mir/netcdf/HyperCube.h"
@@ -19,6 +19,7 @@
 
 namespace mir {
 namespace netcdf {
+
 
 class Reshape : public eckit::Counted {
 public:
@@ -56,4 +57,6 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

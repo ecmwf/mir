@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_OutputDimension
-#define mir_netcdf_OutputDimension
+#ifndef mir_netcdf_OutputDimension_h
+#define mir_netcdf_OutputDimension_h
 
 #include "mir/netcdf/Dimension.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class OutputDimension : public Dimension {
 public:
@@ -37,6 +39,9 @@ private:
     virtual void grow(size_t);
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

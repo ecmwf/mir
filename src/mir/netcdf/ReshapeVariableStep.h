@@ -10,16 +10,22 @@
  */
 
 
-#ifndef mir_netcdf_ReshapeVariableStep
-#define mir_netcdf_ReshapeVariableStep
+#ifndef mir_netcdf_ReshapeVariableStep_h
+#define mir_netcdf_ReshapeVariableStep_h
 
 #include "mir/netcdf/Step.h"
 
+
 namespace mir {
 namespace netcdf {
-
 class Variable;
 class Dimension;
+}  // namespace netcdf
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class ReshapeVariableStep : public Step {
@@ -42,6 +48,9 @@ private:
     virtual bool merge(Step* other);
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

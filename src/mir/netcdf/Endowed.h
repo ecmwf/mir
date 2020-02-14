@@ -10,11 +10,12 @@
  */
 
 
-#ifndef mir_netcdf_Endowned
-#define mir_netcdf_Endowned
+#ifndef mir_netcdf_Endowned_h
+#define mir_netcdf_Endowned_h
 
 #include <map>
 #include <string>
+
 
 namespace mir {
 namespace netcdf {

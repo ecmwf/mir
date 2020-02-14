@@ -10,16 +10,21 @@
  */
 
 
-#ifndef mir_netcdf_Step
-#define mir_netcdf_Step
+#ifndef mir_netcdf_Step_h
+#define mir_netcdf_Step_h
 
 #include <iosfwd>
 
+
 namespace mir {
 namespace netcdf {
-
 class MergePlan;
+}
+}  // namespace mir
 
+
+namespace mir {
+namespace netcdf {
 
 class Step {
     Step(const Step&) = delete;

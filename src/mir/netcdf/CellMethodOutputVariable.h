@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodOutputVariable
-#define mir_netcdf_CellMethodOutputVariable
+#ifndef mir_netcdf_CellMethodOutputVariable_h
+#define mir_netcdf_CellMethodOutputVariable_h
 
 #include "mir/netcdf/OutputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class CellMethodOutputVariable : public OutputVariable {
 public:
@@ -29,6 +30,9 @@ private:
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

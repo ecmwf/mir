@@ -10,15 +10,21 @@
  */
 
 
-#ifndef mir_netcdf_UpdateCoordinateStep
-#define mir_netcdf_UpdateCoordinateStep
+#ifndef mir_netcdf_UpdateCoordinateStep_h
+#define mir_netcdf_UpdateCoordinateStep_h
 
 #include "mir/netcdf/Step.h"
 
+
 namespace mir {
 namespace netcdf {
-
 class Variable;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class UpdateCoordinateStep : public Step {
@@ -38,6 +44,9 @@ private:
     virtual void execute(MergePlan& plan);
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

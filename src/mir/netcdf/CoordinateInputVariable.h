@@ -10,14 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_CoordinateInputVariable
-#define mir_netcdf_CoordinateInputVariable
+#ifndef mir_netcdf_CoordinateInputVariable_h
+#define mir_netcdf_CoordinateInputVariable_h
 
 #include "mir/netcdf/InputVariable.h"
 
 
 namespace mir {
 namespace netcdf {
+
 
 class CoordinateInputVariable : public InputVariable {
 public:
@@ -35,6 +36,9 @@ private:
     virtual void print(std::ostream&) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

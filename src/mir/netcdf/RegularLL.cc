@@ -156,7 +156,6 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
         return false;
     }
 
-
     double d = v[1] - v[0];
 
     for (size_t i = 1; i < v.size(); ++i) {
@@ -165,8 +164,8 @@ static bool check_axis(const Variable& axis, double& first, double& last, double
         }
     }
 
-    first     = v[0];
-    last      = v[v.size() - 1];
+    first     = v.front();
+    last      = v.back();
     increment = d > 0 ? d : -d;
 
     return true;

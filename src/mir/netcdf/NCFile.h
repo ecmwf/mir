@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_NCFile
-#define mir_netcdf_NCFile
+#ifndef mir_netcdf_NCFile_h
+#define mir_netcdf_NCFile_h
 
 #include <string>
 
+
 namespace mir {
 namespace netcdf {
+
 
 class NCFile {
 public:
@@ -52,4 +54,6 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif

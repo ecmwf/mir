@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_Type
-#define mir_netcdf_Type
+#ifndef mir_netcdf_Type_h
+#define mir_netcdf_Type_h
 
 #include <string>
 

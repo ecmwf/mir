@@ -157,7 +157,6 @@ GridSpec* Rectilinear::guess(const Variable& variable, const Variable& latitudes
         return nullptr;
     }
 
-
     return new Rectilinear(variable, north, south, lats, west, east, lons);
 }
 

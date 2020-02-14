@@ -10,13 +10,15 @@
  */
 
 
-#ifndef mir_netcdf_VirtualInputDimension
-#define mir_netcdf_VirtualInputDimension
+#ifndef mir_netcdf_VirtualInputDimension_h
+#define mir_netcdf_VirtualInputDimension_h
 
 #include "mir/netcdf/Dimension.h"
 
+
 namespace mir {
 namespace netcdf {
+
 
 class VirtualInputDimension : public Dimension {
 public:
@@ -35,6 +37,9 @@ private:
     virtual void realDimensions(std::vector<size_t>& dims) const;
 };
 
+
 }  // namespace netcdf
 }  // namespace mir
+
+
 #endif
