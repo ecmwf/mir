@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_netcdf_Variable
-#define mir_netcdf_Variable
+#ifndef mir_netcdf_Variable_h
+#define mir_netcdf_Variable_h
 
 #include <iostream>
 #include <string>
@@ -24,8 +24,6 @@
 namespace mir {
 namespace netcdf {
 class Dataset;
-class Type;
-class Attribute;
 class Dimension;
 class Matrix;
 class MergePlan;
@@ -55,7 +53,6 @@ public:
     virtual bool coordinate() const;
     virtual bool scalar() const;
 
-
     virtual void validate() const;
     virtual bool sameAs(const Variable&) const;
     virtual void dump(std::ostream&) const;
@@ -66,7 +63,6 @@ public:
     virtual void save(int nc) const;
     virtual Variable* clone(Dataset& owner) const;
     virtual void merge(const Variable&, MergePlan&);
-
 
     // From Endowed
     virtual const std::string& name() const;
@@ -94,6 +90,8 @@ public:
 
     const Dataset& dataset() const;
     Dataset& dataset();
+
+    const Variable& lookupInDataset(const std::string& standardName, const std::string& units, size_t n) const;
 
     // Used during identtification
     virtual Variable* makeDataVariable();

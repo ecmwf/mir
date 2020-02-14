@@ -72,44 +72,13 @@ GridSpecGuesser::~GridSpecGuesser() {
     m->erase(priority_);
 }
 
-
-static const Variable& find_variable(const Variable& variable, const std::string& standardName,
-                                     const std::string& units, size_t n) {
-
-    const Dataset& dataset = variable.dataset();
-
-    for (const auto& k : dataset.variables()) {
-        Variable& v = *(k.second);
-        if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("standard_name") == standardName) {
-            eckit::Log::info() << "XXXXX find_variable" << v << " has standard_name " << standardName << std::endl;
-            return v;
-        }
-    }
-
-    for (const auto& k : dataset.variables()) {
-        Variable& v = *(k.second);
-        if (v.sharesDimensions(variable) && v.getAttributeValue<std::string>("units") == units) {
-            eckit::Log::info() << "XXXXX find_variable" << v << " has units " << units << std::endl;
-            return v;
-        }
-    }
-
-    std::vector<std::string> coordinates = variable.coordinates();
-    ASSERT(coordinates.size() >= n);
-
-    const Variable& v = dataset.variable(coordinates[coordinates.size() - n]);
-    eckit::Log::info() << "XXXXX find_variable" << v << " is number " << coordinates.size() - n << std::endl;
-    return v;
-}
-
-
 GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     // We assume lat/lon are the innermost coordinates
-    const Variable& latitudes  = find_variable(variable, "latitude", "degrees_north", 2);
-    const Variable& longitudes = find_variable(variable, "longitude", "degrees_east", 1);
+    const Variable& latitudes  = variable.lookupInDataset("latitude", "degrees_north", 2);
+    const Variable& longitudes = variable.lookupInDataset("longitude", "degrees_east", 1);
 
     for (auto& j : *m) {
         auto spec = j.second->guess(variable, latitudes, longitudes);

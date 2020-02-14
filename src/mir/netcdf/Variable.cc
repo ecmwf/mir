@@ -59,6 +59,32 @@ Dataset& Variable::dataset() {
     return dataset_;
 }
 
+const Variable& Variable::lookupInDataset(const std::string& standardName, const std::string& units, size_t n) const {
+
+    for (const auto& k : dataset_.variables()) {
+        Variable& v = *(k.second);
+        if (v.sharesDimensions(*this) && v.getAttributeValue<std::string>("standard_name") == standardName) {
+            eckit::Log::info() << "Variable::lookup" << v << " has standard_name " << standardName << std::endl;
+            return v;
+        }
+    }
+
+    for (const auto& k : dataset_.variables()) {
+        Variable& v = *(k.second);
+        if (v.sharesDimensions(*this) && v.getAttributeValue<std::string>("units") == units) {
+            eckit::Log::info() << "Variable::lookup" << v << " has units " << units << std::endl;
+            return v;
+        }
+    }
+
+    auto coord = coordinates();
+    ASSERT(coord.size() >= n);
+    size_t i = coord.size() - n;
+
+    const Variable& v = dataset_.variable(coord[i]);
+    eckit::Log::info() << "Variable::lookup" << v << " is number " << i << std::endl;
+    return v;
+}
 
 void Variable::setMatrix(Matrix* matrix) {
     if (matrix != nullptr) {
