@@ -68,7 +68,7 @@ Gaussian::Gaussian(const param::MIRParametrisation& parametrisation) :
     ASSERT(parametrisation.get("N", N_));
     ASSERT(N_ > 0);
 
-    parametrisation.get("angularPrecision", angularPrecision_);
+    parametrisation.get("angular_precision", angularPrecision_);
     ASSERT(angularPrecision_ >= 0);
 }
 
