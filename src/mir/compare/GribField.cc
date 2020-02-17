@@ -1112,8 +1112,8 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                     // Don't trust eccodes
                     size_t pl_size = 0;
                     GRIB_CALL(grib_get_size(h, "pl", &pl_size));
-                    std::vector<long> pl(pl_size);
 
+                    std::vector<long> pl(pl_size);
                     GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &pl_size));
 
                     bool isOctahedral = true;

@@ -864,18 +864,8 @@ bool GribInput::get(const std::string& name, double& value) const {
 }
 
 
-bool GribInput::get(const std::string& name, std::vector<int>& value) const {
-    std::vector<long> v;
-    if (get(name, v)) {
-        value.clear();
-        value.reserve(v.size());
-        for (const long& l : v) {
-            ASSERT(long(int(l)) == l);
-            value.push_back(int(l));
-        }
-        return true;
-    }
-    return false;
+bool GribInput::get(const std::string&, std::vector<int>&) const {
+    NOTIMP;
 }
 
 
