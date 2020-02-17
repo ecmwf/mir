@@ -469,15 +469,6 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
     });
 };
 
-static ProcessingT<double>* divide(const char* key, double denominator) {
-    ASSERT(!eckit::types::is_approximately_equal<double>(denominator, 0));
-    return new ProcessingT<double>([=](grib_handle* h, double& value) {
-        GRIB_CALL(codes_get_double(h, key, &value));
-        value /= denominator;
-        return true;
-    });
-}
-
 static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std::string> keys) {
     const std::vector<std::string> keys_(keys);
     return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
@@ -509,11 +500,6 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
          longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
         {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
          iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
-
-        {"xDirectionGridLengthInMetres", divide("xDirectionGridLengthInMillimetres", 1000.), nullptr},
-        {"yDirectionGridLengthInMetres", divide("yDirectionGridLengthInMillimetres", 1000.), nullptr},
-        {"standardParallelInDegrees", divide("standardParallelInMicrodegrees", 1000000.), nullptr},
-        {"centralLongitudeInDegrees", divide("centralLongitudeInMicrodegrees", 1000000.), nullptr},
 
         {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
