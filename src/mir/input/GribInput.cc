@@ -781,10 +781,10 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return false;
     }
 
+    // FIXME: make sure that 'temp' is not set if GRIB_MISSING_LONG
     long temp = GRIB_MISSING_LONG;
-    int err   = grib_get_long(grib_, key, &temp);
-
-    if (err == GRIB_NOT_FOUND || temp == GRIB_MISSING_LONG) {
+    int err   = codes_get_long(grib_, key, &temp);
+    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return FieldParametrisation::get(name, value);
     }
 
@@ -820,10 +820,9 @@ bool GribInput::get(const std::string& name, long& value) const {
         return false;
     }
 
-    int err = grib_get_long(grib_, key, &value);
-
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
-    if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_LONG) {
+    int err = codes_get_long(grib_, key, &value);
+    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
@@ -856,10 +855,9 @@ bool GribInput::get(const std::string& name, double& value) const {
         return false;
     }
 
-    int err = grib_get_double(grib_, key, &value);
-
     // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
-    if (err == GRIB_NOT_FOUND || value == GRIB_MISSING_DOUBLE) {
+    int err = codes_get_double(grib_, key, &value);
+    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
