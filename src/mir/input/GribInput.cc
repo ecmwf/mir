@@ -246,7 +246,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
 
         {"gridname", "gridName", nullptr},
-        {"angularPrecision", "angularPrecisionInDegrees", nullptr},
 
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
@@ -303,7 +302,7 @@ struct ProcessingT : Processing {
 
 
 static ProcessingT<long>* is_wind_component_uv() {
-    return new ProcessingT<long>([=](grib_handle* h, long& value) {
+    return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
@@ -314,7 +313,7 @@ static ProcessingT<long>* is_wind_component_uv() {
 }
 
 static ProcessingT<long>* is_wind_component_vod() {
-    return new ProcessingT<long>([=](grib_handle* h, long& value) {
+    return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
         GRIB_CALL(grib_get_long(h, "paramId", &paramId));
         static const util::Wind::Defaults def;
@@ -324,12 +323,24 @@ static ProcessingT<long>* is_wind_component_vod() {
     });
 }
 
-static ProcessingT<double>* inverse(const char* key) {
-    return new ProcessingT<double>([=](grib_handle* h, double& value) {
-        double inv = 0;
-        GRIB_CALL(grib_get_double(h, key, &inv));
-        ASSERT(!eckit::types::is_approximately_equal<double>(inv, 0));
-        value = 1. / inv;
+static ProcessingT<double>* angular_precision() {
+    return new ProcessingT<double>([](grib_handle* h, double& value) {
+        auto well_defined = [h](const char* key) -> bool {
+            long dummy = 0;
+            int err    = 0;
+            return (codes_is_defined(h, key) != 0) && (codes_is_missing(h, key, &err) == 0) && (err == GRIB_SUCCESS) &&
+                   (codes_get_long(h, key, &dummy) == GRIB_SUCCESS) && (dummy != 0);
+        };
+
+        if (well_defined("basicAngleOfTheInitialProductionDomain") && well_defined("subdivisionsOfBasicAngle")) {
+            value = 0.;
+            return true;
+        }
+
+        long angleSubdivisions = 0;
+        GRIB_CALL(codes_get_long(h, "angleSubdivisions", &angleSubdivisions));
+
+        value = angleSubdivisions > 0 ? 1. / double(angleSubdivisions) : 0.;
         return true;
     });
 }
@@ -372,11 +383,10 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
 
                 if (size_t(plSum) == valuesSize) {
 
-                    long angularPrecision;
-                    GRIB_CALL(grib_get_long(h, "angularPrecision", &angularPrecision));
-                    ASSERT(angularPrecision > 0);
+                    double eps = 0.;
+                    std::unique_ptr<Processing> precision_in_degrees(angular_precision());
+                    ASSERT(precision_in_degrees->eval(h, eps));
 
-                    eckit::Fraction eps(1L, angularPrecision);
                     eckit::Fraction Lon2_expected(360L * (plMax - 1L), plMax);
 
                     if (!eckit::types::is_approximately_equal<double>(Lon2, Lon2_expected, eps)) {
@@ -494,7 +504,7 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
         const Condition* condition;
     } processings[] = {
 
-        {"angularPrecisionInDegrees", inverse("angularPrecision"), nullptr},
+        {"angular_precision", angular_precision(), nullptr},
         {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
          longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
         {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",

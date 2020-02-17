@@ -65,9 +65,9 @@ BoundingBox::BoundingBox(const param::MIRParametrisation& param) {
     ASSERT(param.get("east", box[3]));
 
     double angularPrecision = 0.;
-    param.get("angularPrecision", angularPrecision);
+    param.get("angular_precision", angularPrecision);
 
-    if (angularPrecision > 0. && !param.has("subdivisionsOfBasicAngle")) {
+    if (angularPrecision > 0.) {
 
         const eckit::Fraction precision(angularPrecision);
         north_ = eckit::Fraction(box[0], precision);
