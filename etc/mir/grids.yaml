@@ -22,3 +22,13 @@ LAEA-EFAS-5km-proj:
     numberOfPointsAlongXAxis: 1000
     numberOfPointsAlongYAxis: 950
 
+SMUFF-OPERA-2km-proj:
+    gridType: lambert_azimuthal_equal_area
+    proj: +proj=laea +lat_0=55 +lon_0=10 +ellps=WGS84 +units=m +no_defs
+    shapeOfTheEarth: 5
+    grid: 2000./2000.
+    gaussianNumber: 1280
+    latitudeOfFirstGridPointInDegrees: 67.035186732680
+    longitudeOfFirstGridPointInDegrees: -39.535385563614
+    numberOfPointsAlongXAxis: 1900
+    numberOfPointsAlongYAxis: 2200
