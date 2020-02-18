@@ -74,7 +74,7 @@ void Rotation::print(std::ostream& out) const {
 void Rotation::fill(grib_info& info) const {
     // Warning: scanning mode not considered
 
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_ROTATED_LL;
+    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
 
     info.grid.latitudeOfSouthernPoleInDegrees  = south_pole_latitude_.value();
     info.grid.longitudeOfSouthernPoleInDegrees = south_pole_longitude_.value();
@@ -84,7 +84,7 @@ void Rotation::fill(grib_info& info) const {
     if (!eckit::types::is_approximately_equal<double>(south_pole_rotation_angle_, 0.)) {
         long j                                      = info.packing.extra_settings_count++;
         info.packing.extra_settings[j].name         = "angleOfRotationInDegrees";
-        info.packing.extra_settings[j].type         = GRIB_TYPE_DOUBLE;
+        info.packing.extra_settings[j].type         = CODES_TYPE_DOUBLE;
         info.packing.extra_settings[j].double_value = south_pole_rotation_angle_;
     }
 }

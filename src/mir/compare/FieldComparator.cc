@@ -293,13 +293,13 @@ double FieldComparator::normalised(double longitude) const {
 
 
 Field FieldComparator::getField(eckit::Buffer& buffer, const std::string& path, off_t offset, size_t size) {
-    if (GRIB_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_GRIB) &&
-        GRIB_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_GRIB)) {
+    if (CODES_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_GRIB) &&
+        CODES_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_GRIB)) {
         return GribField::field(buffer, size, path, offset, ignore_);
     }
 
-    if (GRIB_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_BUFR) &&
-        GRIB_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_BUFR)) {
+    if (CODES_SUCCESS == codes_check_message_header(buffer.data(), size, PRODUCT_BUFR) &&
+        CODES_SUCCESS == codes_check_message_footer(buffer.data(), size, PRODUCT_BUFR)) {
         return BufrField::field(buffer, size, path, offset, ignore_);
     }
 
@@ -359,7 +359,7 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
         size_t size = buffer.size();
 
         eckit::AutoStdFile f(*p);
-        while ((err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE) {
+        while ((err = wmo_read_any_from_file(f, buffer, &size)) != CODES_END_OF_FILE) {
 
 
             try {
@@ -393,7 +393,7 @@ size_t FieldComparator::list(const std::string& path) {
     size_t duplicates = 0;
 
     eckit::AutoStdFile f(path);
-    while ((err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE) {
+    while ((err = wmo_read_any_from_file(f, buffer, &size)) != CODES_END_OF_FILE) {
 
 
         try {
@@ -427,7 +427,7 @@ void FieldComparator::json(eckit::JSON& json, const std::string& path) {
     size_t size = buffer.size();
 
     eckit::AutoStdFile f(path);
-    while ((err = wmo_read_any_from_file(f, buffer, &size)) != GRIB_END_OF_FILE) {
+    while ((err = wmo_read_any_from_file(f, buffer, &size)) != CODES_END_OF_FILE) {
 
         GRIB_CALL(err);
         SYSCALL(pos = ::ftello(f));
@@ -481,29 +481,23 @@ static void getStats(const Field& field, Statistics& stats) {
     GRIB_CALL(wmo_read_any_from_file(f, buffer, &size));
     ASSERT(size == field.length());
 
-    grib_handle* h = grib_handle_new_from_message(nullptr, buffer, size);
-    ASSERT(h);
+    auto h = codes_handle_new_from_message(nullptr, buffer, size);
     HandleDeleter del(h);
 
-
     size_t count;
-    GRIB_CALL(grib_get_size(h, "values", &count));
+    GRIB_CALL(codes_get_size(h, "values", &count));
 
     long missingValuesPresent;
-    GRIB_CALL(grib_get_long(h, "missingValuesPresent", &missingValuesPresent));
+    GRIB_CALL(codes_get_long(h, "missingValuesPresent", &missingValuesPresent));
 
     double missingValue;
-    GRIB_CALL(grib_get_double(h, "missingValue", &missingValue));
+    GRIB_CALL(codes_get_double(h, "missingValue", &missingValue));
 
     double values[count];
 
-
     size = count;
-
-    GRIB_CALL(grib_get_double_array(h, "values", values, &size));
+    GRIB_CALL(codes_get_double_array(h, "values", values, &size));
     ASSERT(size == count);
-
-
     ASSERT(size);
 
     stats = {

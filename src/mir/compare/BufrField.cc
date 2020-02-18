@@ -110,18 +110,18 @@ BufrEntry::BufrEntry(const std::string& full, const std::vector<long>& l, const 
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             s_.clear();
             d_.clear();
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             s_.clear();
             l_.clear();
 
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             d_.clear();
             l_.clear();
             break;
@@ -142,15 +142,15 @@ void BufrEntry::printValue(std::ostream& out) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             out << l_;
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             out << std::setprecision(9) << d_;
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             out << s_;
             break;
     }
@@ -163,7 +163,7 @@ void BufrEntry::json(eckit::JSON& json) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             if (l_.size() == 1) {
                 json << l_[0];
             }
@@ -172,7 +172,7 @@ void BufrEntry::json(eckit::JSON& json) const {
             }
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             if (d_.size() == 1) {
                 json << d_[0];
             }
@@ -181,7 +181,7 @@ void BufrEntry::json(eckit::JSON& json) const {
             }
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             json << s_;
             break;
     }
@@ -255,13 +255,13 @@ bool BufrEntry::operator==(const BufrEntry& other) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             return sameValue(name_, l_, other.l_, bufrRelativeError_);
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             return sameValue(name_, d_, other.d_, bufrRelativeError_);
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             return s_ == other.s_;
     }
 
@@ -284,13 +284,13 @@ bool BufrEntry::operator<(const BufrEntry& other) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             return l_ < other.l_;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             return d_ < other.d_ && !sameValue(name_, d_, other.d_, bufrRelativeError_);
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             return s_ < other.s_;
     }
 
@@ -300,19 +300,19 @@ bool BufrEntry::operator<(const BufrEntry& other) const {
 BufrField::BufrField(const char* buffer, size_t size, const std::string& path, off_t offset,
                      const std::vector<std::string>& /*ignore*/) :
     FieldBase(path, offset, size) {
+    // NOTE: should this be using BUFR functions, rather than GRIB?
 
-    auto h = grib_handle_new_from_message(nullptr, buffer, size);
-    ASSERT(h);
+    auto h = codes_handle_new_from_message(nullptr, buffer, size);
     HandleDeleter delh(h);
 
     size_t nDescriptors;
-    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &nDescriptors));
+    GRIB_CALL(codes_get_size(h, "unexpandedDescriptors", &nDescriptors));
     ASSERT(nDescriptors > 0);
 
     descriptors_.resize(nDescriptors);
 
     size_t n = nDescriptors;
-    GRIB_CALL(grib_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
+    GRIB_CALL(codes_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
     ASSERT(n == nDescriptors);
 
 
@@ -347,34 +347,34 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
         size_t len = sizeof(s);
 
         int t;
-        GRIB_CALL(grib_get_native_type(h, name, &t));
+        GRIB_CALL(codes_get_native_type(h, name, &t));
 
         size_t count = 0;
-        GRIB_CALL(grib_get_size(h, name, &count));
+        GRIB_CALL(codes_get_size(h, name, &count));
         // ASSERT(count == 1);
 
 
         switch (t) {
 
-            case GRIB_TYPE_LONG:
+            case CODES_TYPE_LONG:
                 l.resize(count);
-                GRIB_CALL(grib_get_long_array(h, name, &l[0], &count));
+                GRIB_CALL(codes_get_long_array(h, name, &l[0], &count));
                 ASSERT(l.size() == count);
                 break;
 
-            case GRIB_TYPE_DOUBLE:
+            case CODES_TYPE_DOUBLE:
                 d.resize(count);
-                GRIB_CALL(grib_get_double_array(h, name, &d[0], &count));
+                GRIB_CALL(codes_get_double_array(h, name, &d[0], &count));
                 ASSERT(d.size() == count);
                 break;
 
-            case GRIB_TYPE_STRING:
+            case CODES_TYPE_STRING:
                 ASSERT(count == 1);
-                GRIB_CALL(grib_get_string(h, name, s, &len));
+                GRIB_CALL(codes_get_string(h, name, s, &len));
                 break;
 
             default:
-                throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
+                throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + codes_get_type_name(t));
         }
 
 

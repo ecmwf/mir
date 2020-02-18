@@ -37,15 +37,15 @@ GribAllFileInput::GribAllFileInput(const std::string& path) : path_(path), count
         off_t here;
         SYSCALL(here = ::ftello(f));
         int e = wmo_read_any_from_file(f, buffer, &len);
-        if (e == GRIB_END_OF_FILE) {
+        if (e == CODES_END_OF_FILE) {
             break;
         }
 
-        if (e == GRIB_BUFFER_TOO_SMALL) {
+        if (e == CODES_BUFFER_TOO_SMALL) {
             GRIB_ERROR(e, "wmo_read_any_from_file");
         }
 
-        if (e != GRIB_SUCCESS) {
+        if (e != CODES_SUCCESS) {
             GRIB_ERROR(e, "wmo_read_any_from_file");
         }
 

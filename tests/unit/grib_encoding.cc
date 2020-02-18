@@ -74,7 +74,7 @@ protected:
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;
             info.packing.extra_settings[j].name       = "paramId";
-            info.packing.extra_settings[j].type       = GRIB_TYPE_LONG;
+            info.packing.extra_settings[j].type       = CODES_TYPE_LONG;
             info.packing.extra_settings[j].long_value = 129255;
 
             info.packing.editionNumber = edition;
@@ -89,8 +89,7 @@ protected:
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            grib_handle* sample = grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
-            ASSERT(sample);
+            auto sample = grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
             HandleDeleter sample_detroy(sample);
 
             int err   = 0;
@@ -158,10 +157,10 @@ public:
     size_t numberOfValuesFromGribIterator(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-        int err             = 0;
-        grib_iterator* iter = grib_iterator_new(gribHandle(edition), 0, &err);
-        if (err != GRIB_SUCCESS) {
-            GRIB_CHECK(err, nullptr);
+        int err   = 0;
+        auto iter = grib_iterator_new(gribHandle(edition), 0, &err);
+        if (err != CODES_SUCCESS) {
+            CODES_CHECK(err, nullptr);
         }
 
         long n = 0;
@@ -179,10 +178,10 @@ public:
 
         std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
 
-        int err               = 0;
-        grib_iterator* iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
-        if (err != GRIB_SUCCESS) {
-            GRIB_CHECK(err, nullptr);
+        int err     = 0;
+        auto iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
+        if (err != CODES_SUCCESS) {
+            CODES_CHECK(err, nullptr);
         }
 
         long n = 0;
@@ -560,7 +559,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;
             info.packing.extra_settings[j].name       = "paramId";
-            info.packing.extra_settings[j].type       = GRIB_TYPE_LONG;
+            info.packing.extra_settings[j].type       = CODES_TYPE_LONG;
             info.packing.extra_settings[j].long_value = 129255;
 
             info.packing.editionNumber = edition;
@@ -603,7 +602,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
                 << std::endl;
 
             long remove_result = -1;
-            EXPECT(codes_get_long(handle, "localUsePresent", &remove_result) == GRIB_SUCCESS);
+            EXPECT(codes_get_long(handle, "localUsePresent", &remove_result) == CODES_SUCCESS);
 
             if (remove) {
                 EXPECT(remove_result == 0);

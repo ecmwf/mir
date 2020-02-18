@@ -41,8 +41,7 @@ void StretchedRotatedGG::fill(grib_info& /*info*/) const {
 }
 
 
-static RepresentationBuilder<StretchedRotatedGG> stretchedRotatedGG(
-    "stretched_rotated_gg");  // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedRotatedGG> stretchedRotatedGG("stretched_rotated_gg");
 
 
 }  // namespace repres

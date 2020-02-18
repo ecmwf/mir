@@ -19,10 +19,7 @@
 
 #include "mir/api/Atlas.h"
 #include "mir/api/mir_config.h"
-
-#if defined(HAVE_ECCODES)
-#include "eccodes.h"
-#endif
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -60,10 +57,8 @@ void MIRTool::run() {
                 << std::endl;
         }
 
-#if defined(HAVE_ECCODES)
         log << "eccodes " << ECCODES_VERSION_STR << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, 8)
             << std::endl;
-#endif
     }
 
     init(args);

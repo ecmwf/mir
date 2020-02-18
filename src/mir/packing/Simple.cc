@@ -32,7 +32,7 @@ void Simple::print(std::ostream& out) const {
 
 
 void Simple::fill(grib_info& info, const repres::Representation& repres) const {
-    info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
+    info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setSimplePacking(info);
 }
 

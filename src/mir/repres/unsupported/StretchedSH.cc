@@ -41,7 +41,7 @@ void StretchedSH::fill(grib_info& /*info*/) const {
 }
 
 
-static RepresentationBuilder<StretchedSH> stretchedSH("stretched_sh");  // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedSH> stretchedSH("stretched_sh");
 
 
 }  // namespace repres

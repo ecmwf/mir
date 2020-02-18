@@ -41,7 +41,7 @@ void StretchedLL::fill(grib_info& /*info*/) const {
 }
 
 
-static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll");  // Name is what is returned by grib_api
+static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll");
 
 
 }  // namespace repres

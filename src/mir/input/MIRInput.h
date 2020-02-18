@@ -17,7 +17,7 @@
 #include <string>
 
 
-// Forward declaration only, not need for grib_api
+// Forward declaration only
 using grib_handle = struct grib_handle;
 
 

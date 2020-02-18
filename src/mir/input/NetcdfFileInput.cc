@@ -53,8 +53,8 @@ grib_handle* NetcdfFileInput::gribHandle(size_t /*which*/) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
-        handle = grib_handle_new_from_samples(nullptr, "GRIB1");
-        grib_set_long(handle, "paramId", 255);
+        handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
+        codes_set_long(handle, "paramId", 255);
         ASSERT(handle);
     }
     return handle;
@@ -77,7 +77,6 @@ bool NetcdfFileInput::next() {
     FieldParametrisation::reset();
 
     current_++;
-
     return size_t(current_) < fields_.size();
 }
 

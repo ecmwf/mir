@@ -127,28 +127,28 @@ struct CoordinatesFromGRIB : Coordinates {
     CoordinatesFromGRIB(grib_handle* h) : Coordinates("ecc") {
 
         long Nl = 0;
-        grib_get_long(h, "numberOfDataPoints", &Nl);
+        codes_get_long(h, "numberOfDataPoints", &Nl);
         ASSERT(Nl > 0);
         auto N = size_t(Nl);
 
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
-        int err           = 0;
-        grib_iterator* it = grib_iterator_new(h, 0, &err);
-        if (err != GRIB_SUCCESS) {
-            GRIB_CHECK(err, nullptr);
+        int err = 0;
+        auto it = codes_grib_iterator_new(h, 0, &err);
+        if (err != CODES_SUCCESS) {
+            CODES_CHECK(err, nullptr);
         }
 
         size_t n = 0;
-        for (double lat, lon, value; grib_iterator_next(it, &lat, &lon, &value) != 0;) {
+        for (double lat, lon, value; codes_grib_iterator_next(it, &lat, &lon, &value) != 0;) {
             ASSERT(n < N);
             lats_[n] = lat;
             lons_[n] = lon;
             ++n;
         }
 
-        grib_iterator_delete(it);
+        codes_grib_iterator_delete(it);
     }
     const coord_t& latitudes() const { return lats_; }
     const coord_t& longitudes() const { return lons_; }

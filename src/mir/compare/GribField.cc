@@ -986,13 +986,12 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     auto field = new GribField(path, offset, size);
     Field result(field);
 
-    grib_handle* h = grib_handle_new_from_message(nullptr, buffer, size);
-    ASSERT(h);
+    auto h = codes_handle_new_from_message(nullptr, buffer, size);
     HandleDeleter delh(h);
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    grib_keys_iterator* ks = grib_keys_iterator_new(h, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    auto ks = codes_keys_iterator_new(h, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(ks);
     GKeyIteratorDeleter delk(ks);
 
@@ -1002,8 +1001,8 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
     std::map<std::string, std::string> req;
 
-    while (grib_keys_iterator_next(ks) != 0) {
-        auto name = grib_keys_iterator_get_name(ks);
+    while (codes_keys_iterator_next(ks) != 0) {
+        auto name = codes_keys_iterator_get_name(ks);
         ASSERT(name);
 
         if ((name[0] == '_') || (::strcmp(name, "param") == 0)) {
@@ -1013,7 +1012,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         char val[1024];
         size_t len = sizeof(val);
 
-        GRIB_CALL(grib_keys_iterator_get_string(ks, val, &len));
+        GRIB_CALL(codes_keys_iterator_get_string(ks, val, &len));
 
         field->insert(name, val);
 
@@ -1026,23 +1025,23 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
 
     long paramId;
-    GRIB_CALL(grib_get_long(h, "paramId", &paramId));
+    GRIB_CALL(codes_get_long(h, "paramId", &paramId));
 
     field->param(paramId);
 
     long numberOfDataPoints;
-    GRIB_CALL(grib_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
+    GRIB_CALL(codes_get_long(h, "numberOfDataPoints", &numberOfDataPoints));
     field->numberOfPoints(numberOfDataPoints);
 
     // Look for request embbeded in GRIB message
     long local;
 
-    if (grib_get_long(h, "localDefinitionNumber", &local) == 0 && local == 191) {
+    if (codes_get_long(h, "localDefinitionNumber", &local) == 0 && local == 191) {
         size_t dataSize;
         /* TODO: Not grib2 compatible, but speed-up process */
-        if (grib_get_size(h, "freeFormData", &dataSize) == 0 && dataSize != 0) {
+        if (codes_get_size(h, "freeFormData", &dataSize) == 0 && dataSize != 0) {
             std::vector<unsigned char> data(dataSize);
-            GRIB_CALL(grib_get_bytes(h, "freeFormData", data.data(), &dataSize));
+            GRIB_CALL(codes_get_bytes(h, "freeFormData", data.data(), &dataSize));
 
             eckit::MemoryStream s(data.data(), dataSize);
 
@@ -1075,7 +1074,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         char value[1024];
         size_t len = sizeof(value);
 
-        if (grib_get_string(h, "gridType", value, &len) == 0) {
+        if (codes_get_string(h, "gridType", value, &len) == 0) {
             std::string v(value);
             field->gridtype(v);
 
@@ -1090,14 +1089,14 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
                 double lat;
                 double lon;
-                GRIB_CALL(grib_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
-                GRIB_CALL(grib_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon));
+                GRIB_CALL(codes_get_double(h, "latitudeOfSouthernPoleInDegrees", &lat));
+                GRIB_CALL(codes_get_double(h, "longitudeOfSouthernPoleInDegrees", &lon));
                 field->rotation(lat, lon);
             }
             else if (v == "sh") {
 
                 long n = -1;
-                GRIB_CALL(grib_get_long(h, "pentagonalResolutionParameterJ", &n));
+                GRIB_CALL(codes_get_long(h, "pentagonalResolutionParameterJ", &n));
                 field->resol(n);
             }
             else if (v == "reduced_gg") {
@@ -1105,16 +1104,16 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                 long n = 0;
                 std::ostringstream oss;
 
-                GRIB_CALL(grib_get_long(h, "isOctahedral", &n));
+                GRIB_CALL(codes_get_long(h, "isOctahedral", &n));
 
                 if (n == 0) {
 
                     // Don't trust eccodes
                     size_t pl_size = 0;
-                    GRIB_CALL(grib_get_size(h, "pl", &pl_size));
+                    GRIB_CALL(codes_get_size(h, "pl", &pl_size));
 
                     std::vector<long> pl(pl_size);
-                    GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &pl_size));
+                    GRIB_CALL(codes_get_long_array(h, "pl", pl.data(), &pl_size));
 
                     bool isOctahedral = true;
                     for (size_t i = 1; i < pl_size; i++) {
@@ -1131,11 +1130,11 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                     oss << "O";
                 }
 
-                GRIB_CALL(grib_get_long(h, "N", &n));
+                GRIB_CALL(codes_get_long(h, "N", &n));
                 oss << n;
 
 
-                // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                // ASSERT(codes_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
                 // oss << '/' << rounded(d);
                 field->gridname(oss.str());
 
@@ -1146,10 +1145,10 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
                 // Don't trust eccodes
                 size_t pl_size = 0;
-                GRIB_CALL(grib_get_size(h, "pl", &pl_size));
+                GRIB_CALL(codes_get_size(h, "pl", &pl_size));
 
                 std::vector<long> pl(pl_size);
-                GRIB_CALL(grib_get_long_array(h, "pl", pl.data(), &pl_size));
+                GRIB_CALL(codes_get_long_array(h, "pl", pl.data(), &pl_size));
 
                 std::ostringstream oss;
                 oss << "RLL" << pl.size() << "-";
@@ -1167,10 +1166,10 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
                 long n;
                 std::ostringstream oss;
 
-                GRIB_CALL(grib_get_long(h, "N", &n));
+                GRIB_CALL(codes_get_long(h, "N", &n));
                 oss << "F" << n;
 
-                // ASSERT(grib_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
+                // ASSERT(codes_get_double(h, "iDirectionIncrementInDegrees", &d) == 0);
                 // oss << '/' << rounded(d);
                 field->gridname(oss.str());
 
@@ -1190,35 +1189,35 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
 
 
     // long scanningMode = 0;
-    // if (grib_get_long(h, "scanningMode", &scanningMode) == 0) {
+    // if (codes_get_long(h, "scanningMode", &scanningMode) == 0) {
     //     field->insert("scanningMode", scanningMode);
     // }
 
     // long decimalScaleFactor = 0;
-    // if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+    // if (codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
     //     field->insert("decimalScaleFactor", decimalScaleFactor);
     // }
 
 
     long edition;
-    if (grib_get_long(h, "edition", &edition) == 0) {
+    if (codes_get_long(h, "edition", &edition) == 0) {
         field->format("grib" + l2s(edition));
     }
 
     long missingValuesPresent;
-    if (grib_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
+    if (codes_get_long(h, "missingValuesPresent", &missingValuesPresent) == 0) {
         if (missingValuesPresent != 0) {
             field->missingValuesPresent(true);
         }
     }
 
     long bitsPerValue;
-    if (grib_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
+    if (codes_get_long(h, "bitsPerValue", &bitsPerValue) == 0) {
         field->accuracy(bitsPerValue);
     }
 
     long decimalScaleFactor;
-    if (grib_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
+    if (codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
         field->decimalScaleFactor(decimalScaleFactor);
     }
 
@@ -1226,7 +1225,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     {
         char value[1024];
         size_t len = sizeof(value);
-        if (grib_get_string(h, "packingType", value, &len) == 0) {
+        if (codes_get_string(h, "packingType", value, &len) == 0) {
             field->packing(value);
         }
     }
@@ -1234,7 +1233,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     {
         char value[1024];
         size_t len = sizeof(value);
-        if (grib_get_string(h, "packing", value, &len) == 0) {
+        if (codes_get_string(h, "packing", value, &len) == 0) {
             field->packing(value);
         }
     }
@@ -1252,13 +1251,13 @@ void GribField::setArea(GribField& field, grib_handle* h) {
     double w = -99999;
     double s = -99999;
     double e = -99999;
-    GRIB_CALL(grib_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
-    GRIB_CALL(grib_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
-    GRIB_CALL(grib_get_double(h, "latitudeOfLastGridPointInDegrees", &s));
-    GRIB_CALL(grib_get_double(h, "longitudeOfLastGridPointInDegrees", &e));
+    GRIB_CALL(codes_get_double(h, "latitudeOfFirstGridPointInDegrees", &n));
+    GRIB_CALL(codes_get_double(h, "longitudeOfFirstGridPointInDegrees", &w));
+    GRIB_CALL(codes_get_double(h, "latitudeOfLastGridPointInDegrees", &s));
+    GRIB_CALL(codes_get_double(h, "longitudeOfLastGridPointInDegrees", &e));
 
     long scanningMode = 0;
-    GRIB_CALL(grib_get_long(h, "scanningMode", &scanningMode));
+    GRIB_CALL(codes_get_long(h, "scanningMode", &scanningMode));
 
     switch (scanningMode) {
         case 0:
@@ -1283,8 +1282,8 @@ void GribField::setArea(GribField& field, grib_handle* h) {
 void GribField::setGrid(GribField& field, grib_handle* h) {
     double we = -99999;
     double ns = -99999;
-    GRIB_CALL(grib_get_double(h, "jDirectionIncrementInDegrees", &ns));
-    GRIB_CALL(grib_get_double(h, "iDirectionIncrementInDegrees", &we));
+    GRIB_CALL(codes_get_double(h, "jDirectionIncrementInDegrees", &ns));
+    GRIB_CALL(codes_get_double(h, "iDirectionIncrementInDegrees", &we));
     field.grid(ns, we);
 }
 

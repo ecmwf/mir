@@ -41,8 +41,7 @@ void TransverseMercator::fill(grib_info& /*info*/) const {
 }
 
 
-static RepresentationBuilder<TransverseMercator> transverseMercator(
-    "transverse_mercator");  // Name is what is returned by grib_api
+static RepresentationBuilder<TransverseMercator> transverseMercator("transverse_mercator");
 
 
 }  // namespace repres

@@ -107,7 +107,7 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
 }
 
 
-static RepresentationBuilder<RegularGG> reducedGG("regular_gg");  // Name is what is returned by grib_api
+static RepresentationBuilder<RegularGG> reducedGG("regular_gg");
 
 
 }  // namespace regular

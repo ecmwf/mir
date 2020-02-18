@@ -31,10 +31,6 @@ ecbuild_use_package( PROJECT eccodes VERSION 2.16 REQUIRED )
 ecbuild_use_package( PROJECT eckit   VERSION 1.8  REQUIRED )
 ecbuild_use_package( PROJECT atlas   VERSION 0.19 REQUIRED )
 
-if(ECCODES_FOUND)
-    set(HAVE_ECCODES 1)
-endif()
-
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
 endif()

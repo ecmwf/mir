@@ -30,7 +30,7 @@ void Complex::print(std::ostream& out) const {
 }
 
 void Complex::fill(grib_info& info, const repres::Representation& repres) const {
-    info.packing.packing = GRIB_UTIL_PACKING_USE_PROVIDED;
+    info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setComplexPacking(info);
 }
 

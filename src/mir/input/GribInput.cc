@@ -73,7 +73,7 @@ bool ConditionT<long>::eval(grib_handle* h) const {
     ASSERT(h);
     int err = codes_get_long(h, key_, &value);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return false;
     }
 
@@ -92,7 +92,7 @@ bool ConditionT<double>::eval(grib_handle* h) const {
     ASSERT(h);
     int err = codes_get_double(h, key_, &value);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return false;
     }
 
@@ -112,7 +112,7 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
     ASSERT(h);
     int err = codes_get_string(h, key_, buffer, &size);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return false;
     }
 
@@ -325,14 +325,14 @@ static ProcessingT<long>* is_wind_component_vod() {
 
 static ProcessingT<double>* angular_precision() {
     return new ProcessingT<double>([](grib_handle* h, double& value) {
-        auto well_defined = [h](const char* key) -> bool {
+        auto well_defined = [](grib_handle* h, const char* key) -> bool {
             long dummy = 0;
             int err    = 0;
-            return (codes_is_defined(h, key) != 0) && (codes_is_missing(h, key, &err) == 0) && (err == GRIB_SUCCESS) &&
-                   (codes_get_long(h, key, &dummy) == GRIB_SUCCESS) && (dummy != 0);
+            return (codes_is_defined(h, key) != 0) && (codes_is_missing(h, key, &err) == 0) && (err == CODES_SUCCESS) &&
+                   (codes_get_long(h, key, &dummy) == CODES_SUCCESS) && (dummy != 0);
         };
 
-        if (well_defined("basicAngleOfTheInitialProductionDomain") && well_defined("subdivisionsOfBasicAngle")) {
+        if (well_defined(h, "basicAngleOfTheInitialProductionDomain") && well_defined(h, "subdivisionsOfBasicAngle")) {
             value = 0.;
             return true;
         }
@@ -617,7 +617,7 @@ data::MIRField GribInput::field() const {
     ASSERT(grib_);
 
     long localDefinitionNumber = 0;
-    if (codes_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == GRIB_SUCCESS) {
+    if (codes_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == CODES_SUCCESS) {
         if (localDefinitionNumber == 4) {
             throw eckit::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
         }
@@ -646,7 +646,7 @@ data::MIRField GribInput::field() const {
 
     // Ensure missingValue is unique, so values are not wrongly "missing"
     long numberOfMissingValues = 0;
-    if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == GRIB_SUCCESS &&
+    if (codes_get_long(grib_, "numberOfMissingValues", &numberOfMissingValues) == CODES_SUCCESS &&
         numberOfMissingValues == 0) {
         get_unique_missing_value(values, missing);
     }
@@ -722,7 +722,7 @@ data::MIRField GribInput::field() const {
     data::MIRField field(cache_, missingValuesPresent != 0, missing);
 
     long scanningMode = 0;
-    if (codes_get_long(grib_, "scanningMode", &scanningMode) == GRIB_SUCCESS && scanningMode != 0) {
+    if (codes_get_long(grib_, "scanningMode", &scanningMode) == CODES_SUCCESS && scanningMode != 0) {
         field.representation()->reorder(scanningMode, values);
     }
 
@@ -767,10 +767,10 @@ bool GribInput::get(const std::string& name, bool& value) const {
         return false;
     }
 
-    // FIXME: make sure that 'temp' is not set if GRIB_MISSING_LONG
-    long temp = GRIB_MISSING_LONG;
+    // FIXME: make sure that 'temp' is not set if CODES_MISSING_LONG
+    long temp = CODES_MISSING_LONG;
     int err   = codes_get_long(grib_, key, &temp);
-    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
+    if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return FieldParametrisation::get(name, value);
     }
 
@@ -807,9 +807,9 @@ bool GribInput::get(const std::string& name, long& value) const {
         return false;
     }
 
-    // FIXME: make sure that 'value' is not set if GRIB_MISSING_LONG
+    // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key, &value);
-    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
+    if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
@@ -842,9 +842,9 @@ bool GribInput::get(const std::string& name, double& value) const {
         return false;
     }
 
-    // FIXME: make sure that 'value' is not set if GRIB_MISSING_DOUBLE
+    // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
-    if (err == GRIB_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
+    if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
         return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
     }
 
@@ -876,7 +876,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     size_t count = 0;
     int err      = codes_get_size(grib_, key, &count);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
@@ -938,7 +938,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     size_t size = sizeof(buffer);
     int err     = codes_get_string(grib_, key, buffer, &size);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
@@ -980,7 +980,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     size_t count = 0;
     int err      = codes_get_size(grib_, key, &count);
 
-    if (err == GRIB_NOT_FOUND) {
+    if (err == CODES_NOT_FOUND) {
         return FieldParametrisation::get(name, value);
     }
 
@@ -1114,7 +1114,7 @@ void GribInput::marsRequest(std::ostream& out) const {
 
     static std::string gribToRequestNamespace = eckit::Resource<std::string>("gribToRequestNamespace", "mars");
 
-    auto keys = codes_keys_iterator_new(grib_, GRIB_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
+    auto keys = codes_keys_iterator_new(grib_, CODES_KEYS_ITERATOR_ALL_KEYS, gribToRequestNamespace.c_str());
     ASSERT(keys);
 
     try {
@@ -1170,7 +1170,7 @@ void GribInput::marsRequest(std::ostream& out) const {
         }
 
 
-        if (err != GRIB_NOT_FOUND) {
+        if (err != CODES_NOT_FOUND) {
             grib_call(err, "freeFormData");
         }
     }

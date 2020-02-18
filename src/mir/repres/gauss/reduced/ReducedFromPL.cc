@@ -58,7 +58,7 @@ bool ReducedFromPL::sameAs(const Representation& other) const {
 }
 
 
-static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");  // Name is what is returned by grib_api
+static RepresentationBuilder<ReducedFromPL> reducedFromPL("reduced_gg");
 
 
 }  // namespace reduced

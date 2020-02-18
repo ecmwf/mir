@@ -41,7 +41,7 @@ void AzimuthRange::fill(grib_info& /*info*/) const {
 }
 
 
-static RepresentationBuilder<AzimuthRange> azimuthRange("azimuth_range");  // Name is what is returned by grib_api
+static RepresentationBuilder<AzimuthRange> azimuthRange("azimuth_range");
 
 
 }  // namespace repres

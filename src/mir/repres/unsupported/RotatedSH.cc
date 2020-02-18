@@ -23,6 +23,7 @@ namespace repres {
 
 RotatedSH::RotatedSH(const param::MIRParametrisation& parametrisation) : SphericalHarmonics(parametrisation) {}
 
+
 RotatedSH::~RotatedSH() = default;
 
 
@@ -36,16 +37,18 @@ void RotatedSH::makeName(std::ostream& /*out*/) const {
     NOTIMP;
 }
 
+
 bool RotatedSH::sameAs(const Representation& /*other*/) const {
     NOTIMP;
 }
+
 
 void RotatedSH::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 
 
-static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh");  // Name is what is returned by grib_api
+static RepresentationBuilder<RotatedSH> rotatedSH("rotated_sh");
 
 
 }  // namespace repres

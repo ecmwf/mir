@@ -34,12 +34,12 @@ Gridded::Gridded() = default;
 
 
 void Gridded::setComplexPacking(grib_info& info) const {
-    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_COMPLEX;
+    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_COMPLEX;
 }
 
 
 void Gridded::setSimplePacking(grib_info& info) const {
-    info.packing.packing_type = GRIB_UTIL_PACKING_TYPE_GRID_SIMPLE;
+    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SIMPLE;
 }
 
 

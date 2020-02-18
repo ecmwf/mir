@@ -42,7 +42,7 @@ void EquatorialAzimuthalEquidistant::fill(grib_info& /*info*/) const {
 
 
 static RepresentationBuilder<EquatorialAzimuthalEquidistant> equatorialAzimuthalEquidistant(
-    "equatorial_azimuthal_equidistant");  // Name is what is returned by grib_api
+    "equatorial_azimuthal_equidistant");
 
 
 }  // namespace repres

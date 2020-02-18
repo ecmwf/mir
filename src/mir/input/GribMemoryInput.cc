@@ -23,18 +23,22 @@ namespace input {
 
 GribMemoryInput::GribMemoryInput(const void* message, size_t length) {
     GRIB_CALL(codes_check_message_header(message, length, PRODUCT_GRIB));
-    ASSERT(handle(grib_handle_new_from_message(nullptr, const_cast<void*>(message), length)));
+    ASSERT(handle(codes_handle_new_from_message(nullptr, const_cast<void*>(message), length)));
 }
 
+
 GribMemoryInput::~GribMemoryInput() = default;
+
 
 bool GribMemoryInput::sameAs(const MIRInput& other) const {
     return this == &other;
 }
 
+
 void GribMemoryInput::print(std::ostream& out) const {
     out << "GribMemoryInput[]";
 }
+
 
 }  // namespace input
 }  // namespace mir
