@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,7 +24,6 @@ namespace detail {
 /// Counter accounting for missing values, for differences of two MIRFIelds
 struct CounterBinary {
 private:
-
     Counter counter1_;
     Counter counter2_;
 
@@ -62,7 +62,6 @@ private:
     bool first_;
 
 public:
-
     CounterBinary(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
     void reset(const data::MIRField&, const data::MIRField&);
@@ -83,7 +82,6 @@ public:
     size_t missing() const;
     size_t missingIn1NotIn2() const;
     size_t missingIn2NotIn1() const;
-
 };
 
 

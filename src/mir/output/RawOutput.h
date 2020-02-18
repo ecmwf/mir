@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_output_RawOutput_h
@@ -25,7 +22,6 @@ namespace output {
 
 class RawOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +31,7 @@ public:
 
     // -- Destructor
 
-    ~RawOutput(); // Change to virtual if base class
+    ~RawOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -57,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -74,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     double* values_;
@@ -87,7 +81,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
@@ -102,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RawOutput& p)
+    // friend ostream& operator<<(ostream& s,const RawOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +106,3 @@ private:
 
 
 #endif
-

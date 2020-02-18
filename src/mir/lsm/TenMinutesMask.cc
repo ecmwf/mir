@@ -3,19 +3,16 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
-
 
 #include "TenMinutesMask.h"
 
+#include <cstdio>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -29,10 +26,8 @@
 #include "mir/repres/Representation.h"
 
 
-namespace {
 static eckit::Mutex local_mutex;
 static std::vector<std::vector<bool> > ten_minutes_;
-}
 
 
 namespace mir {
@@ -50,18 +45,15 @@ From EMOSLIB:
 
     ~mir/share/mir/masks/lsm.10min.mask is a copy of ~emos/tables/interpolation/lsm_32_lsm10m01
 */
-TenMinutesMask::TenMinutesMask(const std::string& name,
-                               const eckit::PathName& path,
-                               const param::MIRParametrisation&,
-                               const repres::Representation& representation,
-                               const std::string&):
+TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
+                               const repres::Representation& representation, const std::string&) :
     name_(name),
     path_(path) {
 
     const size_t ROWS = 1080;
     const size_t COLS = 2160;
 
-    if (ten_minutes_.size() == 0) {
+    if (ten_minutes_.empty()) {
 
         eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -74,16 +66,15 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
         unsigned char c;
 
         for (size_t i = 0; i < ROWS; i++) {
-            size_t k = 0;
-            std::vector<bool> &v = ten_minutes_[i] = std::vector<bool>(COLS);
-            for (size_t j = 0; j < bytes ; j++) {
-                ASSERT(fread(&c, 1, 1, file) == 1);
+            size_t k             = 0;
+            std::vector<bool>& v = ten_minutes_[i] = std::vector<bool>(COLS);
+            for (size_t j = 0; j < bytes; j++) {
+                ASSERT(std::fread(&c, 1, 1, file) == 1);
                 for (size_t b = 0; b < 8 && k < COLS; b++) {
-                    v[k++] = (c >> (7 - b)) & 0x1;
+                    v[k++] = ((c >> (7 - b)) & 0x1) != 0;
                 }
             }
         }
-
     }
 
     eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
@@ -95,19 +86,19 @@ TenMinutesMask::TenMinutesMask(const std::string& name,
     std::unique_ptr<repres::Iterator> iter(representation.iterator());
     while (iter->next()) {
         const auto& p = iter->pointUnrotated();
-        Latitude lat = p.lat();
+        Latitude lat  = p.lat();
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         ASSERT(lat >= Latitude::SOUTH_POLE);
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-        int row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
-        ASSERT(row >= 0 && row < int(ROWS));
+        auto row = int((Latitude::NORTH_POLE - lat).value() * (ROWS - 1) / Latitude::GLOBE.value());
+        ASSERT(0 <= row && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
-        ASSERT(col >= 0 && col < int(COLS));
+        auto col = int(lon.value() * COLS / Longitude::GLOBE.value());
+        ASSERT(0 <= col && col < int(COLS));
 
-        mask_.push_back(ten_minutes_[row][col]);
+        mask_.push_back(ten_minutes_[size_t(row)][size_t(col)]);
     }
 }
 
@@ -146,4 +137,3 @@ std::string TenMinutesMask::cacheName() const {
 
 }  // namespace lsm
 }  // namespace mir
-

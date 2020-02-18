@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date Jul 2015
 
 
 #include "mir/stats/statistics/Integral.h"
@@ -55,9 +52,9 @@ void Integral::execute(const data::MIRField& field) {
     const atlas::StructuredGrid structured(rep->atlasGrid());
     ASSERT(structured);
 
-    integral_ = 0.;
+    integral_      = 0.;
     double weights = 0.;
-    auto& values = field.values(0);
+    auto& values   = field.values(0);
 
     Counter::reset(field);
     size_t i = 0;
@@ -69,7 +66,7 @@ void Integral::execute(const data::MIRField& field) {
         }
 
         const double lat = structured.y(jlat);
-        const double w = std::cos(util::degree_to_radian(lat)) / pts_on_latitude;
+        const double w   = std::cos(util::degree_to_radian(lat)) / pts_on_latitude;
 
         for (atlas::idx_t jlon = 0; jlon < pts_on_latitude; ++jlon) {
             auto value = values[i++];
@@ -90,12 +87,9 @@ void Integral::print(std::ostream& out) const {
 }
 
 
-namespace {
 static StatisticsBuilder<Integral> __stats("integral");
-}
 
 
 }  // namespace statistics
 }  // namespace stats
 }  // namespace mir
-

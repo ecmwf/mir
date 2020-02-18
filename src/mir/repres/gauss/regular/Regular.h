@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_gauss_regular_Regular_h
@@ -27,7 +24,6 @@ namespace regular {
 
 class Regular : public Gaussian {
 public:
-
     // -- Exceptions
     // None
 
@@ -38,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Regular(); // Change to virtual if base class
+    virtual ~Regular();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Constructors
     // None
 
@@ -92,7 +87,6 @@ protected:
     // None
 
 private:
-
     Regular();
 
     // -- Members
@@ -104,7 +98,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate=false) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
 
@@ -116,9 +110,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Regular& p)
+    // friend ostream& operator<<(ostream& s,const Regular& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -129,4 +122,3 @@ private:
 
 
 #endif
-

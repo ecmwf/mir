@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -20,15 +21,13 @@ namespace param {
 
 
 SameParametrisation::SameParametrisation(const MIRParametrisation& parametrisation1,
-                                         const MIRParametrisation& parametrisation2,
-                                         bool strict) :
+                                         const MIRParametrisation& parametrisation2, bool strict) :
     parametrisation1_(parametrisation1),
     parametrisation2_(parametrisation2),
-    strict_(strict) {
-}
+    strict_(strict) {}
 
 
-template<class T>
+template <class T>
 bool SameParametrisation::_get(const std::string& name, T& value) const {
 
     // This could be a loop
@@ -49,9 +48,8 @@ bool SameParametrisation::_get(const std::string& name, T& value) const {
 
 void SameParametrisation::print(std::ostream& out) const {
     out << "SameParametrisation["
-            "parametrisation1=" << parametrisation1_
-        << ",parametrisation2=" << parametrisation2_
-        << "]";
+           "parametrisation1="
+        << parametrisation1_ << ",parametrisation2=" << parametrisation2_ << "]";
 }
 
 
@@ -116,4 +114,3 @@ bool SameParametrisation::get(const std::string& name, std::vector<std::string>&
 
 }  // namespace param
 }  // namespace mir
-

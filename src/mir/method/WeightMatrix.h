@@ -3,23 +3,18 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Florian Rathgeber
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date May 2015
-
 
 #ifndef mir_method_WeightMatrix_H
 #define mir_method_WeightMatrix_H
 
-#include <vector>
 #include <iosfwd>
+#include <vector>
 
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/SparseMatrix.h"
@@ -38,8 +33,7 @@ public:  // types
     using Scalar  = eckit::linalg::Scalar;
     using Size    = eckit::linalg::Size;
 
-public: // methods
-
+public:  // methods
     WeightMatrix(SparseMatrix::Allocator* alloc = nullptr);
 
     WeightMatrix(const eckit::PathName&);
@@ -54,31 +48,29 @@ public: // methods
 
     void cleanup(const double& pruneEpsilon = 0);
 
-    void validate(const char *when) const;
+    void validate(const char* when) const;
 
-    using SparseMatrix::rows;
     using SparseMatrix::cols;
+    using SparseMatrix::rows;
 
-    using SparseMatrix::save;
-    using SparseMatrix::load;
-    using SparseMatrix::setIdentity;
-    using SparseMatrix::prune;
     using SparseMatrix::footprint;
+    using SparseMatrix::load;
+    using SparseMatrix::prune;
+    using SparseMatrix::save;
+    using SparseMatrix::setIdentity;
 
-    using SparseMatrix::const_iterator;
-    using SparseMatrix::iterator;
     using SparseMatrix::begin;
+    using SparseMatrix::const_iterator;
     using SparseMatrix::end;
+    using SparseMatrix::iterator;
 
-private: // members
-
+private:  // members
     void print(std::ostream& s) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {
         m.print(out);
         return out;
     }
-
 };
 
 

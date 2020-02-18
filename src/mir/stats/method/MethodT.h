@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,7 +24,7 @@ namespace mir {
 namespace data {
 class MIRField;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,25 +33,20 @@ namespace method {
 
 
 /// Generic statistics on a MIRField
-template<typename STATS>
+template <typename STATS>
 class MethodT : public Method, public detail::Counter, protected std::vector<STATS> {
 private:
-
     // -- Exceptions
 
     using vector_t = std::vector<STATS>;
 
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    MethodT(const param::MIRParametrisation& parametrisation) :
-        Method(parametrisation),
-        Counter(parametrisation) {
-    }
+    MethodT(const param::MIRParametrisation& parametrisation) : Method(parametrisation), Counter(parametrisation) {}
 
     // -- Destructor
     // None
@@ -79,7 +75,6 @@ public:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -104,7 +99,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

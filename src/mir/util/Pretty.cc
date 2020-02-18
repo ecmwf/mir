@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -38,7 +39,8 @@ void Pretty::print(std::ostream& s) const {
 }
 
 
-Pretty::PrettyProgress::PrettyProgress(const std::string& name, size_t limit, Plural units, std::ostream& o) :
+Pretty::PrettyProgress::PrettyProgress(const std::string& name, size_t limit, const Pretty::Plural& units,
+                                       std::ostream& o) :
     Timer(name, o),
     lastTime_(0.),
     counter_(0),
@@ -65,25 +67,25 @@ bool Pretty::PrettyProgress::operator++() {
 }
 
 
-Pretty::ProgressTimer::ProgressTimer(const std::string& name, size_t limit, Pretty::Plural units, std::ostream& o,
-                                     double time) :
+Pretty::ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
+                                     std::ostream& o, double time) :
     PrettyProgress(name, limit, units, o),
     time_(time) {}
 
 
 bool Pretty::ProgressTimer::hasOutput() {
-    return counter_ && (lastTime_ + time_ < elapsed());
+    return (0 < counter_) && (lastTime_ + time_ < elapsed());
 }
 
 
-Pretty::ProgressCounter::ProgressCounter(const std::string& name, size_t limit, Pretty::Plural units, std::ostream& o,
-                                         size_t count) :
+Pretty::ProgressCounter::ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
+                                         std::ostream& o, size_t count) :
     PrettyProgress(name, limit, units, o),
     count_(count) {}
 
 
 bool Pretty::ProgressCounter::hasOutput() {
-    return counter_ && (counter_ % count_ == 0);
+    return (0 < counter_) && (counter_ % count_ == 0);
 }
 
 

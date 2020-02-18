@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/method/knn/NearestLSM.h"
@@ -28,9 +24,7 @@ namespace method {
 namespace knn {
 
 
-NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    distanceWeighting_(param) {
+NearestLSM::NearestLSM(const param::MIRParametrisation& param) : KNearestNeighbours(param), distanceWeighting_(param) {
 
     std::string nearestMethod = "nclosest";
     param.get("nearest-method", nearestMethod);
@@ -41,15 +35,12 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& param) :
 NearestLSM::~NearestLSM() = default;
 
 
-void NearestLSM::assemble(
-    util::MIRStatistics& stats,
-    WeightMatrix& W,
-    const repres::Representation& in,
-    const repres::Representation& out) const {
+void NearestLSM::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                          const repres::Representation& out) const {
 
     // get distance weighting method
     std::unique_ptr<const distance::DistanceWeighting> method(
-                distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)) );
+        distanceWeighting_.distanceWeighting(parametrisation_, getMasks(in, out)));
     ASSERT(method);
 
     // assemble with specific distance weighting method
@@ -78,7 +69,8 @@ lsm::LandSeaMasks NearestLSM::getMasks(const repres::Representation& in, const r
 }
 
 
-static bool sameLsm(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2) {
+static bool sameLsm(const param::MIRParametrisation& parametrisation1,
+                    const param::MIRParametrisation& parametrisation2) {
     param::RuntimeParametrisation runtime1(parametrisation1);
     setParametrisation(parametrisation1, runtime1);
 
@@ -91,7 +83,7 @@ static bool sameLsm(const param::MIRParametrisation& parametrisation1, const par
 
 bool NearestLSM::sameAs(const Method& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
+    return (o != nullptr) && KNearestNeighbours::sameAs(other) && sameLsm(parametrisation_, o->parametrisation_);
 }
 
 
@@ -111,12 +103,9 @@ const char* NearestLSM::name() const {
 }
 
 
-namespace {
-static MethodBuilder< NearestLSM > __method("nearest-lsm");
-}
+static MethodBuilder<NearestLSM> __method("nearest-lsm");
 
 
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

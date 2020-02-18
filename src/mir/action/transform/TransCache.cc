@@ -3,12 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @date Jan 2017
 
 
 #include "mir/action/transform/TransCache.h"
@@ -21,26 +20,19 @@ namespace action {
 namespace transform {
 
 
-TransCache::TransCache() :
-    loader_(nullptr) {
-}
+TransCache::TransCache() : loader_(nullptr) {}
 
 
 TransCache::~TransCache() {
-    if (loader_) {
-        delete loader_;
-    }
+    delete loader_;
 }
 
 
 TransCache& TransCache::operator=(cache_t&& transCache) {
 
     // on assignment, loader is discarded
-    if (loader_) {
-        delete loader_;
-    }
-
-    loader_ = nullptr;
+    delete loader_;
+    loader_     = nullptr;
     transCache_ = transCache;
 
     return *this;
@@ -49,7 +41,7 @@ TransCache& TransCache::operator=(cache_t&& transCache) {
 
 void TransCache::print(std::ostream& s) const {
     s << "TransCache[";
-    if (loader_) {
+    if (loader_ != nullptr) {
         s << *loader_;
     }
     s << "]";

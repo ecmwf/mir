@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #ifndef mir_caching_legendre_NoLoader_h
@@ -29,19 +25,17 @@ class NoLoader : public LegendreLoader {
 public:
     NoLoader(const param::MIRParametrisation&, const eckit::PathName& path);
 
-    ~NoLoader(); // Change to virtual if base class
+    ~NoLoader();  // Change to virtual if base class
 
     static bool shared();
 
 protected:
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
 private:
-
     virtual const void* address() const;
     virtual size_t size() const;
     virtual bool inSharedMemory() const;
-
 };
 
 
@@ -51,4 +45,3 @@ private:
 
 
 #endif
-

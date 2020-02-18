@@ -210,6 +210,8 @@ list(APPEND mir_srcs
     input/GribDataHandleInput.h
     input/GribFileInput.cc
     input/GribFileInput.h
+    input/GribFixes.cc
+    input/GribFixes.h
     input/GribInput.cc
     input/GribInput.h
     input/GribMemoryInput.cc
@@ -228,8 +230,6 @@ list(APPEND mir_srcs
     input/VectorInput.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
-    log/MIR.cc
-    log/MIR.h
     lsm/FileLSM.cc
     lsm/FileLSM.h
     lsm/GribFileMask.cc
@@ -581,6 +581,8 @@ list(APPEND mir_srcs
     util/DeprecatedFunctionality.h
     util/Domain.cc
     util/Domain.h
+    util/Error.cc
+    util/Error.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc

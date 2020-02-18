@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -51,7 +52,7 @@ GridBoxMethod::~GridBoxMethod() = default;
 
 bool GridBoxMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const GridBoxMethod*>(&other);
-    return o && name() == o->name() && MethodWeighted::sameAs(*o);
+    return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
 }
 
 
@@ -165,7 +166,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
     log << "Intersected " << Pretty(weights_triplets.size(), gridBoxes) << std::endl;
 
-    if (nbFailures) {
+    if (nbFailures > 0) {
         auto& warning = eckit::Log::warning();
         warning << "Failed to intersect " << Pretty(nbFailures, gridBoxes) << ":";
         size_t count = 0;

@@ -3,22 +3,18 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
-
 
 #include "mir/caching/legendre/MappedMemoryLoader.h"
 
 #include <fcntl.h>
-#include <iostream>
 #include <sys/mman.h>
+#include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
@@ -32,8 +28,11 @@ namespace caching {
 namespace legendre {
 
 
-MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path)
-    : LegendreLoader(parametrisation, path), fd_(-1), address_(nullptr), size_(0) {
+MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
+    LegendreLoader(parametrisation, path),
+    fd_(-1),
+    address_(nullptr),
+    size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 
@@ -46,7 +45,8 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
     eckit::Stat::Struct s;
     SYSCALL(eckit::Stat::stat(path.localPath(), &s));
 
-    size_ = s.st_size;
+    ASSERT(s.st_size > 0);
+    size_ = size_t(s.st_size);
 
     address_ = eckit::MMap::mmap(nullptr, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
@@ -56,10 +56,12 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 }
 
 MappedMemoryLoader::~MappedMemoryLoader() {
-    if (address_)
+    if (address_ != nullptr) {
         SYSCALL(eckit::MMap::munmap(address_, size_));
-    if (fd_ >= 0)
+    }
+    if (fd_ >= 0) {
         SYSCALL(::close(fd_));
+    }
 }
 
 void MappedMemoryLoader::print(std::ostream& out) const {
@@ -82,13 +84,11 @@ bool MappedMemoryLoader::shared() {
     return true;
 }
 
-namespace {
+
 static LegendreLoaderBuilder<MappedMemoryLoader> loader1("mapped-memory");
 static LegendreLoaderBuilder<MappedMemoryLoader> loader2("mmap");
-}
 
 
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

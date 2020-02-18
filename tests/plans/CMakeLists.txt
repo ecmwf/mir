@@ -12,13 +12,6 @@ find_program( MARS_SCRIPT NAMES "mars" "false" )
 
 configure_file( mir-test.sh.in mir-test.sh @ONLY )
 
-set( _environment
-    "MIR_DEBUG=1"
-    "MIR_HOME=${CMAKE_BINARY_DIR}"
-    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
-    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
-
 file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
 foreach( _t ${test_files} )
@@ -28,6 +21,6 @@ foreach( _t ${test_files} )
       CONDITION   MARS_SCRIPT AND HAVE_TEST_ASSERTIONS
       COMMAND     mir-test.sh
       ARGS        ${_t}
-      ENVIRONMENT ${_environment} )
+      ENVIRONMENT ${_testEnvironment} )
 
 endforeach()

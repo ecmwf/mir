@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -35,12 +36,14 @@ void SortedSample::pick(const search::PointSearch& tree, const eckit::geometry::
               });
 }
 
-size_t SortedSample::n() const { return sample_.n(); }
+size_t SortedSample::n() const {
+    return sample_.n();
+}
 
 
 bool SortedSample::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const SortedSample*>(&other);
-    return o && sample_.sameAs(*o);
+    return (o != nullptr) && sample_.sameAs(*o);
 }
 
 

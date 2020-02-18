@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -18,11 +19,10 @@ namespace mir {
 namespace util {
 
 
-MIRStatistics::MIRStatistics() {
-}
+MIRStatistics::MIRStatistics() = default;
 
 
-MIRStatistics::MIRStatistics(eckit::Stream& s):
+MIRStatistics::MIRStatistics(eckit::Stream& s) :
     bitmapCache_(s),
     areaCroppingCache_(s),
     transHandleCache_(s),
@@ -120,7 +120,7 @@ MIRStatistics& MIRStatistics::operator/=(size_t n) {
 }
 
 
-void MIRStatistics::report(std::ostream& out, const char *indent) const {
+void MIRStatistics::report(std::ostream& out, const char* indent) const {
 
     bitmapCache_.report("Bitmap cache", out, indent);
     areaCroppingCache_.report("Area cache", out, indent);
@@ -157,21 +157,10 @@ void MIRStatistics::csvHeader(std::ostream& out) const {
 
 
 void MIRStatistics::csvRow(std::ostream& out) const {
-    out << grid2gridTiming_ << ","
-        << sh2gridTiming_ << ","
-        << coefficientTiming_ << ","
-        << vod2uvTiming_ << ","
-        << calcTiming_ << ","
-        << cropTiming_ << ","
-        << frameTiming_ << ","
-        << globaliseTiming_ << ","
-        << bitmapTiming_ << ","
-        << computeMatrixTiming_ << ","
-        << matrixTiming_ << ","
-        << createCoeffTiming_ << ","
-        << loadCoeffTiming_ << ","
-        << gribEncodingTiming_ << ","
-        << saveTiming_;
+    out << grid2gridTiming_ << "," << sh2gridTiming_ << "," << coefficientTiming_ << "," << vod2uvTiming_ << ","
+        << calcTiming_ << "," << cropTiming_ << "," << frameTiming_ << "," << globaliseTiming_ << "," << bitmapTiming_
+        << "," << computeMatrixTiming_ << "," << matrixTiming_ << "," << createCoeffTiming_ << "," << loadCoeffTiming_
+        << "," << gribEncodingTiming_ << "," << saveTiming_;
 }
 
 

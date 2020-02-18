@@ -3,20 +3,16 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015∏
-
-
 
 #include "mir/packing/Complex.h"
-#include "mir/util/Grib.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Grib.h"
 
 #include <iostream>
 
@@ -24,9 +20,7 @@ namespace mir {
 namespace packing {
 
 
-Complex::Complex(const std::string &name):
-    Packer(name) {
-}
+Complex::Complex(const std::string& name) : Packer(name) {}
 
 
 Complex::~Complex() = default;
@@ -47,4 +41,3 @@ static Complex packing2("co");
 
 }  // namespace packing
 }  // namespace mir
-

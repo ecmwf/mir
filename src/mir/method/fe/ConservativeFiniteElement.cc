@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/method/fe/ConservativeFiniteElement.h"
@@ -56,18 +52,18 @@ ConservativeFiniteElement::~ConservativeFiniteElement() = default;
 
 bool ConservativeFiniteElement::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ConservativeFiniteElement*>(&other);
-    return o && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
+    return (o != nullptr) && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
            MethodWeighted::sameAs(*o);
 }
 
 
-void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
-                            const repres::Representation& out) const {
+void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
+                                         const repres::Representation& in, const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
     log << "ConservativeFiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
-    // 1) I: compute the interpolation matrix from input to output
+    // 1) I: compute the matrix from input to output
     size_t Ni = out.numberOfPoints();
     size_t Nj = in.numberOfPoints();
 

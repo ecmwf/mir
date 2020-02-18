@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_transform_ShToGridded_h
@@ -28,7 +25,7 @@ class MIRField;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -38,10 +35,9 @@ namespace transform {
 
 class ShToGridded : public Action {
 public:
-
     // -- Types
 
-    using atlas_trans_t = atlas::trans::Trans;
+    using atlas_trans_t  = atlas::trans::Trans;
     using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
@@ -74,7 +70,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -83,7 +78,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const        = 0;
     virtual bool sameAs(const Action& other) const = 0;
     virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
@@ -94,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     method::Cropping cropping_;
@@ -122,9 +116,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
+    // friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
     //  { p.print(s); return s; }
-
 };
 
 

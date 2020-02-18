@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,9 +27,7 @@ namespace mir {
 namespace input {
 
 
-GribAllFileInput::GribAllFileInput(const std::string &path):
-    path_(path),
-    count_(0) {
+GribAllFileInput::GribAllFileInput(const std::string& path) : path_(path), count_(0) {
 
     eckit::AutoStdFile f(path);
     eckit::Buffer buffer(64 * 1024 * 1024);
@@ -37,7 +36,7 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
         size_t len = buffer.size();
         off_t here;
         SYSCALL(here = ::ftello(f));
-        int e  = wmo_read_any_from_file(f, buffer, &len);
+        int e = wmo_read_any_from_file(f, buffer, &len);
         if (e == GRIB_END_OF_FILE) {
             break;
         }
@@ -56,19 +55,19 @@ GribAllFileInput::GribAllFileInput(const std::string &path):
 
 
 GribAllFileInput::~GribAllFileInput() {
-    for (auto j = inputs_.begin(); j != inputs_.end(); ++j) {
-        delete (*j);
+    for (auto& j : inputs_) {
+        delete j;
     }
 }
 
 
-const param::MIRParametrisation &GribAllFileInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& GribAllFileInput::parametrisation(size_t which) const {
     ASSERT(which < inputs_.size());
     return inputs_[which]->parametrisation();
 }
 
 
-grib_handle *GribAllFileInput::gribHandle(size_t which) const {
+grib_handle* GribAllFileInput::gribHandle(size_t which) const {
     ASSERT(which < inputs_.size());
     return inputs_[which]->gribHandle();
 }
@@ -90,9 +89,9 @@ data::MIRField GribAllFileInput::field() const {
 
 bool GribAllFileInput::next() {
     if (count_ == 0) {
-        for (auto j = inputs_.begin(); j != inputs_.end(); ++j) {
+        for (auto& j : inputs_) {
             // eckit::Log::info() << *(*j) << std::endl;
-            ASSERT((*j)->next());
+            ASSERT(j->next());
         }
         return true;
     }
@@ -100,13 +99,13 @@ bool GribAllFileInput::next() {
 }
 
 
-bool GribAllFileInput::sameAs(const MIRInput &other) const {
-    auto o = dynamic_cast<const GribAllFileInput *>(&other);
-    return o && path_ == o->path_;
+bool GribAllFileInput::sameAs(const MIRInput& other) const {
+    auto o = dynamic_cast<const GribAllFileInput*>(&other);
+    return (o != nullptr) && path_ == o->path_;
 }
 
 
-void GribAllFileInput::print(std::ostream &out) const {
+void GribAllFileInput::print(std::ostream& out) const {
     out << "GribAllFileInput[" << path_ << ",size=" << inputs_.size() << "]";
 }
 
@@ -118,4 +117,3 @@ size_t GribAllFileInput::dimensions() const {
 
 }  // namespace input
 }  // namespace mir
-

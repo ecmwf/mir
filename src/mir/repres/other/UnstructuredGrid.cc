@@ -3,14 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 #include "mir/repres/other/UnstructuredGrid.h"
 
@@ -65,7 +63,7 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
         throw eckit::CantOpenFile(path);
     }
 
-    if (!::isprint(in.peek())) {
+    if (::isprint(in.peek()) == 0) {
 
         eckit::Log::info() << "UnstructuredGrid::load  " << path << std::endl;
 
@@ -161,7 +159,7 @@ void UnstructuredGrid::makeName(std::ostream& out) const {
 
 bool UnstructuredGrid::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const UnstructuredGrid*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
+    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
 
@@ -185,7 +183,7 @@ void UnstructuredGrid::fill(util::MeshGeneratorParameters& params) const {
 
 
 util::Domain UnstructuredGrid::domain() const {
-    //FIXME Should be global?
+    // FIXME Should be global?
     return util::Domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
 }
 
@@ -324,10 +322,9 @@ bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
 }
 
 
-namespace {
 static RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
 static RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
-}  // namespace
+
 
 }  // namespace other
 }  // namespace repres

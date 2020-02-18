@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_GribMemoryInput_h
@@ -25,7 +22,6 @@ namespace input {
 
 class GribMemoryInput : public GribInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribMemoryInput(); // Change to virtual if base class
+    virtual ~GribMemoryInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,7 +52,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -73,7 +68,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -93,9 +87,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
+    // friend ostream& operator<<(ostream& s,const GribMemoryInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -104,4 +97,3 @@ private:
 
 
 #endif
-

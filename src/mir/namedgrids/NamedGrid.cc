@@ -3,14 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 #include "mir/namedgrids/NamedGrid.h"
 
@@ -30,17 +28,17 @@ namespace mir {
 namespace namedgrids {
 
 
-namespace {
-
 static std::map<std::string, NamedGrid*>* m = nullptr;
-
-static pthread_once_t once       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-
+static pthread_once_t once                  = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex            = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, NamedGrid*>();
 }
+
+
+namespace {
+
 
 void read_configuration_files() {
 
@@ -78,9 +76,9 @@ void read_configuration_files() {
 
             for (const auto& p : eckit::ValueMap(g.second)) {
                 // value type checking prevents lossy conversions (eg. string > double > string > double)
-                p.second.isDouble() ? ng->set(p.first, p.second.as<double>()) :
-                p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
-                                    : ng->set(p.first, p.second.as<std::string>());
+                p.second.isDouble() ? ng->set(p.first, p.second.as<double>())
+                                    : p.second.isNumber() ? ng->set(p.first, p.second.as<long long>())
+                                                          : ng->set(p.first, p.second.as<std::string>());
             }
 
             ng->print(eckit::Log::debug<LibMir>());
@@ -141,7 +139,7 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
         // Look for pattern matchings
         // This will automatically add the new NamedGrid to the map
         auto ng = NamedGridPattern::build(name);
-        if (ng) {
+        if (ng != nullptr) {
             return *ng;
         }
 

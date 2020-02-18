@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef GribMemoryOutput_H
@@ -24,18 +21,17 @@ namespace output {
 
 
 class GribMemoryOutput : public GribOutput {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    GribMemoryOutput(void *message, size_t size);
+    GribMemoryOutput(void* message, size_t size);
 
     // -- Destructor
 
-    virtual ~GribMemoryOutput(); // Change to virtual if base class
+    virtual ~GribMemoryOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -46,15 +42,9 @@ class GribMemoryOutput : public GribOutput {
     // -- Methods
     // None
 
-    size_t interpolated() const {
-        return interpolated_;
-    }
-    size_t saved() const {
-        return saved_;
-    }
-    size_t length() const {
-        return length_;
-    }
+    size_t interpolated() const { return interpolated_; }
+    size_t saved() const { return saved_; }
+    size_t length() const { return length_; }
 
 
     // -- Overridden methods
@@ -66,8 +56,7 @@ class GribMemoryOutput : public GribOutput {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
@@ -83,8 +72,7 @@ class GribMemoryOutput : public GribOutput {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // -- Members
 
     void* message_;
@@ -110,13 +98,11 @@ class GribMemoryOutput : public GribOutput {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribMemoryOutput& p)
+    // friend ostream& operator<<(ostream& s,const GribMemoryOutput& p)
     //  { p.print(s); return s; }
-
 };
 
 
 }  // namespace output
 }  // namespace mir
 #endif
-

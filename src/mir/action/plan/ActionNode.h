@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_plan_ActionNode_h
@@ -28,7 +25,7 @@ class MIRWatcher;
 namespace action {
 class Action;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -36,8 +33,7 @@ namespace action {
 
 
 class ActionNode {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -47,7 +43,7 @@ class ActionNode {
 
     // -- Destructor
 
-    ~ActionNode(); // Change to virtual if base class
+    ~ActionNode();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -76,14 +72,13 @@ class ActionNode {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -94,8 +89,7 @@ class ActionNode {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
     ActionNode(const ActionNode&);
     ActionNode& operator=(const ActionNode&);
@@ -124,7 +118,6 @@ class ActionNode {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -133,4 +126,3 @@ class ActionNode {
 
 
 #endif
-

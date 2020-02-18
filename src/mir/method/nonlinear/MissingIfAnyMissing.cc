@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,22 +27,17 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfAnyMissing::treatment(NonLinear::Matrix&,
-                                    NonLinear::WeightMatrix& W,
-                                    NonLinear::Matrix&,
-                                    const data::MIRValuesVector& values,
-                                    const double& missingValue) const {
+bool MissingIfAnyMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+                                    const data::MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if any row values is missing)
     ASSERT(W.cols() == values.size());
 
-    auto data = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -81,7 +77,7 @@ bool MissingIfAnyMissing::treatment(NonLinear::Matrix&,
 
 bool MissingIfAnyMissing::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const MissingIfAnyMissing*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -103,4 +99,3 @@ static NonLinearBuilder<MissingIfAnyMissing> __nonlinear("missing-if-any-missing
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

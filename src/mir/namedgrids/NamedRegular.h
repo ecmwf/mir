@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef NamedRegular_H
@@ -24,18 +21,17 @@ namespace namedgrids {
 
 
 class NamedRegular : public NamedGrid {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    NamedRegular(const std::string &name, size_t N);
+    NamedRegular(const std::string& name, size_t N);
 
     // -- Destructor
 
-    virtual ~NamedRegular(); // Change to virtual if base class
+    virtual ~NamedRegular();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,14 +50,13 @@ class NamedRegular : public NamedGrid {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,12 +67,11 @@ class NamedRegular : public NamedGrid {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    NamedRegular(const NamedRegular &);
-    NamedRegular &operator=(const NamedRegular &);
+    NamedRegular(const NamedRegular&);
+    NamedRegular& operator=(const NamedRegular&);
 
     // -- Members
 
@@ -93,18 +87,14 @@ class NamedRegular : public NamedGrid {
 
     // -- Class methods
 
-    virtual const repres::Representation *representation() const;
-    virtual const repres::Representation *representation(const util::Rotation& rotation) const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation& rotation) const;
     virtual size_t gaussianNumber() const;
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
 #endif
-

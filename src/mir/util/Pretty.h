@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -30,6 +31,7 @@ public:
         Plural(std::string one) : Plural(one, one + "s") {}
         Plural(std::string one, std::string notOne) : s_{one, notOne} {}
         Plural(const Plural& other) : s_{other.s_[0], other.s_[1]} {}
+        ~Plural() = default;
 
         const std::string& operator()(int count) const { return s_[count != 1]; }
         const std::string& operator()(size_t count) const { return s_[count != 1]; }
@@ -42,7 +44,7 @@ public:
     };
 
     struct PrettyProgress : public eckit::Timer {
-        PrettyProgress(const std::string& name, size_t limit, Plural units, std::ostream&);
+        PrettyProgress(const std::string& name, size_t limit, const Plural& units, std::ostream&);
         virtual ~PrettyProgress() = default;
         bool operator++();
 
@@ -63,8 +65,8 @@ public:
         /// @param units unit/units
         /// @param time how often to output progress, based on elapsed time
         /// @param o output stream
-        ProgressTimer(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
-                      double time = 5.);
+        ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
+                      std::ostream& o = eckit::Log::info(), double time = 5.);
 
     private:
         bool hasOutput();
@@ -78,8 +80,8 @@ public:
         /// @param units unit/units
         /// @param count how often to output progress, based on total counter
         /// @param o output stream
-        ProgressCounter(const std::string& name, size_t limit, Plural units, std::ostream& o = eckit::Log::info(),
-                        size_t count = 10000);
+        ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
+                        std::ostream& o = eckit::Log::info(), size_t count = 10000);
 
     private:
         bool hasOutput();

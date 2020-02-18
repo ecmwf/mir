@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -51,14 +52,19 @@ public:
         using eckit::option::SimpleOption;
         options_.push_back(new SimpleOption<std::string>("matrix-loader", "Matrix loader mechanism"));
         options_.push_back(new SimpleOption<bool>("matrix-validate", "Matrix validation after loading"));
-        options_.push_back(new SimpleOption<double>("absolute-error", "Matrix comparison non-zero maximum allowed error"));
+        options_.push_back(
+            new SimpleOption<double>("absolute-error", "Matrix comparison non-zero maximum allowed error"));
         options_.push_back(new SimpleOption<bool>("counter", "Use statistics counter"));
     }
 };
 
 
 struct diff_t {
+    diff_t()                                          = default;
     virtual bool operator()(double a, double b) const = 0;
+
+    diff_t(const diff_t&) = delete;
+    diff_t& operator=(const diff_t&) = delete;
 };
 
 
@@ -75,8 +81,8 @@ struct approximate_diff_t : diff_t {
 
 
 void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
-    using mir::method::WeightMatrix;
     using mir::caching::matrix::MatrixLoaderFactory;
+    using mir::method::WeightMatrix;
     using Plural = mir::Pretty::Plural;
 
     struct shape_t : std::vector<WeightMatrix::Size> {
@@ -121,9 +127,8 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
             }
             else {
                 counter.count(*i, *j, std::numeric_limits<double>::infinity());
-                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i)
-                    << "\n !=" << j.row() << '\t' << j.col() << '\t' << (*j)
-                    << std::endl;
+                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i) << "\n !=" << j.row() << '\t' << j.col()
+                    << '\t' << (*j) << std::endl;
             }
         }
         ASSERT(i == a.end());
@@ -147,16 +152,15 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         auto j = b.begin();
         for (; i != a.end() && j != b.end(); ++i, ++j) {
             if (i.row() != j.row() || i.col() != j.col() || (*diff)(*i, *j)) {
-                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i)
-                    << "\n !=" << j.row() << '\t' << j.col() << '\t' << (*j)
-                    << std::endl;
+                log << "\n   " << i.row() << '\t' << i.col() << '\t' << (*i) << "\n !=" << j.row() << '\t' << j.col()
+                    << '\t' << (*j) << std::endl;
                 ++d;
             }
         }
         ASSERT(i == a.end());
         ASSERT(j == b.end());
 
-        if (d) {
+        if (d > 0) {
             throw eckit::BadValue(std::to_string(d) + " " + Plural{"difference"}(d));
         }
     }

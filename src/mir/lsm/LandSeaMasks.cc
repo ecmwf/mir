@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 
 #include "mir/lsm/LandSeaMasks.h"
@@ -22,25 +18,23 @@
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/lsm/Mask.h"
 #include "mir/config/LibMir.h"
+#include "mir/lsm/Mask.h"
 
 
 namespace mir {
 namespace lsm {
 
 
-LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) :
-    input_(input),
-    output_(output) {
+LandSeaMasks::LandSeaMasks(const Mask& input, const Mask& output) : input_(input), output_(output) {
     ASSERT(input_.active() == output_.active());
 }
 
 
-LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) :
-    input_(other.input_),
-    output_(other.output_) {
-}
+LandSeaMasks::LandSeaMasks(const LandSeaMasks& other) = default;
+
+
+LandSeaMasks::~LandSeaMasks() = default;
 
 
 void LandSeaMasks::print(std::ostream& out) const {
@@ -57,8 +51,7 @@ std::string LandSeaMasks::cacheName() const {
 }
 
 
-LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation,
-                                  const repres::Representation& in,
+LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& in,
                                   const repres::Representation& out) {
     eckit::TraceTimer<LibMir>("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
@@ -67,8 +60,7 @@ LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisati
 
 bool LandSeaMasks::sameLandSeaMasks(const param::MIRParametrisation& parametrisation1,
                                     const param::MIRParametrisation& parametrisation2) {
-    return Mask::sameInput(parametrisation1, parametrisation2)
-           && Mask::sameOutput(parametrisation1, parametrisation2);
+    return Mask::sameInput(parametrisation1, parametrisation2) && Mask::sameOutput(parametrisation1, parametrisation2);
 }
 
 
@@ -94,4 +86,3 @@ bool LandSeaMasks::active() const {
 
 }  // namespace lsm
 }  // namespace mir
-

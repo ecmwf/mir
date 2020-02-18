@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -31,14 +32,14 @@ StructuredMethod::~StructuredMethod() = default;
 
 bool StructuredMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod*>(&other);
-    return o && MethodWeighted::sameAs(other);
+    return (o != nullptr) && MethodWeighted::sameAs(other);
 }
 
 void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::vector<PointLatLon>& coords, size_t start,
                                               size_t end, size_t& left, size_t& right) const {
 
-    right = start; // take the first if there's a wrap
-    left = start;
+    right = start;  // take the first if there's a wrap
+    left  = start;
 
     Longitude right_lon = Longitude::GLOBE;
     //    Longitude left_lon  =   0.;
@@ -50,9 +51,10 @@ void StructuredMethod::left_right_lon_indexes(const Longitude& in, const std::ve
         if (lon <= in) {
             //            left_lon = val;
             left = i;
-        } else if (lon < right_lon) {
+        }
+        else if (lon < right_lon) {
             right_lon = lon;
-            right = i;
+            right     = i;
         }
     }
 
@@ -86,24 +88,23 @@ void StructuredMethod::getRepresentationPoints(const repres::Representation& r, 
     maximum = 0;
 
     std::unique_ptr<repres::Iterator> it(r.iterator());
-    size_t i = 0;
+    for (size_t i = 0; it->next(); ++i) {
 
-    while (it->next()) {
         ASSERT(i < N);
         const auto& p = it->pointUnrotated();
 
-        points[i++] = PointLatLon(p.lat(), p.lon());
+        points[i] = PointLatLon(p.lat(), p.lon());
 
-        if (!i || p.lat() < minimum) {
+        if (i == 0 || p.lat() < minimum) {
             minimum = p.lat();
         }
 
-        if (!i || p.lat() > maximum) {
+        if (i == 0 || p.lat() > maximum) {
             maximum = p.lat();
         }
     }
 
-    ASSERT(minimum < maximum);
+    ASSERT(minimum <= maximum);
 }
 
 void StructuredMethod::getRepresentationLatitudes(const repres::Representation& r,
@@ -137,7 +138,7 @@ void StructuredMethod::boundNorthSouth(const Latitude& lat, const std::vector<La
     ASSERT(Nj > 1);
 
     // locate latitude indices just North and South of given latitude
-    std::vector<Latitude>::const_reverse_iterator above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
+    auto above = std::lower_bound(latitudes.rbegin(), latitudes.rend(), lat);
 
     jNorth = (Nj - static_cast<size_t>(std::distance(latitudes.rbegin(), above))) - 1;
     jSouth = jNorth + 1;
@@ -183,6 +184,6 @@ void StructuredMethod::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

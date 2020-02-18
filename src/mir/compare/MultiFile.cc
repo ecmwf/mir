@@ -3,13 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @date   Jul 2016
 
 
 #include "mir/compare/MultiFile.h"
@@ -26,21 +24,14 @@
 namespace mir {
 namespace compare {
 
-MultiFile::MultiFile(const std::string& name, const std::string& from):
-    name_(name),
-    from_(from)
-{
-}
+MultiFile::MultiFile(const std::string& name, const std::string& from) : name_(name), from_(from) {}
 
 
-MultiFile::MultiFile(const std::string& path):
-    name_(path),
-    from_(path)
-{
+MultiFile::MultiFile(const std::string& path) : name_(path), from_(path) {
     add(path);
 }
 
-bool MultiFile::operator<(const MultiFile& other) const  {
+bool MultiFile::operator<(const MultiFile& other) const {
     if (name_ == other.name_) {
         return from_ < other.from_;
     }
@@ -48,10 +39,12 @@ bool MultiFile::operator<(const MultiFile& other) const  {
 }
 
 MultiFile::MultiFile(eckit::Stream& s) {
+    size_t n;
     s >> name_;
     s >> from_;
-    size_t n;
     s >> n;
+    paths_.reserve(n);
+
     for (size_t i = 0; i < n; i++) {
         std::string tmp;
         s >> tmp;
@@ -71,7 +64,7 @@ const std::string& MultiFile::from() const {
 void MultiFile::save() const {
     eckit::PathName out(name_ + "." + from_);
     eckit::MultiHandle mh;
-    for (const auto & path : paths_) {
+    for (const auto& path : paths_) {
         eckit::PathName p(path);
         mh += p.fileHandle();
     }
@@ -109,12 +102,12 @@ void MultiFile::encode(eckit::Stream& s) const {
     s << name_;
     s << from_;
     s << paths_.size();
-    for (const auto & path : paths_) {
+    for (const auto& path : paths_) {
         s << path;
     }
 }
 
-void MultiFile::print(std::ostream& out)  const {
+void MultiFile::print(std::ostream& out) const {
     if (name_ == from_) {
         out << name_;
     }
@@ -141,7 +134,7 @@ void MultiFile::whiteListEntries(std::ostream& out) const {
 
 eckit::Length MultiFile::length() const {
     if (length_ == eckit::Length(0)) {
-        for (const auto & path : paths_) {
+        for (const auto& path : paths_) {
             eckit::PathName p(path);
             try {
                 length_ += p.size();
@@ -158,5 +151,5 @@ const std::vector<std::string>& MultiFile::paths() const {
     return paths_;
 }
 
-} // namespace compare
-} // namespace mir
+}  // namespace compare
+}  // namespace mir

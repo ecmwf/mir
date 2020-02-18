@@ -3,44 +3,44 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_util_LongitudeDouble_h
 #define mir_util_LongitudeDouble_h
 
 #include <iosfwd>
+
 #include "eckit/types/Fraction.h"
+
 
 namespace eckit {
 class MD5;
 class Stream;
-}
+}  // namespace eckit
+
 
 namespace mir {
 
+
 class LongitudeDouble {
 public:
-
-    static LongitudeDouble GLOBE; // 360
-    static LongitudeDouble DATE_LINE; // 180
-    static LongitudeDouble MINUS_DATE_LINE; // -180
-    static LongitudeDouble GREENWICH; // 0
+    static LongitudeDouble GLOBE;            // 360
+    static LongitudeDouble DATE_LINE;        // 180
+    static LongitudeDouble MINUS_DATE_LINE;  // -180
+    static LongitudeDouble GREENWICH;        // 0
 
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    LongitudeDouble(double value = 0): value_(value) {}
-    LongitudeDouble(const eckit::Fraction& value): value_(value) {}
+    LongitudeDouble(double value = 0) : value_(value) {}
+    LongitudeDouble(const eckit::Fraction& value) : value_(value) {}
 
     // -- Operators
 
@@ -53,8 +53,6 @@ public:
     bool operator>=(double) const;
     bool operator<=(double) const;
 
-    //======================================
-
     LongitudeDouble& operator+=(double value) {
         value_ += value;
         return *this;
@@ -65,23 +63,13 @@ public:
         return *this;
     }
 
-    LongitudeDouble operator+(double value) const {
-        return {value_ + value};
-    }
+    LongitudeDouble operator+(double value) const { return {value_ + value}; }
 
-    LongitudeDouble operator-(double value) const {
-        return {value_ - value};
-    }
+    LongitudeDouble operator-(double value) const { return {value_ - value}; }
 
-    LongitudeDouble operator/(double value) const {
-        return {value_ / value};
-    }
+    LongitudeDouble operator/(double value) const { return {value_ / value}; }
 
-    LongitudeDouble operator*(double value) const {
-        return {value_ * value};
-    }
-
-    //======================================
+    LongitudeDouble operator*(double value) const { return {value_ * value}; }
 
     LongitudeDouble& operator+=(const eckit::Fraction& value) {
         value_ += double(value);
@@ -93,15 +81,9 @@ public:
         return *this;
     }
 
-    LongitudeDouble operator+(const eckit::Fraction& value) const {
-        return {value_ + double(value)};
-    }
+    LongitudeDouble operator+(const eckit::Fraction& value) const { return {value_ + double(value)}; }
 
-    LongitudeDouble operator-(const eckit::Fraction& value) const {
-        return {value_ - double(value)};
-    }
-
-    //======================================
+    LongitudeDouble operator-(const eckit::Fraction& value) const { return {value_ - double(value)}; }
 
     LongitudeDouble& operator+=(const LongitudeDouble& other) {
         value_ += other.value_;
@@ -113,37 +95,21 @@ public:
         return *this;
     }
 
-    LongitudeDouble operator+(const LongitudeDouble& other) const {
-        return {value_ + other.value_};
-    }
+    LongitudeDouble operator+(const LongitudeDouble& other) const { return {value_ + other.value_}; }
 
-    LongitudeDouble operator-(const LongitudeDouble& other) const {
-        return {value_ - other.value_};
-    }
+    LongitudeDouble operator-(const LongitudeDouble& other) const { return {value_ - other.value_}; }
 
-    bool operator==(const LongitudeDouble& other) const {
-        return (*this) == other.value_;
-    }
+    bool operator==(const LongitudeDouble& other) const { return (*this) == other.value_; }
 
-    bool operator!=(const LongitudeDouble& other) const {
-        return (*this) != other.value_;
-    }
+    bool operator!=(const LongitudeDouble& other) const { return (*this) != other.value_; }
 
-    bool operator>(const LongitudeDouble& other) const {
-        return (*this) > other.value_;
-    }
+    bool operator>(const LongitudeDouble& other) const { return (*this) > other.value_; }
 
-    bool operator<(const LongitudeDouble& other) const {
-        return (*this) < other.value_;
-    }
+    bool operator<(const LongitudeDouble& other) const { return (*this) < other.value_; }
 
-    bool operator>=(const LongitudeDouble& other) const {
-        return (*this) >= other.value_;
-    }
+    bool operator>=(const LongitudeDouble& other) const { return (*this) >= other.value_; }
 
-    bool operator<=(const LongitudeDouble& other) const {
-        return (*this) <= other.value_;
-    }
+    bool operator<=(const LongitudeDouble& other) const { return (*this) <= other.value_; }
 
     // -- Methods
 
@@ -158,7 +124,6 @@ public:
     LongitudeDouble distance(const LongitudeDouble& meridian) const;
 
 protected:
-
     // -- Methods
 
     void print(std::ostream&) const;
@@ -166,7 +131,6 @@ protected:
     void decode(eckit::Stream&);
 
 private:
-
     // -- Members
 
     double value_;
@@ -209,13 +173,11 @@ private:
 
     friend LongitudeDouble operator+(double, const LongitudeDouble&);
 
-    friend LongitudeDouble operator-(double value, const LongitudeDouble& x) {
-        return {value - x.value_};
-    }
-
+    friend LongitudeDouble operator-(double value, const LongitudeDouble& x) { return {value - x.value_}; }
 };
+
 
 }  // namespace mir
 
-#endif
 
+#endif

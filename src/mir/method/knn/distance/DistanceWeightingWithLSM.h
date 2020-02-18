@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -21,7 +22,7 @@ namespace mir {
 namespace lsm {
 class LandSeaMasks;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,11 +35,8 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
 
     DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
-    void operator()(
-            size_t,
-            const Point3&,
-            const std::vector<search::PointSearch::PointValueType>&,
-            std::vector<WeightMatrix::Triplet>&) const {
+    void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
+                    std::vector<WeightMatrix::Triplet>&) const {
         throw eckit::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
     }
 
@@ -56,21 +54,28 @@ class DistanceWeightingWithLSMFactory {
 private:
     std::string name_;
     virtual DistanceWeighting* make(const param::MIRParametrisation&, const lsm::LandSeaMasks&) = 0;
+
+    DistanceWeightingWithLSMFactory(const DistanceWeightingWithLSMFactory&) = delete;
+    DistanceWeightingWithLSMFactory& operator=(const DistanceWeightingWithLSMFactory&) = delete;
+
 protected:
     DistanceWeightingWithLSMFactory(const std::string& name);
     virtual ~DistanceWeightingWithLSMFactory();
+
 public:
-    static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&, const lsm::LandSeaMasks&);
+    static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&,
+                                          const lsm::LandSeaMasks&);
     static void list(std::ostream&);
     static bool has(const std::string& name);
 };
 
 
-template<class T>
+template <class T>
 class DistanceWeightingWithLSMBuilder : public DistanceWeightingWithLSMFactory {
     virtual DistanceWeighting* make(const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) {
         return new T(param, lsm);
     }
+
 public:
     DistanceWeightingWithLSMBuilder(const std::string& name) : DistanceWeightingWithLSMFactory(name) {}
 };
@@ -83,4 +88,3 @@ public:
 
 
 #endif
-

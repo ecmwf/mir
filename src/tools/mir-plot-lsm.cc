@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include <memory>
@@ -46,8 +43,9 @@ public:
         options_.push_back(new VectorOption<double>("grid", "Default 1/1", 2));
         options_.push_back(new VectorOption<long>("ninj", "Default 360/181", 2));
 
-        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already loaded, does nothing."));
-        // options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into shared memory. If file already loaded, does nothing."));
+        // options_.push_back(new SimpleOption<eckit::PathName>("load", "Load file into shared memory. If file already
+        // loaded, does nothing.")); options_.push_back(new SimpleOption<eckit::PathName>("unload", "Load file into
+        // shared memory. If file already loaded, does nothing."));
     }
 };
 

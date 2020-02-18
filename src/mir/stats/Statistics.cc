@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,33 +27,22 @@ namespace mir {
 namespace stats {
 
 
-namespace {
-
-
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, StatisticsFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-
+static eckit::Mutex* local_mutex                    = nullptr;
+static std::map<std::string, StatisticsFactory*>* m = nullptr;
+static pthread_once_t once                          = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, StatisticsFactory* >();
+    m           = new std::map<std::string, StatisticsFactory*>();
 }
 
 
-}  // (anonymous namespace)
-
-
-Statistics::Statistics(const param::MIRParametrisation& parametrisation) :
-    parametrisation_(parametrisation) {
-}
+Statistics::Statistics(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 
 Statistics::~Statistics() = default;
 
 
-StatisticsFactory::StatisticsFactory(const std::string& name) :
-    name_(name) {
+StatisticsFactory::StatisticsFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -97,10 +87,9 @@ Statistics* StatisticsFactory::build(const std::string& name, const param::MIRPa
         throw eckit::SeriousBug("No StatisticsFactory '" + name + "'");
     }
 
-    return (*j).second->make(params);
+    return j->second->make(params);
 }
 
 
 }  // namespace stats
 }  // namespace mir
-

@@ -3,18 +3,16 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
+#ifndef mir_netcdf_Rectilinear_h
+#define mir_netcdf_Rectilinear_h
 
-#ifndef mir_netcdf_RegularLL
-#define mir_netcdf_RegularLL
-
-#include "eckit/exception/Exceptions.h"
 #include "mir/netcdf/GridSpec.h"
 
 
@@ -24,60 +22,44 @@ namespace netcdf {
 
 class Rectilinear : public GridSpec {
 public:
+    Rectilinear(const Variable&, double north, double south, const std::vector<double>& latitudes, double west,
+                double east, const std::vector<double>& longitudes);
 
-  Rectilinear(const Variable &,
-                  double north,
-                  double south,
-                  const std::vector<double>& latitudes,
-                  double west,
-                  double east,
-                  const std::vector<double>& longitudes);
+    virtual ~Rectilinear();
 
+    // -- Methods
 
-
-  virtual ~Rectilinear();
-
-  // -- Methods
-
-
-  static GridSpec* guess(const Variable &variable,
-                         const Variable &latitudes,
-                         const Variable &longitudes);
+    static GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes);
 
 
 protected:
+    // -- Members
 
-  // -- Members
+    double north_;
+    double south_;
+    std::vector<double> latitudes_;
 
-  bool jScansPositively_;
+    double west_;
+    double east_;
+    std::vector<double> longitudes_;
 
-  double north_;
-  double south_;
-  std::vector<double> latitudes_;
-
-  double west_;
-  double east_;
-  std::vector<double> longitudes_;
+    bool jScansPositively_;
 
 private:
+    Rectilinear(const Rectilinear&);
+    Rectilinear& operator=(const Rectilinear&);
 
-  Rectilinear(const Rectilinear &);
-  Rectilinear &operator=(const Rectilinear &);
+    // - Methods
 
+    virtual void print(std::ostream& s) const;
 
-  // - Methods
-
-  virtual void print(std::ostream &s) const;
-
-  // For MIR
-  virtual bool has(const std::string& name) const;
-  virtual bool get(const std::string&, long&) const;
-  virtual bool get(const std::string&, std::string&) const;
-  virtual bool get(const std::string &name, double &value) const;
-  virtual bool get(const std::string &name, std::vector<double> &value) const;
-
-  virtual void reorder(MIRValuesVector& values) const;
-
+    // From GridSpec
+    virtual bool has(const std::string& name) const;
+    virtual bool get(const std::string&, long&) const;
+    virtual bool get(const std::string&, std::string&) const;
+    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual void reorder(MIRValuesVector& values) const;
 };
 
 

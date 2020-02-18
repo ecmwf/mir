@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -27,22 +28,17 @@ namespace method {
 namespace nonlinear {
 
 
-MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfAllMissing::treatment(NonLinear::Matrix&,
-                                    NonLinear::WeightMatrix& W,
-                                    NonLinear::Matrix&,
-                                    const data::MIRValuesVector& values,
-                                    const double& missingValue) const {
+bool MissingIfAllMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+                                    const data::MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if all row values are missing)
     ASSERT(W.cols() == values.size());
 
-    auto data = const_cast<WeightMatrix::Scalar*>(W.data());
+    auto data  = const_cast<WeightMatrix::Scalar*>(W.data());
     bool modif = false;
 
     WeightMatrix::Size i = 0;
@@ -54,7 +50,7 @@ bool MissingIfAllMissing::treatment(NonLinear::Matrix&,
         size_t i_missing = i;
         size_t N_missing = 0;
         size_t N_entries = 0;
-        double sum = 0.;
+        double sum       = 0.;
 
         WeightMatrix::iterator kt(it);
         WeightMatrix::Size k = i;
@@ -65,7 +61,8 @@ bool MissingIfAllMissing::treatment(NonLinear::Matrix&,
             if (miss) {
                 ++N_missing;
                 i_missing = i;
-            } else {
+            }
+            else {
                 sum += *it;
             }
         }
@@ -84,12 +81,11 @@ bool MissingIfAllMissing::treatment(NonLinear::Matrix&,
                 const double factor = 1. / sum;
                 for (WeightMatrix::Size j = k; j < k + N_entries; ++j, ++kt) {
                     const bool miss = values[kt.col()] == missingValue;
-                    data[j] = miss ? 0. : (factor * data[j]);
+                    data[j]         = miss ? 0. : (factor * data[j]);
                 }
             }
             modif = true;
         }
-
     }
 
     return modif;
@@ -98,7 +94,7 @@ bool MissingIfAllMissing::treatment(NonLinear::Matrix&,
 
 bool MissingIfAllMissing::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const MissingIfAllMissing*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -120,4 +116,3 @@ static NonLinearBuilder<MissingIfAllMissing> __nonlinear("missing-if-all-missing
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

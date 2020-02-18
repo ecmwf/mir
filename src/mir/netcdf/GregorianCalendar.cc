@@ -3,19 +3,17 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-// Baudouin Raoult - ECMWF Jan 2015
 
 
 #include "mir/netcdf/GregorianCalendar.h"
 
 #include <algorithm>
 #include <ostream>
-#include <sstream>
 
 #include <netcdf.h>
 
@@ -28,71 +26,82 @@
 namespace mir {
 namespace netcdf {
 
+
 static long long offset = 0;
 
-static eckit::DateTime reference(const std::string& units) {
-    // std::cout << "===== " << units << std::endl;
+
+static eckit::DateTime reference(const std::string& /*units*/) {
+    // eckit::Log::info() << "===== " << units << std::endl;
     return eckit::DateTime();
 }
 
-GregorianCalendar::GregorianCalendar(const Variable& variable):
+
+GregorianCalendar::GregorianCalendar(const Variable& variable) :
     reference_(reference(variable.getAttributeValue<std::string>("units"))),
     zero_(0),
     units_(variable.getAttributeValue<std::string>("units")),
-    calendar_(variable.getAttributeValue<std::string>("calendar"))
+    calendar_(variable.getAttributeValue<std::string>("calendar")) {
 
-{
+    auto reference_time = static_cast<long long>(eckit::Second(reference_.time()));
+    auto reference_date = static_cast<long long>(reference_.date().julian());
 
-    // std::cout << units_ << std::endl;
-
-    offset_ = reference_.date().julian() * 24 * 60 * 60 + eckit::Second(reference_.time());
-    if (offset == 0) { // Not thread safe
+    offset_ = reference_date * 24 * 60 * 60 + reference_time;
+    if (offset == 0) {  // Not thread safe
         offset = offset_;
     }
     offset_ -= offset;
 }
 
+
 GregorianCalendar::~GregorianCalendar() = default;
 
-void GregorianCalendar::print(std::ostream &out) const {
+
+void GregorianCalendar::print(std::ostream& out) const {
     out << "GregorianCalendar[reference=" << reference_ << ", calendar=" << calendar_ << ", offset=" << offset_ << "]";
 }
 
-template<class T>
-void GregorianCalendar::_decode(std::vector<T> &v) const {
+
+template <class T>
+void GregorianCalendar::_decode(std::vector<T>& v) const {
     for (size_t i = 0; i < v.size(); i++) {
         ASSERT(T(v[i] + offset_) - offset_ == v[i]);
         v[i] += offset_;
     }
 }
 
-void GregorianCalendar::decode(std::vector<double> &v) const {
-    _decode(v);
-}
 
-void GregorianCalendar::decode(std::vector<float> &v) const {
-    _decode(v);
-}
-
-void GregorianCalendar::decode(std::vector<long> &v) const {
-    _decode(v);
-}
-
-void GregorianCalendar::decode(std::vector<short> &v) const {
-    _decode(v);
-}
-
-void GregorianCalendar::decode(std::vector<unsigned char> &v) const {
-    _decode(v);
-}
-
-void GregorianCalendar::decode(std::vector<long long> &v) const {
+void GregorianCalendar::decode(std::vector<double>& v) const {
     _decode(v);
 }
 
 
-template<class T>
-static T _encode(std::vector<T> &v) {
+void GregorianCalendar::decode(std::vector<float>& v) const {
+    _decode(v);
+}
+
+
+void GregorianCalendar::decode(std::vector<long>& v) const {
+    _decode(v);
+}
+
+
+void GregorianCalendar::decode(std::vector<short>& v) const {
+    _decode(v);
+}
+
+
+void GregorianCalendar::decode(std::vector<unsigned char>& v) const {
+    _decode(v);
+}
+
+
+void GregorianCalendar::decode(std::vector<long long>& v) const {
+    _decode(v);
+}
+
+
+template <class T>
+static T _encode(std::vector<T>& v) {
     ASSERT(v.size());
     T zero = *std::min_element(v.begin(), v.end());
     if (zero != v[0]) {
@@ -105,36 +114,44 @@ static T _encode(std::vector<T> &v) {
     return 0;
 }
 
-void GregorianCalendar::encode(std::vector<double> &v) const {
+
+void GregorianCalendar::encode(std::vector<double>& v) const {
+    zero_ = static_cast<long long>(_encode(v));
+}
+
+
+void GregorianCalendar::encode(std::vector<float>& v) const {
+    zero_ = static_cast<long long>(_encode(v));
+}
+
+
+void GregorianCalendar::encode(std::vector<long>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<float> &v) const {
+
+void GregorianCalendar::encode(std::vector<short>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<long> &v) const {
+
+void GregorianCalendar::encode(std::vector<unsigned char>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<short> &v) const {
+
+void GregorianCalendar::encode(std::vector<long long>& v) const {
     zero_ = _encode(v);
 }
 
-void GregorianCalendar::encode(std::vector<unsigned char> &v) const {
-    zero_ = _encode(v);
-}
 
-void GregorianCalendar::encode(std::vector<long long> &v) const {
-    zero_ = _encode(v);
-}
-
-void GregorianCalendar::addAttributes(Variable &v) const {
+void GregorianCalendar::addAttributes(Variable& v) const {
     v.add(new OutputAttribute(v, "units", Value::newFromString("seconds since YYYY-MM-DD HH-MM-SS")));
     v.add(new OutputAttribute(v, "calendar", Value::newFromString(calendar_)));
 }
 
-void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &path) {
+
+void GregorianCalendar::updateAttributes(int nc, int varid, const std::string& path) {
     std::stringstream s;
     eckit::DateTime dt = reference_ + eckit::Second(zero_);
     s << "seconds since " << dt.date() << " " << dt.time();
@@ -145,6 +162,7 @@ void GregorianCalendar::updateAttributes(int nc, int varid, const std::string &p
 
 static CodecBuilder<GregorianCalendar> builder1("gregorian");
 static CodecBuilder<GregorianCalendar> builder2("standard");
+
 
 }  // namespace netcdf
 }  // namespace mir

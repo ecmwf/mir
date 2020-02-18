@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Oct 2016
 
 
 #include "mir/caching/matrix/MatrixLoader.h"
@@ -29,9 +25,7 @@ namespace caching {
 namespace matrix {
 
 
-MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) :
-    path_(path.realName()) {
-}
+MatrixLoader::MatrixLoader(const std::string&, const eckit::PathName& path) : path_(path.realName()) {}
 
 
 MatrixLoader::~MatrixLoader() = default;
@@ -56,13 +50,24 @@ eckit::Channel& MatrixLoader::log() {
     return channel;
 }
 
+eckit::Channel& MatrixLoader::info() {
+    static auto& channel = eckit::Log::info();
+    return channel;
+}
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, MatrixLoaderFactory* >* m = nullptr;
+
+eckit::Channel& MatrixLoader::warn() {
+    static auto& channel = eckit::Log::warning();
+    return channel;
+}
+
+
+static pthread_once_t once                            = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                      = nullptr;
+static std::map<std::string, MatrixLoaderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, MatrixLoaderFactory* >();
+    m           = new std::map<std::string, MatrixLoaderFactory*>();
 }
 
 
@@ -97,7 +102,7 @@ MatrixLoader* MatrixLoaderFactory::build(const std::string& name, const eckit::P
         throw eckit::SeriousBug("MatrixLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(name, path);
+    return j->second->make(name, path);
 }
 
 
@@ -116,4 +121,3 @@ void MatrixLoaderFactory::list(std::ostream& out) {
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-

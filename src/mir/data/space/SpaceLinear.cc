@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -17,15 +18,13 @@ namespace data {
 namespace space {
 
 
-SpaceLinear::SpaceLinear() : Space() {
-}
+SpaceLinear::SpaceLinear() = default;
 
 
 void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
-    using eckit::linalg::Scalar;
-    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);
@@ -35,15 +34,13 @@ void SpaceLinear::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrix
 void SpaceLinear::unlinearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double) const {
 
     // shallow-copy input to output
-    using eckit::linalg::Scalar;
-    Scalar* data = const_cast<Scalar*>(matrixIn.data());
+    auto data = const_cast<eckit::linalg::Scalar*>(matrixIn.data());
     Matrix shallow(data, matrixIn.rows(), matrixIn.cols());
 
     matrixOut.swap(shallow);
 }
 
 
-}  // namespace decompose
-}  // namespace method
+}  // namespace space
+}  // namespace data
 }  // namespace mir
-

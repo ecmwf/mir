@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/stats/Comparator.h"
@@ -30,34 +27,24 @@ namespace mir {
 namespace stats {
 
 
-namespace {
-
-
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, ComparatorFactory* > *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
-
+static eckit::Mutex* local_mutex                    = nullptr;
+static std::map<std::string, ComparatorFactory*>* m = nullptr;
+static pthread_once_t once                          = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, ComparatorFactory* >();
+    m           = new std::map<std::string, ComparatorFactory*>();
 }
-
-
-}  // (anonymous namespace)
 
 
 Comparator::Comparator(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
     parametrisation1_(param1),
-    parametrisation2_(param2) {
-}
+    parametrisation2_(param2) {}
 
 
 Comparator::~Comparator() = default;
 
 
-ComparatorFactory::ComparatorFactory(const std::string& name) :
-    name_(name) {
+ComparatorFactory::ComparatorFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -90,7 +77,8 @@ void ComparatorFactory::list(std::ostream& out) {
 }
 
 
-Comparator* ComparatorFactory::build(const std::string& name, const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) {
+Comparator* ComparatorFactory::build(const std::string& name, const param::MIRParametrisation& param1,
+                                     const param::MIRParametrisation& param2) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -102,10 +90,9 @@ Comparator* ComparatorFactory::build(const std::string& name, const param::MIRPa
         throw eckit::SeriousBug("No ComparatorFactory '" + name + "'");
     }
 
-    return (*j).second->make(param1, param2);
+    return j->second->make(param1, param2);
 }
 
 
 }  // namespace stats
 }  // namespace mir
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Jul 2016
 
 
 #include "mir/param/CachedParametrisation.h"
@@ -21,17 +18,15 @@
 namespace mir {
 namespace param {
 
-CachedParametrisation::CachedParametrisation(MIRParametrisation& parametrisation):
-    parametrisation_(parametrisation) {
-}
+CachedParametrisation::CachedParametrisation(MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 CachedParametrisation::~CachedParametrisation() = default;
 
-void CachedParametrisation::print(std::ostream &out) const {
+void CachedParametrisation::print(std::ostream& out) const {
     out << "CachedParametrisation[" << parametrisation_ << "]";
 }
 
-template<class T>
+template <class T>
 bool CachedParametrisation::_get(const std::string& name, T& value) const {
     MIRParametrisation& cache = cache_;
 
@@ -52,7 +47,7 @@ bool CachedParametrisation::_get(const std::string& name, T& value) const {
 }
 
 
-template<class T>
+template <class T>
 void CachedParametrisation::_set(const std::string& name, const T& value) const {
     // std::cout << "Set " << *this << " " << name << " " << value << std::endl;
     cache_.set(name, value);
@@ -65,7 +60,6 @@ bool CachedParametrisation::has(const std::string& name) const {
 
 bool CachedParametrisation::get(const std::string& name, std::string& value) const {
     return _get(name, value);
-
 }
 bool CachedParametrisation::get(const std::string& name, bool& value) const {
     return _get(name, value);
@@ -108,7 +102,7 @@ bool CachedParametrisation::get(const std::string& name, std::vector<std::string
 }
 
 void CachedParametrisation::reset() {
-//    std::cout << "Reset " << *this << std::endl;
+    //    std::cout << "Reset " << *this << std::endl;
     cache_.reset();
 }
 
@@ -133,8 +127,5 @@ void CachedParametrisation::set(const std::string& name, const char* value) {
 }
 
 
-
-
 }  // namespace param
 }  // namespace mir
-

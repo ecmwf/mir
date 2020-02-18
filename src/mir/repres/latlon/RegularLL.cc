@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/latlon/RegularLL.h"
@@ -30,8 +27,8 @@ namespace latlon {
 
 RegularLL::RegularLL(const param::MIRParametrisation& parametrisation) : LatLon(parametrisation) {}
 
-RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference)
-    : LatLon(increments, bbox, reference) {}
+RegularLL::RegularLL(const util::Increments& increments, const util::BoundingBox& bbox, const PointLatLon& reference) :
+    LatLon(increments, bbox, reference) {}
 
 RegularLL::~RegularLL() = default;
 
@@ -48,8 +45,8 @@ Iterator* RegularLL::iterator() const {
         bool next(Latitude& lat, Longitude& lon) { return LatLonIterator::next(lat, lon); }
 
     public:
-        RegularLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments)
-            : LatLonIterator(ni, nj, north, west, increments) {}
+        RegularLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments) :
+            LatLonIterator(ni, nj, north, west, increments) {}
     };
 
     return new RegularLLIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_);
@@ -66,10 +63,10 @@ atlas::Grid RegularLL::atlasGrid() const {
     // NOTE: for non-shifted/shifted grid, yspace uses bounding box
     // (this works together with the Atlas RectangularDomain cropping)
     const util::Domain dom = domain();
-    double n = bbox_.north().value();
-    double s = bbox_.south().value();
-    double w = dom.west().value();
-    double e = dom.east().value();
+    double n               = bbox_.north().value();
+    double s               = bbox_.south().value();
+    double w               = dom.west().value();
+    double e               = dom.east().value();
 
     using atlas::StructuredGrid;
     using atlas::grid::LinearSpacing;
@@ -97,7 +94,7 @@ void RegularLL::makeName(std::ostream& out) const {
 
 bool RegularLL::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const RegularLL*>(&other);
-    return o && LatLon::sameAs(other);
+    return (o != nullptr) && LatLon::sameAs(other);
 }
 
 const RegularLL* RegularLL::croppedRepresentation(const util::BoundingBox& bbox) const {
@@ -206,8 +203,8 @@ std::string RegularLL::factory() const {
 }
 
 
-static RepresentationBuilder<RegularLL> regularLL("regular_ll"); // Name is what is returned by grib_api
+static RepresentationBuilder<RegularLL> regularLL("regular_ll");  // Name is what is returned by grib_api
 
-} // namespace latlon
-} // namespace repres
-} // namespace mir
+}  // namespace latlon
+}  // namespace repres
+}  // namespace mir

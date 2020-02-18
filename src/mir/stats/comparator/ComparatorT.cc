@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -30,7 +31,7 @@ namespace stats {
 namespace comparator {
 
 
-template<typename STATS>
+template <typename STATS>
 std::string ComparatorT<STATS>::execute(const mir::data::MIRField& field1, const mir::data::MIRField& field2) {
     CounterBinary::reset(field1, field2);
     STATS::reset();
@@ -77,7 +78,7 @@ std::string ComparatorT<STATS>::execute(const mir::data::MIRField& field1, const
 }
 
 
-template<typename STATS>
+template <typename STATS>
 void ComparatorT<STATS>::print(std::ostream& out) const {
     out << "Comparator[";
     CounterBinary::print(out);
@@ -90,7 +91,7 @@ void ComparatorT<STATS>::print(std::ostream& out) const {
 struct MinMax {};
 
 
-template<>
+template <>
 std::string ComparatorT<MinMax>::execute(const data::MIRField& field1, const data::MIRField& field2) {
     CounterBinary::reset(field1, field2);
 
@@ -109,7 +110,7 @@ std::string ComparatorT<MinMax>::execute(const data::MIRField& field1, const dat
 }
 
 
-template<>
+template <>
 void ComparatorT<MinMax>::print(std::ostream& out) const {
     out << "Comparator[";
     CounterBinary::print(out);
@@ -117,8 +118,10 @@ void ComparatorT<MinMax>::print(std::ostream& out) const {
 }
 
 
-static ComparatorBuilder<ComparatorT<detail::AngleT<double, detail::AngleScale::DEGREE, detail::AngleSpace::SYMMETRIC>>> __comp1("angle.degree");
-static ComparatorBuilder<ComparatorT<detail::AngleT<double, detail::AngleScale::RADIAN, detail::AngleSpace::SYMMETRIC>>> __comp2("angle.radian");
+static ComparatorBuilder<ComparatorT<detail::AngleT<double, detail::AngleScale::DEGREE, detail::AngleSpace::SYMMETRIC>>>
+    __comp1("angle.degree");
+static ComparatorBuilder<ComparatorT<detail::AngleT<double, detail::AngleScale::RADIAN, detail::AngleSpace::SYMMETRIC>>>
+    __comp2("angle.radian");
 static ComparatorBuilder<ComparatorT<detail::CentralMomentsT<double>>> __comp3("central-moments");
 static ComparatorBuilder<ComparatorT<detail::PNormsT<double>>> __comp4("p-norms");
 static ComparatorBuilder<ComparatorT<detail::ScalarT<double>>> __comp5("scalar");

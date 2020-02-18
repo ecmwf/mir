@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -27,7 +28,7 @@ class ActionPlan;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -36,7 +37,6 @@ namespace style {
 
 class Resol {
 public:
-
     // -- Exceptions
     // None
 
@@ -72,7 +72,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -91,7 +90,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     long inputTruncation_;
@@ -126,4 +124,3 @@ private:
 
 
 #endif
-

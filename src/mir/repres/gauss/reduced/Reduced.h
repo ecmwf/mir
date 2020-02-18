@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_gauss_reduced_reduced_h
@@ -23,7 +20,7 @@ namespace mir {
 namespace util {
 class Rotation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,14 +31,14 @@ namespace reduced {
 
 class Reduced : public Gaussian {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     Reduced(const param::MIRParametrisation&);
-    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox(),
+            double angularPrecision = 0);
 
     // -- Destructor
 
@@ -66,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Constructors
 
     Reduced(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
@@ -82,7 +78,7 @@ protected:
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
-    template < typename PlVector >
+    template <typename PlVector>
     void setNj(const PlVector&, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e) const;
 
@@ -104,7 +100,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<long> pl_;
@@ -115,7 +110,7 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate=false) const;
+    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const;
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
     virtual std::string factory() const;
@@ -128,9 +123,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Reduced& p)
+    // friend ostream& operator<<(ostream& s,const Reduced& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -141,4 +135,3 @@ private:
 
 
 #endif
-

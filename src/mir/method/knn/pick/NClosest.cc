@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -30,8 +31,7 @@ NClosest::NClosest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosest::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
+void NClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     tree.closestNPoints(p, nClosest_, closest);
     ASSERT(closest.size() == nClosest_);
@@ -45,7 +45,7 @@ size_t NClosest::n() const {
 
 bool NClosest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const NClosest*>(&other);
-    return o && nClosest_ == o->nClosest_;
+    return (o != nullptr) && nClosest_ == o->nClosest_;
 }
 
 
@@ -66,4 +66,3 @@ static PickBuilder<NClosest> __pick("nclosest");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

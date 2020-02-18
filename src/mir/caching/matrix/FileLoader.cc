@@ -3,20 +3,16 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Oct 2016
-
 
 #include "mir/caching/matrix/FileLoader.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Log.h"
@@ -31,14 +27,12 @@ namespace matrix {
 
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path),
-    buffer_(path.size()) {
+    buffer_(size_t(path.size())) {
+
+    log() << "Loading matrix from " << path << std::endl;
 
     // Note: buffer size is based on file.size() -- which is assumed to be bigger than the memory footprint
-
-    log() << "Loading interpolation matrix from " << path << std::endl;
-
     method::WeightMatrix w(path);
-
     w.dump(buffer_);
 }
 
@@ -60,12 +54,10 @@ bool FileLoader::inSharedMemory() const {
     return false;
 }
 
-namespace {
+
 static MatrixLoaderBuilder<FileLoader> loader("file-io");
-}
 
 
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-

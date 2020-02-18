@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/context/Context.h"
@@ -26,21 +23,19 @@ class MIRFormula : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const;
 
 public:
-
     // -- Contructors
 
-    MIRFormula(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
-
+    MIRFormula(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };
 
 
-void MIRFormula::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool
-            << std::endl;
+void MIRFormula::usage(const std::string& tool) const {
+    eckit::Log::info() << "\n"
+                          "Usage: "
+                       << tool << std::endl;
 }
 
 
@@ -51,7 +46,7 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
 
     mir::param::SimpleParametrisation param;
 
-    mir::util::Formula * f = p.parse(param);
+    mir::util::Formula* f = p.parse(param);
     eckit::Log::info() << (*f) << std::endl;
 
     mir::context::Context ctx;
@@ -61,9 +56,7 @@ void MIRFormula::execute(const eckit::option::CmdArgs&) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRFormula tool(argc, argv);
     return tool.start();
 }
-
-

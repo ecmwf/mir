@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -11,6 +12,7 @@
 
 #include "mir/input/MIRInput.h"
 
+#include <cstdio>
 #include <iomanip>
 
 #include "eckit/exception/Exceptions.h"
@@ -37,7 +39,7 @@ MIRInput::~MIRInput() = default;
 grib_handle* MIRInput::gribHandle(size_t) const {
     // ASSERT(which == 0);
     static grib_handle* handle = nullptr;
-    if (!handle) {
+    if (handle == nullptr) {
         handle = grib_handle_new_from_samples(nullptr, "GRIB1");
         grib_set_long(handle, "paramId", 255);
         ASSERT(handle);
@@ -73,10 +75,7 @@ size_t MIRInput::dimensions() const {
     throw eckit::SeriousBug(os.str());
 }
 
-//=========================================================================
 
-
-namespace {
 static pthread_once_t once                          = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                    = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
@@ -84,7 +83,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<unsigned long, MIRInputFactory*>();
 }
-}  // namespace
 
 
 MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
@@ -118,7 +116,7 @@ static void put(std::ostream& out, unsigned long magic) {
     for (int i = 3; i >= 0; i--) {
         unsigned char c = magic & 0xff;
         magic >>= 8;
-        p[i] = isprint(c) ? c : '.';
+        p[i] = isprint(c) != 0 ? c : '.';
     }
 
     out << " (" << p << ")";
@@ -155,10 +153,10 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     for (size_t i = 0; i < 4; i++) {
         unsigned char c;
-        if (fread(&c, 1, 1, f)) {
+        if (std::fread(&c, 1, 1, f) > 0) {
             magic <<= 8;
             magic |= c;
-            p[i] = isprint(c) ? c : '.';
+            p[i] = isprint(c) != 0 ? c : '.';
         }
     }
 
@@ -175,7 +173,7 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
         return aux(new GribFileInput(path));
     }
 
-    return aux((*j).second->make(path));
+    return aux(j->second->make(path));
 }
 
 

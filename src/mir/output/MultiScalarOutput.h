@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -22,7 +23,6 @@ namespace output {
 
 class MultiScalarOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarOutput(); // Change to virtual if base class
+    virtual ~MultiScalarOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,10 +54,9 @@ public:
     // None
 
 protected:
-
     // -- Members
 
-    std::vector< MIROutput* > components_;
+    std::vector<MIROutput*> components_;
 
     // -- Methods
     // None
@@ -72,17 +71,16 @@ protected:
     // None
 
 private:
-
     // -- Members
-    //None
+    // None
 
     // -- Methods
-    //None
+    // None
 
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
@@ -97,7 +95,6 @@ private:
     // None
 
     // -- Friends
-
 };
 
 

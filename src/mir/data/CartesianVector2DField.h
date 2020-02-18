@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_data_CartesianVector2DField_h
@@ -28,7 +25,7 @@ class Representation;
 namespace util {
 class Rotation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -37,26 +34,24 @@ namespace data {
 
 class CartesianVector2DField {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    explicit CartesianVector2DField(
-        const repres::Representation*,
-        bool hasMissing = false,
-        double missingValue = 0 );
+    explicit CartesianVector2DField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
+    CartesianVector2DField(const CartesianVector2DField&) = delete;
 
     // -- Destructor
 
-    ~CartesianVector2DField();  // Change to virtual if base class
+    ~CartesianVector2DField();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    CartesianVector2DField& operator=(const CartesianVector2DField&) = delete;
 
     // -- Methods
 
@@ -72,13 +67,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -90,7 +84,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     MIRValuesVector valuesX_;
@@ -112,11 +105,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const CartesianVector2DField& p) {
+    friend std::ostream& operator<<(std::ostream& s, const CartesianVector2DField& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -125,4 +117,3 @@ private:
 
 
 #endif
-

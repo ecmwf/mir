@@ -3,16 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @author Peter Bispham
-/// @date Apr 2015
 
 
 #ifndef mir_search_tree_TreeMapped_h
@@ -31,7 +26,7 @@ namespace tree {
 class TreeMapped : public Tree {
 
 protected:
-    eckit::AutoUmask umask_; // Must be first
+    eckit::AutoUmask umask_;  // Must be first
     eckit::PathName path_;
     eckit::KDTreeMapped<Tree> tree_;
 
@@ -60,9 +55,9 @@ public:
 };
 
 
-} // namespace tree
-} // namespace search
-} // namespace mir
+}  // namespace tree
+}  // namespace search
+}  // namespace mir
 
 
 #endif

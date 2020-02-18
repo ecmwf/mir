@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -15,9 +16,9 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
-#include "eckit/parser/YAMLParser.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -28,7 +29,6 @@ namespace mir {
 namespace input {
 
 
-namespace {
 static const param::SimpleParametrisation empty;
 static pthread_once_t once                               = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                         = nullptr;
@@ -37,7 +37,6 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, ArtificialInputFactory*>();
 }
-}  // namespace
 
 
 ArtificialInput::ArtificialInput(const param::MIRParametrisation& /*ignored*/) : calls_(0) {}
@@ -121,7 +120,7 @@ void ArtificialInput::print(std::ostream& out) const {
 
 bool ArtificialInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const ArtificialInput*>(&other);
-    return o && parametrisation_.matches(o->parametrisation_);
+    return (o != nullptr) && parametrisation_.matches(o->parametrisation_);
 }
 
 

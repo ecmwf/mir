@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_GribStreamInput_h
@@ -32,7 +29,6 @@ namespace input {
 
 class GribStreamInput : public GribInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -44,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribStreamInput(); // Change to virtual if base class
+    virtual ~GribStreamInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -66,11 +62,10 @@ public:
     // None
 
 protected:
-
     // -- Members
     size_t skip_;
     size_t step_;
-    off_t  offset_;
+    off_t offset_;
 
     // -- Methods
     // None
@@ -85,16 +80,15 @@ protected:
     // None
 
 private:
-
     // -- Members
 
-    bool first_;
     eckit::Buffer buffer_;
+    bool first_;
 
 
     // -- Methods
 
-    virtual eckit::DataHandle &dataHandle() = 0;
+    virtual eckit::DataHandle& dataHandle() = 0;
 
     // -- Overridden methods
     // None
@@ -107,9 +101,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribStreamInput& p)
+    // friend ostream& operator<<(ostream& s,const GribStreamInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -118,4 +111,3 @@ private:
 
 
 #endif
-

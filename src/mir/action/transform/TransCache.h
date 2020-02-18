@@ -3,12 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @date Feb 2017
 
 
 #ifndef mir_action_transform_TransCache_h
@@ -28,16 +27,18 @@ namespace transform {
 struct TransCache {
 
     using loader_t = caching::legendre::LegendreLoader;
-    using cache_t = atlas::trans::Cache;
+    using cache_t  = atlas::trans::Cache;
 
     loader_t* loader_;
     cache_t transCache_;
 
     TransCache();
-
+    TransCache(const TransCache&) = delete;
     ~TransCache();
 
-    TransCache& operator=(cache_t&& other);
+    TransCache& operator=(const TransCache&) = delete;
+
+    TransCache& operator=(cache_t&&);
 
     void print(std::ostream&) const;
 
@@ -45,7 +46,6 @@ struct TransCache {
         e.print(out);
         return out;
     }
-
 };
 
 

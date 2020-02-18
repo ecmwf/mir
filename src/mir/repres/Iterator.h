@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_Iterator_h
@@ -29,7 +26,6 @@ namespace repres {
 
 class Iterator : protected PointLatLon {
 public:
-
     // -- Exceptions
     // None
 
@@ -44,23 +40,19 @@ public:
 
     // -- Convertors
 
-    operator bool() {
-        return valid_;
-    }
+    operator bool() { return valid_; }
 
     // -- Operators
 
     void operator=(const Iterator&) = delete;
 
-    inline const Point2& operator*() const {
-        return pointRotated();
-    }
+    inline const Point2& operator*() const { return pointRotated(); }
 
     // -- Methods
 
     const Point2& pointRotated() const;
     const PointLatLon& pointUnrotated() const;
-    const Point3 point3D() const;
+    Point3 point3D() const;
 
     Iterator& next();
 
@@ -74,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     Point2 point_;
@@ -83,7 +74,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const  = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
 
     // -- Overridden methods
@@ -96,7 +87,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -118,7 +108,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 

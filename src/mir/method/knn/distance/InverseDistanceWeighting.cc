@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -36,11 +37,9 @@ InverseDistanceWeighting::InverseDistanceWeighting(const param::MIRParametrisati
 }
 
 
-void InverseDistanceWeighting::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void InverseDistanceWeighting::operator()(size_t ip, const Point3& point,
+                                          const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                          std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -57,13 +56,12 @@ void InverseDistanceWeighting::operator()(
 
             weights[j] = 1. / std::pow(d2, halfPower_);
             sum += weights[j];
-
-        } else {
+        }
+        else {
 
             // exact match found, use this neighbour only (inverse distance tends to infinity)
             triplets.assign(1, WeightMatrix::Triplet(ip, neighbours[j].payload(), 1.));
             return;
-
         }
     }
 
@@ -79,7 +77,7 @@ void InverseDistanceWeighting::operator()(
 
 bool InverseDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const InverseDistanceWeighting*>(&other);
-    return o && eckit::types::is_approximately_equal(power_, o->power_);
+    return (o != nullptr) && eckit::types::is_approximately_equal(power_, o->power_);
 }
 
 
@@ -103,4 +101,3 @@ static DistanceWeightingBuilder<InverseDistanceWeighting> __distance2("shepard")
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

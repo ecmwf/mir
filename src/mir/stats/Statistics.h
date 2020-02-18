@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,7 +24,7 @@ class MIRField;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,7 +33,6 @@ namespace stats {
 
 class Statistics {
 public:
-
     // -- Exceptions
     // None
 
@@ -66,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -86,7 +85,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -108,7 +106,6 @@ private:
         r.print(out);
         return out;
     }
-
 };
 
 
@@ -116,24 +113,27 @@ class StatisticsFactory {
 private:
     std::string name_;
     virtual Statistics* make(const param::MIRParametrisation&) = 0;
+
+    StatisticsFactory(const StatisticsFactory&) = delete;
+    StatisticsFactory& operator=(const StatisticsFactory&) = delete;
+
 protected:
     StatisticsFactory(const std::string&);
     virtual ~StatisticsFactory();
+
 public:
     static void list(std::ostream&);
     static Statistics* build(const std::string&, const param::MIRParametrisation&);
 };
 
 
-template<class T>
+template <class T>
 class StatisticsBuilder : public StatisticsFactory {
 private:
-    Statistics* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    Statistics* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
-    StatisticsBuilder(const std::string& name) : StatisticsFactory(name) {
-    }
+    StatisticsBuilder(const std::string& name) : StatisticsFactory(name) {}
 };
 
 
@@ -142,4 +142,3 @@ public:
 
 
 #endif
-

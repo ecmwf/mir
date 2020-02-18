@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -47,7 +48,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
 
 
         // distance, up to Earth radius
-        double d = 0.;
+        double d          = 0.;
         const double dMax = util::Earth::radius();
 
 
@@ -77,8 +78,7 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
                     if (i < nbRealPts && j < nbRealPts) {
                         d = std::max(d, util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
-                            eckit::Log::warning()
-                                << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
+                            eckit::Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
                             return dMax;
                         }
                     }

@@ -3,12 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @date Feb 2017
 
 
 #ifndef mir_action_transform_InvtransVodTouv_h
@@ -24,7 +23,6 @@ namespace transform {
 
 class InvtransVodTouv {
 public:
-
     // -- Exceptions
     // None
 
@@ -53,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -72,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -90,7 +86,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

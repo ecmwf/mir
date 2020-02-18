@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,7 +27,8 @@ namespace gauss {
 class GaussianIterator : public Iterator {
 public:
     using ni_type = std::function<long(size_t)>;
-    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni, const util::Rotation& = util::Rotation());
+    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni,
+                     const util::Rotation& = util::Rotation());
     ~GaussianIterator();
 
 private:
@@ -57,4 +59,3 @@ protected:
 
 
 #endif
-

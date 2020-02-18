@@ -3,12 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
 #include "mir/netcdf/MergeCoordinateStep.h"
 
@@ -22,10 +22,7 @@
 namespace mir {
 namespace netcdf {
 
-MergeCoordinateStep::MergeCoordinateStep( Variable &out, const Variable &in):
-    out_(out),
-    in_(in) {
-}
+MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
 
 MergeCoordinateStep::~MergeCoordinateStep() = default;
 
@@ -33,11 +30,11 @@ int MergeCoordinateStep::rank() const {
     return 4;
 }
 
-void MergeCoordinateStep::print(std::ostream &out) const {
+void MergeCoordinateStep::print(std::ostream& out) const {
     out << "MergeCoordinateStep[" << out_ << " & " << in_ << "]";
 }
 
-void MergeCoordinateStep::execute(MergePlan &plan) {
+void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
 #if 0
     if (!out_.mustMerge()) {
 
@@ -52,7 +49,7 @@ void MergeCoordinateStep::execute(MergePlan &plan) {
         return;
     }
 
-    std::cout << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
+    eckit::Log::info() << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
 
     // Resize dimensions
 

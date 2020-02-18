@@ -3,25 +3,22 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
-
 
 #include "mir/caching/legendre/FileLoader.h"
 
-#include <fcntl.h>
-#include <iostream>
+#include <cstdio>
+#include <ostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/Log.h"
 
 
 namespace mir {
@@ -31,12 +28,12 @@ namespace legendre {
 
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path),
-    buffer_(path.size()) {
+    buffer_(size_t(path.size())) {
 
-    log() << "Loading legendre coefficients from " << path << std::endl;
+    log() << "Loading Legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);
-    ASSERT(::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
+    ASSERT(std::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());
 }
 
 FileLoader::~FileLoader() = default;
@@ -61,12 +58,10 @@ bool FileLoader::shared() {
     return false;
 }
 
-namespace {
+
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
-}
 
 
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

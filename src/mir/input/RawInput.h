@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_RawInput_h
@@ -24,7 +21,7 @@ namespace mir {
 namespace input {
 class RawMetadata;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,7 +30,6 @@ namespace input {
 
 class RawInput : public MIRInput, public param::MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -42,7 +38,7 @@ public:
 
     // -- Destructor
 
-    ~RawInput(); // Change to virtual if base class
+    ~RawInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,7 +59,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -80,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const RawMetadata& metadata_;
@@ -92,8 +86,8 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    void print(std::ostream&) const; // Change to virtual if base class
-    const param::MIRParametrisation &parametrisation(size_t which) const;
+    void print(std::ostream&) const;  // Change to virtual if base class
+    const param::MIRParametrisation& parametrisation(size_t which) const;
     data::MIRField field() const;
     bool next();
     size_t copy(double* values, size_t size) const;
@@ -123,7 +117,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

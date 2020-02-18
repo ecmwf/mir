@@ -3,21 +3,18 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #ifndef mir_lsm_LSMSelection_h
 #define mir_lsm_LSMSelection_h
 
-#include <string>
 #include <iosfwd>
+#include <string>
 
 
 namespace mir {
@@ -30,7 +27,7 @@ class Representation;
 namespace lsm {
 class Mask;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -39,7 +36,6 @@ namespace lsm {
 
 class LSMSelection {
 public:
-
     // -- Exceptions
     // None
 
@@ -56,12 +52,10 @@ public:
 
     // -- Methods
 
-    virtual Mask *create(const param::MIRParametrisation&,
-                         const repres::Representation&,
+    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
                          const std::string& which) const = 0;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&,
-                                 const repres::Representation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                                  const std::string& which) const = 0;
 
     // -- Overridden methods
@@ -76,7 +70,6 @@ public:
     static void list(std::ostream&);
 
 protected:
-
     // -- Constructors
 
     LSMSelection(const std::string& name);
@@ -104,7 +97,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -126,7 +118,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -135,4 +126,3 @@ private:
 
 
 #endif
-

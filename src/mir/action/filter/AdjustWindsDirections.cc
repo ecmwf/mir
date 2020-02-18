@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/filter/AdjustWindsDirections.h"
@@ -21,8 +18,8 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/data/MIRField.h"
 #include "mir/data/CartesianVector2DField.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -30,7 +27,7 @@ namespace mir {
 namespace action {
 
 
-AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation &parametrisation):
+AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
 
     std::vector<double> value;
@@ -46,23 +43,23 @@ AdjustWindsDirections::~AdjustWindsDirections() = default;
 
 bool AdjustWindsDirections::sameAs(const Action& other) const {
     auto o = dynamic_cast<const AdjustWindsDirections*>(&other);
-    return o && (rotation_ == o->rotation_);
+    return (o != nullptr) && (rotation_ == o->rotation_);
 }
 
 
-void AdjustWindsDirections::print(std::ostream &out) const {
+void AdjustWindsDirections::print(std::ostream& out) const {
     out << "AdjustWindsDirections[rotation=" << rotation_ << "]";
 }
 
 
-void AdjustWindsDirections::execute(context::Context & ctx) const {
+void AdjustWindsDirections::execute(context::Context& ctx) const {
 
     data::MIRField& field = ctx.field();
     data::CartesianVector2DField cf(field.representation(), field.hasMissing(), field.missingValue());
 
 
     ASSERT((field.dimensions() % 2) == 0);
-    for (size_t i = 0; i < field.dimensions(); i += 2 ) {
+    for (size_t i = 0; i < field.dimensions(); i += 2) {
 
         // set field components directly
         MIRValuesVector& valuesX = field.direct(i);
@@ -75,15 +72,14 @@ void AdjustWindsDirections::execute(context::Context & ctx) const {
     }
 }
 
+
 const char* AdjustWindsDirections::name() const {
     return "AdjustWindsDirections";
 }
 
-namespace {
-static ActionBuilder< AdjustWindsDirections > filter("filter.adjust-winds-directions");
-}
+
+static ActionBuilder<AdjustWindsDirections> filter("filter.adjust-winds-directions");
 
 
 }  // namespace action
 }  // namespace mir
-

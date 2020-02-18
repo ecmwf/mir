@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
@@ -29,14 +26,12 @@
 #include "mir/util/MIRStatistics.h"
 
 
-
 namespace mir {
 namespace action {
 namespace interpolate {
 
 
-Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param):
-    Action(param) {
+Gridded2GriddedInterpolation::Gridded2GriddedInterpolation(const param::MIRParametrisation& param) : Action(param) {
 
     ASSERT(param.get("interpolation", interpolation_));
     method_.reset(method::MethodFactory::build(interpolation_, param));
@@ -101,8 +96,12 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
         else if (!input.contains(output)) {
             std::ostringstream msg;
             msg << "Input does not contain output:"
-                << "\n\t" "Input: " << input
-                << "\n\t" "Output: " << outputBoundingBox();
+                << "\n\t"
+                   "Input: "
+                << input
+                << "\n\t"
+                   "Output: "
+                << outputBoundingBox();
             throw eckit::UserError(msg.str());
         }
     }
@@ -112,17 +111,15 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
 
 
 void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
+    auto timing(ctx.statistics().grid2gridTimer());
 
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().grid2gridTiming_);
-    data::MIRField& field = ctx.field();
-
+    auto& field = ctx.field();
     repres::RepresentationHandle in(field.representation());
 
     method::Cropping crop = cropping(ctx);
 
-
-    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                     : outputRepresentation());
+    repres::RepresentationHandle output(outputRepresentation());
+    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox()) : output.operator->());
 
     method_->execute(ctx, *in, *out);
 
@@ -132,26 +129,21 @@ void Gridded2GriddedInterpolation::execute(context::Context& ctx) const {
 
 bool Gridded2GriddedInterpolation::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2GriddedInterpolation*>(&other);
-    return o && (interpolation_ == o->interpolation_)
-           && method_->sameAs(*o->method_)
-           && (inputIntersectsOutput_ == o->inputIntersectsOutput_);
+    return (o != nullptr) && (interpolation_ == o->interpolation_) && method_->sameAs(*o->method_) &&
+           (inputIntersectsOutput_ == o->inputIntersectsOutput_);
 }
 
 
 void Gridded2GriddedInterpolation::print(std::ostream& out) const {
-    out << "interpolation=" << interpolation_
-        << ",method=" << *method_;
+    out << "interpolation=" << interpolation_ << ",method=" << *method_;
 }
 
 void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
 
     method::Cropping crop = cropping(ctx);
 
-
-    repres::RepresentationHandle out(crop ? outputRepresentation()->croppedRepresentation(crop.boundingBox())
-                                     : outputRepresentation());
-
-
+    repres::RepresentationHandle output(outputRepresentation());
+    repres::RepresentationHandle out(crop ? output->croppedRepresentation(crop.boundingBox()) : output.operator->());
 
     estimateNumberOfGridPoints(ctx, estimation, *out);
     estimateMissingValues(ctx, estimation, *out);
@@ -160,8 +152,6 @@ void Gridded2GriddedInterpolation::estimate(context::Context& ctx, api::MIREstim
 }
 
 
-
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

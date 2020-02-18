@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/method/knn/KNearestNeighbours.h"
@@ -45,7 +42,7 @@ KNearestNeighbours::~KNearestNeighbours() = default;
 
 bool KNearestNeighbours::sameAs(const Method& other) const {
     auto o = dynamic_cast<const KNearestNeighbours*>(&other);
-    return o && pick().sameAs(o->pick()) && distanceWeighting().sameAs(o->distanceWeighting());
+    return (o != nullptr) && pick().sameAs(o->pick()) && distanceWeighting().sameAs(o->distanceWeighting());
 }
 
 
@@ -55,11 +52,8 @@ void KNearestNeighbours::hash(eckit::MD5& md5) const {
 }
 
 
-void KNearestNeighbours::assemble(
-        util::MIRStatistics& stats,
-        WeightMatrix& W,
-        const repres::Representation& in,
-        const repres::Representation& out) const {
+void KNearestNeighbours::assemble(util::MIRStatistics& stats, WeightMatrix& W, const repres::Representation& in,
+                                  const repres::Representation& out) const {
 
     // assemble with specific distance weighting method
     assemble(stats, W, in, out, pick(), distanceWeighting());
@@ -97,9 +91,16 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
             ASSERT(ip < nbOutputPoints);
             if (++progress) {
                 log << "KNearestNeighbours: k-d tree"
-                       "\n" "search: " << search << "s"
-                       "\n" "insert: " << insert << "s"
-                       "\n" << sptree << std::endl;
+                       "\n"
+                       "search: "
+                    << search
+                    << "s"
+                       "\n"
+                       "insert: "
+                    << insert
+                    << "s"
+                       "\n"
+                    << sptree << std::endl;
                 search = insert = 0;
             }
 
@@ -128,9 +129,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
                     insert += timer.elapsed() - t;
                 }
-
             }
-
         }
     }
 
@@ -146,9 +145,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
 void KNearestNeighbours::print(std::ostream& out) const {
     out << "KNearestNeighbours[";
     MethodWeighted::print(out);
-    out << ",nearestMethod=" << pick()
-        << ",distanceWeighting=" << distanceWeighting()
-        << "]";
+    out << ",nearestMethod=" << pick() << ",distanceWeighting=" << distanceWeighting() << "]";
 }
 
 
@@ -160,4 +157,3 @@ bool KNearestNeighbours::canIntroduceMissingValues() const {
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

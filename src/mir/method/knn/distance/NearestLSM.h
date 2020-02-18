@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -19,7 +20,7 @@ namespace mir {
 namespace lsm {
 class LandSeaMasks;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,14 +33,12 @@ namespace distance {
 // requires the LandSeaMasks from the interpolation method
 struct NearestLSM : DistanceWeightingWithLSM {
     NearestLSM(const param::MIRParametrisation&, const lsm::LandSeaMasks&);
-    void operator()(
-            size_t ip,
-            const Point3& point,
-            const std::vector<search::PointSearch::PointValueType>& neighbours,
-            std::vector<WeightMatrix::Triplet>& triplets) const;
+    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+                    std::vector<WeightMatrix::Triplet>& triplets) const;
+
 private:
-    const std::vector< bool >& imask_;
-    const std::vector< bool >& omask_;
+    const std::vector<bool>& imask_;
+    const std::vector<bool>& omask_;
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
     virtual void hash(eckit::MD5&) const;
@@ -53,4 +52,3 @@ private:
 
 
 #endif
-

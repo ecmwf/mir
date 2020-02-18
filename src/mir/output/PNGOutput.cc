@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -46,18 +47,23 @@ namespace mir {
 namespace output {
 
 void call_zero(int bad, const std::string& msg) {
-    if (bad) {
+    if (bad != 0) {
         eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
         throw eckit::SeriousBug(msg);
     }
 }
 
 void call_nonzero(void* ok, const std::string& msg) {
-    call_zero(!ok, msg);
+    call_zero(ok == nullptr ? 1 : 0, msg);
 }
 
 struct PNGOutput::PNGEncoder {
-    virtual ~PNGEncoder()                                = default;
+    PNGEncoder()          = default;
+    virtual ~PNGEncoder() = default;
+
+    PNGEncoder(const PNGEncoder&) = delete;
+    PNGEncoder& operator=(const PNGEncoder&) = delete;
+
     virtual void encode(png_bytep&, const double&) const = 0;
     virtual int bit_depth() const                        = 0;
     virtual int color_type() const                       = 0;
@@ -73,7 +79,7 @@ size_t PNGOutput::copy(const param::MIRParametrisation&, context::Context&) {
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     eckit::TraceResourceUsage<LibMir> usage("PNGOutput::save");
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
+    auto timing(ctx.statistics().saveTimer());
 
     const auto& field = ctx.field();
     field.validate();
@@ -124,11 +130,11 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
         png_set_IHDR(png_ptr, info_ptr, Ni, Nj, encoder->bit_depth(), encoder->color_type(), PNG_INTERLACE_NONE,
                      PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-//        png_color_16 trans;
-//        if (hasMissing_) {
-//            trans.gray =
-//            png_set_tRNS(png_ptr, info_ptr, nullptr, 0, &trans);
-//        }
+        //        png_color_16 trans;
+        //        if (hasMissing_) {
+        //            trans.gray =
+        //            png_set_tRNS(png_ptr, info_ptr, nullptr, 0, &trans);
+        //        }
 
         png_write_info(png_ptr, info_ptr);
         call_zero(setjmp(png_jmpbuf(png_ptr)), "write header end");
@@ -208,7 +214,8 @@ PNGEncoderFactory::PNGEncoderFactory(const std::string& name) : name_(name) {
 
 PNGEncoderFactory::~PNGEncoderFactory() = default;
 
-const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param, const data::MIRField& field) {
+const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param,
+                                                      const data::MIRField& field) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -227,7 +234,7 @@ const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametris
         throw eckit::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(param, field);
+    return j->second->make(param, field);
 }
 
 void PNGEncoderFactory::list(std::ostream& out) {
@@ -302,7 +309,7 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
 
         // set alpha channel
-        if (N_A_CHANNELS) {
+        if (N_A_CHANNELS != 0) {
             for (int i = 0; i < N_BYTES_PER_CHANNEL; ++i) {
                 *(p++) = 0xFF;
             }
@@ -313,8 +320,8 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
 
     int color_type() const {
         return N_C_CHANNELS == 1
-                   ? (N_A_CHANNELS ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
-                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
+                   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
+                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
     }
 
 private:
@@ -326,8 +333,8 @@ private:
     const bool hasMissing_;
 };
 
-static PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>>  encoder1("8-bit/g");
-static PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>>  encoder2("8-bit/ga");
+static PNGEncoderBuilder<PNGEncoderT<1, 0, 1, uint_fast8_t>> encoder1("8-bit/g");
+static PNGEncoderBuilder<PNGEncoderT<1, 1, 1, uint_fast8_t>> encoder2("8-bit/ga");
 static PNGEncoderBuilder<PNGEncoderT<1, 0, 2, uint_fast16_t>> encoder3("16-bit/g");
 static PNGEncoderBuilder<PNGEncoderT<1, 1, 2, uint_fast16_t>> encoder4("16-bit/ga");
 static PNGEncoderBuilder<PNGEncoderT<3, 0, 1, uint_fast32_t>> encoder5("8-bit/rgb");

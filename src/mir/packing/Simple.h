@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef Simple_H
@@ -24,18 +21,17 @@ namespace packing {
 
 
 class Simple : public Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    Simple(const std::string &name);
+    Simple(const std::string& name);
 
     // -- Destructor
 
-    virtual ~Simple(); // Change to virtual if base class
+    virtual ~Simple();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,14 +50,13 @@ class Simple : public Packer {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,12 +67,11 @@ class Simple : public Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    Simple(const Simple &);
-    Simple &operator=(const Simple &);
+    Simple(const Simple&);
+    Simple& operator=(const Simple&);
 
     // -- Members
     // None
@@ -92,18 +86,13 @@ class Simple : public Packer {
 
     // -- Class methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const;
-
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
 
     // -- Friends
-
-
-
 };
 
 
 }  // namespace packing
 }  // namespace mir
 #endif
-

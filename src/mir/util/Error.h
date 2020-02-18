@@ -3,25 +3,34 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @date Feb 2016
 
-#ifndef MIR_H
-#define MIR_H
+#ifndef mir_util_Error_h
+#define mir_util_Error_h
 
-#include "mir/config/LibMir.h"
+#include <iosfwd>
+
 
 namespace mir {
+namespace util {
 
- // Note: no 'log' namespace
 
-typedef LibMir MIR;
+class Error {
+    void print(std::ostream&) const;
+    friend std::ostream& operator<<(std::ostream& s, const Error& e) {
+        e.print(s);
+        return s;
+    }
+};
 
-} // namespace mir
+
+}  // namespace util
+}  // namespace mir
+
 
 #endif

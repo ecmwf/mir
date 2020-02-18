@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -13,8 +14,8 @@
 #define mir_stats_Distribution_h
 
 #include <cstddef>
-#include <string>
 #include <iosfwd>
+#include <string>
 
 
 namespace mir {
@@ -33,6 +34,7 @@ public:
     // -- Constructors
 
     Distribution();
+    Distribution(const Distribution&) = delete;
 
     // -- Destructor
 
@@ -42,9 +44,9 @@ public:
     // None
 
     // -- Operators
-
-    virtual double operator()() const = 0;
-    virtual void reset() = 0;
+    Distribution& operator=(const Distribution&) = delete;
+    virtual double operator()() const            = 0;
+    virtual void reset()                         = 0;
 
     // -- Methods
     // None

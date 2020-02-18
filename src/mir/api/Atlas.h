@@ -3,14 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 #ifndef mir_api_Atlas_H
 #define mir_api_Atlas_H
@@ -53,8 +51,8 @@
 
 namespace atlas {
 
-typedef eckit::geometry::Point2 PointXY;
-typedef eckit::geometry::Point3 PointXYZ;
+using PointXY  = eckit::geometry::Point2;
+using PointXYZ = eckit::geometry::Point3;
 
 struct PointLonLat : eckit::geometry::Point2 {
     PointLonLat();
@@ -66,7 +64,8 @@ struct PointLonLat : eckit::geometry::Point2 {
 namespace util {
 void gaussian_latitudes_npole_spole(int, double*);
 struct Config {
-    template <class T> void set(const char*, T) {}
+    template <class T>
+    void set(const char*, T) {}
 };
 struct Earth {
     static double radius();
@@ -81,7 +80,7 @@ struct Rotation {
     void unrotate(double[]) const;
     friend std::ostream& operator<<(std::ostream&, const Rotation&) {}
 };
-} // namespace util
+}  // namespace util
 
 class RectangularDomain {
 public:
@@ -91,17 +90,22 @@ public:
 struct Projection {
     Projection() {}
 
-    template <class T> Projection(T) {}
+    template <class T>
+    Projection(T) {}
 
     operator bool() const;
 
-    template <class T> PointLonLat lonlat(T) const { return PointLonLat(); }
+    template <class T>
+    PointLonLat lonlat(T) const {
+        return PointLonLat();
+    }
 };
 
 class Grid {
 public:
     Grid() {}
-    template <class T> Grid(T) {}
+    template <class T>
+    Grid(T) {}
 
     operator bool() const;
     const std::vector<long>& nx() const;
@@ -112,54 +116,67 @@ public:
 namespace grid {
 
 struct ReducedGaussianGrid : public Grid {
-    template <class T> ReducedGaussianGrid(T) {}
+    template <class T>
+    ReducedGaussianGrid(T) {}
 
-    template <class T, class U> ReducedGaussianGrid(T, U) {}
+    template <class T, class U>
+    ReducedGaussianGrid(T, U) {}
 };
-
 struct RegularGaussianGrid : public Grid {
-    template <class T> RegularGaussianGrid(T) {}
+    template <class T>
+    RegularGaussianGrid(T) {}
 
-    template <class T, class U> RegularGaussianGrid(T, U) {}
+    template <class T, class U>
+    RegularGaussianGrid(T, U) {}
 };
 
 struct LinearSpacing {
     LinearSpacing(const std::array<double, 2>&, size_t = 0) {}
-    template <class T, class U, class V, class W> LinearSpacing(T, U, V, W) {}
+    template <class T, class U, class V, class W>
+    LinearSpacing(T, U, V, W) {}
 
-    template <class T, class U, class V> LinearSpacing(T, U, V) {}
+    template <class T, class U, class V>
+    LinearSpacing(T, U, V) {}
 };
 
 struct StructuredGrid : public Grid {
 
-    typedef Projection Projection;
+    using Projection = Projection;
 
     struct XSpace {
-        template <class T> XSpace(T) {}
+        template <class T>
+        XSpace(T) {}
 
-        template <class T, class U> XSpace(T, U) {}
+        template <class T, class U>
+        XSpace(T, U) {}
 
         XSpace(const std::array<double, 2>&, const std::vector<long>&, bool) {}
     };
     struct YSpace {
-        template <class T> YSpace(T) {}
+        template <class T>
+        YSpace(T) {}
 
-        template <class T, class U> YSpace(T, U) {}
+        template <class T, class U>
+        YSpace(T, U) {}
     };
 
-    template <class T> StructuredGrid(T) {}
+    template <class T>
+    StructuredGrid(T) {}
 
-    template <class T, class U> StructuredGrid(T, U) {}
-    template <class T, class U, class V, class W> StructuredGrid(T, U, V, W) {}
+    template <class T, class U>
+    StructuredGrid(T, U) {}
+    template <class T, class U, class V, class W>
+    StructuredGrid(T, U, V, W) {}
 };
 
 struct UnstructuredGrid : public Grid {
-    template <class T> UnstructuredGrid(T) {}
+    template <class T>
+    UnstructuredGrid(T) {}
 };
 
-} // namespace grid
+}  // namespace grid
 
-} // namespace atlas
+}  // namespace atlas
 
 #endif
 

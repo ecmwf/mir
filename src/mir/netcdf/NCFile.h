@@ -3,31 +3,32 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
-#ifndef mir_netcdf_NCFile
-#define mir_netcdf_NCFile
+#ifndef mir_netcdf_NCFile_h
+#define mir_netcdf_NCFile_h
 
 #include <string>
+
 
 namespace mir {
 namespace netcdf {
 
-class NCFile
-{
+
+class NCFile {
 public:
-    NCFile(const std::string &path);
+    NCFile(const std::string& path);
     ~NCFile();
 
     int open();
     void close();
 
-    const std::string &path() const;
+    const std::string& path() const;
 
 protected:
     // -- Members
@@ -36,23 +37,23 @@ protected:
     bool open_;
 
 private:
-
-    NCFile(const NCFile &);
-    NCFile &operator=(const NCFile &);
+    NCFile(const NCFile&);
+    NCFile& operator=(const NCFile&);
 
     // -- Methods
-    void print(std::ostream &out) const;
+    void print(std::ostream& out) const;
 
 
     // -- Friends
-    friend std::ostream &operator<<(std::ostream &out, const NCFile &v)
-    {
+    friend std::ostream& operator<<(std::ostream& out, const NCFile& v) {
         v.print(out);
         return out;
     }
 };
 
 
-}
-}
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

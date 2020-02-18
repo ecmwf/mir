@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,21 +27,13 @@ namespace mir {
 namespace stats {
 
 
-namespace {
-
-
 static eckit::Mutex* local_mutex                         = nullptr;
 static std::map<std::string, ValueStatisticsFactory*>* m = nullptr;
 static pthread_once_t once                               = PTHREAD_ONCE_INIT;
-
-
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, ValueStatisticsFactory*>();
 }
-
-
-}  // (anonymous namespace)
 
 
 void ValueStatistics::operator()(const double&) {
@@ -97,7 +90,7 @@ ValueStatistics* ValueStatisticsFactory::build(const std::string& name) {
         throw eckit::SeriousBug("No ValueStatisticsFactory '" + name + "'");
     }
 
-    return (*j).second->make();
+    return j->second->make();
 }
 
 

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/interpolate/Gridded2Points.h"
@@ -28,7 +25,7 @@ namespace action {
 namespace interpolate {
 
 
-Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation):
+Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
     ASSERT(parametrisation_.get("latitudes", latitudes_));
     ASSERT(parametrisation_.get("longitudes", longitudes_));
@@ -45,14 +42,17 @@ Gridded2Points::~Gridded2Points() = default;
 
 bool Gridded2Points::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2Points*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_) &&
+           Gridded2GriddedInterpolation::sameAs(other);
 }
+
 
 void Gridded2Points::print(std::ostream& out) const {
     out << "Gridded2Points["
-           "points=" << latitudes_.size() << ",";
+           "points="
+        << latitudes_.size() << ",";
     Gridded2UnrotatedGrid::print(out);
-    out  << "]";
+    out << "]";
 }
 
 
@@ -60,17 +60,15 @@ const repres::Representation* Gridded2Points::outputRepresentation() const {
     return new repres::other::UnstructuredGrid(latitudes_, longitudes_);
 }
 
+
 const char* Gridded2Points::name() const {
     return "Gridded2Points";
 }
 
 
-namespace {
-static ActionBuilder< Gridded2Points > grid2grid("interpolate.grid2points");
-}
+static ActionBuilder<Gridded2Points> grid2grid("interpolate.grid2points");
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #include "mir/lsm/GribFileMask.h"
@@ -36,10 +32,8 @@ namespace mir {
 namespace lsm {
 
 
-GribFileMask::GribFileMask(const eckit::PathName& path,
-                           const param::MIRParametrisation& parametrisation,
-                           const repres::Representation& representation,
-                           const std::string& which) :
+GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
+                           const repres::Representation& representation, const std::string& which) :
     path_(path) {
 
     // WARNING: don't store the grid, it won't be there later if this
@@ -48,7 +42,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
 
     eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
 
-    mir::input::GribFileInput file( path_ );
+    mir::input::GribFileInput file(path_);
     const mir::input::MIRInput& input = file;
 
     ASSERT(file.next());
@@ -64,7 +58,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
         }
     }
 
-    std::unique_ptr< method::Method > method(method::MethodFactory::build(interpolation, runtime));
+    std::unique_ptr<method::Method> method(method::MethodFactory::build(interpolation, runtime));
     eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
 
     if (!(field.representation()->isGlobal())) {
@@ -73,7 +67,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path,
         throw eckit::UserError(oss.str());
     }
 
-    util::MIRStatistics dummy; // TODO: use the global one
+    util::MIRStatistics dummy;  // TODO: use the global one
     context::Context ctx(field, dummy);
     method->execute(ctx, *field.representation(), representation);
 
@@ -120,4 +114,3 @@ const std::vector<bool>& GribFileMask::mask() const {
 
 }  // namespace lsm
 }  // namespace mir
-

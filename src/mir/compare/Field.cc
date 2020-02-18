@@ -3,22 +3,23 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
+#include "mir/compare/BufrField.h"
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
-#include "mir/compare/BufrField.h"
 #include "mir/compare/GribField.h"
 
 
@@ -30,60 +31,51 @@ static bool normaliseLongitudes_ = false;
 
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
 
-    options.push_back(new SimpleOption<bool>("normalise-longitudes",
-                      "Normalise longitudes between 0 and 360"));
-
-
+    options.push_back(new SimpleOption<bool>("normalise-longitudes", "Normalise longitudes between 0 and 360"));
 
     GribField::addOptions(options);
     BufrField::addOptions(options);
 }
 
 
-void Field::setOptions(const eckit::option::CmdArgs &args) {
-
+void Field::setOptions(const eckit::option::CmdArgs& args) {
     args.get("normalise-longitudes", normaliseLongitudes_);
-
 
     GribField::setOptions(args);
     BufrField::setOptions(args);
 }
 
 
-Field::Field(FieldBase* field):
-    field_(field)
-{
-    if (field_) {
+Field::Field(FieldBase* field) : field_(field) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
 
 
-Field::Field(const Field& other):
-    field_(other.field_)
-{
-    if (field_) {
+Field::Field(const Field& other) : field_(other.field_) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
+
 
 Field::~Field() {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->detach();
     }
 }
 
 
-Field& Field::operator=(const Field& other)
-{
+Field& Field::operator=(const Field& other) {
     if (field_ != other.field_) {
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
         field_ = other.field_;
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
     }
@@ -92,7 +84,7 @@ Field& Field::operator=(const Field& other)
 }
 
 void Field::print(std::ostream& out) const {
-    if (field_) {
+    if (field_ != nullptr) {
         out << *field_;
     }
     else {
@@ -103,35 +95,29 @@ void Field::print(std::ostream& out) const {
 namespace {
 class Differences {
     const Field& field_;
+
 public:
-    Differences(const Field& field): field_(field) {}
-    bool operator() (const Field& a, const Field& b) const {
-        return field_.differences(a) < field_.differences(b);
-    }
-
+    Differences(const Field& field) : field_(field) {}
+    bool operator()(const Field& a, const Field& b) const { return field_.differences(a) < field_.differences(b); }
 };
-}
+}  // namespace
 
-std::vector<Field> Field::bestMatches(const FieldSet & fields) const {
+std::vector<Field> Field::bestMatches(const FieldSet& fields) const {
+
     std::vector<Field> matches;
-
-    for (auto k = fields.begin(); k != fields.end(); ++k) {
-        const auto& other = *k;
-
+    for (auto& other : fields) {
         if (match(other)) {
             matches.push_back(other);
         }
-
     }
 
     std::sort(matches.begin(), matches.end(), Differences(*this));
 
     return matches;
-
 }
 
 
-std::vector<Field> Field::sortByDifference(const FieldSet & fields) const {
+std::vector<Field> Field::sortByDifference(const FieldSet& fields) const {
     std::vector<Field> sorted(fields.begin(), fields.end());
     std::sort(sorted.begin(), sorted.end(), Differences(*this));
     return sorted;
@@ -164,7 +150,7 @@ std::ostream& Field::printDifference(std::ostream& out, const Field& other) cons
 }
 
 Field::operator bool() const {
-    return field_ != 0;
+    return field_ != nullptr;
 }
 
 bool Field::operator<(const Field& other) const {
@@ -202,34 +188,33 @@ const std::string& Field::path() const {
     return field_->path();
 }
 
-std::ostream& Field::printGrid(std::ostream& out)  const {
+std::ostream& Field::printGrid(std::ostream& out) const {
     ASSERT(field_);
     return field_->printGrid(out);
 }
 
-bool Field::match(const std::string&a, const std::string&b)  const {
+bool Field::match(const std::string& a, const std::string& b) const {
     ASSERT(field_);
     return field_->match(a, b);
 }
 
-size_t Field::numberOfPoints()  const {
+size_t Field::numberOfPoints() const {
     ASSERT(field_);
     return field_->numberOfPoints();
 }
 
-const std::string& Field::format()  const {
+const std::string& Field::format() const {
     ASSERT(field_);
     return field_->format();
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
-FieldBase::FieldBase(const std::string& path, off_t offset, size_t length):
-    info_(path, offset, length) {
-
+bool Field::canCompareFieldValues() const {
+    ASSERT(field_);
+    return field_->canCompareFieldValues();
 }
+
+
+FieldBase::FieldBase(const std::string& path, off_t offset, size_t length) : info_(path, offset, length) {}
 
 off_t FieldBase::offset() const {
     return info_.offset();
@@ -263,7 +248,6 @@ double FieldBase::normaliseLongitude(double longitude) {
     return longitude;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-}  // namespace compare
 
+}  // namespace compare
 }  // namespace mir

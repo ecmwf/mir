@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date April 2015
 
 
 #ifndef mir_input_GribInput_h
@@ -30,7 +26,6 @@ namespace input {
 
 class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
-
     GribInput();
 
     virtual ~GribInput();
@@ -39,17 +34,15 @@ public:
     void marsRequest(std::ostream&) const;
 
 protected:
-
     bool handle(grib_handle*);
 
 private:
-
     // -- Members
 
     param::CachedParametrisation cache_;
 
     mutable eckit::Mutex mutex_;
-    grib_handle *grib_;
+    grib_handle* grib_;
 
     // For unstructured grids
     std::vector<double> latitudes_;
@@ -64,7 +57,7 @@ private:
     // From MIRInput
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
-    virtual grib_handle *gribHandle(size_t which = 0) const;
+    virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t dimensions() const;
 
@@ -87,7 +80,6 @@ private:
     // From FieldParametrisation
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
-
 };
 
 
@@ -96,4 +88,3 @@ private:
 
 
 #endif
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Jan 2015
 
 
 #ifndef mir_netcdf_GridSpec_h
@@ -24,10 +21,16 @@
 
 namespace mir {
 namespace netcdf {
-
 class Variable;
+}
+}  // namespace mir
 
-class GridSpec  {
+
+namespace mir {
+namespace netcdf {
+
+
+class GridSpec {
 public:
     GridSpec(const Variable&);
     virtual ~GridSpec();
@@ -37,7 +40,7 @@ public:
 
     // -- Methods
 
-    static GridSpec* create(const Variable& variable);
+    static GridSpec* create(const Variable&);
 
     // For MIR
     virtual bool has(const std::string& name) const                             = 0;
@@ -69,34 +72,28 @@ private:
 
 
 class GridSpecGuesser {
-public:
+    GridSpecGuesser(const GridSpecGuesser&) = delete;
+    GridSpecGuesser& operator=(const GridSpecGuesser&) = delete;
 
-    static GridSpec* guess(const Variable &variable);
+public:
+    static GridSpec* guess(const Variable&);
 
 protected:
-
-
     GridSpecGuesser(size_t priority);
     virtual ~GridSpecGuesser();
 
-    virtual GridSpec* guess(const Variable &variable,
-                            const Variable &latitudes,
-                            const Variable &longitudes) const = 0;
+    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const = 0;
 
 private:
-
     size_t priority_;
-
 };
 
 
-template< class T>
+template <class T>
 class GridSpecGuesserBuilder : public GridSpecGuesser {
 
 
-    virtual GridSpec* guess(const Variable &variable,
-                            const Variable &latitudes,
-                            const Variable &longitudes) const  {
+    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const {
         return T::guess(variable, latitudes, longitudes);
     }
 

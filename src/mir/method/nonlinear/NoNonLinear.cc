@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -22,16 +23,11 @@ namespace method {
 namespace nonlinear {
 
 
-NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) :
-    NonLinear(param) {
-}
+NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool NoNonLinear::treatment(NonLinear::Matrix&,
-                            NonLinear::WeightMatrix&,
-                            NonLinear::Matrix&,
-                            const mir::data::MIRValuesVector&,
-                            const double&) const {
+bool NoNonLinear::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix&, NonLinear::Matrix&,
+                            const mir::data::MIRValuesVector&, const double&) const {
     // no non-linear treatment
     return false;
 }
@@ -39,7 +35,7 @@ bool NoNonLinear::treatment(NonLinear::Matrix&,
 
 bool NoNonLinear::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const NoNonLinear*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -61,4 +57,3 @@ static NonLinearBuilder<NoNonLinear> __nonlinear("no");
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-

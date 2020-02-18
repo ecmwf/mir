@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_context_Context_h
@@ -35,21 +32,19 @@ class MIRField;
 namespace context {
 class Content;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
 namespace context {
 
-class Extension{
+class Extension {
 public:
-
-    virtual ~Extension() {}
-
-    virtual Extension* clone() const = 0;
+    virtual ~Extension()                    = default;
+    virtual Extension* clone() const        = 0;
     virtual void print(std::ostream&) const = 0;
 
-    friend std::ostream &operator<<(std::ostream &s, const Extension &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Extension& p) {
         p.print(s);
         return s;
     }
@@ -57,7 +52,6 @@ public:
 
 class Context {
 public:
-
     // -- Exceptions
     // None
 
@@ -119,7 +113,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -137,13 +130,12 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     mutable eckit::Mutex mutex_;
     std::vector<Context> stack_;
 
-    input::MIRInput &input_;
+    input::MIRInput& input_;
     util::MIRStatistics& statistics_;
     std::unique_ptr<Content> content_;
 
@@ -161,11 +153,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream &s, const Context &p) {
+    friend std::ostream& operator<<(std::ostream& s, const Context& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -174,4 +165,3 @@ private:
 
 
 #endif
-

@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date April 2015
 
 
 #ifndef mir_input_GribAllFileInput_h
@@ -30,7 +26,6 @@ namespace input {
 
 class GribAllFileInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -40,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribAllFileInput(); // Change to virtual if base class
+    virtual ~GribAllFileInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -61,7 +56,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -78,7 +72,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string path_;
@@ -94,8 +87,8 @@ private:
     virtual data::MIRField field() const;
     virtual bool next();
 
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
 
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
@@ -108,7 +101,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -117,4 +109,3 @@ private:
 
 
 #endif
-

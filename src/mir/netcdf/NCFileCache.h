@@ -3,23 +3,29 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
-#ifndef mir_netcdf_NCFileCache
-#define mir_netcdf_NCFileCache
+#ifndef mir_netcdf_NCFileCache_h
+#define mir_netcdf_NCFileCache_h
 
-#include <string>
 #include <map>
+#include <string>
+
 
 namespace mir {
 namespace netcdf {
-
 class NCFile;
+}
+}  // namespace mir
+
+
+namespace mir {
+namespace netcdf {
 
 
 class NCFileCache {
@@ -27,17 +33,18 @@ public:
     NCFileCache();
     ~NCFileCache();
 
-    NCFile &lookUp(const std::string &);
+    NCFile& lookUp(const std::string&);
 
 private:
+    NCFileCache(const NCFileCache&);
+    NCFileCache& operator=(const NCFileCache&);
 
-    NCFileCache(const NCFileCache &);
-    NCFileCache &operator=(const NCFileCache &);
-
-    // ------
-    std::map<std::string, NCFile *> files_;
+    std::map<std::string, NCFile*> files_;
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

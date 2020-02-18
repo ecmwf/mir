@@ -1,0 +1,572 @@
+---
+
+001:
+    grid: 7/7
+    area: 85/0/-90/357
+    boundingBox: 42/42/42/42
+    Ni: 52
+    Nj: 26
+
+002:
+    grid: 4/4
+    area: 90/0/-90/356
+    boundingBox: 42/42/42/42
+    Ni: 90
+    Nj: 46
+
+003:
+    grid: 2/2
+    area: 2/0/0/2
+    boundingBox: 42/42/42/42
+    Ni: 2
+    Nj: 2
+
+004:
+    grid: 2/2
+    area: 2.1/0/0/2.1
+    boundingBox: 42/42/42/42
+    Ni: 2
+    Nj: 2
+
+005:
+    grid: 2/2
+    area: 3/1/1/3
+    boundingBox: 42/42/42/42
+    Ni: 2
+    Nj: 2
+
+006:
+    grid: 2/2
+    area: 37.6025/-114.8907/27.7626/-105.1875
+    boundingBox: 42/42/42/42
+    Ni: 5
+    Nj: 5
+
+007:
+    grid: 2/2
+    area: 37.6025/-114.8907/27.7626/-105.188
+    boundingBox: 42/42/42/42
+    Ni: 5
+    Nj: 5
+
+008:
+    grid: 2/2
+    area: 88/-178/-88/180
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 89
+
+009:
+    grid: 1/1
+    area: 0/-350/0/8
+    boundingBox: 42/42/42/42
+    Ni: 359
+    Nj: 1
+
+010:
+    grid: 0.5/0.5
+    area: 0/-350/0/9
+    boundingBox: 42/42/42/42
+    Ni: 719
+    Nj: 1
+
+011:
+    grid: 7/7
+    area: 85/0/-90/357
+    boundingBox: 42/42/42/42
+    Ni: 52
+    Nj: 26
+
+012:
+    grid: 7/7
+    area: 85/0/-90/357
+    boundingBox: 42/42/42/42
+    Ni: 52
+    Nj: 26
+
+013:
+    grid: 7/7
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 52
+    Nj: 26
+
+014:
+    grid: 4/4
+    area: 90/0/-90/356
+    boundingBox: 42/42/42/42
+    Ni: 90
+    Nj: 46
+
+015:
+    grid: 4/4
+    area: 90/0/-90/356
+    boundingBox: 42/42/42/42
+    Ni: 90
+    Nj: 46
+
+016:
+    grid: 4/4
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 90
+    Nj: 46
+
+017:
+    grid: 2/2
+    area: 90/0/-90/358
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 91
+
+018:
+    grid: 2/2
+    area: 90/0/-90/358
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 91
+
+019:
+    grid: 2/2
+    area: 89/1/-89/359
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 90
+
+020:
+    grid: 2/2
+    area: 90/0/-90/358
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 91
+
+021:
+    grid: 2/2
+    area: 89.7626/1.1093/-88.2374/359.1093
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 90
+
+022:
+    grid: 2/2
+    area: 89.7626/1.1093/-88.2374/359.1093
+    boundingBox: 42/42/42/42
+    Ni: 180
+    Nj: 90
+
+023:
+    grid: 1/1
+    area: 90/0/-90/359
+    boundingBox: 42/42/42/42
+    Ni: 360
+    Nj: 181
+
+024:
+    grid: 0.5/0.5
+    area: 90/0/-90/359.5
+    boundingBox: 42/42/42/42
+    Ni: 720
+    Nj: 361
+
+MIR-251.001:
+    grid: 0.003474259/0.003496601747573
+    area: 34.6548026/113.04894614/34.2911562/113.7472724
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.002:
+    grid: 0.003474259/0.003496601747573
+    area: 34.6548026/113.04894614/34.2911562/113.747272
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.003:
+    grid: 0.00352/0.003558252427184
+    area: 34.657355/113.04832/34.29085525/113.74528
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.004:
+    grid: 0.006198529411765/0.005665625
+    area: 36.34501645/113.58806225/35.81244723/114.41866527
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.005:
+    grid: 0.0097087/0.010417
+    area: 35.00112/112.9995593/33.990671/114.0092641
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.006:
+    grid: 0.010417/0.007353
+    area: 36.345879/113.586968/35.816463/114.420328
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.007:
+    grid: 0.166667/0.166667
+    area: 51.166769/10.833355/42.500085/28.166723
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-251.008:
+    grid: 0.2999999/0.3
+    area: -5.7/105.8999647/-6/106.1999646
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-309.001:
+    grid: 0/0
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.002:
+    grid: 0/0
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.003:
+    grid: 0/0
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.004:
+    grid: 0/0
+    area: -0.2/-0.3/-0.2/-0.3
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.005:
+    grid: 1/1
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.006:
+    grid: 1/1
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-0.3/0/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.007:
+    grid: 1/1
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.2/0/-0.2/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.008:
+    grid: 1/1
+    area: -0.2/-0.3/-0.2/-0.3
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.009:
+    grid: 2/2
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.010:
+    grid: 2/2
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-0.3/0/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.011:
+    grid: 2/2
+    area: -0.2/-0.3/-0.2/-0.3
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.2/0/-0.2/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.012:
+    grid: 2/2
+    area: -0.2/-0.3/-0.2/-0.3
+    boundingBox: -0.2/-0.3/-0.2/-0.3
+    Ni: 0
+    Nj: 0
+
+MIR-309.013:
+    grid: 0/0
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.014:
+    grid: 0/0
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.015:
+    grid: 0/0
+    area: box11
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.016:
+    grid: 0/0
+    area: box11
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.017:
+    grid: 1/1
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.018:
+    grid: 1/1
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-0.2/0/0.8
+    Ni: 0
+    Nj: 0
+
+MIR-309.019:
+    grid: 1/1
+    area: box11
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: 0.9/0/-0.1/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.020:
+    grid: 1/1
+    area: box11
+    boundingBox: 0.9/-0.2/-0.1/0.8
+    Ni: 0
+    Nj: 0
+
+MIR-309.021:
+    grid: 2/2
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.022:
+    grid: 2/2
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-0.2/0/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.023:
+    grid: 2/2
+    area: box11
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.1/0/-0.1/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.024:
+    grid: 2/2
+    area: box11
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.025:
+    grid: 3/3
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.026:
+    grid: 3/3
+    area: box11
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-0.2/0/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.027:
+    grid: 3/3
+    area: box11
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -0.1/0/-0.1/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.028:
+    grid: 3/3
+    area: box11
+    boundingBox: -0.1/-0.2/-0.1/-0.2
+    Ni: 0
+    Nj: 0
+
+MIR-309.029:
+    grid: 3/3
+    area: box22
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 0/0/0/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.030:
+    grid: 3/3
+    area: box22
+    allowLatitudeShift: false
+    allowLongitudeShift: true
+    boundingBox: 0/-1/0/-1
+    Ni: 0
+    Nj: 0
+
+MIR-309.031:
+    grid: 3/3
+    area: box22
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: -1/0/-1/0
+    Ni: 0
+    Nj: 0
+
+MIR-309.032:
+    grid: 3/3
+    area: box22
+    boundingBox: -1/-1/-1/-1
+    Ni: 0
+    Nj: 0
+
+MIR-313.001:
+    grid: 0.45/0.3
+    area: 89.85/0.225/-89.85/359.775
+    boundingBox: 89.85/0.225/-89.85/359.775
+    Ni: 0
+    Nj: 0
+
+MIR-313.002:
+    grid: 0.45/0.3
+    area: 90/0/-90/359.55
+    allowLatitudeShift: false
+    allowLongitudeShift: false
+    boundingBox: 90/0/-90/359.55
+    Ni: 0
+    Nj: 0
+
+MIR-313.003:
+    grid: 1.25/0.833333
+    area: 90/0/-90/358.75
+    allowLatitudeShift: true
+    allowLongitudeShift: false
+    boundingBox: 89.999928/0/-90/358.75
+    Ni: 0
+    Nj: 0
+
+MIR-313.004:
+    grid: 1.25/0.833333
+    area: 89.5833/0.625/-89.5833/359.375
+    boundingBox: 89.583295/0.625/-89.5833/359.375
+    Ni: 0
+    Nj: 0
+
+MIR-315.001:
+    grid: 0.55469953775/1.41732283465
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-315.002:
+    grid: 0.555555555556/1.41732283465
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-315.003:
+    grid: 0.55832037325/1.41732283465
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-315.004:
+    grid: 0.559875583204/1.41732283465
+    area: 90/0/-90/360
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-315.005:
+    grid: 0.8333333333333334/0.5555555555555556
+    area: 90/-359.16666667/29.44444468/0.83333189
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+
+MIR-315.006:
+    grid: 0.04166666667/0.04166666667
+    area: 50.000004/339.95836053/19.95833493/350.000028
+    boundingBox: 42/42/42/42
+    Ni: 0
+    Nj: 0
+

@@ -3,16 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @author Willem Deconinck
-/// @date Apr 2015
 
 
 #ifndef mir_caching_legendre_LegendreLoader_h
@@ -29,7 +24,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -41,11 +36,10 @@ class LegendreLoader {
 
 public:
     LegendreLoader(const param::MIRParametrisation&, const eckit::PathName&);
+    virtual ~LegendreLoader();
 
     LegendreLoader(const LegendreLoader&) = delete;
-    void operator=(const LegendreLoader&) = delete;
-
-    virtual ~LegendreLoader();
+    LegendreLoader& operator=(const LegendreLoader&) = delete;
 
     virtual const void* address() const = 0;
     virtual size_t size() const         = 0;
@@ -53,13 +47,15 @@ public:
 
     atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
 
+    static eckit::Channel& log();
+    static eckit::Channel& info();
+    static eckit::Channel& warn();
+
 protected:
     const param::MIRParametrisation& parametrisation_;
     eckit::PathName path_;
 
     virtual void print(std::ostream&) const = 0;
-
-    static eckit::Channel& log();
 
 private:
     friend std::ostream& operator<<(std::ostream& s, const LegendreLoader& p) {
@@ -73,6 +69,9 @@ class LegendreLoaderFactory {
     std::string name_;
     virtual LegendreLoader* make(const param::MIRParametrisation&, const eckit::PathName& path) = 0;
     virtual bool shared() const                                                                 = 0;
+
+    LegendreLoaderFactory(const LegendreLoaderFactory&) = delete;
+    LegendreLoaderFactory& operator=(const LegendreLoaderFactory&) = delete;
 
 protected:
     LegendreLoaderFactory(const std::string&);

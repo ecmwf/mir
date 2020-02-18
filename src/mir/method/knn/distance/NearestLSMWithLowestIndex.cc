@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -37,11 +38,10 @@ struct Choice {
     size_t index_;
 
     bool operator<(const Choice& other) {
-    return sameType_ >  other.sameType_ || (
-           sameType_ == other.sameType_ && (
-           eckit::types::is_strictly_greater    (other.distance_, distance_) || (
-           eckit::types::is_approximately_equal (other.distance_, distance_) &&
-           index_ < other.index_ )));
+        return sameType_ > other.sameType_ ||
+               (sameType_ == other.sameType_ &&
+                (eckit::types::is_strictly_greater(other.distance_, distance_) ||
+                 (eckit::types::is_approximately_equal(other.distance_, distance_) && index_ < other.index_)));
     }
 };
 
@@ -56,11 +56,9 @@ NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisa
 }
 
 
-void NearestLSMWithLowestIndex::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NearestLSMWithLowestIndex::operator()(size_t ip, const Point3& point,
+                                           const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                           std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
     ASSERT(ip < omask_.size());
@@ -84,7 +82,7 @@ void NearestLSMWithLowestIndex::operator()(
 
 bool NearestLSMWithLowestIndex::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NearestLSMWithLowestIndex*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -107,4 +105,3 @@ static DistanceWeightingWithLSMBuilder<NearestLSMWithLowestIndex> __distance("ne
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

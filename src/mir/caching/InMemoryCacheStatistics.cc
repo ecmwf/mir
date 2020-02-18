@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -17,22 +18,18 @@
 namespace mir {
 namespace caching {
 
-//----------------------------------------------------------------------------------------------------------------------
 
-InMemoryCacheStatistics::InMemoryCacheStatistics():
+InMemoryCacheStatistics::InMemoryCacheStatistics() :
     hits_(0),
     misses_(0),
     evictions_(0),
     insertions_(0),
     oldest_(0),
     youngest_(0),
-    capacity_(),
-    footprint_(),
-    unique_(0),
-    required_() {
-}
+    unique_(0) {}
 
-InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
+
+InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {
     s >> insertions_;
     s >> evictions_;
     s >> hits_;
@@ -45,7 +42,8 @@ InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream &s) {
     s >> required_;
 }
 
-void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
+
+void InMemoryCacheStatistics::encode(eckit::Stream& s) const {
     s << insertions_;
     s << evictions_;
     s << hits_;
@@ -58,7 +56,8 @@ void InMemoryCacheStatistics::encode(eckit::Stream &s) const {
     s << required_;
 }
 
-InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics &other) {
+
+InMemoryCacheStatistics& InMemoryCacheStatistics::operator+=(const InMemoryCacheStatistics& other) {
     insertions_ += other.insertions_;
     evictions_ += other.evictions_;
     hits_ += other.hits_;
@@ -73,7 +72,7 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator+=(const InMemoryCache
 }
 
 
-InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
+InMemoryCacheStatistics& InMemoryCacheStatistics::operator/=(size_t n) {
     insertions_ /= n;
     evictions_ /= n;
     hits_ /= n;
@@ -87,7 +86,8 @@ InMemoryCacheStatistics &InMemoryCacheStatistics::operator/=(size_t n) {
     return *this;
 }
 
-void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const char *indent) const {
+
+void InMemoryCacheStatistics::report(const char* title, std::ostream& out, const char* indent) const {
 
     std::string t(title);
     reportBytes(out, (t + ", capacity").c_str(), capacity_.memory(), indent);
@@ -109,10 +109,8 @@ void InMemoryCacheStatistics::report(const char *title, std::ostream &out, const
 
     reportBytes(out, (t + ", required").c_str(), required_.memory(), indent);
     reportBytes(out, (t + ", required - shared").c_str(), required_.shared(), indent);
-
-
 }
 
 
-} // namespace caching
-} // namespace mir
+}  // namespace caching
+}  // namespace mir

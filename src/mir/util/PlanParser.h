@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date April 2016
 
 
 #ifndef mir_util_PlanParser_h
@@ -30,7 +26,7 @@ class MIRParametrisation;
 namespace action {
 class ActionPlan;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -39,20 +35,17 @@ namespace util {
 
 class PlanParser : public eckit::StreamParser {
 
-public: // methods
+public:  // methods
+    PlanParser(std::istream& in);
 
-    PlanParser(std::istream &in);
+    void parse(action::ActionPlan& p, const param::MIRParametrisation&);
 
-    void parse(action::ActionPlan&p, const param::MIRParametrisation&);
-
-private: // methods
-
+private:  // methods
     void parseAction(action::ActionPlan&, const param::MIRParametrisation&);
 
     std::string parseToken();
     std::map<std::string, std::vector<std::string> > parseArguments(const std::string& action);
     std::vector<std::string> parseValues();
-
 };
 
 
@@ -61,4 +54,3 @@ private: // methods
 
 
 #endif
-

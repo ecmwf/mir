@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -22,21 +23,19 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 class SimpleParametrisation;
-}
-}
+}  // namespace param
+}  // namespace mir
 
 
 namespace mir {
 namespace param {
 
 
-class Rules  {
+class Rules {
 protected:
-
     // -- Types
 
 public:
-
     // -- Contructors
 
     Rules();
@@ -54,7 +53,6 @@ public:
     void readConfigurationFiles();
 
 private:
-
     // -- Members
 
     eckit::Mutex mutex_;
@@ -74,7 +72,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -83,4 +80,3 @@ private:
 
 
 #endif
-

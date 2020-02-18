@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,7 +24,7 @@ class MD5;
 namespace linalg {
 class Matrix;
 }
-}
+}  // namespace eckit
 
 namespace mir {
 namespace method {
@@ -32,7 +33,7 @@ class WeightMatrix;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -42,9 +43,8 @@ namespace nonlinear {
 
 class NonLinear {
 public:
-
     using WeightMatrix = method::WeightMatrix;
-    using Matrix = eckit::linalg::Matrix;
+    using Matrix       = eckit::linalg::Matrix;
 
     NonLinear(const param::MIRParametrisation&);
 
@@ -54,12 +54,8 @@ public:
     virtual ~NonLinear();
 
     /// Update interpolation linear system to account for non-linearities
-    virtual bool treatment(
-            Matrix& A,
-            WeightMatrix& W,
-            Matrix& B,
-            const data::MIRValuesVector& values,
-            const double& missingValue) const = 0;
+    virtual bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
+                           const double& missingValue) const = 0;
 
     virtual bool sameAs(const NonLinear& other) const = 0;
 
@@ -68,14 +64,12 @@ public:
     virtual bool canIntroduceMissingValues() const;
 
 private:
-
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& s, const NonLinear& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -83,23 +77,26 @@ class NonLinearFactory {
 private:
     std::string name_;
     virtual NonLinear* make(const param::MIRParametrisation&) = 0;
+
+    NonLinearFactory(const NonLinearFactory&) = delete;
+    NonLinearFactory& operator=(const NonLinearFactory&) = delete;
+
 protected:
     NonLinearFactory(const std::string& name);
     virtual ~NonLinearFactory();
+
 public:
     static const NonLinear* build(const std::string& name, const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class NonLinearBuilder : public NonLinearFactory {
-    virtual NonLinear* make(const param::MIRParametrisation& param) {
-        return new T(param);
-    }
+    virtual NonLinear* make(const param::MIRParametrisation& param) { return new T(param); }
+
 public:
-    NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {
-    }
+    NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}
 };
 
 
@@ -109,4 +106,3 @@ public:
 
 
 #endif
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/output/ValuesOutput.h"
@@ -24,10 +21,7 @@ namespace mir {
 namespace output {
 
 
-ValuesOutput::ValuesOutput():
-    missingValue_(9999),
-    hasMissing_(false) {
-}
+ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
 
 
 ValuesOutput::~ValuesOutput() = default;
@@ -38,8 +32,7 @@ size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
 }
 
 
-bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&,
-                                       const param::MIRParametrisation&) const {
+bool ValuesOutput::sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const {
     return true;
 }
 
@@ -51,11 +44,11 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 
 bool ValuesOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const ValuesOutput*>(&other);
-    return o && this == o;
+    return (o != nullptr) && this == o;
 }
 
 
-void ValuesOutput::print(std::ostream &out) const {
+void ValuesOutput::print(std::ostream& out) const {
     out << "ValuesOutput[]";
 }
 
@@ -66,7 +59,7 @@ size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ct
     ASSERT(field.dimensions() == 1);
 
     missingValue_ = field.missingValue();
-    hasMissing_ = field.hasMissing();
+    hasMissing_   = field.hasMissing();
 
     values_.resize(field.dimensions());
 
@@ -101,4 +94,3 @@ const MIRValuesVector& ValuesOutput::values(size_t which) const {
 
 }  // namespace output
 }  // namespace mir
-

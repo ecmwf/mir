@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_interpolate_Gridded2ReducedGGPLGiven_h
@@ -27,7 +24,6 @@ namespace interpolate {
 
 class Gridded2ReducedGGPLGiven : public Gridded2UnrotatedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -58,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -78,7 +73,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::vector<long> pl_;
@@ -102,7 +96,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -112,4 +105,3 @@ private:
 
 
 #endif
-

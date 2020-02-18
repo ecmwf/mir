@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,8 +24,7 @@ namespace space {
 static SpaceChoice<SpaceLogarithmic> __space("1d.logarithmic");
 
 
-SpaceLogarithmic::SpaceLogarithmic() : Space() {
-}
+SpaceLogarithmic::SpaceLogarithmic() = default;
 
 
 void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& matrixOut, double missingValue) const {
@@ -33,7 +33,8 @@ void SpaceLogarithmic::linearise(const Space::Matrix& matrixIn, Space::Matrix& m
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn[i] == missingValue) {
             matrixOut[i] = missingValue;
-        } else {
+        }
+        else {
             matrixOut[i] = std::exp(matrixIn[i]);
         }
     }
@@ -46,7 +47,8 @@ void SpaceLogarithmic::unlinearise(const Space::Matrix& matrixIn, Space::Matrix&
     for (Matrix::Size i = 0; i < matrixIn.size(); ++i) {
         if (matrixIn[i] == missingValue) {
             matrixOut[i] = missingValue;
-        } else {
+        }
+        else {
             ASSERT(matrixIn[i] > 0.);
             matrixOut[i] = std::log(matrixIn[i]);
         }
@@ -59,7 +61,6 @@ size_t SpaceLogarithmic::dimensions() const {
 }
 
 
-}  // namespace decompose
-}  // namespace method
+}  // namespace space
+}  // namespace data
 }  // namespace mir
-

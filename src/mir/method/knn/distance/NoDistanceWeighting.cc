@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -21,15 +22,12 @@ namespace knn {
 namespace distance {
 
 
-NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {
-}
+NoDistanceWeighting::NoDistanceWeighting(const param::MIRParametrisation&) {}
 
 
-void NoDistanceWeighting::operator()(
-        size_t ip,
-        const Point3&,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NoDistanceWeighting::operator()(size_t ip, const Point3&,
+                                     const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                     std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
 
@@ -46,7 +44,7 @@ void NoDistanceWeighting::operator()(
 
 bool NoDistanceWeighting::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NoDistanceWeighting*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -70,4 +68,3 @@ static DistanceWeightingBuilder<NoDistanceWeighting> __distance2("no");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

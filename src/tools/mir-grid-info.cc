@@ -3,10 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
+
 
 #include <memory>
 
@@ -26,8 +28,9 @@ class MIRGridInfo : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
+
 public:
-    MIRGridInfo(int argc, char **argv) : MIRTool(argc, argv) {
+    MIRGridInfo(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::VectorOption<double>("grid", "West-East & South-North increments", 2));
         options_.push_back(new eckit::option::SimpleOption<std::string>("gridname", "grid name"));
         options_.push_back(new eckit::option::VectorOption<double>("area", "North/West/South/East", 4));
@@ -35,11 +38,11 @@ public:
 };
 
 
-void MIRGridInfo::usage(const std::string &tool) const {
+void MIRGridInfo::usage(const std::string& tool) const {
     eckit::Log::info() << tool << " --area=n/w/s/e --gridname=name|--grid=we/sn" << std::endl;
 }
 
-template<class T>
+template <class T>
 struct Sorter {
     T ref_;
 
@@ -49,23 +52,19 @@ struct Sorter {
     T dabove_;
     T dbelow_;
 
-    Sorter(const T& ref): ref_(ref),
-        above_(-90),
-        below_(90),
-        dabove_(90),
-        dbelow_(-90) {}
+    Sorter(const T& ref) : ref_(ref), above_(-90), below_(90), dabove_(90), dbelow_(-90) {}
 
     void push(const T& l) {
         auto x = l - ref_;
         if (x >= 0) {
             if (x < dabove_) {
-                above_ = l;
+                above_  = l;
                 dabove_ = x;
             }
         }
         if (x <= 0) {
             if (x > dbelow_) {
-                below_ = l;
+                below_  = l;
                 dbelow_ = x;
             }
         }
@@ -78,7 +77,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     using namespace mir;
     auto& log = eckit::Log::info();
 
-    if (args.count()) {
+    if (args.count() > 0) {
         const param::ConfigurationWrapper args_wrap(args);
 
         for (size_t i = 0, j = 0; i < args.count(); ++i) {
@@ -98,10 +97,11 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     }
 
     std::string gridname;
-    repres::RepresentationHandle rep(
-                args.has("grid") ? new repres::latlon::RegularLL(util::Increments(value[0], value[1])) :
-                args.get("gridname", gridname) ? namedgrids::NamedGrid::lookup(gridname).representation() :
-                throw eckit::UserError("'grid' or 'gridname' should be provided") );
+    repres::RepresentationHandle rep(args.has("grid")
+                                         ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
+                                         : args.get("gridname", gridname)
+                                               ? namedgrids::NamedGrid::lookup(gridname).representation()
+                                               : throw eckit::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 
     std::unique_ptr<repres::Iterator> iterator(rep->iterator());
@@ -132,19 +132,22 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
         e.push(point.lon());
         e.push(point.lon() + 360);
         e.push(point.lon() - 360);
-
     }
 
     log << "north " << n.above_ << ' ' << n.ref_ << ' ' << n.below_ << ' ' << n.dabove_ << ' ' << n.dbelow_
-        << "\n" "west "  << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' << w.dbelow_
-        << "\n" "south " << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_
-        << "\n" "east "  << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' << e.dbelow_
-        << std::endl;
+        << "\n"
+           "west "
+        << w.above_ << ' ' << w.ref_ << ' ' << w.below_ << ' ' << w.dabove_ << ' ' << w.dbelow_
+        << "\n"
+           "south "
+        << s.above_ << ' ' << s.ref_ << ' ' << s.below_ << ' ' << s.dabove_ << ' ' << s.dbelow_
+        << "\n"
+           "east "
+        << e.above_ << ' ' << e.ref_ << ' ' << e.below_ << ' ' << e.dabove_ << ' ' << e.dbelow_ << std::endl;
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRGridInfo tool(argc, argv);
     return tool.start();
 }
-

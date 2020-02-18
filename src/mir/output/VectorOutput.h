@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_output_VectorOutput_h
@@ -25,17 +22,16 @@ namespace output {
 
 class VectorOutput : public MIROutput {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    VectorOutput(MIROutput& component1, MIROutput& v_component);
+    VectorOutput(MIROutput& component1, MIROutput& component2);
 
     // -- Destructor
 
-    virtual ~VectorOutput(); // Change to virtual if base class
+    virtual ~VectorOutput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -49,7 +45,7 @@ public:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&); // No interpolation performed
+    virtual size_t copy(const param::MIRParametrisation&, context::Context&);  // No interpolation performed
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
 
     // -- Class members
@@ -59,7 +55,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     MIROutput& component1_;
@@ -78,7 +73,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -102,9 +96,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const VectorOutput& p)
+    // friend ostream& operator<<(ostream& s,const VectorOutput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +106,3 @@ private:
 
 
 #endif
-

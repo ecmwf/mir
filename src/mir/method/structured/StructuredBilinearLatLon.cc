@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date July 2015
 
 
 #include "mir/method/structured/StructuredBilinearLatLon.h"
@@ -32,18 +29,21 @@ namespace mir {
 namespace method {
 namespace structured {
 
-namespace {
+
 static MethodBuilder<StructuredBilinearLatLon> __method("structured-bilinear-latlon");
-}
+
 
 StructuredBilinearLatLon::StructuredBilinearLatLon(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
+
 StructuredBilinearLatLon::~StructuredBilinearLatLon() = default;
+
 
 bool StructuredBilinearLatLon::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredBilinearLatLon*>(&other);
-    return o && StructuredMethod::sameAs(other);
+    return (o != nullptr) && StructuredMethod::sameAs(other);
 }
+
 
 void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in,
                                                        const repres::Representation& out) const {
@@ -124,21 +124,21 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 //                    << w << " "
                 //                    << w << " "
                 //                    << w << std::endl;
-
-            } else {
+            }
+            else {
 
                 // find encompassing latitudes ("bottom/top")
 
-                size_t top_n = 0; // number of points in top latitude line
-                size_t bot_n = 0; // number of points in bottom latitude line
+                size_t top_n = 0;  // number of points in top latitude line
+                size_t bot_n = 0;  // number of points in bottom latitude line
 
-                size_t top_i = 0; // index of first point in top latitude line
-                size_t bot_i = 0; // index of first point in bottom latitude line
+                size_t top_i = 0;  // index of first point in top latitude line
+                size_t bot_i = 0;  // index of first point in bottom latitude line
 
                 Latitude top_lat = 0;
                 Latitude bot_lat = 0;
 
-                ASSERT(pl.size() >= 2); // at least 2 lines of latitude
+                ASSERT(pl.size() >= 2);  // at least 2 lines of latitude
 
                 if (eckit::types::is_approximately_equal(max_lat.value(), p.lat().value())) {
 
@@ -146,15 +146,15 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                     bot_n = pl[1];
                     top_i = 0;
                     bot_i = top_i + top_n;
-
-                } else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
+                }
+                else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
 
                     top_n = pl[pl.size() - 2];
                     bot_n = pl[pl.size() - 1];
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
-
-                } else {
+                }
+                else {
 
                     top_lat = icoords[top_i].lat();
                     bot_lat = icoords[bot_i].lat();
@@ -282,13 +282,16 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     W.setFromTriplets(triplets);
 }
 
+
 const char* StructuredBilinearLatLon::name() const {
     return "structured-bilinear-latlon";
 }
 
+
 void StructuredBilinearLatLon::hash(eckit::MD5& md5) const {
     StructuredMethod::hash(md5);
 }
+
 
 void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "StructuredBilinearLatLon[";
@@ -296,6 +299,7 @@ void StructuredBilinearLatLon::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

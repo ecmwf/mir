@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date April 2015
 
 
 #ifndef mir_input_MIRInput_h
@@ -67,7 +63,7 @@ public:
     virtual bool next();
     virtual size_t dimensions() const;
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
-    virtual data::MIRField field() const = 0;
+    virtual data::MIRField field() const                                             = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
     virtual size_t copy(double* values, size_t size) const;

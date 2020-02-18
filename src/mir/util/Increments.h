@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_util_Increments_h
@@ -29,12 +26,12 @@ class MIRParametrisation;
 namespace api {
 class MIRJob;
 }
-}
+}  // namespace mir
 namespace mir {
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -43,7 +40,6 @@ namespace util {
 
 class Increments {
 public:
-
     // -- Exceptions
     // None
 
@@ -82,13 +78,9 @@ public:
     bool isLatitudeShifted(const PointLatLon&) const;
     bool isLongitudeShifted(const PointLatLon&) const;
 
-    const LongitudeIncrement& west_east() const {
-        return west_east_;
-    }
+    const LongitudeIncrement& west_east() const { return west_east_; }
 
-    const LatitudeIncrement& south_north() const {
-        return south_north_;
-    }
+    const LatitudeIncrement& south_north() const { return south_north_; }
 
     void fill(grib_info&) const;
 
@@ -106,7 +98,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -124,7 +115,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     LongitudeIncrement west_east_;
@@ -144,11 +134,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream& s, const Increments& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Increments& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -157,4 +146,3 @@ private:
 
 
 #endif
-

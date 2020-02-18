@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -49,9 +50,10 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
 
-    for (std::string key : {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
-        bool value = false;
-        if (user.get(label + "-mesh-generator-" + key, value)) {
+    for (auto& k : {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
+        auto key   = label + "-mesh-generator-" + std::string(k);
+        auto value = false;
+        if (user.get(key, value)) {
             std::replace(key.begin(), key.end(), '-', '_');
             set(key, value);
         }
@@ -64,7 +66,8 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
 }
 
 bool MeshGeneratorParameters::sameAs(const MeshGeneratorParameters& other) const {
-    eckit::MD5 a, b;
+    eckit::MD5 a;
+    eckit::MD5 b;
     hash(a);
     other.hash(b);
 

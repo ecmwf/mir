@@ -3,12 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @date Jun 2017
 
 
 #include <memory>
@@ -30,21 +29,21 @@ private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
     int numberOfPositionalArguments() const { return 0; }
+
 public:
-    MIRGaussianFractions(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption< size_t >("N", "Gaussian N, default 1280"));
-        options_.push_back(new eckit::option::SimpleOption< size_t >("Nmin", "Gaussian N range minimum, default 0"));
-        options_.push_back(new eckit::option::SimpleOption< size_t >("Nmax", "Gaussian N range maximum, default 0"));
+    MIRGaussianFractions(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
+        options_.push_back(new eckit::option::SimpleOption<size_t>("N", "Gaussian N, default 1280"));
+        options_.push_back(new eckit::option::SimpleOption<size_t>("Nmin", "Gaussian N range minimum, default 0"));
+        options_.push_back(new eckit::option::SimpleOption<size_t>("Nmax", "Gaussian N range maximum, default 0"));
     }
 };
 
 
-void MIRGaussianFractions::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\nStatistics of the difference beween Gaussian coordinates converted using Fractions."
-               "\n"
-               "\nUsage: " << tool << " [--N=ordinal]"
-            << std::endl;
+void MIRGaussianFractions::usage(const std::string& tool) const {
+    eckit::Log::info() << "\nStatistics of the difference beween Gaussian coordinates converted using Fractions."
+                          "\n"
+                          "\nUsage: "
+                       << tool << " [--N=ordinal]" << std::endl;
 }
 
 
@@ -57,8 +56,8 @@ statistics_t* evaluateGaussianN(const size_t N, const mir::param::MIRParametrisa
     std::vector<double> latitudes(N);
     atlas::util::gaussian_latitudes_npole_equator(N, latitudes.data());
 
-    statistics_t* stats = new statistics_t;
-    for (const double& l: latitudes) {
+    auto stats = new statistics_t;
+    for (const double& l : latitudes) {
         const double f = double(eckit::Fraction(l));
         stats->operator()(f - l);
     }
@@ -89,7 +88,7 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
         std::unique_ptr<statistics_t> worse(statistics.get());
 
         bool first = true;
-        for (size_t n = Nmin; n <= Nmax; n+=2) {
+        for (size_t n = Nmin; n <= Nmax; n += 2) {
             eckit::Log::info() << "Evaluating N=" << n << std::endl;
 
             std::unique_ptr<statistics_t> stats(evaluateGaussianN(n, param));
@@ -100,23 +99,23 @@ void MIRGaussianFractions::execute(const eckit::option::CmdArgs& args) {
             }
         }
 
-        log << "\n" "Δlat: ";
+        log << "\n"
+               "Δlat: ";
         worse->print(log);
         log << std::endl;
-
-    } else {
+    }
+    else {
 
         evaluateGaussianN(N, param);
-        log << "\n" "Δlat: ";
+        log << "\n"
+               "Δlat: ";
         statistics->print(log);
         log << std::endl;
-
     }
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRGaussianFractions tool(argc, argv);
     return tool.start();
 }
-

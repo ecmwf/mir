@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/unsupported/StretchedLL.h"
@@ -24,33 +21,28 @@ namespace mir {
 namespace repres {
 
 
-StretchedLL::StretchedLL(const param::MIRParametrisation &parametrisation) {
-}
+StretchedLL::StretchedLL(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedLL::StretchedLL() {
-}
+StretchedLL::StretchedLL() = default;
 
 
 StretchedLL::~StretchedLL() = default;
 
 
-void StretchedLL::print(std::ostream &out) const {
+void StretchedLL::print(std::ostream& out) const {
     out << "StretchedLL["
         << "]";
 }
 
 
-void StretchedLL::fill(grib_info &info) const  {
+void StretchedLL::fill(grib_info& /*info*/) const {
     NOTIMP;
 }
 
 
-namespace {
-static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll"); // Name is what is returned by grib_api
-}
+static RepresentationBuilder<StretchedLL> stretchedLL("stretched_ll");  // Name is what is returned by grib_api
 
 
 }  // namespace repres
 }  // namespace mir
-

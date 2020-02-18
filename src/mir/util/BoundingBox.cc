@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/util/BoundingBox.h"
@@ -32,9 +29,6 @@ namespace mir {
 namespace util {
 
 
-namespace {
-
-
 static void check(const BoundingBox& bbox) {
     ASSERT(bbox.north() >= bbox.south());
     ASSERT(bbox.north() <= Latitude::NORTH_POLE);
@@ -45,15 +39,11 @@ static void check(const BoundingBox& bbox) {
 }
 
 
-}  // (anonymous namespace)
-
-
 BoundingBox::BoundingBox() :
     north_(Latitude::NORTH_POLE),
     west_(Longitude::GREENWICH),
     south_(Latitude::SOUTH_POLE),
-    east_(Longitude::GLOBE) {
-}
+    east_(Longitude::GLOBE) {}
 
 
 BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
@@ -70,28 +60,27 @@ BoundingBox::BoundingBox(const param::MIRParametrisation& param) {
 
     double box[4];
     ASSERT(param.get("north", box[0]));
-    ASSERT(param.get("west",  box[1]));
+    ASSERT(param.get("west", box[1]));
     ASSERT(param.get("south", box[2]));
-    ASSERT(param.get("east",  box[3]));
+    ASSERT(param.get("east", box[3]));
 
     double angularPrecision = 0.;
-    param.get("angularPrecision", angularPrecision);
+    param.get("angular_precision", angularPrecision);
 
-    if (angularPrecision > 0. && !param.has("subdivisionsOfBasicAngle")) {
+    if (angularPrecision > 0.) {
 
         const eckit::Fraction precision(angularPrecision);
         north_ = eckit::Fraction(box[0], precision);
         west_  = eckit::Fraction(box[1], precision);
         south_ = eckit::Fraction(box[2], precision);
         east_  = eckit::Fraction(box[3], precision);
-
-    } else {
+    }
+    else {
 
         north_ = box[0];
         west_  = box[1];
         south_ = box[2];
         east_  = box[3];
-
     }
 
     normalise();
@@ -105,10 +94,7 @@ BoundingBox::BoundingBox(const BoundingBox& other) {
 
 
 bool BoundingBox::operator==(const BoundingBox& other) const {
-    return  (north_ == other.north_) &&
-            (south_ == other.south_) &&
-            (west_ == other.west_) &&
-            (east_ == other.east_);
+    return (north_ == other.north_) && (south_ == other.south_) && (west_ == other.west_) && (east_ == other.east_);
 }
 
 
@@ -120,24 +106,20 @@ BoundingBox::~BoundingBox() = default;
 
 void BoundingBox::print(std::ostream& out) const {
     out << "BoundingBox["
-        <<  "north=" << north_
-        << ",west=" << west_
-        << ",south=" << south_
-        << ",east=" << east_
-        << "]";
+        << "north=" << north_ << ",west=" << west_ << ",south=" << south_ << ",east=" << east_ << "]";
 }
 
 
-void BoundingBox::fill(grib_info& info) const  {
+void BoundingBox::fill(grib_info& info) const {
     // Warning: scanning mode not considered
     info.grid.latitudeOfFirstGridPointInDegrees  = north_.value();
     info.grid.longitudeOfFirstGridPointInDegrees = west_.value();
     info.grid.latitudeOfLastGridPointInDegrees   = south_.value();
     info.grid.longitudeOfLastGridPointInDegrees  = east_.value();
 
-    const long c = info.packing.extra_settings_count++;
-    info.packing.extra_settings[c].type = GRIB_TYPE_LONG;
-    info.packing.extra_settings[c].name = "expandBoundingBox";
+    const long c                              = info.packing.extra_settings_count++;
+    info.packing.extra_settings[c].type       = GRIB_TYPE_LONG;
+    info.packing.extra_settings[c].name       = "expandBoundingBox";
     info.packing.extra_settings[c].long_value = 1;
 }
 
@@ -150,7 +132,7 @@ void BoundingBox::hash(eckit::MD5& md5) const {
 }
 
 
-void BoundingBox::fill(api::MIRJob& job) const  {
+void BoundingBox::fill(api::MIRJob& job) const {
     job.set("area", north_.value(), west_.value(), south_.value(), east_.value());
 }
 
@@ -186,9 +168,7 @@ bool BoundingBox::contains(const Point2& p) const {
 
 
 bool BoundingBox::contains(const Latitude& lat, const Longitude& lon) const {
-    return (lat <= north_) &&
-            (lat >= south_) &&
-            (lon.normalise(west_) <= east_);
+    return (lat <= north_) && (lat >= south_) && (lon.normalise(west_) <= east_);
 }
 
 
@@ -199,15 +179,12 @@ bool BoundingBox::contains(const BoundingBox& other) const {
     }
 
     // check for West/East range (if non-periodic), then other's corners
-    if (east_ - west_ < other.east() - other.west() ||
-        east_ < other.east().normalise(west_)) {
+    if (east_ - west_ < other.east() - other.west() || east_ < other.east().normalise(west_)) {
         return false;
     }
 
-    return  contains(other.north(), other.west()) &&
-            contains(other.north(), other.east()) &&
-            contains(other.south(), other.west()) &&
-            contains(other.south(), other.east());
+    return contains(other.north(), other.west()) && contains(other.north(), other.east()) &&
+           contains(other.south(), other.west()) && contains(other.south(), other.east());
 }
 
 
@@ -222,7 +199,7 @@ bool BoundingBox::intersects(BoundingBox& other) const {
     }
 
     if (isPeriodicWestEast() && other.isPeriodicWestEast()) {
-        other = { n, other.west_, s, other.east_ };
+        other = {n, other.west_, s, other.east_};
         return intersectsSN;
     }
 
@@ -238,8 +215,8 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         }
 
         Longitude ref = b.west_.normalise(a.west_);
-        Longitude w_ = std::max(a.west_, ref);
-        Longitude e_ = std::min(a.east_, b.east_.normalise(ref));
+        Longitude w_  = std::max(a.west_, ref);
+        Longitude e_  = std::min(a.east_, b.east_.normalise(ref));
 
         if (w_ <= e_) {
             w = w_;
@@ -249,20 +226,19 @@ bool BoundingBox::intersects(BoundingBox& other) const {
         return false;
     };
 
-    bool intersectsWE = west_ <= other.west_ ?
-        intersect(*this, other, w, e) || intersect(other, *this, w, e) :
-        intersect(other, *this, w, e) || intersect(*this, other, w, e);
+    bool intersectsWE = west_ <= other.west_ ? intersect(*this, other, w, e) || intersect(other, *this, w, e)
+                                             : intersect(other, *this, w, e) || intersect(*this, other, w, e);
 
     ASSERT(w <= e);
-    other = { n, w, s, e };
+    other = {n, w, s, e};
 
     return intersectsSN && intersectsWE;
 }
 
 
 bool BoundingBox::empty() const {
-    return  !eckit::types::is_strictly_greater(north_.value(), south_.value()) ||
-            !eckit::types::is_strictly_greater(east_.value(), west_.value());
+    return !eckit::types::is_strictly_greater(north_.value(), south_.value()) ||
+           !eckit::types::is_strictly_greater(east_.value(), west_.value());
 }
 
 
@@ -273,4 +249,3 @@ void BoundingBox::makeName(std::ostream& out) const {
 
 }  // namespace util
 }  // namespace mir
-

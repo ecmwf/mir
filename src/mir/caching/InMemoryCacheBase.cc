@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date   Oct 2016
 
 
 #include "mir/caching/InMemoryCacheBase.h"
@@ -29,14 +25,14 @@ namespace mir {
 namespace caching {
 
 
-static eckit::Mutex *local_mutex = nullptr;
-static std::set<InMemoryCacheBase *> *m = nullptr;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex       = nullptr;
+static std::set<InMemoryCacheBase*>* m = nullptr;
+static pthread_once_t once             = PTHREAD_ONCE_INIT;
 
 
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::set<InMemoryCacheBase *>();
+    m           = new std::set<InMemoryCacheBase*>();
 }
 
 
@@ -73,9 +69,9 @@ void InMemoryCacheBase::checkTotalFootprint() {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
 
-    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity("mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
-            InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024,
-                               1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
+    static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity(
+        "mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
+        InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024, 1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 
@@ -95,11 +91,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
             totalFootprint += j->footprint();
         }
 
-        log() << "CACHE-checkTotalFootprint size "
-              << totalFootprint
-              << ", max is "
-              << maximumCapacity
-              << std::endl;
+        log() << "CACHE-checkTotalFootprint size " << totalFootprint << ", max is " << maximumCapacity << std::endl;
 
         if (totalFootprint > maximumCapacity) {
 
@@ -109,16 +101,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
             for (auto& j : *m) {
                 InMemoryCacheUsage purged = j->purge(p);
                 if (purged) {
-                    log() << "CACHE-checkTotalFootprint purged "
-                          << purged
-                          << " from "
-                          << j->name()
-                          << std::endl;
+                    log() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;
                     more = true;
                 }
             }
         }
-
     }
 }
 
@@ -131,4 +118,3 @@ eckit::Channel& InMemoryCacheBase::log() {
 
 }  // namespace caching
 }  // namespace mir
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_util_Rotation_h
@@ -25,7 +22,7 @@ struct grib_info;
 namespace atlas {
 class Grid;
 class Projection;
-}
+}  // namespace atlas
 namespace mir {
 namespace api {
 class MIRJob;
@@ -36,7 +33,7 @@ class MIRParametrisation;
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -70,15 +67,14 @@ namespace util {
  */
 class Rotation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
     explicit Rotation(const param::MIRParametrisation&);
-    explicit Rotation(const Latitude& south_pole_latitude = Latitude::SOUTH_POLE,
+    explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
                       const Longitude& south_pole_longitude = Longitude::GREENWICH,
-                      double south_pole_rotation_angle = 0.0);
+                      double south_pole_rotation_angle      = 0.0);
 
     // -- Destructor
     ~Rotation();  // Change to virtual if base class
@@ -95,17 +91,11 @@ public:
     atlas::Grid rotate(const atlas::Grid&) const;
     util::BoundingBox boundingBox(const util::BoundingBox&) const;
 
-    const Latitude& south_pole_latitude() const {
-        return south_pole_latitude_;
-    }
+    const Latitude& south_pole_latitude() const { return south_pole_latitude_; }
 
-    const Longitude& south_pole_longitude() const {
-        return south_pole_longitude_;
-    }
+    const Longitude& south_pole_longitude() const { return south_pole_longitude_; }
 
-    double south_pole_rotation_angle() const {
-        return south_pole_rotation_angle_;
-    }
+    double south_pole_rotation_angle() const { return south_pole_rotation_angle_; }
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;
@@ -121,7 +111,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -140,7 +129,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     Latitude south_pole_latitude_;
@@ -162,11 +150,10 @@ private:
 
     // -- Friends
 
-    friend std::ostream&operator<<(std::ostream& s, const Rotation& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Rotation& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -175,4 +162,3 @@ private:
 
 
 #endif
-

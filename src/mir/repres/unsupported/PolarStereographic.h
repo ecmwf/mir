@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef PolarStereographic_H
@@ -24,18 +21,17 @@ namespace repres {
 
 
 class PolarStereographic : public Gridded {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    PolarStereographic(const param::MIRParametrisation &);
+    PolarStereographic(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~PolarStereographic(); // Change to virtual if base class
+    virtual ~PolarStereographic();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,14 +50,13 @@ class PolarStereographic : public Gridded {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,14 +67,13 @@ class PolarStereographic : public Gridded {
     // -- Class methods
     // None
 
-  private:
-
+private:
     PolarStereographic();
 
     // No copy allowed
 
-    PolarStereographic(const PolarStereographic &);
-    PolarStereographic &operator=(const PolarStereographic &);
+    PolarStereographic(const PolarStereographic&);
+    PolarStereographic& operator=(const PolarStereographic&);
 
     // -- Members
 
@@ -90,8 +84,8 @@ class PolarStereographic : public Gridded {
     double longitudeOfFirstGridPoint_;
     double latitudeOfFirstGridPoint_;
     double orientationOfTheGrid_;
-    bool southPoleOnProjectionPlane_;
     double radiusOfTheEarth_;
+    bool southPoleOnProjectionPlane_;
 
 
     // -- Methods
@@ -99,7 +93,7 @@ class PolarStereographic : public Gridded {
 
     // -- Overridden methods
 
-    virtual void fill(grib_info &) const;
+    virtual void fill(grib_info&) const;
     virtual void validate(const MIRValuesVector&) const;
 
     // -- Class members
@@ -110,13 +104,11 @@ class PolarStereographic : public Gridded {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const PolarStereographic& p)
+    // friend ostream& operator<<(ostream& s,const PolarStereographic& p)
     //  { p.print(s); return s; }
-
 };
 
 
 }  // namespace repres
 }  // namespace mir
 #endif
-

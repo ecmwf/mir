@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -67,9 +68,14 @@ struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     }
 
 private:
-    bool sameAs(const NonLinear& other) const { return dynamic_cast<const GridBoxMaximum*>(&other); }
+    bool sameAs(const NonLinear& other) const {
+        auto o = dynamic_cast<const GridBoxMaximum*>(&other);
+        return o != nullptr;
+    }
+
     void print(std::ostream& out) const { out << "GridBoxMaximum[]"; }
     bool canIntroduceMissingValues() const { return true; }
+
     void hash(eckit::MD5& h) const {
         std::ostringstream s;
         s << *this;

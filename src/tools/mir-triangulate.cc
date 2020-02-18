@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -37,23 +38,21 @@ class MIRTriangulate : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const {
-        return 0;
-    }
+    int minimumPositionalArguments() const { return 0; }
+
 public:
-    MIRTriangulate(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {
+    MIRTriangulate(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<std::string>("output", "Gmsh output file"));
     }
 };
 
 
-void MIRTriangulate::usage(const std::string &tool) const {
-    eckit::Log::info() <<
-                       "\nGRIB Delaunay triangulation."
-                       "\n"
-                       "\nUsage:"
-                       "\n\t" << tool << " [--output=example.msh] file.grib [file.grib [...]]"
-                       << std::endl;
+void MIRTriangulate::usage(const std::string& tool) const {
+    eckit::Log::info() << "\nGRIB Delaunay triangulation."
+                          "\n"
+                          "\nUsage:"
+                          "\n\t"
+                       << tool << " [--output=example.msh] file.grib [file.grib [...]]" << std::endl;
 }
 
 class Segment {
@@ -63,9 +62,8 @@ class Segment {
 public:
     // Segment() {}
 
-    explicit Segment(const eckit::geometry::Point2& start,
-                     const eckit::geometry::Point2& end,
-                     const eckit::geometry::Point2& inside):
+    explicit Segment(const eckit::geometry::Point2& start, const eckit::geometry::Point2& end,
+                     const eckit::geometry::Point2& inside) :
         inside_(inside) {
         points_.push_back(start);
         points_.push_back(end);
@@ -75,7 +73,7 @@ public:
     const eckit::geometry::Point2& end() const { return points_.back(); }
 
     bool inside(const eckit::geometry::Point2& pt) const {
-        bool in = false;
+        bool in  = false;
         double y = pt.y();
         double x = pt.x();
 
@@ -98,7 +96,7 @@ public:
                 continue;
             }
 
-            if(p1.y() == p2.y()) {
+            if (p1.y() == p2.y()) {
                 continue;
             }
 
@@ -109,7 +107,6 @@ public:
         }
 
         return in;
-
     }
 
 
@@ -130,13 +127,9 @@ public:
         return swapped ? (order > 0) : (order < 0);
     }
 
-    bool operator<(const Segment& other) const {
-        return points_ < other.points_;
-    }
+    bool operator<(const Segment& other) const { return points_ < other.points_; }
 
-    bool operator==(const Segment& other) const {
-        return points_ == other.points_;
-    }
+    bool operator==(const Segment& other) const { return points_ == other.points_; }
 
     bool merge(const Segment& other) {
         ASSERT(other.points_.size() == 2);
@@ -184,7 +177,6 @@ public:
         json << "ccw" << ccw();
         json.endObject();
     }
-
 };
 
 static std::map<Segment, eckit::geometry::Point2> cache;
@@ -199,21 +191,18 @@ static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const e
     //     cache[Segment(p2, p1)] = q;
     //     j = cache.find(s);
     // }
-    // return (*j).second;
+    // return j->second;
 }
 
-static bool connect(const eckit::geometry::Point2& q,
-                    Segment& line,
-                    const std::map<eckit::geometry::Point2, std::set<Segment > >& ends,
-                    std::set<Segment >& segments) {
+static bool connect(const eckit::geometry::Point2& q, Segment& line,
+                    const std::map<eckit::geometry::Point2, std::set<Segment> >& ends, std::set<Segment>& segments) {
 
     auto j = ends.find(q);
     if (j != ends.end()) {
-        const std::set<Segment>& q = (*j).second;
+        const std::set<Segment>& q = j->second;
 
         std::set<Segment> i;
-        std::set_intersection(q.begin(), q.end(), segments.begin(), segments.end(),
-                              std::inserter(i, i.begin()));
+        std::set_intersection(q.begin(), q.end(), segments.begin(), segments.end(), std::inserter(i, i.begin()));
 
         if (!i.empty()) {
             const Segment& s = *(i.begin());
@@ -225,11 +214,8 @@ static bool connect(const eckit::geometry::Point2& q,
     return false;
 }
 
-static void p( int n,
-               eckit::geometry::Point2 p0, double val0,
-               eckit::geometry::Point2 p1, double val1,
-               eckit::geometry::Point2 p2, double val2) {
-
+static void p(int n, eckit::geometry::Point2 p0, double val0, eckit::geometry::Point2 p1, double val1,
+              eckit::geometry::Point2 p2, double val2) {
 
 
     std::cout << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
@@ -239,10 +225,10 @@ static void p( int n,
     if (p0.y() > p1.y() && p0.y() > p2.y()) {
         std::cout << "            " << p0 << " (" << val0 << ")" << std::endl;
         if (p1.x() < p2.x()) {
-            std::cout <<  p1 << " (" << val1 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
+            std::cout << p1 << " (" << val1 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
-            std::cout <<  p2 << " (" << val2 << ") --- " << p1 << " (" << val1 << ")" << std::endl;
+            std::cout << p2 << " (" << val2 << ") --- " << p1 << " (" << val1 << ")" << std::endl;
         }
         return;
     }
@@ -250,20 +236,19 @@ static void p( int n,
 
     if (p0.y() > p1.y() && p0.y() == p2.y()) {
         if (p0.x() < p2.x()) {
-            std::cout <<  p0 << " (" << val0 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
+            std::cout << p0 << " (" << val0 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
-            std::cout <<  p2 << " (" << val2 << ") --- " << p0 << " (" << val0 << ")" << std::endl;
+            std::cout << p2 << " (" << val2 << ") --- " << p0 << " (" << val0 << ")" << std::endl;
         }
         std::cout << "            " << p1 << " (" << val1 << ")" << std::endl;
 
         return;
     }
 
-    std::cout <<  "+++ " << p0.y() << "  " << p1.y() << " " << p2.y() << std::endl;
+    std::cout << "+++ " << p0.y() << "  " << p1.y() << " " << p2.y() << std::endl;
 
     NOTIMP;
-
 }
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
@@ -281,7 +266,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
         while (input->next()) {
             // eckit::Timer tim(alternate ? "Delaunay triangulation (alternate)" : "Delaunay triangulation");
 
-            auto field = input->field();
+            auto field          = input->field();
             double missingValue = field.missingValue();
 
             // Build a mesh from grid
@@ -312,12 +297,13 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
             // Write mesh connectivity
             const auto& connectivity = mesh.cells().node_connectivity();
-            const auto coord         = array::make_view<double, 2, atlas::array::Intent::ReadOnly>(mesh.nodes().lonlat());
+            const auto coord = array::make_view<double, 2, atlas::array::Intent::ReadOnly>(mesh.nodes().lonlat());
 
 
-            eckit::geometry::Point2 pa, pb;
+            eckit::geometry::Point2 pa;
+            eckit::geometry::Point2 pb;
 
-            std::map<eckit::geometry::Point2, std::set<Segment > > ends;
+            std::map<eckit::geometry::Point2, std::set<Segment> > ends;
 
             std::set<Segment> segments;
 
@@ -332,7 +318,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                 size_t n = 0;
                 for (size_t i = 0; i < size; ++i) {
                     if (values[size_t(row(i))] == missingValue) {
-                        missing ++;
+                        missing++;
                         n |= 1 << i;
                     }
                 }
@@ -359,51 +345,49 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
                 switch (n) {
 
-                case 1: // missing = p0
-                    pa = middle(p0, p1);
-                    pb = middle(p0, p2);
-                    inside = p0;
-                    break;
+                    case 1:  // missing = p0
+                        pa     = middle(p0, p1);
+                        pb     = middle(p0, p2);
+                        inside = p0;
+                        break;
 
-                case 6: // missing = p2
+                    case 6:  // missing = p2
 
-                    pa = middle(p0, p2);
-                    pb = middle(p0, p1);
-                    inside = p2;
-                    break;
+                        pa     = middle(p0, p2);
+                        pb     = middle(p0, p1);
+                        inside = p2;
+                        break;
 
-                case 2: // missing = p1
+                    case 2:  // missing = p1
 
-                    pa = middle(p1, p0);
-                    pb = middle(p1, p2);
-                    inside = p1;
-                    break;
+                        pa     = middle(p1, p0);
+                        pb     = middle(p1, p2);
+                        inside = p1;
+                        break;
 
-                case 5: // missing = p0, p2
-                    pa = middle(p1, p2);
-                    pb = middle(p1, p0);
-                    inside = p0;
-                    break;
+                    case 5:  // missing = p0, p2
+                        pa     = middle(p1, p2);
+                        pb     = middle(p1, p0);
+                        inside = p0;
+                        break;
 
-                case 3: // missing = p0, p1
-                    pa = middle(p2, p0);
-                    pb = middle(p2, p1);
-                    inside = p0;
-                    break;
+                    case 3:  // missing = p0, p1
+                        pa     = middle(p2, p0);
+                        pb     = middle(p2, p1);
+                        inside = p0;
+                        break;
 
-                case 4: // missing = p2
-                    pa = middle(p2, p1);
-                    pb = middle(p2, p0);
-                    inside = p2;
-                    break;
-
+                    case 4:  // missing = p2
+                        pa     = middle(p2, p1);
+                        pb     = middle(p2, p0);
+                        inside = p2;
+                        break;
                 }
 
                 Segment s(pa, pb, inside);
                 segments.insert(s);
                 ends[pa].insert(s);
                 ends[pb].insert(s);
-
             }
 
 
@@ -432,7 +416,6 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                 count++;
             }
             json.endList();
-
         }
     }
 }

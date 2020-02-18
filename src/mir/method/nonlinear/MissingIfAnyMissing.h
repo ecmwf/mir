@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -22,11 +23,9 @@ namespace nonlinear {
 
 struct MissingIfAnyMissing : NonLinear {
     MissingIfAnyMissing(const param::MIRParametrisation&);
+
 private:
-    bool treatment(Matrix& A,
-                   WeightMatrix& W,
-                   Matrix& B,
-                   const data::MIRValuesVector& values,
+    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
                    const double& missingValue) const;
     bool sameAs(const NonLinear&) const;
     void print(std::ostream&) const;
@@ -40,4 +39,3 @@ private:
 
 
 #endif
-

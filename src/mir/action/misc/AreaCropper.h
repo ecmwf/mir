@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_AreaCropper_h
@@ -24,7 +21,7 @@ namespace mir {
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,7 +30,6 @@ namespace action {
 
 class AreaCropper : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -44,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper(); // Change to virtual if base class
+    virtual ~AreaCropper();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -67,13 +63,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -85,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     util::BoundingBox bbox_;
@@ -111,9 +105,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const AreaCropper& p)
+    // friend ostream& operator<<(ostream& s,const AreaCropper& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -122,4 +115,3 @@ private:
 
 
 #endif
-

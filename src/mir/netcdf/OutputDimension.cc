@@ -3,31 +3,28 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
 #include "mir/netcdf/OutputDimension.h"
 
-#include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Exceptions.h"
 
 #include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
-OutputDimension::OutputDimension(Dataset &owner, const std::string &name, size_t len):
+OutputDimension::OutputDimension(Dataset& owner, const std::string& name, size_t len) :
     Dimension(owner, name, len),
     id_(-1),
     created_(false),
-    grown_(false)
-{
-
-}
+    grown_(false) {}
 
 OutputDimension::~OutputDimension() = default;
 
@@ -37,7 +34,7 @@ void OutputDimension::create(int nc) const {
     created_ = true;
 }
 
-void OutputDimension::print(std::ostream &out) const {
+void OutputDimension::print(std::ostream& out) const {
     out << "OutputDimension[name=" << name_ << ",size=" << len_ << "]";
 }
 
@@ -49,7 +46,7 @@ int OutputDimension::id() const {
 void OutputDimension::grow(size_t count) {
     ASSERT(!created_);
     ASSERT(count >= len_);
-    len_ = count;
+    len_   = count;
     grown_ = true;
 }
 

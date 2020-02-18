@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -20,7 +21,7 @@ namespace mir {
 namespace output {
 class MultiScalarOutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -29,7 +30,6 @@ namespace input {
 
 class MultiScalarInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -39,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarInput(); // Change to virtual if base class
+    virtual ~MultiScalarInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -62,10 +62,9 @@ public:
     // None
 
 protected:
-
     // -- Members
 
-    std::vector< MIRInput* > components_;
+    std::vector<MIRInput*> components_;
 
     // -- Methods
     // None
@@ -80,7 +79,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -93,8 +91,8 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
 
     // -- Class members
@@ -106,7 +104,6 @@ private:
     // -- Friends
 
     friend class output::MultiScalarOutput;
-
 };
 
 
@@ -115,4 +112,3 @@ private:
 
 
 #endif
-

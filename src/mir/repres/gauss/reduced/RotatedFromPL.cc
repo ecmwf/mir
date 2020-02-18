@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/gauss/reduced/RotatedFromPL.h"
@@ -25,27 +22,24 @@ namespace gauss {
 namespace reduced {
 
 
-RotatedFromPL::RotatedFromPL(const param::MIRParametrisation &parametrisation):
+RotatedFromPL::RotatedFromPL(const param::MIRParametrisation& parametrisation) :
     FromPL(parametrisation),
-    rotation_(parametrisation) {
-}
+    rotation_(parametrisation) {}
 
 
-RotatedFromPL::RotatedFromPL(size_t N, const std::vector<long>& pl, const util::Rotation& rotation, const util::BoundingBox& bbox, double angularPrecision) :
+RotatedFromPL::RotatedFromPL(size_t N, const std::vector<long>& pl, const util::Rotation& rotation,
+                             const util::BoundingBox& bbox, double angularPrecision) :
     FromPL(N, pl, bbox, angularPrecision),
-    rotation_(rotation) {
-}
+    rotation_(rotation) {}
 
 
 RotatedFromPL::~RotatedFromPL() = default;
 
 
-void RotatedFromPL::print(std::ostream &out) const {
+void RotatedFromPL::print(std::ostream& out) const {
     out << "RotatedFromPL["
-            "N=" << N_
-        << ",bbox=" << bbox_
-        << ",rotation=" << rotation_
-        << "]";
+           "N="
+        << N_ << ",bbox=" << bbox_ << ",rotation=" << rotation_ << "]";
 }
 
 
@@ -57,7 +51,7 @@ void RotatedFromPL::makeName(std::ostream& out) const {
 
 bool RotatedFromPL::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const RotatedFromPL*>(&other);
-    return o && (rotation_ == o->rotation_) && FromPL::sameAs(other);
+    return (o != nullptr) && (rotation_ == o->rotation_) && FromPL::sameAs(other);
 }
 
 
@@ -66,14 +60,14 @@ Iterator* RotatedFromPL::iterator() const {
 }
 
 
-void RotatedFromPL::fill(grib_info &info) const  {
+void RotatedFromPL::fill(grib_info& info) const {
     FromPL::fill(info);
     rotation_.fill(info);
     info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REDUCED_ROTATED_GG;
 }
 
 
-void RotatedFromPL::fill(api::MIRJob&) const  {
+void RotatedFromPL::fill(api::MIRJob&) const {
     NOTIMP;
 }
 
@@ -88,13 +82,11 @@ const Gridded* RotatedFromPL::croppedRepresentation(const util::BoundingBox& bbo
 }
 
 
-namespace {
-static RepresentationBuilder<RotatedFromPL> rotatedFromPL("reduced_rotated_gg"); // Name is what is returned by grib_api
-}
+static RepresentationBuilder<RotatedFromPL> rotatedFromPL(
+    "reduced_rotated_gg");  // Name is what is returned by grib_api
 
 
 }  // namespace reduced
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

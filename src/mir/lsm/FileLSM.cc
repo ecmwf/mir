@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/lsm/FileLSM.h"
@@ -26,14 +23,10 @@ namespace mir {
 namespace lsm {
 
 
-namespace {
 static FileLSM __lsm_selection("file");
-}
 
 
-FileLSM::FileLSM(const std::string& name) :
-    LSMSelection(name) {
-}
+FileLSM::FileLSM(const std::string& name) : LSMSelection(name) {}
 
 
 FileLSM::~FileLSM() = default;
@@ -58,18 +51,14 @@ std::string FileLSM::path(const param::MIRParametrisation& param, const std::str
 }
 
 
-Mask* FileLSM::create(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+Mask* FileLSM::create(const param::MIRParametrisation& param, const repres::Representation& representation,
+                      const std::string& which) const {
     return new GribFileMaskFromUser(path(param, which), param, representation, which);
 }
 
 
-std::string FileLSM::cacheKey(
-        const param::MIRParametrisation& param,
-        const repres::Representation& representation,
-        const std::string& which) const {
+std::string FileLSM::cacheKey(const param::MIRParametrisation& param, const repres::Representation& representation,
+                              const std::string& which) const {
     eckit::MD5 md5;
     GribFileMaskFromUser::hashCacheKey(md5, path(param, which), param, representation, which);
 
@@ -79,4 +68,3 @@ std::string FileLSM::cacheKey(
 
 }  // namespace lsm
 }  // namespace mir
-

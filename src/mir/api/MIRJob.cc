@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/api/MIRJob.h"
@@ -57,13 +54,13 @@ void MIRJob::estimate(input::MIRInput& input, output::MIROutput& output, MIREsti
 }
 
 
-
 void MIRJob::print(std::ostream& out) const {
     if (eckit::format(out) == eckit::Log::applicationFormat) {
         out << "mir";
         SimpleParametrisation::print(out);
         out << " in.grib out.grib";
-    } else {
+    }
+    else {
         out << "MIRJob[";
         SimpleParametrisation::print(out);
         out << "]";
@@ -83,7 +80,7 @@ MIRJob& MIRJob::set(const std::string& args) {
         parseEquals(a, nameValue);
 
         if (nameValue.size() == 1) {
-            nameValue.push_back("true");
+            nameValue.emplace_back("true");
         }
 
         if (nameValue[0].find("--") != 0) {
@@ -96,41 +93,36 @@ MIRJob& MIRJob::set(const std::string& args) {
 }
 
 
-static const std::map<std::string, std::string> aliases {
-//    {"resol", "truncation"},
+static const std::map<std::string, std::string> aliases{
+    //    {"resol", "truncation"},
 };
 
 
 static const std::string& resolveAliases(const std::string& name) {
     auto j = aliases.find(name);
     if (j != aliases.end()) {
-        eckit::Log::debug<LibMir>() << "MIRJob: changing ["
-                                    << name
-                                    << "] to ["
-                                    << (*j).second
-                                    << "]"
-                                    << std::endl;
-        return (*j).second;
+        eckit::Log::debug<LibMir>() << "MIRJob: changing [" << name << "] to [" << j->second << "]" << std::endl;
+        return j->second;
     }
     return name;
 }
 
 
-template<class T>
-static const T& resolveAliases(const std::string& name, const T& value) {
+template <class T>
+static const T& resolveAliases(const std::string& /*name*/, const T& value) {
     return value;
 }
 
 
 MIRJob& MIRJob::clear(const std::string& name) {
-    const std::string rName = resolveAliases(name);
+    auto& rName = resolveAliases(name);
     eckit::Log::debug<LibMir>() << "MIRJob: clear '" << rName << "'" << std::endl;
     SimpleParametrisation::clear(rName);
     return *this;
 }
 
 
-template<class T>
+template <class T>
 MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
     eckit::Log::debug<LibMir>() << "MIRJob: set '" << name << "'='" << value << "'" << std::endl;
     SimpleParametrisation::set(name, value);
@@ -138,13 +130,13 @@ MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
 }
 
 
-template<class T>
+template <class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
     eckit::Channel& out = eckit::Log::debug<LibMir>();
 
     out << "MIRJob: set '" << name << "'='";
     const char* sep = "";
-    size_t n = 0;
+    size_t n        = 0;
     for (; n < outputCount && n < value.size(); ++n) {
         out << sep << value[n];
         sep = "/";
@@ -165,7 +157,7 @@ MIRJob& MIRJob::set(const std::string& name, const std::string& value) {
 }
 
 
-MIRJob& MIRJob::set(const std::string& name, const char *value) {
+MIRJob& MIRJob::set(const std::string& name, const char* value) {
     _setScalar(resolveAliases(name), resolveAliases(name, value));
     return *this;
 }
@@ -274,7 +266,7 @@ MIRJob& MIRJob::set(const std::string& name, double v1, double v2, double v3, do
 
 MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
 
-    const data::MIRField field = input.field();
+    const data::MIRField field           = input.field();
     const repres::Representation* repres = field.representation();
     ASSERT(repres);
 
@@ -286,10 +278,8 @@ MIRJob& MIRJob::representationFrom(const input::MIRInput& input) {
 
 
 void MIRJob::mirToolCall(std::ostream& out) const {
-    int fmt = eckit::format(out);
-    eckit::setformat(out, eckit::Log::applicationFormat);
-    out << *this;
-    eckit::setformat(out, fmt);
+    auto fmt = eckit::format(out);
+    out << eckit::setformat(eckit::Log::applicationFormat) << *this << eckit::setformat(fmt);
 }
 
 
@@ -299,4 +289,3 @@ void MIRJob::json(eckit::JSON& json) const {
 
 }  // namespace api
 }  // namespace mir
-

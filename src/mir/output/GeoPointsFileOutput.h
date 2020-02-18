@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_output_GeoPointsFileOutput_h
@@ -27,7 +24,6 @@ namespace output {
 
 class GeoPointsFileOutput : public GeoPointsOutput {
 public:
-
     // -- Exceptions
     // None
 
@@ -58,13 +54,11 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     std::string path_;
-    bool binary_;
-
     mutable std::unique_ptr<eckit::DataHandle> handle_;
+    bool binary_;
 
     // -- Methods
     // None
@@ -81,7 +75,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -91,7 +84,7 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIROutput& other) const;
 
     // -- Class members
@@ -102,9 +95,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
+    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutput& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -113,4 +105,3 @@ private:
 
 
 #endif
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/output/GeoPointsFileOutput.h"
@@ -23,10 +20,7 @@ namespace mir {
 namespace output {
 
 
-GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) :
-    path_(path),
-    binary_(binary) {
-}
+GeoPointsFileOutput::GeoPointsFileOutput(const std::string& path, bool binary) : path_(path), binary_(binary) {}
 
 
 GeoPointsFileOutput::~GeoPointsFileOutput() = default;
@@ -44,15 +38,14 @@ eckit::DataHandle& GeoPointsFileOutput::dataHandle() const {
 
 bool GeoPointsFileOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const GeoPointsFileOutput*>(&other);
-    return o && (path_ == o->path_) && (binary_ == o->binary_);
+    return (o != nullptr) && (path_ == o->path_) && (binary_ == o->binary_);
 }
 
 
-void GeoPointsFileOutput::print(std::ostream &out) const {
+void GeoPointsFileOutput::print(std::ostream& out) const {
     out << "GeoPointsFileOutput[path=" << path_ << "]";
 }
 
 
 }  // namespace output
 }  // namespace mir
-

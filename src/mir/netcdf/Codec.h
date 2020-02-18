@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Jan 2015
 
 
 #ifndef mir_netcdf_Codec_h
@@ -27,7 +24,7 @@ namespace mir {
 namespace netcdf {
 class Variable;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -76,31 +73,29 @@ private:
 class CodecFactory {
 
     std::string name_;
+    virtual Codec* make(const Variable&) = 0;
 
-    virtual Codec *make(const Variable&) = 0;
+    CodecFactory(const CodecFactory&) = delete;
+    CodecFactory& operator=(const CodecFactory&) = delete;
 
 protected:
-
-    CodecFactory(const std::string &);
+    CodecFactory(const std::string&);
 
     virtual ~CodecFactory();
 
 public:
-
-    static Codec *build(const std::string&, const Variable&);
+    static Codec* build(const std::string&, const Variable&);
 
     static void list(std::ostream&);
-
 };
 
 
-template<class T>
+template <class T>
 class CodecBuilder : public CodecFactory {
-    virtual Codec *make(const Variable& variable) {
-        return new T(variable);
-    }
+    virtual Codec* make(const Variable& variable) { return new T(variable); }
+
 public:
-    CodecBuilder(const std::string &name) : CodecFactory(name) {}
+    CodecBuilder(const std::string& name) : CodecFactory(name) {}
 };
 
 

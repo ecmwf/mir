@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -86,7 +87,8 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
 
         void appendFieldWrapped(data::MIRValuesVector& values) {
             ASSERT(n == values.size());
-            fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n))).set_functionspace(fs);
+            auto field = fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n)));
+            field.set_functionspace(fs);
         }
 
         const atlas::Grid grid;
@@ -132,7 +134,7 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
 
 bool StructuredMethod2D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod2D*>(&other);
-    return o && method_ == o->method_;
+    return (o != nullptr) && method_ == o->method_;
 }
 
 

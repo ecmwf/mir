@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -34,18 +35,21 @@ namespace mir {
 namespace method {
 namespace structured {
 
-namespace {
+
 static MethodBuilder<StructuredLinear3D> __method("structured-linear-3d");
-}
+
 
 StructuredLinear3D::StructuredLinear3D(const param::MIRParametrisation& param) : StructuredMethod(param) {}
 
+
 StructuredLinear3D::~StructuredLinear3D() = default;
+
 
 bool StructuredLinear3D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredLinear3D*>(&other);
-    return o && StructuredMethod::sameAs(other);
+    return (o != nullptr) && StructuredMethod::sameAs(other);
 }
+
 
 void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::Representation& in,
                                                  const repres::Representation& out) const {
@@ -104,18 +108,18 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
             if (too_much_north || too_much_south) {
                 ASSERT(too_much_north != too_much_south);
 
-                const size_t Ni = size_t(too_much_north ? pl.front() : pl.back());
-                const size_t iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
+                auto Ni     = size_t(too_much_north ? pl.front() : pl.back());
+                auto iStart = too_much_north ? 0 : pl_sum.rbegin()[1];
 
                 size_t l[2];
                 boundWestEast(p.lon(), Ni, iStart, l[0], l[1]);
 
                 const Longitude& l0 = icoords[l[0]].lon();
                 const Longitude& l1 = icoords[l[1]].lon();
-                trip = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
+                trip                = {WeightMatrix::Triplet(ip, l[0], (l1 - p.lon()).value()),
                         WeightMatrix::Triplet(ip, l[1], (p.lon() - l0).value())};
-
-            } else {
+            }
+            else {
 
                 /*
                  * setup quadrilateral: determine enveloping indices
@@ -173,7 +177,7 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
 
                 // project on first triangle (0 or 2) depending on split, if that fails try next (1 or 3)
                 const size_t T[4][3] = {{1, 0, 2}, {2, 3, 1}, {0, 2, 3}, {3, 1, 0}};
-                size_t w = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
+                size_t w             = eckit::types::is_strictly_greater(dist2_q0_q3, dist2_q1_q2) ? 0 : 2;
 
                 const Point3 p3d = it->point3D();
                 const atlas::interpolation::method::Ray ray(p3d.data());
@@ -207,13 +211,16 @@ void StructuredLinear3D::assembleStructuredInput(WeightMatrix& W, const repres::
     W.setFromTriplets(triplets);
 }
 
+
 const char* StructuredLinear3D::name() const {
     return "structured-linear-3d";
 }
 
+
 void StructuredLinear3D::hash(eckit::MD5& md5) const {
     StructuredMethod::hash(md5);
 }
+
 
 void StructuredLinear3D::print(std::ostream& out) const {
     out << "StructuredLinear3D[";
@@ -221,6 +228,7 @@ void StructuredLinear3D::print(std::ostream& out) const {
     out << "]";
 }
 
-} // namespace structured
-} // namespace method
-} // namespace mir
+
+}  // namespace structured
+}  // namespace method
+}  // namespace mir

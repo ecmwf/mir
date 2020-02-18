@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_gauss_reduced_RotatedOctahedral_h
@@ -26,19 +23,19 @@ namespace gauss {
 namespace reduced {
 
 
-class RotatedOctahedral : public  Octahedral {
+class RotatedOctahedral : public Octahedral {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
+    RotatedOctahedral(size_t, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
+                      double angularPrecision = 0);
 
     // -- Destructor
 
-    virtual ~RotatedOctahedral(); // Change to virtual if base class
+    virtual ~RotatedOctahedral();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -59,14 +56,13 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     util::Rotation rotation_;
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -78,7 +74,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -103,9 +98,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
+    // friend ostream& operator<<(ostream& s,const RotatedOctahedral& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -116,4 +110,3 @@ private:
 
 
 #endif
-

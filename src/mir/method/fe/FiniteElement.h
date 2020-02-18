@@ -3,16 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @author Baudouin Raoult
-/// @author Willem Deconinck
-/// @date May 2015
 
 
 #ifndef mir_method_fe_FiniteElement_h
@@ -95,7 +90,8 @@ private:
 
     // From MethodWeighted
     void hash(eckit::MD5&) const;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in, const repres::Representation& out) const;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
 
@@ -114,13 +110,13 @@ private:
 };
 
 
-//=========================================================================
-
-
 class FiniteElementFactory : public MethodFactory {
     std::string name_;
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
     virtual FiniteElement* make(const param::MIRParametrisation&)                           = 0;
+
+    FiniteElementFactory(const FiniteElementFactory&) = delete;
+    FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;
 
 protected:
     FiniteElementFactory(const std::string&);

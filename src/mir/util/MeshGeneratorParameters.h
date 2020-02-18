@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -41,6 +42,7 @@ public:
 
     MeshGeneratorParameters();
     MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    MeshGeneratorParameters(const MeshGeneratorParameters&) = default;
 
     // -- Destructor
 
@@ -50,18 +52,19 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    MeshGeneratorParameters& operator=(const MeshGeneratorParameters&) = default;
 
     // -- Members
 
     std::string meshGenerator_;
+    std::string fileLonLat_;
+    std::string fileXY_;
+    std::string fileXYZ_;
     bool meshCellCentres_;
     bool meshCellLongestDiagonal_;
     bool meshNodeLumpedMassMatrix_;
     bool meshNodeToCellConnectivity_;
-    std::string fileLonLat_;
-    std::string fileXY_;
-    std::string fileXYZ_;
 
     // -- Methods
 

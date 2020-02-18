@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -23,16 +24,14 @@ namespace mir {
 namespace style {
 
 
-template< int ORDER >
+template <int ORDER>
 class SpectralOrderT : public SpectralOrder {
 public:
     // -- Exceptions
     // None
 
     // -- Contructors
-    SpectralOrderT() {
-        ASSERT(ORDER);
-    }
+    SpectralOrderT() { ASSERT(ORDER); }
 
     // -- Destructor
     // None
@@ -50,7 +49,7 @@ public:
     long getTruncationFromGaussianNumber(const long& N) const {
         ASSERT(N);
 
-        long T = long(ceil( 4. / double(ORDER + 1) * N) - 1);
+        long T = long(ceil(4. / double(ORDER + 1) * N) - 1);
         ASSERT(T);
 
         return T;
@@ -65,9 +64,7 @@ public:
         return N;
     }
 
-    void print(std::ostream& out) const {
-        out << "SpectralOrderT<ORDER=" << ORDER << ">[]";
-    }
+    void print(std::ostream& out) const { out << "SpectralOrderT<ORDER=" << ORDER << ">[]"; }
 
     // -- Class members
     // None
@@ -92,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -118,4 +114,3 @@ private:
 
 
 #endif
-

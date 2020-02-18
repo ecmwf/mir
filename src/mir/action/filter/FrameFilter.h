@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef FrameFilter_H
@@ -24,92 +21,87 @@ namespace action {
 
 
 class FrameFilter : public Action {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     FrameFilter(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~FrameFilter(); // Change to virtual if base class
+    virtual ~FrameFilter();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
-// No copy allowed
+private:
+    // No copy allowed
 
     FrameFilter(const FrameFilter&);
     FrameFilter& operator=(const FrameFilter&);
 
-// -- Members
+    // -- Members
 
     size_t size_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
     virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
 
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FrameFilter& p)
+    // friend ostream& operator<<(ostream& s,const FrameFilter& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace action
 }  // namespace mir
 #endif
-

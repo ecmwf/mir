@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,8 +24,6 @@ namespace mir {
 namespace stats {
 namespace distribution {
 
-
-namespace {
 
 static DistributionBuilder<DistributionT<std::bernoulli_distribution>> __random1("bernoulli-distribution");
 static DistributionBuilder<DistributionT<std::binomial_distribution<int>>> __random2("binomial-distribution");
@@ -52,6 +51,10 @@ static DistributionBuilder<DistributionT<std::uniform_real_distribution<double>>
     "uniform-real-distribution");
 static DistributionBuilder<DistributionT<std::weibull_distribution<double>>> __random20("weibull-distribution");
 
+
+namespace {
+
+
 template <typename T>
 T get_value(const param::MIRParametrisation& param, const std::string& key, T value) {
     param.get(key, value);
@@ -69,6 +72,7 @@ std::string put_vector(const std::vector<T>& v) {
     s += "]";
     return s;
 }
+
 
 }  // namespace
 
@@ -167,7 +171,6 @@ std::fisher_f_distribution<double>::param_type DistributionT<std::fisher_f_distr
     const param::MIRParametrisation& p) const {
     return std::fisher_f_distribution<double>::param_type(get_value(p, "m", 1.), get_value(p, "n", 1.));
 }
-std::string name_;
 
 
 template <>

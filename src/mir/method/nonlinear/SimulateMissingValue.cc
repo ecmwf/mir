@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -108,7 +109,7 @@ bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix
 
 bool SimulateMissingValue::sameAs(const NonLinear& other) const {
     auto o = dynamic_cast<const SimulateMissingValue*>(&other);
-    return o && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
+    return (o != nullptr) && eckit::types::is_approximately_equal(missingValue_, o->missingValue_) &&
            eckit::types::is_approximately_equal(epsilon_, o->epsilon_);
 }
 

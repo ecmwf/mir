@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -32,7 +33,9 @@ using util::Increments;
 static auto& log = eckit::Log::info();
 
 
-#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+#define EXPECTV(a)                                \
+    log << "\tEXPECT(" << #a << ")" << std::endl; \
+    EXPECT(a)
 
 
 CASE("MIR-390") {
@@ -58,8 +61,8 @@ CASE("MIR-390") {
         RegularIterator lat{bbox.south().fraction(), bbox.north().fraction(), inc.south_north().latitude().fraction(),
                             reference.lat().fraction()};
 
-        auto n  = lat.b();
-        auto s  = lat.a();
+        auto n = lat.b();
+        auto s = lat.a();
 
         EXPECTV(bbox.south().fraction() == s);
         EXPECTV(bbox.north().fraction() == n);
@@ -68,8 +71,8 @@ CASE("MIR-390") {
         RegularIterator lon{bbox.west().fraction(), bbox.east().fraction(), inc.west_east().longitude().fraction(),
                             reference.lon().fraction(), Longitude::GLOBE.fraction()};
 
-        auto w  = lon.a();
-        auto e  = lon.b();
+        auto w = lon.a();
+        auto e = lon.b();
 
         EXPECTV(bbox.west().fraction() == w);
         EXPECTV(bbox.east().fraction() == e);
@@ -92,7 +95,6 @@ CASE("MIR-390") {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
 }
-

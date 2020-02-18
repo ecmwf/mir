@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_io_Save_h
@@ -26,7 +23,7 @@ class MIRInput;
 namespace output {
 class MIROutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -36,7 +33,6 @@ namespace io {
 
 class Save : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -46,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Save(); // Change to virtual if base class
+    virtual ~Save();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -67,13 +63,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -86,16 +81,15 @@ protected:
     // None
 
 private:
-
     // No copy allowed
 
     Save(const Save&);
-    Save &operator=(const Save&);
+    Save& operator=(const Save&);
 
     // -- Members
 
-    input::MIRInput &input_;
-    output::MIROutput &output_;
+    input::MIRInput& input_;
+    output::MIROutput& output_;
 
     // -- Methods
     // None
@@ -116,9 +110,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Save& p)
+    // friend ostream& operator<<(ostream& s,const Save& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -128,4 +121,3 @@ private:
 
 
 #endif
-

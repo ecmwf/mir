@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -17,9 +18,9 @@ namespace style {
 namespace intgrid {
 
 
-static IntgridBuilder< Automatic > __intgrid1("automatic");
-static IntgridBuilder< Automatic > __intgrid2("auto");
-static IntgridBuilder< Automatic > __intgrid3("AUTO");
+static IntgridBuilder<Automatic> __intgrid1("automatic");
+static IntgridBuilder<Automatic> __intgrid2("auto");
+static IntgridBuilder<Automatic> __intgrid3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
@@ -38,4 +39,3 @@ const std::string& Automatic::gridname() const {
 }  // namespace intgrid
 }  // namespace style
 }  // namespace mir
-

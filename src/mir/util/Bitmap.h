@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date April 2015
 
 
 #ifndef mir_util_Bitmap_h
@@ -26,7 +22,7 @@ namespace util {
 
 
 class Bitmap {
-  public:
+public:
     // -- Exceptions
     // None
 
@@ -46,17 +42,11 @@ class Bitmap {
 
     // -- Methods
 
-    size_t width() const {
-        return width_;
-    }
+    size_t width() const { return width_; }
 
-    size_t height() const {
-        return height_;
-    }
+    size_t height() const { return height_; }
 
-    bool on(size_t j, size_t i) const {
-        return bitmap_[j][i];
-    }
+    bool on(size_t j, size_t i) const { return bitmap_[j][i]; }
 
     size_t footprint() const;
 
@@ -69,7 +59,7 @@ class Bitmap {
     // -- Class methods
     // None
 
-  protected:
+protected:
     // -- Members
     // None
 
@@ -86,8 +76,7 @@ class Bitmap {
     // -- Class methods
     // None
 
-  private:
-
+private:
     Bitmap(const Bitmap&);
     Bitmap& operator=(const Bitmap&);
 
@@ -117,7 +106,6 @@ class Bitmap {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -126,4 +114,3 @@ class Bitmap {
 
 
 #endif
-

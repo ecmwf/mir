@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_NetcdfFileInput_h
@@ -34,12 +31,8 @@ namespace mir {
 namespace input {
 
 
-class NetcdfFileInput :
-        public MIRInput,
-        public param::FieldParametrisation,
-        public mir::netcdf::NCFileCache {
+class NetcdfFileInput : public MIRInput, public param::FieldParametrisation, public netcdf::NCFileCache {
 public:
-
     // -- Exceptions
     // None
 
@@ -49,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NetcdfFileInput(); // Change to virtual if base class
+    virtual ~NetcdfFileInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -70,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -87,32 +79,32 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     eckit::PathName path_;
     param::CachedParametrisation cache_;
 
-    mir::netcdf::InputDataset dataset_;
-    std::vector<mir::netcdf::Field*> fields_;
+    netcdf::InputDataset dataset_;
+    std::vector<netcdf::Field*> fields_;
     int current_;
 
     // mutable std::vector<double> latitude_;
     // mutable std::vector<double> longitude_;
 
     // -- Methods
-    // None
+
+    const netcdf::Field& currentField() const;
 
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const;
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
     virtual size_t dimensions() const;
-    virtual grib_handle *gribHandle(size_t which) const;
+    virtual grib_handle* gribHandle(size_t which) const;
 
     // From FieldParametrisation
     virtual bool has(const std::string& name) const;
@@ -131,9 +123,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
+    // friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -143,4 +134,3 @@ private:
 
 #endif
 #endif
-

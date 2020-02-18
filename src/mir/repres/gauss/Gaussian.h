@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_gauss_Gaussian_h
@@ -27,7 +24,6 @@ namespace repres {
 
 class Gaussian : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
@@ -38,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gaussian(); // Change to virtual if base class
+    virtual ~Gaussian();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -64,7 +60,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     size_t N_;
@@ -81,7 +76,7 @@ protected:
     bool angleApproximatelyEqual(const Latitude&, const Latitude&) const;
     bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
 
-    void correctSouthNorth(Latitude& s, Latitude& n, bool in=true) const;
+    void correctSouthNorth(Latitude& s, Latitude& n, bool in = true) const;
 
     Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
     Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
@@ -105,7 +100,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -123,9 +117,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const Gaussian& p)
+    // friend ostream& operator<<(ostream& s,const Gaussian& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -134,4 +127,3 @@ private:
 
 
 #endif
-

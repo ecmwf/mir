@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/style/MIRStyle.h"
@@ -28,18 +25,14 @@
 
 namespace mir {
 namespace style {
-MIRStyle::MIRStyle(const param::MIRParametrisation &parametrisation):
-    parametrisation_(parametrisation) {
-}
+
+
+MIRStyle::MIRStyle(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 
 
 MIRStyle::~MIRStyle() = default;
 
 
-//=========================================================================
-
-
-namespace {
 static pthread_once_t once                        = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                  = nullptr;
 static std::map<std::string, MIRStyleFactory*>* m = nullptr;
@@ -47,12 +40,10 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MIRStyleFactory*>();
 }
-}  // (anonymous namespace)
 
 
-MIRStyleFactory::MIRStyleFactory(const std::string& name):
-    name_(name) {
-    pthread_once(&once,init);
+MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
@@ -72,7 +63,7 @@ MIRStyleFactory::~MIRStyleFactory() {
 
 
 MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
-    pthread_once(&once,init);
+    pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     std::string name;
@@ -88,7 +79,7 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
         throw eckit::SeriousBug("MIRStyleFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params);
+    return j->second->make(params);
 }
 
 
@@ -106,4 +97,3 @@ void MIRStyleFactory::list(std::ostream& out) {
 
 }  // namespace style
 }  // namespace mir
-

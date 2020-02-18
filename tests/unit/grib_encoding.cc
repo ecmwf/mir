@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -38,8 +39,8 @@ using util::BoundingBox;
 
 static eckit::Mutex local_mutex;
 
-static std::vector<bool> _yes_no {true, false};
-static std::vector<long> _one_two {1, 2};
+static std::vector<bool> _yes_no{true, false};
+static std::vector<long> _one_two{1, 2};
 
 namespace {
 
@@ -71,9 +72,9 @@ protected:
             }};
 
             // paramId "Indicates a missing value"
-            auto j = info.packing.extra_settings_count++;
-            info.packing.extra_settings[j].name = "paramId";
-            info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
+            auto j                                    = info.packing.extra_settings_count++;
+            info.packing.extra_settings[j].name       = "paramId";
+            info.packing.extra_settings[j].type       = GRIB_TYPE_LONG;
             info.packing.extra_settings[j].long_value = 129255;
 
             info.packing.editionNumber = edition;
@@ -88,12 +89,11 @@ protected:
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            grib_handle* sample =
-                grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
+            grib_handle* sample = grib_handle_new_from_samples(nullptr, gribSample(edition).c_str());
             ASSERT(sample);
             HandleDeleter sample_detroy(sample);
 
-            int err = 0;
+            int err   = 0;
             int flags = 0;
             handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
@@ -140,6 +140,9 @@ public:
         delete grib2Input_;
     }
 
+    EncodeTest(const EncodeTest&) = delete;
+    EncodeTest& operator=(const EncodeTest&) = delete;
+
     virtual size_t numberOfValues() const = 0;
 
     size_t numberOfValuesEncodedInGrib(long edition) {
@@ -155,14 +158,14 @@ public:
     size_t numberOfValuesFromGribIterator(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-        int err = 0;
+        int err             = 0;
         grib_iterator* iter = grib_iterator_new(gribHandle(edition), 0, &err);
         if (err != GRIB_SUCCESS) {
             GRIB_CHECK(err, nullptr);
         }
 
         long n = 0;
-        for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value); ++n) {
+        for (double lat, lon, value; grib_iterator_next(iter, &lat, &lon, &value) != 0; ++n) {
         }
 
         grib_iterator_delete(iter);
@@ -176,14 +179,14 @@ public:
 
         std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
 
-        int err = 0;
+        int err               = 0;
         grib_iterator* iter_g = grib_iterator_new(gribHandle(edition), 0, &err);
         if (err != GRIB_SUCCESS) {
             GRIB_CHECK(err, nullptr);
         }
 
         long n = 0;
-        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value); ++n) {
+        for (double lat, lon, value; grib_iterator_next(iter_g, &lat, &lon, &value) != 0; ++n) {
             ASSERT(iter_m->next());
 
             double dlat = mir::Latitude(iter_m->pointRotated()[0]).distance(lat).value();
@@ -241,8 +244,9 @@ class EncodeReduced : public EncodeTest {
     size_t numberOfValues() const { return numberOfValues_; }
 
 public:
-    EncodeReduced(const repres::Representation* rep, size_t numberOfValues)
-        : EncodeTest(rep), numberOfValues_(numberOfValues) {
+    EncodeReduced(const repres::Representation* rep, size_t numberOfValues) :
+        EncodeTest(rep),
+        numberOfValues_(numberOfValues) {
         ASSERT(numberOfValues_);
     }
 };
@@ -254,8 +258,9 @@ class EncodeReducedGaussianGrid final : public EncodeReduced {
     }
 
 public:
-    EncodeReducedGaussianGrid(const repres::Representation* rep, size_t numberOfValues, size_t gaussianNumber)
-        : EncodeReduced(rep, numberOfValues), gaussianNumber_(gaussianNumber) {
+    EncodeReducedGaussianGrid(const repres::Representation* rep, size_t numberOfValues, size_t gaussianNumber) :
+        EncodeReduced(rep, numberOfValues),
+        gaussianNumber_(gaussianNumber) {
         ASSERT(gaussianNumber_);
     }
 };
@@ -299,8 +304,8 @@ class EncodeRegularGaussianGrid final : public EncodeRegular {
     std::string gribSample(long edition) const { return std::string("regular_gg_pl_grib" + std::to_string(edition)); }
 
 public:
-    EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber)
-        : EncodeRegular(rep, Ni, Nj) {
+    EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber) :
+        EncodeRegular(rep, Ni, Nj) {
         ASSERT(gaussianNumber);
     }
 };
@@ -312,7 +317,7 @@ public:
     using EncodeRegular::EncodeRegular;
 };
 
-} // namespace
+}  // namespace
 
 CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
@@ -325,23 +330,23 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
     };
 
     std::vector<test_t> _test {
-             // pgen
-             test_t{"O640", {51.941, 7.005, 43.084, 27.693}, 4512},
-             test_t{"O640", {51.9406, 7.00599, 43.0847, 27.6923}, 4443},
-             test_t{"O640", {57.9852, 230, 25.0918, 300}, 63479}, test_t{"O640", {11.8782, 279, -49.9727, 325}, 111068},
-             test_t{"O640", {-25.0918, 135, -46.8801, 179}, 29294}, test_t{"O640", {43.9281, 91, 21.0152, 143}, 38990},
-             test_t{"O640", {59.9531, 23, 35.0722, 80}, 34426},
+        // pgen
+        test_t{"O640", {51.941, 7.005, 43.084, 27.693}, 4512},
+            test_t{"O640", {51.9406, 7.00599, 43.0847, 27.6923}, 4443},
+            test_t{"O640", {57.9852, 230, 25.0918, 300}, 63479}, test_t{"O640", {11.8782, 279, -49.9727, 325}, 111068},
+            test_t{"O640", {-25.0918, 135, -46.8801, 179}, 29294}, test_t{"O640", {43.9281, 91, 21.0152, 143}, 38990},
+            test_t{"O640", {59.9531, 23, 35.0722, 80}, 34426},
 
-             // ECC-445
-             test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
-             test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
+            // ECC-445
+            test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
+            test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
 
-             // ECC-576
-             test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
-             test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
-             test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
+            // ECC-576
+            test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
+            test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
+            test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
 
-             // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
+        // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
 #if 0
              // MIR-390: resolution triggers these
              test_t{"O1280", {37.6025, -114.891, 27.7626, -105.188}, 12369},
@@ -351,12 +356,12 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
              test_t{"O1280", {37.6025, -114.8915, 27.7626, -105.1875}, 12373},
 #endif
 
-             // "almost global"
-             // NOTE: this cannot be supported because:
-             // * Lo2=359929 is encoded for GRIB1 O1280 global fields
-             // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
-             // so GRIB1 O1280 fields are actually not correctly encoded
-             //         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
+        // "almost global"
+        // NOTE: this cannot be supported because:
+        // * Lo2=359929 is encoded for GRIB1 O1280 global fields
+        // * Lo2=359930 should be the coorrect value (the real value is 360 - 15/214 ~= 359.929907)
+        // so GRIB1 O1280 fields are actually not correctly encoded
+        //         test_t{ "O1280", {  90., 0., -90., 359.929 }, 6599646 },
     };
 
     for (auto& test : _test) {
@@ -397,7 +402,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             EXPECT(bbox.contains(small));
 
             // Compare mir/eccodes iterators coordinates with a better precision
-            if (test.gridname != "O1280") { // FIXME: ECC-747
+            if (test.gridname != "O1280") {  // FIXME: ECC-747
                 double tol = 1.e-3;
                 log << "\tGRIB" << edition << ": |Δ(lat,lon)| <= (" << tol << ", " << tol << ")" << std::endl;
                 EXPECT(encode.compareCoordinates(edition, tol, tol));
@@ -418,7 +423,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     };
 
     // ECC-445
-    std::vector<test_t> _test {
+    std::vector<test_t> _test{
         test_t{"F160", {71.8, -10.66, 34.56, 32.6}, 76, 66},
         test_t{"F160", {40, 50, -50, 169.532}, 213, 160},
         test_t{"F320", {70.9, -40.987, 19.73, 40}, 288, 182},
@@ -484,7 +489,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
     };
 
     // ECC-445
-    std::vector<test_t> _test {
+    std::vector<test_t> _test{
         test_t{util::Increments{0.1, 0.1}, {58.5, -6.1, 36, 20.7}, 269, 226},
     };
 
@@ -553,9 +558,9 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             }};
 
             // paramId "Indicates a missing value"
-            auto j = info.packing.extra_settings_count++;
-            info.packing.extra_settings[j].name = "paramId";
-            info.packing.extra_settings[j].type = GRIB_TYPE_LONG;
+            auto j                                    = info.packing.extra_settings_count++;
+            info.packing.extra_settings[j].name       = "paramId";
+            info.packing.extra_settings[j].type       = GRIB_TYPE_LONG;
             info.packing.extra_settings[j].long_value = 129255;
 
             info.packing.editionNumber = edition;
@@ -573,12 +578,12 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             values[0] = 1.;
 
             // Make sure handles are deleted even in case of exception
-            grib_handle* sample = grib_handle_new_from_samples(
-                nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
+            grib_handle* sample =
+                grib_handle_new_from_samples(nullptr, ("regular_ll_pl_grib" + std::to_string(edition)).c_str());
             ASSERT(sample);
             HandleDeleter sample_detroy(sample);
 
-            int err = 0;
+            int err   = 0;
             int flags = 0;
             handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
@@ -609,9 +614,9 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     }
 }
 
-} // namespace unit
-} // namespace tests
-} // namespace mir
+}  // namespace unit
+}  // namespace tests
+}  // namespace mir
 
 int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
