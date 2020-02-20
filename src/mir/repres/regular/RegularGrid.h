@@ -64,14 +64,14 @@ public:
 protected:
     // -- Types
 
-    using XYZCOORDS = eckit::geometry::XYZCOORDS;
-    using LLCOORDS  = eckit::geometry::LLCOORDS;
+    using LLCOORDS = eckit::geometry::LLCOORDS;
 
     // -- Members
 
     ::atlas::RegularGrid grid_;
     LinearSpacing x_;
     LinearSpacing y_;
+    bool firstPointBottomLeft_;
 
     // -- Methods
     // None
