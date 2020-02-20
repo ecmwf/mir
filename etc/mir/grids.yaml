@@ -22,6 +22,17 @@ LAEA-EFAS-5km-proj:
     numberOfPointsAlongXAxis: 1000
     numberOfPointsAlongYAxis: 950
 
+xpto:
+    gridType: lambert
+    grid: 2500./2500.
+    LaDInDegrees: 45.8
+    LoVInDegrees: 2.
+    latitudeOfFirstGridPointInDegrees: 37.333
+    longitudeOfFirstGridPointInDegrees: -8.354
+    numberOfPointsAlongXAxis: 1000
+    numberOfPointsAlongYAxis: 950
+    gaussianNumber: 1280
+
 SMUFF-OPERA-2km-proj:
     gridType: lambert_azimuthal_equal_area
     proj: +proj=laea +lat_0=55 +lon_0=10 +ellps=WGS84 +units=m +no_defs
