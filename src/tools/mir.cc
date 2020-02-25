@@ -211,8 +211,10 @@ public:
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
 
-        options_.push_back(
-            new SimpleOption<bool>("globalise", "Make the field global, adding missing values if needed"));
+        options_.push_back(new SimpleOption<bool>(
+            "pre-globalise", "Make the field global (before interpolation) adding missing values if needed"));
+        options_.push_back(new SimpleOption<bool>(
+            "globalise", "Make the field global (after interpolation) adding missing values if needed"));
         options_.push_back(new SimpleOption<std::string>("globalise-gridname",
                                                          "Unstructured grid globalise using gridname (default O16)"));
         options_.push_back(new SimpleOption<std::string>(

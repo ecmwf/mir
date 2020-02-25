@@ -382,6 +382,13 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
         user_wants_gridded++;
     }
 
+    bool preglobalise = false;
+    parametrisation_.userParametrisation().get("pre-globalise", preglobalise);
+
+    if (preglobalise) {
+        plan.add("filter.globalise");
+    }
+
     ASSERT(user_wants_gridded <= 1);
 
     bool field_gridded  = parametrisation_.fieldParametrisation().has("gridded");

@@ -90,6 +90,7 @@ private:
 
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual void fill(grib_info&) const;
     virtual void fill(util::MeshGeneratorParameters&) const;
