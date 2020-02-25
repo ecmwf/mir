@@ -97,6 +97,10 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
     bool mustNormalise = false;
     size_t idx[4];
     double w[4];
+    constexpr size_t XX = 0;
+    constexpr size_t YY = 1;
+    constexpr size_t ZZ = 2;
+
     atlas::interpolation::method::Ray ray(p.data());
 
     nbProjectionAttempts = 0;
@@ -123,9 +127,9 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
 
             /* triangle */
             atlas::interpolation::element::Triag3D triag(
-                atlas::PointXYZ{icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2)},
-                atlas::PointXYZ{icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2)},
-                atlas::PointXYZ{icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2)});
+                atlas::PointXYZ{icoords(idx[0], XX), icoords(idx[0], YY), icoords(idx[0], ZZ)},
+                atlas::PointXYZ{icoords(idx[1], XX), icoords(idx[1], YY), icoords(idx[1], ZZ)},
+                atlas::PointXYZ{icoords(idx[2], XX), icoords(idx[2], YY), icoords(idx[2], ZZ)});
 
             // pick an epsilon based on a characteristic length (sqrt(area))
             // (this scales linearly so it better compares with linear weights u,v,w)
@@ -156,10 +160,10 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
 
             /* quadrilateral */
             atlas::interpolation::element::Quad3D quad(
-                atlas::PointXYZ{icoords(idx[0], 0), icoords(idx[0], 1), icoords(idx[0], 2)},
-                atlas::PointXYZ{icoords(idx[1], 0), icoords(idx[1], 1), icoords(idx[1], 2)},
-                atlas::PointXYZ{icoords(idx[2], 0), icoords(idx[2], 1), icoords(idx[2], 2)},
-                atlas::PointXYZ{icoords(idx[3], 0), icoords(idx[3], 1), icoords(idx[3], 2)});
+                atlas::PointXYZ{icoords(idx[0], XX), icoords(idx[0], YY), icoords(idx[0], ZZ)},
+                atlas::PointXYZ{icoords(idx[1], XX), icoords(idx[1], YY), icoords(idx[1], ZZ)},
+                atlas::PointXYZ{icoords(idx[2], XX), icoords(idx[2], YY), icoords(idx[2], ZZ)},
+                atlas::PointXYZ{icoords(idx[3], XX), icoords(idx[3], YY), icoords(idx[3], ZZ)});
 
             if (!quad.validate()) {  // somewhat expensive sanity check
                 eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
