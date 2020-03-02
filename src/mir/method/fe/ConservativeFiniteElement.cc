@@ -73,7 +73,7 @@ void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, Weight
 
     // 2) M_s: input (source) mesh lumped mass matrix
     auto Fin = inputMethod_->atlasMesh(statistics, in).nodes().field("node_lumped_mass_matrix");
-    auto Min = atlas::array::make_view<double, 1, atlas::array::Intent::ReadOnly>(Fin);
+    auto Min = atlas::array::make_view<double, 1>(Fin);
 
     ASSERT(0 < Nj && Nj <= size_t(Min.size()));
     eckit::linalg::Vector M_s(Min.data(), Nj);
@@ -81,7 +81,7 @@ void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, Weight
 
     // 3) M_d^{-1}: output (destination) mesh lumped mass matrix inverse
     auto Fout = outputMethod_->atlasMesh(statistics, out).nodes().field("node_lumped_mass_matrix");
-    auto Mout = atlas::array::make_view<double, 1, atlas::array::Intent::ReadOnly>(Fout);
+    auto Mout = atlas::array::make_view<double, 1>(Fout);
 
     ASSERT(0 < Ni && Ni <= size_t(Mout.size()));
     eckit::linalg::Vector inv_M_d(Ni);

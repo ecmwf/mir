@@ -39,14 +39,14 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
         ASSERT(mesh.generated());
 
         auto& nodes    = mesh.nodes();
-        auto coords    = array::make_view<double, 2, array::Intent::ReadOnly>(nodes.field("xyz"));
+        auto coords    = array::make_view<double, 2>(nodes.field("xyz"));
         auto nbRealPts = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
 
         if (!nodes.has_field(name_)) {
             nodes.add(Field(name_, array::make_datatype<double>(), array::make_shape(nodes.size())));
         }
 
-        auto mass = array::make_view<double, 1, array::Intent::ReadWrite>(nodes.field(name_));
+        auto mass = array::make_view<double, 1>(nodes.field(name_));
         ASSERT(0 < nbRealPts && nbRealPts <= mass.size());
         mass.assign(0.);
 

@@ -297,7 +297,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
             // Write mesh connectivity
             const auto& connectivity = mesh.cells().node_connectivity();
-            const auto coord = array::make_view<double, 2, atlas::array::Intent::ReadOnly>(mesh.nodes().lonlat());
+            const auto coord         = array::make_view<double, 2>(mesh.nodes().lonlat());
 
 
             eckit::geometry::Point2 pa;

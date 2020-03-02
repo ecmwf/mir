@@ -42,9 +42,9 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
         ATLAS_TRACE("CalculateCellLongestDiagonal");
         ASSERT(mesh.generated());
 
-        auto& nodes    = mesh.nodes();
-        auto coords    = array::make_view<double, 2, array::Intent::ReadOnly>(nodes.field("xyz"));
-        auto nbRealPts = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
+        auto& nodes       = mesh.nodes();
+        const auto coords = array::make_view<double, 2>(nodes.field("xyz"));
+        auto nbRealPts    = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
 
 
         // distance, up to Earth radius

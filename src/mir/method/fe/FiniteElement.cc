@@ -393,8 +393,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     const atlas::Mesh& inMesh    = atlasMesh(statistics, in);
     const util::Domain& inDomain = in.domain();
 
-    const atlas::mesh::Nodes& inNodes          = inMesh.nodes();
-    atlas::array::ArrayView<double, 2> icoords = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
+    const atlas::mesh::Nodes& inNodes = inMesh.nodes();
+    auto icoords                      = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (inNodes.metadata().has("NbRealPts")) {
