@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date   April 2016
 
 
 #ifndef mir_util_MIRStatistics_h
@@ -38,8 +34,14 @@ public:
     MIRStatistics();
     MIRStatistics(eckit::Stream&);
 
-    MIRStatistics &operator+=(const MIRStatistics&);
-    MIRStatistics &operator/=(size_t);
+    MIRStatistics(const MIRStatistics&) = default;
+    MIRStatistics& operator=(const MIRStatistics&) = default;
+
+    MIRStatistics& operator+=(const MIRStatistics&);
+    MIRStatistics& operator/=(size_t);
+
+    using AutoTiming = eckit::AutoTiming;
+    using Timing     = eckit::Timing;
 
     caching::InMemoryCacheStatistics bitmapCache_;
     caching::InMemoryCacheStatistics areaCroppingCache_;
@@ -47,40 +49,55 @@ public:
     caching::InMemoryCacheStatistics matrixCache_;
     caching::InMemoryCacheStatistics meshCache_;
 
-    eckit::Timing cropTiming_;
-    eckit::Timing frameTiming_;
-    eckit::Timing globaliseTiming_;
-    eckit::Timing bitmapTiming_;
-    eckit::Timing coefficientTiming_;
-    eckit::Timing sh2gridTiming_;
-    eckit::Timing grid2gridTiming_;
-    eckit::Timing vod2uvTiming_;
-    eckit::Timing computeMatrixTiming_;
-    eckit::Timing matrixTiming_;
-    eckit::Timing loadCoeffTiming_;
-    eckit::Timing createCoeffTiming_;
-    eckit::Timing calcTiming_;
-    eckit::Timing saveTiming_;
-    eckit::Timing gribEncodingTiming_;
+    AutoTiming cropTimer() { return {timer_, cropTiming_}; }
+    AutoTiming frameTimer() { return {timer_, frameTiming_}; }
+    AutoTiming globaliseTimer() { return {timer_, globaliseTiming_}; }
+    AutoTiming bitmapTimer() { return {timer_, bitmapTiming_}; }
+    AutoTiming coefficientTimer() { return {timer_, coefficientTiming_}; }
+    AutoTiming sh2gridTimer() { return {timer_, sh2gridTiming_}; }
+    AutoTiming grid2gridTimer() { return {timer_, grid2gridTiming_}; }
+    AutoTiming vod2uvTimer() { return {timer_, vod2uvTiming_}; }
+    AutoTiming computeMatrixTimer() { return {timer_, computeMatrixTiming_}; }
+    AutoTiming matrixTimer() { return {timer_, matrixTiming_}; }
+    AutoTiming loadCoeffTimer() { return {timer_, loadCoeffTiming_}; }
+    AutoTiming createCoeffTimer() { return {timer_, createCoeffTiming_}; }
+    AutoTiming calcTimer() { return {timer_, calcTiming_}; }
+    AutoTiming saveTimer() { return {timer_, saveTiming_}; }
+    AutoTiming gribEncodingTimer() { return {timer_, gribEncodingTiming_}; }
+
+    Timing& gribEncodingTiming() { return gribEncodingTiming_; }
 
     void report(std::ostream&, const char* indent = "") const;
-
     void csvHeader(std::ostream&) const;
-
     void csvRow(std::ostream&) const;
-
     void encode(eckit::Stream&) const;
 
-    friend eckit::Stream &operator<<(eckit::Stream& s, const MIRStatistics& x) {
+private:
+    Timing cropTiming_;
+    Timing frameTiming_;
+    Timing globaliseTiming_;
+    Timing bitmapTiming_;
+    Timing coefficientTiming_;
+    Timing sh2gridTiming_;
+    Timing grid2gridTiming_;
+    Timing vod2uvTiming_;
+    Timing computeMatrixTiming_;
+    Timing matrixTiming_;
+    Timing loadCoeffTiming_;
+    Timing createCoeffTiming_;
+    Timing calcTiming_;
+    Timing saveTiming_;
+    Timing gribEncodingTiming_;
+
+    friend eckit::Stream& operator<<(eckit::Stream& s, const MIRStatistics& x) {
         x.encode(s);
         return s;
     }
 };
 
 
-} // namespace util
-} // namespace mir
+}  // namespace util
+}  // namespace mir
 
 
 #endif
-

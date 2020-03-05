@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -33,16 +34,25 @@ private:
     int minimumPositionalArguments() const { return 1; }
 
     void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n" "Usage: " << tool << " --point=N/W input1.grib [input2.grib [...]]"
-                              "\n" "Examples: "
-                              "\n" "  % " << tool << " --point=1/1 input.grib"
-                              "\n" "  % " << tool << " --pont=\"1/1 2/2\" input.grib"
-                           << std::endl;
+        eckit::Log::info() << "\n"
+                              "Usage: "
+                           << tool
+                           << " --point=N/W input1.grib [input2.grib [...]]"
+                              "\n"
+                              "Examples: "
+                              "\n"
+                              "  % "
+                           << tool
+                           << " --point=1/1 input.grib"
+                              "\n"
+                              "  % "
+                           << tool << " --pont=\"1/1 2/2\" input.grib" << std::endl;
     }
 
 public:
     MIRSpectralTransformPoints(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
+        options_.push_back(
+            new eckit::option::SimpleOption<std::string>("point", "lat/lon coordinate pair(s), space-separated"));
     }
 };
 
@@ -52,9 +62,12 @@ void MIRSpectralTransformPoints::execute(const eckit::option::CmdArgs& args) {
     eckit::Translator<std::string, double> to_double;
 
     std::string point = args.getString("point");
+    auto points       = eckit::StringTools::split(" ", point);
 
     auto pts = new std::vector<atlas::PointXY>;  // pointer, to transfer ownership to UnstructuredGrid
-    for (auto& pt : eckit::StringTools::split(" ", point)) {
+    pts->reserve(points.size());
+
+    for (auto& pt : points) {
         auto ll = eckit::StringTools::split("/", pt);
         if (ll.size() != 2) {
             throw eckit::UserError("Expecting lat/lon, got '" + pt + "'");

@@ -3,25 +3,21 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @author Willem Deconinck
-/// @date Apr 2015
-
 
 #include "mir/caching/legendre/LegendreLoader.h"
+
+#include <map>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
@@ -58,18 +54,13 @@ eckit::Channel& LegendreLoader::warn() {
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-
-
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, LegendreLoaderFactory* >* m = nullptr;
+static pthread_once_t once                              = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                        = nullptr;
+static std::map<std::string, LegendreLoaderFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, LegendreLoaderFactory* >();
+    m           = new std::map<std::string, LegendreLoaderFactory*>();
 }
-}  // (anonymous namespace)
 
 
 LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {
@@ -107,7 +98,7 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
         throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params, path);
+    return j->second->make(params, path);
 }
 
 
@@ -126,7 +117,7 @@ bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& para
         throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->shared();
+    return j->second->shared();
 }
 
 

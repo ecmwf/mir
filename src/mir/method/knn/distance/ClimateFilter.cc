@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -41,8 +42,8 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
             return "option '" + option + "' = " + std::to_string(value);
         };
 
-        const std::string msg = "ClimateFilter: " + str("distance", distance) +
-                                " should be greater than " + str("climate-filter-delta", delta_);
+        const std::string msg = "ClimateFilter: " + str("distance", distance) + " should be greater than " +
+                                str("climate-filter-delta", delta_);
         eckit::Log::error() << msg << std::endl;
         throw eckit::UserError(msg);
     }
@@ -51,11 +52,9 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
 }
 
 
-void ClimateFilter::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void ClimateFilter::operator()(size_t ip, const Point3& point,
+                               const std::vector<search::PointSearch::PointValueType>& neighbours,
+                               std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -70,9 +69,7 @@ void ClimateFilter::operator()(
         auto r = Point3::distance(point, neighbours[j].point());
         auto h = r < halfDelta_ - delta_
                      ? 1.
-                     : halfDelta_ + delta_ < r
-                           ? 0.
-                           : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta_ + delta_) / delta_);
+                     : halfDelta_ + delta_ < r ? 0. : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta_ + delta_) / delta_);
         // h = std::max(0., std::min(0.99, h));
 
         weights[j] = h;
@@ -91,7 +88,7 @@ void ClimateFilter::operator()(
 
 bool ClimateFilter::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const ClimateFilter*>(&other);
-    return o && eckit::types::is_approximately_equal(halfDelta_, o->halfDelta_) &&
+    return (o != nullptr) && eckit::types::is_approximately_equal(halfDelta_, o->halfDelta_) &&
            eckit::types::is_approximately_equal(delta_, o->delta_);
 }
 
@@ -115,4 +112,3 @@ static DistanceWeightingBuilder<ClimateFilter> __distance("climate-filter");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

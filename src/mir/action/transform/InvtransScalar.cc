@@ -3,12 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
 
 #include "mir/action/transform/InvtransScalar.h"
 
@@ -47,10 +47,10 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     if (F > 1) {
         eckit::Timer timer("InvtransScalar: interlacing spectra", log);
 
-        size_t T = size_t(trans.truncation());
+        auto T = size_t(trans.truncation());
         ASSERT(T > 0);
 
-        size_t N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+        auto N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
         ASSERT(N > 0);
 
         input.resize(F * N * 2);
@@ -61,7 +61,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     }
 
     // set output working area
-    const size_t Ngp = trans.grid().size();
+    auto Ngp = size_t(trans.grid().size());
     MIRValuesVector output(F * Ngp);
 
     // inverse transform
@@ -81,11 +81,12 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
             field.update(output_field, i);
             here += int(Ngp);
         }
-    } else {
+    }
+    else {
         field.update(output, 0);
     }
 }
 
-} // namespace transform
-} // namespace action
-} // namespace mir
+}  // namespace transform
+}  // namespace action
+}  // namespace mir

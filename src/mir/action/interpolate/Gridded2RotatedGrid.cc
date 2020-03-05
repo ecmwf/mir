@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -47,7 +48,7 @@ const util::Rotation& Gridded2RotatedGrid::rotation() const {
 
 bool Gridded2RotatedGrid::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedGrid*>(&other);
-    return o && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
+    return (o != nullptr) && (rotation_ == o->rotation_) && Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
@@ -64,4 +65,3 @@ util::BoundingBox Gridded2RotatedGrid::outputBoundingBox() const {
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

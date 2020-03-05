@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_transform_ShToOctahedralGG_h
@@ -24,10 +21,9 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
+template <class Invtrans>
 class ShToOctahedralGG : public ShToGridded, Invtrans {
 public:
-
     // -- Exceptions
     // None
 
@@ -37,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToOctahedralGG(); // Change to virtual if base class
+    ~ShToOctahedralGG();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +54,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     size_t N_;
@@ -83,7 +78,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -93,4 +87,3 @@ private:
 
 
 #endif
-

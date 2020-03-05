@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/output/GribFileOutput.h"
@@ -21,15 +18,14 @@ namespace mir {
 namespace output {
 
 
-GribFileOutput::GribFileOutput(const eckit::PathName &path, bool append):
+GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) :
     path_(path),
-    handle_(0),
-    append_(append) {
-}
+    handle_(nullptr),
+    append_(append) {}
 
 
 GribFileOutput::~GribFileOutput() {
-    if(handle_) {
+    if (handle_ != nullptr) {
         handle_->close();
         delete handle_;
     }
@@ -38,21 +34,22 @@ GribFileOutput::~GribFileOutput() {
 
 bool GribFileOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const GribFileOutput*>(&other);
-    return o && (path_ == o->path_) && (append_ == o->append_);
+    return (o != nullptr) && (path_ == o->path_) && (append_ == o->append_);
 }
 
 
-void GribFileOutput::print(std::ostream &out) const {
+void GribFileOutput::print(std::ostream& out) const {
     out << "GribFileOutput[path=" << path_ << "]";
 }
 
 
 eckit::DataHandle& GribFileOutput::dataHandle() {
-    if(!handle_) {
+    if (handle_ == nullptr) {
         handle_ = path_.fileHandle();
-        if(append_) {
+        if (append_) {
             handle_->openForAppend(0);
-        } else {
+        }
+        else {
             handle_->openForWrite(0);
         }
     }
@@ -65,4 +62,3 @@ static MIROutputBuilder<GribFileOutput> output("grib");
 
 }  // namespace output
 }  // namespace mir
-

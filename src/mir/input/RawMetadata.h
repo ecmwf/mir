@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_RawMetadata_h
@@ -24,7 +21,7 @@ namespace mir {
 namespace util {
 class BoundingBox;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -33,13 +30,13 @@ namespace input {
 
 class RawMetadata {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     RawMetadata();
+    RawMetadata(const RawMetadata&) = delete;
 
     // -- Destructor
 
@@ -49,25 +46,26 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    RawMetadata& operator=(const RawMetadata&) = delete;
 
     // -- Methods
 
     virtual const std::vector<long>& pl() const = 0;
 
-    virtual size_t N() const = 0;
+    virtual size_t N() const          = 0;
     virtual size_t truncation() const = 0;
 
     virtual const util::BoundingBox& bbox() const = 0;
-    virtual const std::string& gridType() const = 0;
+    virtual const std::string& gridType() const   = 0;
 
-    virtual bool gridded() const = 0;
+    virtual bool gridded() const  = 0;
     virtual bool spectral() const = 0;
 
-    virtual size_t nj() const = 0;
+    virtual size_t nj() const      = 0;
     virtual size_t paramId() const = 0;
 
-    virtual bool hasMissing() const = 0;
+    virtual bool hasMissing() const     = 0;
     virtual double missingValue() const = 0;
 
     // -- Overridden methods
@@ -80,7 +78,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -97,7 +94,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -115,7 +111,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -124,4 +119,3 @@ private:
 
 
 #endif
-

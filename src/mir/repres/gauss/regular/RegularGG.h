@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_gauss_regular_RegularGG_h
@@ -27,7 +24,6 @@ namespace regular {
 
 class RegularGG : public Regular {
 public:
-
     // -- Exceptions
     // None
 
@@ -58,7 +54,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -76,7 +71,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -101,9 +95,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularGG& p)
+    // friend ostream& operator<<(ostream& s,const RegularGG& p)
     // { p.print(s); return s; }
-
 };
 
 
@@ -114,4 +107,3 @@ private:
 
 
 #endif
-

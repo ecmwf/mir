@@ -49,7 +49,7 @@ private:
     void gridtype(const std::string&);
     void gridname(const std::string&);
 
-    void resol(size_t);
+    void resol(long);
     void numberOfPoints(long);
 
     void param(long);
@@ -110,7 +110,7 @@ private:
 
     long param_;
 
-    bool area_;
+    // area
     double north_;
     double west_;
     double south_;
@@ -119,23 +119,27 @@ private:
     long accuracy_;
     long decimalScaleFactor_;
 
-    bool grid_;
+    // grid
     double west_east_;
     double north_south_;
 
-    bool rotation_;
+    // rotation
     double rotation_latitude_;
     double rotation_longitude_;
 
     std::string packing_;
 
-    bool hasMissing_;
     long resol_;
     std::string gridname_;
     std::string gridtype_;
     std::string format_;
 
     long numberOfPoints_;
+
+    bool area_;
+    bool grid_;
+    bool rotation_;
+    bool hasMissing_;
 
 private:
     void print(std::ostream& out) const;

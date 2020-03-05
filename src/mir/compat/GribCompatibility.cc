@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/compat/GribCompatibility.h"
@@ -25,23 +22,21 @@ namespace mir {
 namespace compat {
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = nullptr;
-static std::map< std::string, GribCompatibility* >* m = nullptr;
+static pthread_once_t once                          = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                    = nullptr;
+static std::map<std::string, GribCompatibility*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, GribCompatibility* >();
+    m           = new std::map<std::string, GribCompatibility*>();
 }
 
 
-GribCompatibility::GribCompatibility(const std::string &name):
-    name_(name)  {
+GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
-
 }
 
 
@@ -52,10 +47,6 @@ GribCompatibility::~GribCompatibility() {
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
-
-
-//=========================================================================
-
 
 
 void GribCompatibility::list(std::ostream& out) {
@@ -73,24 +64,21 @@ class CombinedGribCompatibility : public GribCompatibility {
 
     std::vector<const GribCompatibility*> list_;
 
-    virtual void execute(const output::MIROutput& output,
-                         const param::MIRParametrisation& parametrisation,
-                         grib_handle* h,
-                         grib_info& info) const {
+    virtual void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation,
+                         grib_handle* h, grib_info& info) const {
         for (auto c : list_) {
             c->execute(output, parametrisation, h, info);
         }
     }
 
-    virtual void printParametrisation(std::ostream& out,
-                                      const param::MIRParametrisation &param) const {
+    virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
         for (auto c : list_) {
             c->printParametrisation(out, param);
         }
     }
 
-    virtual bool sameParametrisation(const param::MIRParametrisation &param1,
-                                     const param::MIRParametrisation &param2) const {
+    virtual bool sameParametrisation(const param::MIRParametrisation& param1,
+                                     const param::MIRParametrisation& param2) const {
 
         for (auto c : list_) {
             if (!c->sameParametrisation(param1, param2)) {
@@ -101,8 +89,7 @@ class CombinedGribCompatibility : public GribCompatibility {
         return true;
     }
 
-    virtual void initialise(const metkit::MarsRequest& request,
-                            std::map<std::string, std::string>& postproc) const {
+    virtual void initialise(const metkit::MarsRequest& request, std::map<std::string, std::string>& postproc) const {
         for (auto c : list_) {
             c->initialise(request, postproc);
         }
@@ -120,13 +107,13 @@ class CombinedGribCompatibility : public GribCompatibility {
 
 
 public:
-    CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names):
+    CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
         GribCompatibility(name) {
+        list_.reserve(names.size());
         for (auto& n : names) {
             list_.push_back(&GribCompatibility::lookup(n));
         }
     }
-
 };
 
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
@@ -148,11 +135,9 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
         throw eckit::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
 
-    return *(*j).second;
+    return *(j->second);
 }
 
 
-
-}  // namespace method
+}  // namespace compat
 }  // namespace mir
-

@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #ifndef mir_lsm_Mask_h
@@ -25,7 +21,7 @@
 namespace eckit {
 class MD5;
 class PathName;
-}
+}  // namespace eckit
 
 namespace mir {
 namespace param {
@@ -34,7 +30,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -43,7 +39,6 @@ namespace lsm {
 
 class Mask {
 public:
-
     // -- Contructors
 
     Mask();
@@ -62,7 +57,7 @@ public:
 
     // -- Methods
 
-    virtual bool active() const = 0;
+    virtual bool active() const    = 0;
     virtual bool cacheable() const = 0;
     virtual void hash(eckit::MD5&) const;
     virtual const std::vector<bool>& mask() const = 0;
@@ -71,12 +66,8 @@ public:
 
 
     // Cache key takes the interpolation method into account
-    static void hashCacheKey(
-            eckit::MD5&,
-            const eckit::PathName&,
-            const param::MIRParametrisation&,
-            const repres::Representation&,
-            const std::string& which);
+    static void hashCacheKey(eckit::MD5&, const eckit::PathName&, const param::MIRParametrisation&,
+                             const repres::Representation&, const std::string& which);
 
     // -- Overridden methods
     // None
@@ -93,7 +84,6 @@ public:
     static bool sameOutput(const param::MIRParametrisation&, const param::MIRParametrisation&);
 
 protected:
-
     // -- Members
     // None
 
@@ -111,7 +101,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -126,17 +115,14 @@ private:
 
     // -- Class methods
 
-    static Mask& lookup(const param::MIRParametrisation&,
-                        const repres::Representation&,
-                        const std::string& which);
+    static Mask& lookup(const param::MIRParametrisation&, const repres::Representation&, const std::string& which);
 
     // -- Friends
 
-    friend std::ostream &operator<<(std::ostream& s, const Mask& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Mask& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -145,4 +131,3 @@ private:
 
 
 #endif
-

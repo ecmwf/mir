@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_param_RuntimeParametrisation_h
@@ -27,7 +24,6 @@ namespace param {
 
 class RuntimeParametrisation : public SimpleParametrisation {
 public:
-
     // -- Exceptions
     // None
 
@@ -37,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~RuntimeParametrisation(); // Change to virtual if base class
+    ~RuntimeParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -49,8 +45,8 @@ public:
 
     void unset(const std::string& name);
 
-    MIRParametrisation& set(const std::string& name, const std::string &value);
-    MIRParametrisation& set(const std::string& name, const char *value);
+    MIRParametrisation& set(const std::string& name, const std::string& value);
+    MIRParametrisation& set(const std::string& name, const char* value);
     MIRParametrisation& set(const std::string& name, float value);
     MIRParametrisation& set(const std::string& name, double value);
     MIRParametrisation& set(const std::string& name, int value);
@@ -93,7 +89,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -110,7 +105,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const param::MIRParametrisation& owner_;
@@ -118,13 +112,13 @@ private:
 
     // -- Methods
 
-    template<class T>
+    template <class T>
     void _set(const std::string&, const T&);
 
-    template<class T>
+    template <class T>
     void _set(const std::string&, const std::vector<T>&);
 
-    template<class T>
+    template <class T>
     bool _get(const std::string&, T&) const;
 
     // -- Overridden methods
@@ -142,7 +136,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -151,4 +144,3 @@ private:
 
 
 #endif
-

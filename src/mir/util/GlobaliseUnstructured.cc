@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/util/GlobaliseUnstructured.h"
@@ -47,9 +44,7 @@ GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& pa
 GlobaliseUnstructured::~GlobaliseUnstructured() = default;
 
 
-size_t GlobaliseUnstructured::appendGlobalPoints(
-        std::vector<double>& latitudes,
-        std::vector<double>& longitudes ) {
+size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes, std::vector<double>& longitudes) {
     if (globaliseGridname_.empty()) {
         return 0;
     }
@@ -77,7 +72,6 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
             latitudes.push_back(unrotated.lat().value());
             longitudes.push_back(unrotated.lon().value());
             ++nbExtraPoints;
-
         }
     }
 
@@ -87,4 +81,3 @@ size_t GlobaliseUnstructured::appendGlobalPoints(
 
 }  // namespace util
 }  // namespace mir
-

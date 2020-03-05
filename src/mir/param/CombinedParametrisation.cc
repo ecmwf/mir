@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/param/CombinedParametrisation.h"
@@ -22,14 +19,11 @@ namespace mir {
 namespace param {
 
 
-CombinedParametrisation::CombinedParametrisation(
-        const MIRParametrisation& user,
-        const MIRParametrisation& metadata,
-        const MIRParametrisation& defaults):
+CombinedParametrisation::CombinedParametrisation(const MIRParametrisation& user, const MIRParametrisation& metadata,
+                                                 const MIRParametrisation& defaults) :
     user_(user),
     field_(metadata),
-    defaults_(defaults) {
-}
+    defaults_(defaults) {}
 
 
 CombinedParametrisation::~CombinedParametrisation() = default;
@@ -45,7 +39,7 @@ const MIRParametrisation& CombinedParametrisation::fieldParametrisation() const 
 }
 
 
-template<class T>
+template <class T>
 bool CombinedParametrisation::_get(const std::string& name, T& value) const {
 
     // This could be a loop
@@ -55,9 +49,9 @@ bool CombinedParametrisation::_get(const std::string& name, T& value) const {
 
 void CombinedParametrisation::print(std::ostream& out) const {
     out << "CombinedParametrisation["
-//        <<  "user=" << user_
-//        << ",field=" << field_
-//        << ",defaults=" << defaults_
+        //        <<  "user=" << user_
+        //        << ",field=" << field_
+        //        << ",defaults=" << defaults_
         << "]";
 }
 
@@ -124,4 +118,3 @@ bool CombinedParametrisation::get(const std::string& name, std::vector<std::stri
 
 }  // namespace param
 }  // namespace mir
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_plan_ActionPlan_h
@@ -33,7 +30,7 @@ class Context;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -42,13 +39,11 @@ namespace action {
 
 class ActionPlan : protected std::vector<Action*> {
 private:
-
     // -- Types
 
     using container_t = std::vector<Action*>;
 
 public:
-
     // -- Exceptions
     // None
 
@@ -111,7 +106,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -132,7 +126,6 @@ protected:
     // None
 
 private:
-
     // No copy allowed
     ActionPlan(const ActionPlan&);
     ActionPlan& operator=(const ActionPlan&);
@@ -158,7 +151,6 @@ private:
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -167,4 +159,3 @@ private:
 
 
 #endif
-

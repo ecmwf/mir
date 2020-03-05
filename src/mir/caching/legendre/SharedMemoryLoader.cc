@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #include "mir/caching/legendre/SharedMemoryLoader.h"
@@ -23,12 +19,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <sys/types.h>
 #include <sys/ipc.h>
+#include <sys/sem.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/sem.h>
+#include <sys/types.h>
 
 //#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
@@ -51,7 +47,7 @@ namespace legendre {
 
 namespace {
 
-const int MAGIC  =  1234567890;
+const int MAGIC        = 1234567890;
 const size_t INFO_PATH = 1024;
 
 struct SHMInfo {
@@ -60,12 +56,14 @@ struct SHMInfo {
     char path[INFO_PATH];
 };
 
-}
+}  // namespace
 
 
 class Unloader {
 
     std::vector<eckit::PathName> paths_;
+
+    Unloader() = default;
 
 public:
     /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
@@ -75,6 +73,9 @@ public:
     }
 
     void add(const eckit::PathName& path) { paths_.push_back(path); }
+
+    Unloader(const Unloader&) = delete;
+    Unloader& operator=(const Unloader&) = delete;
 
     ~Unloader() {
         for (auto& path : paths_) {
@@ -112,7 +113,7 @@ public:
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path),
     address_(nullptr),
-    size_(path.size()),
+    size_(size_t(path.size())),
     unload_(false) {
 
     eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", log());
@@ -136,9 +137,9 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     // Try to get an exclusive lock, we may be waiting for another process
     // to create the memory segment and load it with the file content
-//    GlobalSemaphore gsem(real.dirName());
-//    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
-//    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
+    //    GlobalSemaphore gsem(real.dirName());
+    //    static const int max_wait_lock = eckit::Resource<int>("$MIR_SEMLOCK_RETRIES", 60);
+    //    eckit::SemLocker locker(gsem.semaphore_, gsem.path_, max_wait_lock);
 
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
@@ -178,7 +179,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
         /* Use 64K pages to back the shared memory region */
         size_t shm_size;
-        struct shmid_ds shm_buf = { 0 };
+        struct shmid_ds shm_buf = {0};
         psize_t psize_64k;
         psize_64k = 64 * 1024;
 
@@ -191,8 +192,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 #endif
 
     // Attach shared memory
-    address_ = eckit::Shmget::shmat(shmid, NULL, 0);
-    if (address_ == (void*) - 1) {
+    address_ = eckit::Shmget::shmat(shmid, nullptr, 0);
+    if (address_ == (void*)-1) {
         warn() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
         throw eckit::FailedSystemCall(msg.str());
     }
@@ -200,11 +201,11 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
     try {
 
-        char* addr   = reinterpret_cast<char*>(address_);
-        SHMInfo* nfo = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
+        auto addr = reinterpret_cast<char*>(address_);
+        auto nfo  = reinterpret_cast<SHMInfo*>(addr + (((size_ + page_size - 1) / page_size) * page_size));
 
         // Check if the file has been loaded in memory
-        if (nfo->ready) {
+        if (nfo->ready != 0) {
             log() << msg.str() << ", already loaded" << std::endl;
 
             if (nfo->magic != MAGIC) {
@@ -228,8 +229,8 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
             std::strcpy(nfo->path, real.asString().c_str());
             nfo->ready = 1;
         }
-
-    } catch (...) {
+    }
+    catch (...) {
         eckit::Shmget::shmdt(address_);
         throw;
     }
@@ -249,7 +250,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
 
 
 SharedMemoryLoader::~SharedMemoryLoader() {
-    if (address_) {
+    if (address_ != nullptr) {
         SYSCALL(eckit::Shmget::shmdt(address_));
     }
     if (unload_) {
@@ -283,7 +284,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     }
 
     // FIXME: add to eckit::Shmget interface
-    if (::shmctl(shmid, IPC_RMID, 0) < 0) {
+    if (::shmctl(shmid, IPC_RMID, nullptr) < 0) {
         warn() << "SharedMemoryLoader: ::shmctl: cannot delete '" << path << "'" << std::endl;
     }
 
@@ -297,7 +298,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 }
 
 
-void SharedMemoryLoader::print(std::ostream &out) const {
+void SharedMemoryLoader::print(std::ostream& out) const {
     out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
@@ -322,15 +323,12 @@ bool SharedMemoryLoader::shared() {
 }
 
 
-namespace {
 static LegendreLoaderBuilder<SharedMemoryLoader> loader1("shared-memory");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader2("shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader3("tmp-shmem");
 static LegendreLoaderBuilder<SharedMemoryLoader> loader5("tmp-shared-memory");
-}
 
 
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-

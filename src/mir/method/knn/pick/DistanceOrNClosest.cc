@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -48,7 +49,8 @@ size_t DistanceOrNClosest::n() const {
 
 bool DistanceOrNClosest::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const DistanceOrNClosest*>(&other);
-    return o && nClosest_.sameAs(o->nClosest_) && eckit::types::is_approximately_equal(distance_, o->distance_);
+    return (o != nullptr) && nClosest_.sameAs(o->nClosest_) &&
+           eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
 

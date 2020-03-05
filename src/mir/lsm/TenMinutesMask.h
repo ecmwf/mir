@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #ifndef mir_lsm_TenMinutesMask_h
@@ -28,7 +24,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -36,18 +32,13 @@ namespace lsm {
 
 class TenMinutesMask : public Mask {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    TenMinutesMask(
-        const std::string& name,
-        const eckit::PathName&,
-        const param::MIRParametrisation&,
-        const repres::Representation&,
-        const std::string& which);
+    TenMinutesMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation&,
+                   const repres::Representation&, const std::string& which);
 
     // -- Destructor
 
@@ -72,7 +63,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     std::string name_;
@@ -99,7 +89,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -108,4 +97,3 @@ private:
 
 
 #endif
-

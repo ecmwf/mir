@@ -3,27 +3,25 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 #include "mir/input/VectorInput.h"
 
 #include <iostream>
 
-#include "mir/data/MIRField.h"
 #include "eckit/exception/Exceptions.h"
+#include "mir/data/MIRField.h"
 
 namespace mir {
 namespace input {
 
 
-VectorInput::VectorInput(MIRInput &component1, MIRInput &component2):
+VectorInput::VectorInput(MIRInput& component1, MIRInput& component2) :
     component1_(component1),
     component2_(component2) {
 
@@ -35,7 +33,7 @@ VectorInput::VectorInput(MIRInput &component1, MIRInput &component2):
 VectorInput::~VectorInput() = default;
 
 
-const param::MIRParametrisation &VectorInput::parametrisation(size_t which) const {
+const param::MIRParametrisation& VectorInput::parametrisation(size_t which) const {
     // Assumes that both component (e.g. U and V) have the same parametrisation
     ASSERT(which <= 1);
     return (which == 0) ? component1_.parametrisation() : component2_.parametrisation();
@@ -71,11 +69,11 @@ bool VectorInput::next() {
 
 bool VectorInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const VectorInput*>(&other);
-    return o && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
+    return (o != nullptr) && component1_.sameAs(o->component1_) && component2_.sameAs(o->component2_);
 }
 
 
-void VectorInput::print(std::ostream &out) const {
+void VectorInput::print(std::ostream& out) const {
     out << "VectorInput[" << component1_ << "," << component2_ << "]";
 }
 
@@ -85,4 +83,3 @@ size_t VectorInput::dimensions() const {
 
 }  // namespace input
 }  // namespace mir
-

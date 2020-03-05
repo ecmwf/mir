@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef IrregularLatlon_H
@@ -25,7 +22,6 @@ namespace repres {
 
 class IrregularLatlon : public Gridded {
 public:
-
     // -- Exceptions
     // None
 
@@ -35,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon(); // Change to virtual if base class
+    virtual ~IrregularLatlon();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -55,13 +51,12 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -73,7 +68,6 @@ protected:
     // None
 
 private:
-
     IrregularLatlon();
 
     // -- Members
@@ -96,6 +90,7 @@ private:
 
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;
+    virtual void validate(const MIRValuesVector&) const;
 
     virtual void fill(grib_info&) const;
     virtual void fill(util::MeshGeneratorParameters&) const;
@@ -117,9 +112,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
+    // friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -128,4 +122,3 @@ private:
 
 
 #endif
-

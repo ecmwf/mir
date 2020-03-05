@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_lsm_MappedMask_h
@@ -28,7 +25,7 @@ class MIRParametrisation;
 namespace repres {
 class Representation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -37,17 +34,13 @@ namespace lsm {
 
 class MappedMask : public Mask {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    MappedMask(const std::string& name,
-               const eckit::PathName&,
-               const param::MIRParametrisation& parametrisation,
-               const repres::Representation &representation,
-               const std::string& which);
+    MappedMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation& parametrisation,
+               const repres::Representation& representation, const std::string& which);
 
     // -- Destructor
 
@@ -72,7 +65,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -94,7 +86,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string name_;
@@ -116,7 +107,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -125,4 +115,3 @@ private:
 
 
 #endif
-

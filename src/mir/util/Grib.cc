@@ -3,13 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
 
 
 #include <sstream>
@@ -85,7 +83,7 @@ void GribExtraSetting::set(grib_info& info, const char* key, long value) {
     auto& set      = info.packing.extra_settings[info.packing.extra_settings_count++];
     set.name       = key;
     set.long_value = value;
-    set.type       = GRIB_TYPE_LONG;
+    set.type       = CODES_TYPE_LONG;
 }
 
 
@@ -93,5 +91,5 @@ void GribExtraSetting::set(grib_info& info, const char* key, double value) {
     auto& set        = info.packing.extra_settings[info.packing.extra_settings_count++];
     set.name         = key;
     set.double_value = value;
-    set.type         = GRIB_TYPE_DOUBLE;
+    set.type         = CODES_TYPE_DOUBLE;
 }

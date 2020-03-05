@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -31,8 +32,7 @@ Distance::Distance(const param::MIRParametrisation& param) {
 }
 
 
-void Distance::pick(const search::PointSearch& tree,
-                    const eckit::geometry::Point3& p,
+void Distance::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
                     Pick::neighbours_t& closest) const {
     tree.closestWithinRadius(p, distance_, closest);
 }
@@ -46,7 +46,7 @@ size_t Distance::n() const {
 
 bool Distance::sameAs(const Pick& other) const {
     auto o = dynamic_cast<const Distance*>(&other);
-    return o && eckit::types::is_approximately_equal(distance_, o->distance_);
+    return (o != nullptr) && eckit::types::is_approximately_equal(distance_, o->distance_);
 }
 
 
@@ -67,4 +67,3 @@ static PickBuilder<Distance> __pick("distance");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

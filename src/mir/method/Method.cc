@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/method/Method.h"
@@ -27,18 +24,13 @@
 namespace mir {
 namespace method {
 
-Method::Method(const param::MIRParametrisation &params) :
-    parametrisation_(params) {
-}
+
+Method::Method(const param::MIRParametrisation& params) : parametrisation_(params) {}
 
 
 Method::~Method() = default;
 
 
-//=========================================================================
-
-
-namespace {
 static pthread_once_t once                      = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                = nullptr;
 static std::map<std::string, MethodFactory*>* m = nullptr;
@@ -46,11 +38,9 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, MethodFactory*>();
 }
-}  // (anonymous namespace)
 
 
-MethodFactory::MethodFactory(const std::string &name):
-    name_(name) {
+MethodFactory::MethodFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -82,7 +72,7 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method *MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+Method* MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -94,11 +84,9 @@ Method *MethodFactory::build(const std::string& name, const param::MIRParametris
         throw eckit::SeriousBug("MethodFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(param);
+    return j->second->make(param);
 }
-
 
 
 }  // namespace method
 }  // namespace mir
-

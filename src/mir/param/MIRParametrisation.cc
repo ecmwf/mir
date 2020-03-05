@@ -3,18 +3,15 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
-
-#include <sstream>
 #include "mir/param/MIRParametrisation.h"
+#include <sstream>
 #include "eckit/exception/Exceptions.h"
 
 
@@ -42,18 +39,18 @@ const MIRParametrisation& MIRParametrisation::fieldParametrisation() const {
 }
 
 
-bool MIRParametrisation::get(const std::string &name, size_t &value) const {
+bool MIRParametrisation::get(const std::string& name, size_t& value) const {
     long v;
     if (get(name, v)) {
         ASSERT(v >= 0);
-        value = v;
+        value = size_t(v);
         return true;
     }
     return false;
 }
 
 
-bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value) const {
+bool MIRParametrisation::get(const std::string& name, std::vector<size_t>& value) const {
     std::vector<long> v;
     if (get(name, v)) {
         value.clear();
@@ -67,7 +64,7 @@ bool MIRParametrisation::get(const std::string &name, std::vector<size_t> &value
     return false;
 }
 
-bool MIRParametrisation::get(const std::string &name, long long &value) const {
+bool MIRParametrisation::get(const std::string& name, long long& value) const {
     long v;
     if (get(name, v)) {
         ASSERT(v >= 0);
@@ -78,7 +75,7 @@ bool MIRParametrisation::get(const std::string &name, long long &value) const {
 }
 
 
-bool MIRParametrisation::get(const std::string &name, std::vector<long long> &value) const {
+bool MIRParametrisation::get(const std::string& name, std::vector<long long>& value) const {
     std::vector<long> v;
     if (get(name, v)) {
         value.clear();
@@ -93,4 +90,3 @@ bool MIRParametrisation::get(const std::string &name, std::vector<long long> &va
 
 }  // namespace param
 }  // namespace mir
-

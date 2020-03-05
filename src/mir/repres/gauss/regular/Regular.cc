@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/gauss/regular/Regular.h"
@@ -29,10 +26,7 @@ namespace repres {
 namespace gauss {
 namespace regular {
 
-Regular::Regular(const param::MIRParametrisation& parametrisation) :
-    Gaussian(parametrisation),
-    Ni_(0),
-    Nj_(0) {
+Regular::Regular(const param::MIRParametrisation& parametrisation) : Gaussian(parametrisation), Ni_(0), Nj_(0) {
 
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox_.north();
@@ -47,14 +41,14 @@ Regular::Regular(const param::MIRParametrisation& parametrisation) :
     bbox_ = util::BoundingBox(n, w, s, e);
 
     eckit::Log::debug<LibMir>() << "Regular::Regular: BoundingBox:"
-                                << "\n\t   " << old
-                                << "\n\t > " << bbox_
-                                << std::endl;
+                                << "\n\t   " << old << "\n\t > " << bbox_ << std::endl;
     setNiNj();
 }
 
-Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision)
-    : Gaussian(N, bbox, angularPrecision), Ni_(0), Nj_(0) {
+Regular::Regular(size_t N, const util::BoundingBox& bbox, double angularPrecision) :
+    Gaussian(N, bbox, angularPrecision),
+    Ni_(0),
+    Nj_(0) {
 
     // adjust latitudes, longitudes and re-set bounding box
     Latitude n = bbox.north();
@@ -76,12 +70,12 @@ void Regular::fill(grib_info& info) const {
 
     // See copy_spec_from_ksec.c in libemos for info
 
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_REGULAR_GG;
+    info.grid.grid_type = CODES_UTIL_GRID_SPEC_REGULAR_GG;
 
-    info.grid.N = long(N_);
+    info.grid.N                            = long(N_);
     info.grid.iDirectionIncrementInDegrees = getSmallestIncrement();
-    info.grid.Ni = long(Ni_);
-    info.grid.Nj = long(Nj_);
+    info.grid.Ni                           = long(Ni_);
+    info.grid.Nj                           = long(Nj_);
 
     bbox_.fill(info);
 }
@@ -105,13 +99,13 @@ void Regular::correctWestEast(Longitude& w, Longitude& e) const {
     ASSERT(inc > 0);
 
     if (angleApproximatelyEqual(Longitude::GREENWICH, w) &&
-            (angleApproximatelyEqual(Longitude::GLOBE - inc, e - w) || Longitude::GLOBE - inc < e - w ||
-             (e != w && e.normalise(w) == w))) {
+        (angleApproximatelyEqual(Longitude::GLOBE - inc, e - w) || Longitude::GLOBE - inc < e - w ||
+         (e != w && e.normalise(w) == w))) {
 
         w = Longitude::GREENWICH;
         e = Longitude::GLOBE - inc;
-
-    } else {
+    }
+    else {
 
         const Fraction west = w.fraction();
         const Fraction east = e.fraction();
@@ -134,7 +128,7 @@ void Regular::correctWestEast(Longitude& w, Longitude& e) const {
 
 bool Regular::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const Regular*>(&other);
-    return o && (N_ == o->N_) && (bbox_ == o->bbox_);
+    return (o != nullptr) && (N_ == o->N_) && (bbox_ == o->bbox_);
 }
 
 eckit::Fraction Regular::getSmallestIncrement() const {
@@ -152,7 +146,7 @@ bool Regular::getLongestElementDiagonal(double& d) const {
     ASSERT(N_);
 
     const auto& lats = latitudes();
-    auto snHalf = 0.5 * (lats[N_ - 1] - lats[N_]);
+    auto snHalf      = 0.5 * (lats[N_ - 1] - lats[N_]);
     ASSERT(!eckit::types::is_approximately_equal(snHalf, 0.));
 
     auto weHalf = double(getSmallestIncrement() / 2);
@@ -209,7 +203,7 @@ void Regular::setNiNj() {
     ASSERT(N_);
 
     const eckit::Fraction inc = getSmallestIncrement();
-    const auto& lats = latitudes();
+    const auto& lats          = latitudes();
 
     const Longitude& west = bbox_.west();
     const Longitude& east = bbox_.east();
@@ -220,13 +214,13 @@ void Regular::setNiNj() {
     if (east - west + inc < Longitude::GLOBE) {
 
         eckit::Fraction w = west.fraction();
-        auto Nw = (w / inc).integralPart();
+        auto Nw           = (w / inc).integralPart();
         if (Nw * inc < w) {
             Nw += 1;
         }
 
         eckit::Fraction e = east.fraction();
-        auto Ne = (e / inc).integralPart();
+        auto Ne           = (e / inc).integralPart();
         if (Ne * inc > e) {
             Ne -= 1;
         }
@@ -264,7 +258,7 @@ size_t Regular::frame(MIRValuesVector& values, size_t size, double missingValue,
     size_t k = 0;
     for (size_t j = 0; j < Nj_; j++) {
         for (size_t i = 0; i < Ni_; i++) {
-            if (!((i < size) || (j < size) || (i >= Ni_ - size) || (j >= Nj_ - size))) { // Check me, may be buggy
+            if (!((i < size) || (j < size) || (i >= Ni_ - size) || (j >= Nj_ - size))) {  // Check me, may be buggy
                 if (!estimate) {
                     values[k] = missingValue;
                 }
@@ -281,7 +275,7 @@ size_t Regular::frame(MIRValuesVector& values, size_t size, double missingValue,
 }
 
 
-} // namespace regular
-} // namespace gauss
-} // namespace repres
-} // namespace mir
+}  // namespace regular
+}  // namespace gauss
+}  // namespace repres
+}  // namespace mir

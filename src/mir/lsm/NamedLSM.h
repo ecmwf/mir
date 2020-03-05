@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -26,7 +27,6 @@ namespace lsm {
 
 class NamedLSM : public LSMSelection {
 public:
-
     // -- Exceptions
     // None
 
@@ -57,7 +57,6 @@ public:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -73,61 +72,50 @@ private:
 
     // -- Class methods
 
-    Mask* create(const param::MIRParametrisation&,
-                 const repres::Representation&,
-                 const std::string& which) const;
+    Mask* create(const param::MIRParametrisation&, const repres::Representation&, const std::string& which) const;
 
-    std::string cacheKey(const param::MIRParametrisation&,
-                         const repres::Representation&,
+    std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                          const std::string& which) const;
 
     // -- Friends
     // None
-
 };
 
 
 class NamedMaskFactory {
-    virtual Mask* make(
-            const param::MIRParametrisation& param,
-            const repres::Representation& representation,
-            const std::string& which) = 0;
-    virtual void hashCacheKey(eckit::MD5&,
-                              const param::MIRParametrisation&,
-                              const repres::Representation&,
-                              const std::string& which) = 0;
+    virtual Mask* make(const param::MIRParametrisation&, const repres::Representation&, const std::string& which) = 0;
+    virtual void hashCacheKey(eckit::MD5&, const param::MIRParametrisation&, const repres::Representation&,
+                              const std::string& which)                                                           = 0;
+
+    NamedMaskFactory(const NamedMaskFactory&) = delete;
+    NamedMaskFactory& operator=(const NamedMaskFactory&) = delete;
+
 protected:
     const std::string name_;
     const std::string path_;
+
     NamedMaskFactory(const std::string& name, const std::string& path);
     virtual ~NamedMaskFactory();
+
 public:
-    static Mask* build(
-            const param::MIRParametrisation&,
-            const repres::Representation&,
-            const std::string& which );
-    static std::string cacheKey(
-            const param::MIRParametrisation&,
-            const repres::Representation&,
-            const std::string& which );
+    static Mask* build(const param::MIRParametrisation&, const repres::Representation&, const std::string& which);
+    static std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
+                                const std::string& which);
     static void list(std::ostream&);
 };
 
 
-template<class T>
+template <class T>
 class NamedMaskBuilder : public NamedMaskFactory {
-    virtual Mask* make(
-            const param::MIRParametrisation& param,
-            const repres::Representation& representation,
-            const std::string& which) {
+    virtual Mask* make(const param::MIRParametrisation& param, const repres::Representation& representation,
+                       const std::string& which) {
         return new T(name_, path_, param, representation, which);
     }
-    virtual void hashCacheKey(eckit::MD5& md5,
-                              const param::MIRParametrisation& parametrisation,
-                              const repres::Representation& representation,
-                              const std::string& which) {
+    virtual void hashCacheKey(eckit::MD5& md5, const param::MIRParametrisation& parametrisation,
+                              const repres::Representation& representation, const std::string& which) {
         T::hashCacheKey(md5, path_, parametrisation, representation, which);
     }
+
 public:
     NamedMaskBuilder(const std::string& name, const std::string& path) : NamedMaskFactory(name, path) {}
 };
@@ -138,4 +126,3 @@ public:
 
 
 #endif
-

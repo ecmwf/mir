@@ -3,43 +3,44 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
-#ifndef mir_netcdf_OutputAttribute
-#define mir_netcdf_OutputAttribute
+#ifndef mir_netcdf_OutputAttribute_h
+#define mir_netcdf_OutputAttribute_h
 
 #include "mir/netcdf/Attribute.h"
+
 
 namespace mir {
 namespace netcdf {
 
-class OutputAttribute : public Attribute
-{
-public:
 
-    OutputAttribute(Endowed &owner, const std::string &name, Value *value);
+class OutputAttribute : public Attribute {
+public:
+    OutputAttribute(Endowed& owner, const std::string& name, Value* value);
     virtual ~OutputAttribute();
 
 private:
-
     // -- Members
 
     bool valid_;
 
     // From Atttribute
     virtual void create(int nc) const;
-    virtual void print(std::ostream &out) const;
-    virtual void clone(Endowed &owner) const;
-    virtual void merge(const Attribute &);
+    virtual void print(std::ostream& out) const;
+    virtual void clone(Endowed& owner) const;
+    virtual void merge(const Attribute&);
     virtual void invalidate();
-
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

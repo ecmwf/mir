@@ -3,19 +3,15 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
-#include "eckit/types/Types.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/input/GribFileInput.h"
@@ -29,22 +25,17 @@ class MIRPoints : public mir::tools::MIRTool {
 
     void execute(const eckit::option::CmdArgs&);
 
-    void usage(const std::string &tool) const;
+    void usage(const std::string& tool) const {
+        eckit::Log::info() << "\n"
+                              "Usage: "
+                           << tool << std::endl;
+    }
 
 public:
-
     // -- Contructors
 
-    MIRPoints(int argc, char **argv) : mir::tools::MIRTool(argc, argv) {}
-
+    using MIRTool::MIRTool;
 };
-
-
-void MIRPoints::usage(const std::string &tool) const {
-    eckit::Log::info()
-            << "\n" "Usage: " << tool
-            << std::endl;
-}
 
 
 void MIRPoints::execute(const eckit::option::CmdArgs& args) {
@@ -54,8 +45,8 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
 
     mir::api::MIRJob job;
 
-    std::vector<double> latitudes = {50, 30, 20, 10, 0};
-    std::vector<double> longitudes = { -10, 10, 6, 52, 8};
+    std::vector<double> latitudes  = {50, 30, 20, 10, 0};
+    std::vector<double> longitudes = {-10, 10, 6, 52, 8};
 
     job.set("caching", false);
 
@@ -69,18 +60,15 @@ void MIRPoints::execute(const eckit::option::CmdArgs& args) {
     while (input.next()) {
         job.execute(input, output);
 
-        std::cout << "Number of fields: " << output.dimensions() << std::endl;
-        std::cout << "Values " << output.values() << std::endl;
-        std::cout << "Has missing " << output.hasMissing() << std::endl;
-        std::cout << "Missing " << output.missingValue() << std::endl;
-
+        eckit::Log::info() << "Number of fields: " << output.dimensions() << std::endl;
+        eckit::Log::info() << "Values " << output.values() << std::endl;
+        eckit::Log::info() << "Has missing " << output.hasMissing() << std::endl;
+        eckit::Log::info() << "Missing " << output.missingValue() << std::endl;
     }
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     MIRPoints tool(argc, argv);
     return tool.start();
 }
-
-

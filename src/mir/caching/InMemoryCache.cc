@@ -3,14 +3,15 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
 
-#include <time.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
@@ -29,27 +30,21 @@ inline static double utime() {
     return double(t.tv_sec) + double(t.tv_usec) * 0.000001;
 }
 
-template<class T>
-InMemoryCache<T>::InMemoryCache(const std::string& name,
-                                size_t memory_capacity,
-                                size_t shared_capacity,
-                                const char* variable, bool cleanupAtExit):
+template <class T>
+InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
+                                const char* variable) :
     name_(name),
-    capacity_(name + "InMemoryCacheCapacity;"  + variable, InMemoryCacheUsage(memory_capacity, shared_capacity)) ,
-    cleanupAtExit_(cleanupAtExit),
-    users_(0) {
-
-}
+    capacity_(name + "InMemoryCacheCapacity;" + variable, InMemoryCacheUsage(memory_capacity, shared_capacity)),
+    users_(0) {}
 
 
-template<class T>
+template <class T>
 InMemoryCache<T>::~InMemoryCache() {
-    if (cleanupAtExit_) {
-        // std::cerr << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " << cache_.size() << std::endl;
-        for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-            // std::cerr << "Deleting InMemoryCache " << name_ << " " << *((*j).second->ptr_) << std::endl;
-            delete (*j).second;
-        }
+    // log() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
+    // cache_.size() << std::endl;
+    for (auto& j : cache_) {
+        // log() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
+        delete j.second;
     }
 
     // std::string title = "InMemoryCache(" + name_ + ")";
@@ -57,17 +52,17 @@ InMemoryCache<T>::~InMemoryCache() {
 }
 
 
-template<class T>
-T* InMemoryCache<T>::find(const std::string & key) const {
+template <class T>
+T* InMemoryCache<T>::find(const std::string& key) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
         statistics_.hits_++;
 
-        (*j).second->hits_++;
-        (*j).second->last_ = utime();
-        return (*j).second->ptr_.get();
+        j->second->hits_++;
+        j->second->last_ = utime();
+        return j->second->ptr_.get();
     }
     // if (statistics_) {
     //     statistics_.misses_++;
@@ -75,17 +70,11 @@ T* InMemoryCache<T>::find(const std::string & key) const {
     return 0;
 }
 
-template<class T>
-void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsage& usage) {
+template <class T>
+void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsage& usage) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    log() << "CACHE-FOOTPRINT-"
-          << name_
-          << " "
-          << key
-          << " => "
-          << usage
-          << std::endl;
+    log() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
 
 
     auto k = cache_.find(key);
@@ -93,31 +82,28 @@ void InMemoryCache<T>::footprint(const std::string & key, const InMemoryCacheUsa
     k->second->footprint_ = usage;
     keys_[key]            = usage;
 
-    footprint(); //  Update stats
+    footprint();  //  Update stats
 
 
     InMemoryCacheUsage result;
     for (auto j = keys_.begin(); j != keys_.end(); ++j) {
-        result += (*j).second;
+        result += j->second;
     }
 
     statistics_.required_ = result;
 
-    log() << "CACHE-FOOTPRINT-" << name_
-          << " total " << footprint()
-          << " required " << result
-          << " capacity " << capacity_
-          << std::endl;
+    log() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << " required " << result << " capacity "
+          << capacity_ << std::endl;
 }
 
 
-template<class T>
+template <class T>
 void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
     InMemoryCacheUsage usage(size, inSharedMemory);
     reserve(usage);
 }
 
-template<class T>
+template <class T>
 void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
@@ -126,29 +112,19 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
     auto u = usage;
     auto p = (f + u) - c;
 
-    log() << "CACHE-RESERVE-"
-          << name_
-          << " "
-          << " => "
-          << u
-          << " footprint: "
-          << f
-          << " capacity: "
-          << c
-          << " f+u: " <<  f + u
-          << " f+u-c: " << p
+    log() << "CACHE-RESERVE-" << name_ << " "
+          << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
           << std::endl;
 
 
     if (p) {
         purge(p, true);
     }
-
 }
 
 
-template<class T>
-T& InMemoryCache<T>::operator[](const std::string & key) {
+template <class T>
+T& InMemoryCache<T>::operator[](const std::string& key) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     T* ptr = find(key);
@@ -158,7 +134,7 @@ T& InMemoryCache<T>::operator[](const std::string & key) {
     return create(key);
 }
 
-static inline double score(size_t count, double recent, double age) {
+static inline double score(size_t /*count*/, double recent, double /*age*/) {
     // count: number of accesses
     // age: age in seconds since creation
     // recent: age in seconds since last access
@@ -167,12 +143,12 @@ static inline double score(size_t count, double recent, double age) {
 
     // return (double(recent) + double(age)) / double(count);
 
-    return recent; // LRU
+    return recent;  // LRU
 }
 
 
-template<class T>
-T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
+template <class T>
+T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
     ASSERT(ptr);
 
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
@@ -183,9 +159,9 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
 
     auto k = cache_.find(key);
     if (k != cache_.end()) {
-        NOTIMP; // Needs to think more about it
-        delete (*k).second;
-        (*k).second = new Entry(ptr);
+        NOTIMP;  // Needs to think more about it
+        delete k->second;
+        k->second  = new Entry(ptr);
         keys_[key] = InMemoryCacheUsage(size_t(1), size_t(0));
         return *ptr;
     }
@@ -195,15 +171,14 @@ T& InMemoryCache<T>::insert(const std::string & key, T * ptr) {
     }
 
     cache_[key] = new Entry(ptr);
-    keys_[key] = InMemoryCacheUsage(size_t(1), size_t(0));
+    keys_[key]  = InMemoryCacheUsage(size_t(1), size_t(0));
 
     statistics_.unique_ = keys_.size();
 
     return *ptr;
-
 }
 
-template<class T>
+template <class T>
 void InMemoryCache<T>::purge() {
 
     auto f = footprint();
@@ -213,12 +188,11 @@ void InMemoryCache<T>::purge() {
 }
 
 
-template<class T>
+template <class T>
 InMemoryCacheUsage InMemoryCache<T>::footprint() const {
     InMemoryCacheUsage result;
     for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-        result += (*j).second->footprint_;
-
+        result += j->second->footprint_;
     }
     if (result > statistics_.footprint_) {
         statistics_.footprint_ = result;
@@ -226,19 +200,19 @@ InMemoryCacheUsage InMemoryCache<T>::footprint() const {
     return result;
 }
 
-template<class T>
-T& InMemoryCache<T>::create(const std::string & key) {
+template <class T>
+T& InMemoryCache<T>::create(const std::string& key) {
     return insert(key, new T());
 }
 
-template<class T>
+template <class T>
 void InMemoryCache<T>::startUsing() {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     users_++;
 }
 
-template<class T>
-void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics & statistics) {
+template <class T>
+void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     ASSERT(users_);
     users_--;
@@ -248,34 +222,34 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics & statistics) {
     checkTotalFootprint();
 
     statistics_.capacity_ = capacity_;
-    statistics = statistics_;
+    statistics            = statistics_;
 }
 
 
-template<class T>
-void InMemoryCache<T>::erase(const std::string & key) {
+template <class T>
+void InMemoryCache<T>::erase(const std::string& key) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
-        delete (*j).second;
+        delete j->second;
         cache_.erase(j);
     }
 }
 
-template<class T>
+template <class T>
 InMemoryCacheUsage InMemoryCache<T>::capacity() const {
     return capacity_;
 }
 
 
-template<class T>
+template <class T>
 const std::string& InMemoryCache<T>::name() const {
     return name_;
 }
 
 
-template<class T>
+template <class T>
 InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, bool force) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
@@ -294,18 +268,18 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         }
 
         double now = utime();
-        auto best = cache_.begin();
-        double m = 0;
+        auto best  = cache_.begin();
+        double m   = 0;
 
         for (auto j = cache_.begin(); j != cache_.end(); ++j) {
-            double s = score((*j).second->hits_, now - (*j).second->last_, now - (*j).second->insert_);
+            double s = score(j->second->hits_, now - j->second->last_, now - j->second->insert_);
             if (s > m) {
-                m = s;
+                m    = s;
                 best = j;
             }
         }
 
-        if (m < statistics_.youngest_ || statistics_.youngest_ == 0 ) {
+        if (m < statistics_.youngest_ || statistics_.youngest_ == 0) {
             statistics_.youngest_ = m;
         }
 
@@ -316,15 +290,13 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         statistics_.evictions_++;
 
 
-        purged += (*best).second->footprint_;
+        purged += best->second->footprint_;
 
-        log() << "CACHE " << name_ << " decache " << (*best).first << std::endl;
-        delete (*best).second;
+        log() << "CACHE " << name_ << " decache " << best->first << std::endl;
+        delete best->second;
         cache_.erase(best);
 
         log() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
-
-
     }
 
     return purged;
@@ -333,4 +305,3 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
 
 }  // namespace caching
 }  // namespace mir
-

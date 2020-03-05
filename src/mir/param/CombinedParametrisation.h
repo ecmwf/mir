@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_param_CombinedParametrisation_h
@@ -25,19 +22,17 @@ namespace param {
 
 class CombinedParametrisation : public MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    CombinedParametrisation(const MIRParametrisation& userParametrisation,
-                            const MIRParametrisation& metadata,
+    CombinedParametrisation(const MIRParametrisation& userParametrisation, const MIRParametrisation& metadata,
                             const MIRParametrisation& defaults);
 
     // -- Destructor
 
-    virtual ~CombinedParametrisation(); // Change to virtual if base class
+    virtual ~CombinedParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -75,7 +69,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     const MIRParametrisation& user_;
@@ -85,7 +78,7 @@ private:
     // -- Methods
     // None
 
-    template<class T>
+    template <class T>
     bool _get(const std::string&, T&) const;
 
     // -- Overridden methods
@@ -119,7 +112,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -128,4 +120,3 @@ private:
 
 
 #endif
-

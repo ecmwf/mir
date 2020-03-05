@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date August 2016
 
 
 #include "mir/config/LibMir.h"
@@ -28,49 +24,34 @@ namespace mir {
 REGISTER_LIBRARY(LibMir);
 
 
-LibMir::LibMir() : Library("mir") {
-}
+LibMir::LibMir() : Library("mir") {}
 
 
 std::string LibMir::cacheDir() {
-    static std::string mirCachePath = eckit::PathName(
-                eckit::LibResource<eckit::PathName, LibMir>(
-                    "mir-cache-path;"
-                    "$MIR_CACHE_PATH",
-                    "/tmp/cache" ));
+    static std::string mirCachePath =
+        eckit::PathName(eckit::LibResource<eckit::PathName, LibMir>("mir-cache-path;"
+                                                                    "$MIR_CACHE_PATH",
+                                                                    "/tmp/cache"));
     return mirCachePath;
 }
 
 
 bool LibMir::caching() {
     static bool mirCaching = eckit::LibResource<bool, LibMir>(
-                "mir-caching;"
-                "$MIR_CACHING",
-                true );
+        "mir-caching;"
+        "$MIR_CACHING",
+        true);
     return mirCaching;
 }
 
 
-const LibMir::keywords_t LibMir::postProcess() {
-    static const keywords_t defaultKeywords {
-        "accuracy",
-        "bitmap",
-        "checkerboard",
-        "compatibility",
-        "edition",
-        "filter",
-        "format",
-        "formula",
-        "frame",
-        "griddef",
-        "latitudes",
-        "longitudes",
-        "packing",
-        "pattern",
-        "vod2uv",
+LibMir::keywords_t LibMir::postProcess() {
+    static const keywords_t defaultKeywords{
+        "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format", "formula",
+        "frame",    "griddef", "latitudes",    "longitudes",    "packing", "pattern", "vod2uv",
     };
 
-    auto& config = instance().configuration();
+    auto& config                     = instance().configuration();
     static const keywords_t keywords = config.getStringVector("post-process", defaultKeywords);
 
     return keywords;
@@ -99,7 +80,8 @@ std::string LibMir::gitsha1(unsigned int count) const {
         return "not available";
     }
 
-    return sha1.substr(0, std::min(count, 40u));
+    return sha1.substr(0, std::min(count, 40U));
 }
 
-} // namespace mir
+
+}  // namespace mir

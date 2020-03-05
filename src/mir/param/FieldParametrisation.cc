@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor
+ * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/param/FieldParametrisation.h"
@@ -27,26 +23,16 @@ namespace mir {
 namespace param {
 
 
-namespace {
-
-
 static Rules fileRules;
-
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex *local_mutex = nullptr;
+static pthread_once_t once       = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
     fileRules.readConfigurationFiles();
 }
 
 
-}  // (anonymous namespace)
-
-
-FieldParametrisation::FieldParametrisation():
-    paramId_(-1)  {
-}
+FieldParametrisation::FieldParametrisation() : paramId_(-1) {}
 
 
 FieldParametrisation::~FieldParametrisation() = default;
@@ -54,8 +40,7 @@ FieldParametrisation::~FieldParametrisation() = default;
 
 bool FieldParametrisation::has(const std::string& name) const {
 
-    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") "
-                                << *this << std::endl;
+    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;
 }
 
@@ -131,12 +116,12 @@ bool FieldParametrisation::get(const std::string& name, std::vector<double>& val
 
     if (name == "latitudes") {
         latitudes(value);
-        return true;
+        return !value.empty();
     }
 
     if (name == "longitudes") {
         longitudes(value);
-        return true;
+        return !value.empty();
     }
 
     return false;

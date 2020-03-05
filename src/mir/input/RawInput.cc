@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/input/RawInput.h"
@@ -30,11 +27,10 @@ namespace mir {
 namespace input {
 
 
-RawInput::RawInput(const RawMetadata& metadata, const double *values, size_t count):
+RawInput::RawInput(const RawMetadata& metadata, const double* values, size_t count) :
     metadata_(metadata),
     values_(values),
-    count_(count) {
-}
+    count_(count) {}
 
 
 RawInput::~RawInput() = default;
@@ -75,7 +71,7 @@ void RawInput::print(std::ostream& out) const {
 }
 
 
-size_t RawInput::copy(double *values, size_t size) const {
+size_t RawInput::copy(double* values, size_t size) const {
     ASSERT(count_ <= size);
     std::memcpy(values, values_, sizeof(double) * count_);
     return count_;
@@ -109,7 +105,7 @@ bool RawInput::get(const std::string& name, std::string& value) const {
 }
 
 
-bool RawInput::get(const std::string& name, bool& value) const {
+bool RawInput::get(const std::string& name, bool& /*value*/) const {
     eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get bool (" << name << ")" << std::endl;
     return false;
 }
@@ -130,22 +126,22 @@ bool RawInput::get(const std::string& name, long& value) const {
     eckit::Log::debug<LibMir>() << ">>>>>>>>>>>>> RawInput::get long (" << name << ")" << std::endl;
 
     if (name == "N") {
-        value = metadata_.N();
+        value = long(metadata_.N());
         return true;
     }
 
     if (name == "Nj") {
-        value = metadata_.nj();
+        value = long(metadata_.nj());
         return true;
     }
 
     if (name == "truncation") {
-        value = metadata_.truncation();
+        value = long(metadata_.truncation());
         return true;
     }
 
     if (name == "paramId") {
-        value = metadata_.paramId();
+        value = long(metadata_.paramId());
         return true;
     }
 
@@ -195,7 +191,7 @@ bool RawInput::get(const std::string& name, std::vector<int>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const long& l: v) {
+        for (const long& l : v) {
             ASSERT(long(int(l)) == l);
             value.push_back(int(l));
         }
@@ -222,7 +218,7 @@ bool RawInput::get(const std::string& name, std::vector<float>& value) const {
     if (get(name, v)) {
         value.clear();
         value.reserve(v.size());
-        for (const double& l: v) {
+        for (const double& l : v) {
             value.push_back(float(l));
         }
         return true;
@@ -235,10 +231,10 @@ bool RawInput::get(const std::string& name, std::vector<double>& value) const {
 
     if (name == "area") {
         value.resize(4);
-        value[0] = metadata_.bbox().north().value(); // North
-        value[1] = metadata_.bbox().west().value(); // West
-        value[2] = metadata_.bbox().south().value(); // South
-        value[3] = metadata_.bbox().east().value(); // East
+        value[0] = metadata_.bbox().north().value();  // North
+        value[1] = metadata_.bbox().west().value();   // West
+        value[2] = metadata_.bbox().south().value();  // South
+        value[3] = metadata_.bbox().east().value();   // East
         return true;
     }
 
@@ -258,4 +254,3 @@ bool RawInput::get(const std::string&, std::vector<std::string>&) const {
 
 }  // namespace input
 }  // namespace mir
-

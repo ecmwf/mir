@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/latlon/RotatedLL.h"
@@ -26,12 +23,14 @@ namespace mir {
 namespace repres {
 namespace latlon {
 
-RotatedLL::RotatedLL(const param::MIRParametrisation& parametrisation)
-    : LatLon(parametrisation), rotation_(parametrisation) {}
+RotatedLL::RotatedLL(const param::MIRParametrisation& parametrisation) :
+    LatLon(parametrisation),
+    rotation_(parametrisation) {}
 
 RotatedLL::RotatedLL(const util::Increments& increments, const util::Rotation& rotation, const util::BoundingBox& bbox,
-                     const PointLatLon& reference)
-    : LatLon(increments, bbox, reference), rotation_(rotation) {}
+                     const PointLatLon& reference) :
+    LatLon(increments, bbox, reference),
+    rotation_(rotation) {}
 
 RotatedLL::~RotatedLL() = default;
 
@@ -49,8 +48,9 @@ Iterator* RotatedLL::iterator() const {
 
     public:
         RotatedLLIterator(size_t ni, size_t nj, Latitude north, Longitude west, const util::Increments& increments,
-                          const util::Rotation& rotation)
-            : LatLonIterator(ni, nj, north, west, increments), Iterator(rotation) {}
+                          const util::Rotation& rotation) :
+            LatLonIterator(ni, nj, north, west, increments),
+            Iterator(rotation) {}
     };
 
     return new RotatedLLIterator(ni_, nj_, bbox_.north(), bbox_.west(), increments_, rotation_);
@@ -67,10 +67,10 @@ atlas::Grid RotatedLL::atlasGrid() const {
     // NOTE: for non-shifted/shifted grid, yspace uses bounding box
     // (this works together with the Atlas RectangularDomain cropping)
     const util::Domain dom = domain();
-    double n = bbox_.north().value();
-    double s = bbox_.south().value();
-    double w = dom.west().value();
-    double e = dom.east().value();
+    double n               = bbox_.north().value();
+    double s               = bbox_.south().value();
+    double w               = dom.west().value();
+    double e               = dom.east().value();
 
     using atlas::StructuredGrid;
     using atlas::grid::LinearSpacing;
@@ -84,7 +84,7 @@ atlas::Grid RotatedLL::atlasGrid() const {
 void RotatedLL::fill(grib_info& info) const {
     LatLon::fill(info);
 
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_ROTATED_LL;
+    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_LL;
     rotation_.fill(info);
 }
 
@@ -101,7 +101,7 @@ void RotatedLL::makeName(std::ostream& out) const {
 bool RotatedLL::sameAs(const Representation& other) const {
 
     auto o = dynamic_cast<const RotatedLL*>(&other);
-    return o && (rotation_ == o->rotation_) && LatLon::sameAs(other);
+    return (o != nullptr) && (rotation_ == o->rotation_) && LatLon::sameAs(other);
 }
 
 const RotatedLL* RotatedLL::croppedRepresentation(const util::BoundingBox& bbox) const {
@@ -117,8 +117,10 @@ std::string RotatedLL::factory() const {
     return "rotated_ll";
 }
 
-static RepresentationBuilder<RotatedLL> rotatedLL("rotated_ll"); // Name is what is returned by grib_api
 
-} // namespace latlon
-} // namespace repres
-} // namespace mir
+static RepresentationBuilder<RotatedLL> rotatedLL("rotated_ll");
+
+
+}  // namespace latlon
+}  // namespace repres
+}  // namespace mir

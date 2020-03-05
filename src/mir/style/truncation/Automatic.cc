@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -24,9 +25,9 @@ namespace style {
 namespace truncation {
 
 
-static TruncationBuilder< Automatic > __truncation1("automatic");
-static TruncationBuilder< Automatic > __truncation2("auto");
-static TruncationBuilder< Automatic > __truncation3("AUTO");
+static TruncationBuilder<Automatic> __truncation1("automatic");
+static TruncationBuilder<Automatic> __truncation2("auto");
+static TruncationBuilder<Automatic> __truncation3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
@@ -64,4 +65,3 @@ bool Automatic::truncation(long& T, long inputTruncation) const {
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir
-

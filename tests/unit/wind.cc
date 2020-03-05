@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -20,7 +21,9 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Wind.h"
 
-#define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
+#define EXPECTV(a)                                \
+    log << "\tEXPECT(" << #a << ")" << std::endl; \
+    EXPECT(a)
 
 
 namespace mir {
@@ -29,14 +32,13 @@ namespace unit {
 
 
 struct FakeInput : public param::RuntimeParametrisation {
-    FakeInput(size_t paramId) : param::RuntimeParametrisation(simple_) {
-        simple_.set("paramId", paramId);
-    }
-    size_t paramId() const {
+    explicit FakeInput(long paramId) : param::RuntimeParametrisation(simple_) { simple_.set("paramId", paramId); }
+    long paramId() const {
         long id = 0;
         ASSERT(simple_.get("paramId", id));
-        return size_t(id);
+        return id;
     }
+
 private:
     param::SimpleParametrisation simple_;
 };
@@ -47,45 +49,42 @@ CASE("MIR-324") {
     auto& log = eckit::Log::debug<LibMir>();
 
 
-    static const long PARAMID_U = LibMir::instance().configuration().getLong("parameter-id-u", 131);
-    static const long PARAMID_V = LibMir::instance().configuration().getLong("parameter-id-v", 132);
+    auto PARAMID_U = LibMir::instance().configuration().getLong("parameter-id-u", 131);
+    auto PARAMID_V = LibMir::instance().configuration().getLong("parameter-id-v", 132);
 
-    const std::vector<size_t> _table {0, 129, 171, 200};
-    const std::vector<long> _user_u {0, 1, PARAMID_U, 999, 999999};
-    const std::vector<long> _user_v {0, 1, PARAMID_V, 999, 999999};
+    const std::vector<long> _table{0, 129, 171, 200};
+    const std::vector<long> _user_u{0, 1, PARAMID_U, 999, 999999};
+    const std::vector<long> _user_v{0, 1, PARAMID_V, 999, 999999};
 
 
     SECTION("Wind: u/v paramId from vorticity/divergence") {
-        for (size_t table : _table) {
+        for (long table : _table) {
             for (long user_u : _user_u) {
                 for (long user_v : _user_v) {
 
                     FakeInput input(138 + table * 1000);
 
-                    if (user_u) {
+                    if (user_u != 0) {
                         input.set("paramId.u", user_u);
                     }
 
-                    if (user_v) {
+                    if (user_v != 0) {
                         input.set("paramId.v", user_v);
                     }
 
-                    size_t u = 0;
-                    size_t v = 0;
+                    long u = 0;
+                    long v = 0;
                     Wind::paramIds(input, u, v);
 
                     static size_t c = 1;
                     log << "Test " << c++ << ":"
-                        << "\n\t   input paramId = " << input.paramId()
-                        << "\n\t + paramId.u " << (user_u ? "(set)" : "(not set)") << " = " << user_u
-                        << "\n\t + paramId.v " << (user_v ? "(set)" : "(not set)") << " = " << user_v
-                        << "\n\t = "
-                        << "\n\t   u = " << u
-                        << "\n\t   v = " << v
-                        << std::endl;
+                        << "\n\t   input paramId = " << input.paramId() << "\n\t + paramId.u "
+                        << (user_u != 0 ? "(set)" : "(not set)") << " = " << user_u << "\n\t + paramId.v "
+                        << (user_v != 0 ? "(set)" : "(not set)") << " = " << user_v << "\n\t = "
+                        << "\n\t   u = " << u << "\n\t   v = " << v << std::endl;
 
-                    EXPECTV(u == (user_u ? size_t(user_u) : PARAMID_U + table * 1000));
-                    EXPECTV(v == (user_v ? size_t(user_v) : PARAMID_V + table * 1000));
+                    EXPECTV(u == (user_u != 0 ? user_u : PARAMID_U + table * 1000));
+                    EXPECTV(v == (user_v != 0 ? user_v : PARAMID_V + table * 1000));
                 }
             }
         }
@@ -98,7 +97,6 @@ CASE("MIR-324") {
 }  // namespace mir
 
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     return eckit::testing::run_tests(argc, argv);
 }
-

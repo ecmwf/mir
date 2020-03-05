@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -27,10 +28,9 @@ namespace statistics {
 
 
 /// Generic statistics on a MIRField
-template<typename STATS>
+template <typename STATS>
 class StatisticsT : public Statistics, detail::Counter, STATS {
 public:
-
     // -- Exceptions
     // None
 
@@ -38,8 +38,7 @@ public:
 
     StatisticsT(const param::MIRParametrisation& parametrisation) :
         Statistics(parametrisation),
-        Counter(parametrisation) {
-    }
+        Counter(parametrisation) {}
 
     // -- Destructor
     // None
@@ -74,7 +73,6 @@ public:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -99,7 +97,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

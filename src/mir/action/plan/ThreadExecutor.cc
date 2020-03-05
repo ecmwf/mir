@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/plan/ThreadExecutor.h"
@@ -26,10 +23,9 @@
 namespace mir {
 namespace action {
 
-static eckit::ThreadPool* pool = 0;
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static eckit::ThreadPool* pool = nullptr;
+static pthread_once_t once     = PTHREAD_ONCE_INIT;
 static void init() {
     pool = new eckit::ThreadPool("executor", 2);
 }
@@ -37,32 +33,27 @@ static void init() {
 
 class ThreadExecutorTask : public eckit::ThreadPoolTask {
     const ThreadExecutor& owner_;
-    context::Context ctx_; // Not a reference, so we have a copy
+    context::Context ctx_;  // Not a reference, so we have a copy
     const ActionNode& node_;
 
     virtual void execute() {
         eckit::Log::info() << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
         eckit::Log::info() << "<=== Done " << node_ << std::endl;
-
     }
 
 public:
-    ThreadExecutorTask(const ThreadExecutor& owner,
-                       context::Context& ctx,
-                       const ActionNode& node):
+    ThreadExecutorTask(const ThreadExecutor& owner, context::Context& ctx, const ActionNode& node) :
         owner_(owner),
         ctx_(ctx),
-        node_(node) {
+        node_(node) {}
 
-    }
+    ThreadExecutorTask(const ThreadExecutorTask&) = delete;
+    ThreadExecutorTask& operator=(const ThreadExecutorTask&) = delete;
 };
 
 
-ThreadExecutor::ThreadExecutor(const std::string& name):
-    Executor(name) {
-
-}
+ThreadExecutor::ThreadExecutor(const std::string& name) : Executor(name) {}
 
 
 ThreadExecutor::~ThreadExecutor() = default;
@@ -85,7 +76,7 @@ void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) cons
 }
 
 
-void ThreadExecutor::parametrisation(const param::MIRParametrisation &parametrisation) {
+void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametrisation) {
     pthread_once(&once, init);
     size_t threads;
     if (parametrisation.get("executor.threads", threads)) {
@@ -94,11 +85,8 @@ void ThreadExecutor::parametrisation(const param::MIRParametrisation &parametris
 }
 
 
-namespace {
 static ThreadExecutor executor("thread");
-}
 
 
 }  // namespace action
 }  // namespace mir
-

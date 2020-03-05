@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -15,13 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "atlas/array/MakeView.h"
-#include "atlas/field/Field.h"
-#include "atlas/interpolation/element/Quad3D.h"
-#include "atlas/interpolation/element/Triag3D.h"
-#include "atlas/mesh.h"
-#include "atlas/runtime/Trace.h"
-#include "atlas/util/Point.h"
+#include "mir/api/Atlas.h"
 
 
 namespace mir {
@@ -44,14 +39,14 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
         ASSERT(mesh.generated());
 
         auto& nodes    = mesh.nodes();
-        auto coords    = array::make_view<double, 2, array::Intent::ReadOnly>(nodes.field("xyz"));
+        auto coords    = array::make_view<double, 2>(nodes.field("xyz"));
         auto nbRealPts = nodes.metadata().has("NbRealPts") ? nodes.metadata().get<idx_t>("NbRealPts") : nodes.size();
 
         if (!nodes.has_field(name_)) {
             nodes.add(Field(name_, array::make_datatype<double>(), array::make_shape(nodes.size())));
         }
 
-        auto mass = array::make_view<double, 1, array::Intent::ReadWrite>(nodes.field(name_));
+        auto mass = array::make_view<double, 1>(nodes.field(name_));
         ASSERT(0 < nbRealPts && nbRealPts <= mass.size());
         mass.assign(0.);
 
@@ -63,12 +58,12 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
         const auto& connectivity = mesh.cells().node_connectivity();
 
         for (idx_t e = 0; e < connectivity.rows(); ++e) {
-            auto nb_cols = connectivity.cols(e);
+            auto nb_cols = size_t(connectivity.cols(e));
             ASSERT(nb_cols == 3 || nb_cols == 4);
 
             std::vector<idx_t> idx(nb_cols);
-            for (idx_t n = 0; n < nb_cols; ++n) {
-                idx[size_t(n)] = connectivity(e, n);
+            for (size_t n = 0; n < nb_cols; ++n) {
+                idx[size_t(n)] = connectivity(e, idx_t(n));
             }
 
             static const double oneThird  = 1. / 3.;

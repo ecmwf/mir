@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_input_VectorInput_h
@@ -23,7 +20,7 @@ namespace mir {
 namespace output {
 class VectorOutput;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -32,7 +29,6 @@ namespace input {
 
 class VectorInput : public MIRInput {
 public:
-
     // -- Exceptions
     // None
 
@@ -42,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorInput(); // Change to virtual if base class
+    virtual ~VectorInput();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -63,7 +59,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     MIRInput& component1_;
@@ -82,7 +77,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -95,8 +89,8 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-    virtual bool sameAs(const MIRInput &other) const ;
-    virtual void print(std::ostream &out) const;
+    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream& out) const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
 
@@ -110,9 +104,8 @@ private:
 
     friend class output::VectorOutput;
 
-    //friend ostream& operator<<(ostream& s,const VectorInput& p)
+    // friend ostream& operator<<(ostream& s,const VectorInput& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -121,4 +114,3 @@ private:
 
 
 #endif
-

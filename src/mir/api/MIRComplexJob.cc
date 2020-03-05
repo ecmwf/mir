@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include <iostream>
@@ -32,7 +29,7 @@ namespace mir {
 namespace api {
 
 
-MIRComplexJob::MIRComplexJob() : input_(0) {}
+MIRComplexJob::MIRComplexJob() : input_(nullptr) {}
 
 
 MIRComplexJob::~MIRComplexJob() {
@@ -75,7 +72,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
         graph.add((*j)->plan(), watchers_[i]);
     }
 
-    if (!input_) {
+    if (input_ == nullptr) {
         return;
     }
 
@@ -88,9 +85,9 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     context::Context ctx(*input_, statistics);
 
     if (printActionGraph) {
-        eckit::Log::info() << ">>>>>>>>>>>> ====== " << std::endl;
-
-        eckit::Log::info() << *input_ << std::endl;
+        eckit::Log::info() << ">>>>>>>>>>>>"
+                              "\n"
+                           << *input_ << std::endl;
     }
 
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
@@ -103,7 +100,7 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     executor.wait();
 
     if (printActionGraph) {
-        eckit::Log::info() << "<<<<<<<<<<< ======" << std::endl;
+        eckit::Log::info() << "<<<<<<<<<<<" << std::endl;
     }
 }
 
@@ -121,11 +118,11 @@ void MIRComplexJob::print(std::ostream& out) const {
 MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, output::MIROutput& output,
                                   api::MIRWatcher* watcher) {
 
-    if (!job) {
+    if (job == nullptr) {
         return *this;
     }
 
-    if (!input_) {
+    if (input_ == nullptr) {
         input_ = &input;
     }
 

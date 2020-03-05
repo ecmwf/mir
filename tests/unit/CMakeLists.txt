@@ -20,19 +20,12 @@ if(HAVE_ATLAS)
     list(APPEND tests atlas)
 endif()
 
-set( _environment
-    "MIR_DEBUG=1"
-    "MIR_HOME=${CMAKE_BINARY_DIR}"
-    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}"
-    "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions"
-    "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
-
 foreach( _t ${tests})
   ecbuild_add_test(
       TARGET            mir_tests_unit_${_t}
       SOURCES           ${_t}.cc
       LIBS              mir
-      ENVIRONMENT       ${_environment}
+      ENVIRONMENT       ${_testEnvironment}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 endforeach()
 

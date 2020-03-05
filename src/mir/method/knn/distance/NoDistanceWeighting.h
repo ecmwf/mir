@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,11 +24,9 @@ namespace distance {
 
 struct NoDistanceWeighting : DistanceWeighting {
     NoDistanceWeighting(const param::MIRParametrisation&);
-    void operator()(
-            size_t ip,
-            const Point3& point,
-            const std::vector<search::PointSearch::PointValueType>& neighbours,
-            std::vector<WeightMatrix::Triplet>& triplets) const;
+    void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
+                    std::vector<WeightMatrix::Triplet>& triplets) const;
+
 private:
     virtual bool sameAs(const DistanceWeighting&) const;
     virtual void print(std::ostream&) const;
@@ -42,4 +41,3 @@ private:
 
 
 #endif
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_api_MIRComplexJob_h
@@ -26,7 +23,7 @@ class Job;
 namespace api {
 class MIRJob;
 class MIRWatcher;
-}
+}  // namespace api
 namespace input {
 class MIRInput;
 }
@@ -42,8 +39,7 @@ namespace api {
 
 
 class MIRComplexJob {
-  public:
-
+public:
     // -- Exceptions
     // None
 
@@ -79,8 +75,7 @@ class MIRComplexJob {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
@@ -96,14 +91,13 @@ class MIRComplexJob {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // -- Members
 
-    std::vector< MIRJob* > apis_;
-    std::vector< action::Job* > jobs_;
-    std::vector< output::MIROutput* > outputs_;
-    std::vector< MIRWatcher* > watchers_;
+    std::vector<MIRJob*> apis_;
+    std::vector<action::Job*> jobs_;
+    std::vector<output::MIROutput*> outputs_;
+    std::vector<MIRWatcher*> watchers_;
 
     input::MIRInput* input_;
 
@@ -124,7 +118,6 @@ class MIRComplexJob {
 
     // -- Friends
     // None
-
 };
 
 
@@ -133,4 +126,3 @@ class MIRComplexJob {
 
 
 #endif
-

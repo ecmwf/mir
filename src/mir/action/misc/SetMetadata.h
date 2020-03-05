@@ -3,21 +3,19 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
+#ifndef mir_action_misc_SetMetadata_h
+#define mir_action_misc_SetMetadata_h
 
-#ifndef SetMetadata_H
-#define SetMetadata_H
+#include <map>
 
 #include "mir/action/plan/Action.h"
-#include <map>
 
 
 namespace mir {
@@ -26,89 +24,85 @@ namespace action {
 
 class SetMetadata : public Action {
 public:
-
-// -- Exceptions
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     SetMetadata(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~SetMetadata(); // Change to virtual if base class
+    virtual ~SetMetadata();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context&) const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 protected:
-
-// -- Members
+    // -- Members
 
     std::map<std::string, long> metadata_;
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
 private:
-
-// No copy allowed
-
+    // No copy allowed
     SetMetadata(const SetMetadata&);
     SetMetadata& operator=(const SetMetadata&);
 
-// -- Members
+    // -- Members
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const SetMetadata& p)
+    // friend ostream& operator<<(ostream& s,const SetMetadata& p)
     //  { p.print(s); return s; }
-
 };
 
 
 }  // namespace action
 }  // namespace mir
-#endif
 
+
+#endif

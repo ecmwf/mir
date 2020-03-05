@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -23,7 +24,7 @@ class MIRField;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -34,7 +35,6 @@ namespace detail {
 /// Counter accounting for missing values, for a single MIRFIeld
 class Counter {
 private:
-
     size_t count_;
     size_t missing_;
     size_t countBelowLowerLimit_;
@@ -59,7 +59,6 @@ private:
     }
 
 public:
-
     Counter(const param::MIRParametrisation&);
 
     void reset(const data::MIRField&);
@@ -76,7 +75,6 @@ public:
 
     double max() const;
     size_t maxIndex() const;
-
 };
 
 

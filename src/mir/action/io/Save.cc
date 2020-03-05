@@ -3,21 +3,16 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "mir/action/io/Save.h"
 
 #include <iostream>
-
-#include "eckit/log/Statistics.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/input/MIRInput.h"
@@ -30,11 +25,10 @@ namespace action {
 namespace io {
 
 
-Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output):
+Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
     Action(parametrisation),
     input_(input),
-    output_(output) {
-}
+    output_(output) {}
 
 
 Save::~Save() = default;
@@ -42,8 +36,8 @@ Save::~Save() = default;
 
 bool Save::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Save*>(&other);
-    return o && input_.sameAs(o->input_) && output_.sameAs(o->output_)
-            && o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
+    return (o != nullptr) && input_.sameAs(o->input_) && output_.sameAs(o->output_) &&
+           o->output_.sameParametrisation(parametrisation_, o->parametrisation_);
 }
 
 
@@ -66,7 +60,7 @@ void Save::custom(std::ostream& out) const {
 
 
 void Save::execute(context::Context& ctx) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().saveTiming_);
+    auto timing(ctx.statistics().saveTimer());
     output_.save(parametrisation_, ctx);
 }
 
@@ -88,4 +82,3 @@ void Save::estimate(context::Context& ctx, api::MIREstimation& estimation) const
 }  // namespace io
 }  // namespace action
 }  // namespace mir
-

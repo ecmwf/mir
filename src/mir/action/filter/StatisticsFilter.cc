@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -37,7 +38,10 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
     std::string statistics = "scalar";
     ASSERT(param.get(which + "-statistics", statistics) || param.get("statistics", statistics));
 
-    for (auto& s : eckit::StringTools::split("/", statistics)) {
+    auto stats(eckit::StringTools::split("/", statistics));
+    statistics_.reserve(stats.size());
+
+    for (auto& s : stats) {
         statistics_.push_back(std::unique_ptr<stats::Statistics>(stats::StatisticsFactory::build(s, param)));
         ASSERT(statistics_.back());
     }
@@ -48,7 +52,7 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
 
 bool StatisticsFilter::sameAs(const Action& other) const {
     auto o = dynamic_cast<const StatisticsFilter*>(&other);
-    if (!o || statistics_.size() != o->statistics_.size()) {
+    if ((o == nullptr) || (statistics_.size() != o->statistics_.size())) {
         return false;
     }
 

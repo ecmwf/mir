@@ -3,31 +3,28 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
 #include "mir/netcdf/VirtualOutputDimension.h"
 
-#include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Dataset.h"
+#include "mir/netcdf/Exceptions.h"
 
 #include <netcdf.h>
 
 namespace mir {
 namespace netcdf {
 
-VirtualOutputDimension::VirtualOutputDimension(Dataset &owner, const std::string &name):
+VirtualOutputDimension::VirtualOutputDimension(Dataset& owner, const std::string& name) :
     Dimension(owner, name, 1),
     id_(-1),
     created_(false),
-    grown_(false)
-{
-
-}
+    grown_(false) {}
 
 VirtualOutputDimension::~VirtualOutputDimension() = default;
 
@@ -45,7 +42,7 @@ bool VirtualOutputDimension::inUse() const {
     return len_ > 1;
 }
 
-void VirtualOutputDimension::print(std::ostream &out) const {
+void VirtualOutputDimension::print(std::ostream& out) const {
     out << "VirtualOutputDimension[name=" << name_ << ",size=" << len_ << "]";
 }
 
@@ -57,7 +54,7 @@ int VirtualOutputDimension::id() const {
 void VirtualOutputDimension::grow(size_t count) {
     ASSERT(!created_);
     ASSERT(count >= len_);
-    len_ = count;
+    len_   = count;
     grown_ = true;
 }
 

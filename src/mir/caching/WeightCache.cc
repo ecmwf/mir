@@ -3,10 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
+
 
 #include "mir/caching/WeightCache.h"
 
@@ -33,16 +35,13 @@ static std::string extract_loader(const param::MIRParametrisation& param) {
 }
 
 
-WeightCache::WeightCache(const param::MIRParametrisation& param):
-    eckit::CacheManager<WeightCacheTraits>(
-        extract_loader(param),
-        LibMir::cacheDir(),
-        eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
-        eckit::Resource<size_t>("$MIR_MATRIX_CACHE_SIZE", 0)) {
-}
+WeightCache::WeightCache(const param::MIRParametrisation& param) :
+    eckit::CacheManager<WeightCacheTraits>(extract_loader(param), LibMir::cacheDir(),
+                                           eckit::Resource<bool>("$MIR_THROW_ON_CACHE_MISS;mirThrowOnCacheMiss", false),
+                                           eckit::Resource<size_t>("$MIR_MATRIX_CACHE_SIZE", 0)) {}
 
 
-const char *WeightCacheTraits::name() {
+const char* WeightCacheTraits::name() {
     return "mir/weights";
 }
 
@@ -52,7 +51,7 @@ int WeightCacheTraits::version() {
 }
 
 
-const char *WeightCacheTraits::extension() {
+const char* WeightCacheTraits::extension() {
     return ".mat";
 }
 
@@ -62,16 +61,12 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
     eckit::TraceTimer<LibMir> timer("Saving weights to cache");
 
     static size_t matrixMaxFootprint = eckit::Resource<size_t>("$MIR_MATRIX_MAX_FOOTPRINT", 0);
-    if (matrixMaxFootprint) {
+    if (matrixMaxFootprint > 0) {
         size_t size = W.footprint();
         if (size > matrixMaxFootprint) {
             std::ostringstream oss;
-            oss << "WeightCacheTraits::save: matrix too large "
-                << size
-                << " ("
-                << eckit::Bytes(size)
-                << "), maximum is "
-                << eckit::Bytes(matrixMaxFootprint);
+            oss << "WeightCacheTraits::save: matrix too large " << size << " (" << eckit::Bytes(size)
+                << "), maximum is " << eckit::Bytes(matrixMaxFootprint);
             throw eckit::UserError(oss.str());
         }
     }
@@ -84,7 +79,7 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
     eckit::TraceTimer<LibMir> timer("Loading weights from cache");
 
-    value_type tmp( matrix::MatrixLoaderFactory::build(manager.loader(), path) );
+    value_type tmp(matrix::MatrixLoaderFactory::build(manager.loader(), path));
     w.swap(tmp);
 
     static bool matrixValidate = eckit::Resource<bool>("$MIR_MATRIX_VALIDATE", false);
@@ -96,4 +91,3 @@ void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type&
 
 }  // namespace caching
 }  // namespace mir
-

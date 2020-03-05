@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/plan/ActionGraph.h"
@@ -48,7 +45,7 @@ void ActionGraph::execute(context::Context& ctx, const Executor& executor) const
 
 
 void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
-    action::ActionGraph *current = this;
+    action::ActionGraph* current = this;
 
     size_t i = 0;
     while (i < plan.size()) {
@@ -57,7 +54,7 @@ void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
         for (auto& k : *current) {
             if (plan.action(i).sameAs(k->action())) {
                 current = &k->graph();
-                found = true;
+                found   = true;
                 break;
             }
         }
@@ -70,7 +67,7 @@ void ActionGraph::add(const ActionPlan& plan, api::MIRWatcher* watcher) {
 
     while (i < plan.size()) {
         action::ActionNode* node = current->add(plan.action(i), watcher);
-        current = &node->graph();
+        current                  = &node->graph();
         i++;
     }
 }
@@ -89,16 +86,17 @@ void ActionGraph::dump(std::ostream& out, size_t depth) const {
 }
 
 
-void ActionGraph::print(std::ostream &out) const {
+void ActionGraph::print(std::ostream& out) const {
     out << "ActionGraph[\n";
     dump(out, 1);
     out << "]";
 }
 
 
-void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher, bool& rethrow) const {
+void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MIRWatcher* watcher,
+                                bool& rethrow) const {
     if (empty()) {
-        if (watcher) {
+        if (watcher != nullptr) {
             rethrow = watcher->failure(e, action) && rethrow;
         }
     }
@@ -110,4 +108,3 @@ void ActionGraph::notifyFailure(std::exception& e, const Action& action, api::MI
 
 }  // namespace action
 }  // namespace mir
-

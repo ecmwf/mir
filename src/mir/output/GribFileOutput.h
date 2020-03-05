@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef GribFileOutput_H
@@ -26,89 +23,84 @@ namespace output {
 
 
 class GribFileOutput : public GribStreamOutput {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     GribFileOutput(const eckit::PathName&, bool append = false);
 
-// -- Destructor
+    // -- Destructor
 
-    ~GribFileOutput(); // Change to virtual if base class
+    ~GribFileOutput();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
-// -- Members
+private:
+    // -- Members
 
     eckit::PathName path_;
     eckit::DataHandle* handle_;
     bool append_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // From MIROutput
     virtual bool sameAs(const MIROutput& other) const;
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // From GribInput
 
     virtual eckit::DataHandle& dataHandle();
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const GribFileOutput& p)
+    // friend ostream& operator<<(ostream& s,const GribFileOutput& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace output
 }  // namespace mir
 #endif
-

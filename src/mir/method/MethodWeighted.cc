@@ -3,16 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Peter Bispham
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #include "mir/method/MethodWeighted.h"
@@ -45,11 +40,9 @@ namespace mir {
 namespace method {
 
 
-namespace {
 static eckit::Mutex local_mutex;
 static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
-}  // (anonymous namespace)
 
 
 MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) : Method(parametrisation) {
@@ -102,7 +95,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
     };
 
     auto o = dynamic_cast<const MethodWeighted*>(&other);
-    return o && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
+    return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_ == o->cropping_;
 }
@@ -360,7 +353,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         ASSERT(mo.rows() == npts_out);
 
         {
-            eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().matrixTiming_);
+            auto timing(ctx.statistics().matrixTimer());
 
             if (matrixCopy) {
                 WeightMatrix M(W);  // modifiable matrix copy
@@ -415,7 +408,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::Representation& in,
                                           const repres::Representation& out, WeightMatrix& W, bool validate) const {
-    eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().computeMatrixTiming_);
+    auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
         eckit::Log::debug<LibMir>() << "Matrix is identity" << std::endl;
@@ -439,7 +432,7 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
     auto& log = eckit::Log::debug<LibMir>();
 
-    log << "======== MethodWeighted::applyMasks(" << masks << ")" << std::endl;
+    log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 
     ASSERT(masks.active());
 
@@ -488,8 +481,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of "
-        << Pretty(W.rows(), {"output point"}) << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of " << Pretty(W.rows(), {"output point"})
+        << std::endl;
 }
 
 
@@ -528,4 +521,3 @@ bool MethodWeighted::canIntroduceMissingValues() const {
 
 }  // namespace method
 }  // namespace mir
-

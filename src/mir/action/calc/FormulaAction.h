@@ -3,18 +3,15 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
-
-#ifndef FormulaAction_H
-#define FormulaAction_H
+#ifndef mir_action_calcl_FormulaAction_h
+#define mir_action_calcl_FormulaAction_h
 
 #include <map>
 #include <memory>
@@ -23,100 +20,97 @@
 
 
 namespace mir {
-
 namespace util {
 class Formula;
 }
+}  // namespace mir
 
+
+namespace mir {
 namespace action {
 
 
 class FormulaAction : public Action {
-  public:
-
-// -- Exceptions
+public:
+    // -- Exceptions
     // None
 
-// -- Contructors
+    // -- Contructors
 
     FormulaAction(const param::MIRParametrisation&);
 
-// -- Destructor
+    // -- Destructor
 
-    virtual ~FormulaAction(); // Change to virtual if base class
+    virtual ~FormulaAction();  // Change to virtual if base class
 
-// -- Convertors
+    // -- Convertors
     // None
 
-// -- Operators
+    // -- Operators
     // None
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  protected:
-
-// -- Members
+protected:
+    // -- Members
     // None
 
-// -- Methods
+    // -- Methods
 
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
-// -- Overridden methods
+    // -- Overridden methods
     // None
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-  private:
-
-// No copy allowed
+private:
+    // No copy allowed
 
     FormulaAction(const FormulaAction&);
     FormulaAction& operator=(const FormulaAction&);
 
-// -- Members
+    // -- Members
 
     std::unique_ptr<util::Formula> formula_;
     std::map<std::string, long> metadata_;
 
-// -- Methods
+    // -- Methods
     // None
 
-// -- Overridden methods
+    // -- Overridden methods
 
-    virtual void execute(context::Context & ctx) const;
+    virtual void execute(context::Context& ctx) const;
     virtual bool sameAs(const Action& other) const;
     virtual const char* name() const;
 
-// -- Class members
+    // -- Class members
     // None
 
-// -- Class methods
+    // -- Class methods
     // None
 
-// -- Friends
+    // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const FormulaAction& p)
+    // friend ostream& operator<<(ostream& s,const FormulaAction& p)
     //	{ p.print(s); return s; }
-
 };
 
 
 }  // namespace action
 }  // namespace mir
 #endif
-

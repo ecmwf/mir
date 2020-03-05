@@ -3,18 +3,15 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
-
-#ifndef ArchivedValue_H
-#define ArchivedValue_H
+#ifndef mir_packing_ArchivedValue_h
+#define mir_packing_ArchivedValue_h
 
 
 #include "mir/packing/Packer.h"
@@ -24,18 +21,17 @@ namespace packing {
 
 
 class ArchivedValue : public Packer {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    ArchivedValue(const std::string &name);
+    ArchivedValue(const std::string& name);
 
     // -- Destructor
 
-    virtual ~ArchivedValue(); // Change to virtual if base class
+    virtual ~ArchivedValue();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,14 +50,13 @@ class ArchivedValue : public Packer {
     // -- Class methods
 
 
-  protected:
-
+protected:
     // -- Members
 
     // -- Methods
 
 
-    virtual void print(std::ostream &) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -72,12 +67,11 @@ class ArchivedValue : public Packer {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    ArchivedValue(const ArchivedValue &);
-    ArchivedValue &operator=(const ArchivedValue &);
+    ArchivedValue(const ArchivedValue&);
+    ArchivedValue& operator=(const ArchivedValue&);
 
     // -- Members
     // None
@@ -92,18 +86,15 @@ class ArchivedValue : public Packer {
 
     // -- Class methods
 
-    virtual void fill(grib_info&, const repres::Representation& ) const;
-
-
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
     // -- Friends
-
-
-
+    // None
 };
 
 
 }  // namespace packing
 }  // namespace mir
-#endif
 
+
+#endif

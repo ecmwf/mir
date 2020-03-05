@@ -3,38 +3,33 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "mir/action/misc/CheckerBoard.h"
 
-#include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/data/MIRField.h"
 
 
 namespace mir {
 namespace action {
 
 
-CheckerBoard::CheckerBoard(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
-}
+CheckerBoard::CheckerBoard(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
 
 
 CheckerBoard::~CheckerBoard() = default;
@@ -44,12 +39,12 @@ bool CheckerBoard::sameAs(const Action&) const {
     return false;
 }
 
-void CheckerBoard::print(std::ostream &out) const {
+void CheckerBoard::print(std::ostream& out) const {
     out << "CheckerBoard[]";
 }
 
 
-void CheckerBoard::execute(context::Context & ctx) const {
+void CheckerBoard::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle representation(field.representation());
@@ -62,7 +57,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         frequencies.push_back(8);
     }
 
-    bool hasMissing = field.hasMissing();
+    bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();
 
     for (size_t k = 0; k < field.dimensions(); k++) {
@@ -71,7 +66,7 @@ void CheckerBoard::execute(context::Context & ctx) const {
         double minvalue = 0;
         double maxvalue = 0;
 
-        size_t first   = 0;
+        size_t first = 0;
         for (; first < values.size(); ++first) {
             if (!hasMissing || values[first] != missingValue) {
                 minvalue = values[first];
@@ -92,8 +87,8 @@ void CheckerBoard::execute(context::Context & ctx) const {
             }
         }
 
-        size_t we = frequencies[0];
-        size_t ns = frequencies[1];
+        auto we = size_t(frequencies[0]);
+        auto ns = size_t(frequencies[1]);
 
         double dwe = Longitude::GLOBE.value() / we;
         double dns = Latitude::GLOBE.value() / ns;
@@ -128,11 +123,11 @@ void CheckerBoard::execute(context::Context & ctx) const {
         while (iter->next()) {
             const auto& p = iter->pointUnrotated();
 
-            Latitude lat = Latitude::NORTH_POLE - p.lat();
+            Latitude lat  = Latitude::NORTH_POLE - p.lat();
             Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
-            size_t c = size_t(lat.value() / dns);
-            size_t r = size_t(lon.value() / dwe);
+            auto c = size_t(lat.value() / dns);
+            auto r = size_t(lon.value() / dwe);
 
             if (!hasMissing || values[j] != missingValue) {
                 values[j] = boxes[std::make_pair(r, c)];
@@ -151,9 +146,8 @@ const char* CheckerBoard::name() const {
 }
 
 
-static ActionBuilder< CheckerBoard > action("misc.checkerboard");
+static ActionBuilder<CheckerBoard> action("misc.checkerboard");
 
 
 }  // namespace action
 }  // namespace mir
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_param_CustomParametrisation_h
@@ -27,19 +24,17 @@ namespace style {
 
 class CustomParametrisation : public param::MIRParametrisation {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
-    CustomParametrisation( const std::string& name,
-                           const std::map<std::string, std::vector<std::string> >& params,
-                           const param::MIRParametrisation &parametrisation);
+    CustomParametrisation(const std::string& name, const std::map<std::string, std::vector<std::string> >& params,
+                          const param::MIRParametrisation& parametrisation);
 
     // -- Destructor
 
-    virtual ~CustomParametrisation(); // Change to virtual if base class
+    virtual ~CustomParametrisation();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -60,14 +55,13 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
     // -- Methods
 
-    template<class T>
-    bool _get(const std::string& name,  T& value) const;
+    template <class T>
+    bool _get(const std::string& name, T& value) const;
 
     // -- Overridden methods
 
@@ -90,7 +84,7 @@ protected:
     virtual bool get(const std::string& name, std::vector<double>& value) const;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
+    virtual void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Class members
     // None
@@ -99,13 +93,11 @@ protected:
     // None
 
 private:
-
-
     // -- Members
 
     std::string name_;
     std::map<std::string, std::vector<std::string> > params_;
-    const param::MIRParametrisation &parametrisation_;
+    const param::MIRParametrisation& parametrisation_;
 
     // -- Methods
     // None
@@ -121,11 +113,9 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
 #endif
-

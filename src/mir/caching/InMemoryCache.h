@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Peter Bispham
-/// @author Tiago Quintino
-/// @date May 2015
 
 
 #ifndef mir_caching_InMemoryCache_h
@@ -29,18 +26,14 @@ namespace mir {
 namespace caching {
 
 
-template<class T>
+template <class T>
 class InMemoryCache : public InMemoryCacheBase {
 
 public:  // methods
-
     using iterator = T*;
 
-    explicit InMemoryCache(const std::string& name,
-                           size_t memory_capacity,
-                           size_t shared_capacity,
-                           const char* variable,
-                           bool cleanupAtExit = true);
+    explicit InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
+                           const char* variable);
 
     ~InMemoryCache();
 
@@ -61,18 +54,16 @@ public:  // methods
     void stopUsing(InMemoryCacheStatistics&);
 
 private:
-
     void purge();
     T& create(const std::string& key);
 
     virtual InMemoryCacheUsage footprint() const;
     virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force=false);
+    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false);
     virtual const std::string& name() const;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
-    bool cleanupAtExit_;
 
     size_t users_;
 
@@ -88,31 +79,28 @@ private:
         double insert_;
         InMemoryCacheUsage footprint_;
 
-        Entry(T* ptr): ptr_(ptr),
-            hits_(1),
-            last_(::time(0)),
-            insert_(::time(0)),
-            footprint_(size_t(1), size_t(0)) {}
+        Entry(T* ptr) : ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;
-
 };
 
-template<class T>
+template <class T>
 class InMemoryCacheUser {
     InMemoryCache<T>& cache_;
     InMemoryCacheStatistics& statistics_;
+
+    InMemoryCacheUser(const InMemoryCacheUser&) = delete;
+    InMemoryCacheUser& operator=(const InMemoryCacheUser&) = delete;
+
 public:
-    InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics):
+    InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
         cache_(cache),
         statistics_(statistics) {
         cache_.startUsing();
     }
 
-    ~InMemoryCacheUser() {
-        cache_.stopUsing(statistics_);
-    }
+    ~InMemoryCacheUser() { cache_.stopUsing(statistics_); }
 };
 
 

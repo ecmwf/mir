@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/latlon/ReducedLL.h"
@@ -84,7 +81,7 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
     // Greenwich
 
     const util::Domain dom = domain();
-    const bool periodic = dom.isPeriodicWestEast();
+    const bool periodic    = dom.isPeriodicWestEast();
 
     ASSERT(pl_.size() >= 2);
     const size_t Dj(pl_.size() - 1);
@@ -101,8 +98,8 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
         ASSERT(Di > 0);
         const eckit::Fraction we((dom.east() - dom.west()).fraction() / Di);
 
-        const Latitude &latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2),
-            latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
+        auto& latAwayFromEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat1 : lat2);
+        auto& latCloserToEquator(std::abs(lat1.value()) > std::abs(lat2.value()) ? lat2 : lat1);
 
         d = std::max(d, atlas::util::Earth::distance(atlas::PointLonLat(0., latCloserToEquator.value()),
                                                      atlas::PointLonLat(we, latAwayFromEquator.value())));
@@ -117,7 +114,7 @@ bool ReducedLL::getLongestElementDiagonal(double& d) const {
 
 bool ReducedLL::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const ReducedLL*>(&other);
-    return o && (bbox_ == o->bbox_) && (pl_ == o->pl_);
+    return (o != nullptr) && (bbox_ == o->bbox_) && (pl_ == o->pl_);
 }
 
 void ReducedLL::fill(grib_info&) const {
@@ -136,8 +133,7 @@ atlas::Grid ReducedLL::atlasGrid() const {
     auto N                 = long(pl_.size());
 
     atlas::StructuredGrid::XSpace xspace({{dom.west().value(), dom.east().value()}}, pl_, !dom.isPeriodicWestEast());
-    atlas::StructuredGrid::YSpace yspace(
-        atlas::grid::LinearSpacing({{dom.north().value(), dom.south().value()}}, N));
+    atlas::StructuredGrid::YSpace yspace(atlas::grid::LinearSpacing({{dom.north().value(), dom.south().value()}}, N));
 
     return atlas::StructuredGrid(xspace, yspace);
 }
@@ -163,7 +159,7 @@ bool ReducedLL::isPeriodicWestEast() const {
         return eckit::types::is_approximately_equal(a.value(), b.value(), GRIB1EPSILON);
     };
 
-    const Longitude we = bbox_.east() - bbox_.west();
+    const Longitude we  = bbox_.east() - bbox_.west();
     const Longitude inc = Longitude::GLOBE - we;
 
     return same_with_grib1_accuracy(inc * maxpl, Longitude::GLOBE);
@@ -325,10 +321,10 @@ std::vector<util::GridBox> ReducedLL::gridBoxes() const {
     return r;
 }
 
-namespace {
-static RepresentationBuilder<ReducedLL> reducedLL("reduced_ll"); // Name is what is returned by grib_api
-}
 
-} // namespace latlon
-} // namespace repres
-} // namespace mir
+static RepresentationBuilder<ReducedLL> reducedLL("reduced_ll");
+
+
+}  // namespace latlon
+}  // namespace repres
+}  // namespace mir

@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -20,7 +21,7 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -29,7 +30,6 @@ namespace style {
 
 class Truncation {
 public:
-
     // -- Exceptions
     // None
 
@@ -63,7 +63,6 @@ public:
     // None
 
 protected:
-
     // -- Members
 
     const param::MIRParametrisation& parametrisation_;
@@ -81,7 +80,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -99,26 +97,32 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
 class TruncationFactory {
     std::string name_;
     virtual Truncation* make(const param::MIRParametrisation&, long targetGaussianN) = 0;
+
+    TruncationFactory(const TruncationFactory&) = delete;
+    TruncationFactory& operator=(const TruncationFactory&) = delete;
+
 protected:
     TruncationFactory(const std::string&);
     virtual ~TruncationFactory();
+
 public:
     static Truncation* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);
     static void list(std::ostream&);
 };
 
 
-template <class T> class TruncationBuilder : public TruncationFactory {
+template <class T>
+class TruncationBuilder : public TruncationFactory {
     virtual Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
         return new T(parametrisation, targetGaussianN);
     }
+
 public:
     TruncationBuilder(const std::string& name) : TruncationFactory(name) {}
 };

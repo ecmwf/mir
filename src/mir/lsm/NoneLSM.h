@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_lsm_NoneLSM_h
@@ -25,7 +22,6 @@ namespace lsm {
 
 class NoneLSM : public LSMSelection {
 public:
-
     // -- Exceptions
     // None
 
@@ -57,7 +53,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -75,7 +70,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -90,19 +84,16 @@ private:
 
     // -- Class methods
 
-    virtual Mask* create(const param::MIRParametrisation&,
-                         const repres::Representation&,
-                         const std::string& which) const ;
+    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
+                         const std::string& which) const;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&,
-                                 const repres::Representation&,
+    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
                                  const std::string& which) const;
 
     virtual std::string cacheName() const;
 
     // -- Friends
     // None
-
 };
 
 
@@ -111,4 +102,3 @@ private:
 
 
 #endif
-

@@ -3,20 +3,19 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "mir/action/interpolate/Gridded2RotatedRegularGG.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
@@ -39,32 +38,35 @@ Gridded2RotatedRegularGG::~Gridded2RotatedRegularGG() = default;
 
 bool Gridded2RotatedRegularGG::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedRegularGG*>(&other);
-    return o && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
+    return (o != nullptr) && (N_ == o->N_) && Gridded2RotatedGrid::sameAs(other);
 }
 
-void Gridded2RotatedRegularGG::print(std::ostream &out) const {
+
+void Gridded2RotatedRegularGG::print(std::ostream& out) const {
     out << "Gridded2RotatedRegularGG["
-           "N=" << N_ << ","
-           "rotation=" << rotation() << ",";
+           "N="
+        << N_
+        << ","
+           "rotation="
+        << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
 
-const repres::Representation *Gridded2RotatedRegularGG::outputRepresentation() const {
+const repres::Representation* Gridded2RotatedRegularGG::outputRepresentation() const {
     return new repres::gauss::regular::RotatedGG(N_, rotation());
 }
+
 
 const char* Gridded2RotatedRegularGG::name() const {
     return "Gridded2RotatedRegularGG";
 }
 
-namespace {
-static ActionBuilder< Gridded2RotatedRegularGG > grid2grid("interpolate.grid2rotated-regular-gg");
-}
+
+static ActionBuilder<Gridded2RotatedRegularGG> grid2grid("interpolate.grid2rotated-regular-gg");
 
 
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-

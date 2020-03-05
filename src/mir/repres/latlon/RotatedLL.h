@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_repres_latlon_RotatedLL_h
@@ -27,16 +24,13 @@ namespace latlon {
 
 class RotatedLL : public LatLon {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
 
     RotatedLL(const param::MIRParametrisation&);
-    RotatedLL(const util::Increments&,
-              const util::Rotation&,
-              const util::BoundingBox& = util::BoundingBox(),
+    RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),
               const PointLatLon& reference = PointLatLon(0, 0));
 
     // -- Destructor
@@ -62,7 +56,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     util::Rotation rotation_;
@@ -72,7 +65,7 @@ private:
 
     // -- Overridden methods
     Iterator* iterator() const;
-    void print(std::ostream&) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     atlas::Grid atlasGrid() const;
 
@@ -94,9 +87,8 @@ private:
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const RegularLL& p)
+    // friend ostream& operator<<(ostream& s,const RegularLL& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -106,4 +98,3 @@ private:
 
 
 #endif
-

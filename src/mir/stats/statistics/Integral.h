@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date Jul 2015
 
 
 #ifndef mir_stats_statistics_Integral_h
@@ -28,7 +25,6 @@ namespace statistics {
 
 class Integral : public Statistics, detail::Counter {
 public:
-
     // -- Exceptions
     // None
 
@@ -49,9 +45,7 @@ public:
 
     void reset();
 
-    double integral() const {
-        return integral_;
-    }
+    double integral() const { return integral_; }
 
     // -- Overridden methods
     // None
@@ -63,7 +57,6 @@ public:
     // None
 
 private:
-
     // -- Members
 
     double integral_;
@@ -84,7 +77,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 

@@ -12,14 +12,15 @@
 
 #include "mir/compare/BufrField.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
+#include <ostream>
 
 #include "eckit/log/Colour.h"
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
-#include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/util/Grib.h"
@@ -66,7 +67,7 @@ static std::set<std::string> headerKeys = {
 
 
 void BufrField::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
     options.push_back(new SimpleOption<bool>("bufr-print-all-values", "Print all BUFR values"));
     options.push_back(
         new SimpleOption<double>("bufr-relative-error", "Relative when comparing BUFR floating pooint values"));
@@ -109,25 +110,25 @@ BufrEntry::BufrEntry(const std::string& full, const std::vector<long>& l, const 
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             s_.clear();
             d_.clear();
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             s_.clear();
             l_.clear();
 
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             d_.clear();
             l_.clear();
             break;
 
         default:
             NOTIMP;
-            break;
+            // break;
     }
 }
 
@@ -141,15 +142,15 @@ void BufrEntry::printValue(std::ostream& out) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             out << l_;
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             out << std::setprecision(9) << d_;
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             out << s_;
             break;
     }
@@ -162,7 +163,7 @@ void BufrEntry::json(eckit::JSON& json) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             if (l_.size() == 1) {
                 json << l_[0];
             }
@@ -171,7 +172,7 @@ void BufrEntry::json(eckit::JSON& json) const {
             }
             break;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             if (d_.size() == 1) {
                 json << d_[0];
             }
@@ -180,7 +181,7 @@ void BufrEntry::json(eckit::JSON& json) const {
             }
             break;
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             json << s_;
             break;
     }
@@ -208,9 +209,8 @@ static bool sameValue(const std::string& name, double a, double b, double e) {
     if (m > 0) {
         return std::abs(a - b) / m <= e;
     }
-    else {
-        return std::abs(a - b) <= e;
-    }
+
+    return std::abs(a - b) <= e;
 }
 
 template <class T>
@@ -255,13 +255,13 @@ bool BufrEntry::operator==(const BufrEntry& other) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             return sameValue(name_, l_, other.l_, bufrRelativeError_);
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             return sameValue(name_, d_, other.d_, bufrRelativeError_);
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             return s_ == other.s_;
     }
 
@@ -284,13 +284,13 @@ bool BufrEntry::operator<(const BufrEntry& other) const {
 
     switch (type_) {
 
-        case GRIB_TYPE_LONG:
+        case CODES_TYPE_LONG:
             return l_ < other.l_;
 
-        case GRIB_TYPE_DOUBLE:
+        case CODES_TYPE_DOUBLE:
             return d_ < other.d_ && !sameValue(name_, d_, other.d_, bufrRelativeError_);
 
-        case GRIB_TYPE_STRING:
+        case CODES_TYPE_STRING:
             return s_ < other.s_;
     }
 
@@ -298,21 +298,21 @@ bool BufrEntry::operator<(const BufrEntry& other) const {
 }
 
 BufrField::BufrField(const char* buffer, size_t size, const std::string& path, off_t offset,
-                     const std::vector<std::string>& ignore) :
+                     const std::vector<std::string>& /*ignore*/) :
     FieldBase(path, offset, size) {
+    // NOTE: should this be using BUFR functions, rather than GRIB?
 
-    grib_handle* h = grib_handle_new_from_message(0, buffer, size);
-    ASSERT(h);
+    auto h = codes_handle_new_from_message(nullptr, buffer, size);
     HandleDeleter delh(h);
 
     size_t nDescriptors;
-    GRIB_CALL(grib_get_size(h, "unexpandedDescriptors", &nDescriptors));
+    GRIB_CALL(codes_get_size(h, "unexpandedDescriptors", &nDescriptors));
     ASSERT(nDescriptors > 0);
 
     descriptors_.resize(nDescriptors);
 
     size_t n = nDescriptors;
-    GRIB_CALL(grib_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
+    GRIB_CALL(codes_get_long_array(h, "unexpandedDescriptors", &descriptors_[0], &n));
     ASSERT(n == nDescriptors);
 
 
@@ -328,7 +328,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
 
     codes_set_long(h, "unpack", 1);
 
-    while (codes_bufr_keys_iterator_next(ks)) {
+    while (codes_bufr_keys_iterator_next(ks) != 0) {
         const char* name = codes_bufr_keys_iterator_get_name(ks);
 
 
@@ -347,34 +347,34 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
         size_t len = sizeof(s);
 
         int t;
-        GRIB_CALL(grib_get_native_type(h, name, &t));
+        GRIB_CALL(codes_get_native_type(h, name, &t));
 
         size_t count = 0;
-        GRIB_CALL(grib_get_size(h, name, &count));
+        GRIB_CALL(codes_get_size(h, name, &count));
         // ASSERT(count == 1);
 
 
         switch (t) {
 
-            case GRIB_TYPE_LONG:
+            case CODES_TYPE_LONG:
                 l.resize(count);
-                GRIB_CALL(grib_get_long_array(h, name, &l[0], &count));
+                GRIB_CALL(codes_get_long_array(h, name, &l[0], &count));
                 ASSERT(l.size() == count);
                 break;
 
-            case GRIB_TYPE_DOUBLE:
+            case CODES_TYPE_DOUBLE:
                 d.resize(count);
-                GRIB_CALL(grib_get_double_array(h, name, &d[0], &count));
+                GRIB_CALL(codes_get_double_array(h, name, &d[0], &count));
                 ASSERT(d.size() == count);
                 break;
 
-            case GRIB_TYPE_STRING:
+            case CODES_TYPE_STRING:
                 ASSERT(count == 1);
-                GRIB_CALL(grib_get_string(h, name, s, &len));
+                GRIB_CALL(codes_get_string(h, name, s, &len));
                 break;
 
             default:
-                throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + grib_get_type_name(t));
+                throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + codes_get_type_name(t));
         }
 
 
@@ -387,7 +387,7 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
         ASSERT(entriesByName_.find(name) == entriesByName_.end());
         entriesByName_[name] = allEntries_.size();
 
-        allEntries_.push_back(BufrEntry(name, l, d, s, t));
+        allEntries_.emplace_back(BufrEntry(name, l, d, s, t));
         if (allEntries_.back().ignore()) {
             ignored_.insert(allEntries_.back().name());
         }
@@ -397,25 +397,27 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
     }
 }
 
-BufrField::~BufrField() {}
+
+BufrField::~BufrField() = default;
+
 
 void BufrField::json(eckit::JSON& json) const {
     json.startObject();
     FieldBase::json(json);
 
 
-    for (auto j : activeEntries_) {
+    for (auto& j : activeEntries_) {
         json << j;
     }
 
     json << "descriptors";
     json.startList();
-    for (auto j : descriptors_) {
+    for (auto& j : descriptors_) {
         json << j;
     }
     json.endList();
 
-    if (ignored_.size()) {
+    if (!ignored_.empty()) {
         json << "ignored" << ignored_;
     }
 
@@ -423,21 +425,19 @@ void BufrField::json(eckit::JSON& json) const {
     json.endObject();
 }
 
+
 Field BufrField::field(const char* buffer, size_t size, const std::string& path, off_t offset,
                        const std::vector<std::string>& ignore) {
-
-
-    BufrField* field = new BufrField(buffer, size, path, offset, ignore);
-
-    Field result(field);
+    Field result(new BufrField(buffer, size, path, offset, ignore));
     return result;
 }
+
 
 void BufrField::print(std::ostream& out) const {
 
     out << '[';
     const char* sep = "";
-    for (auto j : activeEntries_) {
+    for (auto& j : activeEntries_) {
         out << sep;
 
         if (!bufrFullLists) {
@@ -462,7 +462,7 @@ bool BufrField::wrapped() const {
 }
 
 bool BufrField::less_than(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     if (ignored_ == other.ignored_) {
         return activeEntries_ < other.activeEntries_;
     }
@@ -474,8 +474,8 @@ void BufrField::whiteListEntries(std::ostream& out) const {
 }
 
 size_t BufrField::differences(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
-    size_t count           = 0;
+    auto& other  = dynamic_cast<const BufrField&>(o);
+    size_t count = 0;
 
 
     size_t n = std::min(activeEntries_.size(), other.activeEntries_.size());
@@ -494,7 +494,7 @@ size_t BufrField::differences(const FieldBase& o) const {
 
 
 std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
 
     const std::vector<BufrEntry>& ei = activeEntries_;
     const std::vector<BufrEntry>& ej = other.activeEntries_;
@@ -591,7 +591,7 @@ std::ostream& BufrField::printDifference(std::ostream& out, const FieldBase& o) 
 }
 
 void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     // out << "bufr(area)";
     size_t n        = std::min(descriptors_.size(), other.descriptors_.size());
     const char* sep = "";
@@ -610,13 +610,13 @@ void BufrField::compareExtra(std::ostream& out, const FieldBase& o) const {
 }
 
 bool BufrField::same(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
+    auto& other = dynamic_cast<const BufrField&>(o);
     return (activeEntries_ == other.activeEntries_) && (ignored_ == other.ignored_);
 }
 
 bool BufrField::match(const FieldBase& o) const {
-    const BufrField& other = dynamic_cast<const BufrField&>(o);
-    size_t n               = std::min(descriptors_.size(), other.descriptors_.size());
+    auto& other = dynamic_cast<const BufrField&>(o);
+    size_t n    = std::min(descriptors_.size(), other.descriptors_.size());
     for (size_t i = 0; i < n; ++i) {
         if (descriptors_[i] != other.descriptors_[i]) {
             bool loop1 = (descriptors_[i] > 100000);
@@ -636,7 +636,6 @@ std::ostream& BufrField::printGrid(std::ostream& out) const {
 
 bool BufrField::match(const std::string&, const std::string&) const {
     NOTIMP;
-    return false;
 }
 
 size_t BufrField::numberOfPoints() const {

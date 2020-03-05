@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/output/GeoPointsFileOutputXYVector.h"
@@ -34,10 +31,8 @@ namespace output {
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
 
-GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path,
-    bool binary) :
-    GeoPointsFileOutput(path, binary) {
-}
+GeoPointsFileOutputXYVector::GeoPointsFileOutputXYVector(const std::string& path, bool binary) :
+    GeoPointsFileOutput(path, binary) {}
 
 
 size_t GeoPointsFileOutputXYVector::copy(const param::MIRParametrisation&, context::Context&) {
@@ -52,7 +47,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
     const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
-    eckit::Offset position = handle.position();
+    eckit::Offset position    = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
 
@@ -94,9 +89,11 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
         out << std::endl;
     }
 
+    delete out.rdbuf();
+
     // eckit::Log::info() << "GeoPointsFileOutputXYVector::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 
@@ -105,4 +102,3 @@ static MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector
 
 }  // namespace output
 }  // namespace mir
-

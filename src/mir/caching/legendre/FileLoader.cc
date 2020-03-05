@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #include "mir/caching/legendre/FileLoader.h"
@@ -32,7 +28,7 @@ namespace legendre {
 
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path),
-    buffer_(path.size()) {
+    buffer_(size_t(path.size())) {
 
     log() << "Loading Legendre coefficients from " << path << std::endl;
 
@@ -62,9 +58,8 @@ bool FileLoader::shared() {
     return false;
 }
 
-namespace {
+
 static LegendreLoaderBuilder<FileLoader> loader("file-io");
-}
 
 
 }  // namespace legendre

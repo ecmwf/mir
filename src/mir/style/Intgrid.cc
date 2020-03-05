@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -28,7 +29,6 @@ namespace mir {
 namespace style {
 
 
-namespace {
 static pthread_once_t once                       = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                 = nullptr;
 static std::map<std::string, IntgridFactory*>* m = nullptr;
@@ -36,13 +36,12 @@ static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, IntgridFactory*>();
 }
-}  // (anonymous namespace)
 
 
 IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
 
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("IntgridFactory: duplicate '" + name + "'");
@@ -54,25 +53,23 @@ IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
 
 
 IntgridFactory::~IntgridFactory() {
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     m->erase(name_);
 }
 
 
-Intgrid* IntgridFactory::build(
-        const std::string& name,
-        const param::MIRParametrisation& parametrisation,
-        long targetGaussianN ) {
+Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
+                               long targetGaussianN) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "IntgridFactory: looking for '" << name << "'" << std::endl;
     ASSERT(!name.empty());
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return (*j).second->make(parametrisation, targetGaussianN);
+        return j->second->make(parametrisation, targetGaussianN);
     }
 
     // Look for NamedGrid pattern matching
@@ -87,7 +84,7 @@ Intgrid* IntgridFactory::build(
 
 void IntgridFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-    eckit::AutoLock< eckit::Mutex > lock(local_mutex);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

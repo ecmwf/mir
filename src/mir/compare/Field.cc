@@ -31,10 +31,9 @@ static bool normaliseLongitudes_ = false;
 
 
 void Field::addOptions(std::vector<eckit::option::Option*>& options) {
-    using namespace eckit::option;
+    using eckit::option::SimpleOption;
 
     options.push_back(new SimpleOption<bool>("normalise-longitudes", "Normalise longitudes between 0 and 360"));
-
 
     GribField::addOptions(options);
     BufrField::addOptions(options);
@@ -42,9 +41,7 @@ void Field::addOptions(std::vector<eckit::option::Option*>& options) {
 
 
 void Field::setOptions(const eckit::option::CmdArgs& args) {
-
     args.get("normalise-longitudes", normaliseLongitudes_);
-
 
     GribField::setOptions(args);
     BufrField::setOptions(args);
@@ -52,20 +49,21 @@ void Field::setOptions(const eckit::option::CmdArgs& args) {
 
 
 Field::Field(FieldBase* field) : field_(field) {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
 
 
 Field::Field(const Field& other) : field_(other.field_) {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->attach();
     }
 }
 
+
 Field::~Field() {
-    if (field_) {
+    if (field_ != nullptr) {
         field_->detach();
     }
 }
@@ -73,11 +71,11 @@ Field::~Field() {
 
 Field& Field::operator=(const Field& other) {
     if (field_ != other.field_) {
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
         field_ = other.field_;
-        if (field_) {
+        if (field_ != nullptr) {
             field_->attach();
         }
     }
@@ -86,7 +84,7 @@ Field& Field::operator=(const Field& other) {
 }
 
 void Field::print(std::ostream& out) const {
-    if (field_) {
+    if (field_ != nullptr) {
         out << *field_;
     }
     else {
@@ -105,11 +103,9 @@ public:
 }  // namespace
 
 std::vector<Field> Field::bestMatches(const FieldSet& fields) const {
+
     std::vector<Field> matches;
-
-    for (auto k = fields.begin(); k != fields.end(); ++k) {
-        const auto& other = *k;
-
+    for (auto& other : fields) {
         if (match(other)) {
             matches.push_back(other);
         }
@@ -154,7 +150,7 @@ std::ostream& Field::printDifference(std::ostream& out, const Field& other) cons
 }
 
 Field::operator bool() const {
-    return field_ != 0;
+    return field_ != nullptr;
 }
 
 bool Field::operator<(const Field& other) const {

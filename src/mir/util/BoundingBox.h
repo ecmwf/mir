@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_util_BoundingBox_h
@@ -32,7 +29,7 @@ class MIRJob;
 namespace param {
 class MIRParametrisation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -41,17 +38,13 @@ namespace util {
 
 class BoundingBox {
 public:
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
     BoundingBox();
-    BoundingBox(const Latitude& north,
-                const Longitude& west,
-                const Latitude& south,
-                const Longitude& east);
+    BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east);
     BoundingBox(const param::MIRParametrisation&);
     BoundingBox(const BoundingBox&);
 
@@ -68,29 +61,19 @@ public:
 
     bool operator==(const BoundingBox& other) const;
 
-    bool operator!=(const BoundingBox& other) const {
-        return !operator==(other);
-    }
+    bool operator!=(const BoundingBox& other) const { return !operator==(other); }
 
     // -- Methods
 
     // DON'T IMPLEMENT SETTERS
 
-    const Latitude& north() const {
-        return north_;
-    }
+    const Latitude& north() const { return north_; }
 
-    const Longitude& west() const {
-        return west_;
-    }
+    const Longitude& west() const { return west_; }
 
-    const Latitude& south() const {
-        return south_;
-    }
+    const Latitude& south() const { return south_; }
 
-    const Longitude& east() const {
-        return east_;
-    }
+    const Longitude& east() const { return east_; }
 
     /// Check if covers complete range East-West
     bool isPeriodicWestEast() const;
@@ -131,7 +114,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -153,7 +135,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     Latitude north_;
@@ -177,11 +158,10 @@ private:
     // -- Friends
 
     /// Output using stream operator
-    friend std::ostream &operator<<(std::ostream &s, const BoundingBox &p) {
+    friend std::ostream& operator<<(std::ostream& s, const BoundingBox& p) {
         p.print(s);
         return s;
     }
-
 };
 
 
@@ -190,4 +170,3 @@ private:
 
 
 #endif
-

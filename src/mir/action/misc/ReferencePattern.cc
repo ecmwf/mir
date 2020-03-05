@@ -3,29 +3,26 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #include "mir/action/misc/ReferencePattern.h"
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
+#include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/data/MIRField.h"
 #include "mir/util/Angles.h"
 
 
@@ -33,9 +30,7 @@ namespace mir {
 namespace action {
 
 
-ReferencePattern::ReferencePattern(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
-}
+ReferencePattern::ReferencePattern(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {}
 
 
 ReferencePattern::~ReferencePattern() = default;
@@ -46,12 +41,12 @@ bool ReferencePattern::sameAs(const Action&) const {
 }
 
 
-void ReferencePattern::print(std::ostream &out) const {
+void ReferencePattern::print(std::ostream& out) const {
     out << "ReferencePattern[]";
 }
 
 
-void ReferencePattern::execute(context::Context & ctx) const {
+void ReferencePattern::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
 
     repres::RepresentationHandle representation(field.representation());
@@ -59,12 +54,12 @@ void ReferencePattern::execute(context::Context & ctx) const {
     parametrisation_.get("0-1", normalize);
 
     std::vector<long> frequencies;
-    if(!parametrisation_.get("frequencies", frequencies)) {
+    if (!parametrisation_.get("frequencies", frequencies)) {
         frequencies.push_back(6);
         frequencies.push_back(3);
     }
 
-    bool hasMissing = field.hasMissing();
+    bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();
 
     for (size_t k = 0; k < field.dimensions(); k++) {
@@ -103,7 +98,7 @@ void ReferencePattern::execute(context::Context & ctx) const {
         }
 
         double median = (minvalue + maxvalue) / 2;
-        double range = maxvalue - minvalue;
+        double range  = maxvalue - minvalue;
 
         double f1 = frequencies[0] / 2.0;
         double f2 = frequencies[1];
@@ -115,17 +110,15 @@ void ReferencePattern::execute(context::Context & ctx) const {
             const auto& p = iter->pointUnrotated();
 
             if (!hasMissing || values[j] != missingValue) {
-                values[j] = range
-                            * sin(f1 * util::degree_to_radian(p.lon().value()))
-                            * cos(f2 * util::degree_to_radian(p.lat().value()))
-                            * 0.5 + median;
+                values[j] = range * sin(f1 * util::degree_to_radian(p.lon().value())) *
+                                cos(f2 * util::degree_to_radian(p.lat().value())) * 0.5 +
+                            median;
             }
 
             j++;
         }
 
         ASSERT(j == values.size());
-
     }
 }
 
@@ -135,11 +128,8 @@ const char* ReferencePattern::name() const {
 }
 
 
-namespace {
-static ActionBuilder< ReferencePattern > action("misc.pattern");
-}
+static ActionBuilder<ReferencePattern> action("misc.pattern");
 
 
 }  // namespace action
 }  // namespace mir
-

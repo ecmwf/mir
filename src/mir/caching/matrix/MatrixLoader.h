@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Oct 2016
 
 
 #ifndef mir_caching_matrix_MatrixLoader_h
@@ -39,8 +35,11 @@ public:
     MatrixLoader(const std::string&, const eckit::PathName&);
     virtual ~MatrixLoader();
 
+    MatrixLoader(const MatrixLoader&) = delete;
+    MatrixLoader& operator=(const MatrixLoader&) = delete;
+
     virtual const void* address() const = 0;
-    virtual size_t size() const = 0;
+    virtual size_t size() const         = 0;
 
     virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape&);
 
@@ -51,15 +50,16 @@ public:
     static eckit::Channel& warn();
 
 protected:
-
     eckit::PathName path_;
-
 };
 
 
 class MatrixLoaderFactory {
     std::string name_;
     virtual MatrixLoader* make(const std::string& name, const eckit::PathName&) = 0;
+
+    MatrixLoaderFactory(const MatrixLoaderFactory&) = delete;
+    MatrixLoaderFactory& operator=(const MatrixLoaderFactory&) = delete;
 
 protected:
     MatrixLoaderFactory(const std::string&);
@@ -73,9 +73,7 @@ public:
 
 template <class T>
 class MatrixLoaderBuilder : public MatrixLoaderFactory {
-    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) {
-        return new T(name, path);
-    }
+    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) { return new T(name, path); }
 
 public:
     MatrixLoaderBuilder(const std::string& name) : MatrixLoaderFactory(name) {}
@@ -88,4 +86,3 @@ public:
 
 
 #endif
-

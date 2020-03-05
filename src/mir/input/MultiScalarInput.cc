@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -20,7 +21,7 @@ namespace mir {
 namespace input {
 
 
-MultiScalarInput::MultiScalarInput() {}
+MultiScalarInput::MultiScalarInput() = default;
 
 
 MultiScalarInput::~MultiScalarInput() {
@@ -79,13 +80,14 @@ data::MIRField MultiScalarInput::field() const {
 
 bool MultiScalarInput::next() {
     bool first = true;
-    bool next = false;
+    bool next  = false;
 
     for (auto& c : components_) {
         if (first) {
-            next = c->next();
+            next  = c->next();
             first = false;
-        } else {
+        }
+        else {
             ASSERT(next == c->next());
         }
     }
@@ -97,7 +99,7 @@ bool MultiScalarInput::next() {
 bool MultiScalarInput::sameAs(const MIRInput& other) const {
     auto o = dynamic_cast<const MultiScalarInput*>(&other);
 
-    if (!o || dimensions() != o->dimensions()) {
+    if ((o == nullptr) || dimensions() != o->dimensions()) {
         return false;
     }
 
@@ -124,5 +126,5 @@ void MultiScalarInput::print(std::ostream& out) const {
 }
 
 
-} // namespace input
-} // namespace mir
+}  // namespace input
+}  // namespace mir

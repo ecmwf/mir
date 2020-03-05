@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -19,32 +20,30 @@ namespace iterator {
 namespace detail {
 
 
-RegularIterator::RegularIterator(const eckit::Fraction& a,
-                                 const eckit::Fraction& b,
-                                 const eckit::Fraction& inc,
-                                 const eckit::Fraction& ref)
-    : inc_(inc) {
+RegularIterator::RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                                 const eckit::Fraction& ref) :
+    inc_(inc) {
     ASSERT(a <= b);
     ASSERT(inc >= 0);
 
     if (inc_ == 0) {
 
         b_ = a_ = a;
-        n_ = 1;
-
-    } else {
+        n_      = 1;
+    }
+    else {
 
         auto shift = (ref / inc_).decimalPart() * inc;
-        a_ = shift + adjust(a - shift, inc_, true);
+        a_         = shift + adjust(a - shift, inc_, true);
 
         if (b == a) {
             b_ = a_;
-        } else {
+        }
+        else {
 
             auto c = shift + adjust(b - shift, inc_, false);
-            c = a_ + ((c - a_) / inc_).integralPart() * inc_;
-            b_ = c < a_ ? a_ : c;
-
+            c      = a_ + ((c - a_) / inc_).integralPart() * inc_;
+            b_     = c < a_ ? a_ : c;
         }
 
         n_ = size_t(((b_ - a_) / inc_).integralPart() + 1);
@@ -54,12 +53,9 @@ RegularIterator::RegularIterator(const eckit::Fraction& a,
 }
 
 
-RegularIterator::RegularIterator(const eckit::Fraction& a,
-                                 const eckit::Fraction& b,
-                                 const eckit::Fraction& inc,
-                                 const eckit::Fraction& ref,
-                                 const eckit::Fraction& period)
-    : RegularIterator(a, b, inc, ref) {
+RegularIterator::RegularIterator(const eckit::Fraction& a, const eckit::Fraction& b, const eckit::Fraction& inc,
+                                 const eckit::Fraction& ref, const eckit::Fraction& period) :
+    RegularIterator(a, b, inc, ref) {
     ASSERT(period > 0);
 
     if ((n_ - 1) * inc_ >= period) {

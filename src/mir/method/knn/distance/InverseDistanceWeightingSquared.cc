@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -21,15 +22,12 @@ namespace knn {
 namespace distance {
 
 
-InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {
-}
+InverseDistanceWeightingSquared::InverseDistanceWeightingSquared(const param::MIRParametrisation&) {}
 
 
-void InverseDistanceWeightingSquared::operator()(
-        size_t ip,
-        const Point3& point,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void InverseDistanceWeightingSquared::operator()(size_t ip, const Point3& point,
+                                                 const std::vector<search::PointSearch::PointValueType>& neighbours,
+                                                 std::vector<WeightMatrix::Triplet>& triplets) const {
 
     const size_t nbPoints = neighbours.size();
     ASSERT(nbPoints);
@@ -45,7 +43,6 @@ void InverseDistanceWeightingSquared::operator()(
 
         weights[j] = 1. / (1. + d2);
         sum += weights[j];
-
     }
 
     ASSERT(sum > 0.);
@@ -60,7 +57,7 @@ void InverseDistanceWeightingSquared::operator()(
 
 bool InverseDistanceWeightingSquared::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const InverseDistanceWeightingSquared*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -83,4 +80,3 @@ static DistanceWeightingBuilder<InverseDistanceWeightingSquared> __distance("inv
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-

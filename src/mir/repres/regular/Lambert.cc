@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -31,8 +32,8 @@ RegularGrid::Projection Lambert::make_projection(const param::MIRParametrisation
     double Latin2InDegrees;
     ASSERT(param.get("LaDInDegrees", LaDInDegrees));
     ASSERT(param.get("LoVInDegrees", LoVInDegrees));
-    ASSERT(param.get("Latin1InDegrees", Latin1InDegrees));
-    ASSERT(param.get("Latin2InDegrees", Latin2InDegrees));
+    param.get("Latin1InDegrees", Latin1InDegrees = LaDInDegrees);
+    param.get("Latin2InDegrees", Latin2InDegrees = LaDInDegrees);
 
     return Projection::Spec("type", "lambert_conformal_conic")
         .set("latitude1", Latin1InDegrees)

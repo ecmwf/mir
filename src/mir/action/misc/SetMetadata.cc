@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/misc/SetMetadata.h"
@@ -23,16 +20,15 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
 namespace action {
 
 
-SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
-    Action(parametrisation) {
+SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     std::string metadata;
     ASSERT(parametrisation.get("metadata", metadata));
@@ -52,7 +48,6 @@ SetMetadata::SetMetadata(const param::MIRParametrisation &parametrisation):
 
         metadata_[w[0]] = s2l(w[1]);
     }
-
 }
 
 
@@ -61,30 +56,30 @@ SetMetadata::~SetMetadata() = default;
 
 bool SetMetadata::sameAs(const Action& other) const {
     auto o = dynamic_cast<const SetMetadata*>(&other);
-    return o && (metadata_ == o->metadata_);
+    return (o != nullptr) && (metadata_ == o->metadata_);
 }
 
-void SetMetadata::print(std::ostream &out) const {
+
+void SetMetadata::print(std::ostream& out) const {
     out << "SetMetadata[" << metadata_ << "]";
 }
 
 
-void SetMetadata::execute(context::Context & ctx) const {
+void SetMetadata::execute(context::Context& ctx) const {
     data::MIRField& field = ctx.field();
-     for (size_t i = 0; i < field.dimensions(); i++) {
+    for (size_t i = 0; i < field.dimensions(); i++) {
         field.metadata(i, metadata_);
     }
 }
+
 
 const char* SetMetadata::name() const {
     return "SetMetadata";
 }
 
-namespace {
-static ActionBuilder< SetMetadata > action("set.metadata");
-}
+
+static ActionBuilder<SetMetadata> action("set.metadata");
 
 
 }  // namespace action
 }  // namespace mir
-

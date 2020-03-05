@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #include "mir/lsm/Mask.h"
@@ -32,21 +28,15 @@
 
 namespace mir {
 namespace lsm {
-namespace {
 
 
-static eckit::Mutex *local_mutex = nullptr;
-
-static std::map<std::string, Mask *> *cache = nullptr;
-
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static eckit::Mutex* local_mutex           = nullptr;
+static std::map<std::string, Mask*>* cache = nullptr;
+static pthread_once_t once                 = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
-    cache = new std::map<std::string, Mask *>();
+    cache       = new std::map<std::string, Mask*>();
 }
-
-}  // (anonymous namespace)
 
 
 Mask::Mask() = default;
@@ -55,15 +45,11 @@ Mask::Mask() = default;
 Mask::~Mask() = default;
 
 
-void Mask::hash(eckit::MD5&) const {
-}
+void Mask::hash(eckit::MD5&) const {}
 
 
-void Mask::hashCacheKey(eckit::MD5& md5,
-                        const eckit::PathName& path,
-                        const param::MIRParametrisation& parametrisation,
-                        const repres::Representation& representation,
-                        const std::string& which) {
+void Mask::hashCacheKey(eckit::MD5& md5, const eckit::PathName& path, const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation, const std::string& which) {
 
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
@@ -78,7 +64,8 @@ void Mask::hashCacheKey(eckit::MD5& md5,
 }
 
 
-Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation, const std::string& which) {
+Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& representation,
+                   const std::string& which) {
 
     // lsm = true is a requirement for lsm processing
     bool lsm = false;
@@ -97,7 +84,7 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     }
 
     const LSMSelection& chooser = LSMSelection::lookup(name);
-    std::string key = chooser.cacheKey(parametrisation, representation, which);
+    std::string key             = chooser.cacheKey(parametrisation, representation, which);
 
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -105,10 +92,10 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
     eckit::Log::debug<LibMir>() << "Mask::lookup(" << key << ")" << std::endl;
     auto j = cache->find(key);
     if (j != cache->end()) {
-        return *(*j).second;
+        return *(j->second);
     }
 
-    Mask *mask = chooser.create(parametrisation, representation, which);
+    Mask* mask = chooser.create(parametrisation, representation, which);
 
     (*cache)[key] = mask;
 
@@ -116,18 +103,19 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
 }
 
 
-Mask& Mask::lookupInput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+Mask& Mask::lookupInput(const param::MIRParametrisation& parametrisation,
+                        const repres::Representation& representation) {
     return lookup(parametrisation, representation, "input");
 }
 
 
-Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation, const repres::Representation& representation) {
+Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation,
+                         const repres::Representation& representation) {
     return lookup(parametrisation, representation, "output");
 }
 
 
-static bool same(const param::MIRParametrisation& parametrisation1,
-                 const param::MIRParametrisation& parametrisation2,
+static bool same(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2,
                  const std::string& /*which*/) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -182,7 +170,6 @@ static bool same(const param::MIRParametrisation& parametrisation1,
 bool Mask::sameInput(const param::MIRParametrisation& parametrisation1,
                      const param::MIRParametrisation& parametrisation2) {
     return same(parametrisation1, parametrisation2, "input");
-
 }
 
 
@@ -194,4 +181,3 @@ bool Mask::sameOutput(const param::MIRParametrisation& parametrisation1,
 
 }  // namespace lsm
 }  // namespace mir
-

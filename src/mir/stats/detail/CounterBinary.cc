@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -29,8 +30,7 @@ namespace stats {
 namespace detail {
 
 
-CounterBinary::CounterBinary(const param::MIRParametrisation& param1,
-                             const param::MIRParametrisation& param2) :
+CounterBinary::CounterBinary(const param::MIRParametrisation& param1, const param::MIRParametrisation& param2) :
     counter1_(param1),
     counter2_(param2),
     missing_(0),
@@ -40,61 +40,38 @@ CounterBinary::CounterBinary(const param::MIRParametrisation& param1,
     countBelowLowerLimit_(0),
     countAboveUpperLimit_(0),
     max_(std::numeric_limits<double>::quiet_NaN()),
-    lowerLimit_(std::numeric_limits<double>::quiet_NaN()),
-    upperLimit_(std::numeric_limits<double>::quiet_NaN()),
-    absoluteError_(std::numeric_limits<double>::quiet_NaN()),
-    ignoreDifferentMissingValues_(0),
-    ignoreAboveUpperLimit_(0),
-    ignoreDifferentMissingValuesFactor_(std::numeric_limits<double>::quiet_NaN()),
-    ignoreAboveUpperLimitFactor_(std::numeric_limits<double>::quiet_NaN()),
-    toleranceType_(absTolerance_t::NONE),
+    maxIndexValue1_(std::numeric_limits<double>::quiet_NaN()),
+    maxIndexValue2_(std::numeric_limits<double>::quiet_NaN()),
+    packingError_(std::numeric_limits<double>::quiet_NaN()),
     first_(true) {
 
     std::unique_ptr<param::MIRParametrisation> same(new param::SameParametrisation(param1, param2, false));
+    static const double nan = std::numeric_limits<double>::quiet_NaN();
 
-    same->get("ignore-different-missing-values", ignoreDifferentMissingValues_);
-    same->get("ignore-different-missing-values-factor", ignoreDifferentMissingValuesFactor_);
-
-    same->get("counter-lower-limit", lowerLimit_);
-    same->get("counter-upper-limit", upperLimit_);
-    same->get("ignore-above-upper-limit", ignoreAboveUpperLimit_);
-    same->get("ignore-above-upper-limit-factor", ignoreAboveUpperLimitFactor_);
+    same->get("ignore-different-missing-values", ignoreDifferentMissingValues_ = 0);
+    same->get("ignore-different-missing-values-factor", ignoreDifferentMissingValuesFactor_ = nan);
+    same->get("counter-lower-limit", lowerLimit_ = nan);
+    same->get("counter-upper-limit", upperLimit_ = nan);
+    same->get("ignore-above-upper-limit", ignoreAboveUpperLimit_ = 0);
+    same->get("ignore-above-upper-limit-factor", ignoreAboveUpperLimitFactor_ = nan);
 
     hasLowerLimit_ = lowerLimit_ == lowerLimit_;
     hasUpperLimit_ = upperLimit_ == upperLimit_;
 
-    absoluteError_ = std::numeric_limits<double>::quiet_NaN();
-    if (same->get("absolute-error", absoluteError_)) {
-        toleranceType_ = ABSOLUTE;
-        return;
-    }
+    doAbsoluteCompare_    = same->get("absolute-error", absoluteError_ = nan);
+    doRelativeCompare_    = same->get("relative-error-factor", relativeErrorFactor_ = nan);
+    doRelativeMinCompare_ = same->get("relative-error-min", relativeErrorMin_ = nan);
+    doRelativeMaxCompare_ = same->get("relative-error-max", relativeErrorMax_ = nan);
 
-    relativeErrorMin_ = std::numeric_limits<double>::quiet_NaN();
-    relativeErrorMax_ = std::numeric_limits<double>::quiet_NaN();
-    if (same->get("relative-error-min", relativeErrorMin_) ||
-        same->get("relative-error-max", relativeErrorMax_)) {
-        toleranceType_ = RELATIVE;
-        return;
-    }
+    double pef = nan;
+    if ((doPackingCompare_ = same->get("packing-error-factor", pef))) {
+        double packingError1 = 0.;
+        double packingError2 = 0.;
+        ASSERT(param1.fieldParametrisation().get("packingError", packingError1) ||
+               param2.fieldParametrisation().get("packingError", packingError2));
 
-    double pef = std::numeric_limits<double>::quiet_NaN();
-    if (same->get("packing-error-factor", pef)) {
-        ASSERT(pef > 0.);
-        double packingError = 0.;
-
-        double value = 0.;
-        if (param1.fieldParametrisation().get("packingError", value) && value > 0.) {
-            packingError = value;
-        }
-        if (param2.fieldParametrisation().get("packingError", value) && value > packingError) {
-            packingError = value;
-        }
-
-        if (eckit::types::is_strictly_greater(packingError, 0.)) {
-            absoluteError_ = pef * packingError;
-            toleranceType_ = PACKINGERROR;
-            return;
-        }
+        packingError_ = pef * std::max(packingError1, packingError2);
+        ASSERT(packingError_ > 0.);
     }
 }
 
@@ -103,55 +80,63 @@ void CounterBinary::reset(const data::MIRField& field1, const data::MIRField& fi
     counter1_.reset(field1);
     counter2_.reset(field2);
 
-    missing_ = 0;
-    missingIn1NotIn2_ = 0;
-    missingIn2NotIn1_ = 0;
-    maxIndex_ = 0;
+    missing_              = 0;
+    missingIn1NotIn2_     = 0;
+    missingIn2NotIn1_     = 0;
+    maxIndex_             = 0;
     countBelowLowerLimit_ = 0;
     countAboveUpperLimit_ = 0;
 
-    max_ = std::numeric_limits<double>::quiet_NaN();
-    first_ = true;
+    max_            = std::numeric_limits<double>::quiet_NaN();
+    maxIndexValue1_ = std::numeric_limits<double>::quiet_NaN();
+    maxIndexValue2_ = std::numeric_limits<double>::quiet_NaN();
+    first_          = true;
 }
 
 
 void CounterBinary::print(std::ostream& out) const {
     out << "CounterBinary["
-            "count=" << count()
-        << ",max=" << max()
-        << ",maxIndex=" << maxIndex()
-        << ",missing=" << missing()
-        << ",missingIn1NotIn2=" << missingIn1NotIn2()
-        << ",missingIn2NotIn1=" << missingIn2NotIn1();
+           "count="
+        << count() << ",max=" << max() << ",maxIndex=" << maxIndex() << ",maxIndexValue1=" << maxIndexValue1_
+        << ",maxIndexValue2=" << maxIndexValue2_ << ",missing=" << missing()
+        << ",missingIn1NotIn2=" << missingIn1NotIn2() << ",missingIn2NotIn1=" << missingIn2NotIn1();
+
     if (hasUpperLimit_) {
         out << ",countAboveUpperLimit=" << countAboveUpperLimit();
     }
+
     if (hasLowerLimit_) {
         out << ",countBelowLowerLimit=" << countBelowLowerLimit();
     }
-    if (toleranceType_ == ABSOLUTE || toleranceType_ == PACKINGERROR) {
-        out << ",toleranceType=" << (toleranceType_ == ABSOLUTE ? "Absolute" : "packingError")
-            << ",tolerance=" << absoluteError_;
+
+    if (doAbsoluteCompare_) {
+        out << ",toleranceType=Absolute,tolerance=" << absoluteError_;
     }
-    else if (toleranceType_ == RELATIVE) {
-        out << ",toleranceType=Relative";
-        if (relativeErrorMin_ == relativeErrorMin_) {
-            out << ",toleranceMin=" << relativeErrorMin_;
-        }
-        if (relativeErrorMax_ == relativeErrorMax_) {
-            out << ",toleranceMax=" << relativeErrorMax_;
-        }
+
+    if (doPackingCompare_) {
+        out << ",toleranceType=PackingError,tolerance=" << packingError_;
     }
-    out << ",counter1=" << counter1_
-        << ",counter2=" << counter2_
-        << "]";
+
+    if (doRelativeCompare_) {
+        out << ",toleranceType=RelativeError,toleranceFactor=" << relativeErrorFactor_;
+    }
+
+    if (doRelativeMinCompare_) {
+        out << ",toleranceType=RelativeMin,tolerance=" << relativeErrorMin_;
+    }
+
+    if (doRelativeMaxCompare_) {
+        out << ",toleranceType=RelativeMax,tolerance=" << relativeErrorMax_;
+    }
+
+    out << ",counter1=" << counter1_ << ",counter2=" << counter2_ << "]";
 }
 
 
-bool CounterBinary::count(const double& a, const double& b, const double& diff) {
+bool CounterBinary::count(double a, double b, double diff) {
     size_t index = counter1_.count();
-    bool miss1 = !counter1_.count(a);
-    bool miss2 = !counter2_.count(b);
+    bool miss1   = !counter1_.count(a);
+    bool miss2   = !counter2_.count(b);
 
     if (!miss1 && !miss2) {
 
@@ -163,15 +148,17 @@ bool CounterBinary::count(const double& a, const double& b, const double& diff) 
         }
 
         if (max_ < diff || first_) {
-            max_ = diff;
-            maxIndex_ = index;
+            max_            = diff;
+            maxIndex_       = index;
+            maxIndexValue1_ = a;
+            maxIndexValue2_ = b;
         }
 
         first_ = false;
         return true;
     }
 
-    (miss1 && miss2 ? missing_ : (miss1 ? missingIn1NotIn2_ : missingIn2NotIn1_) )++;
+    (miss1 && miss2 ? missing_ : (miss1 ? missingIn1NotIn2_ : missingIn2NotIn1_))++;
     return false;
 }
 
@@ -182,36 +169,65 @@ std::string CounterBinary::check() const {
 
     auto missingDifferent = missingIn1NotIn2_ + missingIn2NotIn1_;
     if (missingDifferent > ignoreDifferentMissingValues()) {
-        reasons << "\n" "* different missing values (" << missingDifferent << ") greater than " << ignoreDifferentMissingValues();
+        reasons << "\n"
+                   "* different missing values ("
+                << missingDifferent << ") greater than " << ignoreDifferentMissingValues();
     }
 
     if (countAboveUpperLimit_ > ignoreAboveUpperLimit()) {
-        reasons << "\n" "* counter above limit " << upperLimit_ << " (" << countAboveUpperLimit() << ") greater than " << ignoreAboveUpperLimit();
+        reasons << "\n"
+                   "* counter above limit "
+                << upperLimit_ << " (" << countAboveUpperLimit() << ") greater than " << ignoreAboveUpperLimit();
     }
 
-    if (toleranceType_ == ABSOLUTE || toleranceType_ == PACKINGERROR) {
+    if (doAbsoluteCompare_) {
         if (max_ > absoluteError_) {
-            reasons << "\n" "* maximum difference (" << max_ << ") greater than " << absoluteError_;
+            reasons << "\n"
+                       "* maximum difference ("
+                    << max_ << ") greater than " << absoluteError_;
         }
     }
 
-    if (toleranceType_ == RELATIVE) {
-        auto relative_error = [](double a, double b) -> double {
-            double mx = std::max(std::abs(a), std::abs(b));
-            if (eckit::types::is_approximately_equal(mx, 0.)) {
-                mx = 1.;
-            }
-            return std::abs(a - b) / mx;
-        };
-
-        double relErrorMin = relative_error(counter1_.min(), counter2_.min());
-        if (relErrorMin > relativeErrorMin_) {
-            reasons << "\n" "* minimum relative error (" << relErrorMin << ") greater than " << relativeErrorMin_;
+    if (doPackingCompare_) {
+        if (max_ > packingError_) {
+            reasons << "\n"
+                       "* maximum difference ("
+                    << max_ << ") greater than " << packingError_;
         }
+    }
 
-        double relErrorMax = relative_error(counter1_.max(), counter2_.max());
-        if (relErrorMax > relativeErrorMax_) {
-            reasons << "\n" "* maximum relative error (" << relErrorMax << ") greater than " << relativeErrorMax_;
+    auto relative_error = [](double a, double b) -> double {
+        double mx = std::max(std::abs(a), std::abs(b));
+        if (eckit::types::is_approximately_equal(mx, 0.)) {
+            mx = 1.;
+        }
+        return std::abs(a - b) / mx;
+    };
+
+    if (doRelativeCompare_) {
+        double error = relative_error(maxIndexValue1_, maxIndexValue2_);
+        if (error > relativeErrorFactor_) {
+            reasons << "\n"
+                       "* relative error ("
+                    << error << ") greater than " << relativeErrorFactor_;
+        }
+    }
+
+    if (doRelativeMinCompare_) {
+        double error = relative_error(counter1_.min(), counter2_.min());
+        if (error > relativeErrorMin_) {
+            reasons << "\n"
+                       "* minimum relative error ("
+                    << error << ") greater than " << relativeErrorMin_;
+        }
+    }
+
+    if (doRelativeMaxCompare_) {
+        double error = relative_error(counter1_.max(), counter2_.max());
+        if (error > relativeErrorMax_) {
+            reasons << "\n"
+                       "* maximum relative error ("
+                    << error << ") greater than " << relativeErrorMax_;
         }
     }
 
@@ -220,16 +236,16 @@ std::string CounterBinary::check() const {
 
 
 size_t CounterBinary::ignoreAboveUpperLimit() const {
-    return ignoreAboveUpperLimitFactor_ == ignoreAboveUpperLimitFactor_ ?
-                size_t(double(count()) * ignoreAboveUpperLimitFactor_) :
-                ignoreAboveUpperLimit_;
+    return ignoreAboveUpperLimitFactor_ == ignoreAboveUpperLimitFactor_
+               ? size_t(double(count()) * ignoreAboveUpperLimitFactor_)
+               : ignoreAboveUpperLimit_;
 }
 
 
 size_t CounterBinary::ignoreDifferentMissingValues() const {
-    return ignoreDifferentMissingValuesFactor_ == ignoreDifferentMissingValuesFactor_ ?
-                size_t(double(count()) * ignoreDifferentMissingValuesFactor_) :
-                ignoreDifferentMissingValues_;
+    return ignoreDifferentMissingValuesFactor_ == ignoreDifferentMissingValuesFactor_
+               ? size_t(double(count()) * ignoreDifferentMissingValuesFactor_)
+               : ignoreDifferentMissingValues_;
 }
 
 

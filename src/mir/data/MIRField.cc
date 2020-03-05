@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/data/MIRField.h"
@@ -42,8 +39,7 @@ MIRField::MIRField(const repres::Representation* repres, bool hasMissing, double
 }
 
 
-MIRField::MIRField(const MIRField& other) :
-    field_(other.field_) {
+MIRField::MIRField(const MIRField& other) : field_(other.field_) {
     field_->attach();
 }
 
@@ -51,7 +47,7 @@ MIRField::MIRField(const MIRField& other) :
 void MIRField::copyOnWrite() {
     if (field_->count() > 1) {
         // eckit::Log::info() << "XXXX copyOnWrite " << *field_ << std::endl;
-        Field *f = field_->clone();
+        Field* f = field_->clone();
         field_->detach();
         field_ = f;
         field_->attach();
@@ -77,7 +73,7 @@ size_t MIRField::dimensions() const {
 }
 
 
-void MIRField::dimensions(size_t size)  {
+void MIRField::dimensions(size_t size) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     copyOnWrite();
@@ -85,7 +81,7 @@ void MIRField::dimensions(size_t size)  {
 }
 
 
-void MIRField::select(size_t which)  {
+void MIRField::select(size_t which) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
     // TODO: Check the if we can select() without copying everything first
     copyOnWrite();
@@ -100,14 +96,14 @@ MIRField::~MIRField() {
 }
 
 
-void MIRField::print(std::ostream &out) const {
+void MIRField::print(std::ostream& out) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     out << *field_;
 }
 
 
-const repres::Representation *MIRField::representation() const {
+const repres::Representation* MIRField::representation() const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     return field_->representation();
@@ -128,7 +124,7 @@ MIRFieldStats MIRField::statistics(size_t i) const {
 }
 
 
-void MIRField::representation(const repres::Representation *representation) {
+void MIRField::representation(const repres::Representation* representation) {
     // eckit::Log::info() << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
@@ -144,7 +140,7 @@ const MIRValuesVector& MIRField::values(size_t which) const {
 }
 
 
-MIRValuesVector& MIRField::direct(size_t which)  {
+MIRValuesVector& MIRField::direct(size_t which) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     // eckit::Log::info() << "MIRField::direct " << *field_ << std::endl;
@@ -202,7 +198,7 @@ void MIRField::hasMissing(bool on) {
 }
 
 
-void MIRField::missingValue(double value)  {
+void MIRField::missingValue(double value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     if (value != missingValue()) {
@@ -212,22 +208,16 @@ void MIRField::missingValue(double value)  {
 }
 
 
-//=========================================================================
-
-
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, FieldFactory* >* m = nullptr;
+static pthread_once_t once                     = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex               = nullptr;
+static std::map<std::string, FieldFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, FieldFactory* >();
+    m           = new std::map<std::string, FieldFactory*>();
 }
-}  // (anonymous namespace)
 
 
-FieldFactory::FieldFactory(const std::string& name):
-    name_(name) {
+FieldFactory::FieldFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -255,7 +245,8 @@ void FieldFactory::list(std::ostream& out) {
 }
 
 
-MIRField* FieldFactory::build(const std::string& name, const param::MIRParametrisation& params, bool hasMissing, double missingValue) {
+MIRField* FieldFactory::build(const std::string& name, const param::MIRParametrisation& params, bool hasMissing,
+                              double missingValue) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -267,10 +258,9 @@ MIRField* FieldFactory::build(const std::string& name, const param::MIRParametri
         throw eckit::SeriousBug("FieldFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params, hasMissing, missingValue);
+    return j->second->make(params, hasMissing, missingValue);
 }
 
 
 }  // namespace data
 }  // namespace mir
-

@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/action/transform/ShToRotatedRegularLL.h"
@@ -28,8 +25,8 @@ namespace action {
 namespace transform {
 
 
-template<class Invtrans>
-ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation &parametrisation):
+template <class Invtrans>
+ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     std::vector<double> value;
@@ -49,43 +46,42 @@ ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisa
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 ShToRotatedRegularLL<Invtrans>::~ShToRotatedRegularLL() = default;
 
 
-template<class Invtrans>
+template <class Invtrans>
 bool ShToRotatedRegularLL<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToRotatedRegularLL*>(&other);
-    return o && (increments_ == o->increments_) && (rotation_ == o->rotation_) && ShToGridded::sameAs(other);
+    return (o != nullptr) && (increments_ == o->increments_) && (rotation_ == o->rotation_) &&
+           ShToGridded::sameAs(other);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 void ShToRotatedRegularLL<Invtrans>::print(std::ostream& out) const {
     out << "ShToRotatedRegularLL[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",bbox=" << bbox_
-        << ",increments=" << increments_
-        << ",rotation=" << rotation_
-        << "]";
+    out << ",bbox=" << bbox_ << ",increments=" << increments_ << ",rotation=" << rotation_ << "]";
 }
 
 
-template<class Invtrans>
-void ShToRotatedRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans, const param::MIRParametrisation& parametrisation) const {
+template <class Invtrans>
+void ShToRotatedRegularLL<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+                                             const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const char* ShToRotatedRegularLL<Invtrans>::name() const {
     return "ShToRotatedRegularLL";
 }
 
 
-template<class Invtrans>
+template <class Invtrans>
 const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentation() const {
 
     util::BoundingBox bbox(bbox_);
@@ -97,13 +93,10 @@ const repres::Representation* ShToRotatedRegularLL<Invtrans>::outputRepresentati
 }
 
 
-namespace {
-static ActionBuilder< ShToRotatedRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-ll");
-static ActionBuilder< ShToRotatedRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-ll");
-}
+static ActionBuilder<ShToRotatedRegularLL<InvtransScalar> > __action1("transform.sh-scalar-to-rotated-regular-ll");
+static ActionBuilder<ShToRotatedRegularLL<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-rotated-regular-ll");
 
 
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-

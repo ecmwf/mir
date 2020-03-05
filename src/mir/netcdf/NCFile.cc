@@ -3,12 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
 #include "mir/netcdf/NCFile.h"
 #include "mir/netcdf/Exceptions.h"
@@ -18,11 +18,7 @@
 namespace mir {
 namespace netcdf {
 
-NCFile::NCFile(const std::string &path):
-    path_(path),
-    nc_(-1),
-    open_(false) {
-}
+NCFile::NCFile(const std::string& path) : path_(path), nc_(-1), open_(false) {}
 
 NCFile::~NCFile() {
     ASSERT(!open_);
@@ -31,7 +27,7 @@ NCFile::~NCFile() {
     }
 }
 
-void NCFile::print(std::ostream &out) const {
+void NCFile::print(std::ostream& out) const {
     out << "NCFile[path=" << path_ << "]";
 }
 
@@ -49,7 +45,7 @@ void NCFile::close() {
     open_ = false;
 }
 
-const std::string &NCFile::path() const {
+const std::string& NCFile::path() const {
     return path_;
 }
 

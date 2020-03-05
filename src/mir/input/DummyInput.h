@@ -3,39 +3,34 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
-
 
 #ifndef mir_input_DummyInput_h
 #define mir_input_DummyInput_h
 
-#include "mir/input/MIRInput.h"
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/input/ArtificialInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-class DummyInput : public MIRInput {
+class DummyInput : public ArtificialInput {
 public:
-
     // -- Exceptions
     // None
 
     // -- Contructors
-    DummyInput();
+
+    DummyInput(const param::MIRParametrisation&);
 
     // -- Destructor
-
-    virtual ~DummyInput(); // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -56,7 +51,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -73,25 +67,20 @@ protected:
     // None
 
 private:
-
     // -- Members
-
-    size_t calls_;
-    param::SimpleParametrisation parametrisation_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const; // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    // From MIRInput
+    virtual bool sameAs(const MIRInput&) const;
 
-    virtual const param::MIRParametrisation &parametrisation(size_t which) const;
-
-    virtual data::MIRField field() const;
-
-    virtual bool next();
+    // From ArtificialInput
+    virtual void print(std::ostream&) const;
+    virtual data::MIRValuesVector fill(size_t) const;
 
     // -- Class members
     // None
@@ -100,10 +89,7 @@ private:
     // None
 
     // -- Friends
-
-    //friend ostream& operator<<(ostream& s,const DummyInput& p)
-    //  { p.print(s); return s; }
-
+    // None
 };
 
 
@@ -112,4 +98,3 @@ private:
 
 
 #endif
-

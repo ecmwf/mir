@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/output/GeoPointsFileOutputXYV.h"
@@ -37,14 +34,11 @@ namespace output {
 
 
 GeoPointsFileOutputXYV::GeoPointsFileOutputXYV(const std::string& path, bool binary) :
-    GeoPointsFileOutput(path, binary) {
-}
+    GeoPointsFileOutput(path, binary) {}
 
 
-static const char* keys[] = {"class", "type", "stream", "expver",
-                             "date", "time", "step", "number", "levtype",
-                             "levelist", "param"
-                            };
+static const char* keys[] = {"class", "type",   "stream",  "expver",   "date", "time",
+                             "step",  "number", "levtype", "levelist", "param"};
 
 
 size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::Context&) {
@@ -52,19 +46,17 @@ size_t GeoPointsFileOutputXYV::copy(const param::MIRParametrisation&, context::C
 }
 
 
-size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param,
-                                    context::Context& ctx) {
+size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, context::Context& ctx) {
     ASSERT(once());
     return binary_ ? saveBinary(param, ctx) : saveText(param, ctx);
 }
 
-size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
-                                        context::Context& ctx) {
+size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, context::Context& ctx) {
 
     const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
-    eckit::Offset position = handle.position();
+    eckit::Offset position    = handle.position();
 
     std::ostream out(new eckit::HandleBuf(handle));
     std::vector<double> latitudes;
@@ -89,7 +81,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
 
 
         out << "#GEO"
-            "\n#FORMAT XYV";
+               "\n#FORMAT XYV";
 
         for (auto& key : keys) {
             std::string v;
@@ -115,7 +107,6 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
 
             latitudes.push_back(p.lat().value());
             longitudes.push_back(p.lon().value());
-
         }
         ASSERT(v == values.cend());
 
@@ -125,24 +116,22 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param,
     std::ostringstream oss;
     oss << "GeoPointsFileOutputXYV save " << handle;
 
-    repres::other::UnstructuredGrid::check(oss.str(),
-                                           latitudes,
-                                           longitudes);
+    repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
 
+    delete out.rdbuf();
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 
-size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param,
-        context::Context& ctx) {
+size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param, context::Context& ctx) {
 
     const data::MIRField& field = ctx.field();
 
     eckit::DataHandle& handle = dataHandle();
-    eckit::Offset position = handle.position();
+    eckit::Offset position    = handle.position();
 
     eckit::HandleStream out(handle);
 
@@ -189,9 +178,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
         while (it->next()) {
             const auto& p = it->pointUnrotated();
             ASSERT(v != values.cend());
-            out << double(p.lon().value())
-                << double(p.lat().value())
-                << double(*v);
+            out << double(p.lon().value()) << double(p.lat().value()) << double(*v);
 
             latitudes.push_back(p.lat().value());
             longitudes.push_back(p.lon().value());
@@ -210,14 +197,12 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
     std::ostringstream oss;
     oss << "GeoPointsFileOutputXYV save " << handle;
 
-    repres::other::UnstructuredGrid::check(oss.str(),
-                                           latitudes,
-                                           longitudes);
+    repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
 
 
     // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
-    return handle.position() - position;
+    return size_t(handle.position() - position);
 }
 
 
@@ -227,4 +212,3 @@ static MIROutputBuilder<GeoPointsFileOutputXYV> output2("geopoints");
 
 }  // namespace output
 }  // namespace mir
-

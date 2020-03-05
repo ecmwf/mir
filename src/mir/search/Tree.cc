@@ -3,26 +3,19 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @author Peter Bispham
-/// @date Apr 2015
-
 
 #include "mir/search/Tree.h"
 
-#include <unistd.h>
 #include <iostream>
 #include <map>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/os/AutoUmask.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
@@ -120,18 +113,13 @@ void Tree::unlock() {
 }
 
 
-// -----------------------------------------------------------------------------
-
-
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
+static pthread_once_t once                    = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex              = nullptr;
 static std::map<std::string, TreeFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map<std::string, TreeFactory*>();
+    m           = new std::map<std::string, TreeFactory*>();
 }
-} // (anonymous namespace)
 
 
 TreeFactory::TreeFactory(const std::string& name) : name_(name) {
@@ -154,8 +142,7 @@ TreeFactory::~TreeFactory() {
 }
 
 
-Tree* TreeFactory::build(const std::string& name,
-                         const repres::Representation& r,
+Tree* TreeFactory::build(const std::string& name, const repres::Representation& r,
                          const param::MIRParametrisation& params) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -168,7 +155,7 @@ Tree* TreeFactory::build(const std::string& name,
         throw eckit::SeriousBug("TreeFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(r, params);
+    return j->second->make(r, params);
 }
 
 

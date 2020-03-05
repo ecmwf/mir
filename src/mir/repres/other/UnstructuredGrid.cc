@@ -3,20 +3,19 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 #include "mir/repres/other/UnstructuredGrid.h"
 
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <set>
 #include <utility>
 
 #include "eckit/exception/Exceptions.h"
@@ -25,10 +24,12 @@
 #include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/MD5.h"
 
+#include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
 
@@ -37,11 +38,15 @@ namespace mir {
 namespace repres {
 namespace other {
 
+
 UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisation) {
-    ASSERT(parametrisation.get("latitudes", latitudes_));
-    ASSERT(parametrisation.get("longitudes", longitudes_));
+    parametrisation.get("latitudes", latitudes_);
+    parametrisation.get("longitudes", longitudes_);
+
+    if (latitudes_.empty() || longitudes_.empty()) {
+        throw eckit::UserError("UnstructuredGrid: requires 'latitudes' and 'longitudes'");
+    }
     ASSERT(latitudes_.size() == longitudes_.size());
-    ASSERT(!longitudes_.empty());
 
     bool checkDuplicatePoints = true;
     parametrisation.get("check-duplicate-points", checkDuplicatePoints);
@@ -51,13 +56,14 @@ UnstructuredGrid::UnstructuredGrid(const param::MIRParametrisation& parametrisat
     }
 }
 
+
 UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
     std::ifstream in(path.asString().c_str());
     if (!in) {
         throw eckit::CantOpenFile(path);
     }
 
-    if (!::isprint(in.peek())) {
+    if (::isprint(in.peek()) == 0) {
 
         eckit::Log::info() << "UnstructuredGrid::load  " << path << std::endl;
 
@@ -77,7 +83,8 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
             s >> longitudes_[i];
             // eckit::Log::info() << latitudes_[i] << " " << longitudes_[i] << std::endl;
         }
-    } else {
+    }
+    else {
         double lat;
         double lon;
         while (in >> lat >> lon) {
@@ -88,6 +95,7 @@ UnstructuredGrid::UnstructuredGrid(const eckit::PathName& path) {
 
     check("UnstructuredGrid from " + path.asString(), latitudes_, longitudes_);
 }
+
 
 void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<double>& latitudes,
                             const std::vector<double>& longitudes, bool binary) {
@@ -100,7 +108,7 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
     if (binary) {
         eckit::FileStream s(path, "w");
         size_t version = 1;
-        size_t count = latitudes.size();
+        size_t count   = latitudes.size();
         s << version;
         s << count;
         for (size_t i = 0; i < count; ++i) {
@@ -110,22 +118,29 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
             eckit::Log::info() << latitudes[i] << " " << longitudes[i] << std::endl;
         }
         s.close();
-    } else {
+    }
+    else {
         NOTIMP;
     }
 }
 
+
 UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
-                                   const util::BoundingBox& bbox)
-    : Gridded(bbox), latitudes_(latitudes), longitudes_(longitudes) {
+                                   const util::BoundingBox& bbox) :
+    Gridded(bbox),
+    latitudes_(latitudes),
+    longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
 }
 
+
 UnstructuredGrid::~UnstructuredGrid() = default;
+
 
 void UnstructuredGrid::print(std::ostream& out) const {
     out << "UnstructuredGrid[points=" << numberOfPoints() << "]";
 }
+
 
 void UnstructuredGrid::makeName(std::ostream& out) const {
 
@@ -141,18 +156,24 @@ void UnstructuredGrid::makeName(std::ostream& out) const {
     out << std::string(md5);
 }
 
+
 bool UnstructuredGrid::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const UnstructuredGrid*>(&other);
-    return o && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
+    return (o != nullptr) && (latitudes_ == o->latitudes_) && (longitudes_ == o->longitudes_);
 }
 
-void UnstructuredGrid::fill(grib_info&) const {
-    NOTIMP;
+
+void UnstructuredGrid::fill(grib_info& info) const {
+    info.grid.grid_type        = CODES_UTIL_GRID_SPEC_UNSTRUCTURED;
+    info.packing.editionNumber = 2;
 }
 
-void UnstructuredGrid::fill(api::MIRJob&) const {
-    NOTIMP;
+
+void UnstructuredGrid::fill(api::MIRJob& job) const {
+    job.set("latitudes", latitudes_);
+    job.set("longitudes", longitudes_);
 }
+
 
 void UnstructuredGrid::fill(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
@@ -160,9 +181,12 @@ void UnstructuredGrid::fill(util::MeshGeneratorParameters& params) const {
     }
 }
 
+
 util::Domain UnstructuredGrid::domain() const {
+    // FIXME Should be global?
     return util::Domain(bbox_.north(), bbox_.west(), bbox_.south(), bbox_.east());
 }
+
 
 atlas::Grid UnstructuredGrid::atlasGrid() const {
     ASSERT(numberOfPoints());
@@ -177,14 +201,17 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
     return atlas::UnstructuredGrid(std::move(pts));
 }
 
+
 void UnstructuredGrid::validate(const MIRValuesVector& values) const {
     ASSERT(values.size() == numberOfPoints());
 }
+
 
 size_t UnstructuredGrid::numberOfPoints() const {
     ASSERT(latitudes_.size() == longitudes_.size());
     return latitudes_.size();
 }
+
 
 const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& bbox) const {
 
@@ -215,6 +242,7 @@ const Gridded* UnstructuredGrid::croppedRepresentation(const util::BoundingBox& 
     return this;
 }
 
+
 class UnstructuredGridIterator : public Iterator {
 
     size_t i_;
@@ -239,27 +267,35 @@ class UnstructuredGridIterator : public Iterator {
     }
 
 public:
-    UnstructuredGridIterator(const std::vector<double>& latitudes, const std::vector<double>& longitudes)
-        : i_(0), size_(latitudes.size()), latitudes_(latitudes), longitudes_(longitudes) {
+    UnstructuredGridIterator(const std::vector<double>& latitudes, const std::vector<double>& longitudes) :
+        i_(0),
+        size_(latitudes.size()),
+        latitudes_(latitudes),
+        longitudes_(longitudes) {
         ASSERT(latitudes_.size() == longitudes_.size());
     }
 };
+
 
 Iterator* UnstructuredGrid::iterator() const {
     return new UnstructuredGridIterator(latitudes_, longitudes_);
 }
 
+
 bool UnstructuredGrid::isPeriodicWestEast() const {
     return bbox_.east() - bbox_.west() == Longitude::GLOBE;
 }
+
 
 bool UnstructuredGrid::includesNorthPole() const {
     return bbox_.north() == Latitude::NORTH_POLE;
 }
 
+
 bool UnstructuredGrid::includesSouthPole() const {
     return bbox_.south() == Latitude::SOUTH_POLE;
 }
+
 
 void UnstructuredGrid::check(const std::string& title, const std::vector<double>& latitudes,
                              const std::vector<double>& longitudes) {
@@ -280,13 +316,16 @@ void UnstructuredGrid::check(const std::string& title, const std::vector<double>
     }
 }
 
-namespace {
-static RepresentationBuilder<UnstructuredGrid>
-    triangular_grid("triangular_grid"); // Name is what is returned by grib_api
-static RepresentationBuilder<UnstructuredGrid>
-    unstructured_grid("unstructured_grid"); // Name is what is returned by grib_api
-} // namespace
 
-} // namespace other
-} // namespace repres
-} // namespace mir
+bool UnstructuredGrid::extendBoundingBoxOnIntersect() const {
+    return false;
+}
+
+
+static RepresentationBuilder<UnstructuredGrid> triangular_grid("triangular_grid");
+static RepresentationBuilder<UnstructuredGrid> unstructured_grid("unstructured_grid");
+
+
+}  // namespace other
+}  // namespace repres
+}  // namespace mir

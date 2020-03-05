@@ -3,16 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Peter Bispham
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #ifndef mir_method_MethodWeighted_h
@@ -38,14 +33,14 @@ namespace method {
 namespace nonlinear {
 class NonLinear;
 }
-}
+}  // namespace method
 namespace repres {
 class Representation;
 }
 namespace util {
 class MIRStatistics;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -117,10 +112,11 @@ private:
     double lsmWeightAdjustment_;
     double pruneEpsilon_;
     Cropping cropping_;
-    bool matrixValidate_;
-    bool matrixAssemble_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
+
+    bool matrixValidate_;
+    bool matrixAssemble_;
 
     // -- Methods
 

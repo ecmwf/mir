@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/Representation.h"
@@ -20,7 +17,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
@@ -35,22 +31,28 @@ namespace mir {
 namespace repres {
 
 
-Representation::Representation() {
-}
+Representation::Representation() = default;
 
 
 Representation::~Representation() = default;
 
-RepresentationHandle::RepresentationHandle(const Representation *representation):
-    representation_(representation) {
-    if (representation_) {
+
+RepresentationHandle::RepresentationHandle(const Representation* r) : representation_(r) {
+    if (representation_ != nullptr) {
+        representation_->attach();
+    }
+}
+
+
+RepresentationHandle::RepresentationHandle(const RepresentationHandle& rh) : representation_(rh) {
+    if (representation_ != nullptr) {
         representation_->attach();
     }
 }
 
 
 RepresentationHandle::~RepresentationHandle() {
-    if (representation_) {
+    if (representation_ != nullptr) {
         representation_->detach();
     }
 }
@@ -92,9 +94,7 @@ void Representation::estimate(api::MIREstimation&) const {
 
 
 bool Representation::isGlobal() const {
-    bool global = isPeriodicWestEast() &&
-                  includesNorthPole() &&
-                  includesSouthPole();
+    bool global = isPeriodicWestEast() && includesNorthPole() && includesSouthPole();
 
     ASSERT(global == domain().isGlobal());
     return global;
@@ -150,14 +150,14 @@ void Representation::fill(util::MeshGeneratorParameters&) const {
 }
 
 
-const Representation *Representation::croppedRepresentation(const util::BoundingBox&) const {
+const Representation* Representation::croppedRepresentation(const util::BoundingBox&) const {
     std::ostringstream os;
     os << "Representation::croppedRepresentation() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
 
-const Representation *Representation::truncate(size_t, const MIRValuesVector&, MIRValuesVector&) const {
+const Representation* Representation::truncate(size_t, const MIRValuesVector&, MIRValuesVector&) const {
     std::ostringstream os;
     os << "Representation::truncate() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -269,7 +269,7 @@ void Representation::reorder(long, MIRValuesVector&) const {
 }
 
 
-Iterator *Representation::iterator() const {
+Iterator* Representation::iterator() const {
     std::ostringstream os;
     os << "Representation::iterator() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
@@ -288,8 +288,10 @@ const Representation* Representation::globalise(data::MIRField& field) const {
     RepresentationHandle octahedral(namedgrids::NamedGrid::lookup("O320").representation());
     size_t size = octahedral->numberOfPoints() + numberOfPoints();
 
-    std::vector<double> latitudes;  latitudes.resize(size);
-    std::vector<double> longitudes; longitudes.resize(size);
+    std::vector<double> latitudes;
+    latitudes.resize(size);
+    std::vector<double> longitudes;
+    longitudes.resize(size);
 
     std::unique_ptr<repres::Iterator> it(octahedral->iterator());
     while (it->next()) {
@@ -314,14 +316,14 @@ const Representation* Representation::globalise(data::MIRField& field) const {
 
 
     double missingValue = field.missingValue();
-    size = latitudes.size();
+    size                = latitudes.size();
 
-    for (size_t i = 0; i < field.dimensions(); i++ ) {
+    for (size_t i = 0; i < field.dimensions(); i++) {
         MIRValuesVector newvalues(size, missingValue);
         const MIRValuesVector& values = field.direct(i);
         ASSERT(values.size() < size);
 
-        for (size_t j = 0 ; j < values.size(); ++j) {
+        for (size_t j = 0; j < values.size(); ++j) {
             newvalues[j] = values[j];
         }
 
@@ -335,22 +337,16 @@ const Representation* Representation::globalise(data::MIRField& field) const {
 }
 
 
-//=========================================================================
-
-
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, RepresentationFactory* >* m = nullptr;
+static pthread_once_t once                              = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex                        = nullptr;
+static std::map<std::string, RepresentationFactory*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, RepresentationFactory* >();
+    m           = new std::map<std::string, RepresentationFactory*>();
 }
-}  // (anonymous namespace)
 
 
-RepresentationFactory::RepresentationFactory(const std::string& name):
-    name_(name) {
+RepresentationFactory::RepresentationFactory(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -387,7 +383,7 @@ const Representation* RepresentationFactory::build(const param::MIRParametrisati
         throw eckit::SeriousBug("RepresentationFactory: unknown '" + name + "'");
     }
 
-    return (*j).second->make(params);
+    return j->second->make(params);
 }
 
 
@@ -405,4 +401,3 @@ void RepresentationFactory::list(std::ostream& out) {
 
 }  // namespace repres
 }  // namespace mir
-

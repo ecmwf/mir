@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date May 2015
 
 
 #ifndef mir_method_knn_KNearestNeighbours_h
@@ -30,9 +27,9 @@ class DistanceWeighting;
 namespace pick {
 class Pick;
 }
-}
-}
-}
+}  // namespace knn
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -42,7 +39,6 @@ namespace knn {
 
 class KNearestNeighbours : public MethodWeighted {
 public:
-
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
     virtual ~KNearestNeighbours();
@@ -59,12 +55,11 @@ protected:
     virtual bool sameAs(const Method& other) const = 0;
 
 private:
-
     virtual void print(std::ostream&) const;
 
     virtual bool canIntroduceMissingValues() const;
 
-    virtual const char *name() const = 0;
+    virtual const char* name() const = 0;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;
@@ -77,4 +72,3 @@ private:
 
 
 #endif
-

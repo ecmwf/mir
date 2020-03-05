@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+#
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
 # To run on lxb15
 import gribapi
 import json
@@ -34,17 +44,20 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
         if "/ai/" in path:
             continue
 
-        print path
+        print(path)
         with open(path) as f:
             while True:
                 h = gribapi.grib_new_from_file(f)
                 if h is None:
                     break
 
-                id = "%s-%s" % (gribapi.grib_get_string(h, "paramId"), gribapi.grib_get_string(h, "gridType"))
+                id = "%s-%s" % (
+                    gribapi.grib_get_string(h, "paramId"),
+                    gribapi.grib_get_string(h, "gridType"),
+                )
                 cl = "%s" % gribapi.grib_get_string(h, "class")
                 if id not in params or SCORE.get(cl, 0) > SCORES.get(id, 0):
-                    print "New ID", id, gribapi.grib_get_string(h, "name")
+                    print("New ID", id, gribapi.grib_get_string(h, "name"))
                     with open("/perm/ma/mab/gribs/%s.grib" % (id,), "w") as g:
                         g.write(gribapi.grib_get_message(h))
                     i = gribapi.grib_keys_iterator_new(h, "mars")
@@ -69,7 +82,7 @@ for root, dirs, files in os.walk("/gpfs/lxab/marsdev/mars_grib2/workdir/class"):
                     try:
                         v = "%s" % gribapi.grib_get_string(h, n)
                         if "unknown" in v:
-                            print "unknown", n, "in", path
+                            print("unknown", n, "in", path)
                     except Exception:
                         v = "missing"
 

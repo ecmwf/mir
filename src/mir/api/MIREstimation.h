@@ -3,13 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @date Aug 2019
 
 
 #ifndef mir_api_MIREstimation_h
@@ -25,7 +23,12 @@ namespace api {
 
 class MIREstimation {
 public:
-    virtual ~MIREstimation()                                       = default;
+    MIREstimation()          = default;
+    virtual ~MIREstimation() = default;
+
+    MIREstimation(const MIREstimation&) = delete;
+    MIREstimation& operator=(const MIREstimation&) = delete;
+
     virtual void numberOfGridPoints(size_t count)                  = 0;
     virtual void missingValues(size_t count)                       = 0;
     virtual void pl(size_t count)                                  = 0;

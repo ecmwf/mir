@@ -35,6 +35,8 @@ list(APPEND mir_srcs
     action/filter/GlobaliseFilter.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
+    action/filter/UnstructuredFilter.cc
+    action/filter/UnstructuredFilter.h
     action/interpolate/Gridded2GridDef.cc
     action/interpolate/Gridded2GridDef.h
     action/interpolate/Gridded2GriddedInterpolation.cc
@@ -190,6 +192,12 @@ list(APPEND mir_srcs
     data/space/SpaceLinear.h
     data/space/SpaceLogarithmic.cc
     data/space/SpaceLogarithmic.h
+    input/ArtificialInput.cc
+    input/ArtificialInput.h
+    input/ConstantInput.cc
+    input/ConstantInput.h
+    input/DistributionInput.cc
+    input/DistributionInput.h
     input/DummyInput.cc
     input/DummyInput.h
     input/EmptyInput.cc
@@ -202,6 +210,8 @@ list(APPEND mir_srcs
     input/GribDataHandleInput.h
     input/GribFileInput.cc
     input/GribFileInput.h
+    input/GribFixes.cc
+    input/GribFixes.h
     input/GribInput.cc
     input/GribInput.h
     input/GribMemoryInput.cc
@@ -220,8 +230,6 @@ list(APPEND mir_srcs
     input/VectorInput.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
-    log/MIR.cc
-    log/MIR.h
     lsm/FileLSM.cc
     lsm/FileLSM.h
     lsm/GribFileMask.cc
@@ -304,6 +312,10 @@ list(APPEND mir_srcs
     method/knn/pick/NearestNeighbourWithLowestIndex.h
     method/knn/pick/Pick.cc
     method/knn/pick/Pick.h
+    method/knn/pick/Sample.cc
+    method/knn/pick/Sample.h
+    method/knn/pick/SortedSample.cc
+    method/knn/pick/SortedSample.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
@@ -486,6 +498,8 @@ list(APPEND mir_srcs
     search/tree/TreeMemory.h
     stats/Comparator.cc
     stats/Comparator.h
+    stats/Distribution.cc
+    stats/Distribution.h
     stats/Method.cc
     stats/Method.h
     stats/Statistics.cc
@@ -510,6 +524,8 @@ list(APPEND mir_srcs
     stats/detail/PNormsT.h
     stats/detail/ScalarT.cc
     stats/detail/ScalarT.h
+    stats/distribution/DistributionT.cc
+    stats/distribution/DistributionT.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc

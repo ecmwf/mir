@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Tiago Quintino
-/// @author Pedro Maciel
-/// @date   Dec 2016
 
 
 #include <fstream>
@@ -58,8 +54,8 @@ public:
         options_.push_back(new eckit::option::SimpleOption<bool>(
             "unload",
             "Unload file from memory. If file is not loaded, or loader does not employ shmem, does nothing."));
-        options_.push_back(new eckit::option::SimpleOption<bool>(
-            "wait", "After load/unload, wait for user input before exiting."));
+        options_.push_back(
+            new eckit::option::SimpleOption<bool>("wait", "After load/unload, wait for user input before exiting."));
         options_.push_back(new eckit::option::FactoryOption<mir::caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
 
@@ -74,7 +70,7 @@ public:
 };
 
 
-void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, std::string path) {
+void display(eckit::Channel& out, mir::caching::matrix::MatrixLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off
@@ -110,16 +106,22 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
     if (load || unload) {
         bool written = false;
 
-        for (std::string path : args) {
+        for (const std::string& path : args) {
 
             if (!load) {
-                eckit::Log::info() << "---" "\n" "unloadSharedMemory" << std::endl;
+                eckit::Log::info() << "---"
+                                      "\n"
+                                      "unloadSharedMemory"
+                                   << std::endl;
                 SharedMemoryLoader::unloadSharedMemory(path);
                 continue;
             }
 
             // matrix construction transfers ownership from loader
-            eckit::Log::info() << "---" "\n" "load" << std::endl;
+            eckit::Log::info() << "---"
+                                  "\n"
+                                  "load"
+                               << std::endl;
 
             auto loader = MatrixLoaderFactory::build(matrixLoader, path);
             WeightMatrix W(loader);
@@ -253,9 +255,12 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
 
             if (unload) {
                 auto shmLoader = dynamic_cast<SharedMemoryLoader*>(loader);
-                if (shmLoader) {
-                    eckit::Log::info() << "---" "\n" "unload" << std::endl;
-                    shmLoader->unloadSharedMemory(path);
+                if (shmLoader != nullptr) {
+                    eckit::Log::info() << "---"
+                                          "\n"
+                                          "unload"
+                                       << std::endl;
+                    SharedMemoryLoader::unloadSharedMemory(path);
                     display(eckit::Log::info(), loader, path);
                 }
             }

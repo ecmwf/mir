@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include <ostream>
@@ -26,8 +23,7 @@ namespace output {
 EmptyOutput::EmptyOutput() = default;
 
 
-EmptyOutput::EmptyOutput(const std::string&) {
-}
+EmptyOutput::EmptyOutput(const std::string&) {}
 
 
 EmptyOutput::~EmptyOutput() = default;
@@ -45,7 +41,7 @@ size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
 
 bool EmptyOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const EmptyOutput*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -65,14 +61,18 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
 
     std::string packing;
     if (param.userParametrisation().get("packing", packing)) {
-        if (ok) { out << ","; }
+        if (ok) {
+            out << ",";
+        }
         out << "packing=" << packing;
         ok = true;
     }
 
     long edition;
     if (param.userParametrisation().get("edition", edition)) {
-        if (ok) { out << ","; }
+        if (ok) {
+            out << ",";
+        }
         out << "edition=" << edition;
         ok = true;
     }
@@ -96,4 +96,3 @@ static MIROutputBuilder<EmptyOutput> output("empty");
 
 }  // namespace output
 }  // namespace mir
-

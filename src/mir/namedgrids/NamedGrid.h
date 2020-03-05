@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_namedgrids_NamedGrid_h
@@ -27,7 +24,7 @@ class Representation;
 namespace util {
 class Rotation;
 }
-}
+}  // namespace mir
 
 
 namespace mir {
@@ -35,7 +32,6 @@ namespace namedgrids {
 
 class NamedGrid {
 public:
-
     // -- Exceptions
     // None
 
@@ -55,9 +51,9 @@ public:
 
     // -- Methods
 
-    virtual const repres::Representation* representation() const = 0;
+    virtual const repres::Representation* representation() const                               = 0;
     virtual const repres::Representation* representation(const util::Rotation& rotation) const = 0;
-    virtual size_t gaussianNumber() const = 0;
+    virtual size_t gaussianNumber() const                                                      = 0;
 
     // -- Overridden methods
     // None
@@ -72,7 +68,6 @@ public:
 
 
 protected:
-
     NamedGrid(const std::string& name);
     virtual ~NamedGrid();
 
@@ -94,7 +89,6 @@ protected:
     // None
 
 private:
-
     // -- Members
     // None
 
@@ -124,4 +118,3 @@ private:
 
 
 #endif
-

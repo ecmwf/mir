@@ -3,9 +3,10 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
- * granted to it by virtue of its status as an intergovernmental organisation
- * nor does it submit to any jurisdiction.
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
  */
 
 
@@ -16,13 +17,11 @@ namespace style {
 namespace truncation {
 
 
-static TruncationBuilder< None > __truncation1("none");
-static TruncationBuilder< None > __truncation2("NONE");
+static TruncationBuilder<None> __truncation1("none");
+static TruncationBuilder<None> __truncation2("NONE");
 
 
-None::None(const param::MIRParametrisation& parametrisation, long) :
-    style::Truncation(parametrisation) {
-}
+None::None(const param::MIRParametrisation& parametrisation, long) : style::Truncation(parametrisation) {}
 
 
 bool None::truncation(long&, long) const {
@@ -33,4 +32,3 @@ bool None::truncation(long&, long) const {
 }  // namespace truncation
 }  // namespace style
 }  // namespace mir
-

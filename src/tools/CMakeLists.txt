@@ -26,7 +26,8 @@ list(APPEND _tools
     mir-load-matrix
     mir-make-lsm
     mir-points
-    mir-statistics)
+    mir-statistics
+    mir-weight-matrix-diff)
 
 if(HAVE_ATLAS)
     list(APPEND _tools

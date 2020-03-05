@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef None_H
@@ -24,19 +21,18 @@ namespace other {
 
 
 class None : public Representation {
-  public:
-
+public:
     // -- Exceptions
     // None
 
     // -- Contructors
 
     None();
-    None(const param::MIRParametrisation &);
+    None(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~None(); // Change to virtual if base class
+    virtual ~None();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -56,14 +52,13 @@ class None : public Representation {
     // -- Class methods
     // None
 
-  protected:
-
+protected:
     // -- Members
     // None
 
     // -- Methods
 
-    void print(std::ostream &) const; // Change to virtual if base class
+    void print(std::ostream&) const;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -74,12 +69,11 @@ class None : public Representation {
     // -- Class methods
     // None
 
-  private:
-
+private:
     // No copy allowed
 
-    None(const None &);
-    None &operator=(const None &);
+    None(const None&);
+    None& operator=(const None&);
 
     // -- Members
 
@@ -97,9 +91,8 @@ class None : public Representation {
 
     // -- Friends
 
-    //friend ostream& operator<<(ostream& s,const None& p)
+    // friend ostream& operator<<(ostream& s,const None& p)
     //  { p.print(s); return s; }
-
 };
 
 
@@ -109,4 +102,3 @@ class None : public Representation {
 
 
 #endif
-

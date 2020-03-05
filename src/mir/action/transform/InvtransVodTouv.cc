@@ -3,12 +3,12 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-/// @date Feb 2017
 
 #include "mir/action/transform/InvtransVodTouv.h"
 
@@ -50,10 +50,11 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
     // get vo/d
     const MIRValuesVector& field_vo = field.values(0);
-    const MIRValuesVector& field_d = field.values(1);
+    const MIRValuesVector& field_d  = field.values(1);
 
     if (field_vo.size() != field_d.size()) {
-        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/" << field_d.size() << std::endl;
+        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
+                            << field_d.size() << std::endl;
         ASSERT(field_vo.size() == field_d.size());
     }
 
@@ -66,8 +67,8 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
 
     // configure paramIds for u/v
-    size_t id_u = 0;
-    size_t id_v = 0;
+    long id_u = 0;
+    long id_v = 0;
     util::Wind::paramIds(parametrisation, id_u, id_v);
 
 
@@ -83,6 +84,6 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     field.metadata(1, "paramId", id_v);
 }
 
-} // namespace transform
-} // namespace action
-} // namespace mir
+}  // namespace transform
+}  // namespace action
+}  // namespace mir

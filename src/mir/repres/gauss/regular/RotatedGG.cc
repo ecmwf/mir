@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/repres/gauss/regular/RotatedGG.h"
@@ -28,14 +25,12 @@ namespace regular {
 
 RotatedGG::RotatedGG(const param::MIRParametrisation& parametrisation) :
     Regular(parametrisation),
-    rotation_(parametrisation) {
-}
+    rotation_(parametrisation) {}
 
 
 RotatedGG::RotatedGG(size_t N, const util::Rotation& rotation, const util::BoundingBox& bbox, double angularPrecision) :
     Regular(N, bbox, angularPrecision),
-    rotation_(rotation) {
-}
+    rotation_(rotation) {}
 
 
 RotatedGG::~RotatedGG() = default;
@@ -43,23 +38,19 @@ RotatedGG::~RotatedGG() = default;
 
 void RotatedGG::print(std::ostream& out) const {
     out << "RotatedGG["
-            "N=" << N_
-        << ",Ni=" << Ni_
-        << ",Nj=" << Nj_
-        << ",bbox=" << bbox_
-        << ",rotation=" << rotation_
-        << "]";
+           "N="
+        << N_ << ",Ni=" << Ni_ << ",Nj=" << Nj_ << ",bbox=" << bbox_ << ",rotation=" << rotation_ << "]";
 }
 
 
 bool RotatedGG::sameAs(const Representation& other) const {
     auto o = dynamic_cast<const RotatedGG*>(&other);
-    return o && (rotation_ == o->rotation_) && Regular::sameAs(other);
+    return (o != nullptr) && (rotation_ == o->rotation_) && Regular::sameAs(other);
 }
 
 
 Iterator* RotatedGG::iterator() const {
-    auto Ni = [=](size_t){ return long(4 * N_); };
+    auto Ni = [=](size_t) { return long(4 * N_); };
     return Gaussian::rotatedIterator(Ni, rotation_);
 }
 
@@ -75,14 +66,14 @@ void RotatedGG::makeName(std::ostream& out) const {
 }
 
 
-void RotatedGG::fill(grib_info& info) const  {
+void RotatedGG::fill(grib_info& info) const {
     Regular::fill(info);
     rotation_.fill(info);
-    info.grid.grid_type = GRIB_UTIL_GRID_SPEC_ROTATED_GG;
+    info.grid.grid_type = CODES_UTIL_GRID_SPEC_ROTATED_GG;
 }
 
 
-void RotatedGG::fill(api::MIRJob& job) const  {
+void RotatedGG::fill(api::MIRJob& job) const {
     Regular::fill(job);
     rotation_.fill(job);
 }
@@ -93,13 +84,10 @@ atlas::Grid RotatedGG::atlasGrid() const {
 }
 
 
-namespace {
-static RepresentationBuilder<RotatedGG> rotatedGG("rotated_gg"); // Name is what is returned by grib_api
-}
+static RepresentationBuilder<RotatedGG> rotatedGG("rotated_gg");
 
 
 }  // namespace regular
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-

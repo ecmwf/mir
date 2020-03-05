@@ -3,15 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @author Tiago Quintino
-/// @date Apr 2015
 
 
 #include "mir/action/transform/ShToGridded.h"
@@ -28,6 +24,7 @@
 #include "eckit/utils/MD5.h"
 #include "mir/action/context/Context.h"
 #include "mir/action/transform/TransCache.h"
+#include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/LegendreCache.h"
 #include "mir/caching/legendre/LegendreLoader.h"
@@ -38,7 +35,6 @@
 #include "mir/util/Domain.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/TraceResourceUsage.h"
-#include "mir/api/MIREstimation.h"
 
 
 namespace mir {
@@ -49,21 +45,15 @@ namespace transform {
 static eckit::Mutex amutex;
 
 
-static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient",
-        8L * 1024 * 1024 * 1024,
-        8L * 1024 * 1024 * 1024,
-        "$MIR_COEFFICIENT_CACHE",
-        false); // Don't cleanup at exit: the Fortran part will dump core
+static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", 8L * 1024 * 1024 * 1024,
+                                                      8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
 
 
-static atlas::trans::Cache getTransCache(
-    atlas::trans::LegendreCacheCreator& creator,
-    const std::string& key,
-    const param::MIRParametrisation& parametrisation,
-    context::Context& ctx ) {
+static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& creator, const std::string& key,
+                                         const param::MIRParametrisation& parametrisation, context::Context& ctx) {
 
 
-    caching::InMemoryCache<TransCache>::iterator j = trans_cache.find(key);
+    auto j = trans_cache.find(key);
     if (j != trans_cache.end()) {
         ASSERT(j->transCache_);
         return j->transCache_;
@@ -78,16 +68,17 @@ static atlas::trans::Cache getTransCache(
     eckit::PathName path;
     {
         // Block for timers
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().coefficientTiming_);
+        auto timing(ctx.statistics().coefficientTimer());
 
         class LegendreCacheCreator final : public caching::LegendreCache::CacheContentCreator {
 
             atlas::trans::LegendreCacheCreator& creator_;
             context::Context& ctx_;
 
-            void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/, bool& saved) override {
-                mir::util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
-                eckit::AutoTiming timer(ctx_.statistics().timer_, ctx_.statistics().createCoeffTiming_);
+            void create(const eckit::PathName& path, caching::LegendreCacheTraits::value_type& /*ignore*/,
+                        bool& saved) override {
+                util::TraceResourceUsage usage("ShToGridded: create Legendre coefficients");
+                auto timing(ctx_.statistics().createCoeffTimer());
 
                 // This will create the cache
                 eckit::Log::info() << "ShToGridded: create Legendre coefficients '" + path + "'" << std::endl;
@@ -95,29 +86,30 @@ static atlas::trans::Cache getTransCache(
 
                 saved = path.exists();
             }
+
         public:
-            LegendreCacheCreator(
-                atlas::trans::LegendreCacheCreator& creator,
-                context::Context& ctx ) :
+            LegendreCacheCreator(atlas::trans::LegendreCacheCreator& creator, context::Context& ctx) :
                 creator_(creator),
-                ctx_(ctx) {
-            }
+                ctx_(ctx) {}
+
+            LegendreCacheCreator(const LegendreCacheCreator&) = delete;
+            LegendreCacheCreator& operator=(const LegendreCacheCreator&) = delete;
         };
 
         static caching::LegendreCache cache;
         LegendreCacheCreator create(creator, ctx);
 
         int dummy = 0;
-        path = cache.getOrCreate(key, create, dummy);
+        path      = cache.getOrCreate(key, create, dummy);
     }
 
 
-    TransCache& tc = trans_cache[key];
+    TransCache& tc                  = trans_cache[key];
     atlas::trans::Cache& transCache = tc.transCache_;
 
     {
-        mir::util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().loadCoeffTiming_);
+        util::TraceResourceUsage usage("ShToGridded: load Legendre coefficients");
+        auto timing(ctx.statistics().loadCoeffTimer());
 
         eckit::Log::info() << "ShToGridded: loading Legendre coefficients '" + path + "'" << std::endl;
 
@@ -132,8 +124,8 @@ static atlas::trans::Cache getTransCache(
         auto after = eckit::system::SystemInfo::instance().memoryUsage();
         after.delta(eckit::Log::info(), before);
 
-        size_t memory = 0;
-        size_t shared = 0;
+        size_t memory                                    = 0;
+        size_t shared                                    = 0;
         (tc.loader_->inSharedMemory() ? shared : memory) = tc.loader_->size();
         trans_cache.footprint(key, caching::InMemoryCacheUsage(memory, shared));
     }
@@ -150,8 +142,9 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ShToGridded::atlas_config_
 }
 
 
-void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation, context::Context& ctx) const {
-    eckit::AutoLock<eckit::Mutex> lock(amutex); // To protect trans_cache
+void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation,
+                            context::Context& ctx) const {
+    eckit::AutoLock<eckit::Mutex> lock(amutex);  // To protect trans_cache
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()
@@ -194,38 +187,31 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
             ASSERT(j->transCache_);
             trans = atlas_trans_t(j->transCache_, grid, domain, truncation, options_);
-
-        } else if (!creator.supported()) {
+        }
+        else if (!creator.supported()) {
 
             eckit::Log::warning() << "ShToGridded: LegendreCacheCreator is not supported for:"
-                                  << "\n  representation: " << representation
-                                  << "\n  options: " << options_
+                                  << "\n  representation: " << representation << "\n  options: " << options_
                                   << std::endl
-                                  << "ShToGridded: continuing with hindered performance"
-                                  << std::endl;
+                                  << "ShToGridded: continuing with hindered performance" << std::endl;
 
             trans = atlas_trans_t(grid, domain, truncation, options_);
-
-        } else if (!caching) {
+        }
+        else if (!caching) {
 
             auto& entry(trans_cache[key] = creator.create());
             ASSERT(entry.transCache_);
             trans = atlas_trans_t(entry.transCache_, grid, domain, truncation, options_);
-
-        } else {
+        }
+        else {
 
             ASSERT(creator.supported());
-            atlas::trans::Cache transCache = getTransCache(
-                                                 creator,
-                                                 key,
-                                                 parametrisation_,
-                                                 ctx);
+            atlas::trans::Cache transCache = getTransCache(creator, key, parametrisation_, ctx);
             ASSERT(transCache);
             trans = atlas_trans_t(transCache, grid, domain, truncation, options_);
-
         }
-
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::caching: " << e.what() << std::endl;
         trans_cache.erase(key);
         throw;
@@ -234,18 +220,17 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     try {
 
-        eckit::AutoTiming time(ctx.statistics().timer_, ctx.statistics().sh2gridTiming_);
+        auto time(ctx.statistics().sh2gridTimer());
         sh2grid(field, trans, parametrisation_);
-
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e) {
         eckit::Log::error() << "ShToGridded::transform: " << e.what() << std::endl;
         throw;
     }
 }
 
 
-ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
-    Action(parametrisation) {
+ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
 
     // use the 'local' spectral transforms
     std::string type = "local";
@@ -253,7 +238,8 @@ ShToGridded::ShToGridded(const param::MIRParametrisation& parametrisation) :
 
     if (!atlas::trans::Trans::hasBackend(type)) {
         std::ostringstream msg;
-        msg << "ShToGridded: Atlas/Trans spectral transforms type '" << type << "' not supported, available types are: ";
+        msg << "ShToGridded: Atlas/Trans spectral transforms type '" << type
+            << "' not supported, available types are: ";
         atlas::trans::Trans::listBackends(msg);
         eckit::Log::error() << msg.str() << std::endl;
         throw eckit::UserError(msg.str());
@@ -275,9 +261,8 @@ ShToGridded::~ShToGridded() = default;
 void ShToGridded::print(std::ostream& out) const {
     // We don't want to 'see' the internal options, just if they are set differently
     // (so we know when they change)
-    out <<  "type=" << options_.getString("type")
-        << ",cropping=" << cropping_
-        << ",options=[" << atlasOptionsDigest(options_) << "]";
+    out << "type=" << options_.getString("type") << ",cropping=" << cropping_ << ",options=["
+        << atlasOptionsDigest(options_) << "]";
 }
 
 
@@ -288,16 +273,15 @@ void ShToGridded::execute(context::Context& ctx) const {
     transform(ctx.field(), *out, ctx);
 
     if (cropping_) {
-        mir::util::TraceResourceUsage usage("ShToGridded: cropping");
-        eckit::AutoTiming timing(ctx.statistics().timer_, ctx.statistics().cropTiming_);
+        util::TraceResourceUsage usage("ShToGridded: cropping");
+        auto timing(ctx.statistics().cropTimer());
 
         const util::BoundingBox& bbox = cropping_.boundingBox();
         ctx.field().representation(out->croppedRepresentation(bbox));
-
-    } else {
+    }
+    else {
 
         ctx.field().representation(out);
-
     }
 }
 
@@ -310,7 +294,6 @@ void ShToGridded::estimate(context::Context& ctx, api::MIREstimation& estimation
     estimation.numberOfGridPoints(out->numberOfPoints());
     ctx.field().representation(out);
 }
-
 
 
 bool ShToGridded::mergeWithNext(const Action& next) {
@@ -338,14 +321,9 @@ bool ShToGridded::mergeWithNext(const Action& next) {
         repres::RepresentationHandle out(outputRepresentation());
         cropping_.boundingBox(out->extendBoundingBox(bbox));
 
-        eckit::Log::debug<LibMir>()
-                << "ShToGridded::mergeWithNext: "
-                << "\n   " << oldAction.str()
-                << "\n + " << next
-                << "\n = " << *this
-                << "\n + " << "(...)"
-                << std::endl;
-
+        eckit::Log::debug<LibMir>() << "ShToGridded::mergeWithNext: "
+                                    << "\n   " << oldAction.str() << "\n + " << next << "\n = " << *this << "\n + "
+                                    << "(...)" << std::endl;
     }
     return false;
 }
@@ -353,7 +331,7 @@ bool ShToGridded::mergeWithNext(const Action& next) {
 
 bool ShToGridded::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToGridded*>(&other);
-    return o && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 
 

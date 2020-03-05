@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/style/CustomParametrisation.h"
@@ -26,30 +23,28 @@ namespace mir {
 namespace style {
 
 
-CustomParametrisation::CustomParametrisation(
-    const std::string& name,
-    const std::map<std::string, std::vector<std::string> >& params,
-    const param::MIRParametrisation &parametrisation):
+CustomParametrisation::CustomParametrisation(const std::string& name,
+                                             const std::map<std::string, std::vector<std::string> >& params,
+                                             const param::MIRParametrisation& parametrisation) :
     name_(name),
     params_(params),
-    parametrisation_(parametrisation) {
-}
+    parametrisation_(parametrisation) {}
 
 
 CustomParametrisation::~CustomParametrisation() = default;
 
 
-const param::MIRParametrisation&CustomParametrisation::userParametrisation() const {
+const param::MIRParametrisation& CustomParametrisation::userParametrisation() const {
     return *this;
 }
 
 
-const param::MIRParametrisation&CustomParametrisation::fieldParametrisation() const {
+const param::MIRParametrisation& CustomParametrisation::fieldParametrisation() const {
     return *this;
 }
 
 
-template<class T>
+template <class T>
 static void fill(T& value, const std::vector<std::string>& params) {
     eckit::Translator<std::string, T> t;
 
@@ -58,24 +53,24 @@ static void fill(T& value, const std::vector<std::string>& params) {
 }
 
 
-template<class T>
+template <class T>
 static void fill(std::vector<T>& value, const std::vector<std::string>& params) {
     eckit::Translator<std::string, T> t;
 
     value.clear();
-    for (auto j = params.begin(); j != params.end(); ++j) {
-        value.push_back(t(*j));
+    for (auto& j : params) {
+        value.push_back(t(j));
     }
 }
 
 
-template<class T>
-bool CustomParametrisation::_get(const std::string& name,  T& value) const {
+template <class T>
+bool CustomParametrisation::_get(const std::string& name, T& value) const {
     eckit::Log::debug<LibMir>() << *this << " get('" << name << "')" << std::endl;
 
     auto j = params_.find(name);
     if (j != params_.end()) {
-        fill(value, (*j).second);
+        fill(value, j->second);
         return true;
     }
 
@@ -151,10 +146,10 @@ void CustomParametrisation::print(std::ostream& out) const {
 
     out << ",params=[";
     const char* sep = "";
-    for(const auto& p : params_) {
+    for (const auto& p : params_) {
         out << sep << p.first << "=[";
         const char* sepv = "";
-        for(const auto& v : p.second) {
+        for (const auto& v : p.second) {
             out << sepv << v;
             sepv = ",";
         }
@@ -166,6 +161,5 @@ void CustomParametrisation::print(std::ostream& out) const {
 }
 
 
-}  // namespace param
+}  // namespace style
 }  // namespace mir
-

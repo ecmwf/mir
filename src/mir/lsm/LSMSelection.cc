@@ -3,43 +3,38 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #include "mir/lsm/LSMSelection.h"
 
 #include <map>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/config/LibMir.h"
+
 
 namespace mir {
 namespace lsm {
 
 
-namespace {
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::map< std::string, LSMSelection* >* m = nullptr;
+static pthread_once_t once                     = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex               = nullptr;
+static std::map<std::string, LSMSelection*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m = new std::map< std::string, LSMSelection* >();
+    m           = new std::map<std::string, LSMSelection*>();
 }
-}  // (anonymous namespace)
 
 
-LSMSelection::LSMSelection(const std::string& name) :
-    name_(name) {
+LSMSelection::LSMSelection(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -57,7 +52,7 @@ LSMSelection::~LSMSelection() {
 }
 
 
-void LSMSelection::list(std::ostream &out) {
+void LSMSelection::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -87,4 +82,3 @@ const LSMSelection& LSMSelection::lookup(const std::string& name) {
 
 }  // namespace lsm
 }  // namespace mir
-

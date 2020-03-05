@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_util_Latitude_h
@@ -19,27 +16,29 @@
 #include <iosfwd>
 #include "eckit/types/Fraction.h"
 
+
 namespace eckit {
 class MD5;
 class Stream;
-}
+}  // namespace eckit
+
 
 namespace mir {
 
+
 class Latitude {
 public:
-
-    static Latitude GLOBE; // 180
-    static Latitude NORTH_POLE; // 90
-    static Latitude SOUTH_POLE; // -90
-    static Latitude EQUATOR; // 0
+    static Latitude GLOBE;       // 180
+    static Latitude NORTH_POLE;  // 90
+    static Latitude SOUTH_POLE;  // -90
+    static Latitude EQUATOR;     // 0
 
     // -- Exceptions
     // None
 
     // -- Contructors
-    Latitude(double value = 0): value_(value) {}
-    Latitude(const eckit::Fraction& value): value_(value) {}
+    Latitude(double value = 0) : value_(value) {}
+    Latitude(const eckit::Fraction& value) : value_(value) {}
 
     double value() const { return value_; }
     eckit::Fraction fraction() const { return eckit::Fraction(value_); }
@@ -55,51 +54,35 @@ public:
     bool operator>=(double) const;
     bool operator<=(double) const;
 
-    //======================================
-
     Latitude& operator+=(double value) {
         value_ += value;
         return *this;
     }
 
-    Latitude& operator-=(double value){
+    Latitude& operator-=(double value) {
         value_ -= value;
         return *this;
     }
 
-    Latitude operator+(double value) const {
-        return {value_ + value};
-    }
+    Latitude operator+(double value) const { return {value_ + value}; }
 
-    Latitude operator-(double value) const {
-        return {value_ - value};
-    }
+    Latitude operator-(double value) const { return {value_ - value}; }
 
-    Latitude operator/(double value) const {
-        return {value_ / value};
-    }
-
-    //======================================
+    Latitude operator/(double value) const { return {value_ / value}; }
 
     Latitude& operator+=(const eckit::Fraction& value) {
         value_ += double(value);
         return *this;
     }
 
-    Latitude& operator-=(const eckit::Fraction& value){
+    Latitude& operator-=(const eckit::Fraction& value) {
         value_ -= double(value);
         return *this;
     }
 
-    Latitude operator+(const eckit::Fraction& value) const {
-        return {value_ + double(value)};
-    }
+    Latitude operator+(const eckit::Fraction& value) const { return {value_ + double(value)}; }
 
-    Latitude operator-(const eckit::Fraction& value) const {
-        return {value_ - double(value)};
-    }
-
-    //======================================
+    Latitude operator-(const eckit::Fraction& value) const { return {value_ - double(value)}; }
 
     Latitude& operator+=(const Latitude& other) {
         value_ += other.value_;
@@ -111,37 +94,21 @@ public:
         return *this;
     }
 
-    Latitude operator+(const Latitude& other) const {
-        return {value_ + other.value_};
-    }
+    Latitude operator+(const Latitude& other) const { return {value_ + other.value_}; }
 
-    Latitude operator-(const Latitude& other) const{
-        return {value_ - other.value_};
-    }
+    Latitude operator-(const Latitude& other) const { return {value_ - other.value_}; }
 
-    bool operator==(const Latitude& other) const {
-        return (*this) == other.value_;
-    }
+    bool operator==(const Latitude& other) const { return (*this) == other.value_; }
 
-    bool operator!=(const Latitude& other) const{
-        return (*this) != other.value_;
-    }
+    bool operator!=(const Latitude& other) const { return (*this) != other.value_; }
 
-    bool operator>(const Latitude& other) const {
-        return (*this) > other.value_;
-    }
+    bool operator>(const Latitude& other) const { return (*this) > other.value_; }
 
-    bool operator<(const Latitude& other) const  {
-        return (*this) < other.value_;
-    }
+    bool operator<(const Latitude& other) const { return (*this) < other.value_; }
 
-    bool operator>=(const Latitude& other) const{
-        return (*this) >= other.value_;
-    }
+    bool operator>=(const Latitude& other) const { return (*this) >= other.value_; }
 
-    bool operator<=(const Latitude& other) const{
-        return (*this) <= other.value_;
-    }
+    bool operator<=(const Latitude& other) const { return (*this) <= other.value_; }
 
     // -- Methods
 
@@ -150,7 +117,6 @@ public:
     Latitude distance(const Latitude& parallel) const;
 
 protected:
-
     // -- Methods
 
     void print(std::ostream&) const;
@@ -158,7 +124,6 @@ protected:
     void decode(eckit::Stream&);
 
 private:
-
     // -- Members
 
     double value_;
@@ -193,24 +158,18 @@ private:
     friend bool operator!=(double, const Latitude&);
 
     friend bool operator>(double, const Latitude&);
-    friend bool operator<(double value, const Latitude& x) {
-        return value < x.value();
-    }
+    friend bool operator<(double value, const Latitude& x) { return value < x.value(); }
 
     friend bool operator>=(double, const Latitude&);
     friend bool operator<=(double, const Latitude&);
 
-    friend Latitude operator+(double value, const Latitude& x) {
-        return {value + x.value_};
-    }
+    friend Latitude operator+(double value, const Latitude& x) { return {value + x.value_}; }
 
-    friend Latitude operator-(double value, const Latitude& x) {
-        return {value - x.value_};
-    }
-
+    friend Latitude operator-(double value, const Latitude& x) { return {value - x.value_}; }
 };
+
 
 }  // namespace mir
 
-#endif
 
+#endif

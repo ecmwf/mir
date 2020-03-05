@@ -3,29 +3,29 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-// Baudouin Raoult - ECMWF Jan 2015
 
-#ifndef mir_netcdf_OutputDimension
-#define mir_netcdf_OutputDimension
+#ifndef mir_netcdf_OutputDimension_h
+#define mir_netcdf_OutputDimension_h
 
 #include "mir/netcdf/Dimension.h"
+
 
 namespace mir {
 namespace netcdf {
 
+
 class OutputDimension : public Dimension {
 public:
-
-    OutputDimension(Dataset &owner, const std::string &name, size_t len);
+    OutputDimension(Dataset& owner, const std::string& name, size_t len);
     virtual ~OutputDimension();
 
 private:
-
     mutable int id_;
     mutable bool created_;
     bool grown_;
@@ -33,12 +33,15 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream &s) const;
+    virtual void print(std::ostream&) const;
     virtual void create(int nc) const;
     virtual int id() const;
-    virtual void grow(size_t n);
+    virtual void grow(size_t);
 };
 
-}
-}
+
+}  // namespace netcdf
+}  // namespace mir
+
+
 #endif

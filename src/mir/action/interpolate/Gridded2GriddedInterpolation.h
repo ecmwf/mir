@@ -3,14 +3,11 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
-/// @author Baudouin Raoult
-/// @author Pedro Maciel
-/// @date Apr 2015
 
 
 #ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
@@ -28,8 +25,8 @@ class Representation;
 namespace method {
 class Cropping;
 class Method;
-}
-}
+}  // namespace method
+}  // namespace mir
 
 
 namespace mir {
@@ -39,7 +36,6 @@ namespace interpolate {
 
 class Gridded2GriddedInterpolation : public Action {
 public:
-
     // -- Exceptions
     // None
 
@@ -70,7 +66,6 @@ public:
     // None
 
 protected:
-
     // -- Members
     // None
 
@@ -83,7 +78,7 @@ protected:
     // -- Overridden methods
 
     virtual bool sameAs(const Action&) const = 0;
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const  = 0;
 
     // -- Class members
     // None
@@ -92,7 +87,6 @@ protected:
     // None
 
 private:
-
     // -- Members
 
     std::string interpolation_;
@@ -119,7 +113,6 @@ private:
 
     // -- Friends
     // None
-
 };
 
 
@@ -129,4 +122,3 @@ private:
 
 
 #endif
-

@@ -3,6 +3,7 @@
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
  * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
@@ -33,17 +34,15 @@ NearestLSM::NearestLSM(const param::MIRParametrisation& parametrisation, const l
 }
 
 
-void NearestLSM::operator()(
-        size_t ip,
-        const Point3&,
-        const std::vector<search::PointSearch::PointValueType>& neighbours,
-        std::vector<WeightMatrix::Triplet>& triplets ) const {
+void NearestLSM::operator()(size_t ip, const Point3&,
+                            const std::vector<search::PointSearch::PointValueType>& neighbours,
+                            std::vector<WeightMatrix::Triplet>& triplets) const {
 
     ASSERT(!neighbours.empty());
     ASSERT(ip < omask_.size());
 
     // choose closest neighbour point with the same output mask value
-    size_t jp = 0;
+    size_t jp          = 0;
     bool foundSameType = false;
 
     for (const auto& p : neighbours) {
@@ -66,7 +65,7 @@ void NearestLSM::operator()(
 
 bool NearestLSM::sameAs(const DistanceWeighting& other) const {
     auto o = dynamic_cast<const NearestLSM*>(&other);
-    return o;
+    return (o != nullptr);
 }
 
 
@@ -89,4 +88,3 @@ static DistanceWeightingWithLSMBuilder<NearestLSM> __distance("nearest-lsm");
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
