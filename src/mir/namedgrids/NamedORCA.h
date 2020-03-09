@@ -10,49 +10,39 @@
  */
 
 
-#ifndef mir_util_Domain_h
-#define mir_util_Domain_h
+#ifndef mir_namedgrids_NamedORCA_h
+#define mir_namedgrids_NamedORCA_h
 
-#include "mir/util/BoundingBox.h"
-
-
-namespace atlas {
-class RectangularDomain;
-}
+#include "mir/namedgrids/NamedGrid.h"
 
 
 namespace mir {
-namespace util {
+namespace namedgrids {
 
 
-class Domain : public BoundingBox {
+class NamedORCA : public NamedGrid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Domain(const ::atlas::RectangularDomain&);
-    using BoundingBox::BoundingBox;
+    NamedORCA(const std::string& name);
+    NamedORCA(const NamedORCA&) = delete;
+
+    // -- Destructor
+
+    virtual ~NamedORCA();
 
     // -- Convertors
-
-    operator ::atlas::RectangularDomain() const;
+    // None
 
     // -- Operators
 
-    using BoundingBox::operator=;
-    using BoundingBox::operator==;
-    using BoundingBox::operator!=;
+    NamedORCA& operator=(const NamedORCA&) = delete;
 
     // -- Methods
     // None
-
-    bool includesPoleNorth() const;
-
-    bool includesPoleSouth() const;
-
-    bool isGlobal() const { return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast(); }
 
     // -- Overridden methods
     // None
@@ -73,14 +63,14 @@ protected:
     // -- Overridden methods
 
     virtual void print(std::ostream&) const;
+    virtual size_t gaussianNumber() const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation&) const;
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
-
-    // -- Friends
     // None
 
 private:
@@ -100,15 +90,11 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const Domain& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace util
+}  // namespace namedgrids
 }  // namespace mir
 
 

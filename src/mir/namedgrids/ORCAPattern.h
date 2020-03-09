@@ -10,49 +10,39 @@
  */
 
 
-#ifndef mir_util_Domain_h
-#define mir_util_Domain_h
+#ifndef mir_namedgrids_ORCAPattern_h
+#define mir_namedgrids_ORCAPattern_h
 
-#include "mir/util/BoundingBox.h"
-
-
-namespace atlas {
-class RectangularDomain;
-}
+#include "mir/namedgrids/NamedGridPattern.h"
 
 
 namespace mir {
-namespace util {
+namespace namedgrids {
 
 
-class Domain : public BoundingBox {
+class ORCAPattern : public NamedGridPattern {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Domain(const ::atlas::RectangularDomain&);
-    using BoundingBox::BoundingBox;
+    ORCAPattern(const std::string& name);
+    ORCAPattern(const ORCAPattern&) = delete;
+
+    // -- Destructor
+
+    virtual ~ORCAPattern();
 
     // -- Convertors
-
-    operator ::atlas::RectangularDomain() const;
+    // None
 
     // -- Operators
 
-    using BoundingBox::operator=;
-    using BoundingBox::operator==;
-    using BoundingBox::operator!=;
+    ORCAPattern& operator=(const ORCAPattern&) = delete;
 
     // -- Methods
     // None
-
-    bool includesPoleNorth() const;
-
-    bool includesPoleSouth() const;
-
-    bool isGlobal() const { return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast(); }
 
     // -- Overridden methods
     // None
@@ -68,19 +58,16 @@ protected:
     // None
 
     // -- Methods
-    // None
-
-    // -- Overridden methods
 
     virtual void print(std::ostream&) const;
+
+    // -- Overridden methods
+    // None
 
     // -- Class members
     // None
 
     // -- Class methods
-    // None
-
-    // -- Friends
     // None
 
 private:
@@ -97,18 +84,15 @@ private:
     // None
 
     // -- Class methods
-    // None
+
+    virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const Domain& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace util
+}  // namespace namedgrids
 }  // namespace mir
 
 

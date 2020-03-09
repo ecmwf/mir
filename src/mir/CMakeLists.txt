@@ -708,6 +708,12 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
+        namedgrids/NamedORCA.cc
+        namedgrids/NamedORCA.h
+        namedgrids/ORCAPattern.cc
+        namedgrids/ORCAPattern.h
+        repres/other/ORCA.cc
+        repres/other/ORCA.h
         repres/regular/Lambert.cc
         repres/regular/Lambert.h
         repres/regular/LambertAzimuthalEqualArea.cc
