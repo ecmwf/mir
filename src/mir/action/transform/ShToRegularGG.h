@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRegularGG(const param::MIRParametrisation&);
 

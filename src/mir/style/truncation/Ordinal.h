@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Ordinal(long truncation, const param::MIRParametrisation&);
 

@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     EmptyOutput();
     EmptyOutput(const ::std::string& path);

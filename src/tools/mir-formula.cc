@@ -26,7 +26,7 @@ class MIRFormula : public mir::tools::MIRTool {
     void usage(const std::string& tool) const;
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRFormula(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };

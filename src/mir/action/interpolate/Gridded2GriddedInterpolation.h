@@ -39,7 +39,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded2GriddedInterpolation(const param::MIRParametrisation&);
 

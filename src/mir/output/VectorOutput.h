@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     VectorOutput(MIROutput& component1, MIROutput& component2);
 

@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Source(const param::MIRParametrisation&, long targetGaussianN);
 

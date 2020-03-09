@@ -30,7 +30,7 @@ class MIRMakeLSM : public mir::tools::MIRTool {
     int minimumPositionalArguments() const { return 2; }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRMakeLSM(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };

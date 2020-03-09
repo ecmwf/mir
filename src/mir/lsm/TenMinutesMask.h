@@ -35,7 +35,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     TenMinutesMask(const std::string& name, const eckit::PathName&, const param::MIRParametrisation&,
                    const repres::Representation&, const std::string& which);

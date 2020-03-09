@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NamedGrid(const std::string& gridname, const param::MIRParametrisation& parametrisation);
 

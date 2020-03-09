@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ConstantInput(const param::MIRParametrisation&);
 

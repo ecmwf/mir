@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Intgrid(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
 

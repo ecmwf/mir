@@ -35,7 +35,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NamedGrid(const NamedGrid&) = delete;
 
@@ -51,9 +51,9 @@ public:
 
     // -- Methods
 
-    virtual const repres::Representation* representation() const                               = 0;
-    virtual const repres::Representation* representation(const util::Rotation& rotation) const = 0;
-    virtual size_t gaussianNumber() const                                                      = 0;
+    virtual const repres::Representation* representation() const                      = 0;
+    virtual const repres::Representation* representation(const util::Rotation&) const = 0;
+    virtual size_t gaussianNumber() const                                             = 0;
 
     // -- Overridden methods
     // None
@@ -65,7 +65,6 @@ public:
 
     static const NamedGrid& lookup(const std::string& name);
     static void list(std::ostream&);
-
 
 protected:
     NamedGrid(const std::string& name);

@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Lambert(const param::MIRParametrisation&);
     Lambert(const Lambert&) = delete;

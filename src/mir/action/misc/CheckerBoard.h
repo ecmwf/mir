@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     CheckerBoard(const param::MIRParametrisation&);
 

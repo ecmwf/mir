@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GeoPointsFileOutput(const std::string& path, bool binary);
 

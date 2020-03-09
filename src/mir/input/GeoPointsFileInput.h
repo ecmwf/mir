@@ -30,7 +30,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
     GeoPointsFileInput(const std::string& path, int which = -1);
 
     // -- Destructor

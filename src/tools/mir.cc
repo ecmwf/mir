@@ -42,6 +42,7 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/nonlinear/NonLinear.h"
+#include "mir/namedgrids/NamedGridPattern.h"
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -117,7 +118,8 @@ public:
                                      "number of parallels between pole and equator (N>=2)"));
         options_.push_back(
             new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
-        options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
+        options_.push_back(new FactoryOption<namedgrids::NamedGridPattern>(
+            "gridname", "Interpolate to given grid name (following a recognizable regular expression)"));
         options_.push_back(
             new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 

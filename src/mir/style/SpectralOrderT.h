@@ -30,7 +30,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
     SpectralOrderT() { ASSERT(ORDER); }
 
     // -- Destructor

@@ -10,9 +10,10 @@
  */
 
 
+#include "mir/namedgrids/NamedOctahedral.h"
+
 #include <iostream>
 
-#include "mir/namedgrids/NamedOctahedral.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"
 
@@ -26,21 +27,26 @@ NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : NamedGrid(
 
 NamedOctahedral::~NamedOctahedral() = default;
 
+
 void NamedOctahedral::print(std::ostream& out) const {
     out << "NamedOctahedral[name=" << name_ << ",N=" << N_ << "]";
 }
+
 
 const repres::Representation* NamedOctahedral::representation() const {
     return new repres::gauss::reduced::ReducedOctahedral(N_);
 }
 
+
 const repres::Representation* NamedOctahedral::representation(const util::Rotation& rotation) const {
     return new repres::gauss::reduced::RotatedOctahedral(N_, rotation);
 }
 
+
 size_t NamedOctahedral::gaussianNumber() const {
     return N_;
 }
+
 
 }  // namespace namedgrids
 }  // namespace mir

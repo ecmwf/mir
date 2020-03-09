@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     BitmapFilter(const param::MIRParametrisation&);
 

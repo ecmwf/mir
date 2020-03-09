@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToNamedGrid(const param::MIRParametrisation&);
 

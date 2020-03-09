@@ -44,7 +44,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Field(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
 

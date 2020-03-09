@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     SimpleExecutor(const std::string& name);
 

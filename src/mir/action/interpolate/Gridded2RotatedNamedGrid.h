@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded2RotatedNamedGrid(const param::MIRParametrisation&);
 

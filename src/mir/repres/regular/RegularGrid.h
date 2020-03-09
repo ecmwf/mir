@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RegularGrid(const param::MIRParametrisation&, const Projection&);
     RegularGrid(const RegularGrid&) = delete;

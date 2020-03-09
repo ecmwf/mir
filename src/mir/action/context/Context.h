@@ -55,7 +55,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Context();
     Context(const Context&);

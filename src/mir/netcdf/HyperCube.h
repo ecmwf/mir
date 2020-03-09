@@ -33,7 +33,7 @@ public:
     using Coordinates = std::vector<size_t>;
     using Remapping   = std::vector<size_t>;
 
-    // -- Contructors
+    // -- Constructors
 
     explicit HyperCube(const Dimensions& d) : dimensions_(d) {}
 

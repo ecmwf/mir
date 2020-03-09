@@ -40,7 +40,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Resol(const param::MIRParametrisation&, bool forceNoIntermediateGrid);
     Resol(const Resol&) = delete;

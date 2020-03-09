@@ -47,7 +47,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ActionPlan(const param::MIRParametrisation&);
 

@@ -43,7 +43,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Increments();
     Increments(const param::MIRParametrisation&);

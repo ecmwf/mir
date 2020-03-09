@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RawMetadata();
     RawMetadata(const RawMetadata&) = delete;

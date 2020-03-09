@@ -36,7 +36,7 @@ protected:
     // -- Types
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     Rules();
 

@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Truncation(const param::MIRParametrisation& parametrisation);
     Truncation(const Truncation&) = delete;

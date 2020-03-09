@@ -35,7 +35,7 @@ class MIRPlotLSM : public mir::tools::MIRTool {
     int minimumPositionalArguments() const { return 1; }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRPlotLSM(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using namespace eckit::option;

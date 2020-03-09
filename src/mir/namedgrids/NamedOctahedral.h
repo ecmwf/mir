@@ -10,11 +10,11 @@
  */
 
 
-#ifndef NamedOctahedral_H
-#define NamedOctahedral_H
-
+#ifndef mir_namedgrids_NamedOctahedral_h
+#define mir_namedgrids_NamedOctahedral_h
 
 #include "mir/namedgrids/NamedGrid.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,21 +25,24 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NamedOctahedral(const std::string& name, size_t N);
+    NamedOctahedral(const NamedOctahedral&) = delete;
 
     // -- Destructor
 
-    virtual ~NamedOctahedral();  // Change to virtual if base class
+    virtual ~NamedOctahedral();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    NamedOctahedral& operator=(const NamedOctahedral&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,19 +51,21 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual size_t gaussianNumber() const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual void print(std::ostream&) const;
+    virtual size_t gaussianNumber() const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation&) const;
 
     // -- Class members
     // None
@@ -69,16 +74,12 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    NamedOctahedral(const NamedOctahedral&);
-    NamedOctahedral& operator=(const NamedOctahedral&);
-
     // -- Members
 
     size_t N_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -87,15 +88,15 @@ private:
     // None
 
     // -- Class methods
-
-    virtual const repres::Representation* representation() const;
-    virtual const repres::Representation* representation(const util::Rotation& rotation) const;
-
+    // None
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif

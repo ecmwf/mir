@@ -37,7 +37,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     LongitudeDouble(double value = 0) : value_(value) {}
     LongitudeDouble(const eckit::Fraction& value) : value_(value) {}

@@ -34,7 +34,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Reduced(const param::MIRParametrisation&);
     Reduced(size_t N, const std::vector<long>& pl, const util::BoundingBox& = util::BoundingBox(),

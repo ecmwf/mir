@@ -37,7 +37,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ActionNode(const Action&, api::MIRWatcher*);
 

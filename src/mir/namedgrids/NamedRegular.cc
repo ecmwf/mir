@@ -10,9 +10,10 @@
  */
 
 
+#include "mir/namedgrids/NamedRegular.h"
+
 #include <iostream>
 
-#include "mir/namedgrids/NamedRegular.h"
 #include "mir/repres/gauss/regular/RegularGG.h"
 #include "mir/repres/gauss/regular/RotatedGG.h"
 
@@ -26,21 +27,26 @@ NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name),
 
 NamedRegular::~NamedRegular() = default;
 
+
 void NamedRegular::print(std::ostream& out) const {
     out << "NamedRegular[name=" << name_ << ",N=" << N_ << "]";
 }
+
 
 const repres::Representation* NamedRegular::representation() const {
     return new repres::gauss::regular::RegularGG(N_);
 }
 
+
 const repres::Representation* NamedRegular::representation(const util::Rotation& rotation) const {
     return new repres::gauss::regular::RotatedGG(N_, rotation);
 }
 
+
 size_t NamedRegular::gaussianNumber() const {
     return N_;
 }
+
 
 }  // namespace namedgrids
 }  // namespace mir

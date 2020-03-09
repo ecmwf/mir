@@ -29,7 +29,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Iterator(const util::Rotation& = util::Rotation());
     Iterator(const Iterator&) = delete;

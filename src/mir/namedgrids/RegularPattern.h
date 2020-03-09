@@ -10,11 +10,11 @@
  */
 
 
-#ifndef RegularPattern_H
-#define RegularPattern_H
-
+#ifndef mir_namedgrids_RegularPattern_h
+#define mir_namedgrids_RegularPattern_h
 
 #include "mir/namedgrids/NamedGridPattern.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,21 +25,24 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RegularPattern(const std::string& name);
+    RegularPattern(const RegularPattern&) = delete;
 
     // -- Destructor
 
-    virtual ~RegularPattern();  // Change to virtual if base class
+    virtual ~RegularPattern();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    RegularPattern& operator=(const RegularPattern&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +51,15 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
 
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -68,15 +71,11 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    RegularPattern(const RegularPattern&);
-    RegularPattern& operator=(const RegularPattern&);
-
     // -- Members
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -89,9 +88,12 @@ private:
     virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif

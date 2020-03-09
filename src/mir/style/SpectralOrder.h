@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     SpectralOrder()                     = default;
     SpectralOrder(const SpectralOrder&) = delete;

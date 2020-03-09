@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded(const param::MIRParametrisation&);
     Gridded(const util::BoundingBox&);
@@ -54,7 +54,7 @@ public:
     // None
 
 protected:
-    // -- Contructors
+    // -- Constructors
 
     Gridded();
 

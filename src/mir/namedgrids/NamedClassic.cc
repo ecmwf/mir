@@ -10,9 +10,10 @@
  */
 
 
+#include "mir/namedgrids/NamedClassic.h"
+
 #include <iostream>
 
-#include "mir/namedgrids/NamedClassic.h"
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
 
@@ -26,21 +27,26 @@ NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name),
 
 NamedClassic::~NamedClassic() = default;
 
+
 void NamedClassic::print(std::ostream& out) const {
     out << "NamedClassic[name=" << name_ << ",N=" << N_ << "]";
 }
+
 
 const repres::Representation* NamedClassic::representation() const {
     return new repres::gauss::reduced::ReducedClassic(N_);
 }
 
+
 const repres::Representation* NamedClassic::representation(const util::Rotation& rotation) const {
     return new repres::gauss::reduced::RotatedClassic(N_, rotation);
 }
 
+
 size_t NamedClassic::gaussianNumber() const {
     return N_;
 }
+
 
 }  // namespace namedgrids
 }  // namespace mir

@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     using Gridded2GriddedInterpolation::Gridded2GriddedInterpolation;
 

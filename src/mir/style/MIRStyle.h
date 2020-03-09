@@ -42,7 +42,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     MIRStyle(const param::MIRParametrisation&);
     MIRStyle(const MIRStyle&) = delete;

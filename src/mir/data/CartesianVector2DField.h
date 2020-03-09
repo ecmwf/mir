@@ -37,7 +37,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     explicit CartesianVector2DField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
     CartesianVector2DField(const CartesianVector2DField&) = delete;

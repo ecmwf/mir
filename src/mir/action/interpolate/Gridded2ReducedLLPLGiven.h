@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded2ReducedLLPLGiven(const param::MIRParametrisation&);
 

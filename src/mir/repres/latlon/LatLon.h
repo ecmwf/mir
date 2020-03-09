@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     LatLon(const param::MIRParametrisation&);
     LatLon(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),

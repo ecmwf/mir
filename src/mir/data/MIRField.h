@@ -45,7 +45,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     /// @note not in Field
     MIRField(const MIRField& other);

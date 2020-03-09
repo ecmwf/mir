@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRotatedNamedGrid(const param::MIRParametrisation&);
 

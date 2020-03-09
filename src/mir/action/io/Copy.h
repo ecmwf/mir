@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Copy(const param::MIRParametrisation&, output::MIROutput&);
 

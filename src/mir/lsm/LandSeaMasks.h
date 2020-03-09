@@ -44,7 +44,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     LandSeaMasks(const Mask& input, const Mask& output);
     LandSeaMasks(const LandSeaMasks&);

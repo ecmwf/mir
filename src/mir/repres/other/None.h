@@ -10,10 +10,11 @@
  */
 
 
-#ifndef None_H
-#define None_H
+#ifndef mir_repres_other_None_h
+#define mir_repres_other_None_h
 
 #include "mir/repres/Representation.h"
+
 
 namespace mir {
 namespace repres {
@@ -25,20 +26,22 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     None();
     None(const param::MIRParametrisation&);
+    None(const None&) = delete;
 
     // -- Destructor
 
-    virtual ~None();  // Change to virtual if base class
+    virtual ~None();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    None& operator=(const None&) = delete;
 
     // -- Methods
     // None
@@ -57,11 +60,12 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    // from Representation
+    void print(std::ostream&) const;
 
     // -- Class members
     // None
@@ -70,12 +74,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    None(const None&);
-    None& operator=(const None&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None
@@ -90,9 +90,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const None& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

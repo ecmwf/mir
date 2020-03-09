@@ -46,7 +46,7 @@ class MIRWeightMatrixDiff : public mir::tools::MIRTool {
     int numberOfPositionalArguments() const { return 2; }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRWeightMatrixDiff(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;

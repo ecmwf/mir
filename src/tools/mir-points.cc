@@ -32,7 +32,7 @@ class MIRPoints : public mir::tools::MIRTool {
     }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     using MIRTool::MIRTool;
 };

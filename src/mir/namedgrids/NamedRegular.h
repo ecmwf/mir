@@ -10,11 +10,11 @@
  */
 
 
-#ifndef NamedRegular_H
-#define NamedRegular_H
-
+#ifndef mir_namedgrids_NamedRegular_h
+#define mir_namedgrids_NamedRegular_h
 
 #include "mir/namedgrids/NamedGrid.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,21 +25,24 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NamedRegular(const std::string& name, size_t N);
+    NamedRegular(const NamedRegular&) = delete;
 
     // -- Destructor
 
-    virtual ~NamedRegular();  // Change to virtual if base class
+    virtual ~NamedRegular();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    NamedRegular& operator=(const NamedRegular&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,18 +51,21 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual void print(std::ostream&) const;
+    virtual size_t gaussianNumber() const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation&) const;
 
     // -- Class members
     // None
@@ -68,16 +74,12 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    NamedRegular(const NamedRegular&);
-    NamedRegular& operator=(const NamedRegular&);
-
     // -- Members
 
     size_t N_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -86,15 +88,15 @@ private:
     // None
 
     // -- Class methods
-
-    virtual const repres::Representation* representation() const;
-    virtual const repres::Representation* representation(const util::Rotation& rotation) const;
-    virtual size_t gaussianNumber() const;
+    // None
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif

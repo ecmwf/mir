@@ -75,25 +75,18 @@ public:
 
     const Longitude& east() const { return east_; }
 
-    /// Check if covers complete range East-West
     bool isPeriodicWestEast() const;
 
-    /// Contains point
     bool contains(const PointLatLon&) const;
 
-    /// Contains point
     bool contains(const Point2&) const;
 
-    /// Contains point
     bool contains(const Latitude&, const Longitude&) const;
 
-    /// Contains bounding box
     bool contains(const BoundingBox&) const;
 
-    /// Intersects bounding box
     bool intersects(BoundingBox&) const;
 
-    /// Empty
     bool empty() const;
 
     void fill(grib_info&) const;
@@ -119,7 +112,6 @@ protected:
 
     // -- Methods
 
-    /// Output to stream
     virtual void print(std::ostream&) const;
 
     // -- Overridden methods
@@ -157,7 +149,6 @@ private:
 
     // -- Friends
 
-    /// Output using stream operator
     friend std::ostream& operator<<(std::ostream& s, const BoundingBox& p) {
         p.print(s);
         return s;

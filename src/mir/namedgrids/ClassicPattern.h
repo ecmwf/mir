@@ -10,11 +10,11 @@
  */
 
 
-#ifndef ClassicPattern_H
-#define ClassicPattern_H
-
+#ifndef mir_namedgrids_ClassicPattern_h
+#define mir_namedgrids_ClassicPattern_h
 
 #include "mir/namedgrids/NamedGridPattern.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,21 +25,24 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ClassicPattern(const std::string& name);
+    ClassicPattern(const ClassicPattern&) = delete;
 
     // -- Destructor
 
-    virtual ~ClassicPattern();  // Change to virtual if base class
+    virtual ~ClassicPattern();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    ClassicPattern& operator=(const ClassicPattern&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +51,15 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
 
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -68,15 +71,11 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    ClassicPattern(const ClassicPattern&);
-    ClassicPattern& operator=(const ClassicPattern&);
-
     // -- Members
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -89,9 +88,12 @@ private:
     virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif

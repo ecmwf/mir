@@ -39,7 +39,7 @@ namespace lsm {
 
 class Mask {
 public:
-    // -- Contructors
+    // -- Constructors
 
     Mask();
     Mask(const Mask&) = delete;

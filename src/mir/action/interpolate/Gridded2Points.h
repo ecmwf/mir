@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded2Points(const param::MIRParametrisation&);
 

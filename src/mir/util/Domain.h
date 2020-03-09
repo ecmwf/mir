@@ -30,7 +30,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     using BoundingBox::BoundingBox;
 
@@ -47,13 +47,10 @@ public:
     // -- Methods
     // None
 
-    /// Check if grid includes the North pole
     bool includesPoleNorth() const;
 
-    /// Check if grid includes the South pole
     bool includesPoleSouth() const;
 
-    /// Check if domain represents the complete globe surface
     bool isGlobal() const { return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast(); }
 
     // -- Overridden methods
@@ -74,7 +71,6 @@ protected:
 
     // -- Overridden methods
 
-    /// Output to stream
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -104,7 +100,6 @@ private:
 
     // -- Friends
 
-    /// Output using stream operator
     friend std::ostream& operator<<(std::ostream& s, const Domain& p) {
         p.print(s);
         return s;

@@ -10,11 +10,11 @@
  */
 
 
-#ifndef OctahedralPattern_H
-#define OctahedralPattern_H
-
+#ifndef mir_namedgrids_OctahedralPattern_h
+#define mir_namedgrids_OctahedralPattern_h
 
 #include "mir/namedgrids/NamedGridPattern.h"
+
 
 namespace mir {
 namespace namedgrids {
@@ -25,21 +25,24 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     OctahedralPattern(const std::string& name);
+    OctahedralPattern(const OctahedralPattern&) = delete;
 
     // -- Destructor
 
-    virtual ~OctahedralPattern();  // Change to virtual if base class
+    virtual ~OctahedralPattern();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    OctahedralPattern& operator=(const OctahedralPattern&) = delete;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +51,15 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
 
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -68,15 +71,11 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    OctahedralPattern(const OctahedralPattern&);
-    OctahedralPattern& operator=(const OctahedralPattern&);
-
     // -- Members
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -89,9 +88,12 @@ private:
     virtual const NamedGrid* make(const std::string& name) const;
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace namedgrids
 }  // namespace mir
+
+
 #endif

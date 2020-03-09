@@ -136,20 +136,19 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
     }
 
     auto j = m->find(name);
-    if (j == m->end()) {
-
-        // Look for pattern matchings
-        // This will automatically add the new NamedGrid to the map
-        auto ng = NamedGridPattern::build(name);
-        if (ng != nullptr) {
-            return *ng;
-        }
-
-        list(eckit::Log::error() << "No NamedGrid '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No NamedGrid '" + name + "'");
+    if (j != m->end()) {
+        return *(j->second);
     }
 
-    return *(j->second);
+    // Look for pattern matchings
+    // This will automatically add the new NamedGrid to the map
+    auto ng = NamedGridPattern::build(name);
+    if (ng != nullptr) {
+        return *ng;
+    }
+
+    list(eckit::Log::error() << "No NamedGrid '" << name << "', choices are:\n");
+    throw eckit::SeriousBug("No NamedGrid '" + name + "'");
 }
 
 

@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     AdjustWindsDirections(const param::MIRParametrisation&);
 

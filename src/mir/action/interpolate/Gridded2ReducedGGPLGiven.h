@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Gridded2ReducedGGPLGiven(const param::MIRParametrisation&);
 

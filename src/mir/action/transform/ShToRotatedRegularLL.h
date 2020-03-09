@@ -29,7 +29,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRotatedRegularLL(const param::MIRParametrisation&);
 

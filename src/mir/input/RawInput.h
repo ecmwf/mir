@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
     RawInput(const RawMetadata& metadata, const double* values, size_t count);
 
     // -- Destructor

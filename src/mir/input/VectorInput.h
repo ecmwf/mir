@@ -32,7 +32,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     VectorInput(MIRInput& component1, MIRInput& component2);
 

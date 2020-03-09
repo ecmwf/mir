@@ -32,7 +32,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
 
     // -- Destructor

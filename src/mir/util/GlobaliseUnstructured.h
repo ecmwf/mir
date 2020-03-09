@@ -30,7 +30,7 @@ namespace util {
 
 class GlobaliseUnstructured {
 public:
-    // -- Contructors
+    // -- Constructors
 
     GlobaliseUnstructured(const param::MIRParametrisation&);
 

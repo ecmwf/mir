@@ -11,10 +11,12 @@
 
 
 #include "mir/namedgrids/ClassicPattern.h"
-#include "eckit/utils/Translator.h"
-#include "mir/namedgrids/NamedClassic.h"
 
 #include <iostream>
+
+#include "eckit/utils/Translator.h"
+
+#include "mir/namedgrids/NamedClassic.h"
 
 
 namespace mir {
