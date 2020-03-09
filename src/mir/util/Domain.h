@@ -14,11 +14,7 @@
 #define mir_util_Domain_h
 
 #include "mir/util/BoundingBox.h"
-
-
-namespace atlas {
-class RectangularDomain;
-}
+#include "mir/util/RectangularDomain.h"
 
 
 namespace mir {
@@ -32,12 +28,12 @@ public:
 
     // -- Constructors
 
-    Domain(const ::atlas::RectangularDomain&);
+    Domain(const RectangularDomain&);
     using BoundingBox::BoundingBox;
 
     // -- Convertors
 
-    operator ::atlas::RectangularDomain() const;
+    operator RectangularDomain() const;
 
     // -- Operators
 

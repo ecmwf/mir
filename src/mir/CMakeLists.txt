@@ -626,6 +626,7 @@ list(APPEND mir_srcs
     util/Rotation.h
     util/TraceResourceUsage.cc
     util/TraceResourceUsage.h
+    util/RectangularDomain.h
     util/Types.h
     util/Wind.cc
     util/Wind.h

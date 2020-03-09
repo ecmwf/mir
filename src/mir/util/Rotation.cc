@@ -23,6 +23,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
+#include "mir/util/RectangularDomain.h"
 
 
 namespace mir {
@@ -126,11 +127,10 @@ atlas::Projection Rotation::atlasProjection() const {
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
 
-    atlas::RectangularDomain before({bbox.west().value(), bbox.east().value()},
-                                    {bbox.south().value(), bbox.north().value()});
+    RectangularDomain before({bbox.west().value(), bbox.east().value()}, {bbox.south().value(), bbox.north().value()});
     ASSERT(before);
 
-    atlas::RectangularLonLatDomain after = atlasProjection().lonlatBoundingBox(before);
+    auto after = atlasProjection().lonlatBoundingBox(before);
     ASSERT(after);
 
     // use [0, 360[ longitude range if periodic

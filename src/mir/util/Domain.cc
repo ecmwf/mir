@@ -14,14 +14,12 @@
 
 #include <iostream>
 
-#include "mir/api/Atlas.h"
-
 
 namespace mir {
 namespace util {
 
 
-Domain::Domain(const atlas::RectangularDomain& rectangle) :
+Domain::Domain(const RectangularDomain& rectangle) :
     Domain(rectangle.containsNorthPole() ? Latitude::NORTH_POLE : rectangle.ymax(), rectangle.xmin(),
            rectangle.containsSouthPole() ? Latitude::SOUTH_POLE : rectangle.ymin(),
            rectangle.zonal_band() ? rectangle.xmin() + Longitude::GLOBE.value() : rectangle.xmax()) {}
@@ -37,8 +35,8 @@ bool Domain::includesPoleSouth() const {
 }
 
 
-Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
+Domain::operator RectangularDomain() const {
+    return RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
 }
 
 
