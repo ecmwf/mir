@@ -19,12 +19,6 @@ namespace mir {
 namespace util {
 
 
-Domain::Domain(const RectangularDomain& rectangle) :
-    Domain(rectangle.containsNorthPole() ? Latitude::NORTH_POLE : rectangle.ymax(), rectangle.xmin(),
-           rectangle.containsSouthPole() ? Latitude::SOUTH_POLE : rectangle.ymin(),
-           rectangle.zonal_band() ? rectangle.xmin() + Longitude::GLOBE.value() : rectangle.xmax()) {}
-
-
 bool Domain::includesPoleNorth() const {
     return north() == Latitude::NORTH_POLE;
 }

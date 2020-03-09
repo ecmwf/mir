@@ -28,7 +28,6 @@ public:
 
     // -- Constructors
 
-    Domain(const RectangularDomain&);
     using BoundingBox::BoundingBox;
 
     // -- Convertors
