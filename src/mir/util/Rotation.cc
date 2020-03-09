@@ -135,7 +135,8 @@ BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
 
     // use [0, 360[ longitude range if periodic
     bool periodic = after.zonal_band();
-    BoundingBox box(after.north(), periodic ? 0 : after.west(), after.south(), periodic ? 360 : after.east());
+    BoundingBox box(after.north(), periodic ? Longitude::GREENWICH : after.west(), after.south(),
+                    periodic ? Longitude::GLOBE : after.east());
 
     return box;
 }
