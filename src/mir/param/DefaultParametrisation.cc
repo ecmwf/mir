@@ -42,9 +42,6 @@ DefaultParametrisation::DefaultParametrisation() {
     set("spectral-order", "linear");
 
     set("compare", "scalar");
-    set("absolute-error", 1e-10);
-    set("relative-error-min", 0.01);
-    set("relative-error-max", 0.01);
 }
 
 
