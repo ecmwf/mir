@@ -83,26 +83,28 @@ void GribField::setOptions(const eckit::option::CmdArgs& args) {
 GribField::GribField(const std::string& path, off_t offset, size_t length) :
     FieldBase(path, offset, length),
     param_(-1),
-    area_(false),
     north_(0),
     west_(0),
     south_(0),
     east_(0),
     accuracy_(-1),
     decimalScaleFactor_(0),
-    grid_(false),
     west_east_(0),
     north_south_(0),
-    rotation_(false),
     rotation_latitude_(0),
     rotation_longitude_(0),
-    hasMissing_(false),
     resol_(-1),
-    numberOfPoints_(-1) {}
+    numberOfPoints_(-1),
+    area_(false),
+    grid_(false),
+    rotation_(false),
+    hasMissing_(false) {}
+
 
 void GribField::insert(const std::string& key, const std::string& value) {
     values_[key] = value;
 }
+
 
 void GribField::insert(const std::string& key, long value) {
     std::ostringstream oss;
@@ -114,6 +116,7 @@ void GribField::insert(const std::string& key, long value) {
 void GribField::erase(const std::string& key) {
     values_.erase(key);
 }
+
 
 const std::string& GribField::format() const {
     return format_;
@@ -205,29 +208,36 @@ void GribField::missingValuesPresent(bool on) {
     hasMissing_ = on;
 }
 
+
 void GribField::resol(long resol) {
     resol_ = resol;
 }
+
 
 void GribField::param(long param) {
     param_ = param;
 }
 
+
 void GribField::numberOfPoints(long n) {
     numberOfPoints_ = n;
 }
+
 
 void GribField::gridname(const std::string& name) {
     gridname_ = name;
 }
 
+
 void GribField::format(const std::string& format) {
     format_ = format;
 }
 
+
 void GribField::gridtype(const std::string& type) {
     gridtype_ = type;
 }
+
 
 bool GribField::samePacking(const GribField& other) const {
 
@@ -265,25 +275,31 @@ bool GribField::samePacking(const GribField& other) const {
     return packing_ == other.packing_;
 }
 
+
 bool GribField::sameResol(const GribField& other) const {
     return resol_ == other.resol_;
 }
+
 
 bool GribField::sameGridname(const GribField& other) const {
     return gridname_ == other.gridname_;
 }
 
+
 bool GribField::sameGridtype(const GribField& other) const {
     return gridtype_ == other.gridtype_;
 }
+
 
 bool GribField::sameFormat(const GribField& other) const {
     return format_ == other.format_;
 }
 
+
 bool GribField::sameParam(const GribField& other) const {
     return param_ == other.param_;
 }
+
 
 bool GribField::sameAccuracy(const GribField& other) const {
 
@@ -302,13 +318,16 @@ bool GribField::sameAccuracy(const GribField& other) const {
     return accuracy_ == other.accuracy_;
 }
 
+
 bool GribField::sameNumberOfPoints(const GribField& other) const {
     return numberOfPoints_ == other.numberOfPoints_;
 }
 
+
 bool GribField::sameBitmap(const GribField& /*other*/) const {
     return true;
 }
+
 
 bool GribField::sameGrid(const GribField& other) const {
 
@@ -332,13 +351,13 @@ bool GribField::sameRotation(const GribField& other) const {
     }
 
     if (rotation_) {
-
         return (rotation_latitude_ == other.rotation_latitude_) &&
                (normaliseLongitude(rotation_longitude_) == normaliseLongitude(other.rotation_longitude_));
     }
 
     return true;
 }
+
 
 bool GribField::less_than(const FieldBase& o) const {
     auto& other = dynamic_cast<const GribField&>(o);
@@ -358,7 +377,6 @@ bool GribField::less_than(const FieldBase& o) const {
     if (format_ > other.format_) {
         return false;
     }
-
 
     std::string this_packing  = packing_;
     std::string other_packing = other.packing_;
@@ -407,7 +425,6 @@ bool GribField::less_than(const FieldBase& o) const {
     if (resol_ > other.resol_) {
         return false;
     }
-
 
     // if(sameAccuracy(other)) {
     //     return false;
@@ -525,13 +542,16 @@ bool GribField::less_than(const FieldBase& o) const {
     return values_ < other.values_;
 }
 
+
 std::map<std::string, std::string>::const_iterator GribField::begin() const {
     return values_.begin();
 }
 
+
 std::map<std::string, std::string>::const_iterator GribField::end() const {
     return values_.end();
 }
+
 
 std::map<std::string, std::string>::const_iterator GribField::find(const std::string& key) const {
     return values_.find(key);
@@ -552,13 +572,16 @@ void GribField::area(double n, double w, double s, double e) {
     }
 }
 
+
 void GribField::accuracy(long n) {
     accuracy_ = n;
 }
 
+
 void GribField::decimalScaleFactor(long n) {
     decimalScaleFactor_ = n;
 }
+
 
 void GribField::packing(const std::string& packing) {
     packing_ = packing;
@@ -571,11 +594,13 @@ void GribField::grid(double ns, double we) {
     west_east_   = we;
 }
 
+
 void GribField::rotation(double lat, double lon) {
     rotation_           = true;
     rotation_latitude_  = lat;
     rotation_longitude_ = lon;
 }
+
 
 void GribField::print(std::ostream& out) const {
 
@@ -636,6 +661,7 @@ void GribField::print(std::ostream& out) const {
     out << "]";
 }
 
+
 void GribField::json(eckit::JSON& json) const {
     json.startObject();
     FieldBase::json(json);
@@ -684,6 +710,7 @@ std::ostream& GribField::printGrid(std::ostream& out) const {
     return out;
 }
 
+
 bool GribField::sameField(const GribField& other) const {
     return values_ == other.values_;
 }
@@ -706,6 +733,7 @@ bool GribField::match(const FieldBase& o) const {
 bool GribField::same(const FieldBase& o) const {
     return differences(o) == 0;
 }
+
 
 size_t GribField::differences(const FieldBase& o) const {
     auto& other = dynamic_cast<const GribField&>(o);
@@ -891,6 +919,7 @@ size_t GribField::numberOfPoints() const {
     return size_t(numberOfPoints_);
 }
 
+
 bool GribField::match(const std::string& name, const std::string& value) const {
     auto j = values_.find(name);
     if (j != values_.end()) {
@@ -1067,9 +1096,6 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
-    static eckit::Translator<long, std::string> l2s;
-
-
     {
         char value[1024];
         size_t len = sizeof(value);
@@ -1187,6 +1213,7 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
         }
     }
 
+    static eckit::Translator<long, std::string> l2s;
 
     // long scanningMode = 0;
     // if (codes_get_long(h, "scanningMode", &scanningMode) == 0) {
@@ -1197,7 +1224,6 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     // if (codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
     //     field->insert("decimalScaleFactor", decimalScaleFactor);
     // }
-
 
     long edition;
     if (codes_get_long(h, "edition", &edition) == 0) {
@@ -1220,7 +1246,6 @@ Field GribField::field(const char* buffer, size_t size, const std::string& path,
     if (codes_get_long(h, "decimalScaleFactor", &decimalScaleFactor) == 0) {
         field->decimalScaleFactor(decimalScaleFactor);
     }
-
 
     {
         char value[1024];
@@ -1273,7 +1298,6 @@ void GribField::setArea(GribField& field, grib_handle* h) {
             throw eckit::SeriousBug(oss.str());
         } /*break;*/
     }
-
 
     field.area(n, w, s, e);
 }

@@ -31,6 +31,7 @@ public:
     // None
 
     // -- Constructors
+
     GeoPointsFileInput(const std::string& path, int which = -1);
 
     // -- Destructor
