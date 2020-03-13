@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 find_package(ecbuild 3.0 REQUIRED)
 
 file(READ "VERSION" VERSION)
-project(mir VERSION ${VERSION} LANGUAGES C CXX)
+project(mir VERSION ${VERSION} LANGUAGES CXX)
 
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
