@@ -22,13 +22,17 @@
 #include "mir/action/plan/Action.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"
+#include "mir/util/MIRStatistics.h"
 
 
 namespace mir {
 namespace action {
 
 
-ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {}
+ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {
+    parametrisation_.get("dump-plan-file", dumpPlanFile_);
+    parametrisation_.get("dump-statistics-file", dumpStatisticsFile_);
+}
 
 
 ActionPlan::~ActionPlan() {
@@ -111,16 +115,13 @@ void ActionPlan::add(const std::string& name, param::MIRParametrisation* runtime
 void ActionPlan::execute(context::Context& ctx) const {
     ASSERT(ended());
 
-    std::string dumpPlanFile;
-    parametrisation_.get("dump-plan-file", dumpPlanFile);
-
-    if (!dumpPlanFile.empty()) {
-        if (dumpPlanFile == "-") {
+    if (!dumpPlanFile_.empty()) {
+        if (dumpPlanFile_ == "-") {
             custom(std::cout);
             std::cout << std::endl;
         }
         else {
-            std::ofstream out(dumpPlanFile, std::ios::app);
+            std::ofstream out(dumpPlanFile_, std::ios::app);
             custom(out);
             out << std::endl;
         }
@@ -145,6 +146,19 @@ void ActionPlan::execute(context::Context& ctx) const {
                                     << sep << "\n"
                                     << ctx << "\n"
                                     << sep << std::endl;
+    }
+
+    if (!dumpStatisticsFile_.empty()) {
+        auto& stats = ctx.statistics();
+        if (dumpStatisticsFile_ == "-") {
+            stats.report(std::cout);
+            std::cout << std::endl;
+        }
+        else {
+            std::ofstream out(dumpStatisticsFile_, std::ios::app);
+            stats.report(out);
+            out << std::endl;
+        }
     }
 }
 
