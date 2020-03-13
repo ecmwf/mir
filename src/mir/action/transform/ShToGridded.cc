@@ -148,7 +148,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()
-    caching::InMemoryCacheUser<TransCache> use(trans_cache, ctx.statistics().transHandleCache_);
+    auto cacheUse(ctx.statistics().cacheUser(trans_cache));
 
 
     atlas::Grid grid = representation.atlasGrid();

@@ -70,8 +70,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
 void BitmapFilter::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    caching::InMemoryCacheUser<util::Bitmap> use(cache, ctx.statistics().bitmapCache_);
-
+    auto cacheUse(ctx.statistics().cacheUser(cache));
     auto timing(ctx.statistics().bitmapTimer());
 
     auto& field = ctx.field();

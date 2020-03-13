@@ -39,6 +39,8 @@ public:  // methods
 
     static InMemoryCacheUsage totalFootprint();
 
+    virtual const std::string& name() const = 0;
+
 protected:
     void checkTotalFootprint();
     static eckit::Channel& log();
@@ -47,7 +49,6 @@ private:
     virtual InMemoryCacheUsage footprint() const                                    = 0;
     virtual InMemoryCacheUsage capacity() const                                     = 0;
     virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) = 0;
-    virtual const std::string& name() const                                         = 0;
 };
 
 

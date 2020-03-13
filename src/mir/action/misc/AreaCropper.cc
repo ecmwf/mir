@@ -243,8 +243,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    caching::InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
-
+    auto cacheUse(ctx.statistics().cacheUser(cache));
     auto timing(ctx.statistics().cropTimer());
 
     // Keep a pointer on the original representation, as the one in the field will

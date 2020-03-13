@@ -12,6 +12,9 @@
 
 #include "mir/util/MIRStatistics.h"
 
+#include <sstream>
+
+#include "eckit/log/JSON.h"
 #include "eckit/serialisation/Stream.h"
 
 
@@ -19,148 +22,136 @@ namespace mir {
 namespace util {
 
 
-MIRStatistics::MIRStatistics() = default;
+static const char* all_caches[] = {"mirBitmap", "mirArea", "mirCoefficient", "mirMatrix", "mirMesh", nullptr};
 
 
-MIRStatistics::MIRStatistics(eckit::Stream& s) :
-    bitmapCache_(s),
-    areaCroppingCache_(s),
-    transHandleCache_(s),
-    matrixCache_(s),
-    meshCache_(s) {
-    s >> cropTiming_;
-    s >> frameTiming_;
-    s >> globaliseTiming_;
-    s >> bitmapTiming_;
-    s >> coefficientTiming_;
-    s >> sh2gridTiming_;
-    s >> grid2gridTiming_;
-    s >> vod2uvTiming_;
-    s >> computeMatrixTiming_;
-    s >> matrixTiming_;
-    s >> loadCoeffTiming_;
-    s >> createCoeffTiming_;
-    s >> calcTiming_;
-    s >> saveTiming_;
-    s >> gribEncodingTiming_;
+static const char* all_timings[] = {"crop",          "Time in area-crop",
+                                    "frame",         "Time in extracting frames",
+                                    "globalise",     "Time in extending to globe",
+                                    "bitmap",        "Time applying bitmaps",
+                                    "coefficient",   "Time loading/building coeff.",
+                                    "sh2grid",       "Time in SH to grid transform",
+                                    "grid2grid",     "Time in grid to grid interp.",
+                                    "vod2uv",        "Time in VO/D to U/V",
+                                    "computeMatrix", "Time compute matrices",
+                                    "matrix",        "Time matrix multiply",
+                                    "loadCoeff",     "Time loading coefficients",
+                                    "createCoeff",   "Time creating coefficients",
+                                    "calc",          "Time in basic computations",
+                                    "save",          "Time saving",
+                                    "gribEncoding",  "Time in GRIB encoding",
+                                    nullptr};
+
+
+MIRStatistics::MIRStatistics() {
+    for (size_t i = 0; all_caches[i] != nullptr;) {
+        caches_.insert({all_caches[i++], {}});
+    }
+
+    for (size_t i = 0; all_timings[i] != nullptr;) {
+        std::string key  = all_timings[i++];
+        std::string desc = all_timings[i++];
+        timings_.insert({key, {}});
+        descriptions_[key] = desc;
+    }
+}
+
+
+MIRStatistics::MIRStatistics(eckit::Stream& s) {
+    for (size_t i = 0; all_caches[i] != nullptr;) {
+        caches_.insert({all_caches[i++], s});
+    }
+
+    for (size_t i = 0; all_timings[i] != nullptr;) {
+        std::string key  = all_timings[i++];
+        std::string desc = all_timings[i++];
+        s >> timings_[key];
+        descriptions_[key] = desc;
+    }
 }
 
 
 void MIRStatistics::encode(eckit::Stream& s) const {
-    s << bitmapCache_;
-    s << areaCroppingCache_;
-    s << transHandleCache_;
-    s << matrixCache_;
-    s << meshCache_;
-    s << cropTiming_;
-    s << frameTiming_;
-    s << globaliseTiming_;
-    s << bitmapTiming_;
-    s << coefficientTiming_;
-    s << sh2gridTiming_;
-    s << grid2gridTiming_;
-    s << vod2uvTiming_;
-    s << computeMatrixTiming_;
-    s << matrixTiming_;
-    s << loadCoeffTiming_;
-    s << createCoeffTiming_;
-    s << calcTiming_;
-    s << saveTiming_;
-    s << gribEncodingTiming_;
+    for (auto& cache : caches_) {
+        s << cache.second;
+    }
+
+    for (auto& tim : timings_) {
+        s << tim.second;
+    }
+}
+
+
+void MIRStatistics::json(eckit::JSON& j) const {
+    j.startObject();
+
+    for (auto& cache : caches_) {
+        std::ostringstream s;
+        s << cache.second.footprint_;
+        j << cache.first << s.str();
+    }
+
+    for (auto& tim : timings_) {
+        j << tim.first << tim.second.elapsed_;
+    }
+
+    j.endObject();
 }
 
 
 MIRStatistics& MIRStatistics::operator+=(const MIRStatistics& other) {
-    bitmapCache_ += other.bitmapCache_;
-    areaCroppingCache_ += other.areaCroppingCache_;
-    transHandleCache_ += other.transHandleCache_;
-    matrixCache_ += other.matrixCache_;
-    meshCache_ += other.meshCache_;
-    cropTiming_ += other.cropTiming_;
-    frameTiming_ += other.frameTiming_;
-    globaliseTiming_ += other.globaliseTiming_;
-    bitmapTiming_ += other.bitmapTiming_;
-    coefficientTiming_ += other.coefficientTiming_;
-    sh2gridTiming_ += other.sh2gridTiming_;
-    grid2gridTiming_ += other.grid2gridTiming_;
-    vod2uvTiming_ += other.vod2uvTiming_;
-    computeMatrixTiming_ += other.computeMatrixTiming_;
-    matrixTiming_ += other.matrixTiming_;
-    loadCoeffTiming_ += other.loadCoeffTiming_;
-    createCoeffTiming_ += other.createCoeffTiming_;
-    calcTiming_ += other.calcTiming_;
-    saveTiming_ += other.saveTiming_;
-    gribEncodingTiming_ += gribEncodingTiming_;
+    for (auto& cache : caches_) {
+        cache.second += other.caches_.at(cache.first);
+    }
+
+    for (auto& tim : timings_) {
+        tim.second += other.timings_.at(tim.first);
+    }
+
     return *this;
 }
 
 
 MIRStatistics& MIRStatistics::operator/=(size_t n) {
-    bitmapCache_ /= n;
-    areaCroppingCache_ /= n;
-    transHandleCache_ /= n;
-    matrixCache_ /= n;
-    meshCache_ /= n;
-    cropTiming_ /= n;
-    frameTiming_ /= n;
-    globaliseTiming_ /= n;
-    bitmapTiming_ /= n;
-    coefficientTiming_ /= n;
-    sh2gridTiming_ /= n;
-    grid2gridTiming_ /= n;
-    vod2uvTiming_ /= n;
-    computeMatrixTiming_ /= n;
-    matrixTiming_ /= n;
-    loadCoeffTiming_ /= n;
-    createCoeffTiming_ /= n;
-    calcTiming_ /= n;
-    saveTiming_ /= n;
-    gribEncodingTiming_ /= n;
+    for (auto& cache : caches_) {
+        cache.second /= n;
+    }
+
+    for (auto& tim : timings_) {
+        tim.second /= n;
+    }
+
     return *this;
 }
 
 
 void MIRStatistics::report(std::ostream& out, const char* indent) const {
+    for (auto& cache : caches_) {
+        cache.second.report(cache.first.c_str(), out, indent);
+    }
 
-    bitmapCache_.report("Bitmap cache", out, indent);
-    areaCroppingCache_.report("Area cache", out, indent);
-    transHandleCache_.report("Trans cache", out, indent);
-    matrixCache_.report("Matrix cache", out, indent);
-    meshCache_.report("Mesh cache", out, indent);
-
-    reportTime(out, "Time in grid to grid interp.", grid2gridTiming_, indent);
-    reportTime(out, "Time in SH to grid transform", sh2gridTiming_, indent);
-    reportTime(out, "Time loading/building coeff.", coefficientTiming_, indent);
-    reportTime(out, "Time in VO/D to U/V", vod2uvTiming_, indent);
-
-    reportTime(out, "Time in basic computations", calcTiming_, indent);
-    reportTime(out, "Time in area-crop", cropTiming_, indent);
-    reportTime(out, "Time in extracting frames", frameTiming_, indent);
-    reportTime(out, "Time in extending to globe", globaliseTiming_, indent);
-
-    reportTime(out, "Time applying bitmaps", bitmapTiming_, indent);
-    reportTime(out, "Time compute matrices", computeMatrixTiming_, indent);
-    reportTime(out, "Time matrix multiply", matrixTiming_, indent);
-    reportTime(out, "Time creating coefficients", createCoeffTiming_, indent);
-    reportTime(out, "Time loading coefficients", loadCoeffTiming_, indent);
-
-    reportTime(out, "Time in GRIB encoding", gribEncodingTiming_, indent);
-
-    reportTime(out, "Time saving", saveTiming_, indent);
+    for (auto& tim : timings_) {
+        auto description = descriptions_.at(tim.first);
+        reportTime(out, description.c_str(), tim.second, indent);
+    }
 }
 
 
 void MIRStatistics::csvHeader(std::ostream& out) const {
-    out << "grid2grid,sh2grid,coefficient,vod2uv,calc,crop,frame,globalise,bitmap,"
-        << "computeMatrix,matrix,createCoeff,loadCoeff,gribEncoding,save";
+    auto sep = "";
+    for (auto& tim : timings_) {
+        out << sep << tim.first;
+        sep = ",";
+    }
 }
 
 
 void MIRStatistics::csvRow(std::ostream& out) const {
-    out << grid2gridTiming_ << "," << sh2gridTiming_ << "," << coefficientTiming_ << "," << vod2uvTiming_ << ","
-        << calcTiming_ << "," << cropTiming_ << "," << frameTiming_ << "," << globaliseTiming_ << "," << bitmapTiming_
-        << "," << computeMatrixTiming_ << "," << matrixTiming_ << "," << createCoeffTiming_ << "," << loadCoeffTiming_
-        << "," << gribEncodingTiming_ << "," << saveTiming_;
+    auto sep = "";
+    for (auto& tim : timings_) {
+        out << sep << tim.second;
+        sep = ", ";
+    }
 }
 
 

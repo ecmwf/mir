@@ -259,7 +259,7 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atla
     eckit::Channel& log = eckit::Log::debug<LibMir>();
 
     eckit::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")", log);
-    caching::InMemoryCacheUser<atlas::Mesh> cache_use(mesh_cache, statistics.meshCache_);
+    auto cacheUse(statistics.cacheUser(mesh_cache));
 
     // generate signature including the mesh generation settings
     eckit::MD5 md5;
