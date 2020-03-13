@@ -50,6 +50,7 @@ public:
     // -- Constructors
 
     ActionPlan(const param::MIRParametrisation&);
+    ActionPlan(const ActionPlan&) = delete;
 
     // -- Destructor
 
@@ -59,7 +60,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    ActionPlan& operator=(const ActionPlan&) = delete;
 
     // -- Methods
 
@@ -126,12 +128,10 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ActionPlan(const ActionPlan&);
-    ActionPlan& operator=(const ActionPlan&);
-
     // -- Members
-    // None
+
+    std::string dumpPlanFile_;
+    std::string dumpStatisticsFile_;
 
     // -- Methods
     // None
