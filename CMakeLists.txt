@@ -1,12 +1,9 @@
-cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+find_package(ecbuild 3.0 REQUIRED)
 
-project( mir C CXX )
-
-set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
+project(mir VERSION 1.5.2 LANGUAGES C CXX)
 
 include( ecbuild_system NO_POLICY_SCOPE )
-
-ecbuild_requires_macro_version( 2.9 )
 
 set( PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "" ) # needed for generating .b files for persistent support
 
