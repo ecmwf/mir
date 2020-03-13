@@ -1,14 +1,10 @@
-cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 find_package(ecbuild 3.0 REQUIRED)
 
-project(mir VERSION 1.5.2 LANGUAGES C CXX)
+file(READ "VERSION" VERSION)
+project(mir VERSION ${VERSION} LANGUAGES C CXX)
 
-include( ecbuild_system NO_POLICY_SCOPE )
-
-set( PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "" ) # needed for generating .b files for persistent support
-
-ecbuild_declare_project()
-
+set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -85,7 +81,7 @@ add_subdirectory( "tests" )
 # install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_top_files SOURCES
-                       TODO AUTHORS README NOTICE LICENSE INSTALL ChangeLog COPYING
+                       AUTHORS README NOTICE LICENSE INSTALL COPYING
                        DONT_PACK
                        BUGS )
 
