@@ -47,8 +47,8 @@ bool LibMir::caching() {
 
 LibMir::keywords_t LibMir::postProcess() {
     static const keywords_t defaultKeywords{
-        "accuracy", "bitmap",  "checkerboard", "compatibility", "edition", "filter",  "format", "formula",
-        "frame",    "griddef", "latitudes",    "longitudes",    "packing", "pattern", "vod2uv",
+        "accuracy", "bitmap", "checkerboard", "compatibility", "derivative", "edition", "filter",  "format",
+        "formula",  "frame",  "griddef",      "latitudes",     "longitudes", "packing", "pattern", "vod2uv",
     };
 
     auto& config                     = instance().configuration();

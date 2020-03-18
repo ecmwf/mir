@@ -84,6 +84,7 @@ public:
     AutoTiming loadCoeffTimer() { return {timer_, timings_.at("loadCoeff")}; }
     AutoTiming createCoeffTimer() { return {timer_, timings_.at("createCoeff")}; }
     AutoTiming calcTimer() { return {timer_, timings_.at("calc")}; }
+    AutoTiming derivativeTimer() { return {timer_, timings_.at("derivative")}; }
     AutoTiming saveTimer() { return {timer_, timings_.at("save")}; }
     AutoTiming gribEncodingTimer() { return {timer_, timings_.at("gribEncoding")}; }
 

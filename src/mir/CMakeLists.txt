@@ -635,6 +635,8 @@ list(APPEND mir_srcs
 
 if (HAVE_ATLAS)
     list(APPEND mir_srcs
+	    action/filter/DerivativeFilter.cc
+	    action/filter/DerivativeFilter.h
         action/transform/InvtransScalar.cc
         action/transform/InvtransScalar.h
         action/transform/InvtransVodTouv.cc
