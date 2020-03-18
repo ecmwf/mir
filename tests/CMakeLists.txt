@@ -67,23 +67,8 @@ ecbuild_get_test_multidata(
 
 
 # Set testing environment
-if( NOT eccodes_BASE_DIR )
-    if( TARGET "grib_compare" )
-        get_target_property( CMD_GRIB_COMPARE "grib_compare" LOCATION )
-    endif()
-    if( NOT CMD_GRIB_COMPARE )
-        find_program( CMD_GRIB_COMPARE "grib_compare" )
-    endif()
-    if( CMD_GRIB_COMPARE )
-        get_filename_component( _grib_compare_dir "${CMD_GRIB_COMPARE}" PATH )
-        get_filename_component( eccodes_BASE_DIR "${_grib_compare_dir}" ABSOLUTE )
-        set( eccodes_BASE_DIR "${eccodes_BASE_DIR}/../" )
-    else()
-        ecbuild_critical("Could not guess eccodes_BASE_DIR, nor find grib_compare (in bundle nor in path) as an alternative" )
-    endif()
-endif()
-
 set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
+
 
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
