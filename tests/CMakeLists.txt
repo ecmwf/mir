@@ -83,16 +83,7 @@ if( NOT eccodes_BASE_DIR )
     endif()
 endif()
 
-set( _testEnvironment
-    "MIR_DEBUG=1"
-    "MIR_HOME=${CMAKE_BINARY_DIR}"
-    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
-if( eccodes_HAVE_INSTALL_ECCODES_DEFINITIONS )
-    list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions" )
-endif()
-if( eccodes_HAVE_INSTALL_ECCODES_SAMPLES )
-    list( APPEND _testEnvironment "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
-endif()
+set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
 
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
