@@ -126,6 +126,8 @@ list(APPEND mir_srcs
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
+    caching/InMemoryMeshCache.cc
+    caching/InMemoryMeshCache.h
     caching/LegendreCache.cc
     caching/LegendreCache.h
     caching/MeshCache.cc

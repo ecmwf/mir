@@ -10,42 +10,53 @@
  */
 
 
-#ifndef mir_action_DerivativeFilter_h
-#define mir_action_DerivativeFilter_h
+#ifndef mir_caching_InMemoryMeshCache_h
+#define mir_caching_InMemoryMeshCache_h
 
-#include <string>
+#include "mir/caching/InMemoryCache.h"
 
-#include "mir/action/plan/Action.h"
-#include "mir/util/MeshGeneratorParameters.h"
+
+namespace atlas {
+class Mesh;
+class Grid;
+}  // namespace atlas
+
+namespace mir {
+namespace util {
+class MIRStatistics;
+class MeshGeneratorParameters;
+}  // namespace util
+}  // namespace mir
 
 
 namespace mir {
-namespace action {
+namespace caching {
 
 
-class DerivativeFilter : public Action {
+class InMemoryMeshCache {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
     // -- Constructors
-
-    DerivativeFilter(const param::MIRParametrisation&);
-    DerivativeFilter(const DerivativeFilter&) = delete;
+    // None
 
     // -- Destructor
-
-    virtual ~DerivativeFilter();
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    DerivativeFilter& operator=(const DerivativeFilter&) = delete;
+    // None
 
     // -- Methods
-    // None
+
+    static const InMemoryMeshCache& instance();
+    static atlas::Mesh atlasMesh(util::MIRStatistics&, const atlas::Grid&, const util::MeshGeneratorParameters&);
 
     // -- Overridden methods
     // None
@@ -61,8 +72,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -74,20 +84,23 @@ protected:
     // None
 
 private:
+    // -- Constructors
+
+    InMemoryMeshCache();
+
+    // -- Destructor
+
+    virtual ~InMemoryMeshCache() = default;
+
     // -- Members
-
-    util::MeshGeneratorParameters meshGeneratorParams_;
-
-    // -- Methods
     // None
 
+    // -- Methods
+
+    virtual void print(std::ostream&) const;
+
     // -- Overridden methods
-
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
-
+    // None
 
     // -- Class members
     // None
@@ -96,11 +109,15 @@ private:
     // None
 
     // -- Friends
-    // None
+
+    friend std::ostream& operator<<(std::ostream& s, const InMemoryMeshCache& p) {
+        p.print(s);
+        return s;
+    }
 };
 
 
-}  // namespace action
+}  // namespace caching
 }  // namespace mir
 
 
