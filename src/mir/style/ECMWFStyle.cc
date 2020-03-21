@@ -19,6 +19,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
@@ -193,19 +194,15 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     long uv = 0;
     uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && (uv != 0));
 
-    // completed later
-    const std::string transform   = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
-    const std::string interpolate = "interpolate.grid2";
-    const std::string target      = target_gridded_from_parametrisation(user, field, false);
-
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
     }
 
+    auto target = target_gridded_from_parametrisation(user, field, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
 
-            plan.add(transform + target);
+            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
         }
         else {
 
@@ -215,7 +212,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             // intermediate grid is not followed by an additional interpolation
             std::string gridname;
             if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
-                plan.add(interpolate + target);
+                plan.add("interpolate.grid2" + target);
             }
         }
 
@@ -270,12 +267,9 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    // completed later
-    const std::string interpolate = "interpolate.grid2";
-    const std::string target      = target_gridded_from_parametrisation(user, field, rotation);
-
+    auto target = target_gridded_from_parametrisation(user, field, rotation);
     if (!target.empty()) {
-        plan.add(interpolate + target);
+        plan.add("interpolate.grid2" + target);
 
         if (vod2uv || uv2uv) {
             ASSERT(vod2uv != uv2uv);
@@ -404,8 +398,11 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
     if (field_gridded || (user_wants_gridded > 0)) {
 
-        if (option(user, "derivative", false)) {
-            plan.add("filter.derivative");
+        std::string nabla;
+        if (user.get("nabla", nabla)) {
+            for (auto operation : eckit::StringTools::split("/", nabla)) {
+                plan.add("filter." + operation);
+            }
         }
 
         if (option(user, "globalise", false)) {

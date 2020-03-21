@@ -10,39 +10,34 @@
  */
 
 
-#ifndef mir_action_DerivativeFilter_h
-#define mir_action_DerivativeFilter_h
+#ifndef mir_action_NablaFilterT_h
+#define mir_action_NablaFilterT_h
 
-#include <string>
-
-#include "mir/action/plan/Action.h"
-#include "mir/util/MeshGeneratorParameters.h"
+#include "mir/action/filter/NablaFilter.h"
 
 
 namespace mir {
 namespace action {
 
 
-class DerivativeFilter : public Action {
+template<typename T>
+class NablaFilterT : public NablaFilter {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    DerivativeFilter(const param::MIRParametrisation&);
-    DerivativeFilter(const DerivativeFilter&) = delete;
+    using NablaFilter::NablaFilter;
 
     // -- Destructor
-
-    virtual ~DerivativeFilter();
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    DerivativeFilter& operator=(const DerivativeFilter&) = delete;
+    // None
 
     // -- Methods
     // None
@@ -61,8 +56,7 @@ protected:
     // None
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -75,19 +69,17 @@ protected:
 
 private:
     // -- Members
-
-    util::MeshGeneratorParameters meshGeneratorParams_;
+    // None
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
-
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

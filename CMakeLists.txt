@@ -70,8 +70,6 @@ foreach( _tpl ${MIR_TPLS} )
   endif()
 endforeach()
 
-### include directories
-
 include_directories( ${MIR_INCLUDE_DIRS} ${MIR_EXTRA_INCLUDE_DIRS}  )
 
 add_subdirectory( "src" )
@@ -79,18 +77,23 @@ add_subdirectory( "etc" )
 add_subdirectory( "share" )
 add_subdirectory( "tests" )
 
-### installation
+## print all variables
+#get_cmake_property(_variableNames VARIABLES)
+#foreach(_variableName ${_variableNames})
+#  ecbuild_info("${_variableName}=${${_variableName}}")
+#endforeach()
+
+
+###############################################################################
+# installation
 
 # install( DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
-ecbuild_add_resources( TARGET ${PROJECT_NAME}_top_files SOURCES
-                       AUTHORS README NOTICE LICENSE INSTALL COPYING
-                       DONT_PACK
-                       BUGS )
-
-############################################################################################
-# packaging and installation
+ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files
+                      SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING
+                      DONT_PACK BUGS TODO)
 
 ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()
+

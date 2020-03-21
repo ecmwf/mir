@@ -24,6 +24,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
+#include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
@@ -212,7 +213,7 @@ public:
         options_.push_back(new SimpleOption<double>("area-precision", "cropping area precision ('outward')"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
-        options_.push_back(new SimpleOption<bool>("derivative", "Derivative"));
+        options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
 
         options_.push_back(new SimpleOption<bool>(
             "pre-globalise", "Make the field global (before interpolation) adding missing values if needed"));
