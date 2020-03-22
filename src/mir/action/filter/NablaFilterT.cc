@@ -51,9 +51,8 @@ protected:
         auto view  = atlas::array::make_view<double, 2>(field);
 
         // Set input field (copying is not great, but there you go)
-        size_t d = 0;
         for (atlas::idx_t v = 0; v < field.variables(); ++v) {
-            auto& values = data.values(d++);
+            auto& values = data.values(size_t(v));
             ASSERT(values.size() <= size_t(nodes_.size()));
 
             size_t m = 0;
@@ -68,14 +67,15 @@ protected:
     }
 
     void writeField(data::MIRField& data, const atlas::Field& field) const {
-        ASSERT(field.variables() >= 1);
-        data.dimensions(field.variables());
+        ASSERT(data.dimensions() > 0);
+        ASSERT(field.variables() > 0);
 
         auto points = data.values(0).size();
         auto view   = atlas::array::make_view<double, 2>(field);
 
+        data.dimensions(field.variables());
+
         // Set results (copying is not great, but there you go)
-        size_t d = 0;
         for (atlas::idx_t v = 0; v < field.variables(); ++v) {
             data::MIRValuesVector values;
             values.reserve(points);
@@ -87,7 +87,7 @@ protected:
             }
             ASSERT(values.size() == points);
 
-            data.update(values, d++);
+            data.update(values, size_t(v));
         }
     }
 
@@ -110,6 +110,9 @@ struct ScalarGradient : NablaOperation {
 
         nabla().gradient(a, b);
         writeField(field, b);
+
+        field.handle(0, 0);
+        field.handle(1, 0);
     }
 };
 
@@ -136,6 +139,11 @@ struct UVGradient : NablaOperation {
 
         nabla().gradient(a, b);
         writeField(field, b);
+
+        field.handle(0, 0);
+        field.handle(1, 0);
+        field.handle(2, 1);
+        field.handle(3, 1);
     }
 };
 

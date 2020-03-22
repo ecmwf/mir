@@ -74,8 +74,7 @@ protected:
 
 private:
     // -- Members
-
-    bool reuseHandle_;
+    // None
 
     // -- Methods
 

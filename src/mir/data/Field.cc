@@ -11,6 +11,7 @@
 
 
 #include <algorithm>
+#include <numeric>
 #include <ostream>
 
 #include "eckit/exception/Exceptions.h"
@@ -45,6 +46,7 @@ Field::Field(const repres::Representation* repres, bool hasMissing, double missi
 Field::Field(const Field& other) :
     values_(other.values_),
     metadata_(other.metadata_),
+    handles_(other.handles_),
     missingValue_(other.missingValue_),
     representation_(other.representation_),
     recomputeHasMissing_(other.recomputeHasMissing_),
@@ -87,6 +89,9 @@ void Field::dimensions(size_t size) {
     eckit::AutoLock<const eckit::Counted> lock(this);
     metadata_.resize(size);
     values_.resize(size);
+
+    handles_.resize(size);
+    std::iota(handles_.begin(), handles_.end(), 0);
 }
 
 
@@ -104,6 +109,8 @@ void Field::select(size_t which) {
 
     metadata_.resize(1);
     values_.resize(1);
+    handles_.resize(1);
+    handles_[0] = 0;
 }
 
 
@@ -138,6 +145,14 @@ void Field::print(std::ostream& out) const {
         out << ')';
     }
 
+    out << ",handles=";
+    char sep = '(';
+    for (auto h : handles_) {
+        out << sep << h;
+        sep = ',';
+    }
+    out << ')';
+
     out << "]";
 }
 
@@ -158,6 +173,22 @@ void Field::validate() const {
             representation_->validate(values(i));
         }
     }
+}
+
+
+void Field::handle(size_t which, size_t handle) {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    ASSERT(which < handles_.size());
+    handles_[which] = handle;
+}
+
+
+size_t Field::handle(size_t which) const {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    ASSERT(which < handles_.size());
+    return handles_[which];
 }
 
 
@@ -207,9 +238,6 @@ const MIRValuesVector& Field::values(size_t which) const {
 
 MIRValuesVector& Field::direct(size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
-    // eckit::Log::info() << "Field::direct => " << values_.size() << std::endl;
-
 
     ASSERT(which < values_.size());
     return values_[which];

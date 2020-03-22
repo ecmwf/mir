@@ -89,6 +89,9 @@ public:
 
     void validate() const;
 
+    void handle(size_t which, size_t handle);
+    size_t handle(size_t which) const;
+
     MIRFieldStats statistics(size_t i) const;
 
     /// @note not in MIRField
@@ -129,6 +132,7 @@ private:
 
     std::vector<MIRValuesVector> values_;
     std::vector<std::map<std::string, long> > metadata_;
+    std::vector<size_t> handles_;
 
     double missingValue_;
     const repres::Representation* representation_;
