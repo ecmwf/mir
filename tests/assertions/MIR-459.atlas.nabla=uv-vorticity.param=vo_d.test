@@ -1,0 +1,9 @@
+# disabled because
+# Exception: Number of dimensions do not match: template argument 1 expected to be 2
+
+# mars
+date=20200308,level=1000,truncation=20,param=vo_d
+# mir
+--vod2uv --grid=1/1 --nabla=uv-vorticity
+# grib_get
+# (no checks for the moment)
