@@ -176,7 +176,7 @@ struct UVVorticity : NablaOperation {
     static const char* name() { return "UVVorticity"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 2);
-        auto b = createField(2);
+        auto b = createField(1);
 
         nabla().curl(a, b);
         writeField(field, b);
