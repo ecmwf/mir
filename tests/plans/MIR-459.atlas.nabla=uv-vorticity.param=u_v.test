@@ -1,0 +1,7 @@
+# mars
+date=20200308,level=1000,grid=O80,param=u_v
+# mir
+--uv2uv --nabla=uv-vorticity
+# plan
+UVVorticity[meshGeneratorParameters=...]|Save[output=...]
+

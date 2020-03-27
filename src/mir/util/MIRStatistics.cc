@@ -38,6 +38,7 @@ static const char* all_timings[] = {"crop",          "Time in area-crop",
                                     "loadCoeff",     "Time loading coefficients",
                                     "createCoeff",   "Time creating coefficients",
                                     "calc",          "Time in basic computations",
+                                    "nabla",         "Time in nabla calculations",
                                     "save",          "Time saving",
                                     "gribEncoding",  "Time in GRIB encoding",
                                     nullptr};

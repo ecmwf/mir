@@ -93,6 +93,9 @@ public:
 
     void validate() const;
 
+    void handle(size_t which, size_t handle);
+    size_t handle(size_t which) const;
+
     MIRFieldStats statistics(size_t i) const;
 
     // -- Overridden methods

@@ -83,8 +83,7 @@ private:
     util::MeshGeneratorParameters meshGeneratorParams_;
 
     // -- Methods
-
-    atlas::Mesh atlasMesh(util::MIRStatistics&, const atlas::Grid&, const util::MeshGeneratorParameters&) const;
+    // None
 
     // -- Overridden methods
 

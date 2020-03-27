@@ -13,29 +13,27 @@
 #include "mir/method/fe/FiniteElement.h"
 
 #include <algorithm>
+#include <cmath>
 #include <forward_list>
+#include <iterator>
 #include <limits>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <ostream>
+#include <sstream>
 #include <utility>
 
-#include "eckit/config/Resource.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/api/Atlas.h"
-
-#include "mir/caching/InMemoryCache.h"
+#include "mir/caching/InMemoryMeshCache.h"
 #include "mir/config/LibMir.h"
-#include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
-#include "mir/method/fe/CalculateCellLongestDiagonal.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 
 
@@ -46,6 +44,14 @@ namespace fe {
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-15;
+
+static std::mutex local_mutex;
+static pthread_once_t once = PTHREAD_ONCE_INIT;
+
+static std::map<std::string, FiniteElementFactory*>* m = nullptr;
+static void init() {
+    m = new std::map<std::string, FiniteElementFactory*>();
+}
 
 using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
 using element_tree_t      = atlas::interpolation::method::ElemIndex3;
@@ -61,21 +67,19 @@ static void normalise(triplet_vector_t& triplets) {
         sum += t.value();
     }
 
+    // normalise all weights according to the total
     if (sum > std::numeric_limits<double>::epsilon()) {
-
-        // now normalise all weights according to the total
         const double invSum = 1. / sum;
         for (auto& t : triplets) {
             t.value() *= invSum;
         }
+        return;
     }
-    else {
 
-        // if no reasonable seight sum is found, distribute equitably
-        const double invSum = 1. / triplets.size();
-        for (auto& t : triplets) {
-            t.value() = invSum;
-        }
+    // if no reasonable weight sum is found, distribute equitably
+    const double invSum = 1. / triplets.size();
+    for (auto& t : triplets) {
+        t.value() = invSum;
     }
 }
 
@@ -209,19 +213,6 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
 }
 
 
-static caching::InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", 512 * 1024 * 1024, 0,
-                                                      "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
-
-
-static pthread_once_t once                             = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                       = nullptr;
-static std::map<std::string, FiniteElementFactory*>* m = nullptr;
-static void init() {
-    local_mutex = new eckit::Mutex();
-    m           = new std::map<std::string, FiniteElementFactory*>();
-}
-
-
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
     MethodWeighted(param),
     meshGeneratorParams_(label, param) {
@@ -242,119 +233,12 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
         params.meshCellLongestDiagonal_ = true;
     }
 
-    auto msh = atlasMesh(statistics, repres.atlasGrid(), params);
+    auto msh = caching::InMemoryMeshCache::atlasMesh(statistics, repres.atlasGrid(), params);
     if (!params.meshCellLongestDiagonal_) {
         ASSERT(d > 0.);
         msh.metadata().set("cell_longest_diagonal", d);
     }
     return msh;
-}
-
-
-atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const atlas::Grid& grid,
-                                     const util::MeshGeneratorParameters& meshGeneratorParams) const {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
-
-    eckit::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")", log);
-    auto cacheUse(statistics.cacheUser(mesh_cache));
-
-    // generate signature including the mesh generation settings
-    eckit::MD5 md5;
-    md5 << grid;
-    md5 << meshGeneratorParams;
-
-    auto j = mesh_cache.find(md5);
-    if (j != mesh_cache.end()) {
-        return *j;
-    }
-
-    atlas::Mesh& mesh = mesh_cache[md5];
-    ASSERT(!mesh.generated());
-
-    try {
-
-        const std::string meshGenerator = meshGeneratorParams.meshGenerator_;
-        if (meshGenerator.empty()) {
-            throw eckit::SeriousBug("Mesh: no mesh generator defined ('" + meshGenerator + "')");
-        }
-
-        atlas::MeshGenerator generator(meshGenerator, meshGeneratorParams);
-        mesh = generator.generate(grid);
-        ASSERT(mesh.generated());
-
-        // If meshgenerator did not create xyz field already, do it now.
-        {
-            eckit::ResourceUsage usage("BuildXYZField", log);
-            eckit::TraceTimer<LibMir> timer("Mesh: BuildXYZField");
-            atlas::mesh::actions::BuildXYZField()(mesh);
-        }
-
-        // Calculate barycenters of mesh cells
-        if (meshGeneratorParams.meshCellCentres_) {
-            eckit::ResourceUsage usage("BuildCellCentres", log);
-            eckit::TraceTimer<LibMir> timer("Mesh: BuildCellCentres");
-            atlas::mesh::actions::BuildCellCentres()(mesh);
-        }
-
-        // Calculate the mesh cells longest diagonal
-        if (meshGeneratorParams.meshCellLongestDiagonal_) {
-            eckit::ResourceUsage usage("CalculateCellLongestDiagonal", log);
-            eckit::TraceTimer<LibMir> timer("Mesh: CalculateCellLongestDiagonal");
-            CalculateCellLongestDiagonal()(mesh);
-        }
-
-        // Calculate node-lumped mass matrix
-        if (meshGeneratorParams.meshNodeLumpedMassMatrix_) {
-            eckit::ResourceUsage usage("BuildNodeLumpedMassMatrix", log);
-            eckit::TraceTimer<LibMir> timer("Mesh: BuildNodeLumpedMassMatrix");
-            BuildNodeLumpedMassMatrix()(mesh);
-        }
-
-        // Calculate node-to-cell ("inverse") connectivity
-        if (meshGeneratorParams.meshNodeToCellConnectivity_) {
-            eckit::ResourceUsage usage("BuildNode2CellConnectivity", log);
-            eckit::TraceTimer<LibMir> timer("Mesh: BuildNode2CellConnectivity");
-            atlas::mesh::actions::BuildNode2CellConnectivity{mesh}();
-        }
-
-        // Some information
-        log << "Mesh["
-               "cells="
-            << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << "," << meshGeneratorParams
-            << "]" << std::endl;
-
-        // Write file(s)
-        if (!meshGeneratorParams.fileLonLat_.empty()) {
-            atlas::output::PathName path(meshGeneratorParams.fileLonLat_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "lonlat")).write(mesh);
-        }
-
-        if (!meshGeneratorParams.fileXY_.empty()) {
-            atlas::output::PathName path(meshGeneratorParams.fileXY_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xy")).write(mesh);
-        }
-
-        if (!meshGeneratorParams.fileXYZ_.empty()) {
-            atlas::output::PathName path(meshGeneratorParams.fileXYZ_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
-        }
-    }
-    catch (...) {
-        // Make sure we don't leave an incomplete entry in the cache
-        mesh_cache.erase(md5);
-        throw;
-    }
-
-    mesh_cache.footprint(md5, caching::InMemoryCacheUsage(mesh.footprint(), 0));
-
-    ASSERT(mesh.generated());
-    return mesh;
 }
 
 
@@ -507,7 +391,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {
     pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> guard(local_mutex);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
@@ -519,7 +403,7 @@ FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFact
 
 
 FiniteElementFactory::~FiniteElementFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> guard(local_mutex);
 
     m->erase(name_);
 }
@@ -527,7 +411,7 @@ FiniteElementFactory::~FiniteElementFactory() {
 
 void FiniteElementFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> guard(local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -540,7 +424,7 @@ void FiniteElementFactory::list(std::ostream& out) {
 FiniteElement* FiniteElementFactory::build(const std::string& method, const std::string& label,
                                            const param::MIRParametrisation& param) {
     pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> guard(local_mutex);
 
     eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << method << "'" << std::endl;
 

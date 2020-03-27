@@ -19,6 +19,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
@@ -46,6 +47,13 @@ struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
 };
 
 
+bool option(const param::MIRParametrisation& param, const std::string& key, bool dfault) {
+    bool value = dfault;
+    param.get(key, value);
+    return value;
+};
+
+
 }  // namespace
 
 
@@ -58,12 +66,10 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
                                                        const param::MIRParametrisation& field, bool checkRotation) {
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
-    bool filter = false;
-    user.get("filter", filter);
-
     std::vector<double> rotation;
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
 
+    bool filter = option(user, "filter", false);
     bool forced = filter || rotated;
     const std::string prefix(user.has("rotation") ? "rotated-" : "");
 
@@ -182,28 +188,21 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     Resol resol(parametrisation_, false);
 
     bool rotation = user.has("rotation");
-
-    bool vod2uv = false;
-    bool uv2uv  = false;
-    user.get("vod2uv", vod2uv);
-    user.get("uv2uv", uv2uv);
+    bool vod2uv   = option(user, "vod2uv", false);
+    bool uv2uv    = option(user, "uv2uv", false);
 
     long uv = 0;
     uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && (uv != 0));
-
-    // completed later
-    const std::string transform   = "transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-");
-    const std::string interpolate = "interpolate.grid2";
-    const std::string target      = target_gridded_from_parametrisation(user, field, false);
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
     }
 
+    auto target = target_gridded_from_parametrisation(user, field, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
 
-            plan.add(transform + target);
+            plan.add("transform." + std::string(vod2uv ? "sh-vod-to-uv-" : "sh-scalar-to-") + target);
         }
         else {
 
@@ -213,7 +212,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
             // intermediate grid is not followed by an additional interpolation
             std::string gridname;
             if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
-                plan.add(interpolate + target);
+                plan.add("interpolate.grid2" + target);
             }
         }
 
@@ -246,9 +245,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"spectral", "raw"});
 
-    bool vod2uv = false;
-    user.get("vod2uv", vod2uv);
-
+    bool vod2uv = option(user, "vod2uv", false);
     if (vod2uv) {
         plan.add("transform.sh-vod-to-UV");
     }
@@ -260,11 +257,8 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     auto& field = parametrisation_.fieldParametrisation();
 
     bool rotation = user.has("rotation");
-
-    bool vod2uv = false;
-    bool uv2uv  = false;
-    user.get("vod2uv", vod2uv);
-    user.get("uv2uv", uv2uv);
+    bool vod2uv   = option(user, "vod2uv", false);
+    bool uv2uv    = option(user, "uv2uv", false);
 
     if (vod2uv) {
         eckit::Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
@@ -273,12 +267,9 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    // completed later
-    const std::string interpolate = "interpolate.grid2";
-    const std::string target      = target_gridded_from_parametrisation(user, field, rotation);
-
+    auto target = target_gridded_from_parametrisation(user, field, rotation);
     if (!target.empty()) {
-        plan.add(interpolate + target);
+        plan.add("interpolate.grid2" + target);
 
         if (vod2uv || uv2uv) {
             ASSERT(vod2uv != uv2uv);
@@ -294,19 +285,14 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
-    bool vod2uv = false;
-    bool uv2uv  = false;
-    user.get("vod2uv", vod2uv);
-    user.get("uv2uv", uv2uv);
+    bool vod2uv = option(user, "vod2uv", false);
+    bool uv2uv  = option(user, "uv2uv", false);
 
     if (vod2uv || uv2uv) {
         ASSERT(vod2uv != uv2uv);
 
-        bool u_only = false;
-        user.get("u-only", u_only);
-
-        bool v_only = false;
-        user.get("v-only", v_only);
+        bool u_only = option(user, "u-only", false);
+        bool v_only = option(user, "v-only", false);
 
         if (u_only) {
             ASSERT(!v_only);
@@ -343,49 +329,46 @@ void ECMWFStyle::print(std::ostream& out) const {
 
 
 void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, output::MIROutput& output) const {
+    auto& user = parametrisation_.userParametrisation();
 
     // All the nasty logic goes there
     prologue(plan);
 
     size_t user_wants_gridded = 0;
 
-    if (parametrisation_.userParametrisation().has("grid")) {
+    if (user.has("grid")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("reduced")) {
+    if (user.has("reduced")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("regular")) {
+    if (user.has("regular")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("octahedral")) {
+    if (user.has("octahedral")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("pl")) {
+    if (user.has("pl")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("gridname")) {
+    if (user.has("gridname")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("griddef")) {
+    if (user.has("griddef")) {
         user_wants_gridded++;
     }
 
-    if (parametrisation_.userParametrisation().has("latitudes") ||
-        parametrisation_.userParametrisation().has("longitudes")) {
+    if (user.has("latitudes") || user.has("longitudes")) {
         user_wants_gridded++;
     }
 
-    bool preglobalise = false;
-    parametrisation_.userParametrisation().get("pre-globalise", preglobalise);
-
-    if (preglobalise) {
+    if (option(user, "pre-globalise", false)) {
         plan.add("filter.globalise");
     }
 
@@ -415,26 +398,30 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
     if (field_gridded || (user_wants_gridded > 0)) {
 
-        bool globalise = false;
-        parametrisation_.userParametrisation().get("globalise", globalise);
+        std::string nabla;
+        if (user.get("nabla", nabla)) {
+            for (auto operation : eckit::StringTools::split("/", nabla)) {
+                plan.add("filter." + operation);
+            }
+        }
 
-        if (globalise) {
+        if (option(user, "globalise", false)) {
             plan.add("filter.globalise");
         }
 
-        if (parametrisation_.userParametrisation().has("area")) {
+        if (user.has("area")) {
             plan.add("crop.area");
         }
 
-        if (parametrisation_.userParametrisation().has("bitmap")) {
+        if (user.has("bitmap")) {
             plan.add("filter.bitmap");
         }
 
-        if (parametrisation_.userParametrisation().has("frame")) {
+        if (user.has("frame")) {
             plan.add("filter.frame");
         }
 
-        if (parametrisation_.userParametrisation().has("unstructured")) {
+        if (user.has("unstructured")) {
             plan.add("filter.unstructured");
         }
     }
