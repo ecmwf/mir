@@ -1,0 +1,8 @@
+# mars
+date=20200308,level=1000,grid=O80,param=u_v
+# mir
+--nabla=scalar-gradient
+# plan
+ScalarGradient[meshGeneratorParameters=...]|Save[output=...]
+ScalarGradient[meshGeneratorParameters=...]|Save[output=...]
+

@@ -60,11 +60,12 @@ protected:
     util::MeshGeneratorParameters meshGeneratorParams_;
 
     // -- Methods
-
-    void print(std::ostream&) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    void print(std::ostream&) const;
+    void custom(std::ostream&) const;
 
     // -- Class members
     // None

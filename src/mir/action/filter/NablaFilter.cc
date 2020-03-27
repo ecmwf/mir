@@ -36,6 +36,11 @@ void NablaFilter::print(std::ostream& out) const {
 }
 
 
+void mir::action::NablaFilter::custom(std::ostream& out) const {
+    out << name() << "[meshGeneratorParameters=...]";
+}
+
+
 static pthread_once_t once       = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex = nullptr;
 static std::set<std::string>* m  = nullptr;
