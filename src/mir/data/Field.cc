@@ -11,7 +11,6 @@
 
 
 #include <algorithm>
-#include <numeric>
 #include <ostream>
 
 #include "eckit/exception/Exceptions.h"
@@ -89,9 +88,7 @@ void Field::dimensions(size_t size) {
     eckit::AutoLock<const eckit::Counted> lock(this);
     metadata_.resize(size);
     values_.resize(size);
-
-    handles_.resize(size);
-    std::iota(handles_.begin(), handles_.end(), 0);
+    handles_.clear();
 }
 
 
@@ -101,7 +98,6 @@ void Field::select(size_t which) {
 
     metadata_.resize(values_.size());
 
-
     if (which != 0) {
         std::swap(metadata_[0], metadata_[which]);
         std::swap(values_[0], values_[which]);
@@ -109,8 +105,16 @@ void Field::select(size_t which) {
 
     metadata_.resize(1);
     values_.resize(1);
-    handles_.resize(1);
-    handles_[0] = 0;
+
+    auto hit = handles_.find(which);
+    if (hit != handles_.end()) {
+        auto h = hit->second;
+        handles_.clear();
+        handles_[0] = h;
+    }
+    else {
+        handles_.clear();
+    }
 }
 
 
@@ -123,7 +127,6 @@ Field::~Field() {
 
 void Field::print(std::ostream& out) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
 
     out << "Field[count=" << count() << ",";
     out << "dimensions=" << values_.size();
@@ -148,7 +151,7 @@ void Field::print(std::ostream& out) const {
     out << ",handles=";
     char sep = '(';
     for (auto h : handles_) {
-        out << sep << h;
+        out << sep << h.first << "=>" << h.second;
         sep = ',';
     }
     out << ')';
@@ -179,7 +182,7 @@ void Field::validate() const {
 void Field::handle(size_t which, size_t handle) {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    ASSERT(which < handles_.size());
+    ASSERT(which < dimensions());
     handles_[which] = handle;
 }
 
@@ -187,8 +190,9 @@ void Field::handle(size_t which, size_t handle) {
 size_t Field::handle(size_t which) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
 
-    ASSERT(which < handles_.size());
-    return handles_[which];
+    ASSERT(which < dimensions());
+    auto hit = handles_.find(which);
+    return hit != handles_.end() ? hit->second : which;
 }
 
 

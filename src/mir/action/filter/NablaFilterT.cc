@@ -40,18 +40,23 @@ struct NablaOperation {
 
 protected:
     atlas::Field createField(size_t variables) const {
-        ASSERT(variables >= 1);
-        return fvm_.node_columns().createField<double>(atlas::option::variables(variables));
+        ASSERT(variables > 0);
+        return variables == 1 ? fvm_.node_columns().createField<double>()
+                              : fvm_.node_columns().createField<double>(atlas::option::variables(variables));
     }
 
     atlas::Field readField(const data::MIRField& data, size_t variables) const {
-        ASSERT(data.dimensions() == variables);
+        ASSERT(variables > 0);
+        ASSERT(variables == data.dimensions());
 
         auto field = createField(variables);
-        auto view  = atlas::array::make_view<double, 2>(field);
 
-        // Set input field (copying is not great, but there you go)
-        for (atlas::idx_t v = 0; v < field.variables(); ++v) {
+        using atlas::array::Range;
+        auto view = variables == 1 ? atlas::array::make_view<double, 1>(field).slice(Range::all(), Range::dummy())
+                                   : atlas::array::make_view<double, 2>(field).slice(Range::all(), Range::all());
+
+        // Copy input field (not great, but there you go)
+        for (atlas::idx_t v = 0; v < atlas::idx_t(variables); ++v) {
             auto& values = data.values(size_t(v));
             ASSERT(values.size() <= size_t(nodes_.size()));
 
@@ -62,21 +67,26 @@ protected:
             ASSERT(values.size() == m);
         }
 
+        field.set_dirty();
         field.haloExchange();
         return field;
     }
 
     void writeField(data::MIRField& data, const atlas::Field& field) const {
         ASSERT(data.dimensions() > 0);
-        ASSERT(field.variables() > 0);
 
-        auto points = data.values(0).size();
-        auto view   = atlas::array::make_view<double, 2>(field);
+        auto points    = data.values(0).size();
+        auto variables = field.variables() > 0 ? field.variables() : 1;
+        ASSERT(variables > 0);
 
-        data.dimensions(field.variables());
+        data.dimensions(variables);
 
-        // Set results (copying is not great, but there you go)
-        for (atlas::idx_t v = 0; v < field.variables(); ++v) {
+        using atlas::array::Range;
+        const auto view = variables == 1 ? atlas::array::make_view<double, 1>(field).slice(Range::all(), Range::dummy())
+                                         : atlas::array::make_view<double, 2>(field).slice(Range::all(), Range::all());
+
+        // Copy results (not great, but there you go)
+        for (atlas::idx_t v = 0; v < variables; ++v) {
             data::MIRValuesVector values;
             values.reserve(points);
 
@@ -161,9 +171,9 @@ struct UVDivergence : NablaOperation {
 };
 
 
-struct UVCurl : NablaOperation {
+struct UVVorticity : NablaOperation {
     using NablaOperation::NablaOperation;
-    static const char* name() { return "UVCurl"; }
+    static const char* name() { return "UVVorticity"; }
     void operator()(data::MIRField& field) const override {
         auto a = readField(field, 2);
         auto b = createField(2);
@@ -193,7 +203,9 @@ void NablaFilterT<T>::execute(context::Context& ctx) const {
 
     auto params = meshGeneratorParams_;
     field.representation()->fill(params);
-    params.set("3d", false).set("force_include_north_pole", false).set("force_include_south_pole", false);
+    params.set("3d", false);
+    params.set("force_include_north_pole", false);
+    params.set("force_include_south_pole", false);
 
     auto grid = field.representation()->atlasGrid();
     auto mesh = caching::InMemoryMeshCache::atlasMesh(ctx.statistics(), grid, params);
@@ -220,7 +232,7 @@ static NablaFilterBuilder<NablaFilterT<ScalarGradient>> __nabla1("scalar-gradien
 static NablaFilterBuilder<NablaFilterT<ScalarLaplacian>> __nabla2("scalar-laplacian");
 static NablaFilterBuilder<NablaFilterT<UVGradient>> __nabla3("uv-gradient");
 static NablaFilterBuilder<NablaFilterT<UVDivergence>> __nabla4("uv-divergence");
-static NablaFilterBuilder<NablaFilterT<UVCurl>> __nabla5("uv-curl");
+static NablaFilterBuilder<NablaFilterT<UVVorticity>> __nabla5("uv-vorticity");
 
 
 }  // namespace action

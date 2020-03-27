@@ -132,7 +132,7 @@ private:
 
     std::vector<MIRValuesVector> values_;
     std::vector<std::map<std::string, long> > metadata_;
-    std::vector<size_t> handles_;
+    std::map<size_t, size_t> handles_;
 
     double missingValue_;
     const repres::Representation* representation_;
