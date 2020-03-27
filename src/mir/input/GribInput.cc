@@ -398,7 +398,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
 
         // angles are within +-1/2 precision, so (Lon2 - Lon1 + we) uses factor 3*1/2
         double eps = 0.;
-        std::unique_ptr<Processing> precision_in_degrees(inverse("angularPrecision"));
+        std::unique_ptr<Processing> precision_in_degrees(angular_precision());
         ASSERT(precision_in_degrees->eval(h, eps));
         eps *= 1.5;
 
