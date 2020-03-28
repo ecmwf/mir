@@ -45,12 +45,12 @@ namespace fe {
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static const double parametricEpsilon = 1e-15;
 
-static std::mutex local_mutex;
-static pthread_once_t once = PTHREAD_ONCE_INIT;
-
+static pthread_once_t once                             = PTHREAD_ONCE_INIT;
+static std::mutex* mtx                                 = nullptr;
 static std::map<std::string, FiniteElementFactory*>* m = nullptr;
 static void init() {
-    m = new std::map<std::string, FiniteElementFactory*>();
+    mtx = new std::mutex();
+    m   = new std::map<std::string, FiniteElementFactory*>();
 }
 
 using triplet_vector_t    = std::vector<WeightMatrix::Triplet>;
@@ -391,7 +391,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {
     pthread_once(&once, init);
-    std::lock_guard<std::mutex> guard(local_mutex);
+    std::lock_guard<std::mutex> guard(*mtx);
 
     if (m->find(name) != m->end()) {
         throw eckit::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
@@ -403,7 +403,7 @@ FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFact
 
 
 FiniteElementFactory::~FiniteElementFactory() {
-    std::lock_guard<std::mutex> guard(local_mutex);
+    std::lock_guard<std::mutex> guard(*mtx);
 
     m->erase(name_);
 }
@@ -411,7 +411,7 @@ FiniteElementFactory::~FiniteElementFactory() {
 
 void FiniteElementFactory::list(std::ostream& out) {
     pthread_once(&once, init);
-    std::lock_guard<std::mutex> guard(local_mutex);
+    std::lock_guard<std::mutex> guard(*mtx);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -424,7 +424,7 @@ void FiniteElementFactory::list(std::ostream& out) {
 FiniteElement* FiniteElementFactory::build(const std::string& method, const std::string& label,
                                            const param::MIRParametrisation& param) {
     pthread_once(&once, init);
-    std::lock_guard<std::mutex> guard(local_mutex);
+    std::lock_guard<std::mutex> guard(*mtx);
 
     eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << method << "'" << std::endl;
 
