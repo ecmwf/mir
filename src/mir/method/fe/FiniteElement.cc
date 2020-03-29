@@ -403,6 +403,7 @@ FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFact
 
 
 FiniteElementFactory::~FiniteElementFactory() {
+    pthread_once(&once, init);
     std::lock_guard<std::mutex> guard(*mtx);
 
     m->erase(name_);
