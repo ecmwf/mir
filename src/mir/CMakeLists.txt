@@ -637,10 +637,10 @@ list(APPEND mir_srcs
 
 if (HAVE_ATLAS)
     list(APPEND mir_srcs
-	    action/filter/NablaFilter.cc
-	    action/filter/NablaFilter.h
-	    action/filter/NablaFilterT.cc
-	    action/filter/NablaFilterT.h
+        action/filter/NablaFilter.cc
+        action/filter/NablaFilter.h
+        action/filter/NablaFilterT.cc
+        action/filter/NablaFilterT.h
         action/transform/InvtransScalar.cc
         action/transform/InvtransScalar.h
         action/transform/InvtransVodTouv.cc
@@ -719,6 +719,8 @@ if (HAVE_ATLAS)
         namedgrids/NamedORCA.h
         namedgrids/ORCAPattern.cc
         namedgrids/ORCAPattern.h
+        repres/other/ClenshawCurtis.cc
+        repres/other/ClenshawCurtis.h
         repres/other/ORCA.cc
         repres/other/ORCA.h
         repres/regular/Lambert.cc
