@@ -715,6 +715,10 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
+        namedgrids/ClenshawCurtisPattern.cc
+        namedgrids/ClenshawCurtisPattern.h
+        namedgrids/NamedClenshawCurtis.cc
+        namedgrids/NamedClenshawCurtis.h
         namedgrids/NamedORCA.cc
         namedgrids/NamedORCA.h
         namedgrids/ORCAPattern.cc
