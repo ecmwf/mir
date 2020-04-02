@@ -713,12 +713,6 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    // apply user-defined fixes, if any
-    static GribFixes gribFixes;
-    if (gribFixes.fix(*this, cache_.cache_)) {
-        wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
-    }
-
     data::MIRField field(cache_, missingValuesPresent != 0, missing);
 
     long scanningMode = 0;
@@ -1023,6 +1017,13 @@ bool GribInput::handle(grib_handle* h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(codes_get_long(h, "7777", &value));
+
+        // apply user-defined fixes, if any
+        static GribFixes gribFixes;
+        if (gribFixes.fix(*this, cache_.cache_)) {
+            wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
+        }
+
         return true;
     }
 
