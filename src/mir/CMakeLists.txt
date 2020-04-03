@@ -709,6 +709,8 @@ if (HAVE_ATLAS)
         method/nonlinear/NonLinear.h
         method/nonlinear/SimulateMissingValue.cc
         method/nonlinear/SimulateMissingValue.h
+        method/other/GridBoxAverageMatrixFree.cc
+        method/other/GridBoxAverageMatrixFree.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc
