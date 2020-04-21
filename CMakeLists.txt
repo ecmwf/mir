@@ -56,7 +56,7 @@ endif()
 
 ### export package to other ecbuild packages
 
-#set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+set( MIR_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( MIR_LIBRARIES      mir )
 
 get_directory_property( COMPILE_DEFINITIONS MIR_DEFINITIONS )
@@ -87,6 +87,7 @@ foreach( _tpl ${MIR_TPLS} )
   endif()
 endforeach()
 
+include_directories( ${MIR_INCLUDE_DIRS} )
 if( DEFINED MIR_EXTRA_INCLUDE_DIRS )
   include_directories( ${MIR_EXTRA_INCLUDE_DIRS} )
 endif()
