@@ -884,16 +884,6 @@ endif()
 
 list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
-set(mir_private_includes ${ECCODES_INCLUDE_DIRS})
-if(DEFINED NETCDF_INCLUDE_DIRS)
-    list(APPEND mir_private_includes ${NETCDF_INCLUDE_DIRS})
-endif()
-
-set(mir_libs ${libatlas} eckit_linalg eckit_geometry eckit_option ${ECCODES_LIBRARIES})
-if(DEFINED NETCDF_LIBRARIES)
-    list(APPEND mir_libs ${NETCDF_LIBRARIES})
-endif()
-
 
 ecbuild_add_library(
   TARGET             mir
@@ -902,8 +892,15 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  PRIVATE_INCLUDES   ${mir_private_includes}
-  LIBS               ${mir_libs}
+  PRIVATE_INCLUDES   ${ECCODES_INCLUDE_DIRS}
+  LIBS               ${libatlas} eckit_linalg eckit_geometry eckit_option ${ECCODES_LIBRARIES}
   )
 
+if(DEFINED NETCDF_LIBRARIES)
+    target_link_libraries(mir ${NETCDF_LIBRARIES})
+endif()
+
+if(DEFINED NETCDF_INCLUDE_DIRS)
+    target_include_directories(mir PRIVATE ${NETCDF_INCLUDE_DIRS})
+endif()
 
