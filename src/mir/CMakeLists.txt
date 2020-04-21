@@ -892,8 +892,18 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  PRIVATE_INCLUDES   ${ATLAS_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${NETCDF_INCLUDE_DIRS} ${ECCODES_INCLUDE_DIRS}
-  LIBS               ${libatlas} eckit_linalg eckit_geometry eckit_option ${ECCODES_LIBRARIES} ${MIR_FEATURE_LIBRARIES} ${NETCDF_LIBRARIES}
+  LIBS               ${libatlas} eckit_linalg eckit_geometry eckit_option
   )
+
+
+if(DEFINED ECCODES_INCLUDE_DIRS AND DEFINED ECCODES_LIBRARIES)
+    target_link_libraries(mir ${ECCODES_LIBRARIES})
+    target_include_directories(mir PRIVATE ${ECCODES_INCLUDE_DIRS})
+endif()
+
+if(DEFINED NETCDF_INCLUDE_DIRS AND DEFINED NETCDF_LIBRARIES)
+    target_link_libraries(mir ${NETCDF_LIBRARIES})
+    target_include_directories(mir PRIVATE ${NETCDF_INCLUDE_DIRS})
+endif()
 
 
