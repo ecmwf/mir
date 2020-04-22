@@ -61,7 +61,7 @@ void GridBoxAverageMatrixFree::execute(context::Context& ctx, const repres::Repr
             auto view = atlas::array::make_view<double, 1>(fields.add(fs.createField<double>()));
             ASSERT(view.contiguous());
             ASSERT(values.size() <= size_t(view.size()));
-            std::copy(values.begin(), values.end(), view.data());
+            std::copy_n(values.begin(), n, view.data());
         }
 
         void appendFieldWrapped(data::MIRValuesVector& values) {
