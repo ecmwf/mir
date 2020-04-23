@@ -69,6 +69,10 @@ ecbuild_get_test_multidata(
 # Set testing environment
 set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
 
+if( NOT eccodes_HAVE_MEMFS AND ECCODES_DEFINITION_PATH )
+    list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${ECCODES_DEFINITION_PATH}" )
+endif()
+
 
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
