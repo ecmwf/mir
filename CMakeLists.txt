@@ -3,7 +3,7 @@ if(POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)
 endif()
 
-find_package(ecbuild 3.0 REQUIRED)
+find_package(ecbuild 3.1 REQUIRED)
 
 project(mir VERSION 1.5.2 LANGUAGES CXX)
 
@@ -20,7 +20,7 @@ ecbuild_add_option( FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download
 ecbuild_add_option( FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions" )
 ecbuild_add_option( FEATURE OMP                DEFAULT ON  DESCRIPTION "support for OpenMP shared memory parallelism" )
 ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support for MPI distributed parallelism" )
-ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
+ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C" )
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
 ecbuild_use_package( PROJECT eccodes VERSION 2.17 REQUIRED )

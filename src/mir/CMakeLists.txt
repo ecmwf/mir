@@ -873,7 +873,6 @@ if (HAVE_NETCDF)
         netcdf/VirtualOutputDimension.cc
         netcdf/VirtualOutputDimension.h
         )
-  list(APPEND netcdflibs ${NETCDF_LIBRARIES})
 endif()
 
 
@@ -892,15 +891,9 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  PRIVATE_INCLUDES   ${ECCODES_INCLUDE_DIRS}
-  LIBS               ${libatlas} eckit_linalg eckit_geometry eckit_option ${ECCODES_LIBRARIES}
+  PUBLIC_LIBS        ${libatlas} eckit_linalg eckit_geometry eckit_option eckit eccodes
   )
 
-if(DEFINED NETCDF_LIBRARIES)
-    target_link_libraries(mir ${NETCDF_LIBRARIES})
+if(HAVE_NETCDF)
+    target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
-
-if(DEFINED NETCDF_INCLUDE_DIRS)
-    target_include_directories(mir PRIVATE ${NETCDF_INCLUDE_DIRS})
-endif()
-
