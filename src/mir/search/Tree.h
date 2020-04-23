@@ -18,8 +18,9 @@
 
 #include "eckit/container/sptree/SPValue.h"
 #include "eckit/geometry/Point3.h"
-#include "mir/util/Types.h"
 
+#include "mir/api/Atlas.h"
+#include "mir/util/Types.h"
 
 namespace mir {
 namespace param {
@@ -43,6 +44,7 @@ public:
     using Point          = Point3;
     using Payload        = size_t;
     using PointValueType = eckit::SPValue<Tree>;
+    using AtlasTree      = atlas::util::IndexKDTree;
 
 public:
     Tree(const repres::Representation&);
@@ -71,6 +73,8 @@ public:
         p.print(s);
         return s;
     }
+
+    virtual AtlasTree atlasTree() const = 0;
 
 private:
     const size_t itemCount_;

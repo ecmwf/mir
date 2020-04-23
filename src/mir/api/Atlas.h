@@ -14,6 +14,7 @@
 #define mir_api_Atlas_H
 
 #include <array>
+#include <memory>
 #include <vector>
 
 #include "mir/api/mir_config.h"
@@ -44,6 +45,7 @@
 #include "atlas/util/Config.h"
 #include "atlas/util/Earth.h"
 #include "atlas/util/GaussianLatitudes.h"
+#include "atlas/util/KDTree.h"
 #include "atlas/util/Point.h"
 #include "atlas/util/Rotation.h"
 
@@ -54,6 +56,7 @@
 
 namespace atlas {
 
+using idx_t    = int;
 using PointXY  = eckit::geometry::Point2;
 using PointXYZ = eckit::geometry::Point3;
 
@@ -82,6 +85,10 @@ struct Rotation {
     void rotate(double[]) const;
     void unrotate(double[]) const;
     friend std::ostream& operator<<(std::ostream&, const Rotation&) {}
+};
+struct IndexKDTree {
+    template <typename Tree>
+    IndexKDTree(const std::shared_ptr<Tree>&) {}
 };
 }  // namespace util
 

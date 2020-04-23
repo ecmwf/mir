@@ -13,6 +13,8 @@
 #ifndef mir_search_tree_TreeMapped_h
 #define mir_search_tree_TreeMapped_h
 
+#include <memory>
+
 #include "eckit/container/KDTree.h"
 #include "eckit/os/AutoUmask.h"
 #include "mir/search/Tree.h"
@@ -28,7 +30,7 @@ class TreeMapped : public Tree {
 protected:
     eckit::AutoUmask umask_;  // Must be first
     eckit::PathName path_;
-    eckit::KDTreeMapped<Tree> tree_;
+    std::shared_ptr<eckit::KDTreeMapped<Tree>> tree_;
 
     void build(std::vector<PointValueType>&);
 
@@ -49,6 +51,8 @@ protected:
     virtual void commit() = 0;
 
     virtual void print(std::ostream& out) const = 0;
+
+    virtual AtlasTree atlasTree() const;
 
 public:
     TreeMapped(const repres::Representation&, const eckit::PathName&);

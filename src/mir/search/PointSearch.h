@@ -31,6 +31,7 @@ public:
     using ValueType      = Tree::Payload;
     using PointType      = Tree::Point;
     using PointValueType = Tree::PointValueType;
+    using AtlasTree      = Tree::AtlasTree;
 
     // -- Exceptions
     // None
@@ -49,6 +50,8 @@ public:
     // -- Operators
 
     void operator=(const PointSearch&) = delete;
+
+    AtlasTree atlasTree() const;
 
     // -- Methods
 

@@ -43,6 +43,10 @@ PointSearch::PointSearch(const param::MIRParametrisation& parametrisation, const
     }
 }
 
+PointSearch::AtlasTree PointSearch::atlasTree() const {
+    return tree_->atlasTree();
+}
+
 PointSearch::PointValueType PointSearch::closestPoint(const PointSearch::PointType& pt) const {
     return tree_->nearestNeighbour(pt);
 }

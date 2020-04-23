@@ -19,34 +19,34 @@ namespace tree {
 
 
 void TreeMapped::build(std::vector<Tree::PointValueType>& v) {
-    tree_.build(v);
+    tree_->build(v);
 }
 
 
 void TreeMapped::insert(const Tree::PointValueType& pt) {
-    tree_.insert(pt);
+    tree_->insert(pt);
 }
 
 
 void TreeMapped::statsPrint(std::ostream& out, bool pretty) {
-    tree_.statsPrint(out, pretty);
+    tree_->statsPrint(out, pretty);
 }
 
 
 void TreeMapped::statsReset() {
-    tree_.statsReset();
+    tree_->statsReset();
 }
 
 
 Tree::PointValueType TreeMapped::nearestNeighbour(const Tree::Point& pt) {
-    const auto& nn = tree_.nearestNeighbour(pt).value();
+    const auto& nn = tree_->nearestNeighbour(pt).value();
     return {nn.point(), nn.payload()};
 }
 
 
 std::vector<Tree::PointValueType> TreeMapped::kNearestNeighbours(const Tree::Point& pt, size_t k) {
     std::vector<PointValueType> result;
-    for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
+    for (const auto& n : tree_->kNearestNeighbours(pt, k)) {
         result.emplace_back(PointValueType(n.point(), n.payload()));
     }
     return result;
@@ -55,15 +55,19 @@ std::vector<Tree::PointValueType> TreeMapped::kNearestNeighbours(const Tree::Poi
 
 std::vector<Tree::PointValueType> TreeMapped::findInSphere(const Tree::Point& pt, double radius) {
     std::vector<PointValueType> result;
-    for (const auto& n : tree_.findInSphere(pt, radius)) {
+    for (const auto& n : tree_->findInSphere(pt, radius)) {
         result.emplace_back(PointValueType(n.point(), n.payload()));
     }
     return result;
 }
 
+Tree::AtlasTree TreeMapped::atlasTree() const {
+    return AtlasTree{tree_};
+}
+
 
 TreeMapped::TreeMapped(const repres::Representation& r, const eckit::PathName& path) :
-    Tree(r), umask_(0), path_(path), tree_(path, path.exists() ? 0 : itemCount(), 0) {}
+    Tree(r), umask_(0), path_(path), tree_(new eckit::KDTreeMapped<Tree>(path, path.exists() ? 0 : itemCount(), 0)) {}
 
 
 }  // namespace tree

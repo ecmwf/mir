@@ -19,34 +19,34 @@ namespace tree {
 
 
 void TreeMemory::build(std::vector<Tree::PointValueType>& v) {
-    tree_.build(v);
+    tree_->build(v);
 }
 
 
 void TreeMemory::insert(const Tree::PointValueType& pt) {
-    tree_.insert(pt);
+    tree_->insert(pt);
 }
 
 
 void TreeMemory::statsPrint(std::ostream& out, bool pretty) {
-    tree_.statsPrint(out, pretty);
+    tree_->statsPrint(out, pretty);
 }
 
 
 void TreeMemory::statsReset() {
-    tree_.statsReset();
+    tree_->statsReset();
 }
 
 
 Tree::PointValueType TreeMemory::nearestNeighbour(const Tree::Point& pt) {
-    const auto& nn = tree_.nearestNeighbour(pt).value();
+    const auto& nn = tree_->nearestNeighbour(pt).value();
     return {nn.point(), nn.payload()};
 }
 
 
 std::vector<Tree::PointValueType> TreeMemory::kNearestNeighbours(const Tree::Point& pt, size_t k) {
     std::vector<PointValueType> result;
-    for (const auto& n : tree_.kNearestNeighbours(pt, k)) {
+    for (const auto& n : tree_->kNearestNeighbours(pt, k)) {
         result.emplace_back(PointValueType(n.point(), n.payload()));
     }
     return result;
@@ -55,7 +55,7 @@ std::vector<Tree::PointValueType> TreeMemory::kNearestNeighbours(const Tree::Poi
 
 std::vector<Tree::PointValueType> TreeMemory::findInSphere(const Tree::Point& pt, double radius) {
     std::vector<PointValueType> result;
-    for (const auto& n : tree_.findInSphere(pt, radius)) {
+    for (const auto& n : tree_->findInSphere(pt, radius)) {
         result.emplace_back(PointValueType(n.point(), n.payload()));
     }
     return result;
@@ -74,8 +74,12 @@ void TreeMemory::print(std::ostream& out) const {
     out << "TreeMemory[]";
 }
 
+Tree::AtlasTree TreeMemory::atlasTree() const {
+    return AtlasTree{tree_};
+}
 
-TreeMemory::TreeMemory(const repres::Representation& r, const param::MIRParametrisation&) : Tree(r) {}
+TreeMemory::TreeMemory(const repres::Representation& r, const param::MIRParametrisation&) :
+    Tree(r), tree_(new eckit::KDTreeMemory<Tree>()) {}
 
 
 static TreeBuilder<TreeMemory> builder("memory");

@@ -13,6 +13,8 @@
 #ifndef mir_search_tree_TreeMemory_h
 #define mir_search_tree_TreeMemory_h
 
+#include <memory>
+
 #include "eckit/container/KDTree.h"
 #include "mir/search/Tree.h"
 
@@ -25,7 +27,7 @@ namespace tree {
 class TreeMemory : public Tree {
 
 protected:
-    eckit::KDTreeMemory<Tree> tree_;
+    std::shared_ptr<eckit::KDTreeMemory<Tree>> tree_;
 
     void build(std::vector<PointValueType>&);
 
@@ -46,6 +48,8 @@ protected:
     virtual void commit();
 
     virtual void print(std::ostream& out) const;
+
+    virtual AtlasTree atlasTree() const;
 
 public:
     TreeMemory(const repres::Representation&, const param::MIRParametrisation&);
