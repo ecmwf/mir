@@ -23,9 +23,9 @@ ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support 
 ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF4" REQUIRED_PACKAGES NetCDF4 )
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
-ecbuild_use_package( PROJECT eccodes VERSION 2.16 REQUIRED )
-ecbuild_use_package( PROJECT eckit   VERSION 1.8  REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.19 REQUIRED )
+ecbuild_use_package( PROJECT eccodes VERSION 2.17 REQUIRED )
+ecbuild_use_package( PROJECT eckit   VERSION 1.10 REQUIRED )
+ecbuild_use_package( PROJECT atlas   VERSION 0.20 REQUIRED )
 
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
