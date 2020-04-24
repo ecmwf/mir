@@ -24,6 +24,12 @@ ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support 
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
 ecbuild_use_package( PROJECT eccodes VERSION 2.17 REQUIRED )
+if( eccodes_HAVE_MEMFS )
+    ecbuild_info( "  Note: eccodes compiled with memfs" )
+else()
+    ecbuild_info( "  Note: eccodes NOT compiled with memfs" )
+endif()
+
 ecbuild_use_package( PROJECT eckit   VERSION 1.10 REQUIRED )
 ecbuild_use_package( PROJECT atlas   VERSION 0.20 REQUIRED )
 
@@ -34,7 +40,6 @@ endif()
 if(HAVE_PNG)
     add_definitions(${PNG_DEFINITIONS})
 endif()
-
 
 # OMP/MPI features handling
 if( ENABLE_OMP )

@@ -69,8 +69,13 @@ ecbuild_get_test_multidata(
 # Set testing environment
 set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
 
-if( NOT eccodes_HAVE_MEMFS AND ECCODES_DEFINITION_PATH )
-    list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${ECCODES_DEFINITION_PATH}" )
+if( NOT eccodes_HAVE_MEMFS )
+    if( ECCODES_DEFINITION_PATH )
+      list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${ECCODES_DEFINITION_PATH}" )
+    endif()
+    if( ECCODES_SAMPLES_PATH )
+      list( APPEND _testEnvironment "ECCODES_SAMPLES_PATH=${ECCODES_SAMPLES_PATH}" )
+    endif()
 endif()
 
 
