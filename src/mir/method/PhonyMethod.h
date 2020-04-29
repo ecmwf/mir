@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_StructuredMethod2D_h
-#define mir_method_StructuredMethod2D_h
+#ifndef mir_method_PhonyMethod_h
+#define mir_method_PhonyMethod_h
 
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
@@ -21,7 +21,7 @@ namespace mir {
 namespace method {
 
 
-class StructuredMethod2D : public Method {
+class PhonyMethod : public Method {
 public:
     // -- Types
     // None
@@ -56,18 +56,18 @@ public:
 protected:
     // -- Constructors
 
-    StructuredMethod2D(const param::MIRParametrisation&, size_t halo);
+    PhonyMethod(const param::MIRParametrisation&, size_t halo);
 
     // -- Destructor
 
-    virtual ~StructuredMethod2D() = default;
+    virtual ~PhonyMethod() = default;
 
     // -- Members
     // None
 
     // -- Methods
 
-    const std::string& method() const { return method_; }
+    const std::string& type() const { return type_; }
 
     // -- Overridden methods
     // None
@@ -81,7 +81,7 @@ protected:
 private:
     // -- Members
 
-    std::string method_;
+    std::string type_;
     size_t halo_;
     Cropping cropping_;
 

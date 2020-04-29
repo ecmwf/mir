@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/method/StructuredMethod2D.h"
+#include "mir/method/PhonyMethod.h"
 
 #include <algorithm>
 #include <vector>
@@ -33,18 +33,18 @@ namespace mir {
 namespace method {
 
 
-struct StructuredBicubic final : public StructuredMethod2D {
-    StructuredBicubic(const param::MIRParametrisation& param) : StructuredMethod2D(param, 2) {}
+struct StructuredBicubic final : public PhonyMethod {
+    StructuredBicubic(const param::MIRParametrisation& param) : PhonyMethod(param, 2) {}
 };
 
 
-struct StructuredBilinear final : public StructuredMethod2D {
-    StructuredBilinear(const param::MIRParametrisation& param) : StructuredMethod2D(param, 1) {}
+struct StructuredBilinear final : public PhonyMethod {
+    StructuredBilinear(const param::MIRParametrisation& param) : PhonyMethod(param, 1) {}
 };
 
 
-struct StructuredQuasiCubic final : public StructuredMethod2D {
-    StructuredQuasiCubic(const param::MIRParametrisation& param) : StructuredMethod2D(param, 2) {}
+struct StructuredQuasiCubic final : public PhonyMethod {
+    StructuredQuasiCubic(const param::MIRParametrisation& param) : PhonyMethod(param, 2) {}
 };
 
 
@@ -53,25 +53,23 @@ static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
 static MethodBuilder<StructuredQuasiCubic> __method3("structured-quasicubic");
 
 
-StructuredMethod2D::StructuredMethod2D(const param::MIRParametrisation& param, size_t halo) :
-    Method(param),
-    halo_(halo) {
+PhonyMethod::PhonyMethod(const param::MIRParametrisation& param, size_t halo) : Method(param), halo_(halo) {
 
     // "interpolation" should return one of the methods registered above
-    param.get("interpolation", method_);
-    ASSERT(!method_.empty());
+    param.get("interpolation", type_);
+    ASSERT(!type_.empty());
 }
 
 
-void StructuredMethod2D::hash(eckit::MD5& md5) const {
-    md5.add(method_);
+void PhonyMethod::hash(eckit::MD5& md5) const {
+    md5.add(type_);
     md5.add(halo_);
     md5.add(cropping_);
 }
 
 
-void StructuredMethod2D::execute(context::Context& ctx, const repres::Representation& in,
-                                 const repres::Representation& out) const {
+void PhonyMethod::execute(context::Context& ctx, const repres::Representation& in,
+                          const repres::Representation& out) const {
     eckit::Timer timer;
     auto& log   = eckit::Log::info();
     auto& field = ctx.field();
@@ -103,28 +101,28 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
     };
 
 
-    log << method_ << ": set input..." << std::endl;
+    log << type_ << ": set input..." << std::endl;
     auto mark = timer.elapsed();
     Helper input(in, atlas::option::halo(halo_));
     for (size_t i = 0; i < field.dimensions(); ++i) {
         input.appendFieldCopy(field.values(i));
     }
-    log << method_ << ": set input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << type_ << ": set input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
-    log << method_ << ": set output" << std::endl;
+    log << type_ << ": set output" << std::endl;
     mark = timer.elapsed();
     Helper output(out);
     std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }
-    log << method_ << ": set output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << type_ << ": set output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
-    log << method_ << ": interpolate..." << std::endl;
+    log << type_ << ": interpolate..." << std::endl;
     mark = timer.elapsed();
-    atlas::util::Config config("type", method_);
+    atlas::util::Config config("type", type_);
     config.set("matrix_free", true);
 
     atlas::Interpolation interpol(config, input.fs, output.fs);
@@ -133,38 +131,38 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
     for (size_t i = 0; i < field.dimensions(); ++i) {
         field.update(result[i], i, true);
     }
-    log << method_ << ": interpolate... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << type_ << ": interpolate... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 }
 
 
-bool StructuredMethod2D::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const StructuredMethod2D*>(&other);
-    return (o != nullptr) && method_ == o->method_ && cropping_ == o->cropping_;
+bool PhonyMethod::sameAs(const Method& other) const {
+    auto o = dynamic_cast<const PhonyMethod*>(&other);
+    return (o != nullptr) && type_ == o->type_ && halo_ == o->halo_ && cropping_ == o->cropping_;
 }
 
 
-bool StructuredMethod2D::canCrop() const {
+bool PhonyMethod::canCrop() const {
     return true;
 }
 
 
-void StructuredMethod2D::setCropping(const util::BoundingBox& bbox) {
+void PhonyMethod::setCropping(const util::BoundingBox& bbox) {
     cropping_.boundingBox(bbox);
 }
 
 
-bool StructuredMethod2D::hasCropping() const {
+bool PhonyMethod::hasCropping() const {
     return cropping_;
 }
 
 
-const util::BoundingBox& StructuredMethod2D::getCropping() const {
+const util::BoundingBox& PhonyMethod::getCropping() const {
     return cropping_.boundingBox();
 }
 
 
-void StructuredMethod2D::print(std::ostream& out) const {
-    out << "StructuredMethod[method=" << method() << ",halo=" << halo_ << ",cropping=" << cropping_ << "]";
+void PhonyMethod::print(std::ostream& out) const {
+    out << "Method[type=" << type() << ",halo=" << halo_ << ",cropping=" << cropping_ << "]";
 }
 
 
