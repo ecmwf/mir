@@ -681,8 +681,8 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
-        method/PhonyMethod.cc
-        method/PhonyMethod.h
+        method/ProxyMethod.cc
+        method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
         method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc
@@ -709,8 +709,6 @@ if (HAVE_ATLAS)
         method/nonlinear/NonLinear.h
         method/nonlinear/SimulateMissingValue.cc
         method/nonlinear/SimulateMissingValue.h
-        method/other/PhonyGridBoxMethod.cc
-        method/other/PhonyGridBoxMethod.h
         method/structured/StructuredBilinearLatLon.cc
         method/structured/StructuredBilinearLatLon.h
         method/structured/StructuredLinear3D.cc

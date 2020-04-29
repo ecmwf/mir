@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/method/PhonyMethod.h"
+#include "mir/method/ProxyMethod.h"
 
 #include <algorithm>
 #include <vector>
@@ -33,70 +33,75 @@ namespace mir {
 namespace method {
 
 
-struct StructuredBicubicMB final : public PhonyMethod {
-    StructuredBicubicMB(const param::MIRParametrisation& param) : PhonyMethod(param, 2, false) {}
+using param_t = param::MIRParametrisation;
+
+
+struct StructuredBicubic final : public ProxyMethod {
+    StructuredBicubic(const param_t& param) : ProxyMethod(param, "structured-bicubic", 2, false) {}
 };
 
 
-struct StructuredBicubicMF final : public PhonyMethod {
-    StructuredBicubicMF(const param::MIRParametrisation& param) : PhonyMethod(param, 2, true) {}
+struct StructuredBilinear final : public ProxyMethod {
+    StructuredBilinear(const param_t& param) : ProxyMethod(param, "structured-bilinear", 1, false) {}
 };
 
 
-struct StructuredBilinearMB final : public PhonyMethod {
-    StructuredBilinearMB(const param::MIRParametrisation& param) : PhonyMethod(param, 1, false) {}
+struct StructuredBiquasicubic final : public ProxyMethod {
+    StructuredBiquasicubic(const param_t& param) : ProxyMethod(param, "structured-biquasicubic", 2, false) {}
 };
 
 
-struct StructuredBilinearMF final : public PhonyMethod {
-    StructuredBilinearMF(const param::MIRParametrisation& param) : PhonyMethod(param, 1, true) {}
+struct GridBoxAverage final : public ProxyMethod {
+    GridBoxAverage(const param_t& param) : ProxyMethod(param, "grid-box-average", 0, true) {}
 };
 
 
-struct StructuredQuasiCubicMB final : public PhonyMethod {
-    StructuredQuasiCubicMB(const param::MIRParametrisation& param) : PhonyMethod(param, 2, false) {}
+struct GridBoxMaximum final : public ProxyMethod {
+    GridBoxMaximum(const param_t& param) : ProxyMethod(param, "grid-box-maximum", 0, true) {}
 };
 
 
-struct StructuredQuasiCubicMF final : public PhonyMethod {
-    StructuredQuasiCubicMF(const param::MIRParametrisation& param) : PhonyMethod(param, 2, true) {}
-};
+static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
+static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
+static MethodBuilder<StructuredBiquasicubic> __method3("structured-biquasicubic");
+static MethodBuilder<GridBoxAverage> __method4("grid-box-average-matrix-free");
+static MethodBuilder<GridBoxMaximum> __method5("grid-box-maximum-matrix-free");
 
 
-static MethodBuilder<StructuredBicubicMB> __method1("structured-bicubic");
-static MethodBuilder<StructuredBicubicMF> __method2("structured-bicubic-matrix-free");
-static MethodBuilder<StructuredBilinearMB> __method3("structured-bilinear");
-static MethodBuilder<StructuredBilinearMF> __method4("structured-bilinear-matrix-free");
-static MethodBuilder<StructuredQuasiCubicMB> __method5("structured-quasicubic");
-static MethodBuilder<StructuredQuasiCubicMF> __method6("structured-quasicubic-matrix-free");
-
-
-static eckit::Hash::digest_t atlasOptionsDigest(const PhonyMethod::atlas_config_t& options) {
+static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_t& options) {
     eckit::MD5 h;
     options.hash(h);
     return h.digest();
 }
 
 
-PhonyMethod::PhonyMethod(const param::MIRParametrisation& param, size_t halo, bool matrixFree) : Method(param) {
+ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type, size_t halo, bool setupUsingGrids) :
+    type_(type),
+    Method(param) {
 
-    // "interpolation" should return one of the methods registered above
-    param.get("interpolation", type_);
-    ASSERT(!type_.empty());
+    // // "interpolation" should return one of the methods registered above
+    // param.get("interpolation", type_);
+    // ASSERT(!type_.empty());
+
+    // NOTE: until interface to Atlas-built matrix is not available, "grid-box-average"/"grid-box-maximum" is
+    // inconsistent while the situation isn't resolved (here the default should be false)
+    bool matrixFree = true;
+    param.get("interpolation-matrix-free", matrixFree);
 
     options_ = {"type", type_};
     options_.set("halo", halo);
     options_.set("matrix_free", matrixFree);
+    options_.set("setup_using_grids", setupUsingGrids);
 }
 
 
-void PhonyMethod::hash(eckit::MD5& md5) const {
+void ProxyMethod::hash(eckit::MD5& md5) const {
     md5.add(options_);
     md5.add(cropping_);
 }
 
 
-void PhonyMethod::execute(context::Context& ctx, const repres::Representation& in,
+void ProxyMethod::execute(context::Context& ctx, const repres::Representation& in,
                           const repres::Representation& out) const {
     eckit::Timer timer;
     auto& log   = eckit::Log::info();
@@ -149,8 +154,9 @@ void PhonyMethod::execute(context::Context& ctx, const repres::Representation& i
 
 
     log << type_ << ": interpolate..." << std::endl;
-    mark = timer.elapsed();
-    atlas::Interpolation interpol(options_, input.fs, output.fs);
+    mark          = timer.elapsed();
+    auto interpol = options_.getBool("setup_using_grids") ? atlas::Interpolation(options_, input.grid, output.grid)
+                                                          : atlas::Interpolation(options_, input.fs, output.fs);
     interpol.execute(input.fields, output.fields);
 
     for (size_t i = 0; i < field.dimensions(); ++i) {
@@ -160,35 +166,35 @@ void PhonyMethod::execute(context::Context& ctx, const repres::Representation& i
 }
 
 
-bool PhonyMethod::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const PhonyMethod*>(&other);
+bool ProxyMethod::sameAs(const Method& other) const {
+    auto o = dynamic_cast<const ProxyMethod*>(&other);
     return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
            cropping_ == o->cropping_;
 }
 
 
-bool PhonyMethod::canCrop() const {
+bool ProxyMethod::canCrop() const {
     return true;
 }
 
 
-void PhonyMethod::setCropping(const util::BoundingBox& bbox) {
+void ProxyMethod::setCropping(const util::BoundingBox& bbox) {
     cropping_.boundingBox(bbox);
 }
 
 
-bool PhonyMethod::hasCropping() const {
+bool ProxyMethod::hasCropping() const {
     return cropping_;
 }
 
 
-const util::BoundingBox& PhonyMethod::getCropping() const {
+const util::BoundingBox& ProxyMethod::getCropping() const {
     return cropping_.boundingBox();
 }
 
 
-void PhonyMethod::print(std::ostream& out) const {
-    out << "Method[options=" << options_ << ",cropping=" << cropping_ << "]";
+void ProxyMethod::print(std::ostream& out) const {
+    out << "ProxyMethod[options=" << options_ << ",cropping=" << cropping_ << "]";
 }
 
 
