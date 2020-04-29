@@ -33,34 +33,39 @@ namespace mir {
 namespace method {
 
 
-static MethodBuilder<StructuredMethod2D> __method1("structured-bicubic");
-static MethodBuilder<StructuredMethod2D> __method2("structured-bilinear");
-static MethodBuilder<StructuredMethod2D> __method3("structured-biquasicubic");
+struct StructuredBicubic final : public StructuredMethod2D {
+    StructuredBicubic(const param::MIRParametrisation& param) : StructuredMethod2D(param, 2) {}
+};
 
 
-StructuredMethod2D::StructuredMethod2D(const param::MIRParametrisation& param) : Method(param) {
+struct StructuredBilinear final : public StructuredMethod2D {
+    StructuredBilinear(const param::MIRParametrisation& param) : StructuredMethod2D(param, 1) {}
+};
+
+
+struct StructuredQuasiCubic final : public StructuredMethod2D {
+    StructuredQuasiCubic(const param::MIRParametrisation& param) : StructuredMethod2D(param, 2) {}
+};
+
+
+static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
+static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
+static MethodBuilder<StructuredQuasiCubic> __method3("structured-quasicubic");
+
+
+StructuredMethod2D::StructuredMethod2D(const param::MIRParametrisation& param, size_t halo) :
+    Method(param),
+    halo_(halo) {
 
     // "interpolation" should return one of the methods registered above
     param.get("interpolation", method_);
     ASSERT(!method_.empty());
-
-    const static struct {
-        const char* method;
-        size_t halo;
-    } halos[] = {{"structured-bilinear", 1}, {"structured-bicubic", 2}, {"structured-biquasicubic", 2}};
-
-    halo_ = 0;
-    for (auto& h : halos) {
-        if (method_ == h.method) {
-            halo_ = h.halo;
-            break;
-        }
-    }
 }
 
 
 void StructuredMethod2D::hash(eckit::MD5& md5) const {
     md5.add(method_);
+    md5.add(halo_);
     md5.add(cropping_);
 }
 
@@ -82,7 +87,7 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
             auto view = atlas::array::make_view<double, 1>(fields.add(fs.createField<double>()));
             ASSERT(view.contiguous());
             ASSERT(values.size() <= size_t(view.size()));
-            std::copy(values.begin(), values.end(), view.data());
+            std::copy_n(values.begin(), n, view.data());
         }
 
         void appendFieldWrapped(data::MIRValuesVector& values) {
@@ -98,26 +103,26 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
     };
 
 
-    log << "Structured method: set input..." << std::endl;
+    log << method_ << ": set input..." << std::endl;
     auto mark = timer.elapsed();
     Helper input(in, atlas::option::halo(halo_));
     for (size_t i = 0; i < field.dimensions(); ++i) {
         input.appendFieldCopy(field.values(i));
     }
-    log << "Structured method: set input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << method_ << ": set input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
-    log << "Structured method: set output" << std::endl;
+    log << method_ << ": set output" << std::endl;
     mark = timer.elapsed();
     Helper output(out);
     std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }
-    log << "Structured method: set output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << method_ << ": set output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
-    log << "Structured method: interpolate..." << std::endl;
+    log << method_ << ": interpolate..." << std::endl;
     mark = timer.elapsed();
     atlas::util::Config config("type", method_);
     config.set("matrix_free", true);
@@ -128,13 +133,13 @@ void StructuredMethod2D::execute(context::Context& ctx, const repres::Representa
     for (size_t i = 0; i < field.dimensions(); ++i) {
         field.update(result[i], i, true);
     }
-    log << "Structured method: interpolate... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << method_ << ": interpolate... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 }
 
 
 bool StructuredMethod2D::sameAs(const Method& other) const {
     auto o = dynamic_cast<const StructuredMethod2D*>(&other);
-    return (o != nullptr) && method_ == o->method_;
+    return (o != nullptr) && method_ == o->method_ && cropping_ == o->cropping_;
 }
 
 
@@ -159,7 +164,7 @@ const util::BoundingBox& StructuredMethod2D::getCropping() const {
 
 
 void StructuredMethod2D::print(std::ostream& out) const {
-    out << "StructuredMethod[method=" << method() << ",halo=" << halo_ << "]";
+    out << "StructuredMethod[method=" << method() << ",halo=" << halo_ << ",cropping=" << cropping_ << "]";
 }
 
 

@@ -30,12 +30,10 @@ public:
     // None
 
     // -- Constructors
-
-    StructuredMethod2D(const param::MIRParametrisation&);
+    // None
 
     // -- Destructor
-
-    virtual ~StructuredMethod2D() = default;
+    // None
 
     // -- Convertors
     // None
@@ -56,6 +54,14 @@ public:
     // None
 
 protected:
+    // -- Constructors
+
+    StructuredMethod2D(const param::MIRParametrisation&, size_t halo);
+
+    // -- Destructor
+
+    virtual ~StructuredMethod2D() = default;
+
     // -- Members
     // None
 
