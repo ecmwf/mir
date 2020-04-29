@@ -76,8 +76,8 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_
 
 
 ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type, size_t halo, bool setupUsingGrids) :
-    type_(type),
-    Method(param) {
+    Method(param),
+    type_(type) {
 
     // // "interpolation" should return one of the methods registered above
     // param.get("interpolation", type_);

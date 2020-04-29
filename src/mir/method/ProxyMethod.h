@@ -84,7 +84,7 @@ private:
     // -- Members
 
     atlas_config_t options_;
-    std::string type_;
+    const std::string type_;
     Cropping cropping_;
 
     // -- Methods
