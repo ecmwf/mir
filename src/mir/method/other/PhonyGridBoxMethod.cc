@@ -142,7 +142,7 @@ void PhonyGridBoxMethod::execute(context::Context& ctx, const repres::Representa
 
 bool PhonyGridBoxMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const PhonyGridBoxMethod*>(&other);
-    return (o != nullptr) && type_ == o->type_ && matrixFree_ == o->matrixFree_;
+    return (o != nullptr) && type_ == o->type_ && matrixFree_ == o->matrixFree_ && cropping_ == o->cropping_;
 }
 
 
@@ -151,23 +151,23 @@ bool PhonyGridBoxMethod::canCrop() const {
 }
 
 
-void PhonyGridBoxMethod::setCropping(const util::BoundingBox&) {
-    NOTIMP;
+void PhonyGridBoxMethod::setCropping(const util::BoundingBox& bbox) {
+    cropping_.boundingBox(bbox);
 }
 
 
 bool PhonyGridBoxMethod::hasCropping() const {
-    return false;
+    return cropping_;
 }
 
 
 const util::BoundingBox& PhonyGridBoxMethod::getCropping() const {
-    NOTIMP;
+    return cropping_.boundingBox();
 }
 
 
 void PhonyGridBoxMethod::print(std::ostream& out) const {
-    out << "GridBoxMethod[type=" << type_ << ",matrixFree=" << matrixFree_ << "]";
+    out << "GridBoxMethod[type=" << type_ << ",matrixFree=" << matrixFree_ << ",cropping=" << cropping_ << "]";
 }
 
 

@@ -13,6 +13,7 @@
 #ifndef mir_method_other_PhonyGridBoxMethod_h
 #define mir_method_other_PhonyGridBoxMethod_h
 
+#include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 
 
@@ -82,6 +83,7 @@ private:
     // -- Members
 
     std::string type_;
+    Cropping cropping_;
     bool matrixFree_;
 
     // -- Methods
