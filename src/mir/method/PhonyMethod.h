@@ -13,6 +13,7 @@
 #ifndef mir_method_PhonyMethod_h
 #define mir_method_PhonyMethod_h
 
+#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 
@@ -24,7 +25,8 @@ namespace method {
 class PhonyMethod : public Method {
 public:
     // -- Types
-    // None
+
+    using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
     // None
@@ -56,7 +58,7 @@ public:
 protected:
     // -- Constructors
 
-    PhonyMethod(const param::MIRParametrisation&, size_t halo);
+    PhonyMethod(const param::MIRParametrisation&, size_t halo, bool matrixFree);
 
     // -- Destructor
 
@@ -81,8 +83,8 @@ protected:
 private:
     // -- Members
 
+    atlas_config_t options_;
     std::string type_;
-    size_t halo_;
     Cropping cropping_;
 
     // -- Methods

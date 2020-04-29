@@ -33,37 +33,65 @@ namespace mir {
 namespace method {
 
 
-struct StructuredBicubic final : public PhonyMethod {
-    StructuredBicubic(const param::MIRParametrisation& param) : PhonyMethod(param, 2) {}
+struct StructuredBicubicMB final : public PhonyMethod {
+    StructuredBicubicMB(const param::MIRParametrisation& param) : PhonyMethod(param, 2, false) {}
 };
 
 
-struct StructuredBilinear final : public PhonyMethod {
-    StructuredBilinear(const param::MIRParametrisation& param) : PhonyMethod(param, 1) {}
+struct StructuredBicubicMF final : public PhonyMethod {
+    StructuredBicubicMF(const param::MIRParametrisation& param) : PhonyMethod(param, 2, true) {}
 };
 
 
-struct StructuredQuasiCubic final : public PhonyMethod {
-    StructuredQuasiCubic(const param::MIRParametrisation& param) : PhonyMethod(param, 2) {}
+struct StructuredBilinearMB final : public PhonyMethod {
+    StructuredBilinearMB(const param::MIRParametrisation& param) : PhonyMethod(param, 1, false) {}
 };
 
 
-static MethodBuilder<StructuredBicubic> __method1("structured-bicubic");
-static MethodBuilder<StructuredBilinear> __method2("structured-bilinear");
-static MethodBuilder<StructuredQuasiCubic> __method3("structured-quasicubic");
+struct StructuredBilinearMF final : public PhonyMethod {
+    StructuredBilinearMF(const param::MIRParametrisation& param) : PhonyMethod(param, 1, true) {}
+};
 
 
-PhonyMethod::PhonyMethod(const param::MIRParametrisation& param, size_t halo) : Method(param), halo_(halo) {
+struct StructuredQuasiCubicMB final : public PhonyMethod {
+    StructuredQuasiCubicMB(const param::MIRParametrisation& param) : PhonyMethod(param, 2, false) {}
+};
+
+
+struct StructuredQuasiCubicMF final : public PhonyMethod {
+    StructuredQuasiCubicMF(const param::MIRParametrisation& param) : PhonyMethod(param, 2, true) {}
+};
+
+
+static MethodBuilder<StructuredBicubicMB> __method1("structured-bicubic");
+static MethodBuilder<StructuredBicubicMF> __method2("structured-bicubic-matrix-free");
+static MethodBuilder<StructuredBilinearMB> __method3("structured-bilinear");
+static MethodBuilder<StructuredBilinearMF> __method4("structured-bilinear-matrix-free");
+static MethodBuilder<StructuredQuasiCubicMB> __method5("structured-quasicubic");
+static MethodBuilder<StructuredQuasiCubicMF> __method6("structured-quasicubic-matrix-free");
+
+
+static eckit::Hash::digest_t atlasOptionsDigest(const PhonyMethod::atlas_config_t& options) {
+    eckit::MD5 h;
+    options.hash(h);
+    return h.digest();
+}
+
+
+PhonyMethod::PhonyMethod(const param::MIRParametrisation& param, size_t halo, bool matrixFree) : Method(param) {
 
     // "interpolation" should return one of the methods registered above
     param.get("interpolation", type_);
     ASSERT(!type_.empty());
+
+    options_ = {"type", type_};
+    options_.set("halo", halo);
+    options_.set("matrix_free", matrixFree);
 }
 
 
 void PhonyMethod::hash(eckit::MD5& md5) const {
-    md5.add(type_);
-    md5.add(halo_);
+    md5.add(options_);
     md5.add(cropping_);
 }
 
@@ -103,7 +131,7 @@ void PhonyMethod::execute(context::Context& ctx, const repres::Representation& i
 
     log << type_ << ": set input..." << std::endl;
     auto mark = timer.elapsed();
-    Helper input(in, atlas::option::halo(halo_));
+    Helper input(in, atlas::option::halo(options_.getUnsigned("halo")));
     for (size_t i = 0; i < field.dimensions(); ++i) {
         input.appendFieldCopy(field.values(i));
     }
@@ -122,10 +150,7 @@ void PhonyMethod::execute(context::Context& ctx, const repres::Representation& i
 
     log << type_ << ": interpolate..." << std::endl;
     mark = timer.elapsed();
-    atlas::util::Config config("type", type_);
-    config.set("matrix_free", true);
-
-    atlas::Interpolation interpol(config, input.fs, output.fs);
+    atlas::Interpolation interpol(options_, input.fs, output.fs);
     interpol.execute(input.fields, output.fields);
 
     for (size_t i = 0; i < field.dimensions(); ++i) {
@@ -137,7 +162,8 @@ void PhonyMethod::execute(context::Context& ctx, const repres::Representation& i
 
 bool PhonyMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const PhonyMethod*>(&other);
-    return (o != nullptr) && type_ == o->type_ && halo_ == o->halo_ && cropping_ == o->cropping_;
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
+           cropping_ == o->cropping_;
 }
 
 
@@ -162,7 +188,7 @@ const util::BoundingBox& PhonyMethod::getCropping() const {
 
 
 void PhonyMethod::print(std::ostream& out) const {
-    out << "Method[type=" << type() << ",halo=" << halo_ << ",cropping=" << cropping_ << "]";
+    out << "Method[options=" << options_ << ",cropping=" << cropping_ << "]";
 }
 
 
