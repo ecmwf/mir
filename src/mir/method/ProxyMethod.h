@@ -58,7 +58,7 @@ public:
 protected:
     // -- Constructors
 
-    ProxyMethod(const param::MIRParametrisation&, std::string type, size_t halo, bool setupUsingGrids);
+    ProxyMethod(const param::MIRParametrisation&, std::string type);
 
     // -- Destructor
 

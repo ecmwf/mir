@@ -33,31 +33,28 @@ namespace mir {
 namespace method {
 
 
-using param_t = param::MIRParametrisation;
-
-
 struct StructuredBicubic final : public ProxyMethod {
-    StructuredBicubic(const param_t& param) : ProxyMethod(param, "structured-bicubic", 2, false) {}
+    StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
 };
 
 
 struct StructuredBilinear final : public ProxyMethod {
-    StructuredBilinear(const param_t& param) : ProxyMethod(param, "structured-bilinear", 1, false) {}
+    StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
 };
 
 
 struct StructuredBiquasicubic final : public ProxyMethod {
-    StructuredBiquasicubic(const param_t& param) : ProxyMethod(param, "structured-biquasicubic", 2, false) {}
+    StructuredBiquasicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-biquasicubic") {}
 };
 
 
 struct GridBoxAverage final : public ProxyMethod {
-    GridBoxAverage(const param_t& param) : ProxyMethod(param, "grid-box-average", 0, true) {}
+    GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
 };
 
 
 struct GridBoxMaximum final : public ProxyMethod {
-    GridBoxMaximum(const param_t& param) : ProxyMethod(param, "grid-box-maximum", 0, true) {}
+    GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
 };
 
 
@@ -75,9 +72,7 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_
 }
 
 
-ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type, size_t halo, bool setupUsingGrids) :
-    Method(param),
-    type_(type) {
+ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type) : Method(param), type_(type) {
 
     // // "interpolation" should return one of the methods registered above
     // param.get("interpolation", type_);
@@ -88,9 +83,7 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
     param.get("interpolation-matrix-free", matrixFree);
 
     options_ = {"type", type_};
-    options_.set("halo", halo);
     options_.set("matrix_free", matrixFree);
-    options_.set("setup_using_grids", setupUsingGrids);
 }
 
 
@@ -107,10 +100,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     auto& field = ctx.field();
 
     struct Helper {
-        Helper(const repres::Representation& r, const eckit::Configuration& config = atlas::util::NoConfig()) :
-            grid(r.atlasGrid()),
-            n(grid.size()),
-            fs(grid, config) {}
+        Helper(size_t numberOfPoints, atlas::FunctionSpace fspace) : n(numberOfPoints), fs(fspace) {}
 
         void appendFieldCopy(const MIRValuesVector& values) {
             ASSERT(n == values.size());
@@ -126,38 +116,40 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
             field.set_functionspace(fs);
         }
 
-        const atlas::Grid grid;
         const size_t n;
-        atlas::functionspace::StructuredColumns fs;
+        atlas::FunctionSpace fs;
         atlas::FieldSet fields;
     };
 
 
-    log << type_ << ": set input..." << std::endl;
+    log << type_ << ": set interpolation..." << std::endl;
     auto mark = timer.elapsed();
-    Helper input(in, atlas::option::halo(options_.getUnsigned("halo")));
+    atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
+    log << type_ << ": set interpolation... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+
+
+    log << type_ << ": copy input..." << std::endl;
+    mark = timer.elapsed();
+    Helper input(in.numberOfPoints(), interpol.source());
     for (size_t i = 0; i < field.dimensions(); ++i) {
         input.appendFieldCopy(field.values(i));
     }
-    log << type_ << ": set input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << type_ << ": copy input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
-    log << type_ << ": set output" << std::endl;
+    log << type_ << ": allocate output..." << std::endl;
     mark = timer.elapsed();
-    Helper output(out);
+    Helper output(out.numberOfPoints(), interpol.target());
     std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }
-    log << type_ << ": set output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    log << type_ << ": allocate output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
 
 
     log << type_ << ": interpolate..." << std::endl;
-    mark          = timer.elapsed();
-    auto interpol = options_.getBool("setup_using_grids") ? atlas::Interpolation(options_, input.grid, output.grid)
-                                                          : atlas::Interpolation(options_, input.fs, output.fs);
+    mark = timer.elapsed();
     interpol.execute(input.fields, output.fields);
-
     for (size_t i = 0; i < field.dimensions(); ++i) {
         field.update(result[i], i, true);
     }
