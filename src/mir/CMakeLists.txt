@@ -681,8 +681,8 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
-        method/StructuredMethod2D.cc
-        method/StructuredMethod2D.h
+        method/ProxyMethod.cc
+        method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
         method/fe/BuildNodeLumpedMassMatrix.h
         method/fe/CalculateCellLongestDiagonal.cc

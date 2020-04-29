@@ -10,9 +10,10 @@
  */
 
 
-#ifndef mir_method_StructuredMethod2D_h
-#define mir_method_StructuredMethod2D_h
+#ifndef mir_method_ProxyMethod_h
+#define mir_method_ProxyMethod_h
 
+#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 
@@ -21,10 +22,11 @@ namespace mir {
 namespace method {
 
 
-class StructuredMethod2D : public Method {
+class ProxyMethod : public Method {
 public:
     // -- Types
-    // None
+
+    using atlas_config_t = atlas::util::Config;
 
     // -- Exceptions
     // None
@@ -56,18 +58,18 @@ public:
 protected:
     // -- Constructors
 
-    StructuredMethod2D(const param::MIRParametrisation&, size_t halo);
+    ProxyMethod(const param::MIRParametrisation&, std::string type, size_t halo, bool setupUsingGrids);
 
     // -- Destructor
 
-    virtual ~StructuredMethod2D() = default;
+    virtual ~ProxyMethod() = default;
 
     // -- Members
     // None
 
     // -- Methods
 
-    const std::string& method() const { return method_; }
+    const std::string& type() const { return type_; }
 
     // -- Overridden methods
     // None
@@ -81,8 +83,8 @@ protected:
 private:
     // -- Members
 
-    std::string method_;
-    size_t halo_;
+    atlas_config_t options_;
+    std::string type_;
     Cropping cropping_;
 
     // -- Methods

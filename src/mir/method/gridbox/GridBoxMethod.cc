@@ -137,6 +137,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ASSERT(area > 0.);
 
             double sumSmallAreas = 0.;
+            bool areaMatch       = false;
             for (auto& c : closest) {
                 auto j        = c.payload();
                 auto smallBox = inBoxes.at(j);
@@ -147,12 +148,16 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
                     triplets.emplace_back(WeightMatrix::Triplet(i, j, smallArea / area));
                     sumSmallAreas += smallArea;
+
+                    if ( ( areaMatch = eckit::types::is_approximately_equal( area, sumSmallAreas, 1. /*m^2*/ ) ) ) {
+                        break;
+                    }
                 }
             }
 
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
-            if (!triplets.empty() && eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/)) {
+            if (!areaMatch) {
                 std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
             }
             else {
