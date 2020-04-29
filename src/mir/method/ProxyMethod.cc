@@ -83,8 +83,7 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
     // param.get("interpolation", type_);
     // ASSERT(!type_.empty());
 
-    // NOTE: until interface to Atlas-built matrix is not available, "grid-box-average"/"grid-box-maximum" is
-    // inconsistent while the situation isn't resolved (here the default should be false)
+    // NOTE: while the Atlas-built matrix is unavailable, "grid-box-*" is inconsistent (default should be false)
     bool matrixFree = true;
     param.get("interpolation-matrix-free", matrixFree);
 
