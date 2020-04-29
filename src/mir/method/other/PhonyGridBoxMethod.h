@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_other_GridBoxAverageMatrixFree_h
-#define mir_method_other_GridBoxAverageMatrixFree_h
+#ifndef mir_method_other_PhonyGridBoxMethod_h
+#define mir_method_other_PhonyGridBoxMethod_h
 
 #include "mir/method/Method.h"
 
@@ -21,7 +21,7 @@ namespace method {
 namespace other {
 
 
-class GridBoxAverageMatrixFree : public Method {
+class PhonyGridBoxMethod : public Method {
 public:
     // -- Types
     // None
@@ -30,12 +30,11 @@ public:
     // None
 
     // -- Constructors
-
-    GridBoxAverageMatrixFree(const param::MIRParametrisation&);
+    // None
 
     // -- Destructor
 
-    virtual ~GridBoxAverageMatrixFree() = default;
+    // None
 
     // -- Convertors
     // None
@@ -56,6 +55,14 @@ public:
     // None
 
 protected:
+    // -- Constructors
+
+    PhonyGridBoxMethod(const param::MIRParametrisation&, std::string type, bool matrixFree);
+
+    // -- Destructor
+
+    virtual ~PhonyGridBoxMethod() = default;
+
     // -- Members
     // None
 
@@ -73,7 +80,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::string type_;
+    bool matrixFree_;
 
     // -- Methods
     // None
