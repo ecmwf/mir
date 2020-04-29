@@ -95,9 +95,6 @@ void ProxyMethod::hash(eckit::MD5& md5) const {
 
 void ProxyMethod::execute(context::Context& ctx, const repres::Representation& in,
                           const repres::Representation& out) const {
-    eckit::Timer timer;
-    auto& log   = eckit::Log::info();
-    auto& field = ctx.field();
 
     struct Helper {
         Helper(size_t numberOfPoints, atlas::FunctionSpace fspace) : n(numberOfPoints), fs(fspace) {}
@@ -121,39 +118,40 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
+    eckit::Timer timer("ProxyMethod::execute", eckit::Log::info());
+    auto report = [](eckit::Timer& timer, std::string msg) {
+        timer.report(msg);
+        timer.stop();
+        timer.start();
+    };
 
-    log << type_ << ": set interpolation..." << std::endl;
-    auto mark = timer.elapsed();
+    auto& field = ctx.field();
+
+
     atlas::Interpolation interpol(options_, in.atlasGrid(), out.atlasGrid());
-    log << type_ << ": set interpolation... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
-
-
-    log << type_ << ": copy input..." << std::endl;
-    mark = timer.elapsed();
     Helper input(in.numberOfPoints(), interpol.source());
+    Helper output(out.numberOfPoints(), interpol.target());
+    report(timer, type_ + ": set interpolation");
+
+
     for (size_t i = 0; i < field.dimensions(); ++i) {
         input.appendFieldCopy(field.values(i));
     }
-    log << type_ << ": copy input... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    report(timer, type_ + ": copy input");
 
 
-    log << type_ << ": allocate output..." << std::endl;
-    mark = timer.elapsed();
-    Helper output(out.numberOfPoints(), interpol.target());
     std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }
-    log << type_ << ": allocate output... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    report(timer, type_ + ": allocate output");
 
 
-    log << type_ << ": interpolate..." << std::endl;
-    mark = timer.elapsed();
     interpol.execute(input.fields, output.fields);
     for (size_t i = 0; i < field.dimensions(); ++i) {
         field.update(result[i], i, true);
     }
-    log << type_ << ": interpolate... done, " << eckit::Seconds(timer.elapsed() - mark) << std::endl;
+    report(timer, type_ + ": interpolate");
 }
 
 
