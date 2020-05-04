@@ -34,16 +34,16 @@ namespace lsm {
 static NamedLSM __lsm_selection("named");
 
 
-static NamedMaskBuilder<MappedMask> __NamedMask_1km_1("1km", "~mir/share/mir/masks/lsm.1km.mask");
-static NamedMaskBuilder<MappedMask> __NamedMask_1km_2("1KM", "~mir/share/mir/masks/lsm.1km.mask");
-static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_1("10min", "~mir/share/mir/masks/lsm.10min.mask");
-static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_2("10MIN", "~mir/share/mir/masks/lsm.10min.mask");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N128("N128", "~mir/share/mir/masks/lsm.N128.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N256("N256", "~mir/share/mir/masks/lsm.N256.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N320("N320", "~mir/share/mir/masks/lsm.N320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O320("O320", "~mir/share/mir/masks/lsm.O320.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O640("O640", "~mir/share/mir/masks/lsm.O640.grib");
-static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O1280("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
+static NamedMaskBuilder<MappedMask> __NamedMask_1km_1("1km", "~mir-data/share/mir/masks/lsm.1km.mask");
+static NamedMaskBuilder<MappedMask> __NamedMask_1km_2("1KM", "~mir-data/share/mir/masks/lsm.1km.mask");
+static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_1("10min", "~mir-data/share/mir/masks/lsm.10min.mask");
+static NamedMaskBuilder<TenMinutesMask> __NamedMask_10min_2("10MIN", "~mir-data/share/mir/masks/lsm.10min.mask");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N128("N128", "~mir-data/share/mir/masks/lsm.N128.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N256("N256", "~mir-data/share/mir/masks/lsm.N256.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_N320("N320", "~mir-data/share/mir/masks/lsm.N320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O320("O320", "~mir-data/share/mir/masks/lsm.O320.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O640("O640", "~mir-data/share/mir/masks/lsm.O640.grib");
+static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_O1280("O1280", "~mir-data/share/mir/masks/lsm.O1280.grib");
 
 
 static pthread_once_t once                         = PTHREAD_ONCE_INIT;

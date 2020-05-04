@@ -891,7 +891,7 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  PUBLIC_LIBS        ${libatlas} eckit_linalg eckit_geometry eckit_option eckit eccodes
+  PUBLIC_LIBS        mir-data ${libatlas} eckit_linalg eckit_geometry eckit_option eckit eccodes
   )
 
 if(HAVE_NETCDF)

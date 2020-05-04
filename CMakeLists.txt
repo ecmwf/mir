@@ -30,8 +30,9 @@ else()
     ecbuild_info( "  Note: eccodes NOT compiled with memfs" )
 endif()
 
-ecbuild_use_package( PROJECT eckit   VERSION 1.10 REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.20 REQUIRED )
+ecbuild_use_package( PROJECT eckit    VERSION 1.10 REQUIRED )
+ecbuild_use_package( PROJECT atlas    VERSION 0.20 REQUIRED )
+ecbuild_use_package( PROJECT mir-data REQUIRED )
 
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
