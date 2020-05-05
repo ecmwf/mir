@@ -12,15 +12,19 @@
 
 #include "mir/action/filter/NablaFilterFVMT.h"
 
+#include <limits>
+#include <memory>
 #include <ostream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/api/Atlas.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
+#include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 
@@ -213,6 +217,29 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
     // Perform operation
     T operation(mesh);
     operation(field);
+
+    if (polesMissingValues_) {
+        auto missingValue = std::numeric_limits<double>::min();
+        auto N            = field.representation()->numberOfPoints();
+
+        for (size_t i = 0, ip = 0; i < field.dimensions(); ++i) {
+            auto& values = field.direct(i);
+            ASSERT(values.size() == N);
+
+            const std::unique_ptr<repres::Iterator> it(field.representation()->iterator());
+            while (it->next()) {
+                auto lat = it->pointUnrotated().lat().value();
+                if (eckit::types::is_approximately_equal(lat, Latitude::NORTH_POLE.value()) ||
+                    eckit::types::is_approximately_equal(lat, Latitude::SOUTH_POLE.value())) {
+                    ASSERT(ip < N);
+                    values[ip] = missingValue;
+                }
+                ++ip;
+            }
+        }
+
+        field.hasMissing(true);
+    }
 }
 
 

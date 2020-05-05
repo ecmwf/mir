@@ -18,14 +18,16 @@
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
+#include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace action {
 
 
-NablaFilter::NablaFilter(const param::MIRParametrisation& param) :
-    Action(param),
-    meshGeneratorParams_("input", param) {}
+NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_("input", param) {
+    param.get("nabla-poles-missing-values", polesMissingValues_ = false);
+}
 
 
 NablaFilter::~NablaFilter() = default;

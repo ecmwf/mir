@@ -58,6 +58,7 @@ protected:
     // -- Members
 
     util::MeshGeneratorParameters meshGeneratorParams_;
+    bool polesMissingValues_;
 
     // -- Methods
     // None

@@ -218,6 +218,7 @@ public:
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
 
+        options_.push_back(new SimpleOption<bool>("nabla-poles-missing-values", "Force missing values at the poles"));
         options_.push_back(new SimpleOption<bool>(
             "pre-globalise", "Make the field global (before interpolation) adding missing values if needed"));
         options_.push_back(new SimpleOption<bool>(
