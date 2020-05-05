@@ -238,6 +238,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
             }
         }
 
+        field.missingValue(missingValue);
         field.hasMissing(true);
     }
 }
