@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_action_NablaFilterT_h
-#define mir_action_NablaFilterT_h
+#ifndef mir_action_NablaFilterFVMT_h
+#define mir_action_NablaFilterFVMT_h
 
 #include "mir/action/filter/NablaFilter.h"
 
@@ -20,8 +20,8 @@ namespace mir {
 namespace action {
 
 
-template<typename T>
-class NablaFilterT : public NablaFilter {
+template <typename T>
+class NablaFilterFVMT : public NablaFilter {
 public:
     // -- Exceptions
     // None

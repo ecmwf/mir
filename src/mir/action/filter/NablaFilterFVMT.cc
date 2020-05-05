@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/action/filter/NablaFilterT.h"
+#include "mir/action/filter/NablaFilterFVMT.h"
 
 #include <ostream>
 
@@ -185,14 +185,14 @@ struct UVVorticity : NablaOperation {
 
 
 template <typename T>
-bool NablaFilterT<T>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const NablaFilterT<T>*>(&other);
+bool NablaFilterFVMT<T>::sameAs(const Action& other) const {
+    auto o = dynamic_cast<const NablaFilterFVMT<T>*>(&other);
     return (o != nullptr) && meshGeneratorParams_.sameAs(o->meshGeneratorParams_);
 }
 
 
 template <typename T>
-void NablaFilterT<T>::execute(context::Context& ctx) const {
+void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
     auto timing(ctx.statistics().nablaTimer());
 
     // Generate mesh (disabling incompatible features)
@@ -217,22 +217,22 @@ void NablaFilterT<T>::execute(context::Context& ctx) const {
 
 
 template <typename T>
-const char* NablaFilterT<T>::name() const {
+const char* NablaFilterFVMT<T>::name() const {
     return T::name();
 }
 
 
 template <typename T>
-void NablaFilterT<T>::estimate(context::Context&, api::MIREstimation& estimation) const {
+void NablaFilterFVMT<T>::estimate(context::Context&, api::MIREstimation& estimation) const {
     estimation.sameAsInput();
 }
 
 
-static NablaFilterBuilder<NablaFilterT<ScalarGradient>> __nabla1("scalar-gradient");
-static NablaFilterBuilder<NablaFilterT<ScalarLaplacian>> __nabla2("scalar-laplacian");
-static NablaFilterBuilder<NablaFilterT<UVGradient>> __nabla3("uv-gradient");
-static NablaFilterBuilder<NablaFilterT<UVDivergence>> __nabla4("uv-divergence");
-static NablaFilterBuilder<NablaFilterT<UVVorticity>> __nabla5("uv-vorticity");
+static NablaFilterBuilder<NablaFilterFVMT<ScalarGradient>> __nabla1("scalar-gradient");
+static NablaFilterBuilder<NablaFilterFVMT<ScalarLaplacian>> __nabla2("scalar-laplacian");
+static NablaFilterBuilder<NablaFilterFVMT<UVGradient>> __nabla3("uv-gradient");
+static NablaFilterBuilder<NablaFilterFVMT<UVDivergence>> __nabla4("uv-divergence");
+static NablaFilterBuilder<NablaFilterFVMT<UVVorticity>> __nabla5("uv-vorticity");
 
 
 }  // namespace action

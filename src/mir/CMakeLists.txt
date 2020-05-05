@@ -639,8 +639,8 @@ if (HAVE_ATLAS)
     list(APPEND mir_srcs
         action/filter/NablaFilter.cc
         action/filter/NablaFilter.h
-        action/filter/NablaFilterT.cc
-        action/filter/NablaFilterT.h
+        action/filter/NablaFilterFVMT.cc
+        action/filter/NablaFilterFVMT.h
         action/transform/InvtransScalar.cc
         action/transform/InvtransScalar.h
         action/transform/InvtransVodTouv.cc
