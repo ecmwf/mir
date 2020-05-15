@@ -10,17 +10,20 @@
  */
 
 
-#ifndef Mercator_H
-#define Mercator_H
+#ifndef mir_repres_regular_Mercator_h
+#define mir_repres_regular_Mercator_h
 
-#include "mir/repres/Gridded.h"
+#include "mir/api/Atlas.h"
+
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
+namespace regular {
 
 
-class Mercator : public Gridded {
+class Mercator : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -28,10 +31,11 @@ public:
     // -- Constructors
 
     Mercator(const param::MIRParametrisation&);
+    Mercator(const Mercator&) = delete;
+    Mercator& operator=(const Mercator&) = delete;
 
     // -- Destructor
-
-    virtual ~Mercator();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -50,37 +54,13 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const;  // Change to virtual if base class
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
-    Mercator();
-
-    // No copy allowed
-
-    Mercator(const Mercator&);
-    Mercator& operator=(const Mercator&);
-
     // -- Members
-
-
-    // -- Methods
     // None
 
+    // -- Methods
+
+    static Projection make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
 
@@ -93,12 +73,13 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Mercator& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
+
+
 #endif
