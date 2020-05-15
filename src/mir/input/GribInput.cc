@@ -506,6 +506,7 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
          is("gridType", "lambert_azimuthal_equal_area")},
         {"grid", vector_double({"DxInMetres", "DyInMetres"}), is("gridType", "lambert")},
+        {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
 
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
