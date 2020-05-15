@@ -74,7 +74,8 @@ protected:
     bool firstPointBottomLeft_;
 
     // -- Methods
-    // None
+
+    static Projection make_projection_via_proj(const param::MIRParametrisation&);
 
     // -- Overridden methods
 
