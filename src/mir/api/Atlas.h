@@ -38,6 +38,7 @@
 #include "atlas/numerics/fvm/Method.h"
 #include "atlas/option.h"
 #include "atlas/output/Gmsh.h"
+#include "atlas/projection/detail/ProjectionFactory.h"
 #include "atlas/trans/LegendreCacheCreator.h"
 #include "atlas/trans/Trans.h"
 #include "atlas/util/Config.h"

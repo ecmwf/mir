@@ -57,6 +57,7 @@ public:
         options_.push_back(
             new SimpleOption<size_t>("nclosest", "Number of points close to given latitude/longitude, default 1"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
+        options_.push_back(new SimpleOption<bool>("proj-if-available", "Use PROJ for projections if available"));
     }
 };
 
