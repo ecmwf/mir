@@ -75,7 +75,7 @@ protected:
 
     // -- Methods
 
-    static Projection make_projection_via_proj(const param::MIRParametrisation&);
+    static Projection make_projection_via_proj(const param::MIRParametrisation&, std::string proj);
 
     // -- Overridden methods
 
