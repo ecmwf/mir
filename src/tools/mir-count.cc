@@ -108,23 +108,10 @@ using DistanceLat = std::pair<Latitude, Latitude>;
 using DistanceLon = std::pair<Longitude, Longitude>;
 
 
-size_t countRepresentationInBoundingBox(const repres::Representation& rep, const util::BoundingBox& bbox,
-                                        std::set<DistanceLat>& nn, std::set<DistanceLon>& ww, std::set<DistanceLat>& ss,
-                                        std::set<DistanceLon>& ee) {
-    Latitude n  = 0;
-    Latitude s  = 0;
-    Longitude e = 0;
-    Longitude w = 0;
+struct counter_t {
+    counter_t(const util::BoundingBox& bbox_) : bbox(bbox_), first(true), count(0), values(0), n(0), s(0), e(0), w(0) {}
 
-    size_t count  = 0;
-    size_t values = 0;
-    bool first    = true;
-
-    std::unique_ptr<repres::Iterator> iter(rep.iterator());
-
-    while (iter->next()) {
-        const auto& point = iter->pointUnrotated();
-
+    void insert(const PointLatLon& point) {
         values++;
 
         nn.insert(DistanceLat(bbox.north().distance(point.lat()), point.lat()));
@@ -165,34 +152,52 @@ size_t countRepresentationInBoundingBox(const repres::Representation& rep, const
         }
     }
 
-    eckit::Log::info() << Pretty(count) << " out of " << Pretty(values) << ", north=" << n << " (bbox.n - n "
-                       << bbox.north() - n << ")"
-                       << ", west=" << w << " (w - bbox.w " << w - bbox.west() << ")"
-                       << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
-                       << ", east=" << e << " (bbox.e - e " << bbox.east() - e << ")"
-                       << "\n"
-                          "N "
-                       << bbox.north() << ":" << nn
-                       << "\n"
-                          "W "
-                       << bbox.west() << ":" << ww
-                       << "\n"
-                          "S "
-                       << bbox.south() << ":" << ss
-                       << "\n"
-                          "E "
-                       << bbox.east() << ":" << ee << std::endl;
+    void print(std::ostream& out) const {
+        out << Pretty(count) << " out of " << Pretty(values) << ", north=" << n << " (bbox.n - n " << bbox.north() - n
+            << ")"
+            << ", west=" << w << " (w - bbox.w " << w - bbox.west() << ")"
+            << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
+            << ", east=" << e << " (bbox.e - e " << bbox.east() - e << ")"
+            << "\n"
+               "N "
+            << bbox.north() << ":" << nn
+            << "\n"
+               "W "
+            << bbox.west() << ":" << ww
+            << "\n"
+               "S "
+            << bbox.south() << ":" << ss
+            << "\n"
+               "E "
+            << bbox.east() << ":" << ee << std::endl;
+    }
 
-    return count;
-}
+    const util::BoundingBox bbox;
+    bool first;
 
+    size_t count;
+    size_t values;
 
-void MIRCount::execute(const eckit::option::CmdArgs& args) {
+    Latitude n;
+    Latitude s;
+    Longitude e;
+    Longitude w;
 
     std::set<DistanceLat> nn;
     std::set<DistanceLat> ss;
     std::set<DistanceLon> ww;
     std::set<DistanceLon> ee;
+};
+
+
+void countRepresentationInBoundingBox(counter_t& counter, const repres::Representation& rep) {
+    for (std::unique_ptr<repres::Iterator> iter(rep.iterator()); iter->next();) {
+        counter.insert(iter->pointUnrotated());
+    }
+}
+
+
+void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     std::vector<double> value;
 
@@ -217,7 +222,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
         }
 
         repres::latlon::RegularLL rep(grid);
-        countRepresentationInBoundingBox(rep, bbox, nn, ww, ss, ee);
+        counter_t counter(bbox);
+
+        countRepresentationInBoundingBox(counter, rep);
+
+        counter.print(eckit::Log::info());
         return;
     }
 
@@ -228,7 +237,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
         ASSERT(!args.has("grid"));
 
         repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(gridname).representation());
-        countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
+        counter_t counter(bbox);
+
+        countRepresentationInBoundingBox(counter, *rep);
+
+        counter.print(eckit::Log::info());
         return;
     }
 
@@ -244,7 +257,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
             ASSERT(field.dimensions() == 1);
 
             repres::RepresentationHandle rep(field.representation());
-            countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
+            counter_t counter(bbox);
+
+            countRepresentationInBoundingBox(counter, *rep);
+
+            counter.print(eckit::Log::info());
         }
     }
 }
