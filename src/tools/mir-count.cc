@@ -12,6 +12,7 @@
 
 #include <memory>
 
+#include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/VectorOption.h"
 
@@ -28,6 +29,8 @@
 
 
 using namespace mir;
+
+using prec_t = decltype(std::cout.precision());
 
 
 class MIRCount : public mir::tools::MIRTool {
@@ -48,6 +51,7 @@ public:
         options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
         options_.push_back(
             new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
+        options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
 };
 
@@ -152,24 +156,47 @@ struct counter_t {
         }
     }
 
-    void print(std::ostream& out) const {
-        out << Pretty(count) << " out of " << Pretty(values) << ", north=" << n << " (bbox.n - n " << bbox.north() - n
-            << ")"
-            << ", west=" << w << " (w - bbox.w " << w - bbox.west() << ")"
-            << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
-            << ", east=" << e << " (bbox.e - e " << bbox.east() - e << ")"
-            << "\n"
-               "N "
-            << bbox.north() << ":" << nn
-            << "\n"
-               "W "
-            << bbox.west() << ":" << ww
-            << "\n"
-               "S "
-            << bbox.south() << ":" << ss
-            << "\n"
-               "E "
-            << bbox.east() << ":" << ee << std::endl;
+    void json(eckit::JSON& j) const {
+        j.startObject();
+
+        j << "count" << count;
+        j << "values" << values;
+
+        j << "point";
+        j.startObject();
+        j << "n" << n.value();
+        j << "w" << w.value();
+        j << "s" << s.value();
+        j << "e" << e.value();
+        j.endObject();
+
+        j << "bbox";
+        j.startObject();
+        j << "n" << bbox.north().value();
+        j << "w" << bbox.west().value();
+        j << "s" << bbox.south().value();
+        j << "e" << bbox.east().value();
+        j.endObject();
+
+        j << "distance_to_bbox";
+        j.startObject();
+        j << "n" << (bbox.north() - n).value();
+        j << "w" << (w - bbox.west()).value();
+        j << "s" << (s - bbox.south()).value();
+        j << "e" << (bbox.east() - e).value();
+        j.endObject();
+
+        if (!nn.empty() && !ww.empty() && !ss.empty() && !ee.empty()) {
+            j << "distance_to_closest";
+            j.startObject();
+            j << "n" << (nn.begin()->first).value();
+            j << "w" << (ww.begin()->first).value();
+            j << "s" << (ss.begin()->first).value();
+            j << "e" << (ee.begin()->first).value();
+            j.endObject();
+        }
+
+        j.endObject();
     }
 
     const util::BoundingBox bbox;
@@ -198,6 +225,11 @@ void countRepresentationInBoundingBox(counter_t& counter, const repres::Represen
 
 
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
+    auto& log = eckit::Log::info();
+
+    prec_t precision;
+    args.get("precision", precision) ? log.precision(precision) : log.precision();
+    eckit::JSON j(log);
 
     std::vector<double> value;
 
@@ -226,7 +258,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
         countRepresentationInBoundingBox(counter, rep);
 
-        counter.print(eckit::Log::info());
+        counter.json(j);
         return;
     }
 
@@ -241,12 +273,15 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
         countRepresentationInBoundingBox(counter, *rep);
 
-        counter.print(eckit::Log::info());
+        counter.json(j);
         return;
     }
 
 
     // count each file(s) message(s)
+    j.startObject();
+    j.startList();
+
     for (size_t i = 0; i < args.count(); ++i) {
         eckit::Log::info() << args(i) << std::endl;
 
@@ -261,9 +296,12 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
             countRepresentationInBoundingBox(counter, *rep);
 
-            counter.print(eckit::Log::info());
+            counter.json(j);
         }
     }
+
+    j.endList();
+    j.endObject();
 }
 
 
