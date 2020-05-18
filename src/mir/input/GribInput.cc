@@ -225,6 +225,8 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
         {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
+        {"proj", "projString", nullptr},
+
         // This will be just called for has()
         {
             "gridded",
