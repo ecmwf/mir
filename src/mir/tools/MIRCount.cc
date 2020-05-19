@@ -132,8 +132,10 @@ struct counter_t {
         }
     }
 
-    void json(eckit::JSON& j) const {
-        j.startObject();
+    void json(eckit::JSON& j, bool enclose = true) const {
+        if (enclose) {
+            j.startObject();
+        }
 
         j << "count" << count;
         j << "values" << values;
@@ -172,7 +174,9 @@ struct counter_t {
             j.endObject();
         }
 
-        j.endObject();
+        if (enclose) {
+            j.endObject();
+        }
     }
 
     const util::BoundingBox bbox;
@@ -225,7 +229,10 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
         if (args.has("ni-nj")) {
             // Note: this *does not crop*, it is a "local" representation
             repres::latlon::RegularLL rep(grid, bbox, {bbox.south(), bbox.west()});
-            eckit::Log::info() << rep.Ni() << ":" << rep.Nj() << std::endl;
+            j.startObject();
+            j << "Ni" << rep.Ni();
+            j << "Nj" << rep.Nj();
+            j.endObject();
             return;
         }
 
@@ -256,13 +263,14 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     // count each file(s) message(s)
     j.startObject();
+    j << "files";
     j.startList();
 
-    for (size_t i = 0; i < args.count(); ++i) {
-        eckit::Log::info() << args(i) << std::endl;
+    for (size_t i = 0, k = 0; i < args.count(); ++i, k = 0) {
 
         input::GribFileInput grib(args(i));
         while (grib.next()) {
+            ++k;
 
             data::MIRField field = static_cast<const input::MIRInput&>(grib).field();
             ASSERT(field.dimensions() == 1);
@@ -272,7 +280,11 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
             countRepresentationInBoundingBox(counter, *rep);
 
-            counter.json(j);
+            j.startObject();
+            j << "file" << args(i);
+            j << "fileMessage" << k;
+            counter.json(j, false);
+            j.endObject();
         }
     }
 
