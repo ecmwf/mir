@@ -23,7 +23,6 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
 
 #include "mir/tools/MIRCount.h"
@@ -34,9 +33,6 @@ namespace tools {
 
 
 using prec_t = decltype(std::cout.precision());
-
-using DistanceLat = std::pair<Latitude, Latitude>;
-using DistanceLon = std::pair<Longitude, Longitude>;
 
 
 void MIRCount::usage(const std::string& tool) const {
@@ -89,116 +85,120 @@ std::ostream& operator<<(std::ostream& s, const std::set<std::pair<T, T> >& x) {
 }
 
 
-struct counter_t {
-    counter_t(const util::BoundingBox& bbox_) : bbox(bbox_), first(true), count(0), values(0), n(0), s(0), e(0), w(0) {}
-
-    void insert(const PointLatLon& point) {
-        values++;
-
-        nn.insert(DistanceLat(bbox.north().distance(point.lat()), point.lat()));
-        ss.insert(DistanceLat(bbox.south().distance(point.lat()), point.lat()));
-
-        ee.insert(DistanceLon(bbox.east().distance(point.lon()), point.lon()));
-        ww.insert(DistanceLon(bbox.west().distance(point.lon()), point.lon()));
-
-        // std::cout << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
-
-        if (bbox.contains(point)) {
-
-            const Latitude& lat = point.lat();
-            const Longitude lon = point.lon().normalise(bbox.west());
-
-            if (first) {
-                n = s = lat;
-                e = w = lon;
-                first = false;
-            }
-            else {
-                if (n < lat) {
-                    n = lat;
-                }
-                if (s > lat) {
-                    s = lat;
-                }
-                if (e < lon) {
-                    e = lon;
-                }
-                if (w > lon) {
-                    w = lon;
-                }
-            }
+util::BoundingBox get_bounding_box(const std::vector<double>& area) {
+    if (area.empty()) {
+        return {};
+    }
+    ASSERT(area.size() == 4);
+    return {area[0], area[1], area[2], area[3]};
+}
 
 
-            count++;
+MIRCount::counter_t::counter_t(const util::BoundingBox& bbox_) :
+    bbox(bbox_),
+    first(true),
+    count(0),
+    values(0),
+    n(0),
+    s(0),
+    e(0),
+    w(0) {}
+
+
+MIRCount::counter_t::counter_t(std::vector<double>& area) : counter_t(get_bounding_box(area)) {}
+
+
+void MIRCount::counter_t::insert(const PointLatLon& point) {
+    values++;
+
+    nn.insert(DistanceLat(bbox.north().distance(point.lat()), point.lat()));
+    ss.insert(DistanceLat(bbox.south().distance(point.lat()), point.lat()));
+
+    ee.insert(DistanceLon(bbox.east().distance(point.lon()), point.lon()));
+    ww.insert(DistanceLon(bbox.west().distance(point.lon()), point.lon()));
+
+    // std::cout << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
+
+    if (bbox.contains(point)) {
+
+        const Latitude& lat = point.lat();
+        const Longitude lon = point.lon().normalise(bbox.west());
+
+        if (first) {
+            n = s = lat;
+            e = w = lon;
+            first = false;
         }
+        else {
+            if (n < lat) {
+                n = lat;
+            }
+            if (s > lat) {
+                s = lat;
+            }
+            if (e < lon) {
+                e = lon;
+            }
+            if (w > lon) {
+                w = lon;
+            }
+        }
+
+
+        count++;
+    }
+}
+
+
+void MIRCount::counter_t::json(eckit::JSON& j, bool enclose) const {
+    if (enclose) {
+        j.startObject();
     }
 
-    void json(eckit::JSON& j, bool enclose = true) const {
-        if (enclose) {
-            j.startObject();
-        }
+    j << "count" << count;
+    j << "values" << values;
 
-        j << "count" << count;
-        j << "values" << values;
+    j << "point";
+    j.startObject();
+    j << "n" << n.value();
+    j << "w" << w.value();
+    j << "s" << s.value();
+    j << "e" << e.value();
+    j.endObject();
 
-        j << "point";
+    j << "bbox";
+    j.startObject();
+    j << "n" << bbox.north().value();
+    j << "w" << bbox.west().value();
+    j << "s" << bbox.south().value();
+    j << "e" << bbox.east().value();
+    j.endObject();
+
+    j << "distance_to_bbox";
+    j.startObject();
+    j << "n" << (bbox.north() - n).value();
+    j << "w" << (w - bbox.west()).value();
+    j << "s" << (s - bbox.south()).value();
+    j << "e" << (bbox.east() - e).value();
+    j.endObject();
+
+    if (!nn.empty() && !ww.empty() && !ss.empty() && !ee.empty()) {
+        j << "distance_to_closest";
         j.startObject();
-        j << "n" << n.value();
-        j << "w" << w.value();
-        j << "s" << s.value();
-        j << "e" << e.value();
+        j << "n" << (nn.begin()->first).value();
+        j << "w" << (ww.begin()->first).value();
+        j << "s" << (ss.begin()->first).value();
+        j << "e" << (ee.begin()->first).value();
         j.endObject();
-
-        j << "bbox";
-        j.startObject();
-        j << "n" << bbox.north().value();
-        j << "w" << bbox.west().value();
-        j << "s" << bbox.south().value();
-        j << "e" << bbox.east().value();
-        j.endObject();
-
-        j << "distance_to_bbox";
-        j.startObject();
-        j << "n" << (bbox.north() - n).value();
-        j << "w" << (w - bbox.west()).value();
-        j << "s" << (s - bbox.south()).value();
-        j << "e" << (bbox.east() - e).value();
-        j.endObject();
-
-        if (!nn.empty() && !ww.empty() && !ss.empty() && !ee.empty()) {
-            j << "distance_to_closest";
-            j.startObject();
-            j << "n" << (nn.begin()->first).value();
-            j << "w" << (ww.begin()->first).value();
-            j << "s" << (ss.begin()->first).value();
-            j << "e" << (ee.begin()->first).value();
-            j.endObject();
-        }
-
-        if (enclose) {
-            j.endObject();
-        }
     }
 
-    const util::BoundingBox bbox;
-    bool first;
-
-    size_t count;
-    size_t values;
-
-    Latitude n;
-    Latitude s;
-    Longitude e;
-    Longitude w;
-
-    std::set<DistanceLat> nn;
-    std::set<DistanceLat> ss;
-    std::set<DistanceLon> ww;
-    std::set<DistanceLon> ee;
-};
+    if (enclose) {
+        j.endObject();
+    }
+}
 
 
-void countRepresentationInBoundingBox(counter_t& counter, const repres::Representation& rep) {
+void countRepresentationInBoundingBox(MIRCount::counter_t& counter, const repres::Representation& rep) {
     for (std::unique_ptr<repres::Iterator> iter(rep.iterator()); iter->next();) {
         counter.insert(iter->pointUnrotated());
     }
@@ -207,40 +207,22 @@ void countRepresentationInBoundingBox(counter_t& counter, const repres::Represen
 
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
     auto& log = eckit::Log::info();
+    eckit::JSON j(log);
 
     prec_t precision;
     args.get("precision", precision) ? log.precision(precision) : log.precision();
-    eckit::JSON j(log);
 
-    std::vector<double> value;
-
-    util::BoundingBox bbox;
-    if (args.get("area", value)) {
-        ASSERT(value.size() == 4);
-        bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
-    }
+    std::vector<double> area;
+    args.get("area", area);
 
 
     // setup a regular lat/lon representation and perfom count
-    if (args.get("grid", value)) {
+    std::vector<double> grid;
+    if (args.get("grid", grid)) {
         ASSERT(!args.has("gridname"));
-        ASSERT(value.size() == 2);
-        util::Increments grid(value[0], value[1]);
+        counter_t counter(area);
 
-        if (args.has("ni-nj")) {
-            // Note: this *does not crop*, it is a "local" representation
-            repres::latlon::RegularLL rep(grid, bbox, {bbox.south(), bbox.west()});
-            j.startObject();
-            j << "Ni" << rep.Ni();
-            j << "Nj" << rep.Nj();
-            j.endObject();
-            return;
-        }
-
-        repres::latlon::RegularLL rep(grid);
-        counter_t counter(bbox);
-
-        countRepresentationInBoundingBox(counter, rep);
+        countOnGridIncrements(counter, grid);
 
         counter.json(j);
         return;
@@ -251,11 +233,9 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     std::string gridname;
     if (args.get("gridname", gridname)) {
         ASSERT(!args.has("grid"));
+        counter_t counter(area);
 
-        repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(gridname).representation());
-        counter_t counter(bbox);
-
-        countRepresentationInBoundingBox(counter, *rep);
+        countOnNamedGrid(counter, gridname);
 
         counter.json(j);
         return;
@@ -263,6 +243,8 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
 
     // count each file(s) message(s)
+    util::BoundingBox bbox(get_bounding_box(area));
+
     j.startObject();
     j << "files";
     j.startList();
@@ -303,8 +285,25 @@ void MIRCount::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
     options.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
     options.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
-    options.push_back(new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
     options.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
+}
+
+
+void MIRCount::countOnNamedGrid(counter_t& counter, std::string grid) {
+    ASSERT(!grid.empty());
+    repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(grid).representation());
+
+    countRepresentationInBoundingBox(counter, *rep);
+}
+
+
+void MIRCount::countOnGridIncrements(counter_t& counter, std::vector<double> grid) {
+    ASSERT(grid.size() == 2);
+    util::Increments inc(grid[0], grid[1]);
+
+    repres::latlon::RegularLL rep(inc);
+
+    countRepresentationInBoundingBox(counter, rep);
 }
 
 
