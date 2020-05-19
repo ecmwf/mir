@@ -14,6 +14,7 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
@@ -293,18 +294,26 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 }
 
 
-MIRCount::MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
+void MIRCount::addOptions(std::vector<eckit::option::Option*>& options) {
     using eckit::option::SimpleOption;
     using eckit::option::VectorOption;
 
     // options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors,
     // default false"));
-    options_.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
-    options_.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
-    options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
-    options_.push_back(new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
-    options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
+    options.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
+    options.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
+    options.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
+    options.push_back(new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
+    options.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
 }
+
+
+MIRCount::MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
+    addOptions(options_);
+}
+
+
+MIRCount::~MIRCount() = default;
 
 
 }  // namespace tools

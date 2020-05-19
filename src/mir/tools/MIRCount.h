@@ -13,8 +13,7 @@
 #ifndef mir_tools_MIRCount_h
 #define mir_tools_MIRCount_h
 
-#include "eckit/option/SimpleOption.h"
-#include "eckit/option/VectorOption.h"
+#include <vector>
 
 #include "mir/tools/MIRTool.h"
 
@@ -24,13 +23,16 @@ namespace tools {
 
 
 class MIRCount : public tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const { return 0; }
+protected:
+    virtual void execute(const eckit::option::CmdArgs&);
+    virtual void usage(const std::string& tool) const;
+    virtual int minimumPositionalArguments() const { return 0; }
+
+    static void addOptions(std::vector<eckit::option::Option*>&);
 
 public:
     MIRCount(int argc, char** argv);
+    virtual ~MIRCount();
 };
 
 
