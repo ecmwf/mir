@@ -10,17 +10,18 @@
  */
 
 
-#ifndef PolarStereographic_H
-#define PolarStereographic_H
+#ifndef mir_repres_regular_PolarStereographic_h
+#define mir_repres_regular_PolarStereographic_h
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/regular/RegularGrid.h"
 
 
 namespace mir {
 namespace repres {
+namespace regular {
 
 
-class PolarStereographic : public Gridded {
+class PolarStereographic : public RegularGrid {
 public:
     // -- Exceptions
     // None
@@ -28,10 +29,11 @@ public:
     // -- Constructors
 
     PolarStereographic(const param::MIRParametrisation&);
+    PolarStereographic(const PolarStereographic&) = delete;
+    PolarStereographic& operator=(const PolarStereographic&) = delete;
 
     // -- Destructor
-
-    virtual ~PolarStereographic();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -50,51 +52,17 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const;  // Change to virtual if base class
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
-    PolarStereographic();
-
-    // No copy allowed
-
-    PolarStereographic(const PolarStereographic&);
-    PolarStereographic& operator=(const PolarStereographic&);
-
     // -- Members
-
-    size_t Nx_;
-    size_t Ny_;
-    size_t Dx_;
-    size_t Dy_;
-    double longitudeOfFirstGridPoint_;
-    double latitudeOfFirstGridPoint_;
-    double orientationOfTheGrid_;
-    double radiusOfTheEarth_;
-    bool southPoleOnProjectionPlane_;
-
+    // None
 
     // -- Methods
-    // None
+
+    static Projection make_projection(const param::MIRParametrisation&);
 
     // -- Overridden methods
 
     virtual void fill(grib_info&) const;
-    virtual void validate(const MIRValuesVector&) const;
 
     // -- Class members
     // None
@@ -103,12 +71,13 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const PolarStereographic& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
+}  // namespace regular
 }  // namespace repres
 }  // namespace mir
+
+
 #endif

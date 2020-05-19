@@ -464,8 +464,6 @@ list(APPEND mir_srcs
     repres/unsupported/EquatorialAzimuthalEquidistant.h
     repres/unsupported/IrregularLatlon.cc
     repres/unsupported/IrregularLatlon.h
-    repres/unsupported/PolarStereographic.cc
-    repres/unsupported/PolarStereographic.h
     repres/unsupported/RotatedSH.cc
     repres/unsupported/RotatedSH.h
     repres/unsupported/SpaceView.cc
@@ -733,6 +731,8 @@ if (HAVE_ATLAS)
         repres/regular/LambertAzimuthalEqualArea.h
         repres/regular/Mercator.cc
         repres/regular/Mercator.h
+        repres/regular/PolarStereographic.cc
+        repres/regular/PolarStereographic.h
         repres/regular/RegularGrid.cc
         repres/regular/RegularGrid.h
         util/MeshGeneratorParameters.cc
