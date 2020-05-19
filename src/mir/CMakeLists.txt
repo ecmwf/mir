@@ -570,6 +570,8 @@ list(APPEND mir_srcs
     style/truncation/None.h
     style/truncation/Ordinal.cc
     style/truncation/Ordinal.h
+    tools/MIRCount.cc
+    tools/MIRCount.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
