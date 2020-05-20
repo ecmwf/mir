@@ -10,19 +10,20 @@
  */
 
 
+#include "mir/tools/Count.h"
+
 #include <memory>
 
 #include "eckit/log/JSON.h"
 #include "eckit/log/Log.h"
 
+#include "mir/config/LibMir.h"
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Pretty.h"
-
-#include "mir/tools/Count.h"
 
 
 namespace mir {
@@ -187,7 +188,8 @@ void Count::countOnNamedGrid(std::string grid) {
     reset();
 
     if (!namedgrids::NamedGrid::known(grid)) {
-        eckit::Log::warning() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
+        // avoid 'grid=auto' or 'grid=av' without failure
+        eckit::Log::debug<LibMir>() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
         return;
     }
 
