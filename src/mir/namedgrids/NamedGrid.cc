@@ -41,6 +41,11 @@ namespace {
 
 
 void read_configuration_files() {
+    static bool files_read = false;
+    if (files_read) {
+        return;
+    }
+    files_read = true;
 
     // Read config file, attaching new NamedGrid's grids to parametrisations
     struct NamedGridFromFile : NamedGrid, param::SimpleParametrisation {
@@ -127,14 +132,11 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
+    read_configuration_files();
+
     eckit::Log::debug<LibMir>() << "NamedGrid: looking for '" << name << "'" << std::endl;
 
-    static bool first = true;
-    if (first) {
-        first = false;
-        read_configuration_files();
-    }
-
+    // Look for specific name matches
     auto j = m->find(name);
     if (j != m->end()) {
         return *(j->second);
@@ -149,6 +151,26 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
 
     list(eckit::Log::error() << "No NamedGrid '" << name << "', choices are:\n");
     throw eckit::SeriousBug("No NamedGrid '" + name + "'");
+}
+
+
+bool NamedGrid::known(const std::string& name) {
+    pthread_once(&once, init);
+    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+
+    read_configuration_files();
+
+    eckit::Log::debug<LibMir>() << "NamedGrid: looking for '" << name << "'" << std::endl;
+
+    // Look for specific name matches
+    if (m->find(name) != m->end()) {
+        return true;
+    }
+
+    // Look for pattern matchings
+    // This will automatically add the new NamedGrid to the map
+    auto ng = NamedGridPattern::build(name);
+    return (ng != nullptr);
 }
 
 

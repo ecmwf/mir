@@ -55,6 +55,10 @@ public:
     virtual const repres::Representation* representation(const util::Rotation&) const = 0;
     virtual size_t gaussianNumber() const                                             = 0;
 
+    static const NamedGrid& lookup(const std::string& name);
+    static bool known(const std::string& name);
+    static void list(std::ostream&);
+
     // -- Overridden methods
     // None
 
@@ -62,9 +66,7 @@ public:
     // None
 
     // -- Class methods
-
-    static const NamedGrid& lookup(const std::string& name);
-    static void list(std::ostream&);
+    // None
 
 protected:
     NamedGrid(const std::string& name);
