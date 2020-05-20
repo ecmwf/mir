@@ -13,6 +13,7 @@
 #include <memory>
 
 #include "eckit/log/JSON.h"
+#include "eckit/log/Log.h"
 
 #include "mir/namedgrids/NamedGrid.h"
 #include "mir/repres/Iterator.h"
@@ -183,6 +184,12 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
 void Count::countOnNamedGrid(std::string grid) {
     ASSERT(!grid.empty());
+    reset();
+
+    if (!namedgrids::NamedGrid::known(grid)) {
+        eckit::Log::warning() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
+        return;
+    }
 
     repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(grid).representation());
     countOnRepresentation(*rep);
@@ -191,6 +198,7 @@ void Count::countOnNamedGrid(std::string grid) {
 
 void Count::countOnGridIncrements(std::vector<double> grid) {
     ASSERT(grid.size() == 2);
+    reset();
 
     util::Increments inc(grid[0], grid[1]);
     repres::RepresentationHandle rep(new repres::latlon::RegularLL(inc));
