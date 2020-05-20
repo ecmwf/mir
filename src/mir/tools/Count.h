@@ -90,7 +90,7 @@ private:
     bool first_;
 
     size_t count_;
-    size_t values_;
+    size_t countTotal_;
 
     Latitude n_;
     Latitude s_;

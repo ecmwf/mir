@@ -59,13 +59,13 @@ Count::Count(std::vector<double>& area) : Count(get_bounding_box(area)) {}
 
 
 void Count::reset() {
-    first_  = true;
-    count_  = 0;
-    values_ = 0;
-    n_      = 0;
-    s_      = 0;
-    e_      = 0;
-    w_      = 0;
+    first_      = true;
+    count_      = 0;
+    countTotal_ = 0;
+    n_          = 0;
+    s_          = 0;
+    e_          = 0;
+    w_          = 0;
     nn_.clear();
     ww_.clear();
     ss_.clear();
@@ -74,7 +74,7 @@ void Count::reset() {
 
 
 void Count::count(const PointLatLon& point) {
-    values_++;
+    countTotal_++;
 
     nn_.insert(DistanceLat(bbox_.north().distance(point.lat()), point.lat()));
     ss_.insert(DistanceLat(bbox_.south().distance(point.lat()), point.lat()));
@@ -115,8 +115,8 @@ void Count::count(const PointLatLon& point) {
 
 
 void Count::print(std::ostream& out) const {
-    out << Pretty(count_) << " out of " << Pretty(values_) << ", north=" << n_ << " (bbox.n - n " << bbox_.north() - n_
-        << ")"
+    out << Pretty(count_) << " out of " << Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
+        << bbox_.north() - n_ << ")"
         << ", west=" << w_ << " (w - bbox.w " << w_ - bbox_.west() << ")"
         << ", south=" << s_ << " (s - bbox.s " << s_ - bbox_.south() << ")"
         << ", east=" << e_ << " (bbox.e - e " << bbox_.east() - e_ << ")"
@@ -141,7 +141,7 @@ void Count::json(eckit::JSON& j, bool enclose) const {
     }
 
     j << "count" << count_;
-    j << "values" << values_;
+    j << "countTotal" << countTotal_;
 
     j << "point";
     j.startObject();
