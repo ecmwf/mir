@@ -568,8 +568,8 @@ list(APPEND mir_srcs
     style/truncation/None.h
     style/truncation/Ordinal.cc
     style/truncation/Ordinal.h
-    tools/MIRCount.cc
-    tools/MIRCount.h
+    tools/Count.cc
+    tools/Count.h
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
