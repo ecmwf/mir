@@ -14,11 +14,10 @@
 
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/method/Method.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Assert.h"
 #include "mir/util/Domain.h"
 
 
@@ -33,7 +32,7 @@ Gridded2RotatedGrid::Gridded2RotatedGrid(const param::MIRParametrisation& parame
     std::vector<double> value;
     ASSERT(parametrisation_.userParametrisation().get("rotation", value));
 
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }
 

@@ -13,11 +13,12 @@
 #include "mir/action/transform/ShToRotatedReducedGG.h"
 
 #include <iostream>
-#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/RotatedClassic.h"
+#include "mir/util/Assert.h"
 
 
 namespace mir {
@@ -33,7 +34,7 @@ ShToRotatedReducedGG<Invtrans>::ShToRotatedReducedGG(const param::MIRParametrisa
 
     std::vector<double> value;
     ASSERT(parametrisation_.userParametrisation().get("rotation", value));
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }
 

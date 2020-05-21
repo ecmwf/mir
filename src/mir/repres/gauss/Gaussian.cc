@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -25,6 +24,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
+#include "mir/util/Assert.h"
 #include "mir/util/Domain.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
@@ -100,8 +100,9 @@ void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
     eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << Pretty(values.size(), {"value"})
-                                << ", within domain: " << Pretty(count) << "." << std::endl;
-    ASSERT(values.size() == count);
+                                << ", iterator counts " << Pretty(count) << " (" << domain() << ")." << std::endl;
+
+    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("Gaussian", values.size(), count);
 }
 
 

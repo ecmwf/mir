@@ -573,6 +573,7 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
+    util/Assert.h
     util/Bitmap.cc
     util/Bitmap.h
     util/BoundingBox.cc

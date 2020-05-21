@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
 
@@ -26,6 +27,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Assert.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -58,7 +60,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 
     std::vector<double> value;
     ASSERT(parametrisation.userParametrisation().get("area", value));
-    ASSERT(value.size() == 4);
+    ASSERT_KEYWORD_AREA_SIZE(value.size());
 
     bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 

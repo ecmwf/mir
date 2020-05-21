@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/Fraction.h"
 
@@ -26,6 +25,7 @@
 #include "mir/style/SpectralOrder.h"
 #include "mir/style/intgrid/None.h"
 #include "mir/style/truncation/Ordinal.h"
+#include "mir/util/Assert.h"
 #include "mir/util/Increments.h"
 
 
@@ -139,7 +139,7 @@ long Resol::getTargetGaussianNumber() const {
     if (parametrisation_.userParametrisation().get("grid", grid)) {
 
         // get N from number of points in half-meridian (uses only grid[1] South-North increment)
-        ASSERT(grid.size() == 2);
+        ASSERT_KEYWORD_GRID_SIZE(grid.size());
         util::Increments increments(grid[0], grid[1]);
 
         // use (non-shifted) global bounding box

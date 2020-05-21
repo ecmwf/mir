@@ -22,6 +22,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Assert.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Pretty.h"
 
@@ -47,7 +48,7 @@ util::BoundingBox get_bounding_box(const std::vector<double>& area) {
     if (area.empty()) {
         return {};
     }
-    ASSERT(area.size() == 4);
+    ASSERT_KEYWORD_AREA_SIZE(area.size());
     return {area[0], area[1], area[2], area[3]};
 }
 
@@ -199,7 +200,7 @@ void Count::countOnNamedGrid(std::string grid) {
 
 
 void Count::countOnGridIncrements(std::vector<double> grid) {
-    ASSERT(grid.size() == 2);
+    ASSERT_KEYWORD_GRID_SIZE(grid.size());
     reset();
 
     util::Increments inc(grid[0], grid[1]);
