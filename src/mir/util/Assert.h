@@ -13,8 +13,6 @@
 #ifndef mir_util_Assert_h
 #define mir_util_Assert_h
 
-#include <string>
-
 #include "eckit/exception/Exceptions.h"
 
 #define ASSERT_KEYWORD_GRID_SIZE(size) ASSERT_MSG(size == 2, "keyword 'grid' expected size=2")
