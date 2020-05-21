@@ -204,15 +204,9 @@ void FieldComparator::compare(const std::string& name, const MultiFile& multi1, 
     args_.get("compare-headers-only", compareHeadersOnly);
 
     if (compareHeadersOnly) {
-        if (compareValues) {
-            compareValues = false;
-        }
-        if (compareMissingValues) {
-            compareMissingValues = false;
-        }
-        if (compareStatistics) {
-            compareStatistics = false;
-        }
+        compareValues        = false;
+        compareMissingValues = false;
+        compareStatistics    = false;
     }
 
     size_t save = fatals_;
