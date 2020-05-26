@@ -1,0 +1,8 @@
+# mars
+MIR-459.gridType=regular_ll,param=vector.grib1
+# mir
+--uv2uv --nabla=uv-vorticity
+# grib_get
+Ni=720
+Nj=356
+
