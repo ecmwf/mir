@@ -15,6 +15,7 @@
 
 #include <map>
 #include <set>
+#include <string>
 
 #include "eckit/thread/Mutex.h"
 
