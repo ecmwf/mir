@@ -28,9 +28,7 @@ namespace netcdf {
 
 Curvilinear::Curvilinear(const Variable& variable, const std::vector<double>& latitudes,
                          const std::vector<double>& longitudes) :
-    GridSpec(variable),
-    latitudes_(latitudes),
-    longitudes_(longitudes) {
+    GridSpec(variable), latitudes_(latitudes), longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
     ASSERT(latitudes_.size() >= 2);
 

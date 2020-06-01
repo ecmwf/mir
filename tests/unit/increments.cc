@@ -284,10 +284,7 @@ CASE("Increments::correctBoundingBox") {
 
 struct Case {
     Case(const std::string&& name, const BoundingBox& boundingBox, size_t ni, size_t nj) :
-        name_(name),
-        boundingBox_(boundingBox),
-        ni_(ni),
-        nj_(nj) {}
+        name_(name), boundingBox_(boundingBox), ni_(ni), nj_(nj) {}
 
     void print(std::ostream& out) const {
         out << "name='" << name_
@@ -324,9 +321,7 @@ struct Case {
 
 struct UserAndGlobalisedCase {
     UserAndGlobalisedCase(const Increments& increments, const Case&& user, const Case&& globalised) :
-        increments_(increments),
-        user_(user),
-        globalised_(globalised) {}
+        increments_(increments), user_(user), globalised_(globalised) {}
 
     void print(std::ostream& out) const {
         out << "UserAndGlobalisedCase["

@@ -23,9 +23,7 @@ namespace netcdf {
 
 
 MergeCoordinateMatrix::MergeCoordinateMatrix(Matrix* out, Matrix* in, size_t size) :
-    Matrix(Type::lookup(out->type(), in->type()), out->name(), size),
-    out_(out),
-    in_(in) {
+    Matrix(Type::lookup(out->type(), in->type()), out->name(), size), out_(out), in_(in) {
     out_->attach();
     in_->attach();
 }

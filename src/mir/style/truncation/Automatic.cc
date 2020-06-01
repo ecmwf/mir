@@ -31,8 +31,7 @@ static TruncationBuilder<Automatic> __truncation3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
-    style::Truncation(parametrisation),
-    truncation_(0) {
+    style::Truncation(parametrisation), truncation_(0) {
 
     // If target Gaussian N is not specified, no truncation happens
     if (targetGaussianN <= 0) {

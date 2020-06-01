@@ -41,11 +41,7 @@ void Pretty::print(std::ostream& s) const {
 
 Pretty::PrettyProgress::PrettyProgress(const std::string& name, size_t limit, const Pretty::Plural& units,
                                        std::ostream& o) :
-    Timer(name, o),
-    lastTime_(0.),
-    counter_(0),
-    units_(units),
-    limit_(limit) {}
+    Timer(name, o), lastTime_(0.), counter_(0), units_(units), limit_(limit) {}
 
 
 bool Pretty::PrettyProgress::operator++() {
@@ -69,8 +65,7 @@ bool Pretty::PrettyProgress::operator++() {
 
 Pretty::ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
                                      std::ostream& o, double time) :
-    PrettyProgress(name, limit, units, o),
-    time_(time) {}
+    PrettyProgress(name, limit, units, o), time_(time) {}
 
 
 bool Pretty::ProgressTimer::hasOutput() {
@@ -80,8 +75,7 @@ bool Pretty::ProgressTimer::hasOutput() {
 
 Pretty::ProgressCounter::ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
                                          std::ostream& o, size_t count) :
-    PrettyProgress(name, limit, units, o),
-    count_(count) {}
+    PrettyProgress(name, limit, units, o), count_(count) {}
 
 
 bool Pretty::ProgressCounter::hasOutput() {

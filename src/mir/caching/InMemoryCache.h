@@ -96,8 +96,7 @@ class InMemoryCacheUser {
 public:
     InMemoryCacheUser(InMemoryCacheUser&&) = default;
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
-        cache_(cache),
-        statistics_(statistics) {
+        cache_(cache), statistics_(statistics) {
         cache_.startUsing();
     }
 

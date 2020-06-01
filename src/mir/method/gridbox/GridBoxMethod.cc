@@ -149,7 +149,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                     triplets.emplace_back(WeightMatrix::Triplet(i, j, smallArea / area));
                     sumSmallAreas += smallArea;
 
-                    if ( ( areaMatch = eckit::types::is_approximately_equal( area, sumSmallAreas, 1. /*m^2*/ ) ) ) {
+                    if ((areaMatch = eckit::types::is_approximately_equal(area, sumSmallAreas, 1. /*m^2*/))) {
                         break;
                     }
                 }

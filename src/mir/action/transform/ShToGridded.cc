@@ -89,8 +89,7 @@ static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& cre
 
         public:
             LegendreCacheCreator(atlas::trans::LegendreCacheCreator& creator, context::Context& ctx) :
-                creator_(creator),
-                ctx_(ctx) {}
+                creator_(creator), ctx_(ctx) {}
 
             LegendreCacheCreator(const LegendreCacheCreator&) = delete;
             LegendreCacheCreator& operator=(const LegendreCacheCreator&) = delete;

@@ -69,9 +69,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
-    Action(parametrisation),
-    bbox_(bbox),
-    caching_(true) {
+    Action(parametrisation), bbox_(bbox), caching_(true) {
 
     parametrisation_.get("caching", caching_);
 }
@@ -202,8 +200,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
         public:
             CroppingCacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
-                representation_(representation),
-                bbox_(bbox) {}
+                representation_(representation), bbox_(bbox) {}
 
             CroppingCacheCreator(const CroppingCacheCreator&) = delete;
             CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;

@@ -27,8 +27,7 @@ namespace output {
 
 
 VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2) :
-    component1_(component1),
-    component2_(component2) {}
+    component1_(component1), component2_(component2) {}
 
 VectorOutput::~VectorOutput() = default;
 

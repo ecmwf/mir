@@ -26,9 +26,7 @@ namespace io {
 
 
 Save::Save(const param::MIRParametrisation& parametrisation, input::MIRInput& input, output::MIROutput& output) :
-    Action(parametrisation),
-    input_(input),
-    output_(output) {}
+    Action(parametrisation), input_(input), output_(output) {}
 
 
 Save::~Save() = default;

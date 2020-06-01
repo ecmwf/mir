@@ -27,8 +27,7 @@ namespace legendre {
 
 
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    LegendreLoader(parametrisation, path),
-    buffer_(size_t(path.size())) {
+    LegendreLoader(parametrisation, path), buffer_(size_t(path.size())) {
 
     log() << "Loading Legendre coefficients from " << path << std::endl;
 

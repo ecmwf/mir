@@ -20,14 +20,10 @@ namespace input {
 
 
 GribFileInput::GribFileInput(const eckit::PathName& path, size_t skip, size_t step) :
-    GribStreamInput(skip, step),
-    path_(path),
-    handle_(nullptr) {}
+    GribStreamInput(skip, step), path_(path), handle_(nullptr) {}
 
 GribFileInput::GribFileInput(const eckit::PathName& path, off_t offset) :
-    GribStreamInput(offset),
-    path_(path),
-    handle_(nullptr) {}
+    GribStreamInput(offset), path_(path), handle_(nullptr) {}
 
 GribFileInput::GribFileInput(const eckit::PathName& path) : path_(path), handle_(nullptr) {}
 

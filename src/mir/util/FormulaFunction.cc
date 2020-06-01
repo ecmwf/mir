@@ -23,16 +23,14 @@ namespace util {
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                                  Formula* arg1) :
-    Formula(parametrisation),
-    function_(Function::lookup(name)) {
+    Formula(parametrisation), function_(Function::lookup(name)) {
     args_.push_back(arg1);
 }
 
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                                  Formula* arg1, Formula* arg2) :
-    Formula(parametrisation),
-    function_(Function::lookup(name)) {
+    Formula(parametrisation), function_(Function::lookup(name)) {
     args_.push_back(arg1);
     args_.push_back(arg2);
 }
@@ -40,8 +38,7 @@ FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisatio
 
 FormulaFunction::FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                                  std::vector<Formula*>& args) :
-    Formula(parametrisation),
-    function_(Function::lookup(name)) {
+    Formula(parametrisation), function_(Function::lookup(name)) {
     std::swap(args_, args);
 }
 

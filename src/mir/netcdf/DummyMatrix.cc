@@ -21,8 +21,7 @@ namespace mir {
 namespace netcdf {
 
 DummyMatrix::DummyMatrix(const Variable& v) :
-    Matrix(v.matrix()->type(), v.name(), v.matrix()->size()),
-    other_(v.matrix()) {
+    Matrix(v.matrix()->type(), v.name(), v.matrix()->size()), other_(v.matrix()) {
     other_->attach();
 }
 

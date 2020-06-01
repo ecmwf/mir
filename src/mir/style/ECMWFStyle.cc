@@ -42,8 +42,7 @@ namespace {
 
 struct DeprecatedStyle : ECMWFStyle, util::DeprecatedFunctionality {
     DeprecatedStyle(const param::MIRParametrisation& p) :
-        ECMWFStyle(p),
-        util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
+        ECMWFStyle(p), util::DeprecatedFunctionality("style 'dissemination' now known as 'ecmwf'") {}
 };
 
 

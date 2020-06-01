@@ -244,8 +244,7 @@ class EncodeReduced : public EncodeTest {
 
 public:
     EncodeReduced(const repres::Representation* rep, size_t numberOfValues) :
-        EncodeTest(rep),
-        numberOfValues_(numberOfValues) {
+        EncodeTest(rep), numberOfValues_(numberOfValues) {
         ASSERT(numberOfValues_);
     }
 };
@@ -258,8 +257,7 @@ class EncodeReducedGaussianGrid final : public EncodeReduced {
 
 public:
     EncodeReducedGaussianGrid(const repres::Representation* rep, size_t numberOfValues, size_t gaussianNumber) :
-        EncodeReduced(rep, numberOfValues),
-        gaussianNumber_(gaussianNumber) {
+        EncodeReduced(rep, numberOfValues), gaussianNumber_(gaussianNumber) {
         ASSERT(gaussianNumber_);
     }
 };

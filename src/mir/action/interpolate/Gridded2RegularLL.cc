@@ -27,8 +27,7 @@ namespace interpolate {
 
 
 Gridded2RegularLL::Gridded2RegularLL(const param::MIRParametrisation& parametrisation) :
-    Gridded2UnrotatedGrid(parametrisation),
-    reference_(0, 0) {
+    Gridded2UnrotatedGrid(parametrisation), reference_(0, 0) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("grid", value));

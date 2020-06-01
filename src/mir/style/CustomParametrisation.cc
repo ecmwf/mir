@@ -26,9 +26,7 @@ namespace style {
 CustomParametrisation::CustomParametrisation(const std::string& name,
                                              const std::map<std::string, std::vector<std::string> >& params,
                                              const param::MIRParametrisation& parametrisation) :
-    name_(name),
-    params_(params),
-    parametrisation_(parametrisation) {}
+    name_(name), params_(params), parametrisation_(parametrisation) {}
 
 
 CustomParametrisation::~CustomParametrisation() = default;

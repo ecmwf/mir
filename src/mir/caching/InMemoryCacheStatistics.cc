@@ -20,13 +20,7 @@ namespace caching {
 
 
 InMemoryCacheStatistics::InMemoryCacheStatistics() :
-    hits_(0),
-    misses_(0),
-    evictions_(0),
-    insertions_(0),
-    oldest_(0),
-    youngest_(0),
-    unique_(0) {}
+    hits_(0), misses_(0), evictions_(0), insertions_(0), oldest_(0), youngest_(0), unique_(0) {}
 
 
 InMemoryCacheStatistics::InMemoryCacheStatistics(eckit::Stream& s) {

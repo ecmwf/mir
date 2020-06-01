@@ -31,8 +31,7 @@ namespace action {
 
 
 Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, bool compress) :
-    input_(input),
-    output_(output) {
+    input_(input), output_(output) {
 
     // get input and parameter-specific parametrisations
     static param::DefaultParametrisation defaults;

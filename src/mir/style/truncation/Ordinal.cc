@@ -21,8 +21,7 @@ namespace truncation {
 
 
 Ordinal::Ordinal(long truncation, const param::MIRParametrisation& parametrisation) :
-    style::Truncation(parametrisation),
-    truncation_(truncation) {
+    style::Truncation(parametrisation), truncation_(truncation) {
     ASSERT(truncation_ > 0);
 }
 

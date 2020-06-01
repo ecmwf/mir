@@ -31,10 +31,7 @@ Field::Field(const param::MIRParametrisation& param, bool hasMissing, double mis
 
 
 Field::Field(const repres::Representation* repres, bool hasMissing, double missingValue) :
-    missingValue_(missingValue),
-    representation_(repres),
-    recomputeHasMissing_(false),
-    hasMissing_(hasMissing) {
+    missingValue_(missingValue), representation_(repres), recomputeHasMissing_(false), hasMissing_(hasMissing) {
 
     if (representation_ != nullptr) {
         representation_->attach();

@@ -26,8 +26,7 @@ namespace interpolate {
 
 
 Gridded2RotatedRegularGG::Gridded2RotatedRegularGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation),
-    N_(0) {
+    Gridded2RotatedGrid(parametrisation), N_(0) {
     ASSERT(parametrisation_.userParametrisation().get("regular", N_));
     ASSERT(N_ > 0);
 }

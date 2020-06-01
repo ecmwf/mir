@@ -21,9 +21,7 @@ namespace param {
 
 CombinedParametrisation::CombinedParametrisation(const MIRParametrisation& user, const MIRParametrisation& metadata,
                                                  const MIRParametrisation& defaults) :
-    user_(user),
-    field_(metadata),
-    defaults_(defaults) {}
+    user_(user), field_(metadata), defaults_(defaults) {}
 
 
 CombinedParametrisation::~CombinedParametrisation() = default;

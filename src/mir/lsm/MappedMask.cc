@@ -72,8 +72,7 @@ namespace lsm {
 
 MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, const param::MIRParametrisation&,
                        const repres::Representation& representation, const std::string&) :
-    name_(name),
-    path_(path) {
+    name_(name), path_(path) {
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {

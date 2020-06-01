@@ -21,8 +21,7 @@ namespace intgrid {
 
 
 NamedGrid::NamedGrid(const std::string& gridname, const param::MIRParametrisation& parametrisation) :
-    Intgrid(parametrisation),
-    gridname_(gridname) {
+    Intgrid(parametrisation), gridname_(gridname) {
     ASSERT(!gridname_.empty());
 }
 

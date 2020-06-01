@@ -29,11 +29,7 @@ namespace netcdf {
 
 
 Matrix::Matrix(Type& type, const std::string& name, size_t size) :
-    type_(&type),
-    missingValue_(nullptr),
-    codec_(nullptr),
-    name_(name),
-    size_(size) {}
+    type_(&type), missingValue_(nullptr), codec_(nullptr), name_(name), size_(size) {}
 
 
 Matrix::~Matrix() {

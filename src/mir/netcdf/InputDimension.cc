@@ -21,8 +21,7 @@ namespace mir {
 namespace netcdf {
 
 InputDimension::InputDimension(Dataset& owner, const std::string& name, int id, size_t len) :
-    Dimension(owner, name, len),
-    id_(id) {}
+    Dimension(owner, name, len), id_(id) {}
 
 InputDimension::~InputDimension() = default;
 

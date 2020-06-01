@@ -28,9 +28,7 @@ namespace input {
 
 
 RawInput::RawInput(const RawMetadata& metadata, const double* values, size_t count) :
-    metadata_(metadata),
-    values_(values),
-    count_(count) {}
+    metadata_(metadata), values_(values), count_(count) {}
 
 
 RawInput::~RawInput() = default;

@@ -23,11 +23,7 @@ namespace output {
 
 
 GribMemoryOutput::GribMemoryOutput(void* message, size_t size) :
-    message_(message),
-    size_(size),
-    length_(0),
-    saved_(0),
-    interpolated_(0) {}
+    message_(message), size_(size), length_(0), saved_(0), interpolated_(0) {}
 
 
 GribMemoryOutput::~GribMemoryOutput() = default;

@@ -214,8 +214,7 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
-    MethodWeighted(param),
-    meshGeneratorParams_(label, param) {
+    MethodWeighted(param), meshGeneratorParams_(label, param) {
 
     // input mesh requirements
     meshGeneratorParams_.meshCellCentres_ = true;

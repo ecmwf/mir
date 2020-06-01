@@ -30,11 +30,7 @@ namespace netcdf {
 
 
 Variable::Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
-    dataset_(owner),
-    name_(name),
-    matrix_(nullptr),
-    dimensions_(dimensions),
-    scalar_(dimensions.empty()) {}
+    dataset_(owner), name_(name), matrix_(nullptr), dimensions_(dimensions), scalar_(dimensions.empty()) {}
 
 
 Variable::~Variable() {

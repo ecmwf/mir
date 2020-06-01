@@ -22,9 +22,7 @@ namespace mir {
 namespace netcdf {
 
 Attribute::Attribute(Endowed& owner, const std::string& name, Value* value) :
-    owner_(owner),
-    name_(name),
-    value_(value) {}
+    owner_(owner), name_(name), value_(value) {}
 
 Attribute::~Attribute() {
     delete value_;

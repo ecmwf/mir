@@ -24,8 +24,7 @@ namespace netcdf {
 
 InputVariable::InputVariable(Dataset& owner, const std::string& name, int id,
                              const std::vector<Dimension*>& dimensions) :
-    Variable(owner, name, dimensions),
-    id_(id) {}
+    Variable(owner, name, dimensions), id_(id) {}
 
 
 InputVariable::~InputVariable() = default;

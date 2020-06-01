@@ -24,11 +24,7 @@ namespace input {
 
 
 NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
-    path_(path),
-    cache_(*this),
-    dataset_(path, *this),
-    fields_(dataset_.fields()),
-    current_(-1) {
+    path_(path), cache_(*this), dataset_(path, *this), fields_(dataset_.fields()), current_(-1) {
 
     for (auto field : fields_) {
         eckit::Log::info() << "NC " << *field << std::endl;

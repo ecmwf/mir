@@ -27,12 +27,7 @@ namespace method {
 MatrixCacheCreator::MatrixCacheCreator(const MethodWeighted& owner, context::Context& ctx,
                                        const repres::Representation& in, const repres::Representation& out,
                                        const lsm::LandSeaMasks& masks, const Cropping& cropping) :
-    owner_(owner),
-    ctx_(ctx),
-    in_(in),
-    out_(out),
-    masks_(masks),
-    cropping_(cropping) {}
+    owner_(owner), ctx_(ctx), in_(in), out_(out), masks_(masks), cropping_(cropping) {}
 
 void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bool& saved) {
 

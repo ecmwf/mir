@@ -41,10 +41,7 @@ static void init() {
 
 
 SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :
-    name_(name),
-    choice_(choice),
-    component_(component),
-    dimensions_(dimensions) {
+    name_(name), choice_(choice), component_(component), dimensions_(dimensions) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

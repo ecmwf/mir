@@ -41,10 +41,7 @@ namespace util {
 
 
 GridBox::GridBox(double north, double west, double south, double east) :
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east) {
+    north_(north), west_(west), south_(south), east_(east) {
     ASSERT(SOUTH_POLE <= south_ && south_ <= north_ && north_ <= NORTH_POLE);
     ASSERT(west_ <= east_ && east_ <= west_ + GLOBE);
 }
