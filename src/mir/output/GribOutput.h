@@ -44,7 +44,8 @@ public:
     // None
 
     // -- Methods
-    // None
+    virtual size_t interpolated() const;
+    virtual size_t saved() const;
 
     // -- Overridden methods
     // None
@@ -57,7 +58,6 @@ public:
 
 protected:
     // -- Members
-    // None
 
     // -- Methods
 
@@ -74,7 +74,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    size_t interpolated_;
+    size_t saved_;
 
     // -- Methods
 
