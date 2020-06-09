@@ -33,6 +33,17 @@ xpto:
     numberOfPointsAlongYAxis: 950
     gaussianNumber: 1280
 
+ypto:
+    gridType: lambert
+    grid: 2500./2500.
+    gaussianNumber: 1280
+    LaDInDegrees: 63.
+    LoVInDegrees: 15.
+    latitudeOfFirstGridPointInDegrees: 52.041
+    longitudeOfFirstGridPointInDegrees: 1.639
+    numberOfPointsAlongXAxis: 739
+    numberOfPointsAlongYAxis: 949
+
 SMUFF-OPERA-2km-proj:
     gridType: lambert_azimuthal_equal_area
     proj: +proj=laea +lat_0=55 +lon_0=10 +ellps=WGS84 +units=m +no_defs
