@@ -213,7 +213,6 @@ public:
         //==============================================
         options_.push_back(new Separator("Filtering"));
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
-        options_.push_back(new SimpleOption<double>("area-precision", "cropping area precision ('outward')"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
         options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
@@ -225,7 +224,7 @@ public:
             "globalise", "Make the field global (after interpolation) adding missing values if needed"));
         options_.push_back(new SimpleOption<std::string>("globalise-gridname",
                                                          "Unstructured grid globalise using gridname (default O16)"));
-        options_.push_back(new SimpleOption<std::string>(
+        options_.push_back(new SimpleOption<double>(
             "globalise-missing-radius",
             "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));

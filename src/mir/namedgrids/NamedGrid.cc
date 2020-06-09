@@ -160,17 +160,16 @@ bool NamedGrid::known(const std::string& name) {
 
     read_configuration_files();
 
-    eckit::Log::debug<LibMir>() << "NamedGrid: looking for '" << name << "'" << std::endl;
-
     // Look for specific name matches
     if (m->find(name) != m->end()) {
         return true;
     }
 
     // Look for pattern matchings
-    // This will automatically add the new NamedGrid to the map
-    auto ng = NamedGridPattern::build(name);
-    return (ng != nullptr);
+    auto ng           = NamedGridPattern::build(name);
+    bool knownPattern = ng != nullptr;
+    delete ng;
+    return knownPattern;
 }
 
 
