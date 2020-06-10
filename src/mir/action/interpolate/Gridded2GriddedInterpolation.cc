@@ -106,6 +106,14 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
         }
     }
 
+    if (crop) {
+        // disable cropping if global and West aligned with input (no "renumbering")
+        util::Domain domain(crop.boundingBox());
+        if (domain.isGlobal() && domain.west() == input.west()) {
+            return method::Cropping();
+        }
+    }
+
     return crop;
 }
 
