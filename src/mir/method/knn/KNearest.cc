@@ -64,7 +64,9 @@ const char* KNearest::name() const {
 }
 
 
-static MethodBuilder<KNearest> __method("k-nearest");
+static MethodBuilder<KNearest> __method1("k-nearest");
+static MethodBuilder<KNearest> __method2("k-nearest-neighbours");
+static MethodBuilder<KNearest> __method3("k-nearest-neighbors");
 
 
 }  // namespace knn
