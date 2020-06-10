@@ -108,8 +108,9 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
 
     if (crop) {
         // disable cropping if global and West aligned with input (no "renumbering")
-        util::Domain domain(crop.boundingBox());
-        if (domain.isGlobal() && domain.west() == input.west()) {
+        auto& bbox = crop.boundingBox();
+        const util::Domain domain(bbox.north(), bbox.west(), bbox.south(), bbox.east());
+        if (domain.isGlobal() && bbox.west() == input.west()) {
             return method::Cropping();
         }
     }

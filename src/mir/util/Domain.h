@@ -29,7 +29,6 @@ public:
     // -- Constructors
 
     using BoundingBox::BoundingBox;
-    Domain(const BoundingBox& bbox) : BoundingBox(bbox) {}
 
     // -- Convertors
 
