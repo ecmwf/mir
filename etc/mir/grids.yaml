@@ -22,43 +22,6 @@ LAEA-EFAS-5km-proj:
     numberOfPointsAlongXAxis: 1000
     numberOfPointsAlongYAxis: 950
 
-xpto:
-    gridType: lambert
-    grid: 2500./2500.
-    LaDInDegrees: 45.8
-    LoVInDegrees: 2.
-    latitudeOfFirstGridPointInDegrees: 37.333
-    longitudeOfFirstGridPointInDegrees: -8.354
-    numberOfPointsAlongXAxis: 1000
-    numberOfPointsAlongYAxis: 950
-    gaussianNumber: 1280
-
-ypto:
-    gridType: lambert
-    proj: +proj=lcc +lon_0=15.000000 +lat_0=63.000000 +lat_1=63.000000 +lat_2=63.000000 +R=6367470.000000
-    writeLaDInDegrees: false
-    grid: 2500./2500.
-    gaussianNumber: 1280
-    LaDInDegrees: 63.
-    LoVInDegrees: 15.
-    latitudeOfFirstGridPointInDegrees: 52.041
-    longitudeOfFirstGridPointInDegrees: 1.639
-    numberOfPointsAlongXAxis: 739
-    numberOfPointsAlongYAxis: 949
-
-lambert_centre_eidb_grib1:
-    gridType: lambert
-    proj: +proj=lcc +lon_0=15.000000 +lat_0=63.000000 +lat_1=63.000000 +lat_2=63.000000 +R=6367470.000000
-    writeLaDInDegrees: false
-    grid: 2500./2500.
-    gaussianNumber: 1280
-    LaDInDegrees: 63.
-    LoVInDegrees: 15.
-    latitudeOfFirstGridPointInDegrees: 52.041
-    longitudeOfFirstGridPointInDegrees: 1.639
-    numberOfPointsAlongXAxis: 739
-    numberOfPointsAlongYAxis: 949
-
 SMUFF-OPERA-2km-proj:
     gridType: lambert_azimuthal_equal_area
     proj: +proj=laea +lat_0=55 +lon_0=10 +ellps=WGS84 +units=m +no_defs
