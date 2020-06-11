@@ -55,7 +55,8 @@ public:
 
 protected:
     // -- Members
-    // None
+
+    bool writeLaDInDegrees_;
 
     // -- Methods
 
