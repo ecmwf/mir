@@ -631,7 +631,7 @@ data::MIRField GribInput::field() const {
     long earthIsOblate = 0;
     if (GRIB_GET(codes_get_long(grib_, "earthIsOblate", &earthIsOblate))) {
         if (earthIsOblate != 0) {
-            wrongly_encoded_grib("GribInput: earthIsOblate != 0 not supported");
+            wrongly_encoded_grib("GribInput: only spherical earth supported (earthIsOblate != 0)");
         }
     }
 
