@@ -22,7 +22,9 @@ struct grib_info;
 struct grib_handle;
 
 namespace metkit {
+namespace mars {
 class MarsRequest;
+}
 }
 
 namespace mir {
@@ -51,7 +53,7 @@ public:
 
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
 
-    virtual void initialise(const metkit::MarsRequest&, std::map<std::string, std::string>& postproc) const = 0;
+    virtual void initialise(const metkit::mars::MarsRequest&, std::map<std::string, std::string>& postproc) const = 0;
 
     static const GribCompatibility& lookup(const std::string&);
 
