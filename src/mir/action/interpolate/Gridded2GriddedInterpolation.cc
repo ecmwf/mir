@@ -107,10 +107,9 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
     }
 
     if (crop) {
-        // disable cropping if global and West aligned with input (no "renumbering")
+        // disable cropping if completely containing input without periodicity (no "renumbering")
         auto& bbox = crop.boundingBox();
-        const util::Domain domain(bbox.north(), bbox.west(), bbox.south(), bbox.east());
-        if (domain.isGlobal() && bbox.west() == input.west()) {
+        if (bbox.contains(input) && bbox.west() <= input.west() && input.east() <= bbox.east()) {
             return method::Cropping();
         }
     }
