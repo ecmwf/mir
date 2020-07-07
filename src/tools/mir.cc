@@ -76,6 +76,8 @@ private:
 
     void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
+
 public:
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
@@ -147,6 +149,8 @@ public:
             new SimpleOption<bool>("uv2uv", "Input is vector (gridded u/v or spectral U/V), convert to gridded u/v"));
         options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
         options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
+        options_.push_back(
+            new SimpleOption<size_t>("only", "Filter input on parameter id (incompatible with 'u-only'/'v-only')"));
 
         options_.push_back(new SimpleOption<eckit::PathName>(
             "same", "Interpolate to the same grid type as the first GRIB message in file"));
@@ -390,7 +394,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     args.get("uv2uv", uv2uv);
     args.get("vod2uv", vod2uv);
 
-
     if (args.has("plan") || args.has("plan-script")) {
         job.set("style", "custom");
     }
@@ -415,6 +418,11 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
 
+    size_t onlyParamId = 0;
+    if (args.get("only", onlyParamId)) {
+        only(job, *input, *output, onlyParamId);
+    }
+
     process(job, *input, *output, "field");
 }
 
@@ -429,6 +437,28 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
     size_t i = 0;
     while (input.next()) {
         eckit::Log::debug<LibMir>() << "============> " << what << ": " << (++i) << std::endl;
+        job.execute(input, output, statistics);
+    }
+
+    statistics.report(eckit::Log::info());
+
+    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+}
+
+
+void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
+    eckit::Timer timer("Total time");
+
+    std::string what = "field";
+
+    util::MIRStatistics statistics;
+    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
+                                << std::endl;
+
+    size_t i = 0;
+    while (input.only(paramId)) {
+        eckit::Log::debug<LibMir>() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 

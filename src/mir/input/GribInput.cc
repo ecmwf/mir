@@ -1088,6 +1088,26 @@ void GribInput::setAuxiliaryInformation(const std::string& yaml) {
 }
 
 
+bool GribInput::only(size_t paramId) {
+    auto paramIdOnly = long(paramId);
+
+    while (next()) {
+        eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+        ASSERT(grib_);
+
+        long paramIdAsLong;
+        GRIB_CALL(codes_get_long(grib_, "paramId", &paramIdAsLong));
+
+        if (paramIdOnly == paramIdAsLong) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 size_t GribInput::dimensions() const {
     // This will be one probably for a long time
     return 1;

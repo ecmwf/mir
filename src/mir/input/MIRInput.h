@@ -61,6 +61,7 @@ public:
     // -- Methods
 
     virtual bool next();
+    virtual bool only(size_t paramId);
     virtual size_t dimensions() const;
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
     virtual data::MIRField field() const                                             = 0;

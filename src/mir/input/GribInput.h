@@ -59,6 +59,7 @@ private:
     virtual data::MIRField field() const;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual void setAuxiliaryInformation(const std::string&);
+    virtual bool only(size_t paramId);
     virtual size_t dimensions() const;
 
     /// From MIRParametrisation
