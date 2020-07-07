@@ -16,18 +16,14 @@ echo "======> $1"
 t=$(basename $1)
 
 mir="@MIR_TOOL@"
-mir_compare="@MIR_COMPARE@"
 grib_get="@GRIB_GET@"
-grib_compare="@GRIB_COMPARE@"
-mars_script="@MARS_SCRIPT@"
 
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
-tmp_assertions_dir="@CMAKE_CURRENT_BINARY_DIR@"
 
 pwd
 ok=0
 
-state=mars
+state=file
 while read n
 do
     if [[ "$n" = "" ]]
@@ -42,44 +38,24 @@ do
         *)
         case $state in
 
-            mars)
+            file)
             ok=0
             m=$(echo $n | tr '/' '_')
-            if [[ -f "${tests_assertions_dir}/$m" ]]
+            [ -f "${tests_assertions_dir}/$m" ] && ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
+            if [ -s data.in.$t ]
             then
-                ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
-            elif [[ -f "${tmp_assertions_dir}/$m" ]]
-            then
-                ln -sf "${tmp_assertions_dir}/$m" data.in.$t && ok=1
+                state=mir
             else
-                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
-                $mars_script mars.r.$t || rm data.in.$t
-                cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
+                echo "$1: input file '${tests_assertions_dir}/$m' has zero size?"
+                exit 1
             fi
-            env=
-            state=mir
             ;;
 
             mir)
-            ok=0
-            if [[ $n =~ ^\$.* ]]
-            then
-                env="$env ${n/?}"
-                continue
-            fi
             eval n=\"$n\"
-            env $env $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
+            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
             # For some reason set -e does not trigger
             [[ $? -eq 0 ]] || exit 1
-
-            ## Ensure we can decode gridded fields
-            #if [ $($grib_get -wcount=1 -p gridType data.out.$t) != sh ]
-            #then
-            #    $(dirname $grib_get)/grib_get_data data.out.$t ; [[ $? -eq 0 ]] || exit 1
-            #    $(dirname $grib_get)/mir-get-data  data.out.$t ; [[ $? -eq 0 ]] || exit 1
-            #fi
-
-            unset env
             state=eccodes
             ;;
 

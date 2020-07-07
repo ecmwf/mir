@@ -100,5 +100,6 @@ if(HAVE_TEST_ASSERTIONS)
 endif()
 
 add_subdirectory(plans)
+add_subdirectory(tool)
 add_subdirectory(unit)
 
