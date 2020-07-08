@@ -64,7 +64,7 @@ bool MIRInput::next() {
 
 bool MIRInput::only(size_t) {
     std::ostringstream os;
-    os << "MIRInput::next() not implemented for " << *this;
+    os << "MIRInput::only() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
