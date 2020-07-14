@@ -378,6 +378,8 @@ list(APPEND mir_srcs
     packing/CCSDS.h
     packing/Complex.cc
     packing/Complex.h
+    packing/IEEE.cc
+    packing/IEEE.h
     packing/JPEG2000.cc
     packing/JPEG2000.h
     packing/Packer.cc
