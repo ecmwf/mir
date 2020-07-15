@@ -2423,7 +2423,6 @@ numerics.vertical-integral:
 - 171136  # Total column water anomaly
 - 171137  # Total column water vapour anomaly
 - 171206  # Total column ozone anomaly
-- 172189  # Vertical integral of northward cloud liquid water flux
 - 174137  # Total column water vapour
 - 200078  # Total column liquid water
 - 200079  # Total column ice water
