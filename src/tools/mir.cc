@@ -35,6 +35,10 @@
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
+#include "mir/key/grid/NamedGridPattern.h"
+#include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/style/MIRStyle.h"
+#include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
@@ -43,20 +47,16 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/nonlinear/NonLinear.h"
-#include "mir/namedgrids/NamedGridPattern.h"
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Statistics.h"
-#include "mir/style/Intgrid.h"
-#include "mir/style/MIRStyle.h"
-#include "mir/style/SpectralOrder.h"
-#include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/SpectralOrder.h"
 
 #if defined(HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -95,7 +95,7 @@ public:
         options_.push_back(new SimpleOption<bool>(
             "vod2uv",
             "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new FactoryOption<style::SpectralOrderFactory>(
+        options_.push_back(new FactoryOption<util::SpectralOrderFactory>(
             "spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type",

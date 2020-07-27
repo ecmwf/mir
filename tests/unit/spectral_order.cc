@@ -16,7 +16,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/style/SpectralOrder.h"
+#include "mir/util/SpectralOrder.h"
 
 
 using namespace eckit::testing;
@@ -28,7 +28,7 @@ namespace unit {
 
 
 CASE("test_spectral_order") {
-    using namespace style;
+    using namespace util;
 
     // Cases from hsh2gg.F
 

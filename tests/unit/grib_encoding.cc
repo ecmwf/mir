@@ -21,7 +21,7 @@
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"

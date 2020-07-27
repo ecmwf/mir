@@ -16,7 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 
 

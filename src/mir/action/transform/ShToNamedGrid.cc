@@ -13,11 +13,14 @@
 #include "mir/action/transform/ShToNamedGrid.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace action {

@@ -16,9 +16,10 @@
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Assert.h"
+
 
 namespace mir {
 namespace action {

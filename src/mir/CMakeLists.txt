@@ -83,14 +83,14 @@ list(APPEND mir_srcs
     action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
+    action/misc/Noop.cc
+    action/misc/Noop.h
     action/misc/ReferencePattern.cc
     action/misc/ReferencePattern.h
     action/misc/SelectField.cc
     action/misc/SelectField.h
     action/misc/SetMetadata.cc
     action/misc/SetMetadata.h
-    action/misc/Noop.cc
-    action/misc/Noop.h
     action/plan/Action.cc
     action/plan/Action.h
     action/plan/ActionGraph.cc
@@ -107,15 +107,15 @@ list(APPEND mir_srcs
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
+    api/Atlas.cc
+    api/Atlas.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
+    api/MIREstimation.h
     api/MIRJob.cc
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
-    api/MIREstimation.h
-    api/Atlas.cc
-    api/Atlas.h
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -150,21 +150,23 @@ list(APPEND mir_srcs
     caching/matrix/MatrixLoader.h
     caching/matrix/SharedMemoryLoader.cc
     caching/matrix/SharedMemoryLoader.h
-    compare/Field.cc
-    compare/Field.h
-    compare/GribField.cc
-    compare/GribField.h
     compare/BufrField.cc
     compare/BufrField.h
+    compare/Field.cc
+    compare/Field.h
     compare/FieldComparator.cc
     compare/FieldComparator.h
     compare/FieldInfo.cc
     compare/FieldInfo.h
     compare/FieldSet.cc
     compare/FieldSet.h
+    compare/GribField.cc
+    compare/GribField.h
     compare/MultiFile.cc
     compare/MultiFile.h
     compat/GribCompatibility.cc
+    compat/GribCompatibility.cc
+    compat/GribCompatibility.h
     compat/GribCompatibility.h
     config/LibMir.cc
     config/LibMir.h
@@ -232,6 +234,50 @@ list(APPEND mir_srcs
     input/VectorInput.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
+    key/grid/ClassicPattern.cc
+    key/grid/ClassicPattern.h
+    key/grid/NamedClassic.cc
+    key/grid/NamedClassic.h
+    key/grid/NamedGrid.cc
+    key/grid/NamedGrid.h
+    key/grid/NamedGridPattern.cc
+    key/grid/NamedGridPattern.h
+    key/grid/NamedOctahedral.cc
+    key/grid/NamedOctahedral.h
+    key/grid/NamedRegular.cc
+    key/grid/NamedRegular.h
+    key/grid/OctahedralPattern.cc
+    key/grid/OctahedralPattern.h
+    key/grid/RegularPattern.cc
+    key/grid/RegularPattern.h
+    key/intgrid/Automatic.cc
+    key/intgrid/Automatic.h
+    key/intgrid/Intgrid.cc
+    key/intgrid/Intgrid.h
+    key/intgrid/NamedGrid.cc
+    key/intgrid/NamedGrid.h
+    key/intgrid/None.cc
+    key/intgrid/None.h
+    key/intgrid/Source.cc
+    key/intgrid/Source.h
+    key/resol/Resol.cc
+    key/resol/Resol.h
+    key/style/CustomParametrisation.cc
+    key/style/CustomParametrisation.h
+    key/style/CustomStyle.cc
+    key/style/CustomStyle.h
+    key/style/ECMWFStyle.cc
+    key/style/ECMWFStyle.h
+    key/style/MIRStyle.cc
+    key/style/MIRStyle.h
+    key/truncation/Automatic.cc
+    key/truncation/Automatic.h
+    key/truncation/None.cc
+    key/truncation/None.h
+    key/truncation/Ordinal.cc
+    key/truncation/Ordinal.h
+    key/truncation/Truncation.cc
+    key/truncation/Truncation.h
     lsm/FileLSM.cc
     lsm/FileLSM.h
     lsm/GribFileMask.cc
@@ -328,24 +374,6 @@ list(APPEND mir_srcs
     method/structured/StructuredLinear3D.h
     method/structured/StructuredMethod.cc
     method/structured/StructuredMethod.h
-    namedgrids/ClassicPattern.cc
-    namedgrids/ClassicPattern.h
-    namedgrids/NamedClassic.cc
-    namedgrids/NamedClassic.h
-    namedgrids/NamedGrid.cc
-    namedgrids/NamedGrid.h
-    namedgrids/NamedGridPattern.cc
-    namedgrids/NamedGridPattern.h
-    namedgrids/NamedOctahedral.cc
-    namedgrids/NamedOctahedral.h
-    namedgrids/NamedRegular.cc
-    namedgrids/NamedRegular.h
-    namedgrids/OctahedralPattern.cc
-    namedgrids/OctahedralPattern.h
-    namedgrids/RegularPattern.cc
-    namedgrids/RegularPattern.h
-    compat/GribCompatibility.cc
-    compat/GribCompatibility.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -410,13 +438,13 @@ list(APPEND mir_srcs
     param/SameParametrisation.h
     param/SimpleParametrisation.cc
     param/SimpleParametrisation.h
-    repres/gauss/Gaussian.cc
     repres/Gridded.cc
     repres/Gridded.h
     repres/Iterator.cc
     repres/Iterator.h
     repres/Representation.cc
     repres/Representation.h
+    repres/gauss/Gaussian.cc
     repres/gauss/Gaussian.h
     repres/gauss/GaussianIterator.cc
     repres/gauss/GaussianIterator.h
@@ -540,38 +568,6 @@ list(APPEND mir_srcs
     stats/statistics/Spectral.h
     stats/statistics/StatisticsT.cc
     stats/statistics/StatisticsT.h
-    style/CustomParametrisation.cc
-    style/CustomParametrisation.h
-    style/CustomStyle.cc
-    style/CustomStyle.h
-    style/ECMWFStyle.cc
-    style/ECMWFStyle.h
-    style/Intgrid.cc
-    style/Intgrid.h
-    style/MIRStyle.cc
-    style/MIRStyle.h
-    style/Resol.cc
-    style/Resol.h
-    style/SpectralOrder.cc
-    style/SpectralOrder.h
-    style/SpectralOrderT.cc
-    style/SpectralOrderT.h
-    style/Truncation.cc
-    style/Truncation.h
-    style/intgrid/Automatic.cc
-    style/intgrid/Automatic.h
-    style/intgrid/NamedGrid.cc
-    style/intgrid/NamedGrid.h
-    style/intgrid/None.cc
-    style/intgrid/None.h
-    style/intgrid/Source.cc
-    style/intgrid/Source.h
-    style/truncation/Automatic.cc
-    style/truncation/Automatic.h
-    style/truncation/None.cc
-    style/truncation/None.h
-    style/truncation/Ordinal.cc
-    style/truncation/Ordinal.h
     tools/Count.cc
     tools/Count.h
     tools/MIRTool.cc
@@ -627,11 +623,15 @@ list(APPEND mir_srcs
     util/PointLatLonT.h
     util/Pretty.cc
     util/Pretty.h
+    util/RectangularDomain.h
     util/Rotation.cc
     util/Rotation.h
+    util/SpectralOrder.cc
+    util/SpectralOrder.h
+    util/SpectralOrderT.cc
+    util/SpectralOrderT.h
     util/TraceResourceUsage.cc
     util/TraceResourceUsage.h
-    util/RectangularDomain.h
     util/Types.h
     util/Wind.cc
     util/Wind.h
@@ -684,6 +684,14 @@ if (HAVE_ATLAS)
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc
         action/transform/TransCache.h
+        key/grid/ClenshawCurtisPattern.cc
+        key/grid/ClenshawCurtisPattern.h
+        key/grid/NamedClenshawCurtis.cc
+        key/grid/NamedClenshawCurtis.h
+        key/grid/NamedORCA.cc
+        key/grid/NamedORCA.h
+        key/grid/ORCAPattern.cc
+        key/grid/ORCAPattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
@@ -718,14 +726,6 @@ if (HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
-        namedgrids/ClenshawCurtisPattern.cc
-        namedgrids/ClenshawCurtisPattern.h
-        namedgrids/NamedClenshawCurtis.cc
-        namedgrids/NamedClenshawCurtis.h
-        namedgrids/NamedORCA.cc
-        namedgrids/NamedORCA.h
-        namedgrids/ORCAPattern.cc
-        namedgrids/ORCAPattern.h
         repres/other/ClenshawCurtis.cc
         repres/other/ClenshawCurtis.h
         repres/other/ORCA.cc

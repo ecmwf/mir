@@ -29,7 +29,7 @@
 #include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiScalarInput.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"

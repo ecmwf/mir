@@ -13,7 +13,7 @@
 #include <string>
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/NamedGrid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 

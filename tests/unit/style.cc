@@ -24,11 +24,11 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/key/style/MIRStyle.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/style/MIRStyle.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 

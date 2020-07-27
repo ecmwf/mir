@@ -20,9 +20,9 @@
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
+#include "mir/key/style/MIRStyle.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
-#include "mir/style/MIRStyle.h"
 #include "mir/util/MIRStatistics.h"
 
 
