@@ -17,7 +17,7 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace intgrid {
 
 
@@ -75,7 +75,7 @@ private:
 
 
 }  // namespace intgrid
-}  // namespace style
+}  // namespace key
 }  // namespace mir
 
 

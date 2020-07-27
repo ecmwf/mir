@@ -146,7 +146,7 @@ CASE("ECMWFStyle") {
                         output::EmptyOutput out;
 
                         const param::CombinedParametrisation combined(user, in, defaults);
-                        std::unique_ptr<style::MIRStyle> style(style::MIRStyleFactory::build(combined));
+                        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(combined));
 
                         action::ActionPlan plan(combined);
                         style->prepare(plan, in, out);

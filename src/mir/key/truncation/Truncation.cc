@@ -27,7 +27,8 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace truncation {
 
 
 static pthread_once_t once                          = PTHREAD_ONCE_INIT;
@@ -101,5 +102,6 @@ void TruncationFactory::list(std::ostream& out) {
 }
 
 
-}  // namespace style
+}  // namespace truncation
+}  // namespace key
 }  // namespace mir

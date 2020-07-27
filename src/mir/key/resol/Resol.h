@@ -32,7 +32,8 @@ class MIRParametrisation;
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace resol {
 
 
 class Resol {
@@ -93,8 +94,8 @@ private:
     // -- Members
 
     long inputTruncation_;
-    std::unique_ptr<Intgrid> intgrid_;
-    std::unique_ptr<Truncation> truncation_;
+    std::unique_ptr<intgrid::Intgrid> intgrid_;
+    std::unique_ptr<truncation::Truncation> truncation_;
 
     // -- Methods
 
@@ -119,7 +120,8 @@ private:
 };
 
 
-}  // namespace style
+}  // namespace resol
+}  // namespace key
 }  // namespace mir
 
 

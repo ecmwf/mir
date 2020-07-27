@@ -17,7 +17,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 class NamedClassic : public NamedGrid {
@@ -95,7 +96,8 @@ private:
 };
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir
 
 

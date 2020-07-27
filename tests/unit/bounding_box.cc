@@ -294,7 +294,7 @@ CASE("BoundingBox") {
 
 CASE("Representation::extendBoundingBox") {
 
-    using namedgrids::NamedGrid;
+    using key::grid::NamedGrid;
     using util::BoundingBox;
 
     auto& log = eckit::Log::info();

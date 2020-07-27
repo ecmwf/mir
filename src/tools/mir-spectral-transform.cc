@@ -163,7 +163,7 @@ const repres::Representation* output_representation(std::ostream& log,
     std::string gridname;
     if (parametrisation.get("gridname", gridname) && !gridname.empty()) {
         ASSERT(!parametrisation.has("rotation"));
-        return namedgrids::NamedGrid::lookup(gridname).representation();
+        return key::grid::NamedGrid::lookup(gridname).representation();
     }
 
     throw eckit::UserError("MIRSpectralTransform: could not create output representation");

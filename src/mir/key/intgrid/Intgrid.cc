@@ -26,7 +26,8 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace intgrid {
 
 
 static pthread_once_t once                       = PTHREAD_ONCE_INIT;
@@ -73,7 +74,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     }
 
     // Look for NamedGrid pattern matching
-    if (namedgrids::NamedGridPattern::match(name)) {
+    if (grid::NamedGridPattern::match(name)) {
         return new intgrid::NamedGrid(name, parametrisation);
     }
 
@@ -92,9 +93,10 @@ void IntgridFactory::list(std::ostream& out) {
         sep = ", ";
     }
 
-    namedgrids::NamedGridPattern::list(out << sep);
+    grid::NamedGridPattern::list(out << sep);
 }
 
 
-}  // namespace style
+}  // namespace intgrid
+}  // namespace key
 }  // namespace mir

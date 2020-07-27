@@ -20,7 +20,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 OctahedralPattern::OctahedralPattern(const std::string& name) : NamedGridPattern(name) {}
@@ -42,5 +43,6 @@ const NamedGrid* OctahedralPattern::make(const std::string& name) const {
 static OctahedralPattern pattern("^[oO][1-9][0-9]*$");
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

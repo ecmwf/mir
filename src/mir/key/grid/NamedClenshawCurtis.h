@@ -17,7 +17,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 class NamedClenshawCurtis : public NamedGrid {
@@ -94,7 +95,8 @@ private:
 };
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir
 
 

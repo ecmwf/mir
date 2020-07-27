@@ -22,6 +22,7 @@
 
 
 namespace mir {
+namespace key {
 namespace style {
 
 
@@ -162,4 +163,5 @@ void CustomParametrisation::print(std::ostream& out) const {
 
 
 }  // namespace style
+}  // namespace key
 }  // namespace mir

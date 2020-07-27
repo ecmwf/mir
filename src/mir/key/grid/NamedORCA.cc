@@ -18,7 +18,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 NamedORCA::~NamedORCA() = default;
@@ -47,5 +48,6 @@ size_t NamedORCA::gaussianNumber() const {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

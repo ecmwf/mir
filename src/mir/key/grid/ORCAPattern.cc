@@ -18,7 +18,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 ORCAPattern::ORCAPattern(const std::string& name) : NamedGridPattern(name) {}
@@ -40,5 +41,6 @@ const NamedGrid* ORCAPattern::make(const std::string& name) const {
 static ORCAPattern pattern("^e?orca[0-9]+_[TUVWF]$");
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

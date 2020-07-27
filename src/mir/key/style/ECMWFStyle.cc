@@ -34,6 +34,7 @@
 
 
 namespace mir {
+namespace key {
 namespace style {
 
 
@@ -184,7 +185,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"spectral", "raw"});
 
-    Resol resol(parametrisation_, false);
+    resol::Resol resol(parametrisation_, false);
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
@@ -235,7 +236,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
-    Resol resol(parametrisation_, true);
+    resol::Resol resol(parametrisation_, true);
     eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion
@@ -445,4 +446,5 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
 
 }  // namespace style
+}  // namespace key
 }  // namespace mir

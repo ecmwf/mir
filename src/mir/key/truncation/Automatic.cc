@@ -21,7 +21,7 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace truncation {
 
 
@@ -31,7 +31,7 @@ static TruncationBuilder<Automatic> __truncation3("AUTO");
 
 
 Automatic::Automatic(const param::MIRParametrisation& parametrisation, long targetGaussianN) :
-    style::Truncation(parametrisation), truncation_(0) {
+    Truncation(parametrisation), truncation_(0) {
 
     // If target Gaussian N is not specified, no truncation happens
     if (targetGaussianN <= 0) {
@@ -62,5 +62,5 @@ bool Automatic::truncation(long& T, long inputTruncation) const {
 
 
 }  // namespace truncation
-}  // namespace style
+}  // namespace key
 }  // namespace mir

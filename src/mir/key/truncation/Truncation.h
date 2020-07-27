@@ -25,7 +25,8 @@ class MIRParametrisation;
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace truncation {
 
 
 class Truncation {
@@ -128,7 +129,8 @@ public:
 };
 
 
-}  // namespace style
+}  // namespace truncation
+}  // namespace key
 }  // namespace mir
 
 

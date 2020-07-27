@@ -35,7 +35,7 @@ using Handle = repres::RepresentationHandle;
 CASE("Test number of points representation <=> grid") {
     auto& log = eckit::Log::info();
 
-    using namedgrids::NamedGrid;
+    using key::grid::NamedGrid;
     using repres::latlon::RegularLL;
 
 
@@ -116,7 +116,7 @@ CASE("MIR-374") {
 
     for (auto& domain : domains) {
         for (auto& name : names) {
-            Handle repr = namedgrids::NamedGrid::lookup(name).representation();
+            Handle repr = key::grid::NamedGrid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 
             std::unique_ptr<repres::Iterator> it(crop->iterator());

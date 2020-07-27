@@ -87,9 +87,9 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new FactoryOption<style::TruncationFactory>(
+        options_.push_back(new FactoryOption<key::truncation::TruncationFactory>(
             "truncation", "Describes the intermediate truncation which the transform is performed from"));
-        options_.push_back(new FactoryOption<style::IntgridFactory>(
+        options_.push_back(new FactoryOption<key::intgrid::IntgridFactory>(
             "intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>(
@@ -121,7 +121,7 @@ public:
                                      "number of parallels between pole and equator (N>=2)"));
         options_.push_back(
             new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
-        options_.push_back(new FactoryOption<namedgrids::NamedGridPattern>(
+        options_.push_back(new FactoryOption<key::grid::NamedGridPattern>(
             "gridname", "Interpolate to given grid name (following a recognizable regular expression)"));
         options_.push_back(
             new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
@@ -293,7 +293,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(
-            new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+            new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
         options_.push_back(new SimpleOption<std::string>(
             "input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));

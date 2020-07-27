@@ -31,7 +31,8 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace resol {
 
 
 Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoIntermediateGrid) :
@@ -53,13 +54,13 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     else {
         std::string intgrid = "automatic";
         parametrisation_.get("intgrid", intgrid);
-        intgrid_.reset(IntgridFactory::build(intgrid, parametrisation_, N));
+        intgrid_.reset(intgrid::IntgridFactory::build(intgrid, parametrisation_, N));
     }
     ASSERT(intgrid_);
 
     const std::string Gi = intgrid_->gridname();
     if (!Gi.empty()) {
-        N = long(namedgrids::NamedGrid::lookup(Gi).gaussianNumber());
+        N = long(grid::NamedGrid::lookup(Gi).gaussianNumber());
         ASSERT(N > 0);
     }
 
@@ -72,7 +73,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
     else {
         std::string name = "automatic";
         parametrisation_.userParametrisation().get("truncation", name);
-        truncation_.reset(TruncationFactory::build(name, parametrisation_, N));
+        truncation_.reset(truncation::TruncationFactory::build(name, parametrisation_, N));
     }
     ASSERT(truncation_);
 }
@@ -158,7 +159,7 @@ long Resol::getTargetGaussianNumber() const {
     else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
 
         // get Gaussian N given a gridname
-        N = long(namedgrids::NamedGrid::lookup(gridname).gaussianNumber());
+        N = long(grid::NamedGrid::lookup(gridname).gaussianNumber());
     }
     else if (parametrisation_.userParametrisation().has("griddef") ||
              parametrisation_.userParametrisation().has("latitudes") ||
@@ -187,5 +188,6 @@ long Resol::getSourceGaussianNumber() const {
 }
 
 
-}  // namespace style
+}  // namespace resol
+}  // namespace key
 }  // namespace mir

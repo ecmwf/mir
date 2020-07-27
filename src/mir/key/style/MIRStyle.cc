@@ -24,6 +24,7 @@
 
 
 namespace mir {
+namespace key {
 namespace style {
 
 
@@ -96,4 +97,5 @@ void MIRStyleFactory::list(std::ostream& out) {
 
 
 }  // namespace style
+}  // namespace key
 }  // namespace mir

@@ -25,7 +25,8 @@ class MIRParametrisation;
 
 
 namespace mir {
-namespace style {
+namespace key {
+namespace intgrid {
 
 
 class Intgrid {
@@ -129,7 +130,8 @@ public:
 };
 
 
-}  // namespace style
+}  // namespace intgrid
+}  // namespace key
 }  // namespace mir
 
 

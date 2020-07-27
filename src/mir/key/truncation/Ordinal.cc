@@ -16,12 +16,12 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace truncation {
 
 
 Ordinal::Ordinal(long truncation, const param::MIRParametrisation& parametrisation) :
-    style::Truncation(parametrisation), truncation_(truncation) {
+    Truncation(parametrisation), truncation_(truncation) {
     ASSERT(truncation_ > 0);
 }
 
@@ -33,5 +33,5 @@ bool Ordinal::truncation(long& T, long) const {
 
 
 }  // namespace truncation
-}  // namespace style
+}  // namespace key
 }  // namespace mir

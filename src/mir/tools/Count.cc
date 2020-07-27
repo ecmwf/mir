@@ -188,13 +188,13 @@ void Count::countOnNamedGrid(std::string grid) {
     ASSERT(!grid.empty());
     reset();
 
-    if (!namedgrids::NamedGrid::known(grid)) {
+    if (!key::grid::NamedGrid::known(grid)) {
         // avoid 'grid=auto' or 'grid=av' without failure
         eckit::Log::debug<LibMir>() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
         return;
     }
 
-    repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(grid).representation());
+    repres::RepresentationHandle rep(key::grid::NamedGrid::lookup(grid).representation());
     countOnRepresentation(*rep);
 }
 

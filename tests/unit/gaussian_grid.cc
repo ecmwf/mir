@@ -66,7 +66,7 @@ CASE("NamedGrid") {
         for (const auto& t : tests) {
 
             log << "Test " + t.gridname + " (global)" << std::endl;
-            repres::RepresentationHandle global(namedgrids::NamedGrid::lookup(t.gridname).representation());
+            repres::RepresentationHandle global(key::grid::NamedGrid::lookup(t.gridname).representation());
             EXPECT(global->numberOfPoints() == t.numberOfPoints);
 
             log << "Test " + t.gridname + " (cropped)" << std::endl;

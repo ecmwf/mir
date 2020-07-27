@@ -21,7 +21,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 NamedClenshawCurtis::~NamedClenshawCurtis() = default;
@@ -52,5 +53,6 @@ size_t NamedClenshawCurtis::gaussianNumber() const {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

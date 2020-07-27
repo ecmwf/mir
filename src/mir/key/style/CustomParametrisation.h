@@ -20,6 +20,7 @@
 
 
 namespace mir {
+namespace key {
 namespace style {
 
 
@@ -118,6 +119,7 @@ private:
 
 
 }  // namespace style
+}  // namespace key
 }  // namespace mir
 
 

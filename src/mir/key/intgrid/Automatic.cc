@@ -14,7 +14,7 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace intgrid {
 
 
@@ -37,5 +37,5 @@ const std::string& Automatic::gridname() const {
 
 
 }  // namespace intgrid
-}  // namespace style
+}  // namespace key
 }  // namespace mir

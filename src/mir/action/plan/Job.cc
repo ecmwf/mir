@@ -67,7 +67,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     combined_.reset(new param::CombinedParametrisation(job, metadata, defaults));
     plan_.reset(new action::ActionPlan(*combined_));
 
-    std::unique_ptr<style::MIRStyle> style(style::MIRStyleFactory::build(*combined_));
+    std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(*combined_));
     style->prepare(*plan_, input_, output_);
     ASSERT(plan_->ended());
 

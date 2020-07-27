@@ -19,7 +19,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
@@ -48,5 +49,6 @@ size_t NamedClassic::gaussianNumber() const {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

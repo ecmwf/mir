@@ -58,7 +58,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
 
     // setup global grid
-    repres::RepresentationHandle globe(namedgrids::NamedGrid::lookup(globaliseGridname_).representation());
+    repres::RepresentationHandle globe(key::grid::NamedGrid::lookup(globaliseGridname_).representation());
     size_t nbExtraPoints = 0;
 
 

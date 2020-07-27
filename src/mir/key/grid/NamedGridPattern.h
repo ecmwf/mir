@@ -20,14 +20,17 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 class NamedGrid;
 }
+}  // namespace key
 }  // namespace mir
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 class NamedGridPattern {
@@ -111,7 +114,8 @@ private:
 };
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir
 
 

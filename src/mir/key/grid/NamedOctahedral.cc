@@ -19,7 +19,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
@@ -48,5 +49,6 @@ size_t NamedOctahedral::gaussianNumber() const {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

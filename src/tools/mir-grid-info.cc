@@ -100,7 +100,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     repres::RepresentationHandle rep(args.has("grid")
                                          ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
                                          : args.get("gridname", gridname)
-                                               ? namedgrids::NamedGrid::lookup(gridname).representation()
+                                               ? key::grid::NamedGrid::lookup(gridname).representation()
                                                : throw eckit::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 

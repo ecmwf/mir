@@ -25,7 +25,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 static std::map<std::string, NamedGrid*>* m = nullptr;
@@ -173,5 +174,6 @@ bool NamedGrid::known(const std::string& name) {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

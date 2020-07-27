@@ -363,7 +363,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
+        auto& ng = key::grid::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
@@ -429,7 +429,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = namedgrids::NamedGrid::lookup(test.gridname);
+        auto& ng = key::grid::NamedGrid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;

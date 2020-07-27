@@ -71,7 +71,7 @@ const char* ShToNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
-    const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
+    const auto& ng = key::grid::NamedGrid::lookup(gridname_);
     return ng.representation();
 }
 

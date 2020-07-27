@@ -24,6 +24,7 @@
 
 
 namespace mir {
+namespace key {
 namespace style {
 
 
@@ -82,4 +83,5 @@ static MIRStyleBuilder<CustomStyle> __style("custom");
 
 
 }  // namespace style
+}  // namespace key
 }  // namespace mir

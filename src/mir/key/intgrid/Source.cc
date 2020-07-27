@@ -21,7 +21,7 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace intgrid {
 
 
@@ -29,7 +29,7 @@ static IntgridBuilder<Source> __intgrid1("source");
 static IntgridBuilder<Source> __intgrid2("SOURCE");
 
 
-Source::Source(const param::MIRParametrisation& parametrisation, long) : style::Intgrid(parametrisation) {
+Source::Source(const param::MIRParametrisation& parametrisation, long) : Intgrid(parametrisation) {
 
     std::unique_ptr<util::SpectralOrder> spectralOrder(util::SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
@@ -52,5 +52,5 @@ const std::string& Source::gridname() const {
 
 
 }  // namespace intgrid
-}  // namespace style
+}  // namespace key
 }  // namespace mir

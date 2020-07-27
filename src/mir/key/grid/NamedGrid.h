@@ -28,7 +28,8 @@ class Rotation;
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 class NamedGrid {
 public:
@@ -114,7 +115,8 @@ private:
 };
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir
 
 

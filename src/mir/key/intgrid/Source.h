@@ -17,11 +17,11 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace intgrid {
 
 
-class Source : public style::Intgrid {
+class Source : public Intgrid {
 public:
     // -- Exceptions
     // None
@@ -75,7 +75,7 @@ private:
 
 
 }  // namespace intgrid
-}  // namespace style
+}  // namespace key
 }  // namespace mir
 
 

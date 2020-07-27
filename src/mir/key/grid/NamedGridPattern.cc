@@ -23,7 +23,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 static eckit::Mutex* local_mutex                   = nullptr;
@@ -125,5 +126,6 @@ const NamedGrid* NamedGridPattern::build(const std::string& name) {
 }
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

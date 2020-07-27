@@ -18,7 +18,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 ClenshawCurtisPattern::ClenshawCurtisPattern(const std::string& name) : NamedGridPattern(name) {}
@@ -40,5 +41,6 @@ const NamedGrid* ClenshawCurtisPattern::make(const std::string& name) const {
 static ClenshawCurtisPattern pattern("^[rR][cC][cC][1-9][0-9]*$");
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

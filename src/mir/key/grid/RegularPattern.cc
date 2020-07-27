@@ -20,7 +20,8 @@
 
 
 namespace mir {
-namespace namedgrids {
+namespace key {
+namespace grid {
 
 
 RegularPattern::RegularPattern(const std::string& name) : NamedGridPattern(name) {}
@@ -42,5 +43,6 @@ const NamedGrid* RegularPattern::make(const std::string& name) const {
 static RegularPattern pattern("^[fF][1-9][0-9]*$");
 
 
-}  // namespace namedgrids
+}  // namespace grid
+}  // namespace key
 }  // namespace mir

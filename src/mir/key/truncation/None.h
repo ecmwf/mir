@@ -17,11 +17,11 @@
 
 
 namespace mir {
-namespace style {
+namespace key {
 namespace truncation {
 
 
-class None : public style::Truncation {
+class None : public Truncation {
 public:
     // -- Exceptions
     // None
@@ -74,7 +74,7 @@ private:
 
 
 }  // namespace truncation
-}  // namespace style
+}  // namespace key
 }  // namespace mir
 
 
