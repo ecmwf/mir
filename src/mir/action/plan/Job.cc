@@ -20,6 +20,7 @@
 #include "mir/api/MIRJob.h"
 #include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
+#include "mir/key/Key.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
@@ -42,7 +43,7 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
     // input is already what was specified
 
     bool postProcessingRequested = false;
-    for (auto& keyword : LibMir::postProcess()) {
+    for (auto& keyword : key::Key::postProcess()) {
         if (job.has(keyword)) {
             postProcessingRequested = true;
             break;

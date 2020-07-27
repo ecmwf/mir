@@ -234,6 +234,8 @@ list(APPEND mir_srcs
     input/VectorInput.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
+    key/Key.cc
+    key/Key.h
     key/grid/ClassicPattern.cc
     key/grid/ClassicPattern.h
     key/grid/NamedClassic.cc
