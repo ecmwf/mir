@@ -13,7 +13,7 @@
 #ifndef mir_key_grid_NamedClenshawCurtis_h
 #define mir_key_grid_NamedClenshawCurtis_h
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 
 
 namespace mir {
@@ -21,7 +21,7 @@ namespace key {
 namespace grid {
 
 
-class NamedClenshawCurtis : public NamedGrid {
+class NamedClenshawCurtis : public Grid {
 public:
     // -- Exceptions
     // None

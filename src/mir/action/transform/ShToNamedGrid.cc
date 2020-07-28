@@ -18,7 +18,7 @@
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -71,7 +71,7 @@ const char* ShToNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
-    const auto& ng = key::grid::NamedGrid::lookup(gridname_);
+    const auto& ng = key::grid::Grid::lookup(gridname_);
     return ng.representation();
 }
 

@@ -22,7 +22,7 @@
 namespace mir {
 namespace key {
 namespace grid {
-class NamedGrid;
+class Grid;
 }
 }  // namespace key
 }  // namespace mir
@@ -64,7 +64,7 @@ public:
     // -- Class methods
 
     static bool match(const std::string&);
-    static const NamedGrid* build(const std::string&);
+    static const Grid* build(const std::string&);
     static void list(std::ostream&);
 
 protected:
@@ -77,8 +77,8 @@ protected:
 
     // -- Methods
 
-    virtual const NamedGrid* make(const std::string&) const = 0;
-    virtual void print(std::ostream&) const                 = 0;
+    virtual const Grid* make(const std::string&) const = 0;
+    virtual void print(std::ostream&) const            = 0;
 
     // -- Overridden methods
     // None

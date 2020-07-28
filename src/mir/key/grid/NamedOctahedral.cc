@@ -23,7 +23,7 @@ namespace key {
 namespace grid {
 
 
-NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
+NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : Grid(name), N_(N) {}
 
 
 NamedOctahedral::~NamedOctahedral() = default;

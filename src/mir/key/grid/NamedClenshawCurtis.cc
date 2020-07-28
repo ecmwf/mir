@@ -28,7 +28,7 @@ namespace grid {
 NamedClenshawCurtis::~NamedClenshawCurtis() = default;
 
 
-NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : NamedGrid(name) {}
+NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : Grid(name) {}
 
 
 void NamedClenshawCurtis::print(std::ostream& out) const {

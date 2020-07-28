@@ -33,7 +33,7 @@ void ORCAPattern::print(std::ostream& out) const {
 }
 
 
-const NamedGrid* ORCAPattern::make(const std::string& name) const {
+const Grid* ORCAPattern::make(const std::string& name) const {
     return new NamedORCA(name);
 }
 

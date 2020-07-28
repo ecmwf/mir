@@ -17,7 +17,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -100,7 +100,7 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     repres::RepresentationHandle rep(args.has("grid")
                                          ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
                                          : args.get("gridname", gridname)
-                                               ? key::grid::NamedGrid::lookup(gridname).representation()
+                                               ? key::grid::Grid::lookup(gridname).representation()
                                                : throw eckit::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 

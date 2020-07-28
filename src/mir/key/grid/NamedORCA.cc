@@ -25,7 +25,7 @@ namespace grid {
 NamedORCA::~NamedORCA() = default;
 
 
-NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
+NamedORCA::NamedORCA(const std::string& name) : Grid(name) {}
 
 
 void NamedORCA::print(std::ostream& out) const {

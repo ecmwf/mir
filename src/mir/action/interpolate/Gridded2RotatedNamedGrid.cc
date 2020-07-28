@@ -16,7 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -54,7 +54,7 @@ void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::NamedGrid::lookup(gridname_);
+    const auto& ng = key::grid::Grid::lookup(gridname_);
     return ng.representation(rotation());
 }
 

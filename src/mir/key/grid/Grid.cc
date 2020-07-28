@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
@@ -29,12 +29,12 @@ namespace key {
 namespace grid {
 
 
-static std::map<std::string, NamedGrid*>* m = nullptr;
-static pthread_once_t once                  = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex            = nullptr;
+static std::map<std::string, Grid*>* m = nullptr;
+static pthread_once_t once             = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex       = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m           = new std::map<std::string, NamedGrid*>();
+    m           = new std::map<std::string, Grid*>();
 }
 
 
@@ -48,22 +48,22 @@ void read_configuration_files() {
     }
     files_read = true;
 
-    // Read config file, attaching new NamedGrid's grids to parametrisations
-    struct NamedGridFromFile : NamedGrid, param::SimpleParametrisation {
-        NamedGridFromFile(const std::string& name) : NamedGrid(name) {}
+    // Read config file, attaching new Grid's grids to parametrisations
+    struct TypedGridFromFile : Grid, param::SimpleParametrisation {
+        TypedGridFromFile(const std::string& name) : Grid(name) {}
         const repres::Representation* representation() const { return repres::RepresentationFactory::build(*this); }
         const repres::Representation* representation(const util::Rotation&) const { NOTIMP; }
         size_t gaussianNumber() const {
             long N = 64;
             if (!get("gaussianNumber", N)) {
                 eckit::Log::warning()
-                    << "NamedGridFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
+                    << "TypedGridFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
                     << " (hardcoded!)" << std::endl;
             }
             return size_t(N);
         }
         void print(std::ostream& out) const {
-            out << "NamedGridFromFile[name=" << name_ << ",parametrisation=";
+            out << "TypedGridFromFile[name=" << name_ << ",parametrisation=";
             SimpleParametrisation::print(out);
             out << "]";
         }
@@ -71,13 +71,13 @@ void read_configuration_files() {
 
     eckit::PathName path("~mir/etc/mir/grids.yaml");
     if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "NamedGrid: reading from '" << path << "'" << std::endl;
+        eckit::Log::debug<LibMir>() << "Grid: reading from '" << path << "'" << std::endl;
 
         eckit::ValueMap grids = eckit::YAMLParser::decodeFile(path);
         for (const auto& g : grids) {
 
-            // This registers a new NamedGrid (don't delete pointer)
-            auto ng = new NamedGridFromFile(g.first);
+            // This registers a new Grid (don't delete pointer)
+            auto ng = new TypedGridFromFile(g.first);
             ASSERT(ng);
 
             for (const auto& p : eckit::ValueMap(g.second)) {
@@ -98,7 +98,7 @@ void read_configuration_files() {
 }  // namespace
 
 
-NamedGrid::NamedGrid(const std::string& name) : name_(name) {
+Grid::Grid(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -107,7 +107,7 @@ NamedGrid::NamedGrid(const std::string& name) : name_(name) {
 }
 
 
-NamedGrid::~NamedGrid() {
+Grid::~Grid() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -116,7 +116,7 @@ NamedGrid::~NamedGrid() {
 }
 
 
-void NamedGrid::list(std::ostream& out) {
+void Grid::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -129,13 +129,13 @@ void NamedGrid::list(std::ostream& out) {
 }
 
 
-const NamedGrid& NamedGrid::lookup(const std::string& name) {
+const Grid& Grid::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     read_configuration_files();
 
-    eckit::Log::debug<LibMir>() << "NamedGrid: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "Grid: looking for '" << name << "'" << std::endl;
 
     // Look for specific name matches
     auto j = m->find(name);
@@ -144,18 +144,18 @@ const NamedGrid& NamedGrid::lookup(const std::string& name) {
     }
 
     // Look for pattern matchings
-    // This will automatically add the new NamedGrid to the map
+    // This will automatically add the new Grid to the map
     auto ng = NamedGridPattern::build(name);
     if (ng != nullptr) {
         return *ng;
     }
 
-    list(eckit::Log::error() << "No NamedGrid '" << name << "', choices are:\n");
-    throw eckit::SeriousBug("No NamedGrid '" + name + "'");
+    list(eckit::Log::error() << "No Grid '" << name << "', choices are:\n");
+    throw eckit::SeriousBug("No Grid '" + name + "'");
 }
 
 
-bool NamedGrid::known(const std::string& name) {
+bool Grid::known(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

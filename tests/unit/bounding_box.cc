@@ -16,7 +16,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 
@@ -294,7 +294,7 @@ CASE("BoundingBox") {
 
 CASE("Representation::extendBoundingBox") {
 
-    using key::grid::NamedGrid;
+    using key::grid::Grid;
     using util::BoundingBox;
 
     auto& log = eckit::Log::info();
@@ -307,7 +307,7 @@ CASE("Representation::extendBoundingBox") {
                                        {0, -350, 0, 9},  {60, -350, 20, 9},  {90, -10, 70, 10}};
 
         for (const auto& name : _name) {
-            repres::RepresentationHandle repres = NamedGrid::lookup(name).representation();
+            repres::RepresentationHandle repres = Grid::lookup(name).representation();
 
             for (const auto& bbox : _bbox) {
                 BoundingBox extended = repres->extendBoundingBox(bbox);

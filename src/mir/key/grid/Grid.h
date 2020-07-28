@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_key_grid_NamedGrid_h
-#define mir_key_grid_NamedGrid_h
+#ifndef mir_key_grid_Grid_h
+#define mir_key_grid_Grid_h
 
 #include <iosfwd>
 #include <string>
@@ -31,14 +31,14 @@ namespace mir {
 namespace key {
 namespace grid {
 
-class NamedGrid {
+class Grid {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    NamedGrid(const NamedGrid&) = delete;
+    Grid(const Grid&) = delete;
 
     // -- Destructor
     // None
@@ -48,7 +48,7 @@ public:
 
     // -- Operators
 
-    NamedGrid& operator=(const NamedGrid&) = delete;
+    Grid& operator=(const Grid&) = delete;
 
     // -- Methods
 
@@ -56,7 +56,7 @@ public:
     virtual const repres::Representation* representation(const util::Rotation&) const = 0;
     virtual size_t gaussianNumber() const                                             = 0;
 
-    static const NamedGrid& lookup(const std::string& name);
+    static const Grid& lookup(const std::string& name);
     static bool known(const std::string& name);
     static void list(std::ostream&);
 
@@ -70,8 +70,8 @@ public:
     // None
 
 protected:
-    NamedGrid(const std::string& name);
-    virtual ~NamedGrid();
+    Grid(const std::string& name);
+    virtual ~Grid();
 
     // -- Members
 
@@ -108,7 +108,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const NamedGrid& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Grid& p) {
         p.print(s);
         return s;
     }

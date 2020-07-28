@@ -29,7 +29,7 @@
 #include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiScalarInput.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -163,7 +163,7 @@ const repres::Representation* output_representation(std::ostream& log,
     std::string gridname;
     if (parametrisation.get("gridname", gridname) && !gridname.empty()) {
         ASSERT(!parametrisation.has("rotation"));
-        return key::grid::NamedGrid::lookup(gridname).representation();
+        return key::grid::Grid::lookup(gridname).representation();
     }
 
     throw eckit::UserError("MIRSpectralTransform: could not create output representation");

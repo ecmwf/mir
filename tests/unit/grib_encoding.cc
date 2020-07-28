@@ -21,7 +21,7 @@
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -363,7 +363,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::NamedGrid::lookup(test.gridname);
+        auto& ng = key::grid::Grid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
@@ -429,7 +429,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::NamedGrid::lookup(test.gridname);
+        auto& ng = key::grid::Grid::lookup(test.gridname);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;

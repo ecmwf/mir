@@ -16,7 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
@@ -58,7 +58,7 @@ size_t GlobaliseUnstructured::appendGlobalPoints(std::vector<double>& latitudes,
 
 
     // setup global grid
-    repres::RepresentationHandle globe(key::grid::NamedGrid::lookup(globaliseGridname_).representation());
+    repres::RepresentationHandle globe(key::grid::Grid::lookup(globaliseGridname_).representation());
     size_t nbExtraPoints = 0;
 
 

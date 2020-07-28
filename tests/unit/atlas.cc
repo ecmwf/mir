@@ -18,7 +18,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/Atlas.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Domain.h"
@@ -35,15 +35,15 @@ using Handle = repres::RepresentationHandle;
 CASE("Test number of points representation <=> grid") {
     auto& log = eckit::Log::info();
 
-    using key::grid::NamedGrid;
+    using key::grid::Grid;
     using repres::latlon::RegularLL;
 
 
     Handle representations[] = {
         new RegularLL(util::Increments(1., 1.)),
         new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
-        NamedGrid::lookup("O16").representation(),
-        NamedGrid::lookup("O1280").representation(),
+        Grid::lookup("O16").representation(),
+        Grid::lookup("O1280").representation(),
     };
 
     for (const auto& repres : representations) {
@@ -116,7 +116,7 @@ CASE("MIR-374") {
 
     for (auto& domain : domains) {
         for (auto& name : names) {
-            Handle repr = key::grid::NamedGrid::lookup(name).representation();
+            Handle repr = key::grid::Grid::lookup(name).representation();
             Handle crop = repr->croppedRepresentation(domain);
 
             std::unique_ptr<repres::Iterator> it(crop->iterator());

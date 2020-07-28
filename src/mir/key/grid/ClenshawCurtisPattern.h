@@ -86,7 +86,7 @@ private:
 
     // -- Class methods
 
-    virtual const NamedGrid* make(const std::string& name) const;
+    virtual const Grid* make(const std::string& name) const;
 
     // -- Friends
     // None

@@ -88,7 +88,7 @@ bool NamedGridPattern::match(const std::string& name) {
 }
 
 
-const NamedGrid* NamedGridPattern::build(const std::string& name) {
+const Grid* NamedGridPattern::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

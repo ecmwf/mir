@@ -20,7 +20,7 @@
 
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/key/intgrid/None.h"
 #include "mir/key/truncation/Ordinal.h"
 #include "mir/key/truncation/Truncation.h"
@@ -60,7 +60,7 @@ Resol::Resol(const param::MIRParametrisation& parametrisation, bool forceNoInter
 
     const std::string Gi = intgrid_->gridname();
     if (!Gi.empty()) {
-        N = long(grid::NamedGrid::lookup(Gi).gaussianNumber());
+        N = long(grid::Grid::lookup(Gi).gaussianNumber());
         ASSERT(N > 0);
     }
 
@@ -159,7 +159,7 @@ long Resol::getTargetGaussianNumber() const {
     else if (parametrisation_.userParametrisation().get("gridname", gridname)) {
 
         // get Gaussian N given a gridname
-        N = long(grid::NamedGrid::lookup(gridname).gaussianNumber());
+        N = long(grid::Grid::lookup(gridname).gaussianNumber());
     }
     else if (parametrisation_.userParametrisation().has("griddef") ||
              parametrisation_.userParametrisation().has("latitudes") ||

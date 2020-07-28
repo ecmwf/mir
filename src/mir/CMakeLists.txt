@@ -238,10 +238,10 @@ list(APPEND mir_srcs
     key/Key.h
     key/grid/ClassicPattern.cc
     key/grid/ClassicPattern.h
+    key/grid/Grid.cc
+    key/grid/Grid.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
-    key/grid/NamedGrid.cc
-    key/grid/NamedGrid.h
     key/grid/NamedGridPattern.cc
     key/grid/NamedGridPattern.h
     key/grid/NamedOctahedral.cc

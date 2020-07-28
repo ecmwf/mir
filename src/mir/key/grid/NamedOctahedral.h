@@ -13,7 +13,7 @@
 #ifndef mir_key_grid_NamedOctahedral_h
 #define mir_key_grid_NamedOctahedral_h
 
-#include "mir/key/grid/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 
 
 namespace mir {
@@ -21,7 +21,7 @@ namespace key {
 namespace grid {
 
 
-class NamedOctahedral : public NamedGrid {
+class NamedOctahedral : public Grid {
 public:
     // -- Exceptions
     // None
