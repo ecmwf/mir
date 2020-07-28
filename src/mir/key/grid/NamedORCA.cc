@@ -25,16 +25,16 @@ namespace grid {
 NamedORCA::~NamedORCA() = default;
 
 
-NamedORCA::NamedORCA(const std::string& name) : Grid(name) {}
+NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
 
 
 void NamedORCA::print(std::ostream& out) const {
-    out << "NamedORCA[name=" << name_ << "]";
+    out << "NamedORCA[name=" << key_ << "]";
 }
 
 
 const repres::Representation* NamedORCA::representation() const {
-    return new repres::other::ORCA(name_);
+    return new repres::other::ORCA(key_);
 }
 
 

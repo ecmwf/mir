@@ -242,6 +242,9 @@ list(APPEND mir_srcs
     key/grid/Grid.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
+    key/grid/NamedFromFile.cc
+    key/grid/NamedFromFile.h
+    key/grid/NamedGrid.h
     key/grid/NamedGridPattern.cc
     key/grid/NamedGridPattern.h
     key/grid/NamedOctahedral.cc
@@ -252,6 +255,7 @@ list(APPEND mir_srcs
     key/grid/OctahedralPattern.h
     key/grid/RegularPattern.cc
     key/grid/RegularPattern.h
+    key/grid/TypedGrid.h
     key/intgrid/Automatic.cc
     key/intgrid/Automatic.h
     key/intgrid/Intgrid.cc

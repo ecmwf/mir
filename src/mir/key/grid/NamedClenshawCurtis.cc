@@ -28,17 +28,17 @@ namespace grid {
 NamedClenshawCurtis::~NamedClenshawCurtis() = default;
 
 
-NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : Grid(name) {}
+NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : NamedGrid(name) {}
 
 
 void NamedClenshawCurtis::print(std::ostream& out) const {
-    out << "NamedClenshawCurtis[name=" << name_ << "]";
+    out << "NamedClenshawCurtis[name=" << key_ << "]";
 }
 
 
 const repres::Representation* NamedClenshawCurtis::representation() const {
 
-    size_t N = eckit::Translator<std::string, size_t>()(name_.substr(3));
+    size_t N = eckit::Translator<std::string, size_t>()(key_.substr(3));
     return new repres::other::ClenshawCurtis(N);
 }
 

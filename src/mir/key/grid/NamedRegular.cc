@@ -23,14 +23,14 @@ namespace key {
 namespace grid {
 
 
-NamedRegular::NamedRegular(const std::string& name, size_t N) : Grid(name), N_(N) {}
+NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
 NamedRegular::~NamedRegular() = default;
 
 
 void NamedRegular::print(std::ostream& out) const {
-    out << "NamedRegular[name=" << name_ << ",N=" << N_ << "]";
+    out << "NamedRegular[name=" << key_ << ",N=" << N_ << "]";
 }
 
 

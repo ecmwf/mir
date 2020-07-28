@@ -13,7 +13,7 @@
 #ifndef mir_key_grid_NamedClassic_h
 #define mir_key_grid_NamedClassic_h
 
-#include "mir/key/grid/Grid.h"
+#include "mir/key/grid/NamedGrid.h"
 
 
 namespace mir {
@@ -21,7 +21,7 @@ namespace key {
 namespace grid {
 
 
-class NamedClassic : public Grid {
+class NamedClassic : public NamedGrid {
 public:
     // -- Exceptions
     // None

@@ -23,14 +23,14 @@ namespace key {
 namespace grid {
 
 
-NamedClassic::NamedClassic(const std::string& name, size_t N) : Grid(name), N_(N) {}
+NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
 NamedClassic::~NamedClassic() = default;
 
 
 void NamedClassic::print(std::ostream& out) const {
-    out << "NamedClassic[name=" << name_ << ",N=" << N_ << "]";
+    out << "NamedClassic[name=" << key_ << ",N=" << N_ << "]";
 }
 
 

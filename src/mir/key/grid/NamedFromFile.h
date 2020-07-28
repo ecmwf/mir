@@ -10,21 +10,11 @@
  */
 
 
-#ifndef mir_key_grid_Grid_h
-#define mir_key_grid_Grid_h
+#ifndef mir_key_grid_NamedFromFile_h
+#define mir_key_grid_NamedFromFile_h
 
-#include <iosfwd>
-#include <string>
-
-
-namespace mir {
-namespace repres {
-class Representation;
-}
-namespace util {
-class Rotation;
-}
-}  // namespace mir
+#include "mir/key/grid/NamedGrid.h"
+#include "mir/param/SimpleParametrisation.h"
 
 
 namespace mir {
@@ -32,34 +22,27 @@ namespace key {
 namespace grid {
 
 
-class Grid {
+class NamedFromFile : public NamedGrid, public param::SimpleParametrisation {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Grid(const Grid&) = delete;
+    NamedFromFile(const std::string& name);
 
     // -- Destructor
-    // None
+
+    virtual ~NamedFromFile();
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    Grid& operator=(const Grid&) = delete;
 
     // -- Methods
-
-    virtual const repres::Representation* representation() const                      = 0;
-    virtual const repres::Representation* representation(const util::Rotation&) const = 0;
-    virtual size_t gaussianNumber() const                                             = 0;
-
-    static const Grid& lookup(const std::string& key);
-    static bool known(const std::string& key);
-    static void list(std::ostream&);
+    // None
 
     // -- Overridden methods
     // None
@@ -71,19 +54,18 @@ public:
     // None
 
 protected:
-    Grid(const std::string& key);
-    virtual ~Grid();
-
     // -- Members
-
-    std::string key_;
+    // None
 
     // -- Methods
-
-    virtual void print(std::ostream&) const = 0;
+    // None
 
     // -- Overridden methods
-    // None
+
+    virtual void print(std::ostream&) const;
+    virtual size_t gaussianNumber() const;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation&) const;
 
     // -- Class members
     // None
@@ -108,11 +90,7 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const Grid& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
