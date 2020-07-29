@@ -15,6 +15,7 @@
 
 #include <map>
 #include <string>
+
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -54,6 +55,7 @@ public:
     // -- Methods
 
     void copyValuesTo(SimpleParametrisation&) const;
+    void swap(SimpleParametrisation&);
 
     SimpleParametrisation& set(const std::string& name, const std::string& value);
     SimpleParametrisation& set(const std::string& name, const char* value);
