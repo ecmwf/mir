@@ -18,6 +18,9 @@
 
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
 class Representation;
 }
@@ -53,13 +56,18 @@ public:
 
     // -- Methods
 
-    virtual const repres::Representation* representation() const                      = 0;
-    virtual const repres::Representation* representation(const util::Rotation&) const = 0;
-    virtual size_t gaussianNumber() const                                             = 0;
+    virtual const repres::Representation* representation() const;
+    virtual const repres::Representation* representation(const util::Rotation&) const;
+    virtual const repres::Representation* representation(const param::MIRParametrisation&) const;
+    virtual size_t gaussianNumber() const;
 
     static const Grid& lookup(const std::string& key);
     static bool known(const std::string& key);
     static void list(std::ostream&);
+
+    bool isNamed() const { return gridType_ == named_t; }
+    bool isTyped() const { return gridType_ == typed_t; }
+    bool isRegularLL() const { return gridType_ == regular_ll_t; }
 
     // -- Overridden methods
     // None
@@ -71,7 +79,21 @@ public:
     // None
 
 protected:
-    Grid(const std::string& key);
+    // -- Types
+
+    enum grid_t
+    {
+        named_t,
+        typed_t,
+        regular_ll_t
+    };
+
+    // -- Constructors
+
+    Grid(const std::string& key, grid_t);
+
+    // -- Destructor
+
     virtual ~Grid();
 
     // -- Members
@@ -93,7 +115,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    grid_t gridType_;
 
     // -- Methods
     // None

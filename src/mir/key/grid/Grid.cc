@@ -21,8 +21,8 @@
 #include "eckit/thread/Mutex.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
-#include "mir/key/grid/NamedGridPattern.h"
 
 
 namespace mir {
@@ -73,7 +73,7 @@ static void read_configuration_files() {
 }
 
 
-Grid::Grid(const std::string& key) : key_(key) {
+Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -104,6 +104,33 @@ void Grid::list(std::ostream& out) {
 }
 
 
+const repres::Representation* Grid::representation() const {
+    std::ostringstream os;
+    os << "Grid::representation() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+const repres::Representation* Grid::representation(const util::Rotation&) const {
+    std::ostringstream os;
+    os << "Grid::representation(Rotation&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
+    std::ostringstream os;
+    os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+size_t Grid::gaussianNumber() const {
+    std::ostringstream os;
+    os << "Grid::gaussianNumber() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
 const Grid& Grid::lookup(const std::string& key) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -120,7 +147,7 @@ const Grid& Grid::lookup(const std::string& key) {
 
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
-    auto ng = NamedGridPattern::build(key);
+    auto ng = GridPattern::build(key);
     if (ng != nullptr) {
         return *ng;
     }
@@ -142,7 +169,7 @@ bool Grid::known(const std::string& key) {
     }
 
     // Look for pattern matchings
-    auto ng           = NamedGridPattern::build(key);
+    auto ng           = GridPattern::build(key);
     bool knownPattern = ng != nullptr;
     delete ng;
     return knownPattern;

@@ -10,12 +10,10 @@
  */
 
 
-#ifndef mir_key_grid_TypedGrid_h
-#define mir_key_grid_TypedGrid_h
+#ifndef mir_key_grid_RegularLLPattern_h
+#define mir_key_grid_RegularLLPattern_h
 
-#include "mir/key/grid/Grid.h"
-
-#include <vector>
+#include "mir/key/grid/GridPattern.h"
 
 
 namespace mir {
@@ -23,21 +21,26 @@ namespace key {
 namespace grid {
 
 
-class TypedGrid : public Grid {
+class RegularLLPattern : public GridPattern {
 public:
+    // -- Exceptions
+    // None
+
     // -- Constructors
 
-    TypedGrid(const std::string& key, const std::vector<std::string>& requiredKeys);
+    RegularLLPattern(const std::string& name);
+    RegularLLPattern(const RegularLLPattern&) = delete;
 
     // -- Destructor
 
-    virtual ~TypedGrid() = default;
+    virtual ~RegularLLPattern();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    RegularLLPattern& operator=(const RegularLLPattern&) = delete;
 
     // -- Methods
     // None
@@ -53,16 +56,14 @@ public:
 
 protected:
     // -- Members
-
-    std::vector<std::string> requiredKeys_;
-
-    // -- Methods
     // None
 
-    // -- Overridden methods
+    // -- Methods
 
     virtual void print(std::ostream&) const;
-    virtual const repres::Representation* representation(const param::MIRParametrisation&) const = 0;
+
+    // -- Overridden methods
+    // None
 
     // -- Class members
     // None
@@ -84,7 +85,8 @@ private:
     // None
 
     // -- Class methods
-    // None
+
+    virtual const Grid* make(const std::string& name) const;
 
     // -- Friends
     // None

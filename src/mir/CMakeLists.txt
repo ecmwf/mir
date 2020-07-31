@@ -253,8 +253,13 @@ list(APPEND mir_srcs
     key/grid/NamedRegular.h
     key/grid/OctahedralPattern.cc
     key/grid/OctahedralPattern.h
+    key/grid/RegularLL.cc
+    key/grid/RegularLL.h
+    key/grid/RegularLLPattern.cc
+    key/grid/RegularLLPattern.h
     key/grid/RegularPattern.cc
     key/grid/RegularPattern.h
+    key/grid/TypedGrid.cc
     key/grid/TypedGrid.h
     key/intgrid/Automatic.cc
     key/intgrid/Automatic.h

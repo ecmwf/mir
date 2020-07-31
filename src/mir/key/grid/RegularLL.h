@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_key_grid_NamedGrid_h
-#define mir_key_grid_NamedGrid_h
+#ifndef mir_key_grid_RegularLL_h
+#define mir_key_grid_RegularLL_h
 
 #include "mir/key/grid/Grid.h"
 
@@ -21,15 +21,20 @@ namespace key {
 namespace grid {
 
 
-class NamedGrid : public Grid {
-protected:
+class RegularLL final : public Grid {
+public:
+    // -- Types
+    // None
+
+    // -- Exceptions
+    // None
+
     // -- Constructors
 
-    NamedGrid(const std::string& key) : Grid(key, named_t) {}
+    RegularLL(const std::string& key);
 
     // -- Destructor
-
-    virtual ~NamedGrid() = default;
+    // None
 
     // -- Convertors
     // None
@@ -41,11 +46,7 @@ protected:
     // None
 
     // -- Overridden methods
-
-    virtual void print(std::ostream&) const                                           = 0;
-    virtual size_t gaussianNumber() const                                             = 0;
-    virtual const repres::Representation* representation() const                      = 0;
-    virtual const repres::Representation* representation(const util::Rotation&) const = 0;
+    // None
 
     // -- Class members
     // None
@@ -54,6 +55,22 @@ protected:
     // None
 
 private:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
+
+    // -- Overridden methods
+
+    void print(std::ostream&) const override;
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
     // -- Friends
     // None
 };
