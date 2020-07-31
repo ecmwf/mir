@@ -25,6 +25,7 @@
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/config/LibMir.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -73,11 +74,27 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     bool forced = filter || rotated;
     const std::string prefix(user.has("rotation") ? "rotated-" : "");
 
-    if (user.has("grid")) {
-        std::vector<double> grid;
-        return !same->get("grid", grid) || forced || !repres::latlon::LatLon::samePoints(user, field)
-                   ? prefix + "regular-ll"
-                   : "";
+
+    std::string grid;
+    if (user.get("grid", grid)) {
+        auto& g = grid::Grid::lookup(grid);
+
+        if (g.isRegularLL()) {
+            std::vector<double> grid_v;
+            return !same->get("grid", grid_v) || forced || !repres::latlon::LatLon::samePoints(user, field)
+                       ? prefix + "regular-ll"
+                       : "";
+        }
+
+        if (g.isNamed()) {
+            return !same->get("gridname", grid) || forced ? prefix + "namedgrid" : "";
+        }
+
+        if (g.isTyped()) {
+            return prefix + "typedgrid";
+        }
+
+        NOTIMP;
     }
 
     if (user.has("reduced")) {
@@ -98,11 +115,6 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     if (user.has("pl")) {
         std::vector<long> pl;
         return !same->get("pl", pl) || forced ? prefix + "reduced-gg-pl-given" : "";
-    }
-
-    if (user.has("gridname")) {
-        std::string gridname;
-        return !same->get("gridname", gridname) || forced ? prefix + "namedgrid" : "";
     }
 
     if (user.has("griddef")) {
@@ -210,8 +222,8 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
             // if the intermediate grid is the same as the target grid, the interpolation to the
             // intermediate grid is not followed by an additional interpolation
-            std::string gridname;
-            if (rotation || !user.get("gridname", gridname) || gridname != resol.gridname()) {
+            std::string grid;
+            if (rotation || !user.get("grid", grid) || grid != resol.gridname()) {
                 plan.add("interpolate.grid2" + target);
             }
         }
@@ -353,10 +365,6 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
     }
 
     if (user.has("pl")) {
-        user_wants_gridded++;
-    }
-
-    if (user.has("gridname")) {
         user_wants_gridded++;
     }
 

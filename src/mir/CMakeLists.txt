@@ -73,6 +73,8 @@ list(APPEND mir_srcs
     action/interpolate/Gridded2RotatedReducedGGPLGiven.h
     action/interpolate/Gridded2RotatedRegularGG.cc
     action/interpolate/Gridded2RotatedRegularGG.h
+    action/interpolate/Gridded2TypedGrid.cc
+    action/interpolate/Gridded2TypedGrid.h
     action/interpolate/Gridded2UnrotatedGrid.cc
     action/interpolate/Gridded2UnrotatedGrid.h
     action/io/Copy.cc
