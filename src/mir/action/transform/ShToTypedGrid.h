@@ -10,11 +10,10 @@
  */
 
 
-#ifndef mir_action_transform_ShToRotatedNamedGrid_h
-#define mir_action_transform_ShToRotatedNamedGrid_h
+#ifndef mir_action_transform_ShToTypedGrid_h
+#define mir_action_transform_ShToTypedGrid_h
 
 #include "mir/action/transform/ShToGridded.h"
-#include "mir/util/Rotation.h"
 
 
 namespace mir {
@@ -23,18 +22,18 @@ namespace transform {
 
 
 template <class Invtrans>
-class ShToRotatedNamedGrid : public ShToGridded, Invtrans {
+class ShToTypedGrid : public ShToGridded, Invtrans {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    ShToRotatedNamedGrid(const param::MIRParametrisation&);
+    ShToTypedGrid(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    ~ShToRotatedNamedGrid();  // Change to virtual if base class
+    ~ShToTypedGrid();  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -58,7 +57,6 @@ private:
     // -- Members
 
     std::string grid_;
-    util::Rotation rotation_;
 
     // -- Methods
     // None

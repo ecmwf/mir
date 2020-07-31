@@ -691,6 +691,8 @@ if (HAVE_ATLAS)
         action/transform/ShToRotatedRegularGG.h
         action/transform/ShToRotatedRegularLL.cc
         action/transform/ShToRotatedRegularLL.h
+        action/transform/ShToTypedGrid.cc
+        action/transform/ShToTypedGrid.h
         action/transform/ShTruncate.cc
         action/transform/ShTruncate.h
         action/transform/ShVodToUV.cc

@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/action/transform/ShToNamedGrid.h"
+#include "mir/action/transform/ShToTypedGrid.h"
 
 #include <iostream>
 
@@ -28,7 +28,7 @@ namespace transform {
 
 
 template <class Invtrans>
-ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation) :
+ShToTypedGrid<Invtrans>::ShToTypedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
@@ -36,19 +36,19 @@ ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametr
 
 
 template <class Invtrans>
-ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
+ShToTypedGrid<Invtrans>::~ShToTypedGrid() = default;
 
 
 template <class Invtrans>
-bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
-    auto o = dynamic_cast<const ShToNamedGrid*>(&other);
+bool ShToTypedGrid<Invtrans>::sameAs(const Action& other) const {
+    auto o = dynamic_cast<const ShToTypedGrid*>(&other);
     return (o != nullptr) && (grid_ == o->grid_);
 }
 
 
 template <class Invtrans>
-void ShToNamedGrid<Invtrans>::print(std::ostream& out) const {
-    out << "ShToNamedGrid[";
+void ShToTypedGrid<Invtrans>::print(std::ostream& out) const {
+    out << "ShToTypedGrid[";
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
@@ -57,27 +57,27 @@ void ShToNamedGrid<Invtrans>::print(std::ostream& out) const {
 
 
 template <class Invtrans>
-void ShToNamedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
+void ShToTypedGrid<Invtrans>::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                                       const param::MIRParametrisation& parametrisation) const {
     Invtrans::sh2grid(field, trans, parametrisation);
 }
 
 
 template <class Invtrans>
-const char* ShToNamedGrid<Invtrans>::name() const {
-    return "ShToNamedGrid";
+const char* ShToTypedGrid<Invtrans>::name() const {
+    return "ShToTypedGrid";
 }
 
 
 template <class Invtrans>
-const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
+const repres::Representation* ShToTypedGrid<Invtrans>::outputRepresentation() const {
     const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation();
 }
 
 
-static ActionBuilder<ShToNamedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-namedgrid");
-static ActionBuilder<ShToNamedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-namedgrid");
+static ActionBuilder<ShToTypedGrid<InvtransScalar> > __action1("transform.sh-scalar-to-typedgrid");
+static ActionBuilder<ShToTypedGrid<InvtransVodTouv> > __action2("transform.sh-vod-to-uv-typedgrid");
 
 
 }  // namespace transform
