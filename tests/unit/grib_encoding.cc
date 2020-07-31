@@ -321,7 +321,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
     auto& log = eckit::Log::info();
 
     struct test_t {
-        std::string gridname;
+        std::string grid;
         BoundingBox bbox;
         size_t count;
     };
@@ -363,7 +363,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::Grid::lookup(test.gridname);
+        auto& ng = key::grid::Grid::lookup(test.grid);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;
@@ -399,7 +399,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             EXPECT(bbox.contains(small));
 
             // Compare mir/eccodes iterators coordinates with a better precision
-            if (test.gridname != "O1280") {  // FIXME: ECC-747
+            if (test.grid != "O1280") {  // FIXME: ECC-747
                 double tol = 1.e-3;
                 log << "\tGRIB" << edition << ": |Δ(lat,lon)| <= (" << tol << ", " << tol << ")" << std::endl;
                 EXPECT(encode.compareCoordinates(edition, tol, tol));
@@ -413,7 +413,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     auto& log = eckit::Log::info();
 
     struct test_t {
-        std::string gridname;
+        std::string grid;
         BoundingBox bbox;
         size_t Ni;
         size_t Nj;
@@ -429,7 +429,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 
     for (auto& test : _test) {
 
-        auto& ng = key::grid::Grid::lookup(test.gridname);
+        auto& ng = key::grid::Grid::lookup(test.grid);
         const RepresentationHandle rep(ng.representation());
 
         log << "Test " << *rep << " with " << test.bbox << "..." << std::endl;

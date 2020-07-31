@@ -36,7 +36,7 @@ CASE("NamedGrid") {
 
 
     struct test_t {
-        const std::string gridname;
+        const std::string grid;
         size_t numberOfPoints;
         size_t numberOfCroppedPoints;
         BoundingBox bbox;
@@ -67,11 +67,11 @@ CASE("NamedGrid") {
     SECTION("numberOfPoints") {
         for (const auto& t : tests) {
 
-            log << "Test " + t.gridname + " (global)" << std::endl;
-            repres::RepresentationHandle global(key::grid::Grid::lookup(t.gridname).representation());
+            log << "Test " + t.grid + " (global)" << std::endl;
+            repres::RepresentationHandle global(key::grid::Grid::lookup(t.grid).representation());
             EXPECT(global->numberOfPoints() == t.numberOfPoints);
 
-            log << "Test " + t.gridname + " (cropped)" << std::endl;
+            log << "Test " + t.grid + " (cropped)" << std::endl;
             repres::RepresentationHandle local(global->croppedRepresentation(t.bbox));
             EXPECT(local->numberOfPoints() == t.numberOfCroppedPoints);
         }
