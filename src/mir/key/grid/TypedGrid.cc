@@ -16,6 +16,7 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 
 #include "mir/key/grid/GridPattern.h"
 #include "mir/param/MIRParametrisation.h"
@@ -40,6 +41,13 @@ void TypedGrid::print(std::ostream& out) const {
         sep = ",";
     }
     out << "]]";
+}
+
+
+size_t TypedGrid::gaussianNumber() const {
+    size_t N = 64;
+    eckit::Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+    return N;
 }
 
 

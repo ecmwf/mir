@@ -14,6 +14,14 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+#include "eckit/types/Fraction.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/utils/Translator.h"
+
+#include "mir/util/Assert.h"
+#include "mir/util/Increments.h"
+
 
 namespace mir {
 namespace key {
@@ -21,6 +29,22 @@ namespace grid {
 
 
 RegularLL::RegularLL(const std::string& key) : Grid(key, regular_ll_t) {}
+
+
+size_t RegularLL::gaussianNumber() const {
+    auto grid_str = eckit::StringTools::split(key_, "/");
+    ASSERT_KEYWORD_GRID_SIZE(grid_str.size());
+
+    eckit::Translator<std::string, double> cvt;
+    double grid_v[2] = {cvt(grid_str[0]), cvt(grid_str[1])};
+
+    util::Increments increments(grid_v[0], grid_v[1]);
+    eckit::Fraction r = Latitude::GLOBE.fraction() / increments.south_north().latitude().fraction();
+    auto N            = long(r.integralPart() / 2);
+
+    ASSERT(N >= 0);
+    return N;
+}
 
 
 void RegularLL::print(std::ostream& out) const {

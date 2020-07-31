@@ -46,7 +46,8 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+
+    size_t gaussianNumber() const override;
 
     // -- Class members
     // None

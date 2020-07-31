@@ -61,8 +61,9 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
-    virtual const repres::Representation* representation(const param::MIRParametrisation&) const = 0;
+    virtual void print(std::ostream&) const override;
+    virtual const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
+    virtual size_t gaussianNumber() const override;
 
     // -- Class members
     // None
