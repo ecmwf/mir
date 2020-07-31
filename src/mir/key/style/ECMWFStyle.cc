@@ -71,7 +71,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     const bool rotated = checkRotation && user.has("rotation") && !same->get("rotation", rotation);
 
     bool filter = option(user, "filter", false);
-    bool forced = filter || rotated;
+    bool forced = field.has("spectral") || filter || rotated;
     const std::string prefix(user.has("rotation") ? "rotated-" : "");
 
 
@@ -81,40 +81,39 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
-            return !same->get("grid", grid_v) || forced || !repres::latlon::LatLon::samePoints(user, field)
+            forced = forced || !field.has("gridded_regular_ll");
+            return forced || !same->get("grid", grid_v) || !repres::latlon::LatLon::samePoints(user, field)
                        ? prefix + "regular-ll"
                        : "";
         }
 
         if (g.isNamed()) {
-            return !same->get("gridname", grid) || forced ? prefix + "namedgrid" : "";
+            forced = forced || !field.has("gridded_named");
+            return forced || !same->get("grid", grid) ? prefix + "namedgrid" : "";
         }
 
-        if (g.isTyped()) {
-            return prefix + "typedgrid";
-        }
-
-        NOTIMP;
+        ASSERT(g.isTyped());
+        return prefix + "typedgrid";
     }
 
     if (user.has("reduced")) {
         long N;
-        return !same->get("reduced", N) || forced ? prefix + "reduced-gg" : "";
+        return forced || !same->get("reduced", N) ? prefix + "reduced-gg" : "";
     }
 
     if (user.has("regular")) {
         long N;
-        return !same->get("regular", N) || forced ? prefix + "regular-gg" : "";
+        return forced || !same->get("regular", N) ? prefix + "regular-gg" : "";
     }
 
     if (user.has("octahedral")) {
         long N;
-        return !same->get("octahedral", N) || forced ? prefix + "octahedral-gg" : "";
+        return forced || !same->get("octahedral", N) ? prefix + "octahedral-gg" : "";
     }
 
     if (user.has("pl")) {
         std::vector<long> pl;
-        return !same->get("pl", pl) || forced ? prefix + "reduced-gg-pl-given" : "";
+        return forced || !same->get("pl", pl) ? prefix + "reduced-gg-pl-given" : "";
     }
 
     if (user.has("griddef")) {
@@ -135,8 +134,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
     }
 
     if (user.has("area") || user.has("rotation")) {
-        std::vector<double> grid;
-        if (field.get("grid", grid) && !repres::latlon::LatLon::samePoints(user, field)) {
+        if (field.has("gridded_regular_ll") && !repres::latlon::LatLon::samePoints(user, field)) {
             return prefix + "regular-ll";
         }
     }

@@ -32,7 +32,7 @@ RegularLL::RegularLL(const std::string& key) : Grid(key, regular_ll_t) {}
 
 
 size_t RegularLL::gaussianNumber() const {
-    auto grid_str = eckit::StringTools::split(key_, "/");
+    auto grid_str = eckit::StringTools::split("/", key_);
     ASSERT_KEYWORD_GRID_SIZE(grid_str.size());
 
     eckit::Translator<std::string, double> cvt;
