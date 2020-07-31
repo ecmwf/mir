@@ -22,7 +22,7 @@ namespace key {
 namespace grid {
 
 
-ORCAPattern::ORCAPattern(const std::string& name) : NamedGridPattern(name) {}
+ORCAPattern::ORCAPattern(const std::string& name) : GridPattern(name) {}
 
 
 ORCAPattern::~ORCAPattern() = default;

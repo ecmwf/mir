@@ -22,7 +22,7 @@ namespace key {
 namespace grid {
 
 
-ClenshawCurtisPattern::ClenshawCurtisPattern(const std::string& name) : NamedGridPattern(name) {}
+ClenshawCurtisPattern::ClenshawCurtisPattern(const std::string& name) : GridPattern(name) {}
 
 
 ClenshawCurtisPattern::~ClenshawCurtisPattern() = default;

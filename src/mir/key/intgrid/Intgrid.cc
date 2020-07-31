@@ -21,7 +21,7 @@
 #include "eckit/thread/Once.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/key/grid/NamedGridPattern.h"
+#include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/NamedGrid.h"
 
 
@@ -74,7 +74,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     }
 
     // Look for NamedGrid pattern matching
-    if (grid::NamedGridPattern::match(name)) {
+    if (grid::GridPattern::match(name)) {
         return new intgrid::NamedGrid(name, parametrisation);
     }
 
@@ -93,7 +93,7 @@ void IntgridFactory::list(std::ostream& out) {
         sep = ", ";
     }
 
-    grid::NamedGridPattern::list(out << sep);
+    grid::GridPattern::list(out << sep);
 }
 
 

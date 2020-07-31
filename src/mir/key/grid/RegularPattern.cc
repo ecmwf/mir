@@ -24,7 +24,7 @@ namespace key {
 namespace grid {
 
 
-RegularPattern::RegularPattern(const std::string& name) : NamedGridPattern(name) {}
+RegularPattern::RegularPattern(const std::string& name) : GridPattern(name) {}
 
 
 RegularPattern::~RegularPattern() = default;

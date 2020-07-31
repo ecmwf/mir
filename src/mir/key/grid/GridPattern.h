@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_key_grid_NamedGridPattern_h
-#define mir_key_grid_NamedGridPattern_h
+#ifndef mir_key_grid_GridPattern_h
+#define mir_key_grid_GridPattern_h
 
 #include <iosfwd>
 #include <string>
@@ -33,14 +33,14 @@ namespace key {
 namespace grid {
 
 
-class NamedGridPattern {
+class GridPattern {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    NamedGridPattern(const NamedGridPattern&) = delete;
+    GridPattern(const GridPattern&) = delete;
 
     // -- Destructor
     // None
@@ -50,7 +50,7 @@ public:
 
     // -- Operators
 
-    void operator=(const NamedGridPattern&) = delete;
+    void operator=(const GridPattern&) = delete;
 
     // -- Methods
     // None
@@ -68,8 +68,8 @@ public:
     static void list(std::ostream&);
 
 protected:
-    NamedGridPattern(const std::string&);
-    virtual ~NamedGridPattern();
+    GridPattern(const std::string&);
+    virtual ~GridPattern();
 
     // -- Members
 
@@ -107,7 +107,7 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const NamedGridPattern& p) {
+    friend std::ostream& operator<<(std::ostream& s, const GridPattern& p) {
         p.print(s);
         return s;
     }

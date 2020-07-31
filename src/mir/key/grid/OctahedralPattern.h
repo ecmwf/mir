@@ -13,7 +13,7 @@
 #ifndef mir_key_grid_OctahedralPattern_h
 #define mir_key_grid_OctahedralPattern_h
 
-#include "mir/key/grid/NamedGridPattern.h"
+#include "mir/key/grid/GridPattern.h"
 
 
 namespace mir {
@@ -21,7 +21,7 @@ namespace key {
 namespace grid {
 
 
-class OctahedralPattern : public NamedGridPattern {
+class OctahedralPattern : public GridPattern {
 public:
     // -- Exceptions
     // None

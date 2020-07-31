@@ -35,7 +35,7 @@
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
-#include "mir/key/grid/NamedGridPattern.h"
+#include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/key/truncation/Truncation.h"
@@ -103,10 +103,8 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
-        options_.push_back(new VectorOption<double>("grid",
-                                                    "Interpolate to a regular latitude/longitude grid (regular_ll), "
-                                                    "provided the West-East & South-North increments",
-                                                    2));
+        options_.push_back(new FactoryOption<key::grid::GridPattern>(
+            "grid", "Interpolate to given grid (following a recognizable regular expression)"));
         options_.push_back(new SimpleOption<size_t>("regular",
                                                     "Interpolate to the regular Gaussian grid N (regular_gg), with N "
                                                     "the number of parallels between pole and equator (N>=2)"));
@@ -121,8 +119,6 @@ public:
                                      "number of parallels between pole and equator (N>=2)"));
         options_.push_back(
             new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
-        options_.push_back(new FactoryOption<key::grid::NamedGridPattern>(
-            "gridname", "Interpolate to given grid name (following a recognizable regular expression)"));
         options_.push_back(
             new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 

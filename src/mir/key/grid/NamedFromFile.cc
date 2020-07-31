@@ -31,7 +31,7 @@ NamedFromFile::~NamedFromFile() = default;
 
 
 void NamedFromFile::print(std::ostream& out) const {
-    out << "NamedFromFile[name=" << key_ << ",parametrisation=";
+    out << "NamedFromFile[key=" << key_ << ",parametrisation=";
     SimpleParametrisation::print(out);
     out << "]";
 }

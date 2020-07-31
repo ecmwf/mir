@@ -30,7 +30,7 @@ NamedClassic::~NamedClassic() = default;
 
 
 void NamedClassic::print(std::ostream& out) const {
-    out << "NamedClassic[name=" << key_ << ",N=" << N_ << "]";
+    out << "NamedClassic[key=" << key_ << ",N=" << N_ << "]";
 }
 
 

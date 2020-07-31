@@ -32,7 +32,7 @@ NamedClenshawCurtis::NamedClenshawCurtis(const std::string& name) : NamedGrid(na
 
 
 void NamedClenshawCurtis::print(std::ostream& out) const {
-    out << "NamedClenshawCurtis[name=" << key_ << "]";
+    out << "NamedClenshawCurtis[key=" << key_ << "]";
 }
 
 

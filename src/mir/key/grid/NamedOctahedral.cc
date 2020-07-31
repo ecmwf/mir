@@ -30,7 +30,7 @@ NamedOctahedral::~NamedOctahedral() = default;
 
 
 void NamedOctahedral::print(std::ostream& out) const {
-    out << "NamedOctahedral[name=" << key_ << ",N=" << N_ << "]";
+    out << "NamedOctahedral[key=" << key_ << ",N=" << N_ << "]";
 }
 
 

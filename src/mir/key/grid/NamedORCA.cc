@@ -29,7 +29,7 @@ NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
 
 
 void NamedORCA::print(std::ostream& out) const {
-    out << "NamedORCA[name=" << key_ << "]";
+    out << "NamedORCA[key=" << key_ << "]";
 }
 
 

@@ -30,7 +30,7 @@ NamedRegular::~NamedRegular() = default;
 
 
 void NamedRegular::print(std::ostream& out) const {
-    out << "NamedRegular[name=" << key_ << ",N=" << N_ << "]";
+    out << "NamedRegular[key=" << key_ << ",N=" << N_ << "]";
 }
 
 

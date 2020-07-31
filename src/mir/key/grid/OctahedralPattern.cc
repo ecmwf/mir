@@ -24,7 +24,7 @@ namespace key {
 namespace grid {
 
 
-OctahedralPattern::OctahedralPattern(const std::string& name) : NamedGridPattern(name) {}
+OctahedralPattern::OctahedralPattern(const std::string& name) : GridPattern(name) {}
 
 
 OctahedralPattern::~OctahedralPattern() = default;
