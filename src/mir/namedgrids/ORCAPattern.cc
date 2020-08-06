@@ -37,7 +37,7 @@ const NamedGrid* ORCAPattern::make(const std::string& name) const {
 }
 
 
-static ORCAPattern pattern("^e?orca[0-9]+_[FTUV]$");
+static ORCAPattern pattern("^e?orca[0-9]+_[TUVWF]$");
 
 
 }  // namespace namedgrids
