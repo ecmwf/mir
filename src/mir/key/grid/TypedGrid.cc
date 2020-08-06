@@ -29,14 +29,22 @@ namespace key {
 namespace grid {
 
 
-TypedGrid::TypedGrid(const std::string& key, const std::vector<std::string>& requiredKeys) :
-    Grid(key, typed_t), requiredKeys_(requiredKeys) {}
+TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
+                     const std::set<std::string>& optionalKeys) :
+    Grid(key, typed_t), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
 
 
 void TypedGrid::print(std::ostream& out) const {
     out << "TypedGrid[key=" << key_ << ",requiredKeys=[";
     auto sep = "";
     for (auto& k : requiredKeys_) {
+        out << sep << k;
+        sep = ",";
+    }
+    out << "]";
+    out << ",optionalKeys=[";
+    sep = "";
+    for (auto& k : optionalKeys_) {
         out << sep << k;
         sep = ",";
     }
@@ -80,19 +88,24 @@ struct TypedGeneric final : public TypedGrid {
 
 template <typename TYPE>
 struct TypedGenericPattern final : public GridPattern {
-    TypedGenericPattern(const std::string& name, const std::vector<std::string>& requiredKeys) :
-        GridPattern(name), requiredKeys_(requiredKeys) {}
+    TypedGenericPattern(const std::string& name, const std::set<std::string>& requiredKeys,
+                        const std::set<std::string>& optionalKeys = {}) :
+        GridPattern(name), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
 
     TypedGenericPattern(const TypedGenericPattern&) = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
 
     const Grid* make(const std::string& name) const override {
+#if 0
         // register only the value of gridType= (which comes at the beggining)
         ASSERT(name.find("gridType=") == 0);
         auto key = name.substr(9);
         key      = key.substr(0, key.find(","));
 
         return new TYPE(key, requiredKeys_);
+#else
+        return new TYPE(name, requiredKeys_, optionalKeys_);
+#endif
     }
 
     void print(std::ostream& out) const override {
@@ -102,22 +115,33 @@ struct TypedGenericPattern final : public GridPattern {
             out << sep << k;
             sep = ",";
         }
+        out << "]";
+        out << ",optionalKeys=[";
+        sep = "";
+        for (auto& k : optionalKeys_) {
+            out << sep << k;
+            sep = ",";
+        }
         out << "]]";
     }
 
-    std::vector<std::string> requiredKeys_;
+    std::set<std::string> requiredKeys_;
+    std::set<std::string> optionalKeys_;
 };
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
-    "^gridType=lambert,.*$", {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
-                              "longitudeOfFirstGridPointInDegrees", "gaussianNumber"});
+    "^gridType=lambert,.*$",
+    {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
+     "longitudeOfFirstGridPointInDegrees"},
+    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "gaussianNumber"});
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
     "^gridType=lambert_azimuthal_equal_area,.*$",
     {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
-     "longitudeOfFirstGridPointInDegrees", "gaussianNumber"});
+     "longitudeOfFirstGridPointInDegrees"},
+    {"gaussianNumber"});
 
 
 }  // namespace grid

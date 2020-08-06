@@ -15,7 +15,7 @@
 
 #include "mir/key/grid/Grid.h"
 
-#include <vector>
+#include <set>
 
 
 namespace mir {
@@ -27,7 +27,8 @@ class TypedGrid : public Grid {
 public:
     // -- Constructors
 
-    TypedGrid(const std::string& key, const std::vector<std::string>& requiredKeys);
+    TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
+              const std::set<std::string>& optionalKeys = {});
 
     // -- Destructor
 
@@ -54,7 +55,8 @@ public:
 protected:
     // -- Members
 
-    std::vector<std::string> requiredKeys_;
+    std::set<std::string> requiredKeys_;
+    std::set<std::string> optionalKeys_;
 
     // -- Methods
     // None
