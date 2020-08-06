@@ -649,6 +649,22 @@ space.3d.vector.w:
 - 150135  # Ocean W wind component
 - 151133  # Ocean current vertical component
 
+space.geographic-coordinate.latitude:
+- 250001  # Latitude
+- 250003  # Latitude on T grid
+- 250005  # Latitude on U grid
+- 250007  # Latitude on V grid
+- 250009  # Latitude on W grid
+- 250011  # Latitude on F grid
+
+space.geographic-coordinate.longitude:
+- 250002  # Longitude
+- 250004  # Longitude on T grid
+- 250006  # Longitude on U grid
+- 250008  # Longitude on V grid
+- 250010  # Longitude on W grid
+- 250012  # Longitude on F grid
+
 index:
 - 29  # Type of low vegetation
 - 30  # Type of high vegetation

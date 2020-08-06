@@ -53,6 +53,14 @@ space.3d.vector.v:
 space.3d.vector.w:
     space: 3d.vector.w
 
+# Geographic coordinate, latitude
+space.geographic-coordinate.latitude:
+    interpolation: fail
+
+# Geographic coordinate, longitude
+space.geographic-coordinate.longitude:
+    interpolation: fail
+
 # associated to a table
 index:
     interpolation: nearest-neighbour
