@@ -76,12 +76,12 @@ bool GridPattern::match(const std::string& name) {
     auto k         = m->cend();
     for (auto j = m->cbegin(); j != m->cend() && !conflicts; ++j) {
         if (j->second->pattern_.match(name)) {
-            conflicts = k != m->end();
+            conflicts = k != m->cend();
             k         = j;
         }
     }
 
-    bool can = !conflicts && k != m->end();
+    bool can = !conflicts && k != m->cend();
     eckit::Log::debug<LibMir>() << "GridPattern: '" << name << "' " << (can ? "can" : "cannot") << " be built"
                                 << std::endl;
     return can;
@@ -94,12 +94,12 @@ const Grid* GridPattern::build(const std::string& name) {
 
     eckit::Log::debug<LibMir>() << "GridPattern: looking for '" << name << "'" << std::endl;
 
-    auto k = m->end();
-    for (auto j = m->begin(); j != m->end(); ++j) {
+    auto k = m->cend();
+    for (auto j = m->cbegin(); j != m->cend(); ++j) {
         if (j->second->pattern_.match(name)) {
             eckit::Log::debug<LibMir>() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
-            if (k != m->end()) {
+            if (k != m->cend()) {
                 std::stringstream os;
                 os << "GridPattern: '" << name << "' matches '" << k->second << "' and '" << j->second << "'"
                    << std::endl;
@@ -112,7 +112,7 @@ const Grid* GridPattern::build(const std::string& name) {
         }
     }
 
-    if (k != m->end()) {
+    if (k != m->cend()) {
         return k->second->make(name);
     }
 
