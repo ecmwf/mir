@@ -258,6 +258,8 @@ list(APPEND mir_srcs
     lsm/TenMinutesMask.h
     method/Cropping.cc
     method/Cropping.h
+    method/FailMethod.cc
+    method/FailMethod.h
     method/MatrixCacheCreator.cc
     method/MatrixCacheCreator.h
     method/Method.cc
