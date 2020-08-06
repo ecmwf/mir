@@ -1,0 +1,6 @@
+# mars
+param=2t,levtype=sfc
+# mir
+--grid=9/9 --interpolation=fail
+# assertions
+gridType=regular_ll
