@@ -157,8 +157,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
 bool ProxyMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ProxyMethod*>(&other);
-    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
-           cropping_ == o->cropping_;
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
 }
 
 
