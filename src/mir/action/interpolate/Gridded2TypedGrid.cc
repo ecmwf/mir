@@ -51,7 +51,7 @@ bool Gridded2TypedGrid::sameAs(const Action& other) const {
 
 
 void Gridded2TypedGrid::print(std::ostream& out) const {
-    out << "Gridded2TypedGrid[gridParams=" << gridParams_ << ",";
+    out << "Gridded2TypedGrid[grid=" << gridParams_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
