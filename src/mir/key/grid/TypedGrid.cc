@@ -98,7 +98,17 @@ void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametris
 
 
 size_t TypedGrid::gaussianNumber() const {
-    size_t N = 64;
+    // FIXME: Resol (deprecated!!!) gets gaussianNumber without instantiating a Representation
+    param::SimpleParametrisation param;
+    parametrisation(key_, param);
+
+    long N;
+    if (param.get("gaussianNumber", N)) {
+        ASSERT(N >= 0);
+        return size_t(N);
+    }
+
+    N = 64;
     eckit::Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
     return N;
 }
