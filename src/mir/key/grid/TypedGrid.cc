@@ -17,9 +17,11 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/key/grid/GridPattern.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/regular/Lambert.h"
 #include "mir/repres/regular/LambertAzimuthalEqualArea.h"
 
@@ -31,7 +33,9 @@ namespace grid {
 
 TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requiredKeys,
                      const std::set<std::string>& optionalKeys) :
-    Grid(key, typed_t), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {}
+    Grid(key, typed_t), requiredKeys_(requiredKeys), optionalKeys_(optionalKeys) {
+    requiredKeys_.insert("gridType");
+}
 
 
 void TypedGrid::print(std::ostream& out) const {
@@ -49,6 +53,47 @@ void TypedGrid::print(std::ostream& out) const {
         sep = ",";
     }
     out << "]]";
+}
+
+
+void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametrisation& param) const {
+    // set a new parametrisation containing only required or optional keys
+    param::SimpleParametrisation p;
+    for (auto kv_str : eckit::StringTools::split(",", grid)) {
+        auto kv = eckit::StringTools::split("=", kv_str);
+        if (kv.size() != 2) {
+            throw eckit::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
+        }
+
+        auto& key   = kv[0];
+        auto& value = kv[1];
+        if (requiredKeys_.find(key) != requiredKeys_.end() || optionalKeys_.find(key) != optionalKeys_.end()) {
+            p.set(key, value);
+        }
+    }
+
+    // ensure required keys exist
+    decltype(requiredKeys_) missingKeys;
+    for (auto& key : requiredKeys_) {
+        if (!p.has(key)) {
+            missingKeys.insert(key);
+        }
+    }
+
+    if (!missingKeys.empty()) {
+        std::ostringstream msg;
+        auto sep = "";
+        msg << *this << ": missing keys: ";
+        for (auto& key : missingKeys) {
+            msg << sep << key;
+            sep = ", ";
+        }
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+
+    // set return parametrisation
+    param.swap(p);
 }
 
 
@@ -95,18 +140,7 @@ struct TypedGenericPattern final : public GridPattern {
     TypedGenericPattern(const TypedGenericPattern&) = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
 
-    const Grid* make(const std::string& name) const override {
-#if 0
-        // register only the value of gridType= (which comes at the beggining)
-        ASSERT(name.find("gridType=") == 0);
-        auto key = name.substr(9);
-        key      = key.substr(0, key.find(","));
-
-        return new TYPE(key, requiredKeys_);
-#else
-        return new TYPE(name, requiredKeys_, optionalKeys_);
-#endif
-    }
+    const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
 
     void print(std::ostream& out) const override {
         out << "TypedGenericPattern[pattern=" << pattern_ << ",requiredKeys=[";

@@ -76,6 +76,7 @@ protected:
 private:
     // -- Members
 
+    std::string grid_;
     param::SimpleParametrisation gridParams_;
 
     // -- Methods

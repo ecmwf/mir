@@ -88,7 +88,7 @@ bool GridPattern::match(const std::string& name) {
 }
 
 
-const Grid* GridPattern::build(const std::string& name) {
+const Grid& GridPattern::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -113,16 +113,14 @@ const Grid* GridPattern::build(const std::string& name) {
     }
 
     if (k != m->cend()) {
-        return k->second->make(name);
+        // This adds a new Grid to the map
+        auto gp = k->second->make(name);
+        return *gp;
     }
 
 
-    if (k == m->end()) {
-        list(eckit::Log::error() << "GridPattern: unknown '" << name << "', choices are: ");
-        eckit::Log::error() << std::endl;
-    }
-
-    return nullptr;
+    list(eckit::Log::error() << "GridPattern: unknown '" << name << "', choices are: ");
+    throw eckit::SeriousBug("GridPattern: unknown '" + name + "'");
 }
 
 

@@ -15,9 +15,7 @@
 #include <iostream>
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/StringTools.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 
@@ -29,22 +27,13 @@ namespace interpolate {
 
 Gridded2TypedGrid::Gridded2TypedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
+    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 
-    std::string grid;
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid));
+    const auto& g = key::grid::Grid::lookup(grid_);
+    ASSERT(g.isTyped());
 
-    for (auto kv_str : eckit::StringTools::split(",", grid)) {
-        auto kv = eckit::StringTools::split("=", kv_str);
-        if (kv.size() != 2) {
-            throw eckit::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
-        }
-        gridParams_.set(kv[0], kv[1]);
-    }
-
-    std::string gridType;
-    if (!gridParams_.get("gridType", gridType)) {
-        throw eckit::UserError("Gridded2TypedGrid: expecting key 'gridType'");
-    }
+    g.parametrisation(grid_, gridParams_);
+    ASSERT(gridParams_.has("gridType"));
 }
 
 
@@ -54,24 +43,22 @@ Gridded2TypedGrid::~Gridded2TypedGrid() = default;
 bool Gridded2TypedGrid::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2TypedGrid*>(&other);
 
-    // NOTE: SimpleParametrisation::matches() is not commutative
+    // NOTE: SimpleParametrisation::matches() is not commutative, and grid_ is not compared because gridParams_ contains
+    // all useful information for building Representation
     return (o != nullptr) && gridParams_.matches(o->gridParams_) && o->gridParams_.matches(gridParams_) &&
            Gridded2GriddedInterpolation::sameAs(other);
 }
 
 
 void Gridded2TypedGrid::print(std::ostream& out) const {
-    out << "Gridded2TypedGrid[grid=" << gridParams_ << ",";
+    out << "Gridded2TypedGrid[gridParams=" << gridParams_ << ",";
     Gridded2UnrotatedGrid::print(out);
     out << "]";
 }
 
 
 const repres::Representation* Gridded2TypedGrid::outputRepresentation() const {
-    std::string gridType;
-    ASSERT(gridParams_.get("gridType", gridType));
-
-    const auto& g = key::grid::Grid::lookup(gridType);
+    const auto& g = key::grid::Grid::lookup(grid_);
     return g.representation(gridParams_);
 }
 

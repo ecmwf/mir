@@ -117,9 +117,17 @@ const repres::Representation* Grid::representation(const util::Rotation&) const 
     throw eckit::SeriousBug(os.str());
 }
 
+
 const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
     std::ostringstream os;
     os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
+void Grid::parametrisation(const std::string&, param::SimpleParametrisation&) const {
+    std::ostringstream os;
+    os << "Grid::parametrisation() not implemented for " << *this;
     throw eckit::SeriousBug(os.str());
 }
 
@@ -147,9 +155,8 @@ const Grid& Grid::lookup(const std::string& key) {
 
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
-    auto ng = GridPattern::build(key);
-    if (ng != nullptr) {
-        return *ng;
+    if (GridPattern::match(key)) {
+        return GridPattern::lookup(key);
     }
 
     list(eckit::Log::error() << "No Grid '" << key << "', choices are:\n");
@@ -169,10 +176,7 @@ bool Grid::known(const std::string& key) {
     }
 
     // Look for pattern matchings
-    auto ng           = GridPattern::build(key);
-    bool knownPattern = ng != nullptr;
-    delete ng;
-    return knownPattern;
+    return GridPattern::match(key);
 }
 
 

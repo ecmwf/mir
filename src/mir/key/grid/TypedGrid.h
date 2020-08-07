@@ -65,6 +65,7 @@ protected:
 
     virtual void print(std::ostream&) const override;
     virtual const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
+    virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const override;
     virtual size_t gaussianNumber() const override;
 
     // -- Class members

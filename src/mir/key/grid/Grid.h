@@ -20,7 +20,8 @@
 namespace mir {
 namespace param {
 class MIRParametrisation;
-}
+class SimpleParametrisation;
+}  // namespace param
 namespace repres {
 class Representation;
 }
@@ -59,6 +60,7 @@ public:
     virtual const repres::Representation* representation() const;
     virtual const repres::Representation* representation(const util::Rotation&) const;
     virtual const repres::Representation* representation(const param::MIRParametrisation&) const;
+    virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
 
     static const Grid& lookup(const std::string& key);

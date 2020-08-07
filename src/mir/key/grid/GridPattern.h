@@ -64,7 +64,7 @@ public:
     // -- Class methods
 
     static bool match(const std::string&);
-    static const Grid* build(const std::string&);
+    static const Grid& lookup(const std::string&);
     static void list(std::ostream&);
 
 protected:
