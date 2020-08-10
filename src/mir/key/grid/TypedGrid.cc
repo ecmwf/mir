@@ -178,7 +178,7 @@ static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
     "^gridType=lambert,.*$",
     {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
-    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "gaussianNumber"});
+    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber"});
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
