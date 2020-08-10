@@ -30,10 +30,7 @@ Gridded2TypedGrid::Gridded2TypedGrid(const param::MIRParametrisation& parametris
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 
     const auto& g = key::grid::Grid::lookup(grid_);
-    ASSERT(g.isTyped());
-
     g.parametrisation(grid_, gridParams_);
-    ASSERT(gridParams_.has("gridType"));
 }
 
 
