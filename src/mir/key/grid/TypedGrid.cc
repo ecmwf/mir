@@ -178,14 +178,15 @@ static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
     "^gridType=lambert,.*$",
     {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
-    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber"});
+    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber",
+     "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
     "^gridType=lambert_azimuthal_equal_area,.*$",
     {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
-    {"gaussianNumber"});
+    {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
 
 
 }  // namespace grid
