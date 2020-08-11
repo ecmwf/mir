@@ -72,27 +72,8 @@ void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametris
         }
     }
 
-    // ensure required keys exist
-    decltype(requiredKeys_) missingKeys;
-    for (auto& key : requiredKeys_) {
-        if (!p.has(key)) {
-            missingKeys.insert(key);
-        }
-    }
-
-    if (!missingKeys.empty()) {
-        std::ostringstream msg;
-        auto sep = "";
-        msg << *this << ": missing keys: ";
-        for (auto& key : missingKeys) {
-            msg << sep << key;
-            sep = ", ";
-        }
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
-    }
-
-    // set return parametrisation
+    // check for missing keys, set return parametrisation
+    checkRequiredKeys(p);
     param.swap(p);
 }
 
@@ -114,28 +95,33 @@ size_t TypedGrid::gaussianNumber() const {
 }
 
 
+void TypedGrid::checkRequiredKeys(const param::MIRParametrisation& param) const {
+    std::string missingKeys;
+
+    auto sep = "";
+    for (auto& key : requiredKeys_) {
+        if (!param.has(key)) {
+            missingKeys += sep + key;
+            sep = ", ";
+        }
+    }
+
+    if (!missingKeys.empty()) {
+        std::ostringstream msg;
+        msg << *this << ": required keys are missing: " << missingKeys;
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+}
+
+
 template <typename Repres>
 struct TypedGeneric final : public TypedGrid {
     using TypedGrid::TypedGrid;
 
     const repres::Representation* representation(const param::MIRParametrisation& param) const {
-        // check for missing keys
-        std::string missingKeys;
-        auto sep = "";
-        for (auto& key : requiredKeys_) {
-            if (!param.has(key)) {
-                missingKeys += sep + key;
-                sep = ", ";
-            }
-        }
-
-        if (!missingKeys.empty()) {
-            std::ostringstream msg;
-            msg << *this << ": expected keys are missing: " << missingKeys << std::endl;
-            throw eckit::UserError(msg.str());
-        }
-
-        // return parametrised representation
+        // check for missing keys, set return representation
+        checkRequiredKeys(param);
         return new Repres(param);
     }
 };
@@ -178,8 +164,8 @@ static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
     "^gridType=lambert;.*$",
     {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
-    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber",
-     "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
+    {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber", "shapeOfTheEarth",
+     "radius", "earthMajorAxis", "earthMinorAxis"});
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(

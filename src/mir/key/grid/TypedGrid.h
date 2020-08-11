@@ -59,7 +59,8 @@ protected:
     std::set<std::string> optionalKeys_;
 
     // -- Methods
-    // None
+
+    void checkRequiredKeys(const param::MIRParametrisation&) const;
 
     // -- Overridden methods
 
