@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
@@ -141,7 +142,7 @@ long Resol::getTargetGaussianNumber() const {
     }
 
     // get Gaussian N directly
-    long N;
+    long N = std::numeric_limits<long>::max();
     if (user.get("reduced", N) || user.get("regular", N) || user.get("octahedral", N)) {
         ASSERT(N >= 0);
         return N;
@@ -149,7 +150,6 @@ long Resol::getTargetGaussianNumber() const {
 
     // unstructured grids (hardcoded)
     if (user.has("griddef") || user.has("latitudes") || user.has("longitudes")) {
-
         N = 64;
         eckit::Log::warning() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
         ASSERT(N >= 0);
