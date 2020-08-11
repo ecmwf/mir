@@ -2,6 +2,6 @@
 # mars
 param=t,level=1000
 # mir
---intgrid=auto --gridname=O640 --dont-compress-plan
+--intgrid=auto --grid=O640 --dont-compress-plan
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,gridname=F640]|Gridded2NamedGrid[gridname=O640,interpolation=linear,method=FiniteElement[method=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F640]|Gridded2NamedGrid[grid=O640,interpolation=linear,method=FiniteElement[method=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]

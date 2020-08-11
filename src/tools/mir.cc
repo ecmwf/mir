@@ -35,6 +35,10 @@
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
+#include "mir/key/grid/GridPattern.h"
+#include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/style/MIRStyle.h"
+#include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
@@ -43,20 +47,16 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/nonlinear/NonLinear.h"
-#include "mir/namedgrids/NamedGridPattern.h"
 #include "mir/output/MIROutput.h"
 #include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Statistics.h"
-#include "mir/style/Intgrid.h"
-#include "mir/style/MIRStyle.h"
-#include "mir/style/SpectralOrder.h"
-#include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/SpectralOrder.h"
 
 #if defined(HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -87,15 +87,15 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new FactoryOption<style::TruncationFactory>(
+        options_.push_back(new FactoryOption<key::truncation::TruncationFactory>(
             "truncation", "Describes the intermediate truncation which the transform is performed from"));
-        options_.push_back(new FactoryOption<style::IntgridFactory>(
+        options_.push_back(new FactoryOption<key::intgrid::IntgridFactory>(
             "intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>(
             "vod2uv",
             "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new FactoryOption<style::SpectralOrderFactory>(
+        options_.push_back(new FactoryOption<util::SpectralOrderFactory>(
             "spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type",
@@ -103,10 +103,8 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
-        options_.push_back(new VectorOption<double>("grid",
-                                                    "Interpolate to a regular latitude/longitude grid (regular_ll), "
-                                                    "provided the West-East & South-North increments",
-                                                    2));
+        options_.push_back(new FactoryOption<key::grid::GridPattern>(
+            "grid", "Interpolate to given grid (following a recognizable regular expression)"));
         options_.push_back(new SimpleOption<size_t>("regular",
                                                     "Interpolate to the regular Gaussian grid N (regular_gg), with N "
                                                     "the number of parallels between pole and equator (N>=2)"));
@@ -121,8 +119,6 @@ public:
                                      "number of parallels between pole and equator (N>=2)"));
         options_.push_back(
             new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
-        options_.push_back(new FactoryOption<namedgrids::NamedGridPattern>(
-            "gridname", "Interpolate to given grid name (following a recognizable regular expression)"));
         options_.push_back(
             new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
@@ -293,7 +289,7 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(
-            new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+            new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
         options_.push_back(new SimpleOption<std::string>(
             "input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));

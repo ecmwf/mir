@@ -18,7 +18,7 @@
 #include "eckit/log/Log.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -188,13 +188,13 @@ void Count::countOnNamedGrid(std::string grid) {
     ASSERT(!grid.empty());
     reset();
 
-    if (!namedgrids::NamedGrid::known(grid)) {
+    if (!key::grid::Grid::known(grid)) {
         // avoid 'grid=auto' or 'grid=av' without failure
         eckit::Log::debug<LibMir>() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
         return;
     }
 
-    repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(grid).representation());
+    repres::RepresentationHandle rep(key::grid::Grid::lookup(grid).representation());
     countOnRepresentation(*rep);
 }
 

@@ -15,6 +15,8 @@
 
 #include <cmath>
 
+#include "mir/util/Types.h"
+
 
 namespace mir {
 namespace util {
@@ -29,6 +31,12 @@ inline double degree_to_radian(const double& a) {
 /// @return radian to degree (no range check)
 inline double radian_to_degree(const double& a) {
     return a * (M_1_PI * 180.);
+}
+
+
+/// @return longitude in degree within range [minimum, minimum + 360[
+inline double normalise_longitude(const double& lon, const double& minimum) {
+    return Longitude(lon).normalise(minimum).value();
 }
 
 

@@ -511,6 +511,11 @@ void SimpleParametrisation::copyValuesTo(SimpleParametrisation& other) const {
 }
 
 
+void SimpleParametrisation::swap(SimpleParametrisation& other) {
+    settings_.swap(other.settings_);
+}
+
+
 bool SimpleParametrisation::has(const std::string& name) const {
     return settings_.find(name) != settings_.end();
 }

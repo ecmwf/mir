@@ -57,6 +57,7 @@ protected:
     // -- Members
 
     bool writeLaDInDegrees_;
+    bool writeLonPositive_;
 
     // -- Methods
 

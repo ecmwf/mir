@@ -242,13 +242,16 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         },
         {
             "gridded",
-            "numberOfGridInReference",
+            "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
-        },  // numberOfGridInReference is just dummy
-
+        },
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
+        {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
+        {"gridded_named", "gridName", nullptr},
 
-        {"gridname", "gridName", nullptr},
+        {"grid", "gridName",
+         _or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+             is("gridType", "reduced_rotated_gg"))},
 
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 

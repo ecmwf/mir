@@ -16,7 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -28,7 +28,7 @@ namespace interpolate {
 Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation) {
 
-    ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
+    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 }
 
 
@@ -37,24 +37,19 @@ Gridded2RotatedNamedGrid::~Gridded2RotatedNamedGrid() = default;
 
 bool Gridded2RotatedNamedGrid::sameAs(const Action& other) const {
     auto o = dynamic_cast<const Gridded2RotatedNamedGrid*>(&other);
-    return (o != nullptr) && (gridname_ == o->gridname_) && Gridded2RotatedGrid::sameAs(other);
+    return (o != nullptr) && (grid_ == o->grid_) && Gridded2RotatedGrid::sameAs(other);
 }
 
 
 void Gridded2RotatedNamedGrid::print(std::ostream& out) const {
-    out << "Gridded2RotatedNamedGrid["
-           "gridname="
-        << gridname_
-        << ","
-           "rotation="
-        << rotation() << ",";
+    out << "Gridded2RotatedNamedGrid[grid=" << grid_ << ",rotation=" << rotation() << ",";
     Gridded2RotatedGrid::print(out);
     out << "]";
 }
 
 
 const repres::Representation* Gridded2RotatedNamedGrid::outputRepresentation() const {
-    const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation(rotation());
 }
 

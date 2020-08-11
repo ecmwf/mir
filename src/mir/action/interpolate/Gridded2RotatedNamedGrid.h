@@ -76,7 +76,7 @@ protected:
 private:
     // -- Members
 
-    std::string gridname_;
+    std::string grid_;
 
     // -- Methods
     // None

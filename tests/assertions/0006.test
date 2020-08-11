@@ -1,7 +1,7 @@
 # Mars request
 param=2t,levtype=sfc
 # Mir tool options
---gridname=f320 --area=56/-16.5/50.5/-3
+--grid=f320 --area=56/-16.5/50.5/-3
 # grib_get assertions
 Ni=48
 Nj=19

@@ -11,8 +11,9 @@
 
 
 #include "mir/util/PlanParser.h"
+
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/style/CustomParametrisation.h"
+#include "mir/key/style/CustomParametrisation.h"
 
 
 namespace mir {
@@ -38,7 +39,7 @@ void PlanParser::parse(action::ActionPlan& plan, const param::MIRParametrisation
 void PlanParser::parseAction(action::ActionPlan& plan, const param::MIRParametrisation& parametrisation) {
 
     std::string name = parseToken();
-    plan.add(name, new style::CustomParametrisation(name, parseArguments(name), parametrisation));
+    plan.add(name, new key::style::CustomParametrisation(name, parseArguments(name), parametrisation));
 }
 
 std::string PlanParser::parseToken() {
