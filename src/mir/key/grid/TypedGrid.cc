@@ -59,7 +59,7 @@ void TypedGrid::print(std::ostream& out) const {
 void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametrisation& param) const {
     // set a new parametrisation containing only required or optional keys
     param::SimpleParametrisation p;
-    for (auto kv_str : eckit::StringTools::split(",", grid)) {
+    for (auto kv_str : eckit::StringTools::split(";", grid)) {
         auto kv = eckit::StringTools::split("=", kv_str);
         if (kv.size() != 2) {
             throw eckit::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
@@ -175,7 +175,7 @@ struct TypedGenericPattern final : public GridPattern {
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
-    "^gridType=lambert,.*$",
+    "^gridType=lambert;.*$",
     {"LaDInDegrees", "LoVInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
     {"Latin1InDegrees", "Latin2InDegrees", "writeLaDInDegrees", "writeLonPositive", "gaussianNumber",
@@ -183,7 +183,7 @@ static TypedGenericPattern<TypedGeneric<repres::regular::Lambert>> __pattern1(
 
 
 static TypedGenericPattern<TypedGeneric<repres::regular::LambertAzimuthalEqualArea>> __pattern2(
-    "^gridType=lambert_azimuthal_equal_area,.*$",
+    "^gridType=lambert_azimuthal_equal_area;.*$",
     {"standardParallelInDegrees", "centralLongitudeInDegrees", "Ni", "Nj", "grid", "latitudeOfFirstGridPointInDegrees",
      "longitudeOfFirstGridPointInDegrees"},
     {"gaussianNumber", "shapeOfTheEarth", "radius", "earthMajorAxis", "earthMinorAxis"});
