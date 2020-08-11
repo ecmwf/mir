@@ -95,6 +95,7 @@ MIRJob& MIRJob::set(const std::string& args) {
 
 static const std::map<std::string, std::string> aliases{
     //    {"resol", "truncation"},
+    {"gridname", "grid"},
 };
 
 
