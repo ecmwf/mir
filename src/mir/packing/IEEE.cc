@@ -21,7 +21,7 @@ namespace mir {
 namespace packing {
 
 
-static IEEE packing("ieee");
+// static IEEE packing("ieee");
 
 
 IEEE::IEEE(const std::string& name) : Packer(name) {}
@@ -37,7 +37,7 @@ void IEEE::print(std::ostream& out) const {
 
 void IEEE::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
+    //    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
 }
 
 
