@@ -971,7 +971,9 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+
+    // NOTE: MARS client sets 'grid=vector' (deprecated) which needs to be compared against GRIB gridName
+    if (std::string(key).empty() || std::string(key) == "gridName") {
         return false;
     }
 
