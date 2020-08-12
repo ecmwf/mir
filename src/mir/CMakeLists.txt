@@ -167,8 +167,6 @@ list(APPEND mir_srcs
     compare/MultiFile.cc
     compare/MultiFile.h
     compat/GribCompatibility.cc
-    compat/GribCompatibility.cc
-    compat/GribCompatibility.h
     compat/GribCompatibility.h
     config/LibMir.cc
     config/LibMir.h
@@ -581,6 +579,7 @@ list(APPEND mir_srcs
     stats/statistics/Spectral.h
     stats/statistics/StatisticsT.cc
     stats/statistics/StatisticsT.h
+    style/MIRStyle.h
     tools/Count.cc
     tools/Count.h
     tools/MIRTool.cc
