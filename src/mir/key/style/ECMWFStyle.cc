@@ -350,6 +350,13 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
         user_wants_gridded++;
     }
 
+    if (user.has("gridname")) {
+        static struct DeprecatedKeyword : util::DeprecatedFunctionality {
+            DeprecatedKeyword() : util::DeprecatedFunctionality("keyword 'gridname' is now 'grid'") {}
+        } __deprecated_gridname;
+        user_wants_gridded++;
+    }
+
     if (user.has("reduced")) {
         user_wants_gridded++;
     }
