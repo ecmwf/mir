@@ -55,8 +55,7 @@ Increments::Increments(double westEastIncrement, double southNorthIncrement) :
 
 
 Increments::Increments(const LongitudeIncrement& west_east, const LatitudeIncrement& south_north) :
-    west_east_(west_east),
-    south_north_(south_north) {
+    west_east_(west_east), south_north_(south_north) {
     check(*this);
 }
 

@@ -27,7 +27,7 @@ class MIRInspect : public mir::tools::MIRTool {
     int minimumPositionalArguments() const { return 1; }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRInspect(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };

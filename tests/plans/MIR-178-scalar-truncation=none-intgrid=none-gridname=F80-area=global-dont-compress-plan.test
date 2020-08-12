@@ -1,6 +1,6 @@
 # mars
 param=t,level=1000
 # mir
---truncation=none --intgrid=none --gridname=F80 --dont-compress-plan
+--truncation=none --intgrid=none --grid=F80 --dont-compress-plan
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,gridname=F80]|Save[output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F80]|Save[output=...]

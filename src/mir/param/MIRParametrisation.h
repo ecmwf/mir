@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     MIRParametrisation();
     MIRParametrisation(const MIRParametrisation&) = delete;

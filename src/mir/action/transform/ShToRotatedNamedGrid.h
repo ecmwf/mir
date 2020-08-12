@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRotatedNamedGrid(const param::MIRParametrisation&);
 
@@ -57,7 +57,7 @@ public:
 private:
     // -- Members
 
-    std::string gridname_;
+    std::string grid_;
     util::Rotation rotation_;
 
     // -- Methods

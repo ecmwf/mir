@@ -156,15 +156,11 @@ Context::Context(const Context& other) : input_(other.input_), statistics_(other
 
 
 Context::Context(data::MIRField& field, util::MIRStatistics& statistics) :
-    input_(missing),
-    statistics_(statistics),
-    content_(new FieldContent(field)) {}
+    input_(missing), statistics_(statistics), content_(new FieldContent(field)) {}
 
 
 Context::Context(input::MIRInput& input, util::MIRStatistics& statistics) :
-    input_(input),
-    statistics_(statistics),
-    content_(nullptr) {}
+    input_(input), statistics_(statistics), content_(nullptr) {}
 
 
 Context::~Context() = default;

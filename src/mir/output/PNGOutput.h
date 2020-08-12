@@ -37,7 +37,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     PNGOutput(std::string path);
 

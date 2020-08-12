@@ -45,7 +45,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     /// @note not in Field
     MIRField(const MIRField& other);
@@ -92,6 +92,9 @@ public:
     bool hasMissing() const;
 
     void validate() const;
+
+    void handle(size_t which, size_t handle);
+    size_t handle(size_t which) const;
 
     MIRFieldStats statistics(size_t i) const;
 

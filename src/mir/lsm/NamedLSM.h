@@ -30,7 +30,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NamedLSM(const std::string& name);
 

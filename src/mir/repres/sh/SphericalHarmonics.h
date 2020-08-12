@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     SphericalHarmonics(const param::MIRParametrisation&);
     SphericalHarmonics(size_t truncation);

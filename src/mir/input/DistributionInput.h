@@ -34,7 +34,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     DistributionInput(const param::MIRParametrisation&);
 

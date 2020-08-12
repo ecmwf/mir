@@ -50,9 +50,7 @@ Mapper<T>::Mapper(std::vector<T>& v, std::vector<bool>& set, bool& overlap) : v_
 
 template <class T>
 Mapper<T>::Mapper(Mapper<T>& parent, const std::vector<Reshape*>& reshapes) :
-    v_(parent.v_),
-    set_(parent.set_),
-    overlap_(parent.overlap_) {
+    v_(parent.v_), set_(parent.set_), overlap_(parent.overlap_) {
     Reshape* r = nullptr;
     for (std::vector<Reshape*>::const_iterator j = reshapes.begin(); j != reshapes.end(); ++j) {
         if (r && r->merge(*(*j))) {

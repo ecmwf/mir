@@ -15,11 +15,10 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
+#include "mir/util/Assert.h"
 
 
 namespace mir {
@@ -28,17 +27,17 @@ namespace interpolate {
 
 
 Gridded2RotatedLL::Gridded2RotatedLL(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation),
-    reference_(0, 0) {
+    Gridded2RotatedGrid(parametrisation), reference_(0, 0) {
 
     std::vector<double> value;
     ASSERT(parametrisation_.get("grid", value));
+    ASSERT_KEYWORD_GRID_SIZE(value.size());
 
-    ASSERT(value.size() == 2);
     increments_ = util::Increments(value[0], value[1]);
 
     if (parametrisation_.userParametrisation().get("area", value)) {
-        ASSERT(value.size() == 4);
+        ASSERT_KEYWORD_AREA_SIZE(value.size());
+
         bbox_      = util::BoundingBox(value[0], value[1], value[2], value[3]);
         reference_ = PointLatLon(bbox_.south(), bbox_.west());
     }

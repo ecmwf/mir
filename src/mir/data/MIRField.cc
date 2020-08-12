@@ -117,6 +117,20 @@ void MIRField::validate() const {
 }
 
 
+void MIRField::handle(size_t which, size_t handle) {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    return field_->handle(which, handle);
+}
+
+
+size_t MIRField::handle(size_t which) const {
+    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+    return field_->handle(which);
+}
+
+
 MIRFieldStats MIRField::statistics(size_t i) const {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 

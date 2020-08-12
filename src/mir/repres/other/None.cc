@@ -20,10 +20,10 @@ namespace repres {
 namespace other {
 
 
-None::None(const param::MIRParametrisation&) {}
-
-
 None::None() = default;
+
+
+None::None(const param::MIRParametrisation&) {}
 
 
 None::~None() = default;

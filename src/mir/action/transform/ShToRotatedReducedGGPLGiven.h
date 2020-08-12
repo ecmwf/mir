@@ -29,7 +29,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRotatedReducedGGPLGiven(const param::MIRParametrisation&);
 

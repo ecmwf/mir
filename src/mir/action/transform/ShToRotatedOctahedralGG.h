@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToRotatedOctahedralGG(const param::MIRParametrisation&);
 

@@ -62,6 +62,13 @@ bool MIRInput::next() {
 }
 
 
+bool MIRInput::only(size_t) {
+    std::ostringstream os;
+    os << "MIRInput::only() not implemented for " << *this;
+    throw eckit::SeriousBug(os.str());
+}
+
+
 size_t MIRInput::copy(double*, size_t) const {
     std::ostringstream os;
     os << "MIRInput::copy() not implemented for " << *this;

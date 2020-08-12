@@ -111,10 +111,7 @@ public:
 
 
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    LegendreLoader(parametrisation, path),
-    address_(nullptr),
-    size_(size_t(path.size())),
-    unload_(false) {
+    LegendreLoader(parametrisation, path), address_(nullptr), size_(size_t(path.size())), unload_(false) {
 
     eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", log());
 

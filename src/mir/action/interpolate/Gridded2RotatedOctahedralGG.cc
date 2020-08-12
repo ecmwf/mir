@@ -26,8 +26,7 @@ namespace interpolate {
 
 
 Gridded2RotatedOctahedralGG::Gridded2RotatedOctahedralGG(const param::MIRParametrisation& parametrisation) :
-    Gridded2RotatedGrid(parametrisation),
-    N_(0) {
+    Gridded2RotatedGrid(parametrisation), N_(0) {
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
     ASSERT(N_ > 0);
 }

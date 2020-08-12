@@ -22,9 +22,7 @@ namespace param {
 
 SameParametrisation::SameParametrisation(const MIRParametrisation& parametrisation1,
                                          const MIRParametrisation& parametrisation2, bool strict) :
-    parametrisation1_(parametrisation1),
-    parametrisation2_(parametrisation2),
-    strict_(strict) {}
+    parametrisation1_(parametrisation1), parametrisation2_(parametrisation2), strict_(strict) {}
 
 
 template <class T>

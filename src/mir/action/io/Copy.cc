@@ -26,8 +26,7 @@ namespace io {
 
 
 Copy::Copy(const param::MIRParametrisation& parametrisation, output::MIROutput& output) :
-    Action(parametrisation),
-    output_(output) {}
+    Action(parametrisation), output_(output) {}
 
 
 Copy::~Copy() = default;

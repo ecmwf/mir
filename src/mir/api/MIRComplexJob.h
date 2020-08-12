@@ -43,7 +43,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     MIRComplexJob();
     MIRComplexJob(const MIRComplexJob&) = delete;

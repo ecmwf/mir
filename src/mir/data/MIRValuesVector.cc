@@ -27,34 +27,26 @@ namespace data {
 
 template <typename T, typename A>
 MIRValuesVectorT<T, A>::MIRValuesVectorT(size_t n) :
-    begin_(n ? allocate(n) : nullptr),
-    end_(n ? begin_ + n : nullptr),
-    endStorage_(end_) {}
+    begin_(n ? allocate(n) : nullptr), end_(n ? begin_ + n : nullptr), endStorage_(end_) {}
 
 
 template <typename T, typename A>
 MIRValuesVectorT<T, A>::MIRValuesVectorT(size_t n, const value_type& val) :
-    begin_(allocate(n)),
-    end_(begin_ + n),
-    endStorage_(end_) {
+    begin_(allocate(n)), end_(begin_ + n), endStorage_(end_) {
     std::uninitialized_fill_n<pointer, size_t>(begin_, n, val);
 }
 
 
 template <typename T, typename A>
 MIRValuesVectorT<T, A>::MIRValuesVectorT(const MIRValuesVectorT<T, A>& other) :
-    begin_(allocate(other.size())),
-    end_(begin_ + other.size()),
-    endStorage_(end_) {
+    begin_(allocate(other.size())), end_(begin_ + other.size()), endStorage_(end_) {
     std::memcpy(begin_, other.begin_, other.size() * sizeof(value_type));
 }
 
 
 template <typename T, typename A>
 MIRValuesVectorT<T, A>::MIRValuesVectorT(MIRValuesVectorT<T, A>&& other) noexcept :
-    begin_(other.begin_),
-    end_(other.end_),
-    endStorage_(other.endStorage_) {
+    begin_(other.begin_), end_(other.end_), endStorage_(other.endStorage_) {
     other.begin_      = nullptr;
     other.end_        = nullptr;
     other.endStorage_ = nullptr;

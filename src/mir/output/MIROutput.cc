@@ -82,8 +82,7 @@ struct OutputFromExtension : public MIROutputFactory {
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) :
-    name_(name),
-    extensions_(extensions) {
+    name_(name), extensions_(extensions) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 

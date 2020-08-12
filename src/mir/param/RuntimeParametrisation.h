@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RuntimeParametrisation(const param::MIRParametrisation& owner);
 

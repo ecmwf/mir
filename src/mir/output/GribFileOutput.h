@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GribFileOutput(const eckit::PathName&, bool append = false);
 

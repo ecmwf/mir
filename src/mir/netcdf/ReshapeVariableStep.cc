@@ -28,10 +28,7 @@ namespace netcdf {
 
 
 ReshapeVariableStep::ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth) :
-    out_(out),
-    dimension_(dimension),
-    growth_(growth),
-    next_(nullptr) {}
+    out_(out), dimension_(dimension), growth_(growth), next_(nullptr) {}
 
 ReshapeVariableStep::~ReshapeVariableStep() {
     delete next_;

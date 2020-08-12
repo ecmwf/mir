@@ -24,8 +24,7 @@ namespace knn {
 
 
 NearestNeighbour::NearestNeighbour(const param::MIRParametrisation& param) :
-    KNearestNeighbours(param),
-    distanceWeighting_(param) {
+    KNearestNeighbours(param), distanceWeighting_(param) {
 
     std::string nearestMethod = "nearest-neighbour-with-lowest-index";
     param.get("nearest-method", nearestMethod);

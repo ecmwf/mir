@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RegularLL(const param::MIRParametrisation&);
     RegularLL(const util::Increments&, const util::BoundingBox& = util::BoundingBox(),

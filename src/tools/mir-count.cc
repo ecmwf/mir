@@ -12,29 +12,66 @@
 
 #include <memory>
 
+#include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/tools/Count.h"
 #include "mir/tools/MIRTool.h"
-#include "mir/util/BoundingBox.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Pretty.h"
 
 
-using namespace mir;
+using prec_t = decltype(std::cout.precision());
 
 
 class MIRCount : public mir::tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
+
     int minimumPositionalArguments() const { return 0; }
+
+    void usage(const std::string& tool) const {
+        eckit::Log::info() << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
+                              "\n"
+                              "\nUsage:"
+                              "\n\t"
+                           << tool
+                           << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+                              "\n\t"
+                           << tool
+                           << " [--area=N/W/S/E] --grid=WE/SN"
+                              "\n\t"
+                           << tool
+                           << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
+                              "\n\t"
+                           << tool
+                           << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
+                              "\n"
+                              "\n"
+                              "Examples:"
+                              "\n\t"
+                              "% "
+                           << tool
+                           << " 1.grib"
+                              "\n\t"
+                              "% "
+                           << tool
+                           << " --area=6/0/0/6 1.grib 2.grib"
+                              "\n\t"
+                              "% "
+                           << tool
+                           << " --area=6/0/0/6 --gridname=O1280"
+                              "\n\t"
+                              "% "
+                           << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
+    }
 
 public:
     MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
@@ -46,178 +83,33 @@ public:
         options_.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
         options_.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
         options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
-        options_.push_back(
-            new SimpleOption<bool>("ni-nj", "output number of increments in longitude/latitude (Ni:Nj)"));
+        options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
 };
 
 
-void MIRCount::usage(const std::string& tool) const {
-    eckit::Log::info() << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
-                          "\n"
-                          "\nUsage:"
-                          "\n\t"
-                       << tool
-                       << " [--area=N/W/S/E] file.grib [file.grib [...]]"
-                          "\n\t"
-                       << tool
-                       << " [--area=N/W/S/E] --grid=WE/SN"
-                          "\n\t"
-                       << tool
-                       << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
-                          "\n\t"
-                       << tool
-                       << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
-                          "\n"
-                          "\n"
-                          "Examples:"
-                          "\n\t"
-                          "% "
-                       << tool
-                       << " 1.grib"
-                          "\n\t"
-                          "% "
-                       << tool
-                       << " --area=6/0/0/6 1.grib 2.grib"
-                          "\n\t"
-                          "% "
-                       << tool
-                       << " --area=6/0/0/6 --gridname=O1280"
-                          "\n\t"
-                          "% "
-                       << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
-}
-
-
-template <class T>
-std::ostream& operator<<(std::ostream& s, const std::set<std::pair<T, T> >& x) {
-    size_t i = 0;
-    for (auto e : x) {
-        s << ' ' << e.first << " (" << e.second << ")";
-        if (++i >= 2) {
-            break;
-        }
-    }
-    return s;
-}
-
-
-using mir::Latitude;
-using mir::Longitude;
-using DistanceLat = std::pair<Latitude, Latitude>;
-using DistanceLon = std::pair<Longitude, Longitude>;
-
-
-size_t countRepresentationInBoundingBox(const repres::Representation& rep, const util::BoundingBox& bbox,
-                                        std::set<DistanceLat>& nn, std::set<DistanceLon>& ww, std::set<DistanceLat>& ss,
-                                        std::set<DistanceLon>& ee) {
-    Latitude n  = 0;
-    Latitude s  = 0;
-    Longitude e = 0;
-    Longitude w = 0;
-
-    size_t count  = 0;
-    size_t values = 0;
-    bool first    = true;
-
-    std::unique_ptr<repres::Iterator> iter(rep.iterator());
-
-    while (iter->next()) {
-        const auto& point = iter->pointUnrotated();
-
-        values++;
-
-        nn.insert(DistanceLat(bbox.north().distance(point.lat()), point.lat()));
-        ss.insert(DistanceLat(bbox.south().distance(point.lat()), point.lat()));
-
-        ee.insert(DistanceLon(bbox.east().distance(point.lon()), point.lon()));
-        ww.insert(DistanceLon(bbox.west().distance(point.lon()), point.lon()));
-
-        // std::cout << point.lat << " " << point.lon << " => " << bbox.contains(point.lat, point.lon) << std::endl;
-
-        if (bbox.contains(point)) {
-
-            const Latitude& lat = point.lat();
-            const Longitude lon = point.lon().normalise(bbox.west());
-
-            if (first) {
-                n = s = lat;
-                e = w = lon;
-                first = false;
-            }
-            else {
-                if (n < lat) {
-                    n = lat;
-                }
-                if (s > lat) {
-                    s = lat;
-                }
-                if (e < lon) {
-                    e = lon;
-                }
-                if (w > lon) {
-                    w = lon;
-                }
-            }
-
-
-            count++;
-        }
-    }
-
-    eckit::Log::info() << Pretty(count) << " out of " << Pretty(values) << ", north=" << n << " (bbox.n - n "
-                       << bbox.north() - n << ")"
-                       << ", west=" << w << " (w - bbox.w " << w - bbox.west() << ")"
-                       << ", south=" << s << " (s - bbox.s " << s - bbox.south() << ")"
-                       << ", east=" << e << " (bbox.e - e " << bbox.east() - e << ")"
-                       << "\n"
-                          "N "
-                       << bbox.north() << ":" << nn
-                       << "\n"
-                          "W "
-                       << bbox.west() << ":" << ww
-                       << "\n"
-                          "S "
-                       << bbox.south() << ":" << ss
-                       << "\n"
-                          "E "
-                       << bbox.east() << ":" << ee << std::endl;
-
-    return count;
-}
-
-
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
+    using mir::util::BoundingBox;
 
-    std::set<DistanceLat> nn;
-    std::set<DistanceLat> ss;
-    std::set<DistanceLon> ww;
-    std::set<DistanceLon> ee;
+    auto& log = eckit::Log::info();
+    eckit::JSON j(log);
 
-    std::vector<double> value;
+    prec_t precision;
+    args.get("precision", precision) ? log.precision(precision) : log.precision();
 
-    util::BoundingBox bbox;
-    if (args.get("area", value)) {
-        ASSERT(value.size() == 4);
-        bbox = util::BoundingBox(value[0], value[1], value[2], value[3]);
-    }
+    std::vector<double> area;
+    args.get("area", area);
 
 
     // setup a regular lat/lon representation and perfom count
-    if (args.get("grid", value)) {
+    std::vector<double> grid;
+    if (args.get("grid", grid)) {
         ASSERT(!args.has("gridname"));
-        ASSERT(value.size() == 2);
-        util::Increments grid(value[0], value[1]);
 
-        if (args.has("ni-nj")) {
-            // Note: this *does not crop*, it is a "local" representation
-            repres::latlon::RegularLL rep(grid, bbox, {bbox.south(), bbox.west()});
-            eckit::Log::info() << rep.Ni() << ":" << rep.Nj() << std::endl;
-            return;
-        }
+        mir::tools::Count counter(area);
+        counter.countOnGridIncrements(grid);
 
-        repres::latlon::RegularLL rep(grid);
-        countRepresentationInBoundingBox(rep, bbox, nn, ww, ss, ee);
+        counter.json(j);
         return;
     }
 
@@ -227,26 +119,42 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     if (args.get("gridname", gridname)) {
         ASSERT(!args.has("grid"));
 
-        repres::RepresentationHandle rep(namedgrids::NamedGrid::lookup(gridname).representation());
-        countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
+        mir::tools::Count counter(area);
+        counter.countOnNamedGrid(gridname);
+
+        counter.json(j);
         return;
     }
 
 
     // count each file(s) message(s)
-    for (size_t i = 0; i < args.count(); ++i) {
-        eckit::Log::info() << args(i) << std::endl;
+    mir::tools::Count counter(area);
 
-        input::GribFileInput grib(args(i));
+    j.startObject();
+    j << "files";
+    j.startList();
+
+    for (size_t i = 0, k = 0; i < args.count(); ++i, k = 0) {
+
+        mir::input::GribFileInput grib(args(i));
         while (grib.next()) {
+            ++k;
 
-            data::MIRField field = static_cast<const input::MIRInput&>(grib).field();
-            ASSERT(field.dimensions() == 1);
+            auto field = static_cast<const mir::input::MIRInput&>(grib).field();
+            mir::repres::RepresentationHandle rep(field.representation());
 
-            repres::RepresentationHandle rep(field.representation());
-            countRepresentationInBoundingBox(*rep, bbox, nn, ww, ss, ee);
+            counter.countOnRepresentation(*rep);
+
+            j.startObject();
+            j << "file" << args(i);
+            j << "fileMessage" << k;
+            counter.json(j, false);
+            j.endObject();
         }
     }
+
+    j.endList();
+    j.endObject();
 }
 
 

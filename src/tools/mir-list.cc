@@ -30,7 +30,7 @@ class MIRList : public mir::tools::MIRTool {
     int minimumPositionalArguments() const { return 1; }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRList(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<bool>("json", "JSON output"));

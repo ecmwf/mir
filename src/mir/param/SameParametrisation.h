@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     SameParametrisation(const MIRParametrisation&, const MIRParametrisation&, bool strict);
 

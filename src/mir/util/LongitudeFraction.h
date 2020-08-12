@@ -37,7 +37,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     LongitudeFraction(double value = 0) : value_(value) {}
     LongitudeFraction(const eckit::Fraction& value) : value_(value) {}

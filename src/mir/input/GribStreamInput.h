@@ -32,7 +32,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GribStreamInput();
     GribStreamInput(size_t skip, size_t step);

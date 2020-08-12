@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Lambert(const param::MIRParametrisation&);
     Lambert(const Lambert&) = delete;
@@ -55,7 +55,9 @@ public:
 
 protected:
     // -- Members
-    // None
+
+    bool writeLaDInDegrees_;
+    bool writeLonPositive_;
 
     // -- Methods
 

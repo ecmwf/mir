@@ -15,6 +15,7 @@
 
 #include <map>
 #include <set>
+#include <string>
 
 #include "eckit/thread/Mutex.h"
 
@@ -36,7 +37,7 @@ protected:
     // -- Types
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     Rules();
 

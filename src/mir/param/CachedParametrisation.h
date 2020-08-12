@@ -35,7 +35,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     CachedParametrisation(MIRParametrisation& parametrisation);
 

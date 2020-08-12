@@ -24,8 +24,7 @@ namespace netcdf {
 
 
 DummyInputVariable::DummyInputVariable(Dataset& owner, const Variable& parent) :
-    Variable(owner, parent.name(), parent.dimensions()),
-    parent_(parent) {
+    Variable(owner, parent.name(), parent.dimensions()), parent_(parent) {
     eckit::Log::info() << "DummmyInputVariable " << parent_ << std::endl;
     setMatrix(new DummyMatrix(parent));
 

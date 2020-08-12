@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     AdjustWindsScaleCosLatitude(const param::MIRParametrisation&);
 

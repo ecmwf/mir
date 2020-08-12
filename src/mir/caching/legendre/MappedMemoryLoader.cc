@@ -29,10 +29,7 @@ namespace legendre {
 
 
 MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    LegendreLoader(parametrisation, path),
-    fd_(-1),
-    address_(nullptr),
-    size_(0) {
+    LegendreLoader(parametrisation, path), fd_(-1), address_(nullptr), size_(0) {
 
     ASSERT(sizeof(size_) > 4);
 

@@ -70,7 +70,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
     explicit Rotation(const param::MIRParametrisation&);
     explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
                       const Longitude& south_pole_longitude = Longitude::GREENWICH,

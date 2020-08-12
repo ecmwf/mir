@@ -44,6 +44,7 @@ public:  // methods
     iterator end() const { return 0; }
 
     void footprint(const std::string& key, const InMemoryCacheUsage&);
+    const std::string& name() const;
 
     void reserve(size_t size, bool inSharedMemory);
     void reserve(const InMemoryCacheUsage&);
@@ -60,7 +61,6 @@ private:
     virtual InMemoryCacheUsage footprint() const;
     virtual InMemoryCacheUsage capacity() const;
     virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false);
-    virtual const std::string& name() const;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
@@ -94,9 +94,9 @@ class InMemoryCacheUser {
     InMemoryCacheUser& operator=(const InMemoryCacheUser&) = delete;
 
 public:
+    InMemoryCacheUser(InMemoryCacheUser&&) = default;
     InMemoryCacheUser(InMemoryCache<T>& cache, InMemoryCacheStatistics& statistics) :
-        cache_(cache),
-        statistics_(statistics) {
+        cache_(cache), statistics_(statistics) {
         cache_.startUsing();
     }
 

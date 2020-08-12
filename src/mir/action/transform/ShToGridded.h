@@ -43,7 +43,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     ShToGridded(const param::MIRParametrisation&);
 

@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+set -eaux
+
+echo "======> $1"
+
+t=$(basename $1)
+
+mir="@MIR_TOOL@"
+grib_get="@GRIB_GET@"
+
+tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
+
+pwd
+ok=0
+
+state=file
+while read n
+do
+    if [[ "$n" = "" ]]
+    then
+        continue
+    fi
+    echo $n
+    case $n in
+        \#*)
+            ;;
+
+        *)
+        case $state in
+
+            file)
+            ok=0
+            m=$(echo $n | tr '/' '_')
+            [ -f "${tests_assertions_dir}/$m" ] && ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
+            if [ -s data.in.$t ]
+            then
+                state=mir
+            else
+                echo "$1: input file '${tests_assertions_dir}/$m' has zero size?"
+                exit 1
+            fi
+            ;;
+
+            mir)
+            eval n=\"$n\"
+            $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
+            # For some reason set -e does not trigger
+            [[ $? -eq 0 ]] || exit 1
+            state=eccodes
+            ;;
+
+            eccodes)
+            ok=0
+            set $(echo $n | tr '=' ' ')
+            g=$($grib_get -wcount=1  -p $1 data.out.$t)
+            if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
+            then
+                echo "$1: expected [$2], got [$g]" 1>&2
+                exit 1
+            fi
+            ok=1
+            ;;
+
+        esac
+        ;;
+
+
+    esac
+done < $1
+
+if [[ $ok -ne 1 ]]
+then
+    echo "No assertions defined"
+    exit 1
+fi

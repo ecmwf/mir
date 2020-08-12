@@ -27,9 +27,7 @@ namespace netcdf {
 
 
 OutputVariable::OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions) :
-    Variable(owner, name, dimensions),
-    id_(-1),
-    created_(false) {}
+    Variable(owner, name, dimensions), id_(-1), created_(false) {}
 
 
 OutputVariable::~OutputVariable() = default;

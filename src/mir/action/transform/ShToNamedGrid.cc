@@ -13,11 +13,14 @@
 #include "mir/action/transform/ShToNamedGrid.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
-#include "mir/namedgrids/NamedGrid.h"
+#include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
+
 
 namespace mir {
 namespace action {
@@ -28,7 +31,7 @@ template <class Invtrans>
 ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
 
-    ASSERT(parametrisation_.userParametrisation().get("gridname", gridname_));
+    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 }
 
 
@@ -39,7 +42,7 @@ ShToNamedGrid<Invtrans>::~ShToNamedGrid() = default;
 template <class Invtrans>
 bool ShToNamedGrid<Invtrans>::sameAs(const Action& other) const {
     auto o = dynamic_cast<const ShToNamedGrid*>(&other);
-    return (o != nullptr) && (gridname_ == o->gridname_);
+    return (o != nullptr) && (grid_ == o->grid_);
 }
 
 
@@ -49,7 +52,7 @@ void ShToNamedGrid<Invtrans>::print(std::ostream& out) const {
     ShToGridded::print(out);
     out << ",";
     Invtrans::print(out);
-    out << ",gridname=" << gridname_ << "]";
+    out << ",grid=" << grid_ << "]";
 }
 
 
@@ -68,7 +71,7 @@ const char* ShToNamedGrid<Invtrans>::name() const {
 
 template <class Invtrans>
 const repres::Representation* ShToNamedGrid<Invtrans>::outputRepresentation() const {
-    const namedgrids::NamedGrid& ng = namedgrids::NamedGrid::lookup(gridname_);
+    const auto& ng = key::grid::Grid::lookup(grid_);
     return ng.representation();
 }
 

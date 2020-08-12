@@ -22,8 +22,7 @@ namespace input {
 
 
 VectorInput::VectorInput(MIRInput& component1, MIRInput& component2) :
-    component1_(component1),
-    component2_(component2) {
+    component1_(component1), component2_(component2) {
 
     // This is because MIRInput object keep some state
     ASSERT(&component1 != &component2);

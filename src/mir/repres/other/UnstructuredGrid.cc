@@ -28,6 +28,7 @@
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
+#include "mir/util/Assert.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Grib.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -127,9 +128,7 @@ void UnstructuredGrid::save(const eckit::PathName& path, const std::vector<doubl
 
 UnstructuredGrid::UnstructuredGrid(const std::vector<double>& latitudes, const std::vector<double>& longitudes,
                                    const util::BoundingBox& bbox) :
-    Gridded(bbox),
-    latitudes_(latitudes),
-    longitudes_(longitudes) {
+    Gridded(bbox), latitudes_(latitudes), longitudes_(longitudes) {
     ASSERT(latitudes_.size() == longitudes_.size());
 }
 
@@ -203,7 +202,7 @@ atlas::Grid UnstructuredGrid::atlasGrid() const {
 
 
 void UnstructuredGrid::validate(const MIRValuesVector& values) const {
-    ASSERT(values.size() == numberOfPoints());
+    ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("UnstructuredGrid", values.size(), numberOfPoints());
 }
 
 
@@ -268,10 +267,7 @@ class UnstructuredGridIterator : public Iterator {
 
 public:
     UnstructuredGridIterator(const std::vector<double>& latitudes, const std::vector<double>& longitudes) :
-        i_(0),
-        size_(latitudes.size()),
-        latitudes_(latitudes),
-        longitudes_(longitudes) {
+        i_(0), size_(latitudes.size()), latitudes_(latitudes), longitudes_(longitudes) {
         ASSERT(latitudes_.size() == longitudes_.size());
     }
 };

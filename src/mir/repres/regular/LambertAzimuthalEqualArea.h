@@ -28,7 +28,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     LambertAzimuthalEqualArea(const param::MIRParametrisation&);
     LambertAzimuthalEqualArea(const LambertAzimuthalEqualArea&) = delete;

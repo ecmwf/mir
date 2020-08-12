@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GribDataHandleInput(eckit::DataHandle& handle, size_t skip, size_t step);
     GribDataHandleInput(eckit::DataHandle& handle, off_t offset);

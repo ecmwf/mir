@@ -30,8 +30,7 @@ static const char* dont_drop[] = {"_FillValue", "missing_value", nullptr};
 
 
 OutputAttribute::OutputAttribute(Endowed& owner, const std::string& name, Value* value) :
-    Attribute(owner, name, value),
-    valid_(true) {}
+    Attribute(owner, name, value), valid_(true) {}
 
 
 OutputAttribute::~OutputAttribute() = default;

@@ -45,7 +45,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Action(const param::MIRParametrisation&);
     Action(const Action&) = delete;

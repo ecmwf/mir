@@ -26,8 +26,7 @@ namespace matrix {
 
 
 FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
-    MatrixLoader(name, path),
-    buffer_(size_t(path.size())) {
+    MatrixLoader(name, path), buffer_(size_t(path.size())) {
 
     log() << "Loading matrix from " << path << std::endl;
 

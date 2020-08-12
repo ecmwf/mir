@@ -40,21 +40,13 @@ static long readcb(void* data, void* buffer, long len) {
 
 
 GribStreamInput::GribStreamInput(size_t skip, size_t step) :
-    skip_(skip),
-    step_(step),
-    offset_(0),
-    buffer_(buffer_size()),
-    first_(true) {
+    skip_(skip), step_(step), offset_(0), buffer_(buffer_size()), first_(true) {
     ASSERT(step_ > 0);
 }
 
 
 GribStreamInput::GribStreamInput(off_t offset) :
-    skip_(0),
-    step_(1),
-    offset_(offset),
-    buffer_(buffer_size()),
-    first_(true) {
+    skip_(0), step_(1), offset_(offset), buffer_(buffer_size()), first_(true) {
     ASSERT(step_ > 0);
 }
 

@@ -13,11 +13,12 @@
 #include "mir/action/transform/ShToRegularLL.h"
 
 #include <iostream>
-#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
+#include "mir/util/Assert.h"
 
 
 namespace mir {
@@ -32,12 +33,12 @@ ShToRegularLL<Invtrans>::ShToRegularLL(const param::MIRParametrisation& parametr
     std::vector<double> value;
 
     if (parametrisation.userParametrisation().get("area", value)) {
-        ASSERT(value.size() == 4);
+        ASSERT_KEYWORD_AREA_SIZE(value.size());
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
     ASSERT(parametrisation.userParametrisation().get("grid", value));
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_GRID_SIZE(value.size());
     increments_ = util::Increments(value[0], value[1]);
 }
 

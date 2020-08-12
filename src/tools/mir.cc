@@ -24,6 +24,7 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
+#include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
@@ -34,6 +35,10 @@
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/VectorInput.h"
+#include "mir/key/grid/GridPattern.h"
+#include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/style/MIRStyle.h"
+#include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
@@ -48,13 +53,10 @@
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Statistics.h"
-#include "mir/style/Intgrid.h"
-#include "mir/style/MIRStyle.h"
-#include "mir/style/SpectralOrder.h"
-#include "mir/style/Truncation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/SpectralOrder.h"
 
 #if defined(HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -74,6 +76,8 @@ private:
 
     void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
+
 public:
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::FactoryOption;
@@ -83,15 +87,15 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
-        options_.push_back(new FactoryOption<style::TruncationFactory>(
+        options_.push_back(new FactoryOption<key::truncation::TruncationFactory>(
             "truncation", "Describes the intermediate truncation which the transform is performed from"));
-        options_.push_back(new FactoryOption<style::IntgridFactory>(
+        options_.push_back(new FactoryOption<key::intgrid::IntgridFactory>(
             "intgrid", "Describes the intermediate grid which the transform is performed to"));
 
         options_.push_back(new SimpleOption<bool>(
             "vod2uv",
             "Input is vorticity and divergence (vo/d), convert to Cartesian components (gridded u/v or spectral U/V)"));
-        options_.push_back(new FactoryOption<style::SpectralOrderFactory>(
+        options_.push_back(new FactoryOption<util::SpectralOrderFactory>(
             "spectral-order", "Spectral/gridded transform order of accuracy)"));
         options_.push_back(new SimpleOption<bool>("atlas-trans-flt", "Atlas/Trans Fast Legendre Transform"));
         options_.push_back(new SimpleOption<std::string>("atlas-trans-type",
@@ -99,10 +103,8 @@ public:
 
         //==============================================
         options_.push_back(new Separator("Interpolation"));
-        options_.push_back(new VectorOption<double>("grid",
-                                                    "Interpolate to a regular latitude/longitude grid (regular_ll), "
-                                                    "provided the West-East & South-North increments",
-                                                    2));
+        options_.push_back(new FactoryOption<key::grid::GridPattern>(
+            "grid", "Interpolate to given grid (following a recognizable regular expression)"));
         options_.push_back(new SimpleOption<size_t>("regular",
                                                     "Interpolate to the regular Gaussian grid N (regular_gg), with N "
                                                     "the number of parallels between pole and equator (N>=2)"));
@@ -117,12 +119,14 @@ public:
                                      "number of parallels between pole and equator (N>=2)"));
         options_.push_back(
             new VectorOption<long>("pl", "Interpolate to the reduced Gaussian grid with specific pl array", 0));
-        options_.push_back(new SimpleOption<std::string>("gridname", "Interpolate to given grid name"));
         options_.push_back(
             new VectorOption<double>("rotation", "Rotate the grid by moving the South pole to latitude/longitude", 2));
 
         options_.push_back(
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+
+        options_.push_back(
+            new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>(
             "conservative-finite-element-method-input", "Conservative FEM for input mesh"));
@@ -141,6 +145,8 @@ public:
             new SimpleOption<bool>("uv2uv", "Input is vector (gridded u/v or spectral U/V), convert to gridded u/v"));
         options_.push_back(new SimpleOption<bool>("u-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
         options_.push_back(new SimpleOption<bool>("v-only", "Keep only specific component ('uv2uv'/'vod2uv')"));
+        options_.push_back(
+            new SimpleOption<size_t>("only", "Filter input on parameter id (incompatible with 'u-only'/'v-only')"));
 
         options_.push_back(new SimpleOption<eckit::PathName>(
             "same", "Interpolate to the same grid type as the first GRIB message in file"));
@@ -207,17 +213,18 @@ public:
         //==============================================
         options_.push_back(new Separator("Filtering"));
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
-        options_.push_back(new SimpleOption<double>("area-precision", "cropping area precision ('outward')"));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
 
+        options_.push_back(new SimpleOption<bool>("nabla-poles-missing-values", "Force missing values at the poles"));
         options_.push_back(new SimpleOption<bool>(
             "pre-globalise", "Make the field global (before interpolation) adding missing values if needed"));
         options_.push_back(new SimpleOption<bool>(
             "globalise", "Make the field global (after interpolation) adding missing values if needed"));
         options_.push_back(new SimpleOption<std::string>("globalise-gridname",
                                                          "Unstructured grid globalise using gridname (default O16)"));
-        options_.push_back(new SimpleOption<std::string>(
+        options_.push_back(new SimpleOption<double>(
             "globalise-missing-radius",
             "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));
@@ -282,13 +289,12 @@ public:
         //==============================================
         options_.push_back(new Separator("Miscellaneous"));
         options_.push_back(
-            new FactoryOption<style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
+            new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
         options_.push_back(new SimpleOption<std::string>(
             "input", "Additional information to decribe input (such as latitudes, longitudes, coordinates) in YAML"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
         options_.push_back(new SimpleOption<double>("constant", "Set input to constant value"));
-
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
         options_.push_back(new SimpleOption<std::string>("plan", "String containing a plan definition"));
         options_.push_back(new SimpleOption<eckit::PathName>("plan-script", "File containing a plan definition"));
@@ -384,7 +390,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     args.get("uv2uv", uv2uv);
     args.get("vod2uv", vod2uv);
 
-
     if (args.has("plan") || args.has("plan-script")) {
         job.set("style", "custom");
     }
@@ -409,6 +414,11 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
 
+    size_t onlyParamId = 0;
+    if (args.get("only", onlyParamId)) {
+        only(job, *input, *output, onlyParamId);
+    }
+
     process(job, *input, *output, "field");
 }
 
@@ -423,6 +433,28 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
     size_t i = 0;
     while (input.next()) {
         eckit::Log::debug<LibMir>() << "============> " << what << ": " << (++i) << std::endl;
+        job.execute(input, output, statistics);
+    }
+
+    statistics.report(eckit::Log::info());
+
+    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+}
+
+
+void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
+    eckit::Timer timer("Total time");
+
+    std::string what = "field";
+
+    util::MIRStatistics statistics;
+    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
+                                << std::endl;
+
+    size_t i = 0;
+    while (input.only(paramId)) {
+        eckit::Log::debug<LibMir>() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 

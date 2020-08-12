@@ -48,7 +48,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Job(const api::MIRJob&, input::MIRInput&, output::MIROutput&, bool compress);
 

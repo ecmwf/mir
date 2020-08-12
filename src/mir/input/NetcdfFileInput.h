@@ -36,7 +36,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     NetcdfFileInput(const eckit::PathName&);
 

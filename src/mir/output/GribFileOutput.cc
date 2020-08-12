@@ -19,9 +19,7 @@ namespace output {
 
 
 GribFileOutput::GribFileOutput(const eckit::PathName& path, bool append) :
-    path_(path),
-    handle_(nullptr),
-    append_(append) {}
+    path_(path), handle_(nullptr), append_(append) {}
 
 
 GribFileOutput::~GribFileOutput() {

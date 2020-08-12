@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RegularGrid(const param::MIRParametrisation&, const Projection&);
     RegularGrid(const RegularGrid&) = delete;
@@ -74,7 +74,8 @@ protected:
     bool firstPointBottomLeft_;
 
     // -- Methods
-    // None
+
+    static Projection::Spec make_proj_spec(const param::MIRParametrisation&);
 
     // -- Overridden methods
 

@@ -96,6 +96,8 @@ void FieldComparator::addOptions(std::vector<eckit::option::Option*>& options) {
     options.push_back(new SimpleOption<bool>("compare-values", "Compare field values (GRIB only)"));
     options.push_back(new SimpleOption<bool>("compare-missing-values", "Compare field bitmap (GRIB only)"));
     options.push_back(new SimpleOption<bool>("compare-statistics", "Compare field statistics (GRIB only)"));
+    options.push_back(new SimpleOption<bool>(
+        "compare-headers-only", "Compare field headers-only, disables other compare-* options (GRIB only)"));
 
     options.push_back(
         new SimpleOption<bool>("white-list-entries", "Output lines that can be used in white-list files"));
@@ -186,7 +188,6 @@ void FieldComparator::compare(const std::string& name, const MultiFile& multi1, 
     bool saveAllFields = false;
     args_.get("save-all-fields", saveAllFields);
 
-
     std::string requirements;
     args_.get("requirements", requirements);
 
@@ -198,6 +199,15 @@ void FieldComparator::compare(const std::string& name, const MultiFile& multi1, 
 
     bool compareStatistics = false;
     args_.get("compare-statistics", compareStatistics);
+
+    bool compareHeadersOnly = false;
+    args_.get("compare-headers-only", compareHeadersOnly);
+
+    if (compareHeadersOnly) {
+        compareValues        = false;
+        compareMissingValues = false;
+        compareStatistics    = false;
+    }
 
     size_t save = fatals_;
 

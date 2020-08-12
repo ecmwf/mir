@@ -29,8 +29,7 @@ namespace fe {
 
 
 CalculateCellLongestDiagonal::CalculateCellLongestDiagonal(std::string name, bool force_recompute) :
-    name_(std::move(name)),
-    force_recompute_(force_recompute) {}
+    name_(std::move(name)), force_recompute_(force_recompute) {}
 
 
 double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {

@@ -20,8 +20,7 @@ namespace util {
 
 
 FormulaString::FormulaString(const param::MIRParametrisation& parametrisation, const std::string& value) :
-    Formula(parametrisation),
-    value_(value) {}
+    Formula(parametrisation), value_(value) {}
 
 
 FormulaString::~FormulaString() = default;

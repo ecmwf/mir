@@ -25,7 +25,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     CombinedParametrisation(const MIRParametrisation& userParametrisation, const MIRParametrisation& metadata,
                             const MIRParametrisation& defaults);

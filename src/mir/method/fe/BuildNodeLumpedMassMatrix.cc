@@ -25,8 +25,7 @@ namespace fe {
 
 
 BuildNodeLumpedMassMatrix::BuildNodeLumpedMassMatrix(std::string name, bool force_recompute) :
-    name_(std::move(name)),
-    force_recompute_(force_recompute) {}
+    name_(std::move(name)), force_recompute_(force_recompute) {}
 
 
 atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {

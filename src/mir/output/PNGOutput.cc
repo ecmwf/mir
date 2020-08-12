@@ -252,8 +252,7 @@ template <int N_C_CHANNELS, int N_A_CHANNELS, int N_BYTES_PER_CHANNEL, typename 
 struct PNGEncoderT : PNGOutput::PNGEncoder {
 
     PNGEncoderT(const param::MIRParametrisation& param, const data::MIRField& field) :
-        missingValue_(field.missingValue()),
-        hasMissing_(field.hasMissing()) {
+        missingValue_(field.missingValue()), hasMissing_(field.hasMissing()) {
         ASSERT(N_C_CHANNELS == 1 || N_C_CHANNELS == 3);
         ASSERT(N_A_CHANNELS == 0 || N_A_CHANNELS == 1);
 

@@ -44,9 +44,7 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
 
 public:
     ThreadExecutorTask(const ThreadExecutor& owner, context::Context& ctx, const ActionNode& node) :
-        owner_(owner),
-        ctx_(ctx),
-        node_(node) {}
+        owner_(owner), ctx_(ctx), node_(node) {}
 
     ThreadExecutorTask(const ThreadExecutorTask&) = delete;
     ThreadExecutorTask& operator=(const ThreadExecutorTask&) = delete;

@@ -40,17 +40,11 @@ static void check(const BoundingBox& bbox) {
 
 
 BoundingBox::BoundingBox() :
-    north_(Latitude::NORTH_POLE),
-    west_(Longitude::GREENWICH),
-    south_(Latitude::SOUTH_POLE),
-    east_(Longitude::GLOBE) {}
+    north_(Latitude::NORTH_POLE), west_(Longitude::GREENWICH), south_(Latitude::SOUTH_POLE), east_(Longitude::GLOBE) {}
 
 
 BoundingBox::BoundingBox(const Latitude& north, const Longitude& west, const Latitude& south, const Longitude& east) :
-    north_(north),
-    west_(west),
-    south_(south),
-    east_(east) {
+    north_(north), west_(west), south_(south), east_(east) {
     normalise();
     check(*this);
 }

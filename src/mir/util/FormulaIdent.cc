@@ -21,8 +21,7 @@ namespace util {
 
 
 FormulaIdent::FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name) :
-    Formula(parametrisation),
-    name_(name) {}
+    Formula(parametrisation), name_(name) {}
 
 
 FormulaIdent::~FormulaIdent() = default;

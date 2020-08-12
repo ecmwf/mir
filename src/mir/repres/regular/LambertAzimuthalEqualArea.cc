@@ -14,6 +14,8 @@
 
 #include <string>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Grib.h"
 
@@ -22,28 +24,17 @@ namespace mir {
 namespace repres {
 namespace regular {
 
+
 static RepresentationBuilder<LambertAzimuthalEqualArea> __builder("lambert_azimuthal_equal_area");
+
 
 LambertAzimuthalEqualArea::LambertAzimuthalEqualArea(const param::MIRParametrisation& param) :
     RegularGrid(param, make_projection(param)) {}
 
+
 RegularGrid::Projection LambertAzimuthalEqualArea::make_projection(const param::MIRParametrisation& param) {
-
-    std::string proj;
-    if (param.get("proj", proj) && !proj.empty()) {
-        Projection::Spec spec("type", "proj");
-        spec.set("proj", proj);
-
-        std::string projSource;
-        if (param.get("projSource", projSource) && !projSource.empty()) {
-            spec.set("proj_source", projSource);
-        }
-
-        std::string projGeocentric;
-        if (param.get("projGeocentric", projGeocentric) && !projGeocentric.empty()) {
-            spec.set("proj_geocentric", projGeocentric);
-        }
-
+    auto spec = make_proj_spec(param);
+    if (!spec.empty()) {
         return spec;
     }
 
@@ -60,6 +51,7 @@ RegularGrid::Projection LambertAzimuthalEqualArea::make_projection(const param::
         .set("radius", radius);
 }
 
+
 void LambertAzimuthalEqualArea::fill(grib_info& info) const {
 
     info.grid.grid_type        = CODES_UTIL_GRID_SPEC_LAMBERT_AZIMUTHAL_EQUAL_AREA;
@@ -67,11 +59,8 @@ void LambertAzimuthalEqualArea::fill(grib_info& info) const {
 
     ASSERT(x_.size() > 1);
     ASSERT(y_.size() > 1);
-
     auto Dx = (x_.max() - x_.min()) / (x_.size() - 1.);
     auto Dy = (y_.max() - y_.min()) / (y_.size() - 1.);
-    ASSERT(Dx > 0.);
-    ASSERT(Dy > 0.);
 
     Point2 reference = grid_.projection().lonlat({0., 0.});
     Point2 firstLL   = grid_.projection().lonlat({x_.front(), y_.front()});
@@ -81,14 +70,15 @@ void LambertAzimuthalEqualArea::fill(grib_info& info) const {
     info.grid.Ni                                 = long(x_.size());
     info.grid.Nj                                 = long(y_.size());
 
-    GribExtraSetting::set(info, "xDirectionGridLengthInMetres", Dx);
-    GribExtraSetting::set(info, "yDirectionGridLengthInMetres", Dy);
+    GribExtraSetting::set(info, "DxInMetres", Dx);
+    GribExtraSetting::set(info, "DyInMetres", Dy);
     GribExtraSetting::set(info, "standardParallelInDegrees", reference[LLCOORDS::LAT]);
     GribExtraSetting::set(info, "centralLongitudeInDegrees", reference[LLCOORDS::LON]);
 
     // some extra keys are edition-specific, so parent call is here
     RegularGrid::fill(info);
 }
+
 
 }  // namespace regular
 }  // namespace repres

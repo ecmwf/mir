@@ -15,12 +15,11 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/data/CartesianVector2DField.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Assert.h"
 
 
 namespace mir {
@@ -32,7 +31,7 @@ AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& pa
 
     std::vector<double> value;
     ASSERT(parametrisation_.userParametrisation().get("rotation", value));
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
 
     rotation_ = util::Rotation(value[0], value[1]);
 }

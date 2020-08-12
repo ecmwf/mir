@@ -27,7 +27,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     RotatedLL(const param::MIRParametrisation&);
     RotatedLL(const util::Increments&, const util::Rotation&, const util::BoundingBox& = util::BoundingBox(),

@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     UnstructuredGrid(const eckit::PathName&);
     UnstructuredGrid(const param::MIRParametrisation&);

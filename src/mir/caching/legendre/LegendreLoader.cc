@@ -29,8 +29,7 @@ namespace legendre {
 
 
 LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
-    parametrisation_(parametrisation),
-    path_(path.realName()) {}
+    parametrisation_(parametrisation), path_(path.realName()) {}
 
 
 LegendreLoader::~LegendreLoader() = default;

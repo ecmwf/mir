@@ -24,11 +24,11 @@
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/key/style/MIRStyle.h"
 #include "mir/output/EmptyOutput.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/style/MIRStyle.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -146,7 +146,7 @@ CASE("ECMWFStyle") {
                         output::EmptyOutput out;
 
                         const param::CombinedParametrisation combined(user, in, defaults);
-                        std::unique_ptr<style::MIRStyle> style(style::MIRStyleFactory::build(combined));
+                        std::unique_ptr<key::style::MIRStyle> style(key::style::MIRStyleFactory::build(combined));
 
                         action::ActionPlan plan(combined);
                         style->prepare(plan, in, out);

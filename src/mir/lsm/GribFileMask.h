@@ -38,7 +38,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GribFileMask(const eckit::PathName&, const param::MIRParametrisation&, const repres::Representation&,
                  const std::string& which);

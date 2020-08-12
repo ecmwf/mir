@@ -1,6 +1,6 @@
 # Mars request
 param=t,level=1000,resol=20
 # Mir tool options
---gridname=O1280 --area=90/280/25/50
+--grid=O1280 --area=90/280/25/50
 # grib_get assertions
 numberOfValues=622725

@@ -49,7 +49,7 @@ class MIRConfig : public mir::tools::MIRTool {
     }
 
 public:
-    // -- Contructors
+    // -- Constructors
 
     MIRConfig(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;

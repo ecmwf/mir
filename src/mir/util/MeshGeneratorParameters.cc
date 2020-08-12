@@ -29,7 +29,7 @@ MeshGeneratorParameters::MeshGeneratorParameters() {
     meshNodeLumpedMassMatrix_   = false;
     meshNodeToCellConnectivity_ = false;
 
-    set("three_dimensional", true);
+    set("3d", true);
     set("triangulate", false);
     set("angle", 0.);
     set("force_include_north_pole", false);
@@ -50,14 +50,18 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     user.get(label + "-mesh-file-xy", fileXY_);
     user.get(label + "-mesh-file-xyz", fileXYZ_);
 
-    for (auto& k : {"three-dimensional", "triangulate", "force-include-north-pole", "force-include-south-pole"}) {
+    for (auto& k : {"triangulate", "force_include_north_pole", "force_include_south_pole"}) {
         auto key   = label + "-mesh-generator-" + std::string(k);
         auto value = false;
-        if (user.get(key, value)) {
-            std::replace(key.begin(), key.end(), '-', '_');
-            set(key, value);
-        }
+        std::replace(key.begin(), key.end(), '_', '-');
+
+        user.get(key, value);
+        set(k, value);
     }
+
+    bool three_dimensional = true;
+    user.get(label + "-mesh-generator-three-dimensional", three_dimensional);
+    set("3d", three_dimensional);
 
     double angle = getDouble("angle");
     if (user.get(label + "-mesh-generator-angle", angle)) {

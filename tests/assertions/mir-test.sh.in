@@ -69,7 +69,7 @@ do
             fi
             eval n=\"$n\"
             env $env $mir $n $(pwd)/data.in.$t $(pwd)/data.out.$t && ok=1
-            # For some reasons set -e does not trigger
+            # For some reason set -e does not trigger
             [[ $? -eq 0 ]] || exit 1
 
             ## Ensure we can decode gridded fields

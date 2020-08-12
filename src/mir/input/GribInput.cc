@@ -225,6 +225,9 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
         {"south_pole_rotation_angle", "angleOfRotationInDegrees", nullptr},
 
+        {"proj", "projTargetString", nullptr},
+        {"projSource", "projSourceString", nullptr},
+
         // This will be just called for has()
         {
             "gridded",
@@ -239,13 +242,16 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         },
         {
             "gridded",
-            "numberOfGridInReference",
+            "numberOfGridInReference" /*just a dummy*/,
             is("gridType", "unstructured_grid"),
-        },  // numberOfGridInReference is just dummy
-
+        },
         {"gridded", "numberOfPointsAlongAMeridian", nullptr},  // Is that always true?
+        {"gridded_regular_ll", "Ni", _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
+        {"gridded_named", "gridName", nullptr},
 
-        {"gridname", "gridName", nullptr},
+        {"grid", "gridName",
+         _or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+             is("gridType", "reduced_rotated_gg"))},
 
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
@@ -505,7 +511,9 @@ static bool get_value(const std::string& name, grib_handle* h, T& value) {
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
          is("gridType", "lambert_azimuthal_equal_area")},
-        {"grid", vector_double({"DxInMetres", "DyInMetres"}), is("gridType", "lambert")},
+        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
+         _or(is("gridType", "lambert"), is("gridType", "polar_stereographic"))},
+        {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
 
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
@@ -623,10 +631,10 @@ data::MIRField GribInput::field() const {
         }
     }
 
-    long earthIsOblate;
+    long earthIsOblate = 0;
     if (GRIB_GET(codes_get_long(grib_, "earthIsOblate", &earthIsOblate))) {
         if (earthIsOblate != 0) {
-            throw eckit::UserError("GribInput: GRIB earthIsOblate!=0 not supported");
+            wrongly_encoded_grib("GribInput: only spherical earth supported (earthIsOblate != 0)");
         }
     }
 
@@ -711,12 +719,6 @@ data::MIRField GribInput::field() const {
             size_t pl_sum = size_t(std::accumulate(pl.begin(), pl.end(), 0));
             ASSERT(pl_sum == values.size());
         }
-    }
-
-    // apply user-defined fixes, if any
-    static GribFixes gribFixes;
-    if (gribFixes.fix(*this, cache_.cache_)) {
-        wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
     }
 
     data::MIRField field(cache_, missingValuesPresent != 0, missing);
@@ -969,7 +971,9 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+
+    // NOTE: MARS client sets 'grid=vector' (deprecated) which needs to be compared against GRIB gridName
+    if (std::string(key).empty() || std::string(key) == "gridName") {
         return false;
     }
 
@@ -1023,6 +1027,13 @@ bool GribInput::handle(grib_handle* h) {
     if (h != nullptr) {
         long value = 0;
         GRIB_CALL(codes_get_long(h, "7777", &value));
+
+        // apply user-defined fixes, if any
+        static GribFixes gribFixes;
+        if (gribFixes.fix(*this, cache_.cache_)) {
+            wrongly_encoded_grib("GribInput: wrongly encoded GRIB (user-defined fixes)");
+        }
+
         return true;
     }
 
@@ -1079,6 +1090,26 @@ void GribInput::setAuxiliaryInformation(const std::string& yaml) {
             auxilaryValues(kv.second, longitudes_);
         }
     }
+}
+
+
+bool GribInput::only(size_t paramId) {
+    auto paramIdOnly = long(paramId);
+
+    while (next()) {
+        eckit::AutoLock<eckit::Mutex> lock(mutex_);
+
+        ASSERT(grib_);
+
+        long paramIdAsLong;
+        GRIB_CALL(codes_get_long(grib_, "paramId", &paramIdAsLong));
+
+        if (paramIdOnly == paramIdAsLong) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

@@ -29,9 +29,7 @@ namespace netcdf {
 
 
 InputMatrix::InputMatrix(Type& type, int varid, const std::string& name, size_t size, NCFile& file) :
-    Matrix(type, name, size),
-    file_(file),
-    varid_(varid) {}
+    Matrix(type, name, size), file_(file), varid_(varid) {}
 
 InputMatrix::~InputMatrix() = default;
 

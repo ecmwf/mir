@@ -39,10 +39,7 @@ static Type* types_[NC_MAX_ATOMIC_TYPE + 1] = {
 
 
 Type::Type(int code, const std::string& name, const std::string& dump, int super) :
-    code_(code),
-    super_(super),
-    name_(name),
-    dump_(dump) {
+    code_(code), super_(super), name_(name), dump_(dump) {
     types_[code] = this;
 }
 

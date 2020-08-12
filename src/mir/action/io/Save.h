@@ -36,7 +36,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     Save(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
 

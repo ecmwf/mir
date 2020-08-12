@@ -2,7 +2,7 @@
 # Mars request
 stream=wave,param=mwd
 # Mir tool options
---gridname=O32
+--grid=O32
 # grib_get assertions
 numberOfValues = 5144
 N = 32

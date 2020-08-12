@@ -53,13 +53,27 @@ void eccodes_assertion(const char* message) {
 }
 
 
-GribOutput::GribOutput() = default;
+GribOutput::GribOutput():
+    interpolated_(0),
+    saved_(0) {
+
+}
 
 
 GribOutput::~GribOutput() = default;
 
 
+size_t GribOutput::interpolated() const {
+    return interpolated_;
+}
+
+size_t GribOutput::saved() const {
+    return saved_;
+}
+
 size_t GribOutput::copy(const param::MIRParametrisation&, context::Context& ctx) {  // No interpolation performed
+
+    saved_++;
 
     const input::MIRInput& input = ctx.input();
 
@@ -253,6 +267,8 @@ size_t GribOutput::save(const param::MIRParametrisation& parametrisation, contex
 
     util::TraceResourceUsage usage("GribOutput::save");
 
+    interpolated_++;
+
     const auto& field = ctx.field();
     const auto& input = ctx.input();
 
@@ -298,7 +314,7 @@ size_t GribOutput::save(const param::MIRParametrisation& parametrisation, contex
             continue;
         }
 
-        auto h = input.gribHandle(i);  // Base class throws if input cannot provide handle
+        auto h = input.gribHandle(field.handle(i));  // Base class throws if input cannot provide handle
 
         grib_info info = {
             {0},

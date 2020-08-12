@@ -21,8 +21,7 @@ namespace util {
 
 
 FormulaNumber::FormulaNumber(const param::MIRParametrisation& parametrisation, double value) :
-    Formula(parametrisation),
-    value_(value) {}
+    Formula(parametrisation), value_(value) {}
 
 FormulaNumber::~FormulaNumber() = default;
 

@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
 
@@ -26,6 +27,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Assert.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -58,7 +60,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 
     std::vector<double> value;
     ASSERT(parametrisation.userParametrisation().get("area", value));
-    ASSERT(value.size() == 4);
+    ASSERT_KEYWORD_AREA_SIZE(value.size());
 
     bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
 
@@ -67,9 +69,7 @@ AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Act
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation, const util::BoundingBox& bbox) :
-    Action(parametrisation),
-    bbox_(bbox),
-    caching_(true) {
+    Action(parametrisation), bbox_(bbox), caching_(true) {
 
     parametrisation_.get("caching", caching_);
 }
@@ -200,8 +200,7 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
 
         public:
             CroppingCacheCreator(const repres::Representation* representation, const util::BoundingBox& bbox) :
-                representation_(representation),
-                bbox_(bbox) {}
+                representation_(representation), bbox_(bbox) {}
 
             CroppingCacheCreator(const CroppingCacheCreator&) = delete;
             CroppingCacheCreator& operator=(const CroppingCacheCreator&) = delete;
@@ -243,8 +242,7 @@ static const caching::CroppingCacheEntry& getMapping(const repres::Representatio
 void AreaCropper::execute(context::Context& ctx) const {
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    caching::InMemoryCacheUser<caching::CroppingCacheEntry> use(cache, ctx.statistics().areaCroppingCache_);
-
+    auto cacheUse(ctx.statistics().cacheUser(cache));
     auto timing(ctx.statistics().cropTimer());
 
     // Keep a pointer on the original representation, as the one in the field will

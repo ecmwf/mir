@@ -33,7 +33,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     MIRWatcher();
     MIRWatcher(const MIRWatcher&) = delete;

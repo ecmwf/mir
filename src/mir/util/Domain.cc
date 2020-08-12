@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-#include "mir/api/Atlas.h"
-
 
 namespace mir {
 namespace util {
@@ -31,19 +29,15 @@ bool Domain::includesPoleSouth() const {
 }
 
 
-Domain::operator atlas::RectangularDomain() const {
-    return atlas::RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
+Domain::operator RectangularDomain() const {
+    return RectangularDomain({{west().value(), east().value()}}, {{south().value(), north().value()}});
 }
 
 
 void Domain::print(std::ostream& os) const {
     os << "Domain["
-       << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east() << ",isGlobal="
-       << isGlobal()
-       // << ",includesPoleNorth=" << includesPoleNorth()
-       // << ",includesPoleSouth=" << includesPoleSouth()
-       // << ",isPeriodicEastWest=" << isPeriodicEastWest()
-       << "]";
+       << "north=" << north() << ",west=" << west() << ",south=" << south() << ",east=" << east()
+       << ",isGlobal=" << isGlobal() << "]";
 }
 
 

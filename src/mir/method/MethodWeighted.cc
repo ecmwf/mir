@@ -282,8 +282,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
 
     // Make sure another thread to no evict anything from the cache while we are using it
-    caching::InMemoryCacheUser<WeightMatrix> matrix_use(matrix_cache, ctx.statistics().matrixCache_);
-
+    auto cacheUse(ctx.statistics().cacheUser(matrix_cache));
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 

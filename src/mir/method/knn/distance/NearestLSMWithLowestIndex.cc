@@ -30,9 +30,7 @@ namespace distance {
 
 struct Choice {
     explicit Choice(bool sameType, double distance, size_t index) :
-        sameType_(size_t(sameType)),
-        distance_(distance),
-        index_(index) {}
+        sameType_(size_t(sameType)), distance_(distance), index_(index) {}
     size_t sameType_;
     double distance_;
     size_t index_;
@@ -48,9 +46,7 @@ struct Choice {
 
 NearestLSMWithLowestIndex::NearestLSMWithLowestIndex(const param::MIRParametrisation& parametrisation,
                                                      const lsm::LandSeaMasks& landSeaMasks) :
-    DistanceWeightingWithLSM(parametrisation),
-    imask_(landSeaMasks.inputMask()),
-    omask_(landSeaMasks.outputMask()) {
+    DistanceWeightingWithLSM(parametrisation), imask_(landSeaMasks.inputMask()), omask_(landSeaMasks.outputMask()) {
     ASSERT(!imask_.empty());
     ASSERT(!omask_.empty());
 }

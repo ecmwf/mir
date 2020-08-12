@@ -46,7 +46,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     MIROutput();
     MIROutput(const MIROutput&) = delete;

@@ -14,11 +14,7 @@
 #define mir_util_Domain_h
 
 #include "mir/util/BoundingBox.h"
-
-
-namespace atlas {
-class RectangularDomain;
-}
+#include "mir/util/RectangularDomain.h"
 
 
 namespace mir {
@@ -30,13 +26,13 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     using BoundingBox::BoundingBox;
 
     // -- Convertors
 
-    operator atlas::RectangularDomain() const;
+    operator RectangularDomain() const;
 
     // -- Operators
 
@@ -47,13 +43,10 @@ public:
     // -- Methods
     // None
 
-    /// Check if grid includes the North pole
     bool includesPoleNorth() const;
 
-    /// Check if grid includes the South pole
     bool includesPoleSouth() const;
 
-    /// Check if domain represents the complete globe surface
     bool isGlobal() const { return includesPoleNorth() && includesPoleSouth() && isPeriodicWestEast(); }
 
     // -- Overridden methods
@@ -74,7 +67,6 @@ protected:
 
     // -- Overridden methods
 
-    /// Output to stream
     virtual void print(std::ostream&) const;
 
     // -- Class members
@@ -104,7 +96,6 @@ private:
 
     // -- Friends
 
-    /// Output using stream operator
     friend std::ostream& operator<<(std::ostream& s, const Domain& p) {
         p.print(s);
         return s;

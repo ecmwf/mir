@@ -92,11 +92,7 @@ void BufrField::setOptions(const eckit::option::CmdArgs& args) {
 
 BufrEntry::BufrEntry(const std::string& full, const std::vector<long>& l, const std::vector<double>& d,
                      const std::string& s, int type) :
-    full_(full),
-    l_(l),
-    d_(d),
-    s_(s),
-    type_(type) {
+    full_(full), l_(l), d_(d), s_(s), type_(type) {
 
     static eckit::Tokenizer parse("#");
     std::vector<std::string> v;

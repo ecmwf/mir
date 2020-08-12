@@ -21,10 +21,7 @@ namespace mir {
 namespace netcdf {
 
 VirtualOutputDimension::VirtualOutputDimension(Dataset& owner, const std::string& name) :
-    Dimension(owner, name, 1),
-    id_(-1),
-    created_(false),
-    grown_(false) {}
+    Dimension(owner, name, 1), id_(-1), created_(false), grown_(false) {}
 
 VirtualOutputDimension::~VirtualOutputDimension() = default;
 

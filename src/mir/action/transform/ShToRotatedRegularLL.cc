@@ -13,11 +13,12 @@
 #include "mir/action/transform/ShToRotatedRegularLL.h"
 
 #include <iostream>
-#include "eckit/exception/Exceptions.h"
+
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/latlon/RotatedLL.h"
+#include "mir/util/Assert.h"
 
 
 namespace mir {
@@ -32,16 +33,16 @@ ShToRotatedRegularLL<Invtrans>::ShToRotatedRegularLL(const param::MIRParametrisa
     std::vector<double> value;
 
     if (parametrisation.userParametrisation().get("area", value)) {
-        ASSERT(value.size() == 4);
+        ASSERT_KEYWORD_AREA_SIZE(value.size());
         bbox_ = util::BoundingBox(value[0], value[1], value[2], value[3]);
     }
 
     ASSERT(parametrisation.userParametrisation().get("grid", value));
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_GRID_SIZE(value.size());
     increments_ = util::Increments(value[0], value[1]);
 
     ASSERT(parametrisation.userParametrisation().get("rotation", value));
-    ASSERT(value.size() == 2);
+    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
     rotation_ = util::Rotation(value[0], value[1]);
 }
 

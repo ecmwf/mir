@@ -26,7 +26,7 @@ public:
     // -- Exceptions
     // None
 
-    // -- Contructors
+    // -- Constructors
 
     GribFileInput(const eckit::PathName&, size_t skip, size_t step);
     GribFileInput(const eckit::PathName&, off_t offset);

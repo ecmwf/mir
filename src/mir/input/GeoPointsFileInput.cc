@@ -29,15 +29,15 @@
 namespace mir {
 namespace input {
 
-// See https://software.ecmwf.int/wiki/display/METV/Geopoints
 
+// See https://software.ecmwf.int/wiki/display/METV/Geopoints
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
-    which_(which),
     next_(0),
-    hasMissing_(false),
+    footprint_(size_t(eckit::PathName(path).size())),
     missingValue_(3e38),
-    footprint_(size_t(eckit::PathName(path).size())) {  // For now, this should overestimate the memory footprint
+    which_(which),
+    hasMissing_(false) {  // For now, this should overestimate the memory footprint
 
     std::ifstream in(path_.c_str());
     if (!in) {
@@ -72,6 +72,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
 
     repres::other::UnstructuredGrid::check(std::string("GeoPointsFileInput from ") + path, latitudes_, longitudes_);
 }
+
 
 GeoPointsFileInput::~GeoPointsFileInput() = default;
 

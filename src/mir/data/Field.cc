@@ -31,10 +31,7 @@ Field::Field(const param::MIRParametrisation& param, bool hasMissing, double mis
 
 
 Field::Field(const repres::Representation* repres, bool hasMissing, double missingValue) :
-    missingValue_(missingValue),
-    representation_(repres),
-    recomputeHasMissing_(false),
-    hasMissing_(hasMissing) {
+    missingValue_(missingValue), representation_(repres), recomputeHasMissing_(false), hasMissing_(hasMissing) {
 
     if (representation_ != nullptr) {
         representation_->attach();
@@ -45,6 +42,7 @@ Field::Field(const repres::Representation* repres, bool hasMissing, double missi
 Field::Field(const Field& other) :
     values_(other.values_),
     metadata_(other.metadata_),
+    handles_(other.handles_),
     missingValue_(other.missingValue_),
     representation_(other.representation_),
     recomputeHasMissing_(other.recomputeHasMissing_),
@@ -87,6 +85,7 @@ void Field::dimensions(size_t size) {
     eckit::AutoLock<const eckit::Counted> lock(this);
     metadata_.resize(size);
     values_.resize(size);
+    handles_.clear();
 }
 
 
@@ -96,7 +95,6 @@ void Field::select(size_t which) {
 
     metadata_.resize(values_.size());
 
-
     if (which != 0) {
         std::swap(metadata_[0], metadata_[which]);
         std::swap(values_[0], values_[which]);
@@ -104,6 +102,16 @@ void Field::select(size_t which) {
 
     metadata_.resize(1);
     values_.resize(1);
+
+    auto hit = handles_.find(which);
+    if (hit != handles_.end()) {
+        auto h = hit->second;
+        handles_.clear();
+        handles_[0] = h;
+    }
+    else {
+        handles_.clear();
+    }
 }
 
 
@@ -116,7 +124,6 @@ Field::~Field() {
 
 void Field::print(std::ostream& out) const {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
 
     out << "Field[count=" << count() << ",";
     out << "dimensions=" << values_.size();
@@ -138,6 +145,14 @@ void Field::print(std::ostream& out) const {
         out << ')';
     }
 
+    out << ",handles=";
+    char sep = '(';
+    for (auto h : handles_) {
+        out << sep << h.first << "=>" << h.second;
+        sep = ',';
+    }
+    out << ')';
+
     out << "]";
 }
 
@@ -158,6 +173,23 @@ void Field::validate() const {
             representation_->validate(values(i));
         }
     }
+}
+
+
+void Field::handle(size_t which, size_t handle) {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    ASSERT(which < dimensions());
+    handles_[which] = handle;
+}
+
+
+size_t Field::handle(size_t which) const {
+    eckit::AutoLock<const eckit::Counted> lock(this);
+
+    ASSERT(which < dimensions());
+    auto hit = handles_.find(which);
+    return hit != handles_.end() ? hit->second : which;
 }
 
 
@@ -207,9 +239,6 @@ const MIRValuesVector& Field::values(size_t which) const {
 
 MIRValuesVector& Field::direct(size_t which) {
     eckit::AutoLock<const eckit::Counted> lock(this);
-
-    // eckit::Log::info() << "Field::direct => " << values_.size() << std::endl;
-
 
     ASSERT(which < values_.size());
     return values_[which];

@@ -17,6 +17,7 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/JSON.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
@@ -149,15 +150,14 @@ void ActionPlan::execute(context::Context& ctx) const {
     }
 
     if (!dumpStatisticsFile_.empty()) {
-        auto& stats = ctx.statistics();
         if (dumpStatisticsFile_ == "-") {
-            stats.report(std::cout);
-            std::cout << std::endl;
+            eckit::JSON out(std::cout);
+            ctx.statistics().json(out);
         }
         else {
-            std::ofstream out(dumpStatisticsFile_, std::ios::app);
-            stats.report(out);
-            out << std::endl;
+            std::ofstream file(dumpStatisticsFile_, std::ios::app);
+            eckit::JSON out(file);
+            ctx.statistics().json(out);
         }
     }
 }

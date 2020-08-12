@@ -1,7 +1,7 @@
 
 # Setup cache directory
-set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
-file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
+set(TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/)
+file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 
 
 # Set list of input data files
@@ -22,16 +22,16 @@ endif()
 # Set interpolation tests
 # (each line is an interpolation, the previous-to-last entry in each line is a file to download)
 unset(_test_reqs)
-foreach( _in ${TEST_INPUT_FILES})
-  foreach( _pproc
+foreach(_in ${TEST_INPUT_FILES})
+  foreach(_pproc
           ""
           "--grid=1/1 --area=40/20/20/40"
           "--grid=1/1 --area=40/20/20/40 --frame=2"
           "--grid=2/2"
           "--grid=3/3"
           "--rotation=-90/0"
-          "--rotation=-89/1" )
-      if( "${_pproc}" STREQUAL "" )
+          "--rotation=-89/1")
+      if("${_pproc}" STREQUAL "")
         set(_label "mir_tests_nointerpol ${_in}")
       else()
         set(_label "mir_tests_interpol ${_in} to ${_pproc}")
@@ -39,10 +39,10 @@ foreach( _in ${TEST_INPUT_FILES})
       string(REGEX REPLACE "[.]grib"      ""  _label ${_label})
       string(REGEX REPLACE "[^A-Za-z0-9]" "_" _label ${_label})
       string(REGEX REPLACE "[ _]+"        "_" _label ${_label})
-      if( NOT (_in MATCHES ".*_sh[.]grib$" AND _pproc MATCHES "--frame=.*" OR
-               _in MATCHES ".*[.]nc$" AND _pproc MATCHES "^$" ))
+      if(NOT (_in MATCHES ".*_sh[.]grib$" AND _pproc MATCHES "--frame=.*" OR
+              _in MATCHES ".*[.]nc$" AND _pproc MATCHES "^$"))
 
-        if( _in MATCHES ".*[.]nc$" )
+        if(_in MATCHES ".*[.]nc$")
           set(_pproc "${_pproc} --interpolation=linear")
         endif()
 
@@ -63,36 +63,21 @@ list(REMOVE_DUPLICATES _tests_src_files)
 
 ecbuild_get_test_multidata(
     TARGET download_mir_tests_files
-    NAMES  ${_tests_src_files} )
+    NAMES  ${_tests_src_files})
 
 
 # Set testing environment
-if( NOT eccodes_BASE_DIR )
-    if( TARGET "grib_compare" )
-        get_target_property( CMD_GRIB_COMPARE "grib_compare" LOCATION )
+set(_testEnvironment "MIR_DEBUG=1" "MIR_HOME=${CMAKE_BINARY_DIR}" "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
+
+if( NOT eccodes_HAVE_MEMFS )
+    if( ECCODES_DEFINITION_PATH )
+      list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${ECCODES_DEFINITION_PATH}" )
     endif()
-    if( NOT CMD_GRIB_COMPARE )
-        find_program( CMD_GRIB_COMPARE "grib_compare" )
-    endif()
-    if( CMD_GRIB_COMPARE )
-        get_filename_component( _grib_compare_dir "${CMD_GRIB_COMPARE}" PATH )
-        get_filename_component( eccodes_BASE_DIR "${_grib_compare_dir}" ABSOLUTE )
-        set( eccodes_BASE_DIR "${eccodes_BASE_DIR}/../" )
-    else()
-        ecbuild_critical("Could not guess eccodes_BASE_DIR, nor find grib_compare (in bundle nor in path) as an alternative" )
+    if( ECCODES_SAMPLES_PATH )
+      list( APPEND _testEnvironment "ECCODES_SAMPLES_PATH=${ECCODES_SAMPLES_PATH}" )
     endif()
 endif()
 
-set( _testEnvironment
-    "MIR_DEBUG=1"
-    "MIR_HOME=${CMAKE_BINARY_DIR}"
-    "TEST_ECKIT_CACHE_DIR=${TEST_ECKIT_CACHE_DIR}")
-if( eccodes_HAVE_INSTALL_ECCODES_DEFINITIONS )
-    list( APPEND _testEnvironment "ECCODES_DEFINITION_PATH=${eccodes_BASE_DIR}/share/eccodes/definitions" )
-endif()
-if( eccodes_HAVE_INSTALL_ECCODES_SAMPLES )
-    list( APPEND _testEnvironment "ECCODES_SAMPLES_PATH=${eccodes_BASE_DIR}/share/eccodes/samples" )
-endif()
 
 # Unit tests: simple interpolations
 foreach(_t ${_test_reqs})
@@ -105,12 +90,16 @@ foreach(_t ${_test_reqs})
       COMMAND      $<TARGET_FILE:mir-tool>
       ARGS         "--caching=0" ${_t}
       TEST_DEPENDS download_mir_tests_files
-      ENVIRONMENT  ${_testEnvironment} )
+      ENVIRONMENT  ${_testEnvironment})
 
 endforeach()
 
 
-add_subdirectory(assertions)
+if(HAVE_TEST_ASSERTIONS)
+  add_subdirectory(assertions)
+endif()
+
 add_subdirectory(plans)
+add_subdirectory(tool)
 add_subdirectory(unit)
 
