@@ -23,15 +23,15 @@ ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support 
 ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C" )
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
-ecbuild_use_package( PROJECT eccodes VERSION 2.19 REQUIRED )
+ecbuild_find_package( NAME eccodes VERSION 2.19 REQUIRED )
 if( eccodes_HAVE_MEMFS )
     ecbuild_info( "  Note: eccodes compiled with memfs" )
 else()
     ecbuild_info( "  Note: eccodes NOT compiled with memfs" )
 endif()
 
-ecbuild_use_package( PROJECT eckit   VERSION 1.10 REQUIRED )
-ecbuild_use_package( PROJECT atlas   VERSION 0.20 REQUIRED )
+ecbuild_find_package( NAME eckit   VERSION 1.10 REQUIRED )
+ecbuild_find_package( NAME atlas   VERSION 0.20 REQUIRED )
 
 if(ATLAS_FOUND)
     set(HAVE_ATLAS 1)
@@ -121,4 +121,3 @@ ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files
 ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()
-
