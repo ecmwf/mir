@@ -15,10 +15,10 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir="@$<TARGET_FILE:mir-tool>@"
-mir_compare="@$<TARGET_FILE:mir-compare>@"
-grib_get="@$<TARGET_FILE:grib_get>@"
-grib_compare="@$<TARGET_FILE:grib_compare>@"
+mir="$<TARGET_FILE:mir-tool>"
+mir_compare="$<TARGET_FILE:mir-compare>"
+grib_get="$<TARGET_FILE:grib_get>"
+grib_compare="$<TARGET_FILE:grib_compare>"
 
 mars_script="@MARS_SCRIPT@"
 

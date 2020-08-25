@@ -15,8 +15,8 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir="@$<TARGET_FILE:mir-tool>@"
-grib_get="@$<TARGET_FILE:grib_get>@"
+mir="$<TARGET_FILE:mir-tool>"
+grib_get="$<TARGET_FILE:grib_get>"
 
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
 
