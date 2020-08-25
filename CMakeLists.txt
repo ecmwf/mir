@@ -33,6 +33,8 @@ add_subdirectory( "tests" )
 ###############################################################################
 # installation
 
+set( MIR_LIBRARIES mir )
+
 ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files
                       SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING
                       DONT_PACK BUGS TODO)
