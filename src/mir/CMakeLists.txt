@@ -898,8 +898,14 @@ ecbuild_add_library(
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
   PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
+  PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+                     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
 )
 
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
+endif()
+
+if (HAVE_PNG)
+    target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
