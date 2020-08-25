@@ -5,7 +5,18 @@
 
 #include "mir/api/mir_version.h"
 
-#cmakedefine HAVE_NETCDF
-#cmakedefine HAVE_PNG
+#cmakedefine mir_HAVE_NETCDF
+#ifdef mir_HAVE_NETCDF
+#define MIR_HAVE_NETCDF 1
+#else
+#define MIR_HAVE_NETCDF 0
+#endif
+
+#cmakedefine mir_HAVE_PNG
+#ifdef mir_HAVE_PNG
+#define MIR_HAVE_PNG 1
+#else
+#define MIR_HAVE_PNG 0
+#endif
 
 #endif  // mir_config_h

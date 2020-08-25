@@ -15,7 +15,7 @@ set(TEST_INPUT_FILES
     "vo-d_sh.grib"
     "z_sh.grib")
 
-if(HAVE_NETCDF AND ATLAS_HAVE_TESSELATION)
+if(mir_HAVE_NETCDF AND atlas_HAVE_TESSELATION)
    list(APPEND TEST_INPUT_FILES "nemo.nc")
 endif()
 
@@ -102,4 +102,3 @@ endif()
 add_subdirectory(plans)
 add_subdirectory(tool)
 add_subdirectory(unit)
-

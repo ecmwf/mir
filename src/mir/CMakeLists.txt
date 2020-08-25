@@ -746,7 +746,7 @@ list(APPEND mir_srcs
     util/Wind.h
 )
 
-if (HAVE_NETCDF)
+if (mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
@@ -900,6 +900,6 @@ ecbuild_add_library(
   PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
 )
 
-if(HAVE_NETCDF)
+if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
