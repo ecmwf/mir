@@ -9,8 +9,7 @@ foreach(_t ${test_files})
         ARGS        ${_t}
         ENVIRONMENT ${_testEnvironment})
     if((_t MATCHES "[.]fail$") OR
-       (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
-       (_t MATCHES "[.]atlas[.]"))
+       (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS))
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endif()
 endforeach()
