@@ -109,7 +109,6 @@ list(APPEND mir_srcs
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    api/Atlas.cc
     api/Atlas.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
@@ -647,119 +646,111 @@ list(APPEND mir_srcs
     util/Types.h
     util/Wind.cc
     util/Wind.h
-  )
-
-
-if (HAVE_ATLAS)
-    list(APPEND mir_srcs
-        action/filter/NablaFilter.cc
-        action/filter/NablaFilter.h
-        action/filter/NablaFilterFVMT.cc
-        action/filter/NablaFilterFVMT.h
-        action/transform/InvtransScalar.cc
-        action/transform/InvtransScalar.h
-        action/transform/InvtransVodTouv.cc
-        action/transform/InvtransVodTouv.h
-        action/transform/ShToGridDef.cc
-        action/transform/ShToGridDef.h
-        action/transform/ShToGridded.cc
-        action/transform/ShToGridded.h
-        action/transform/ShToNamedGrid.cc
-        action/transform/ShToNamedGrid.h
-        action/transform/ShToOctahedralGG.cc
-        action/transform/ShToOctahedralGG.h
-        action/transform/ShToPoints.cc
-        action/transform/ShToPoints.h
-        action/transform/ShToReducedGG.cc
-        action/transform/ShToReducedGG.h
-        action/transform/ShToReducedGGPLGiven.cc
-        action/transform/ShToReducedGGPLGiven.h
-        action/transform/ShToRegularGG.cc
-        action/transform/ShToRegularGG.h
-        action/transform/ShToRegularLL.cc
-        action/transform/ShToRegularLL.h
-        action/transform/ShToRotatedNamedGrid.cc
-        action/transform/ShToRotatedNamedGrid.h
-        action/transform/ShToRotatedOctahedralGG.cc
-        action/transform/ShToRotatedOctahedralGG.h
-        action/transform/ShToRotatedReducedGG.cc
-        action/transform/ShToRotatedReducedGG.h
-        action/transform/ShToRotatedReducedGGPLGiven.cc
-        action/transform/ShToRotatedReducedGGPLGiven.h
-        action/transform/ShToRotatedRegularGG.cc
-        action/transform/ShToRotatedRegularGG.h
-        action/transform/ShToRotatedRegularLL.cc
-        action/transform/ShToRotatedRegularLL.h
-        action/transform/ShToTypedGrid.cc
-        action/transform/ShToTypedGrid.h
-        action/transform/ShTruncate.cc
-        action/transform/ShTruncate.h
-        action/transform/ShVodToUV.cc
-        action/transform/ShVodToUV.h
-        action/transform/TransCache.cc
-        action/transform/TransCache.h
-        key/grid/ClenshawCurtisPattern.cc
-        key/grid/ClenshawCurtisPattern.h
-        key/grid/NamedClenshawCurtis.cc
-        key/grid/NamedClenshawCurtis.h
-        key/grid/NamedORCA.cc
-        key/grid/NamedORCA.h
-        key/grid/ORCAPattern.cc
-        key/grid/ORCAPattern.h
-        method/ProxyMethod.cc
-        method/ProxyMethod.h
-        method/fe/BuildNodeLumpedMassMatrix.cc
-        method/fe/BuildNodeLumpedMassMatrix.h
-        method/fe/CalculateCellLongestDiagonal.cc
-        method/fe/CalculateCellLongestDiagonal.h
-        method/fe/ConservativeFiniteElement.cc
-        method/fe/ConservativeFiniteElement.h
-        method/fe/FEBilinear.cc
-        method/fe/FEBilinear.h
-        method/fe/FELinear.cc
-        method/fe/FELinear.h
-        method/fe/FiniteElement.cc
-        method/fe/FiniteElement.h
-        method/nonlinear/Heaviest.cc
-        method/nonlinear/Heaviest.h
-        method/nonlinear/MissingIfAllMissing.cc
-        method/nonlinear/MissingIfAllMissing.h
-        method/nonlinear/MissingIfAnyMissing.cc
-        method/nonlinear/MissingIfAnyMissing.h
-        method/nonlinear/MissingIfHeaviestMissing.cc
-        method/nonlinear/MissingIfHeaviestMissing.h
-        method/nonlinear/NoNonLinear.cc
-        method/nonlinear/NoNonLinear.h
-        method/nonlinear/NonLinear.cc
-        method/nonlinear/NonLinear.h
-        method/nonlinear/SimulateMissingValue.cc
-        method/nonlinear/SimulateMissingValue.h
-        method/structured/StructuredBilinearLatLon.cc
-        method/structured/StructuredBilinearLatLon.h
-        method/structured/StructuredLinear3D.cc
-        method/structured/StructuredLinear3D.h
-        method/structured/StructuredMethod.cc
-        method/structured/StructuredMethod.h
-        repres/other/ClenshawCurtis.cc
-        repres/other/ClenshawCurtis.h
-        repres/other/ORCA.cc
-        repres/other/ORCA.h
-        repres/regular/Lambert.cc
-        repres/regular/Lambert.h
-        repres/regular/LambertAzimuthalEqualArea.cc
-        repres/regular/LambertAzimuthalEqualArea.h
-        repres/regular/Mercator.cc
-        repres/regular/Mercator.h
-        repres/regular/PolarStereographic.cc
-        repres/regular/PolarStereographic.h
-        repres/regular/RegularGrid.cc
-        repres/regular/RegularGrid.h
-        util/MeshGeneratorParameters.cc
-        util/MeshGeneratorParameters.h
-        )
-    set(libatlas atlas)
-endif()
-
+    action/filter/NablaFilter.cc
+    action/filter/NablaFilter.h
+    action/filter/NablaFilterFVMT.cc
+    action/filter/NablaFilterFVMT.h
+    action/transform/InvtransScalar.cc
+    action/transform/InvtransScalar.h
+    action/transform/InvtransVodTouv.cc
+    action/transform/InvtransVodTouv.h
+    action/transform/ShToGridDef.cc
+    action/transform/ShToGridDef.h
+    action/transform/ShToGridded.cc
+    action/transform/ShToGridded.h
+    action/transform/ShToNamedGrid.cc
+    action/transform/ShToNamedGrid.h
+    action/transform/ShToOctahedralGG.cc
+    action/transform/ShToOctahedralGG.h
+    action/transform/ShToPoints.cc
+    action/transform/ShToPoints.h
+    action/transform/ShToReducedGG.cc
+    action/transform/ShToReducedGG.h
+    action/transform/ShToReducedGGPLGiven.cc
+    action/transform/ShToReducedGGPLGiven.h
+    action/transform/ShToRegularGG.cc
+    action/transform/ShToRegularGG.h
+    action/transform/ShToRegularLL.cc
+    action/transform/ShToRegularLL.h
+    action/transform/ShToRotatedNamedGrid.cc
+    action/transform/ShToRotatedNamedGrid.h
+    action/transform/ShToRotatedOctahedralGG.cc
+    action/transform/ShToRotatedOctahedralGG.h
+    action/transform/ShToRotatedReducedGG.cc
+    action/transform/ShToRotatedReducedGG.h
+    action/transform/ShToRotatedReducedGGPLGiven.cc
+    action/transform/ShToRotatedReducedGGPLGiven.h
+    action/transform/ShToRotatedRegularGG.cc
+    action/transform/ShToRotatedRegularGG.h
+    action/transform/ShToRotatedRegularLL.cc
+    action/transform/ShToRotatedRegularLL.h
+    action/transform/ShToTypedGrid.cc
+    action/transform/ShToTypedGrid.h
+    action/transform/ShTruncate.cc
+    action/transform/ShTruncate.h
+    action/transform/ShVodToUV.cc
+    action/transform/ShVodToUV.h
+    action/transform/TransCache.cc
+    action/transform/TransCache.h
+    key/grid/ClenshawCurtisPattern.cc
+    key/grid/ClenshawCurtisPattern.h
+    key/grid/NamedClenshawCurtis.cc
+    key/grid/NamedClenshawCurtis.h
+    key/grid/NamedORCA.cc
+    key/grid/NamedORCA.h
+    key/grid/ORCAPattern.cc
+    key/grid/ORCAPattern.h
+    method/ProxyMethod.cc
+    method/ProxyMethod.h
+    method/fe/BuildNodeLumpedMassMatrix.cc
+    method/fe/BuildNodeLumpedMassMatrix.h
+    method/fe/CalculateCellLongestDiagonal.cc
+    method/fe/CalculateCellLongestDiagonal.h
+    method/fe/ConservativeFiniteElement.cc
+    method/fe/ConservativeFiniteElement.h
+    method/fe/FEBilinear.cc
+    method/fe/FEBilinear.h
+    method/fe/FELinear.cc
+    method/fe/FELinear.h
+    method/fe/FiniteElement.cc
+    method/fe/FiniteElement.h
+    method/nonlinear/Heaviest.cc
+    method/nonlinear/Heaviest.h
+    method/nonlinear/MissingIfAllMissing.cc
+    method/nonlinear/MissingIfAllMissing.h
+    method/nonlinear/MissingIfAnyMissing.cc
+    method/nonlinear/MissingIfAnyMissing.h
+    method/nonlinear/MissingIfHeaviestMissing.cc
+    method/nonlinear/MissingIfHeaviestMissing.h
+    method/nonlinear/NoNonLinear.cc
+    method/nonlinear/NoNonLinear.h
+    method/nonlinear/NonLinear.cc
+    method/nonlinear/NonLinear.h
+    method/nonlinear/SimulateMissingValue.cc
+    method/nonlinear/SimulateMissingValue.h
+    method/structured/StructuredBilinearLatLon.cc
+    method/structured/StructuredBilinearLatLon.h
+    method/structured/StructuredLinear3D.cc
+    method/structured/StructuredLinear3D.h
+    method/structured/StructuredMethod.cc
+    method/structured/StructuredMethod.h
+    repres/other/ClenshawCurtis.cc
+    repres/other/ClenshawCurtis.h
+    repres/other/ORCA.cc
+    repres/other/ORCA.h
+    repres/regular/Lambert.cc
+    repres/regular/Lambert.h
+    repres/regular/LambertAzimuthalEqualArea.cc
+    repres/regular/LambertAzimuthalEqualArea.h
+    repres/regular/Mercator.cc
+    repres/regular/Mercator.h
+    repres/regular/PolarStereographic.cc
+    repres/regular/PolarStereographic.h
+    repres/regular/RegularGrid.cc
+    repres/regular/RegularGrid.h
+    util/MeshGeneratorParameters.cc
+    util/MeshGeneratorParameters.h
+)
 
 if (HAVE_NETCDF)
     list(APPEND mir_srcs
@@ -912,8 +903,8 @@ ecbuild_add_library(
   SOURCES            ${mir_srcs}
   GENERATED          api/mir_version.cc
   TEMPLATES          ${mir_tmpls}
-  PUBLIC_LIBS        ${libatlas} eckit_linalg eckit_geometry eckit_option eckit eccodes
-  )
+  PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
+)
 
 if(HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)

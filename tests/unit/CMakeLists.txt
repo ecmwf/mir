@@ -15,10 +15,7 @@ set(tests
     spectral_order
     style
     wind
-    )
-if(HAVE_ATLAS)
-    list(APPEND tests atlas)
-endif()
+    atlas)
 
 foreach( _t ${tests})
   ecbuild_add_test(
@@ -28,4 +25,3 @@ foreach( _t ${tests})
       ENVIRONMENT       ${_testEnvironment}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 endforeach()
-

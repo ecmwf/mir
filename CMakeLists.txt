@@ -24,10 +24,6 @@ ecbuild_find_package( NAME eccodes VERSION 2.19 REQUIRED )
 ecbuild_find_package( NAME eckit   VERSION 1.10 REQUIRED )
 ecbuild_find_package( NAME atlas   VERSION 0.20 REQUIRED )
 
-if(ATLAS_FOUND)
-    set(HAVE_ATLAS 1)
-endif()
-
 if(HAVE_PNG)
     add_definitions(${PNG_DEFINITIONS})
 endif()

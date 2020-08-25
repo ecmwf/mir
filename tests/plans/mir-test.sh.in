@@ -15,7 +15,7 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir="@MIR_TOOL@"
+mir="@$<TARGET_FILE:mir-tool>@"
 diff="@DIFF_TOOL@"
 mars_script="@MARS_SCRIPT@"
 

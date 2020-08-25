@@ -13,7 +13,7 @@ if(MARS_SCRIPT)
             ENVIRONMENT ${_testEnvironment})
         if((_t MATCHES "[.]fail$") OR
            (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
-           (_t MATCHES "[.]atlas[.]" AND NOT HAVE_ATLAS))
+           (_t MATCHES "[.]atlas[.]"))
             set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
         endif()
     endforeach()

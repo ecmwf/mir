@@ -15,10 +15,11 @@ echo "======> $1"
 
 t=$(basename $1)
 
-mir="@MIR_TOOL@"
-mir_compare="@MIR_COMPARE@"
-grib_get="@GRIB_GET@"
-grib_compare="@GRIB_COMPARE@"
+mir="@$<TARGET_FILE:mir-tool>@"
+mir_compare="@$<TARGET_FILE:mir-compare>@"
+grib_get="@$<TARGET_FILE:grib_get>@"
+grib_compare="@$<TARGET_FILE:grib_compare>@"
+
 mars_script="@MARS_SCRIPT@"
 
 tests_assertions_dir="@CMAKE_CURRENT_SOURCE_DIR@"
