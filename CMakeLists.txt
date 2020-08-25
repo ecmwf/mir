@@ -1,9 +1,6 @@
-cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
-if(POLICY CMP0074)
-    cmake_policy(SET CMP0074 NEW)
-endif()
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
-find_package(ecbuild 3.1 REQUIRED)
+find_package(ecbuild 3.4 REQUIRED)
 
 project(mir VERSION 1.6.2 LANGUAGES CXX)
 
@@ -24,12 +21,6 @@ ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support 
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
 ecbuild_find_package( NAME eccodes VERSION 2.19 REQUIRED )
-if( eccodes_HAVE_MEMFS )
-    ecbuild_info( "  Note: eccodes compiled with memfs" )
-else()
-    ecbuild_info( "  Note: eccodes NOT compiled with memfs" )
-endif()
-
 ecbuild_find_package( NAME eckit   VERSION 1.10 REQUIRED )
 ecbuild_find_package( NAME atlas   VERSION 0.20 REQUIRED )
 
