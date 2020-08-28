@@ -1,21 +1,16 @@
 ### config headers
 
-ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/mir )
+ecbuild_generate_config_headers(DESTINATION ${INSTALL_INCLUDE_DIR}/mir)
 
-configure_file( api/mir_config.h.in   api/mir_config.h  )
-configure_file( api/mir_version.h.in  api/mir_version.h )
-configure_file( api/mir_version.cc.in  api/mir_version.cc )
+configure_file(api/mir_config.h.in api/mir_config.h)
+configure_file(api/mir_version.h.in api/mir_version.h)
+configure_file(api/mir_version.cc.in api/mir_version.cc)
 
-install(
-  FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h
-    ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
-  DESTINATION
-    ${INSTALL_INCLUDE_DIR}/mir/api
-  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
+        DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
 
 
-list( APPEND mir_srcs api/mir_version.cc )
+list(APPEND mir_srcs api/mir_version.cc)
 
 
 list(APPEND mir_srcs
@@ -743,8 +738,7 @@ list(APPEND mir_srcs
     util/TraceResourceUsage.h
     util/Types.h
     util/Wind.cc
-    util/Wind.h
-)
+    util/Wind.h)
 
 if (mir_HAVE_NETCDF)
     list(APPEND mir_srcs
@@ -877,8 +871,7 @@ if (mir_HAVE_NETCDF)
         netcdf/VirtualInputDimension.cc
         netcdf/VirtualInputDimension.h
         netcdf/VirtualOutputDimension.cc
-        netcdf/VirtualOutputDimension.h
-        )
+        netcdf/VirtualOutputDimension.h)
 endif()
 
 
@@ -891,15 +884,15 @@ list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 
 ecbuild_add_library(
-  TARGET             mir
-  INSTALL_HEADERS    LISTED
-  HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-  SOURCES            ${mir_srcs}
-  GENERATED          api/mir_version.cc
-  TEMPLATES          ${mir_tmpls}
-  PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
-  PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
-                     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+    TARGET             mir
+    INSTALL_HEADERS    LISTED
+    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
+    SOURCES            ${mir_srcs}
+    GENERATED          api/mir_version.cc
+    TEMPLATES          ${mir_tmpls}
+    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+                       $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
 )
 
 if(mir_HAVE_NETCDF)
@@ -909,3 +902,4 @@ endif()
 if (HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
+

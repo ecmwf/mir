@@ -41,3 +41,4 @@ else()
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir NOINSTALL)
     endforeach()
 endif()
+

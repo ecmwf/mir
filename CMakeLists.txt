@@ -1,3 +1,13 @@
+# (C) Copyright 1996- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
+
+
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 find_package(ecbuild 3.4 REQUIRED)
@@ -8,34 +18,27 @@ set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b f
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-###############################################################################
-# project
 
-ecbuild_add_option( FEATURE MIR_TOOLS          DEFAULT OFF DESCRIPTION "install mir tools" )
-ecbuild_add_option( FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files" )
+ecbuild_add_option(FEATURE MIR_TOOLS          DEFAULT OFF DESCRIPTION "install tools")
+ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files")
+ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions")
+ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
+ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 
-ecbuild_add_option( FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions" )
-ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C" )
-ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
+ecbuild_find_package(NAME eccodes VERSION 2.19 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 1.10 REQUIRED)
+ecbuild_find_package(NAME atlas   VERSION 0.20 REQUIRED)
 
-ecbuild_find_package( NAME eccodes VERSION 2.19 REQUIRED )
-ecbuild_find_package( NAME eckit   VERSION 1.10 REQUIRED )
-ecbuild_find_package( NAME atlas   VERSION 0.20 REQUIRED )
+add_subdirectory(src)
+add_subdirectory(etc)
+add_subdirectory(share)
+add_subdirectory(tests)
 
-###############################################################################
-# contents
 
-add_subdirectory( "src" )
-add_subdirectory( "etc" )
-add_subdirectory( "share" )
-add_subdirectory( "tests" )
-
-###############################################################################
-# installation
-
-set( MIR_LIBRARIES mir )
+set(MIR_LIBRARIES mir)
 
 ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
-ecbuild_install_project( NAME ${PROJECT_NAME} )
+ecbuild_install_project(NAME ${PROJECT_NAME})
 
 ecbuild_print_summary()
+
