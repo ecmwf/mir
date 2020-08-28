@@ -35,10 +35,7 @@ add_subdirectory( "tests" )
 
 set( MIR_LIBRARIES mir )
 
-ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files
-                      SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING
-                      DONT_PACK BUGS TODO)
-
+ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
 ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 ecbuild_print_summary()
