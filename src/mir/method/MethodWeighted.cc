@@ -144,8 +144,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     // Check with $getconf -a | grep -i name
     std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-";
     eckit::MD5 hash;
-    hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox() << pruneEpsilon_
-         << lsmWeightAdjustment_;
+    hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox();
 
     disk_key += hash;
     std::string memory_key = disk_key;
@@ -488,6 +487,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
 
 void MethodWeighted::hash(eckit::MD5& md5) const {
     md5.add(name());
+    md5 << pruneEpsilon_;
+    md5 << lsmWeightAdjustment_;
     for (auto& n : nonLinear_) {
         n->hash(md5);
     }
