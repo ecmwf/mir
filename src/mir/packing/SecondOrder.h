@@ -10,11 +10,11 @@
  */
 
 
-#ifndef SecondOrder_H
-#define SecondOrder_H
-
+#ifndef mir_packing_SecondOrder_h
+#define mir_packing_SecondOrder_h
 
 #include "mir/packing/Packer.h"
+
 
 namespace mir {
 namespace packing {
@@ -22,16 +22,19 @@ namespace packing {
 
 class SecondOrder : public Packer {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    SecondOrder(const std::string& name);
+    SecondOrder(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~SecondOrder();  // Change to virtual if base class
+    virtual ~SecondOrder();
 
     // -- Convertors
     // None
@@ -40,6 +43,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +52,14 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -68,15 +71,13 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    SecondOrder(const SecondOrder&);
-    SecondOrder& operator=(const SecondOrder&);
-
     // -- Members
     // None
 
     // -- Methods
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&) const;
 
     // -- Overridden methods
     // None
@@ -85,14 +86,15 @@ private:
     // None
 
     // -- Class methods
-
-    virtual void fill(grib_info&, const repres::Representation&) const;
-
+    // None
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace packing
 }  // namespace mir
+
+
 #endif

@@ -10,22 +10,28 @@
  */
 
 
-#ifndef Packer_H
-#define Packer_H
+#ifndef mir_packing_Packer_h
+#define mir_packing_Packer_h
 
 #include <iosfwd>
 #include <string>
 
+
 struct grib_info;
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
 class Representation;
 }
 }  // namespace mir
 
+
 namespace mir {
 namespace packing {
+
 
 class Packer {
 public:
@@ -34,15 +40,19 @@ public:
 
     // -- Constructors
 
+    Packer(const param::MIRParametrisation&);
+    Packer(const Packer&) = delete;
 
     // -- Destructor
 
+    virtual ~Packer();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Packer&) = delete;
 
     // -- Methods
 
@@ -55,24 +65,15 @@ public:
     // None
 
     // -- Class methods
-
-    static const Packer& lookup(const std::string& name);
-    static void list(std::ostream&);
-
+    // None
 
 protected:
-    Packer(const std::string& name);
-    virtual ~Packer();  // Change to virtual if base class
-
-
     // -- Members
-
-    std::string name_;
+    // None
 
     // -- Methods
 
-
-    virtual void print(std::ostream&) const = 0;  // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -84,16 +85,11 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Packer(const Packer&);
-    Packer& operator=(const Packer&);
-
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -102,7 +98,7 @@ private:
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
@@ -113,6 +109,38 @@ private:
 };
 
 
+class PackerFactory {
+
+    std::string name_;
+
+    virtual Packer* make(const param::MIRParametrisation&) = 0;
+
+    PackerFactory(const PackerFactory&) = delete;
+    PackerFactory& operator=(const PackerFactory&) = delete;
+
+protected:
+    PackerFactory(const std::string&);
+
+    virtual ~PackerFactory();
+
+public:
+    static Packer* build(const std::string&, const param::MIRParametrisation&);
+
+    static void list(std::ostream&);
+};
+
+
+template <class T>
+class PackerBuilder : public PackerFactory {
+    virtual Packer* make(const param::MIRParametrisation& param) { return new T(param); }
+
+public:
+    PackerBuilder(const std::string& name) : PackerFactory(name) {}
+};
+
+
 }  // namespace packing
 }  // namespace mir
+
+
 #endif

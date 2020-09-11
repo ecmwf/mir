@@ -21,10 +21,10 @@ namespace mir {
 namespace packing {
 
 
-static CCSDS packing("ccsds");
+static PackerBuilder<CCSDS> __packer("ccsds");
 
 
-CCSDS::CCSDS(const std::string& name) : Packer(name) {}
+CCSDS::CCSDS(const param::MIRParametrisation& param) : Packer(param) {}
 
 
 CCSDS::~CCSDS() = default;

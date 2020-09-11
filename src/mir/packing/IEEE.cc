@@ -21,10 +21,10 @@ namespace mir {
 namespace packing {
 
 
-static IEEE packing("ieee");
+static PackerBuilder<IEEE> __packer("ieee");
 
 
-IEEE::IEEE(const std::string& name) : Packer(name) {}
+IEEE::IEEE(const param::MIRParametrisation& param) : Packer(param) {}
 
 
 IEEE::~IEEE() = default;

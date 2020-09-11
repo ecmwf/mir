@@ -21,7 +21,11 @@ namespace mir {
 namespace packing {
 
 
-SecondOrder::SecondOrder(const std::string& name) : Packer(name) {}
+static PackerBuilder<SecondOrder> __packer1("second-order");
+static PackerBuilder<SecondOrder> __packer2("so");  // For the lazy
+
+
+SecondOrder::SecondOrder(const param::MIRParametrisation& param) : Packer(param) {}
 
 
 SecondOrder::~SecondOrder() = default;
@@ -36,10 +40,6 @@ void SecondOrder::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
 }
-
-
-static SecondOrder packing1("second-order");
-static SecondOrder packing2("so");  // For the lazy
 
 
 }  // namespace packing
