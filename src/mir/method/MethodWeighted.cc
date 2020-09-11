@@ -142,21 +142,16 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     // TODO: add (possibly) missing unique identifiers
     // NOTE: key has to be relatively short, to avoid filesystem "File name too long" errors
     // Check with $getconf -a | grep -i name
-    std::string disk_key = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-";
     eckit::MD5 hash;
     hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox();
 
-    disk_key += hash;
+    std::string disk_key   = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-" + std::string(hash);
     std::string memory_key = disk_key;
 
     // Add masks if any
     if (masks.active()) {
-
-        std::string masks_key = "-lsm-";
-        masks_key += masks.cacheName();
-
+        std::string masks_key = "-lsm-" + masks.cacheName();
         memory_key += masks_key;
-
         if (masks.cacheable()) {
             disk_key += masks_key;
         }
@@ -164,8 +159,8 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
 
     {
-        auto j           = matrix_cache.find(memory_key);
-        const bool found = j != matrix_cache.end();
+        auto j     = matrix_cache.find(memory_key);
+        auto found = j != matrix_cache.end();
         log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, "
             << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
