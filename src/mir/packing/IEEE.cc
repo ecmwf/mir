@@ -28,18 +28,7 @@ namespace packing {
 static IEEE __packer("ieee");
 
 
-IEEE::IEEE(const std::string& name) : Packer(name) {
-    //    long bits = -1;
-    //    ASSERT(param.userParametrisation().get("accuracy", bits) || param.fieldParametrisation().get("accuracy",
-    //    bits));
-
-    //    if (bits != 32 && bits != 64) {
-    //        std::ostringstream msg;
-    //        msg << *this << ": only supports bitsPerValue 32 and 64 (from input, or as set by 'accuracy')";
-    //        eckit::Log::error() << msg.str() << std::endl;
-    //        throw eckit::UserError(msg.str());
-    //    }
-}
+IEEE::IEEE(const std::string& name) : Packer(name) {}
 
 
 IEEE::~IEEE() = default;
@@ -50,7 +39,16 @@ void IEEE::print(std::ostream& out) const {
 }
 
 
-void IEEE::fill(grib_info& info, const repres::Representation&) const {
+void IEEE::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation& user,
+                const param::MIRParametrisation& field) const {
+    long bits = -1;
+    if ((user.get("accuracy", bits) || field.get("accuracy", bits)) && (bits != 32 && bits != 64)) {
+        std::ostringstream msg;
+        msg << *this << ": only supports bitsPerValue 32 and 64 (from input, or as set by 'accuracy')";
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
 }

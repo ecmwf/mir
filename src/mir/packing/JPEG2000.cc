@@ -36,7 +36,8 @@ void JPEG2000::print(std::ostream& out) const {
 }
 
 
-void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
+void JPEG2000::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation&,
+                    const param::MIRParametrisation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_JPEG;
 }

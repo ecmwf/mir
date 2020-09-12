@@ -77,7 +77,8 @@ private:
     // -- Methods
 
     virtual void print(std::ostream&) const;
-    virtual void fill(grib_info&, const repres::Representation&) const;
+    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
+                      const param::MIRParametrisation&) const;
 
     // -- Overridden methods
     // None

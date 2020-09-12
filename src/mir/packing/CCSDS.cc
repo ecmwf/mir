@@ -35,7 +35,8 @@ void CCSDS::print(std::ostream& out) const {
 }
 
 
-void CCSDS::fill(grib_info& info, const repres::Representation&) const {
+void CCSDS::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation&,
+                 const param::MIRParametrisation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_CCSDS;
 }

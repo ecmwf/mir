@@ -34,7 +34,8 @@ void ArchivedValue::print(std::ostream& out) const {
 }
 
 
-void ArchivedValue::fill(grib_info&, const repres::Representation&) const {
+void ArchivedValue::fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
+                         const param::MIRParametrisation&) const {
     // Nothing to do
 }
 

@@ -57,7 +57,8 @@ public:
 
     static const Packer& lookup(const std::string&);
     static void list(std::ostream&);
-    virtual void fill(grib_info&, const repres::Representation&) const = 0;
+    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation& user,
+                      const param::MIRParametrisation& field) const = 0;
 
     // -- Overridden methods
     // None

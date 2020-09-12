@@ -36,7 +36,8 @@ void SecondOrder::print(std::ostream& out) const {
 }
 
 
-void SecondOrder::fill(grib_info& info, const repres::Representation&) const {
+void SecondOrder::fill(grib_info& info, const repres::Representation& repres, const param::MIRParametrisation&,
+                       const param::MIRParametrisation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
 }
