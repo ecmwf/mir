@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    ArchivedValue(const param::MIRParametrisation&);
+    ArchivedValue(const std::string& name);
 
     // -- Destructor
 

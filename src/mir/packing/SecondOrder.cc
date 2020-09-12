@@ -21,11 +21,11 @@ namespace mir {
 namespace packing {
 
 
-static PackerBuilder<SecondOrder> __packer1("second-order");
-static PackerBuilder<SecondOrder> __packer2("so");  // For the lazy
+static SecondOrder __packer1("second-order");
+static SecondOrder __packer2("so");  // For the lazy
 
 
-SecondOrder::SecondOrder(const param::MIRParametrisation& param) : Packer(param) {}
+SecondOrder::SecondOrder(const std::string& name) : Packer(name) {}
 
 
 SecondOrder::~SecondOrder() = default;

@@ -25,27 +25,21 @@ namespace mir {
 namespace packing {
 
 
-static pthread_once_t once                      = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                = nullptr;
-static std::map<std::string, PackerFactory*>* m = nullptr;
+static pthread_once_t once               = PTHREAD_ONCE_INIT;
+static eckit::Mutex* local_mutex         = nullptr;
+static std::map<std::string, Packer*>* m = nullptr;
 static void init() {
     local_mutex = new eckit::Mutex();
-    m           = new std::map<std::string, PackerFactory*>();
+    m           = new std::map<std::string, Packer*>();
 }
 
 
-Packer::Packer(const param::MIRParametrisation&) {}
-
-
-Packer::~Packer() = default;
-
-
-PackerFactory::PackerFactory(const std::string& name) : name_(name) {
+Packer::Packer(const std::string& name) : name_(name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PackerFactory: duplicate '" + name + "'");
+        throw eckit::SeriousBug("Packer: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -53,7 +47,7 @@ PackerFactory::PackerFactory(const std::string& name) : name_(name) {
 }
 
 
-PackerFactory::~PackerFactory() {
+Packer::~Packer() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -62,7 +56,7 @@ PackerFactory::~PackerFactory() {
 }
 
 
-void PackerFactory::list(std::ostream& out) {
+void Packer::list(std::ostream& out) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -74,19 +68,19 @@ void PackerFactory::list(std::ostream& out) {
 }
 
 
-Packer* PackerFactory::build(const std::string& name, const param::MIRParametrisation& params) {
+const Packer& Packer::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "PackerFactory: looking for '" << name << "'" << std::endl;
+    eckit::Log::debug<LibMir>() << "Packer: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j != m->end()) {
-        return j->second->make(params);
+        return *(j->second);
     }
 
-    list(eckit::Log::error() << "PackerFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("PackerFactory: unknown '" + name + "'");
+    list(eckit::Log::error() << "Packer: unknown '" << name << "', choices are: ");
+    throw eckit::SeriousBug("Packer: unknown '" + name + "'");
 }
 
 

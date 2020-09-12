@@ -22,11 +22,11 @@ namespace mir {
 namespace packing {
 
 
-static PackerBuilder<Complex> __packer1("complex");
-static PackerBuilder<Complex> __packer2("co");  // For the lazy
+static Complex __packer1("complex");
+static Complex __packer2("co");  // For the lazy
 
 
-Complex::Complex(const param::MIRParametrisation& param) : Packer(param) {}
+Complex::Complex(const std::string& name) : Packer(name) {}
 
 
 Complex::~Complex() = default;

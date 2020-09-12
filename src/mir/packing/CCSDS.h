@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    CCSDS(const param::MIRParametrisation&);
+    CCSDS(const std::string& name);
 
     // -- Destructor
 

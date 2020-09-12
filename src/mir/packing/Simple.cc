@@ -22,10 +22,10 @@ namespace mir {
 namespace packing {
 
 
-static PackerBuilder<Simple> __packer("simple");
+static Simple __packer("simple");
 
 
-Simple::Simple(const param::MIRParametrisation& param) : Packer(param) {}
+Simple::Simple(const std::string& name) : Packer(name) {}
 
 
 Simple::~Simple() = default;

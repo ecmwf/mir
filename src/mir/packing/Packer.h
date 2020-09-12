@@ -40,7 +40,6 @@ public:
 
     // -- Constructors
 
-    Packer(const param::MIRParametrisation&);
     Packer(const Packer&) = delete;
 
     // -- Destructor
@@ -56,6 +55,8 @@ public:
 
     // -- Methods
 
+    static const Packer& lookup(const std::string&);
+    static void list(std::ostream&);
     virtual void fill(grib_info&, const repres::Representation&) const = 0;
 
     // -- Overridden methods
@@ -68,8 +69,13 @@ public:
     // None
 
 protected:
+    // -- Constructors
+
+    Packer(const std::string& name);
+
     // -- Members
-    // None
+
+    std::string name_;
 
     // -- Methods
 
@@ -106,36 +112,6 @@ private:
         p.print(s);
         return s;
     }
-};
-
-
-class PackerFactory {
-
-    std::string name_;
-
-    virtual Packer* make(const param::MIRParametrisation&) = 0;
-
-    PackerFactory(const PackerFactory&) = delete;
-    PackerFactory& operator=(const PackerFactory&) = delete;
-
-protected:
-    PackerFactory(const std::string&);
-
-    virtual ~PackerFactory();
-
-public:
-    static Packer* build(const std::string&, const param::MIRParametrisation&);
-
-    static void list(std::ostream&);
-};
-
-
-template <class T>
-class PackerBuilder : public PackerFactory {
-    virtual Packer* make(const param::MIRParametrisation& param) { return new T(param); }
-
-public:
-    PackerBuilder(const std::string& name) : PackerFactory(name) {}
 };
 
 

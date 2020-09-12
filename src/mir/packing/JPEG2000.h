@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    JPEG2000(const param::MIRParametrisation&);
+    JPEG2000(const std::string& name);
 
     // -- Destructor
 

@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    IEEE(const param::MIRParametrisation&);
+    IEEE(const std::string& name);
 
     // -- Destructor
 

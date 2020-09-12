@@ -19,11 +19,11 @@ namespace mir {
 namespace packing {
 
 
-static PackerBuilder<ArchivedValue> __packer1("archived-value");
-static PackerBuilder<ArchivedValue> __packer2("av");  // For the lazy
+static ArchivedValue __packer1("archived-value");
+static ArchivedValue __packer2("av");  // For the lazy
 
 
-ArchivedValue::ArchivedValue(const param::MIRParametrisation& param) : Packer(param) {}
+ArchivedValue::ArchivedValue(const std::string& name) : Packer(name) {}
 
 
 ArchivedValue::~ArchivedValue() = default;

@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    Complex(const param::MIRParametrisation&);
+    Complex(const std::string& name);
 
     // -- Destructor
 

@@ -268,7 +268,7 @@ public:
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<packing::PackerFactory>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<packing::Packer>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));

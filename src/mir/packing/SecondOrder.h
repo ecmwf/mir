@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    SecondOrder(const param::MIRParametrisation&);
+    SecondOrder(const std::string& name);
 
     // -- Destructor
 
