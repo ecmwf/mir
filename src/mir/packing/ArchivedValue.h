@@ -13,8 +13,8 @@
 #ifndef mir_packing_ArchivedValue_h
 #define mir_packing_ArchivedValue_h
 
-
 #include "mir/packing/Packer.h"
+
 
 namespace mir {
 namespace packing {
@@ -22,6 +22,9 @@ namespace packing {
 
 class ArchivedValue : public Packer {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
@@ -31,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ArchivedValue();  // Change to virtual if base class
+    virtual ~ArchivedValue();
 
     // -- Convertors
     // None
@@ -40,6 +43,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +52,14 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -68,15 +71,14 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    ArchivedValue(const ArchivedValue&);
-    ArchivedValue& operator=(const ArchivedValue&);
-
     // -- Members
     // None
 
     // -- Methods
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
+                      const param::MIRParametrisation&) const;
 
     // -- Overridden methods
     // None
@@ -85,8 +87,7 @@ private:
     // None
 
     // -- Class methods
-
-    virtual void fill(grib_info&, const repres::Representation&) const;
+    // None
 
     // -- Friends
     // None

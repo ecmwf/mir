@@ -21,6 +21,10 @@ namespace mir {
 namespace packing {
 
 
+static JPEG2000 __packer1("grid_jpeg");
+static JPEG2000 __packer2("jpeg");
+
+
 JPEG2000::JPEG2000(const std::string& name) : Packer(name) {}
 
 
@@ -32,14 +36,11 @@ void JPEG2000::print(std::ostream& out) const {
 }
 
 
-void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
+void JPEG2000::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation&,
+                    const param::MIRParametrisation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_JPEG;
 }
-
-
-static JPEG2000 packing1("grid_jpeg");
-static JPEG2000 packing2("jpeg");
 
 
 }  // namespace packing

@@ -10,22 +10,28 @@
  */
 
 
-#ifndef Packer_H
-#define Packer_H
+#ifndef mir_packing_Packer_h
+#define mir_packing_Packer_h
 
 #include <iosfwd>
 #include <string>
 
+
 struct grib_info;
 
 namespace mir {
+namespace param {
+class MIRParametrisation;
+}
 namespace repres {
 class Representation;
 }
 }  // namespace mir
 
+
 namespace mir {
 namespace packing {
+
 
 class Packer {
 public:
@@ -34,19 +40,25 @@ public:
 
     // -- Constructors
 
+    Packer(const Packer&) = delete;
 
     // -- Destructor
 
+    virtual ~Packer();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    void operator=(const Packer&) = delete;
 
     // -- Methods
 
-    virtual void fill(grib_info&, const repres::Representation&) const = 0;
+    static const Packer& lookup(const std::string&);
+    static void list(std::ostream&);
+    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation& user,
+                      const param::MIRParametrisation& field) const = 0;
 
     // -- Overridden methods
     // None
@@ -55,15 +67,12 @@ public:
     // None
 
     // -- Class methods
-
-    static const Packer& lookup(const std::string& name);
-    static void list(std::ostream&);
-
+    // None
 
 protected:
-    Packer(const std::string& name);
-    virtual ~Packer();  // Change to virtual if base class
+    // -- Constructors
 
+    Packer(const std::string& name);
 
     // -- Members
 
@@ -71,8 +80,7 @@ protected:
 
     // -- Methods
 
-
-    virtual void print(std::ostream&) const = 0;  // Change to virtual if base class
+    virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods
     // None
@@ -84,16 +92,11 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Packer(const Packer&);
-    Packer& operator=(const Packer&);
-
     // -- Members
     // None
 
     // -- Methods
-
+    // None
 
     // -- Overridden methods
     // None
@@ -102,7 +105,7 @@ private:
     // None
 
     // -- Class methods
-
+    // None
 
     // -- Friends
 
@@ -115,4 +118,6 @@ private:
 
 }  // namespace packing
 }  // namespace mir
+
+
 #endif

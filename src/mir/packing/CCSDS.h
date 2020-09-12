@@ -31,7 +31,6 @@ public:
     // -- Constructors
 
     CCSDS(const std::string& name);
-    CCSDS(const CCSDS&) = delete;
 
     // -- Destructor
 
@@ -41,8 +40,7 @@ public:
     // None
 
     // -- Operators
-
-    CCSDS& operator=(const CCSDS&) = delete;
+    // None
 
     // -- Methods
     // None
@@ -61,9 +59,7 @@ protected:
     // None
 
     // -- Methods
-
-    virtual void print(std::ostream&) const;
-    virtual void fill(grib_info&, const repres::Representation&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -79,7 +75,10 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
+                      const param::MIRParametrisation&) const;
 
     // -- Overridden methods
     // None

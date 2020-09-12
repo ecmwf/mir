@@ -23,7 +23,7 @@ ecbuild_add_option( FEATURE MPI                DEFAULT OFF DESCRIPTION "support 
 ecbuild_add_option( FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for NetCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C" )
 ecbuild_add_option( FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG )
 
-ecbuild_use_package( PROJECT eccodes VERSION 2.17 REQUIRED )
+ecbuild_use_package( PROJECT eccodes VERSION 2.19 REQUIRED )
 if( eccodes_HAVE_MEMFS )
     ecbuild_info( "  Note: eccodes compiled with memfs" )
 else()

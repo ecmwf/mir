@@ -19,6 +19,10 @@ namespace mir {
 namespace packing {
 
 
+static ArchivedValue __packer1("archived-value");
+static ArchivedValue __packer2("av");  // For the lazy
+
+
 ArchivedValue::ArchivedValue(const std::string& name) : Packer(name) {}
 
 
@@ -30,13 +34,10 @@ void ArchivedValue::print(std::ostream& out) const {
 }
 
 
-void ArchivedValue::fill(grib_info&, const repres::Representation&) const {
+void ArchivedValue::fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
+                         const param::MIRParametrisation&) const {
     // Nothing to do
 }
-
-
-static ArchivedValue packing1("archived-value");
-static ArchivedValue packing2("av");  // For the lazy
 
 
 }  // namespace packing

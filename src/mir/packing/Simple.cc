@@ -11,13 +11,18 @@
 
 
 #include "mir/packing/Simple.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/Grib.h"
 
 #include <iostream>
 
+#include "mir/repres/Representation.h"
+#include "mir/util/Grib.h"
+
+
 namespace mir {
 namespace packing {
+
+
+static Simple __packer("simple");
 
 
 Simple::Simple(const std::string& name) : Packer(name) {}
@@ -31,13 +36,11 @@ void Simple::print(std::ostream& out) const {
 }
 
 
-void Simple::fill(grib_info& info, const repres::Representation& repres) const {
+void Simple::fill(grib_info& info, const repres::Representation& repres, const param::MIRParametrisation&,
+                  const param::MIRParametrisation&) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setSimplePacking(info);
 }
-
-
-static Simple packing("simple");
 
 
 }  // namespace packing

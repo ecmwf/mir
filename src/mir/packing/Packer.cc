@@ -17,6 +17,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+
 #include "mir/config/LibMir.h"
 
 
@@ -24,9 +25,9 @@ namespace mir {
 namespace packing {
 
 
+static pthread_once_t once               = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex         = nullptr;
 static std::map<std::string, Packer*>* m = nullptr;
-static pthread_once_t once               = PTHREAD_ONCE_INIT;
 static void init() {
     local_mutex = new eckit::Mutex();
     m           = new std::map<std::string, Packer*>();
@@ -74,12 +75,12 @@ const Packer& Packer::lookup(const std::string& name) {
     eckit::Log::debug<LibMir>() << "Packer: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
-    if (j == m->end()) {
-        list(eckit::Log::error() << "Packer: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("Packer: unknown '" + name + "'");
+    if (j != m->end()) {
+        return *(j->second);
     }
 
-    return *(j->second);
+    list(eckit::Log::error() << "Packer: unknown '" << name << "', choices are: ");
+    throw eckit::SeriousBug("Packer: unknown '" + name + "'");
 }
 
 
