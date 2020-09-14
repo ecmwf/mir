@@ -104,6 +104,8 @@ public:
     virtual void addCoordinateVariable(const Variable*);
     virtual Variable* addMissingCoordinates();
 
+    bool hasAttribute(const std::string& name) const;
+
     template <class T>
     T getAttributeValue(const std::string& name) const {
         T result;

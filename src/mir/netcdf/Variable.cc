@@ -400,6 +400,11 @@ void Variable::collectField(std::vector<Field*>&) const {
 }
 
 
+bool Variable::hasAttribute(const std::string& name) const {
+    return attributes_.find(name) != attributes_.end();
+}
+
+
 void Variable::getAttribute(const std::string& name, std::string& value) const {
     auto j = attributes_.find(name);
     if (j == attributes_.end()) {
