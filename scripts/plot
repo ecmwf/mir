@@ -163,7 +163,7 @@ if args.diff or args.error or args.miss:
                 contour_label="off",
                 contour_shade_max_level_colour="rgb(0,0,1)",
                 contour_shade_min_level_colour="rgb(0,0,1)",
-                **contour_extra,
+                **contour_extra
             ),
             mproc(
                 contour="off",
@@ -174,7 +174,7 @@ if args.diff or args.error or args.miss:
                 contour_label="off",
                 contour_shade_max_level_colour="rgb(1,0,0)",
                 contour_shade_min_level_colour="rgb(1,0,0)",
-                **contour_extra,
+                **contour_extra
             ),
         ]
     if args.error:
@@ -185,7 +185,7 @@ if args.diff or args.error or args.miss:
             contour_shade_technique="grid_shading",
             contour_shade_min_level=EPSILON - EPSILON / 2.0,
             contour_label="off",
-            **contour_extra,
+            **contour_extra
         )
     if args.miss:
         contour = mproc(
@@ -197,7 +197,7 @@ if args.diff or args.error or args.miss:
             contour_shade_technique="marker",
             contour_shade_colour_method="list",
             contour_shade_colour_list=["red", "blue"],
-            **contour_extra,
+            **contour_extra
         )
 
 
@@ -217,7 +217,7 @@ output = macro.output(
     output_formats=[args.format[1:]],
     output_name_first_page_number="off",
     output_name=base,
-    **output_extra,
+    **output_extra
 )
 
 # Setting the coordinates of the geographical area
@@ -275,7 +275,7 @@ if args.grid_shading:
         contour_shade="on",
         contour_shade_technique="grid_shading",
         contour_method="linear",
-        **contour_extra,
+        **contour_extra
     )
     grib_extra = {"grib_interpolation_method": "nearest"}
 
@@ -284,7 +284,7 @@ if args.cell_shading:
         contour="off",
         contour_shade="on",
         contour_shade_technique="cell_shading",
-        **contour_extra,
+        **contour_extra
     )
 
 if args.marker:
@@ -292,7 +292,7 @@ if args.marker:
         contour="off",
         contour_shade="on",
         contour_shade_technique="marker",
-        **contour_extra,
+        **contour_extra
     )
 
 data = []
@@ -301,7 +301,7 @@ for i in range(1, 2):
         grib_input_file_name=args.grib[0],
         grib_field_position=i,
         grib_automatic_scaling=scaling,
-        **grib_extra,
+        **grib_extra
     )
     print(grib)
 
