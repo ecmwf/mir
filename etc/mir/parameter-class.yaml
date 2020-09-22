@@ -2291,6 +2291,7 @@ numerics.accumulated:
 - 215089  # Accumulated total aerosol optical depth at 550 nm
 - 228021  # Total sky direct solar radiation at surface
 - 228022  # Clear-sky direct solar radiation at surface
+- 228038  # Liquid water content in snow pack
 - 228100  # Evaporation from the top of canopy
 - 228101  # Evaporation from bare soil
 - 228102  # Evaporation from open water surfaces excluding oceans
@@ -3674,6 +3675,7 @@ rate.mass-flux:
 - 219218  # Wildfire flux of alkanes high oh rate
 - 219219  # Wildfire flux of hydrogen cyanide
 - 219220  # Wildfire flux of acetonitrile
+- 228038  # Liquid water content in snow pack
 - 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
 - 228084  # Flux of Carbon Dioxide Gross Primary Production
 - 228085  # Flux of Carbon Dioxide Ecosystem Respiration
