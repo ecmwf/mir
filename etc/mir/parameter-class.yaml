@@ -2384,6 +2384,7 @@ numerics.accumulated:
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
 - 260479  # Land Surface Precipitation Accumulation
+- 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300065  # Wat equiv acc snow depth
 - 300177  # Potential sfc evaporation
 
@@ -2813,6 +2814,7 @@ rate:
 - 260366  # Convective Cloud Mass Flux
 - 260447  # Rate of water dropping from canopy to ground
 - 260501  # Salt Flux
+- 260559  # Rate of spread (as defined by the Australian forest service)
 - 260616  # Adiabatic heating rate
 - 260623  # Adiabatic moistening rate
 - 260633  # Large scale condensation heating rate
@@ -3163,6 +3165,7 @@ rate.energy-flux:
 - 260478  # Direct evaporation from bare soil
 - 260496  # Net Air-Ocean Heat Flux
 - 260497  # Assimilative Heat Flux
+- 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260615  # Evapotranspiration
 - 300111  # Short wave absorbed at ground
 - 300112  # Net long wave at bottom
@@ -4096,6 +4099,10 @@ ratio:
 - 260369  # Richardson Number
 - 260379  # Ozone Concentration (PPB)
 - 260418  # Radiative emissivity
+- 260558  # Drought factor (as defined by the Australian forest service)
+- 260560  # Fire danger index (as defined by the Australian forest service)
+- 260561  # Spread component (as defined by the U.S Forest Service National Fire-Danger Rating System)
+- 260562  # Burning index (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300052  # Relative humidity
 - 300153  # Freezing level relative humidity
 - 300170  # Vertical moisture advection
@@ -4332,6 +4339,7 @@ ratio.fraction:
 - 260458  # Normalized Difference Vegetation Index
 - 260483  # Field Capacity
 - 260509  # Albedo
+- 260557  # Keetch-Byram drought index
 - 261003  # Malaria cases
 - 261004  # Malaria circumsporozoite protein rate
 - 261007  # Malaria immunity
@@ -4914,6 +4922,7 @@ ratio.probability:
 - 260416  # Total Probability of Extreme Severe Thunderstorms (Days 2,3)
 - 260429  # Probability of Freezing Precipitation
 - 260431  # Probability of precipitation exceeding flash flood guidance values
+- 260563  # Ignition component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260432  # Probability of Wetting Rain, exceeding in 0.10 in a given time period
 - 300060  # Thunder probability
 
