@@ -4922,8 +4922,8 @@ ratio.probability:
 - 260416  # Total Probability of Extreme Severe Thunderstorms (Days 2,3)
 - 260429  # Probability of Freezing Precipitation
 - 260431  # Probability of precipitation exceeding flash flood guidance values
-- 260563  # Ignition component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260432  # Probability of Wetting Rain, exceeding in 0.10 in a given time period
+- 260563  # Ignition component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300060  # Thunder probability
 
 ratio.volume:
