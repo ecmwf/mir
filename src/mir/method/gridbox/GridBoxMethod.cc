@@ -157,7 +157,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
 
             // insert the interpolant weights into the global (sparse) interpolant matrix
-            if (!areaMatch) {
+            if (areaMatch) {
                 std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
             }
             else {
