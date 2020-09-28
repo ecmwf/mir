@@ -1,15 +1,4 @@
-
-# set(MIR_TOOL     "$<TARGET_FILE:mir-tool>")
-# set(MIR_COMPARE  "$<TARGET_FILE:mir-compare>")
-# set(GRIB_GET     "$<TARGET_FILE:grib_get>")
-# set(GRIB_COMPARE "$<TARGET_FILE:grib_compare>")
-
-get_target_property(MIR_TOOL     "mir-tool"     LOCATION)
-get_target_property(MIR_COMPARE  "mir-compare"  LOCATION)
-get_target_property(GRIB_GET     "grib_get"     LOCATION)
-get_target_property(GRIB_COMPARE "grib_compare" LOCATION)
-
-configure_file(mir-test.sh.in mir-test.sh @ONLY)
+ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
 file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test *.fail)
 
@@ -20,8 +9,8 @@ foreach(_t ${test_files})
         ARGS        ${_t}
         ENVIRONMENT ${_testEnvironment})
     if((_t MATCHES "[.]fail$") OR
-       (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS) OR
-       (_t MATCHES "[.]atlas[.]" AND NOT HAVE_ATLAS))
+       (_t MATCHES "[.]lsm[.]" AND NOT HAVE_MIR_DOWNLOAD_MASKS))
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endif()
 endforeach()
+

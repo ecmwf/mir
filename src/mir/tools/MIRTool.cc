@@ -66,18 +66,12 @@ void MIRTool::run() {
     finish(args);
 }
 
-
 void MIRTool::init(const eckit::option::CmdArgs& args) {
-#if defined(HAVE_ATLAS)
     atlas::Library::instance().initialise(args);
-#endif
 }
 
-
 void MIRTool::finish(const eckit::option::CmdArgs&) {
-#if defined(HAVE_ATLAS)
     atlas::Library::instance().finalise();
-#endif
 }
 
 
