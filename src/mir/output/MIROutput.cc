@@ -149,8 +149,11 @@ void MIROutputFactory::list(std::ostream& out) {
 
 
 void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
-    // do nothing
+    std::ostringstream oss;
+    oss << "MIROutput::prepare not implemented for " << *this;
+    throw eckit::SeriousBug(oss.str());
 }
+
 
 void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
     std::ostringstream oss;
