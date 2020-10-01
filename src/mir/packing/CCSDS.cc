@@ -24,10 +24,7 @@ namespace mir {
 namespace packing {
 
 
-static CCSDS __packer("ccsds");
-
-
-CCSDS::CCSDS(const std::string& name) : Packer(name) {}
+static PackerBuilder<CCSDS> __packer("ccsds");
 
 
 CCSDS::~CCSDS() = default;
@@ -38,14 +35,13 @@ void CCSDS::print(std::ostream& out) const {
 }
 
 
-void CCSDS::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation&,
-                 const param::MIRParametrisation&) const {
+void CCSDS::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_CCSDS;
 }
 
 
-std::string CCSDS::packingType(const repres::Representation* repres) const {
+std::string CCSDS::type(const repres::Representation* repres) const {
     if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
         return "grid_ccsds";
     }

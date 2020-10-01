@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    Simple(const std::string& name);
+    using Packer::Packer;
 
     // -- Destructor
 
@@ -77,9 +77,8 @@ private:
     // -- Methods
 
     virtual void print(std::ostream&) const;
-    virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
-                      const param::MIRParametrisation&) const;
-    virtual std::string packingType(const repres::Representation*) const;
+    virtual void fill(grib_info&, const repres::Representation&) const;
+    virtual std::string type(const repres::Representation*) const;
 
     // -- Overridden methods
     // None

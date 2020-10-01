@@ -23,10 +23,7 @@ namespace mir {
 namespace packing {
 
 
-static Simple __packer("simple");
-
-
-Simple::Simple(const std::string& name) : Packer(name) {}
+static PackerBuilder<Simple> __packer("simple");
 
 
 Simple::~Simple() = default;
@@ -37,14 +34,13 @@ void Simple::print(std::ostream& out) const {
 }
 
 
-void Simple::fill(grib_info& info, const repres::Representation& repres, const param::MIRParametrisation&,
-                  const param::MIRParametrisation&) const {
+void Simple::fill(grib_info& info, const repres::Representation& repres) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setSimplePacking(info);
 }
 
 
-std::string Simple::packingType(const repres::Representation* repres) const {
+std::string Simple::type(const repres::Representation* repres) const {
     return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_simple" : "spectral_simple";
 }
 
