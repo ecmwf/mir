@@ -10,37 +10,47 @@
  */
 
 
-#ifndef mir_packing_IEEE_h
-#define mir_packing_IEEE_h
+#ifndef mir_action_io_Set_h
+#define mir_action_io_Set_h
 
-#include "mir/packing/Packer.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
-namespace packing {
+namespace input {
+class MIRInput;
+}
+namespace output {
+class MIROutput;
+}
+}  // namespace mir
 
 
-class IEEE : public Packer {
+namespace mir {
+namespace action {
+namespace io {
+
+
+class Set : public Action {
 public:
-    // -- Types
-    // None
-
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+    Set(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Set(const Set&) = delete;
 
     // -- Destructor
 
-    virtual ~IEEE();
+    virtual ~Set();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Set& operator=(const Set&) = delete;
 
     // -- Methods
     // None
@@ -59,7 +69,9 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void print(std::ostream&) const;
+    void custom(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -72,16 +84,21 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    input::MIRInput& input_;
+    output::MIROutput& output_;
 
     // -- Methods
-
-    virtual void print(std::ostream&) const;
-    virtual void fill(grib_info&, const repres::Representation&) const;
-    virtual std::string type(const repres::Representation*) const;
+    // None
 
     // -- Overridden methods
-    // None
+
+    // From Action
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
+    virtual const char* name() const;
+    virtual bool isEndAction() const;
+    virtual void estimate(context::Context&, api::MIREstimation&) const;
 
     // -- Class members
     // None
@@ -94,7 +111,8 @@ private:
 };
 
 
-}  // namespace packing
+}  // namespace io
+}  // namespace action
 }  // namespace mir
 
 

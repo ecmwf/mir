@@ -80,6 +80,8 @@ list(APPEND mir_srcs
     action/io/Copy.h
     action/io/Save.cc
     action/io/Save.h
+    action/io/Set.cc
+    action/io/Set.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc

@@ -39,16 +39,18 @@ public:
     // -- Constructors
 
     Save(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Save(const Save&) = delete;
 
     // -- Destructor
 
-    virtual ~Save();  // Change to virtual if base class
+    virtual ~Save();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Save& operator=(const Save&) = delete;
 
     // -- Methods
     // None
@@ -68,7 +70,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -81,11 +83,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Save(const Save&);
-    Save& operator=(const Save&);
-
     // -- Members
 
     input::MIRInput& input_;
@@ -96,11 +93,12 @@ private:
 
     // -- Overridden methods
 
+    // From Action
     virtual void execute(context::Context&) const;
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
     virtual bool isEndAction() const;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    virtual void estimate(context::Context&, api::MIREstimation&) const;
 
     // -- Class members
     // None
@@ -109,9 +107,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Save& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

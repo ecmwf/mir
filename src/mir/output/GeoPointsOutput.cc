@@ -11,7 +11,9 @@
 
 
 #include "mir/output/GeoPointsOutput.h"
+
 #include <sstream>
+
 #include "eckit/exception/Exceptions.h"
 
 

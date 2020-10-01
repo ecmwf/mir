@@ -116,11 +116,9 @@ MIROutputFactory::~MIROutputFactory() {
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    std::string format = user.has("dryrun") ? "empty"
-                                            : user.has("griddef") ? "geopoints"
-                                                                  : user.has("latitudes") || user.has("longitudes")
-                                                                        ? "geopoints"
-                                                                        : "extension";  // maybe "grib"??
+    std::string format = user.has("griddef") || user.has("latitudes") || user.has("longitudes")
+                             ? "geopoints"
+                             : "extension";  // maybe "grib"??
 
     user.get("format", format);
 
@@ -148,9 +146,16 @@ void MIROutputFactory::list(std::ostream& out) {
 }
 
 
+size_t MIROutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
+    // redirect to save
+    return save(param, ctx);
+}
+
+
 void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
     // do nothing
 }
+
 
 void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
     std::ostringstream oss;

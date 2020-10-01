@@ -51,6 +51,7 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
     return binary_ ? saveBinary(param, ctx) : saveText(param, ctx);
 }
 
+
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, context::Context& ctx) {
 
     const data::MIRField& field = ctx.field();
