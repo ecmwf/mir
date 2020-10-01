@@ -13,6 +13,7 @@
 #include "mir/output/ValuesOutput.h"
 
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 
@@ -42,11 +43,6 @@ bool ValuesOutput::printParametrisation(std::ostream&, const param::MIRParametri
 }
 
 
-void ValuesOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, MIROutput&) {
-    // do nothing
-}
-
-
 bool ValuesOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const ValuesOutput*>(&other);
     return (o != nullptr) && this == o;
@@ -73,11 +69,6 @@ size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ct
     }
 
     return 0;
-}
-
-
-size_t ValuesOutput::set(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
 }
 
 

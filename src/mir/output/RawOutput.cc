@@ -47,11 +47,6 @@ bool RawOutput::printParametrisation(std::ostream& /*out*/, const param::MIRPara
 }
 
 
-void RawOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, MIROutput&) {
-    // do nothing
-}
-
-
 size_t RawOutput::copy(const param::MIRParametrisation& /*param*/, context::Context& /*ctx*/) {
     NOTIMP;
     // size_ = input.copy(values_, count_);
@@ -77,11 +72,6 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
     ::memcpy(values_, &values[0], size_ * sizeof(double));
 
     return size_ * sizeof(double);
-}
-
-
-size_t RawOutput::set(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
 }
 
 

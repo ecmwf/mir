@@ -52,11 +52,6 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 }
 
 
-size_t GeoPointsFileOutputXYV::set(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
-
-
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, context::Context& ctx) {
 
     const data::MIRField& field = ctx.field();

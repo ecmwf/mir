@@ -62,7 +62,6 @@ protected:
     // From MIROutput
     virtual size_t copy(const param::MIRParametrisation&, context::Context&);
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual size_t set(const param::MIRParametrisation&, context::Context&);
 
     // -- Class members
     // None

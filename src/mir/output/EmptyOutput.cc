@@ -10,9 +10,10 @@
  */
 
 
+#include "mir/output/EmptyOutput.h"
+
 #include <ostream>
 
-#include "mir/output/EmptyOutput.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -35,11 +36,6 @@ size_t EmptyOutput::copy(const param::MIRParametrisation&, context::Context&) {
 
 
 size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
-    return 0;
-}
-
-
-size_t EmptyOutput::set(const param::MIRParametrisation&, context::Context&) {
     return 0;
 }
 
@@ -83,11 +79,6 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
     }
 
     return ok;
-}
-
-
-void EmptyOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
-    // do nothing
 }
 
 

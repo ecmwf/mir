@@ -97,11 +97,6 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 }
 
 
-size_t GeoPointsFileOutputXYVector::set(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
-}
-
-
 static MIROutputBuilder<GeoPointsFileOutputXYVector> output("geopoints-xy-vector");
 
 

@@ -11,7 +11,9 @@
 
 
 #include "mir/output/GeoPointsOutput.h"
+
 #include <sstream>
+
 #include "eckit/exception/Exceptions.h"
 
 
@@ -46,11 +48,6 @@ bool GeoPointsOutput::sameParametrisation(const param::MIRParametrisation&, cons
 
 bool GeoPointsOutput::printParametrisation(std::ostream&, const param::MIRParametrisation&) const {
     return false;
-}
-
-
-void GeoPointsOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, MIROutput&) {
-    // do nothing
 }
 
 

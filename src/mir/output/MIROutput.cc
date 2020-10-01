@@ -146,10 +146,14 @@ void MIROutputFactory::list(std::ostream& out) {
 }
 
 
+size_t MIROutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
+    // redirect to save
+    return save(param, ctx);
+}
+
+
 void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
-    std::ostringstream oss;
-    oss << "MIROutput::prepare not implemented for " << *this;
-    throw eckit::SeriousBug(oss.str());
+    // do nothing
 }
 
 
