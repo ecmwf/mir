@@ -25,7 +25,7 @@ namespace metkit {
 namespace mars {
 class MarsRequest;
 }
-}
+}  // namespace metkit
 
 namespace mir {
 namespace param {
