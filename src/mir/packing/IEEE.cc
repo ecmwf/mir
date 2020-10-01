@@ -18,6 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Gridded.h"
 #include "mir/util/Grib.h"
 
 
@@ -51,6 +52,11 @@ void IEEE::fill(grib_info& info, const repres::Representation&, const param::MIR
 
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
+}
+
+
+std::string IEEE::packingType(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_ieee" : "spectral_ieee";
 }
 
 

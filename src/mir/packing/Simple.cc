@@ -14,6 +14,7 @@
 
 #include <iostream>
 
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -40,6 +41,11 @@ void Simple::fill(grib_info& info, const repres::Representation& repres, const p
                   const param::MIRParametrisation&) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setSimplePacking(info);
+}
+
+
+std::string Simple::packingType(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_simple" : "spectral_simple";
 }
 
 

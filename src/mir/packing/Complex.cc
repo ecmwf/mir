@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
@@ -41,6 +44,14 @@ void Complex::fill(grib_info& info, const repres::Representation& repres, const 
                    const param::MIRParametrisation&) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
     repres.setComplexPacking(info);
+}
+
+
+std::string Complex::packingType(const repres::Representation* repres) const {
+    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
+        NOTIMP;
+    }
+    return "spectral_complex";
 }
 
 

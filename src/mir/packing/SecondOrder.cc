@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Pretty.h"
@@ -50,6 +53,14 @@ void SecondOrder::fill(grib_info& info, const repres::Representation& repres, co
 
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+}
+
+
+std::string SecondOrder::packingType(const repres::Representation* repres) const {
+    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
+        return "grid_second_order";
+    }
+    NOTIMP;
 }
 
 

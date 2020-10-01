@@ -40,5 +40,10 @@ void ArchivedValue::fill(grib_info&, const repres::Representation&, const param:
 }
 
 
+std::string ArchivedValue::packingType(const repres::Representation*) const {
+    return "";
+}
+
+
 }  // namespace packing
 }  // namespace mir

@@ -79,6 +79,7 @@ private:
     virtual void print(std::ostream&) const;
     virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation& user,
                       const param::MIRParametrisation& field) const;
+    virtual std::string packingType(const repres::Representation*) const;
 
     // -- Overridden methods
     // None
