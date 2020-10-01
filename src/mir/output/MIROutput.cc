@@ -116,11 +116,9 @@ MIROutputFactory::~MIROutputFactory() {
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
-    std::string format = user.has("dryrun") ? "empty"
-                                            : user.has("griddef") ? "geopoints"
-                                                                  : user.has("latitudes") || user.has("longitudes")
-                                                                        ? "geopoints"
-                                                                        : "extension";  // maybe "grib"??
+    std::string format = user.has("griddef") || user.has("latitudes") || user.has("longitudes")
+                             ? "geopoints"
+                             : "extension";  // maybe "grib"??
 
     user.get("format", format);
 
