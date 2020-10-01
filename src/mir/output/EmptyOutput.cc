@@ -39,6 +39,11 @@ size_t EmptyOutput::save(const param::MIRParametrisation&, context::Context&) {
 }
 
 
+size_t EmptyOutput::set(const param::MIRParametrisation&, context::Context&) {
+    return 0;
+}
+
+
 bool EmptyOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const EmptyOutput*>(&other);
     return (o != nullptr);

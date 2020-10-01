@@ -33,8 +33,7 @@ VectorOutput::~VectorOutput() = default;
 
 
 size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
-
-    input::MIRInput& input = ctx.input();
+    auto& input = ctx.input();
 
     try {
         auto& v     = dynamic_cast<input::VectorInput&>(input);
@@ -57,8 +56,8 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
 
 
 size_t VectorOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    data::MIRField& field  = ctx.field();
-    input::MIRInput& input = ctx.input();
+    auto& field = ctx.field();
+    auto& input = ctx.input();
 
     ASSERT(field.dimensions() == 2);
 
@@ -87,6 +86,29 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::save() not implemented for input of type: " << input;
+        throw eckit::SeriousBug(os.str());
+    }
+}
+
+
+size_t VectorOutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
+    auto& input = ctx.input();
+
+    try {
+        auto& v     = dynamic_cast<input::VectorInput&>(input);
+        size_t size = 0;
+
+        context::Context ctx1(v.component1_, ctx.statistics());
+        size += component1_.set(param, ctx1);
+
+        context::Context ctx2(v.component2_, ctx.statistics());
+        size += component2_.set(param, ctx2);
+
+        return size;
+    }
+    catch (std::bad_cast&) {
+        std::ostringstream os;
+        os << "VectorOutput::set() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
     }
 }

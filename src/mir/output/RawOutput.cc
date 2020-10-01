@@ -80,6 +80,11 @@ size_t RawOutput::save(const param::MIRParametrisation& /*param*/, context::Cont
 }
 
 
+size_t RawOutput::set(const param::MIRParametrisation&, context::Context&) {
+    NOTIMP;
+}
+
+
 void RawOutput::print(std::ostream& out) const {
     out << "RawOutput[count=" << count_ << ", size=" << size_ << "]";
 }

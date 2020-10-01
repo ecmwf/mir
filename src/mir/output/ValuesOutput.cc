@@ -76,6 +76,11 @@ size_t ValuesOutput::save(const param::MIRParametrisation&, context::Context& ct
 }
 
 
+size_t ValuesOutput::set(const param::MIRParametrisation&, context::Context&) {
+    NOTIMP;
+}
+
+
 bool ValuesOutput::hasMissing() const {
     return hasMissing_;
 }

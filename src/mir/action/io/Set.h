@@ -10,33 +10,47 @@
  */
 
 
-#ifndef mir_output_GeoPointsFileOutputXYV_h
-#define mir_output_GeoPointsFileOutputXYV_h
+#ifndef mir_action_io_Set_h
+#define mir_action_io_Set_h
 
-#include "mir/output/GeoPointsFileOutput.h"
+#include "mir/action/plan/Action.h"
 
 
 namespace mir {
+namespace input {
+class MIRInput;
+}
 namespace output {
+class MIROutput;
+}
+}  // namespace mir
 
 
-class GeoPointsFileOutputXYV : public GeoPointsFileOutput {
+namespace mir {
+namespace action {
+namespace io {
+
+
+class Set : public Action {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    GeoPointsFileOutputXYV(const ::std::string& path, bool binary = false);
+    Set(const param::MIRParametrisation&, input::MIRInput&, output::MIROutput&);
+    Set(const Set&) = delete;
 
     // -- Destructor
-    // None
+
+    virtual ~Set();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Set& operator=(const Set&) = delete;
 
     // -- Methods
     // None
@@ -55,14 +69,12 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    void print(std::ostream&) const;
+    void custom(std::ostream&) const;
 
     // -- Overridden methods
-
-    // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&);
-    virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual size_t set(const param::MIRParametrisation&, context::Context&);
+    // None
 
     // -- Class members
     // None
@@ -72,14 +84,21 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    input::MIRInput& input_;
+    output::MIROutput& output_;
 
     // -- Methods
-    size_t saveText(const param::MIRParametrisation&, context::Context&);
-    size_t saveBinary(const param::MIRParametrisation&, context::Context&);
+    // None
 
     // -- Overridden methods
-    // None
+
+    // From Action
+    virtual void execute(context::Context&) const;
+    virtual bool sameAs(const Action&) const;
+    virtual const char* name() const;
+    virtual bool isEndAction() const;
+    virtual void estimate(context::Context&, api::MIREstimation&) const;
 
     // -- Class members
     // None
@@ -88,13 +107,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYV& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 
-}  // namespace output
+}  // namespace io
+}  // namespace action
 }  // namespace mir
 
 
