@@ -51,7 +51,6 @@ struct LL {
 
 
 static eckit::Mutex local_mutex;
-
 static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0,
                                                                  "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
@@ -176,8 +175,6 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
 static const caching::CroppingCacheEntry& getMapping(const std::string& key,
                                                      const repres::Representation* representation,
                                                      const util::BoundingBox& bbox, bool caching) {
-
-
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     auto a = cache.find(key);
@@ -218,9 +215,9 @@ static const caching::CroppingCacheEntry& getMapping(const std::string& key,
     return c;
 }
 
+
 static const caching::CroppingCacheEntry& getMapping(const repres::Representation* representation,
                                                      const util::BoundingBox& bbox, bool caching) {
-
     eckit::MD5 md5;
     md5 << representation->uniqueName() << bbox;
 
@@ -281,9 +278,7 @@ void AreaCropper::execute(context::Context& ctx) const {
 
 
 void AreaCropper::estimate(context::Context& ctx, api::MIREstimation& estimation) const {
-
     repres::RepresentationHandle in(ctx.field().representation());
-
     repres::RepresentationHandle out(in->croppedRepresentation(bbox_));
 
     estimateNumberOfGridPoints(ctx, estimation, *out);
@@ -308,7 +303,7 @@ bool AreaCropper::canCrop() const {
 }
 
 
-static ActionBuilder<AreaCropper> subAreaCropper("crop.area");
+static ActionBuilder<AreaCropper> __action("crop.area");
 
 
 }  // namespace action

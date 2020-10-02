@@ -16,7 +16,10 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <memory>
+
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
@@ -83,7 +86,7 @@ const char* AdjustWindsScaleCosLatitude::name() const {
 }
 
 
-static ActionBuilder<AdjustWindsScaleCosLatitude> filter("filter.adjust-winds-scale-cos-latitude");
+static ActionBuilder<AdjustWindsScaleCosLatitude> __action("filter.adjust-winds-scale-cos-latitude");
 
 
 }  // namespace action

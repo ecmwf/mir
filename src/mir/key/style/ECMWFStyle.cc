@@ -326,6 +326,10 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
         plan.add("filter.statistics", "which-statistics", "output");
     }
 
+    if (user.has("add-random")) {
+        plan.add("filter.add-random");
+    }
+
     std::string epilogue;
     if (parametrisation_.get("epilogue", epilogue)) {
         plan.add(epilogue);

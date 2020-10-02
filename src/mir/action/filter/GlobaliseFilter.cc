@@ -69,7 +69,7 @@ const char* GlobaliseFilter::name() const {
 }
 
 
-static ActionBuilder<GlobaliseFilter> globaliseFilter("filter.globalise");
+static ActionBuilder<GlobaliseFilter> __action("filter.globalise");
 
 
 }  // namespace action

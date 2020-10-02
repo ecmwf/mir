@@ -18,6 +18,8 @@ list(APPEND mir_srcs
     action/calc/FormulaAction.h
     action/context/Context.cc
     action/context/Context.h
+    action/filter/AddRandomFilter.cc
+    action/filter/AddRandomFilter.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc

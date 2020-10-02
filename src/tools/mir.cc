@@ -215,6 +215,9 @@ public:
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new FactoryOption<stats::DistributionFactory>(
+            "add-random", "Add random numbers to field values according to a probability density function"));
+
         options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
 
         options_.push_back(new SimpleOption<bool>("nabla-poles-missing-values", "Force missing values at the poles"));

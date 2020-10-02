@@ -10,20 +10,20 @@
  */
 
 
+#include "mir/action/filter/BitmapFilter.h"
+
 #include <iostream>
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/param/MIRParametrisation.h"
-#include "mir/util/Bitmap.h"
-
-#include "mir/action/filter/BitmapFilter.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryCache.h"
 #include "mir/data/MIRField.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Bitmap.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -49,6 +49,7 @@ bool BitmapFilter::sameAs(const Action& other) const {
     return (o != nullptr) && (path_ == o->path_);
 }
 
+
 void BitmapFilter::print(std::ostream& out) const {
     out << "BitmapFilter[path=" << path_ << "]";
 }
@@ -66,6 +67,7 @@ util::Bitmap& BitmapFilter::bitmap() const {
     }
     return *j;
 }
+
 
 void BitmapFilter::execute(context::Context& ctx) const {
 
@@ -138,7 +140,7 @@ const char* BitmapFilter::name() const {
 }
 
 
-static ActionBuilder<BitmapFilter> bitmapFilter("filter.bitmap");
+static ActionBuilder<BitmapFilter> __action("filter.bitmap");
 
 
 }  // namespace action
