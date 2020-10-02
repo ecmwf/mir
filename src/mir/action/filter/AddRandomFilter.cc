@@ -12,9 +12,7 @@
 
 #include "mir/action/filter/AddRandomFilter.h"
 
-#include <cmath>
 #include <limits>
-#include <sstream>
 
 #include "eckit/exception/Exceptions.h"
 
