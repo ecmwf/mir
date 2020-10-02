@@ -27,11 +27,7 @@ namespace action {
 namespace filter {
 
 
-static ActionBuilder<StatisticsFilter> bitmapFilter("filter.statistics");
-
-
 StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Action(param) {
-
     std::string which;
     param.get("which-statistics", which);
 
@@ -103,6 +99,9 @@ void StatisticsFilter::execute(context::Context& ctx) const {
 
     log.precision(old);
 }
+
+
+static ActionBuilder<StatisticsFilter> __action("filter.statistics");
 
 
 }  // namespace filter

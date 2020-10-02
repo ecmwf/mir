@@ -146,7 +146,7 @@ const char* CheckerBoard::name() const {
 }
 
 
-static ActionBuilder<CheckerBoard> action("misc.checkerboard");
+static ActionBuilder<CheckerBoard> __action("misc.checkerboard");
 
 
 }  // namespace action

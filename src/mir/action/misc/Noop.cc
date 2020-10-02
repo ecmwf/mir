@@ -44,7 +44,7 @@ const char* Noop::name() const {
 }
 
 
-static ActionBuilder<Noop> action("noop");
+static ActionBuilder<Noop> __action("noop");
 
 
 }  // namespace action

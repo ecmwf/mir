@@ -29,7 +29,6 @@ namespace action {
 
 
 SetMetadata::SetMetadata(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
-
     std::string metadata;
     ASSERT(parametrisation.get("metadata", metadata));
 
@@ -78,7 +77,7 @@ const char* SetMetadata::name() const {
 }
 
 
-static ActionBuilder<SetMetadata> action("set.metadata");
+static ActionBuilder<SetMetadata> __action("set.metadata");
 
 
 }  // namespace action
