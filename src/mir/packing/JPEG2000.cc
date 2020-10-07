@@ -24,8 +24,7 @@ namespace mir {
 namespace packing {
 
 
-static PackerBuilder<JPEG2000> __packer1("grid_jpeg");
-static PackerBuilder<JPEG2000> __packer2("jpeg");
+static PackerBuilder<JPEG2000> __packer("jpeg");
 
 
 JPEG2000::~JPEG2000() = default;
