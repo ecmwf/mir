@@ -1646,6 +1646,12 @@ intensity:
 - 228136  # U-tendency from non-orographic wave drag
 - 228139  # Soil Temperature
 - 228229  # SMOS first Brightness Temperature Bias Correction parameter
+- 228231  # Mixed-layer CAPE in the lowest 50 hPa
+- 228232  # Mixed-layer CIN in the lowest 50 hPa
+- 228233  # Mixed-layer CAPE in the lowest 100 hPa
+- 228234  # Mixed-layer CIN in the lowest 100 hPa
+- 228235  # Most-unstable CAPE
+- 228236  # Most-unstable CIN
 - 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
