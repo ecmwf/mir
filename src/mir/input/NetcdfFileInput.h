@@ -14,7 +14,7 @@
 #define mir_input_NetcdfFileInput_h
 
 #include "mir/api/mir_config.h"
-#if MIR_HAVE_NETCDF
+#if defined(mir_HAVE_NETCDF)
 
 #include <string>
 

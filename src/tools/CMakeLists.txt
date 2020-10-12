@@ -32,7 +32,7 @@ list(APPEND _tools
     mir-spectral-transform-points
     mir-triangulate)
 
-if (HAVE_MIR_TOOLS)
+if(HAVE_MIR_TOOLS)
     foreach(tool IN LISTS _tools)
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
     endforeach()

@@ -743,7 +743,7 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-if (mir_HAVE_NETCDF)
+if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
@@ -878,7 +878,7 @@ if (mir_HAVE_NETCDF)
 endif()
 
 
-if (HAVE_PNG)
+if(mir_HAVE_PNG)
     list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
 endif()
 
@@ -902,7 +902,7 @@ if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
 
-if (HAVE_PNG)
+if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
 
