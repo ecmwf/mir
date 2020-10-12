@@ -1652,6 +1652,7 @@ intensity:
 - 228234  # Mixed-layer CIN in the lowest 100 hPa
 - 228235  # Most-unstable CAPE
 - 228236  # Most-unstable CIN
+- 228237  # Departure level of the most unstable parcel expressed as Pressure
 - 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
