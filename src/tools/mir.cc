@@ -58,7 +58,7 @@
 #include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
 
-#if defined(HAVE_PNG)
+#if defined(MIR_HAVE_PNG)
 #include "mir/output/PNGOutput.h"
 #endif
 
@@ -328,7 +328,7 @@ public:
             options_.push_back(
                 new FactoryOption<input::ArtificialInputFactory>("artificial-input", "Use artificial data for input"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
-#if defined(HAVE_PNG)
+#if defined(MIR_HAVE_PNG)
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));
