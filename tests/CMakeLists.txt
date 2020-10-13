@@ -89,11 +89,17 @@ foreach(_t ${_test_reqs})
 endforeach()
 
 
-if(HAVE_TEST_ASSERTIONS)
-    add_subdirectory(assertions)
+# ecCodes really doesn't build tools, so disabling testing is required
+if(eccodes_HAVE_BUILD_TOOLS)
+    if (HAVE_TEST_ASSERTIONS)
+        add_subdirectory(assertions)
+    endif()
+    add_subdirectory(tool)
+else()
+    message(WARNING "${PROJECT_NAME}: assertion tests (option TEST_ASSERTIONS) requires ecCodes option BUILD_TOOLS, tests disabled")
+    message(WARNING "${PROJECT_NAME}: tool tests requires ecCodes option BUILD_TOOLS, tests disabled")
 endif()
 
 add_subdirectory(plans)
-add_subdirectory(tool)
 add_subdirectory(unit)
 
