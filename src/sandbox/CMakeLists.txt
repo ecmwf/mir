@@ -1,3 +1,11 @@
-ecbuild_add_executable(TARGET grids SOURCES grids.cc LIBS mir)
-ecbuild_add_executable(TARGET lsm SOURCES lsm.cc LIBS mir)
+
+foreach(tool IN ITEMS
+        grids
+        lsm)
+    if(BUILD_TOOLS)
+        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
+    else()
+        ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir NOINSTALL)
+    endif()
+endforeach()
 

@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-ecbuild_add_option(FEATURE MIR_TOOLS          DEFAULT OFF DESCRIPTION "install tools")
+ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT OFF DESCRIPTION "build the command line tools (install)")
 ecbuild_add_option(FEATURE MIR_DOWNLOAD_MASKS DEFAULT ON  DESCRIPTION "download LSM files")
 ecbuild_add_option(FEATURE TEST_ASSERTIONS    DEFAULT ON  DESCRIPTION "test: regressions")
 ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support for netCDF" REQUIRED_PACKAGES "NetCDF COMPONENTS C")
