@@ -1,5 +1,5 @@
 
-if(BUILD_TOOLS)
+if(HAVE_BUILD_TOOLS)
     ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir)
 else()
     ecbuild_add_executable(TARGET mir-tool OUTPUT_NAME mir SOURCES mir.cc LIBS mir NOINSTALL)
@@ -25,7 +25,7 @@ foreach(tool IN ITEMS
         mir-statistics
         mir-triangulate
         mir-weight-matrix-diff)
-    if(BUILD_TOOLS)
+    if(HAVE_BUILD_TOOLS)
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir)
     else()
         ecbuild_add_executable(TARGET ${tool} SOURCES ${tool}.cc LIBS mir NOINSTALL)
