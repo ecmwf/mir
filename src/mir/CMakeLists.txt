@@ -673,7 +673,6 @@ list(APPEND mir_srcs
     stats/statistics/Spectral.h
     stats/statistics/StatisticsT.cc
     stats/statistics/StatisticsT.h
-    style/MIRStyle.h
     tools/Count.cc
     tools/Count.h
     tools/MIRTool.cc
