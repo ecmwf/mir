@@ -13,6 +13,7 @@
 #include "mir/output/ValuesOutput.h"
 
 #include "eckit/exception/Exceptions.h"
+
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 

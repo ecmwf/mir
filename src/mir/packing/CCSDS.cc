@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/repres/Gridded.h"
 #include "mir/util/Grib.h"
 
 
@@ -21,10 +24,7 @@ namespace mir {
 namespace packing {
 
 
-static CCSDS packing("ccsds");
-
-
-CCSDS::CCSDS(const std::string& name) : Packer(name) {}
+static PackerBuilder<CCSDS> __packer("ccsds");
 
 
 CCSDS::~CCSDS() = default;
@@ -38,6 +38,14 @@ void CCSDS::print(std::ostream& out) const {
 void CCSDS::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_CCSDS;
+}
+
+
+std::string CCSDS::type(const repres::Representation* repres) const {
+    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
+        return "grid_ccsds";
+    }
+    NOTIMP;
 }
 
 

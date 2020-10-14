@@ -11,23 +11,29 @@
 
 
 #include "mir/packing/Complex.h"
+
+#include <iostream>
+
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
-#include <iostream>
 
 namespace mir {
 namespace packing {
 
 
-Complex::Complex(const std::string& name) : Packer(name) {}
+static PackerBuilder<Complex> __packer1("complex");
+static PackerBuilder<Complex> __packer2("co");  // For the lazy
 
 
 Complex::~Complex() = default;
 
+
 void Complex::print(std::ostream& out) const {
     out << "Complex[]";
 }
+
 
 void Complex::fill(grib_info& info, const repres::Representation& repres) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
@@ -35,8 +41,9 @@ void Complex::fill(grib_info& info, const repres::Representation& repres) const 
 }
 
 
-static Complex packing1("complex");
-static Complex packing2("co");
+std::string Complex::type(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_complex" : "spectral_complex";
+}
 
 
 }  // namespace packing

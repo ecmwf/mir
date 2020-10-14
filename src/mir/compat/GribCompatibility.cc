@@ -89,7 +89,8 @@ class CombinedGribCompatibility : public GribCompatibility {
         return true;
     }
 
-    virtual void initialise(const metkit::mars::MarsRequest& request, std::map<std::string, std::string>& postproc) const {
+    virtual void initialise(const metkit::mars::MarsRequest& request,
+                            std::map<std::string, std::string>& postproc) const {
         for (auto c : list_) {
             c->initialise(request, postproc);
         }

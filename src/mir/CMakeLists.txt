@@ -1,21 +1,16 @@
 ### config headers
 
-ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/mir )
+ecbuild_generate_config_headers(DESTINATION ${INSTALL_INCLUDE_DIR}/mir)
 
-configure_file( api/mir_config.h.in   api/mir_config.h  )
-configure_file( api/mir_version.h.in  api/mir_version.h )
-configure_file( api/mir_version.cc.in  api/mir_version.cc )
+configure_file(api/mir_config.h.in api/mir_config.h)
+configure_file(api/mir_version.h.in api/mir_version.h)
+configure_file(api/mir_version.cc.in api/mir_version.cc)
 
-install(
-  FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h
-    ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
-  DESTINATION
-    ${INSTALL_INCLUDE_DIR}/mir/api
-  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
+        DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
 
 
-list( APPEND mir_srcs api/mir_version.cc )
+list(APPEND mir_srcs api/mir_version.cc)
 
 
 list(APPEND mir_srcs
@@ -23,6 +18,8 @@ list(APPEND mir_srcs
     action/calc/FormulaAction.h
     action/context/Context.cc
     action/context/Context.h
+    action/filter/AddRandomFilter.cc
+    action/filter/AddRandomFilter.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc
@@ -33,6 +30,10 @@ list(APPEND mir_srcs
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
+    action/filter/NablaFilter.cc
+    action/filter/NablaFilter.h
+    action/filter/NablaFilterFVMT.cc
+    action/filter/NablaFilterFVMT.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
@@ -81,6 +82,8 @@ list(APPEND mir_srcs
     action/io/Copy.h
     action/io/Save.cc
     action/io/Save.h
+    action/io/Set.cc
+    action/io/Set.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
@@ -109,7 +112,48 @@ list(APPEND mir_srcs
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    api/Atlas.cc
+    action/transform/InvtransScalar.cc
+    action/transform/InvtransScalar.h
+    action/transform/InvtransVodTouv.cc
+    action/transform/InvtransVodTouv.h
+    action/transform/ShToGridDef.cc
+    action/transform/ShToGridDef.h
+    action/transform/ShToGridded.cc
+    action/transform/ShToGridded.h
+    action/transform/ShToNamedGrid.cc
+    action/transform/ShToNamedGrid.h
+    action/transform/ShToOctahedralGG.cc
+    action/transform/ShToOctahedralGG.h
+    action/transform/ShToPoints.cc
+    action/transform/ShToPoints.h
+    action/transform/ShToReducedGG.cc
+    action/transform/ShToReducedGG.h
+    action/transform/ShToReducedGGPLGiven.cc
+    action/transform/ShToReducedGGPLGiven.h
+    action/transform/ShToRegularGG.cc
+    action/transform/ShToRegularGG.h
+    action/transform/ShToRegularLL.cc
+    action/transform/ShToRegularLL.h
+    action/transform/ShToRotatedNamedGrid.cc
+    action/transform/ShToRotatedNamedGrid.h
+    action/transform/ShToRotatedOctahedralGG.cc
+    action/transform/ShToRotatedOctahedralGG.h
+    action/transform/ShToRotatedReducedGG.cc
+    action/transform/ShToRotatedReducedGG.h
+    action/transform/ShToRotatedReducedGGPLGiven.cc
+    action/transform/ShToRotatedReducedGGPLGiven.h
+    action/transform/ShToRotatedRegularGG.cc
+    action/transform/ShToRotatedRegularGG.h
+    action/transform/ShToRotatedRegularLL.cc
+    action/transform/ShToRotatedRegularLL.h
+    action/transform/ShToTypedGrid.cc
+    action/transform/ShToTypedGrid.h
+    action/transform/ShTruncate.cc
+    action/transform/ShTruncate.h
+    action/transform/ShVodToUV.cc
+    action/transform/ShVodToUV.h
+    action/transform/TransCache.cc
+    action/transform/TransCache.h
     api/Atlas.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
@@ -238,19 +282,27 @@ list(APPEND mir_srcs
     key/Key.h
     key/grid/ClassicPattern.cc
     key/grid/ClassicPattern.h
+    key/grid/ClenshawCurtisPattern.cc
+    key/grid/ClenshawCurtisPattern.h
     key/grid/Grid.cc
     key/grid/Grid.h
     key/grid/GridPattern.cc
     key/grid/GridPattern.h
     key/grid/NamedClassic.cc
     key/grid/NamedClassic.h
+    key/grid/NamedClenshawCurtis.cc
+    key/grid/NamedClenshawCurtis.h
     key/grid/NamedFromFile.cc
     key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
+    key/grid/NamedORCA.cc
+    key/grid/NamedORCA.h
     key/grid/NamedOctahedral.cc
     key/grid/NamedOctahedral.h
     key/grid/NamedRegular.cc
     key/grid/NamedRegular.h
+    key/grid/ORCAPattern.cc
+    key/grid/ORCAPattern.h
     key/grid/OctahedralPattern.cc
     key/grid/OctahedralPattern.h
     key/grid/RegularLL.cc
@@ -323,8 +375,22 @@ list(APPEND mir_srcs
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
+    method/ProxyMethod.cc
+    method/ProxyMethod.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/fe/BuildNodeLumpedMassMatrix.cc
+    method/fe/BuildNodeLumpedMassMatrix.h
+    method/fe/CalculateCellLongestDiagonal.cc
+    method/fe/CalculateCellLongestDiagonal.h
+    method/fe/ConservativeFiniteElement.cc
+    method/fe/ConservativeFiniteElement.h
+    method/fe/FEBilinear.cc
+    method/fe/FEBilinear.h
+    method/fe/FELinear.cc
+    method/fe/FELinear.h
+    method/fe/FiniteElement.cc
+    method/fe/FiniteElement.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
@@ -377,6 +443,20 @@ list(APPEND mir_srcs
     method/knn/pick/Sample.h
     method/knn/pick/SortedSample.cc
     method/knn/pick/SortedSample.h
+    method/nonlinear/Heaviest.cc
+    method/nonlinear/Heaviest.h
+    method/nonlinear/MissingIfAllMissing.cc
+    method/nonlinear/MissingIfAllMissing.h
+    method/nonlinear/MissingIfAnyMissing.cc
+    method/nonlinear/MissingIfAnyMissing.h
+    method/nonlinear/MissingIfHeaviestMissing.cc
+    method/nonlinear/MissingIfHeaviestMissing.h
+    method/nonlinear/NoNonLinear.cc
+    method/nonlinear/NoNonLinear.h
+    method/nonlinear/NonLinear.cc
+    method/nonlinear/NonLinear.h
+    method/nonlinear/SimulateMissingValue.cc
+    method/nonlinear/SimulateMissingValue.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
     method/structured/StructuredBilinearLatLon.cc
@@ -493,10 +573,24 @@ list(APPEND mir_srcs
     repres/latlon/RegularLL.h
     repres/latlon/RotatedLL.cc
     repres/latlon/RotatedLL.h
+    repres/other/ClenshawCurtis.cc
+    repres/other/ClenshawCurtis.h
     repres/other/None.cc
     repres/other/None.h
+    repres/other/ORCA.cc
+    repres/other/ORCA.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
+    repres/regular/Lambert.cc
+    repres/regular/Lambert.h
+    repres/regular/LambertAzimuthalEqualArea.cc
+    repres/regular/LambertAzimuthalEqualArea.h
+    repres/regular/Mercator.cc
+    repres/regular/Mercator.h
+    repres/regular/PolarStereographic.cc
+    repres/regular/PolarStereographic.h
+    repres/regular/RegularGrid.cc
+    repres/regular/RegularGrid.h
     repres/sh/SphericalHarmonics.cc
     repres/sh/SphericalHarmonics.h
     repres/unsupported/Albers.cc
@@ -579,7 +673,6 @@ list(APPEND mir_srcs
     stats/statistics/Spectral.h
     stats/statistics/StatisticsT.cc
     stats/statistics/StatisticsT.h
-    style/MIRStyle.h
     tools/Count.cc
     tools/Count.h
     tools/MIRTool.cc
@@ -630,6 +723,8 @@ list(APPEND mir_srcs
     util/LongitudeIncrement.h
     util/MIRStatistics.cc
     util/MIRStatistics.h
+    util/MeshGeneratorParameters.cc
+    util/MeshGeneratorParameters.h
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
@@ -646,122 +741,9 @@ list(APPEND mir_srcs
     util/TraceResourceUsage.h
     util/Types.h
     util/Wind.cc
-    util/Wind.h
-  )
+    util/Wind.h)
 
-
-if (HAVE_ATLAS)
-    list(APPEND mir_srcs
-        action/filter/NablaFilter.cc
-        action/filter/NablaFilter.h
-        action/filter/NablaFilterFVMT.cc
-        action/filter/NablaFilterFVMT.h
-        action/transform/InvtransScalar.cc
-        action/transform/InvtransScalar.h
-        action/transform/InvtransVodTouv.cc
-        action/transform/InvtransVodTouv.h
-        action/transform/ShToGridDef.cc
-        action/transform/ShToGridDef.h
-        action/transform/ShToGridded.cc
-        action/transform/ShToGridded.h
-        action/transform/ShToNamedGrid.cc
-        action/transform/ShToNamedGrid.h
-        action/transform/ShToOctahedralGG.cc
-        action/transform/ShToOctahedralGG.h
-        action/transform/ShToPoints.cc
-        action/transform/ShToPoints.h
-        action/transform/ShToReducedGG.cc
-        action/transform/ShToReducedGG.h
-        action/transform/ShToReducedGGPLGiven.cc
-        action/transform/ShToReducedGGPLGiven.h
-        action/transform/ShToRegularGG.cc
-        action/transform/ShToRegularGG.h
-        action/transform/ShToRegularLL.cc
-        action/transform/ShToRegularLL.h
-        action/transform/ShToRotatedNamedGrid.cc
-        action/transform/ShToRotatedNamedGrid.h
-        action/transform/ShToRotatedOctahedralGG.cc
-        action/transform/ShToRotatedOctahedralGG.h
-        action/transform/ShToRotatedReducedGG.cc
-        action/transform/ShToRotatedReducedGG.h
-        action/transform/ShToRotatedReducedGGPLGiven.cc
-        action/transform/ShToRotatedReducedGGPLGiven.h
-        action/transform/ShToRotatedRegularGG.cc
-        action/transform/ShToRotatedRegularGG.h
-        action/transform/ShToRotatedRegularLL.cc
-        action/transform/ShToRotatedRegularLL.h
-        action/transform/ShToTypedGrid.cc
-        action/transform/ShToTypedGrid.h
-        action/transform/ShTruncate.cc
-        action/transform/ShTruncate.h
-        action/transform/ShVodToUV.cc
-        action/transform/ShVodToUV.h
-        action/transform/TransCache.cc
-        action/transform/TransCache.h
-        key/grid/ClenshawCurtisPattern.cc
-        key/grid/ClenshawCurtisPattern.h
-        key/grid/NamedClenshawCurtis.cc
-        key/grid/NamedClenshawCurtis.h
-        key/grid/NamedORCA.cc
-        key/grid/NamedORCA.h
-        key/grid/ORCAPattern.cc
-        key/grid/ORCAPattern.h
-        method/ProxyMethod.cc
-        method/ProxyMethod.h
-        method/fe/BuildNodeLumpedMassMatrix.cc
-        method/fe/BuildNodeLumpedMassMatrix.h
-        method/fe/CalculateCellLongestDiagonal.cc
-        method/fe/CalculateCellLongestDiagonal.h
-        method/fe/ConservativeFiniteElement.cc
-        method/fe/ConservativeFiniteElement.h
-        method/fe/FEBilinear.cc
-        method/fe/FEBilinear.h
-        method/fe/FELinear.cc
-        method/fe/FELinear.h
-        method/fe/FiniteElement.cc
-        method/fe/FiniteElement.h
-        method/nonlinear/Heaviest.cc
-        method/nonlinear/Heaviest.h
-        method/nonlinear/MissingIfAllMissing.cc
-        method/nonlinear/MissingIfAllMissing.h
-        method/nonlinear/MissingIfAnyMissing.cc
-        method/nonlinear/MissingIfAnyMissing.h
-        method/nonlinear/MissingIfHeaviestMissing.cc
-        method/nonlinear/MissingIfHeaviestMissing.h
-        method/nonlinear/NoNonLinear.cc
-        method/nonlinear/NoNonLinear.h
-        method/nonlinear/NonLinear.cc
-        method/nonlinear/NonLinear.h
-        method/nonlinear/SimulateMissingValue.cc
-        method/nonlinear/SimulateMissingValue.h
-        method/structured/StructuredBilinearLatLon.cc
-        method/structured/StructuredBilinearLatLon.h
-        method/structured/StructuredLinear3D.cc
-        method/structured/StructuredLinear3D.h
-        method/structured/StructuredMethod.cc
-        method/structured/StructuredMethod.h
-        repres/other/ClenshawCurtis.cc
-        repres/other/ClenshawCurtis.h
-        repres/other/ORCA.cc
-        repres/other/ORCA.h
-        repres/regular/Lambert.cc
-        repres/regular/Lambert.h
-        repres/regular/LambertAzimuthalEqualArea.cc
-        repres/regular/LambertAzimuthalEqualArea.h
-        repres/regular/Mercator.cc
-        repres/regular/Mercator.h
-        repres/regular/PolarStereographic.cc
-        repres/regular/PolarStereographic.h
-        repres/regular/RegularGrid.cc
-        repres/regular/RegularGrid.h
-        util/MeshGeneratorParameters.cc
-        util/MeshGeneratorParameters.h
-        )
-    set(libatlas atlas)
-endif()
-
-
-if (HAVE_NETCDF)
+if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
@@ -892,12 +874,11 @@ if (HAVE_NETCDF)
         netcdf/VirtualInputDimension.cc
         netcdf/VirtualInputDimension.h
         netcdf/VirtualOutputDimension.cc
-        netcdf/VirtualOutputDimension.h
-        )
+        netcdf/VirtualOutputDimension.h)
 endif()
 
 
-if (HAVE_PNG)
+if(mir_HAVE_PNG)
     list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
 endif()
 
@@ -906,15 +887,22 @@ list(APPEND mir_tmpls caching/InMemoryCache.cc)
 
 
 ecbuild_add_library(
-  TARGET             mir
-  INSTALL_HEADERS    LISTED
-  HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-  SOURCES            ${mir_srcs}
-  GENERATED          api/mir_version.cc
-  TEMPLATES          ${mir_tmpls}
-  PUBLIC_LIBS        ${libatlas} eckit_linalg eckit_geometry eckit_option eckit eccodes
-  )
+    TARGET             mir
+    INSTALL_HEADERS    LISTED
+    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
+    SOURCES            ${mir_srcs}
+    GENERATED          api/mir_version.cc
+    TEMPLATES          ${mir_tmpls}
+    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+                       $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+)
 
-if(HAVE_NETCDF)
+if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
+
+if(mir_HAVE_PNG)
+    target_link_libraries(mir PRIVATE PNG::PNG)
+endif()
+

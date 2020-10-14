@@ -30,8 +30,7 @@ public:
 
     // -- Constructors
 
-    IEEE(const std::string& name);
-    IEEE(const IEEE&) = delete;
+    IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
 
     // -- Destructor
 
@@ -41,8 +40,7 @@ public:
     // None
 
     // -- Operators
-
-    IEEE& operator=(const IEEE&) = delete;
+    // None
 
     // -- Methods
     // None
@@ -61,9 +59,7 @@ protected:
     // None
 
     // -- Methods
-
-    virtual void print(std::ostream&) const;
-    virtual void fill(grib_info&, const repres::Representation&) const;
+    // None
 
     // -- Overridden methods
     // None
@@ -79,7 +75,10 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&) const;
+    virtual std::string type(const repres::Representation*) const;
 
     // -- Overridden methods
     // None

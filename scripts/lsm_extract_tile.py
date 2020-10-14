@@ -83,12 +83,22 @@ X = {}
 for path in sys.argv[1:]:
     print path
     raster = gdal.Open(path)
-    (top_left_x, w_e_pixel_resolution, _, top_left_y, _, n_s_pixel_resolution) = raster.GetGeoTransform()
+    (
+        top_left_x,
+        w_e_pixel_resolution,
+        _,
+        top_left_y,
+        _,
+        n_s_pixel_resolution,
+    ) = raster.GetGeoTransform()
 
     # print "x=", top_left_x, " dx=", w_e_pixel_resolution
     # print "y=", top_left_y, " dy=", n_s_pixel_resolution
     x = raster.GetProjection()
-    assert x == 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433],AUTHORITY["EPSG","4326"]]'
+    assert (
+        x
+        == 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433],AUTHORITY["EPSG","4326"]]'
+    )
 
     # print dir(raster)
     assert raster.RasterCount == 1
@@ -111,8 +121,8 @@ for path in sys.argv[1:]:
     print (top_left_x, top_left_y)
 
     for x in xrange(0, height):
-        pos = len(header) + 172800 * (x + row-1) + col
+        pos = len(header) + 172800 * (x + row - 1) + col
         assert pos > 0
         g.seek(pos)
-        p = [mapping[q] for q in values[x:x+1].flatten()]
+        p = [mapping[q] for q in values[x : x + 1].flatten()]
         g.write(bytearray(p))

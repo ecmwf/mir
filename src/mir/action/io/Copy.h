@@ -36,16 +36,18 @@ public:
     // -- Constructors
 
     Copy(const param::MIRParametrisation&, output::MIROutput&);
+    Copy(const Copy&) = delete;
 
     // -- Destructor
 
-    virtual ~Copy();  // Change to virtual if base class
+    virtual ~Copy();
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Copy& operator=(const Copy&) = delete;
 
     // -- Methods
     // None
@@ -65,7 +67,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
     void custom(std::ostream&) const;
 
     // -- Overridden methods
@@ -78,11 +80,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Copy(const Copy&);
-    Copy& operator=(const Copy&);
-
     // -- Members
 
     output::MIROutput& output_;
@@ -92,6 +89,7 @@ private:
 
     // -- Overridden methods
 
+    // From Action
     virtual void execute(context::Context&) const;
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;
@@ -105,9 +103,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Copy& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

@@ -85,7 +85,7 @@ void FrameFilter::estimate(context::Context& ctx, api::MIREstimation& estimation
 }
 
 
-static ActionBuilder<FrameFilter> frameFilter("filter.frame");
+static ActionBuilder<FrameFilter> __action("filter.frame");
 
 
 }  // namespace action

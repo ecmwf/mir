@@ -58,7 +58,7 @@
 #include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
 
-#if defined(HAVE_PNG)
+#if defined(mir_HAVE_PNG)
 #include "mir/output/PNGOutput.h"
 #endif
 
@@ -215,6 +215,9 @@ public:
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));
         options_.push_back(new SimpleOption<eckit::PathName>("bitmap", "Bitmap file to apply"));
         options_.push_back(new SimpleOption<size_t>("frame", "Size of the frame"));
+        options_.push_back(new FactoryOption<stats::DistributionFactory>(
+            "add-random", "Add random numbers to field values according to a probability density function"));
+
         options_.push_back(new FactoryOption<action::NablaFilterFactory>("nabla", "Vector/scalar operator(s)"));
 
         options_.push_back(new SimpleOption<bool>("nabla-poles-missing-values", "Force missing values at the poles"));
@@ -268,7 +271,7 @@ public:
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<packing::Packer>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<packing::PackerFactory>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));
@@ -325,7 +328,7 @@ public:
             options_.push_back(
                 new FactoryOption<input::ArtificialInputFactory>("artificial-input", "Use artificial data for input"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
-#if defined(HAVE_PNG)
+#if defined(mir_HAVE_PNG)
             options_.push_back(
                 new FactoryOption<output::PNGEncoderFactory>("png-output-encoder", "PNG output encoder"));
             options_.push_back(new VectorOption<double>("png-output-minmax", "PNG output minimum/maximum", 2));

@@ -10,11 +10,11 @@
  */
 
 
-#ifndef Simple_H
-#define Simple_H
-
+#ifndef mir_packing_Simple_h
+#define mir_packing_Simple_h
 
 #include "mir/packing/Packer.h"
+
 
 namespace mir {
 namespace packing {
@@ -22,16 +22,19 @@ namespace packing {
 
 class Simple : public Packer {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Simple(const std::string& name);
+    using Packer::Packer;
 
     // -- Destructor
 
-    virtual ~Simple();  // Change to virtual if base class
+    virtual ~Simple();
 
     // -- Convertors
     // None
@@ -40,6 +43,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +52,14 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -68,15 +71,14 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Simple(const Simple&);
-    Simple& operator=(const Simple&);
-
     // -- Members
     // None
 
     // -- Methods
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&) const;
+    virtual std::string type(const repres::Representation*) const;
 
     // -- Overridden methods
     // None
@@ -85,14 +87,15 @@ private:
     // None
 
     // -- Class methods
-
-    virtual void fill(grib_info&, const repres::Representation&) const;
-
+    // None
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace packing
 }  // namespace mir
+
+
 #endif

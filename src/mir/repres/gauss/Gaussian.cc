@@ -222,6 +222,14 @@ void Gaussian::fill(util::MeshGeneratorParameters& params) const {
 }
 
 
+void Gaussian::fill(api::MIRJob& job) const {
+    auto d = domain();
+    if (!d.isGlobal() || d.west() != Longitude::GREENWICH) {
+        bbox_.fill(job);
+    }
+}
+
+
 const std::vector<double>& Gaussian::latitudes(size_t N) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);

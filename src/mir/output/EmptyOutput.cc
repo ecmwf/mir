@@ -10,9 +10,10 @@
  */
 
 
+#include "mir/output/EmptyOutput.h"
+
 #include <ostream>
 
-#include "mir/output/EmptyOutput.h"
 #include "mir/param/MIRParametrisation.h"
 
 
@@ -78,11 +79,6 @@ bool EmptyOutput::printParametrisation(std::ostream& out, const param::MIRParame
     }
 
     return ok;
-}
-
-
-void EmptyOutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) {
-    // do nothing
 }
 
 

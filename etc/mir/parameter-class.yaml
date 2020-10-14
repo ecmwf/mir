@@ -1646,6 +1646,13 @@ intensity:
 - 228136  # U-tendency from non-orographic wave drag
 - 228139  # Soil Temperature
 - 228229  # SMOS first Brightness Temperature Bias Correction parameter
+- 228231  # Mixed-layer CAPE in the lowest 50 hPa
+- 228232  # Mixed-layer CIN in the lowest 50 hPa
+- 228233  # Mixed-layer CAPE in the lowest 100 hPa
+- 228234  # Mixed-layer CIN in the lowest 100 hPa
+- 228235  # Most-unstable CAPE
+- 228236  # Most-unstable CIN
+- 228237  # Departure level of the most unstable parcel expressed as Pressure
 - 228241  # 200 metre wind speed
 - 228249  # 100 metre wind speed
 - 228252  # Irrigation
@@ -2291,6 +2298,7 @@ numerics.accumulated:
 - 215089  # Accumulated total aerosol optical depth at 550 nm
 - 228021  # Total sky direct solar radiation at surface
 - 228022  # Clear-sky direct solar radiation at surface
+- 228038  # Liquid water content in snow pack
 - 228100  # Evaporation from the top of canopy
 - 228101  # Evaporation from bare soil
 - 228102  # Evaporation from open water surfaces excluding oceans
@@ -2383,6 +2391,7 @@ numerics.accumulated:
 - 260461  # Water vapor added by precip assimilation
 - 260462  # Water condensate added by precip assimilation
 - 260479  # Land Surface Precipitation Accumulation
+- 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300065  # Wat equiv acc snow depth
 - 300177  # Potential sfc evaporation
 
@@ -2812,6 +2821,7 @@ rate:
 - 260366  # Convective Cloud Mass Flux
 - 260447  # Rate of water dropping from canopy to ground
 - 260501  # Salt Flux
+- 260559  # Rate of spread (as defined by the Australian forest service)
 - 260616  # Adiabatic heating rate
 - 260623  # Adiabatic moistening rate
 - 260633  # Large scale condensation heating rate
@@ -3162,6 +3172,7 @@ rate.energy-flux:
 - 260478  # Direct evaporation from bare soil
 - 260496  # Net Air-Ocean Heat Flux
 - 260497  # Assimilative Heat Flux
+- 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 260615  # Evapotranspiration
 - 300111  # Short wave absorbed at ground
 - 300112  # Net long wave at bottom
@@ -3674,6 +3685,7 @@ rate.mass-flux:
 - 219218  # Wildfire flux of alkanes high oh rate
 - 219219  # Wildfire flux of hydrogen cyanide
 - 219220  # Wildfire flux of acetonitrile
+- 228038  # Liquid water content in snow pack
 - 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
 - 228084  # Flux of Carbon Dioxide Gross Primary Production
 - 228085  # Flux of Carbon Dioxide Ecosystem Respiration
@@ -4094,6 +4106,10 @@ ratio:
 - 260369  # Richardson Number
 - 260379  # Ozone Concentration (PPB)
 - 260418  # Radiative emissivity
+- 260558  # Drought factor (as defined by the Australian forest service)
+- 260560  # Fire danger index (as defined by the Australian forest service)
+- 260561  # Spread component (as defined by the U.S Forest Service National Fire-Danger Rating System)
+- 260562  # Burning index (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300052  # Relative humidity
 - 300153  # Freezing level relative humidity
 - 300170  # Vertical moisture advection
@@ -4330,6 +4346,7 @@ ratio.fraction:
 - 260458  # Normalized Difference Vegetation Index
 - 260483  # Field Capacity
 - 260509  # Albedo
+- 260557  # Keetch-Byram drought index
 - 261003  # Malaria cases
 - 261004  # Malaria circumsporozoite protein rate
 - 261007  # Malaria immunity
@@ -4913,6 +4930,7 @@ ratio.probability:
 - 260429  # Probability of Freezing Precipitation
 - 260431  # Probability of precipitation exceeding flash flood guidance values
 - 260432  # Probability of Wetting Rain, exceeding in 0.10 in a given time period
+- 260563  # Ignition component (as defined by the U.S Forest Service National Fire-Danger Rating System)
 - 300060  # Thunder probability
 
 ratio.volume:

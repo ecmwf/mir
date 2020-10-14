@@ -10,11 +10,11 @@
  */
 
 
-#ifndef JPEG2000_H
-#define JPEG2000_H
-
+#ifndef mir_packing_JPEG2000_h
+#define mir_packing_JPEG2000_h
 
 #include "mir/packing/Packer.h"
+
 
 namespace mir {
 namespace packing {
@@ -22,16 +22,19 @@ namespace packing {
 
 class JPEG2000 : public Packer {
 public:
+    // -- Types
+    // None
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    JPEG2000(const std::string& name);
+    using Packer::Packer;
 
     // -- Destructor
 
-    virtual ~JPEG2000();  // Change to virtual if base class
+    virtual ~JPEG2000();
 
     // -- Convertors
     // None
@@ -40,6 +43,7 @@ public:
     // None
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None
@@ -48,15 +52,14 @@ public:
     // None
 
     // -- Class methods
-
+    // None
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
-
-
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    // None
 
     // -- Overridden methods
     // None
@@ -68,15 +71,14 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    JPEG2000(const JPEG2000&);
-    JPEG2000& operator=(const JPEG2000&);
-
     // -- Members
     // None
 
     // -- Methods
+
+    virtual void print(std::ostream&) const;
+    virtual void fill(grib_info&, const repres::Representation&) const;
+    virtual std::string type(const repres::Representation*) const;
 
     // -- Overridden methods
     // None
@@ -85,14 +87,15 @@ private:
     // None
 
     // -- Class methods
-
-    virtual void fill(grib_info&, const repres::Representation&) const;
-
+    // None
 
     // -- Friends
+    // None
 };
 
 
 }  // namespace packing
 }  // namespace mir
+
+
 #endif

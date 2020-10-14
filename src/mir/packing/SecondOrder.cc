@@ -14,17 +14,35 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/repres/Gridded.h"
+#include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
 namespace packing {
 
 
-SecondOrder::SecondOrder(const std::string& name) : Packer(name) {}
+static PackerBuilder<SecondOrder> __packer1("second-order");
+static PackerBuilder<SecondOrder> __packer2("so");  // For the lazy
 
 
 SecondOrder::~SecondOrder() = default;
+
+
+bool SecondOrder::check(const repres::Representation& repres) const {
+    auto n = repres.numberOfPoints();
+    if (n < 4) {
+        // NOTE: There is a bug in ecCodes if the user asks 1 value and select second-order
+        // Once this fixed, remove this code
+        eckit::Log::warning() << "Field has " << Pretty(n, {"value"}) << " < 4, ignoring packer " << *this << std::endl;
+        return false;
+    }
+    return true;
+}
 
 
 void SecondOrder::print(std::ostream& out) const {
@@ -32,14 +50,20 @@ void SecondOrder::print(std::ostream& out) const {
 }
 
 
-void SecondOrder::fill(grib_info& info, const repres::Representation&) const {
-    info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+void SecondOrder::fill(grib_info& info, const repres::Representation& repres) const {
+    if (check(repres)) {
+        info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
+        info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
+    }
 }
 
 
-static SecondOrder packing1("second-order");
-static SecondOrder packing2("so");  // For the lazy
+std::string SecondOrder::type(const repres::Representation* repres) const {
+    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
+        return check(*repres) ? "grid_second_order" : "";
+    }
+    NOTIMP;
+}
 
 
 }  // namespace packing

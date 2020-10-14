@@ -12,6 +12,8 @@
 
 #include "mir/input/NetcdfFileInput.h"
 
+#include <limits>
+
 #include "eckit/exception/Exceptions.h"
 
 #include "mir/data/MIRField.h"
@@ -78,14 +80,32 @@ bool NetcdfFileInput::next() {
 
 
 data::MIRField NetcdfFileInput::field() const {
-
     auto& ncField = currentField();
-    data::MIRField field(*this, ncField.hasMissing(), ncField.missingValue());
+
+    auto hasMissing         = ncField.hasMissing();
+    auto mv                 = ncField.missingValue();
+    auto modifyMissingValue = hasMissing && mv != mv;
+
+    if (modifyMissingValue) {
+        mv = std::numeric_limits<double>::lowest();
+        eckit::Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
+    }
+
+    data::MIRField field(*this, hasMissing, mv);
 
     for (size_t i = 0; i < ncField.count2DValues(); ++i) {
         MIRValuesVector values;
         ncField.get2DValues(values, i);
         ncField.setMetadata(field, i);
+
+        if (modifyMissingValue) {
+            for (auto& v : values) {
+                if (v != v) {
+                    v = mv;
+                }
+            }
+        }
+
         field.update(values, i);
     }
 

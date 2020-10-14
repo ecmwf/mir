@@ -1,12 +1,12 @@
 #ifndef mir_api_version_h
 #define mir_api_version_h
 
-#define MIR_VERSION_STR "@MIR_VERSION_STR@"
-#define MIR_VERSION     "@MIR_VERSION@"
+#define mir_VERSION_STR "@mir_VERSION_STR@"
+#define mir_VERSION     "@mir_VERSION@"
 
-#define MIR_MAJOR_VERSION @MIR_MAJOR_VERSION@
-#define MIR_MINOR_VERSION @MIR_MINOR_VERSION@
-#define MIR_PATCH_VERSION @MIR_PATCH_VERSION@
+#define mir_VERSION_MAJOR @mir_VERSION_MAJOR@
+#define mir_VERSION_MINOR @mir_VERSION_MINOR@
+#define mir_VERSION_PATCH @mir_VERSION_PATCH@
 
 const char * mir_version();
 

@@ -1,7 +1,7 @@
 
 # Setup cache directory
-set( TEST_ECKIT_CACHE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/cache/ )
-file( REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR} )
+set(TEST_ECKIT_CACHE_DIR ${CMAKE_CURRENT_BINARY_DIR}/cache/)
+file(REMOVE_RECURSE ${TEST_ECKIT_CACHE_DIR})
 
 set(tests
 #    MIR-333
@@ -15,17 +15,14 @@ set(tests
     spectral_order
     style
     wind
-    )
-if(HAVE_ATLAS)
-    list(APPEND tests atlas)
-endif()
+    atlas)
 
-foreach( _t ${tests})
-  ecbuild_add_test(
-      TARGET            mir_tests_unit_${_t}
-      SOURCES           ${_t}.cc
-      LIBS              mir
-      ENVIRONMENT       ${_testEnvironment}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+foreach(_t ${tests})
+    ecbuild_add_test(
+        TARGET            mir_tests_unit_${_t}
+        SOURCES           ${_t}.cc
+        LIBS              mir
+        ENVIRONMENT       ${_testEnvironment}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 

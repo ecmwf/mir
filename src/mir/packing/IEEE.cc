@@ -13,7 +13,12 @@
 #include "mir/packing/IEEE.h"
 
 #include <iostream>
+#include <sstream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/param/MIRParametrisation.h"
+#include "mir/repres/Gridded.h"
 #include "mir/util/Grib.h"
 
 
@@ -21,10 +26,18 @@ namespace mir {
 namespace packing {
 
 
-// static IEEE packing("ieee");
+static PackerBuilder<IEEE> __packer("ieee");
 
 
-IEEE::IEEE(const std::string& name) : Packer(name) {}
+IEEE::IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field) : Packer(user, field) {
+    long bits = -1;
+    if ((user.get("accuracy", bits) || field.get("accuracy", bits)) && (bits != 32 && bits != 64)) {
+        std::ostringstream msg;
+        msg << *this << ": only supports bitsPerValue 32 and 64 (from input, or as set by 'accuracy')";
+        eckit::Log::error() << msg.str() << std::endl;
+        throw eckit::UserError(msg.str());
+    }
+}
 
 
 IEEE::~IEEE() = default;
@@ -37,7 +50,12 @@ void IEEE::print(std::ostream& out) const {
 
 void IEEE::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    //    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
+    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
+}
+
+
+std::string IEEE::type(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_ieee" : "spectral_ieee";
 }
 
 

@@ -11,16 +11,19 @@
 
 
 #include "mir/packing/Simple.h"
+
+#include <iostream>
+
+#include "mir/repres/Gridded.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
-#include <iostream>
 
 namespace mir {
 namespace packing {
 
 
-Simple::Simple(const std::string& name) : Packer(name) {}
+static PackerBuilder<Simple> __packer("simple");
 
 
 Simple::~Simple() = default;
@@ -37,7 +40,9 @@ void Simple::fill(grib_info& info, const repres::Representation& repres) const {
 }
 
 
-static Simple packing("simple");
+std::string Simple::type(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_simple" : "spectral_simple";
+}
 
 
 }  // namespace packing

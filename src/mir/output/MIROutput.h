@@ -69,8 +69,9 @@ public:
     virtual bool sameAs(const MIROutput& other) const                                                          = 0;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const = 0;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const                   = 0;
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
 
+    virtual size_t set(const param::MIRParametrisation&, context::Context&);
+    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
     virtual void estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const;
 
     // -- Overridden methods
