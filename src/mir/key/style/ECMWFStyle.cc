@@ -197,12 +197,16 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
 
     resol::Resol resol(parametrisation_, false);
 
+    long uv       = 0;
+    bool uv_input = field.get("is_wind_component_uv", uv) && (uv != 0);
+
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
-    bool uv2uv    = option(user, "uv2uv", false);
+    bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
-    long uv = 0;
-    uv2uv   = uv2uv || (field.get("is_wind_component_uv", uv) && (uv != 0));
+    if (vod2uv && uv_input) {
+        throw eckit::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+    }
 
     if (resol.resultIsSpectral()) {
         resol.prepare(plan);
