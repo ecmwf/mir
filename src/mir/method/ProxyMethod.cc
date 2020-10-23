@@ -93,6 +93,11 @@ void ProxyMethod::hash(eckit::MD5& md5) const {
 }
 
 
+int ProxyMethod::version() const {
+    return 0;
+}
+
+
 void ProxyMethod::execute(context::Context& ctx, const repres::Representation& in,
                           const repres::Representation& out) const {
 

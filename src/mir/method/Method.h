@@ -52,6 +52,8 @@ public:
 
     virtual void hash(eckit::MD5&) const = 0;
 
+    virtual int version() const = 0;
+
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
 

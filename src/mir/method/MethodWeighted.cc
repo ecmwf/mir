@@ -145,7 +145,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     eckit::MD5 hash;
     hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox();
 
-    std::string disk_key   = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-" + std::string(hash);
+    std::string version_str;
+    auto v = version();
+    if (v) {
+        version_str = std::to_string(v) + "/";
+    }
+
+    std::string disk_key =
+        std::string(name()) + "/" + version_str + shortName_in + "/" + shortName_out + "-" + std::string(hash);
     std::string memory_key = disk_key;
 
     // Add masks if any
@@ -486,6 +493,16 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
     for (auto& n : nonLinear_) {
         n->hash(md5);
     }
+
+    auto v = version();
+    if (v != 0) {
+        md5.add(v);
+    }
+}
+
+
+int MethodWeighted::version() const {
+    return 0;
 }
 
 

@@ -130,6 +130,11 @@ void ConservativeFiniteElement::hash(eckit::MD5& md5) const {
 }
 
 
+int ConservativeFiniteElement::version() const {
+    return 1;
+}
+
+
 void ConservativeFiniteElement::print(std::ostream& out) const {
     out << "ConservativeFiniteElement[inputMethod=";
     inputMethod_->print(out);
