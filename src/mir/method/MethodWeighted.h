@@ -73,6 +73,8 @@ public:
 
     virtual void hash(eckit::MD5&) const;
 
+    virtual int version() const;
+
     virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
                                           const repres::Representation& out) const;
 
