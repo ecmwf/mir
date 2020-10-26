@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/method/fe/ConservativeFiniteElement.h"
+#include "mir/method/fe/L2Projection.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
@@ -30,16 +30,16 @@ namespace method {
 namespace fe {
 
 
-ConservativeFiniteElement::ConservativeFiniteElement(const param::MIRParametrisation& param) : MethodWeighted(param) {
+L2Projection::L2Projection(const param::MIRParametrisation& param) : MethodWeighted(param) {
     std::string method;
 
-    param.get("conservative-finite-element-method-input", method = "linear");
+    param.get("l2-projection-input-method", method = "linear");
     inputMethod_.reset(FiniteElementFactory::build(method, "input", param));
     ASSERT(inputMethod_);
 
     inputMethod_->meshGeneratorParams().meshNodeLumpedMassMatrix_ = true;
 
-    param.get("conservative-finite-element-method-output", method = "linear");
+    param.get("l2-projection-output-method", method = "linear");
     outputMethod_.reset(FiniteElementFactory::build(method, "output", param));
     ASSERT(outputMethod_);
 
@@ -47,20 +47,20 @@ ConservativeFiniteElement::ConservativeFiniteElement(const param::MIRParametrisa
 }
 
 
-ConservativeFiniteElement::~ConservativeFiniteElement() = default;
+L2Projection::~L2Projection() = default;
 
 
-bool ConservativeFiniteElement::sameAs(const Method& other) const {
-    auto o = dynamic_cast<const ConservativeFiniteElement*>(&other);
+bool L2Projection::sameAs(const Method& other) const {
+    auto o = dynamic_cast<const L2Projection*>(&other);
     return (o != nullptr) && inputMethod_->sameAs(*(o->inputMethod_)) && outputMethod_->sameAs(*(o->outputMethod_)) &&
            MethodWeighted::sameAs(*o);
 }
 
 
-void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W,
-                                         const repres::Representation& in, const repres::Representation& out) const {
+void L2Projection::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
+                            const repres::Representation& out) const {
     eckit::Channel& log = eckit::Log::debug<LibMir>();
-    log << "ConservativeFiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    log << "L2Projection::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
     // 1) I: compute the matrix from input to output
@@ -117,12 +117,12 @@ void ConservativeFiniteElement::assemble(util::MIRStatistics& statistics, Weight
 }
 
 
-const char* ConservativeFiniteElement::name() const {
-    return "conservative-finite-element";
+const char* L2Projection::name() const {
+    return "l2-projection";
 }
 
 
-void ConservativeFiniteElement::hash(eckit::MD5& md5) const {
+void L2Projection::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
     inputMethod_->hash(md5);
     outputMethod_->hash(md5);
@@ -130,8 +130,13 @@ void ConservativeFiniteElement::hash(eckit::MD5& md5) const {
 }
 
 
-void ConservativeFiniteElement::print(std::ostream& out) const {
-    out << "ConservativeFiniteElement[inputMethod=";
+int L2Projection::version() const {
+    return 1;
+}
+
+
+void L2Projection::print(std::ostream& out) const {
+    out << "L2Projection[inputMethod=";
     inputMethod_->print(out);
     out << ",outputMethod=";
     outputMethod_->print(out);
@@ -141,7 +146,7 @@ void ConservativeFiniteElement::print(std::ostream& out) const {
 }
 
 
-static MethodBuilder<ConservativeFiniteElement> __builder("conservative-finite-element");
+static MethodBuilder<L2Projection> __builder("l2-projection");
 
 
 }  // namespace fe
