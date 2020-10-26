@@ -383,14 +383,14 @@ list(APPEND mir_srcs
     method/fe/BuildNodeLumpedMassMatrix.h
     method/fe/CalculateCellLongestDiagonal.cc
     method/fe/CalculateCellLongestDiagonal.h
-    method/fe/ConservativeFiniteElement.cc
-    method/fe/ConservativeFiniteElement.h
     method/fe/FEBilinear.cc
     method/fe/FEBilinear.h
     method/fe/FELinear.cc
     method/fe/FELinear.h
     method/fe/FiniteElement.cc
     method/fe/FiniteElement.h
+    method/fe/L2Projection.cc
+    method/fe/L2Projection.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
