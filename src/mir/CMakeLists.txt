@@ -276,6 +276,7 @@ list(APPEND mir_srcs
     input/RawMetadata.h
     input/VectorInput.cc
     input/VectorInput.h
+    iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
     key/Key.cc
