@@ -38,7 +38,7 @@ const Grid* ORCAPattern::make(const std::string& name) const {
 }
 
 
-static ORCAPattern __pattern("^e?orca[0-9]+_[TUVWF]$");
+static ORCAPattern __pattern("^(e?[oO][rR][cC][aA][0-9]+)_([TUVWF])$");
 
 
 }  // namespace grid
