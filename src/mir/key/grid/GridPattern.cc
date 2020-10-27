@@ -36,7 +36,7 @@ static void init() {
 }
 
 
-GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern) {
+GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_(pattern_) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -66,16 +66,20 @@ void GridPattern::list(std::ostream& out) {
 }
 
 
-bool GridPattern::match(const std::string& name) {
+GridPattern::match_t GridPattern::match(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     eckit::Log::debug<LibMir>() << "GridPattern: looking for '" << name << "'" << std::endl;
 
+    match_t matches;
     bool conflicts = false;
     auto k         = m->cend();
+
     for (auto j = m->cbegin(); j != m->cend() && !conflicts; ++j) {
-        if (j->second->pattern_.match(name)) {
+        match_t ms;
+        if (std::regex_match(name, ms, j->second->regex_)) {
+            matches   = ms;
             conflicts = k != m->cend();
             k         = j;
         }
@@ -84,7 +88,7 @@ bool GridPattern::match(const std::string& name) {
     bool can = !conflicts && k != m->cend();
     eckit::Log::debug<LibMir>() << "GridPattern: '" << name << "' " << (can ? "can" : "cannot") << " be built"
                                 << std::endl;
-    return can;
+    return can ? matches : match_t();
 }
 
 
@@ -96,7 +100,8 @@ const Grid& GridPattern::lookup(const std::string& name) {
 
     auto k = m->cend();
     for (auto j = m->cbegin(); j != m->cend(); ++j) {
-        if (j->second->pattern_.match(name)) {
+        std::smatch matches;
+        if (std::regex_match(name, matches, j->second->regex_)) {
             eckit::Log::debug<LibMir>() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->cend()) {

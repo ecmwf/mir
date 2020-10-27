@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/ORCAPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/key/grid/NamedORCA.h"
 
@@ -38,7 +38,7 @@ const Grid* ORCAPattern::make(const std::string& name) const {
 }
 
 
-static ORCAPattern pattern("^e?orca[0-9]+_[TUVWF]$");
+static ORCAPattern __pattern("^e?orca[0-9]+_[TUVWF]$");
 
 
 }  // namespace grid

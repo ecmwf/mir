@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/ClassicPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 
@@ -40,7 +40,7 @@ const Grid* ClassicPattern::make(const std::string& name) const {
 }
 
 
-static ClassicPattern pattern("^[nN][1-9][0-9]*$");
+static ClassicPattern __pattern("^[nN][1-9][0-9]*$");
 
 
 }  // namespace grid

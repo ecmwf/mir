@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/OctahedralPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 
@@ -40,7 +40,7 @@ const Grid* OctahedralPattern::make(const std::string& name) const {
 }
 
 
-static OctahedralPattern pattern("^[oO][1-9][0-9]*$");
+static OctahedralPattern __pattern("^[oO][1-9][0-9]*$");
 
 
 }  // namespace grid

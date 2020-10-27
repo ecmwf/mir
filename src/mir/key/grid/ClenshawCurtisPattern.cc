@@ -38,7 +38,7 @@ const Grid* ClenshawCurtisPattern::make(const std::string& name) const {
 }
 
 
-static ClenshawCurtisPattern pattern("^[rR][cC][cC][1-9][0-9]*$");
+static ClenshawCurtisPattern __pattern("^[rR][cC][cC][1-9][0-9]*$");
 
 
 }  // namespace grid

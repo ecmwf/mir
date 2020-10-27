@@ -14,9 +14,8 @@
 #define mir_key_grid_GridPattern_h
 
 #include <iosfwd>
+#include <regex>
 #include <string>
-
-#include "eckit/utils/Regex.h"
 
 
 namespace mir {
@@ -38,6 +37,12 @@ public:
     // -- Exceptions
     // None
 
+    // -- Types
+
+    struct match_t : std::smatch {
+        operator bool() const { return !std::smatch::empty(); }
+    };
+
     // -- Constructors
 
     GridPattern(const GridPattern&) = delete;
@@ -53,7 +58,10 @@ public:
     void operator=(const GridPattern&) = delete;
 
     // -- Methods
-    // None
+
+    static match_t match(const std::string&);
+    static const Grid& lookup(const std::string&);
+    static void list(std::ostream&);
 
     // -- Overridden methods
     // None
@@ -62,10 +70,7 @@ public:
     // None
 
     // -- Class methods
-
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string&);
-    static void list(std::ostream&);
+    // None
 
 protected:
     GridPattern(const std::string&);
@@ -73,7 +78,8 @@ protected:
 
     // -- Members
 
-    eckit::Regex pattern_;
+    std::string pattern_;
+    std::regex regex_;
 
     // -- Methods
 
