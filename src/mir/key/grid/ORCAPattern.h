@@ -43,7 +43,8 @@ public:
     ORCAPattern& operator=(const ORCAPattern&) = delete;
 
     // -- Methods
-    // None
+
+    static const std::string& pattern();
 
     // -- Overridden methods
     // None

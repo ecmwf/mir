@@ -732,6 +732,8 @@ list(APPEND mir_srcs
     util/Pretty.cc
     util/Pretty.h
     util/RectangularDomain.h
+    util/Regex.cc
+    util/Regex.h
     util/Rotation.cc
     util/Rotation.h
     util/SpectralOrder.cc

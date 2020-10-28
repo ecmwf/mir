@@ -10,53 +10,50 @@
  */
 
 
-#ifndef mir_key_grid_GridPattern_h
-#define mir_key_grid_GridPattern_h
+#ifndef mir_util_Regex_h
+#define mir_util_Regex_h
 
-#include <iosfwd>
+#include <regex>
 #include <string>
 
-#include "eckit/utils/Regex.h"
-
 
 namespace mir {
-namespace key {
-namespace grid {
-class Grid;
-}
-}  // namespace key
-}  // namespace mir
+namespace util {
 
 
-namespace mir {
-namespace key {
-namespace grid {
-
-
-class GridPattern {
+class Regex {
 public:
+    // -- Types
+
+    using regex_t = std::regex;
+
+    struct match_t : std::smatch {
+        operator bool() const { return !std::smatch::empty(); }
+    };
+
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    GridPattern(const GridPattern&) = delete;
+    Regex(const std::string& pattern);
 
     // -- Destructor
-    // None
+
+    virtual ~Regex() = default;
 
     // -- Convertors
     // None
 
     // -- Operators
-
-    void operator=(const GridPattern&) = delete;
+    // None
 
     // -- Methods
 
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string&);
-    static void list(std::ostream&);
+    const std::string& pattern() const;
+    match_t match(const std::string&) const;
+
+    static match_t match(const std::string& pattern, const std::string& s) { return Regex(pattern).match(s); }
 
     // -- Overridden methods
     // None
@@ -68,18 +65,11 @@ public:
     // None
 
 protected:
-    GridPattern(const std::string&);
-    virtual ~GridPattern();
-
     // -- Members
-
-    const std::string pattern_;
-    const eckit::Regex regex_;
+    // None
 
     // -- Methods
-
-    virtual const Grid* make(const std::string&) const = 0;
-    virtual void print(std::ostream&) const            = 0;
+    // None
 
     // -- Overridden methods
     // None
@@ -92,7 +82,9 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    const std::string pattern_;
+    regex_t regex_;
 
     // -- Methods
     // None
@@ -107,16 +99,11 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const GridPattern& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
-}  // namespace grid
-}  // namespace key
+}  // namespace util
 }  // namespace mir
 
 
