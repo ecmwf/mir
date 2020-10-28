@@ -79,13 +79,18 @@ endif()
 foreach(_t ${_test_reqs})
     separate_arguments(_t)
     list(GET _t -1 _out)
+    list(GET _t -2 _in)
+    unset(extraEnvironment)
+    if(_in MATCHES "[.]nc$")
+        set(_extraEnvironment "MIR_CHECK_DUPLICATE_POINTS=0")
+    endif()
     string(REGEX REPLACE "[.]grib$" "" _label ${_out})
     ecbuild_add_test(
         TARGET       ${_label}
         COMMAND      $<TARGET_FILE:mir-tool>
         ARGS         "--caching=0" ${_t}
         TEST_DEPENDS download_mir_tests_files
-        ENVIRONMENT  ${_testEnvironment})
+        ENVIRONMENT  ${_testEnvironment} ${_extraEnvironment})
 endforeach()
 
 
