@@ -35,7 +35,7 @@ Source::Source(const param::MIRParametrisation& parametrisation, long) : Intgrid
     ASSERT(spectralOrder);
 
     long T = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("spectral", T));
+    ASSERT(parametrisation_.get("truncation", T));
     ASSERT(T > 0);
 
     long N = spectralOrder->getGaussianNumberFromTruncation(T);
