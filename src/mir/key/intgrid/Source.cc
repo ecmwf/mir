@@ -30,12 +30,13 @@ static IntgridBuilder<Source> __intgrid2("SOURCE");
 
 
 Source::Source(const param::MIRParametrisation& parametrisation, long) : Intgrid(parametrisation) {
-
     std::unique_ptr<util::SpectralOrder> spectralOrder(util::SpectralOrderFactory::build("cubic"));
     ASSERT(spectralOrder);
 
     long T = 0;
-    ASSERT(parametrisation_.fieldParametrisation().get("spectral", T));
+    if (!(parametrisation_.userParametrisation().get("truncation", T) && T > 0)) {
+        ASSERT(parametrisation_.fieldParametrisation().get("truncation", T));
+    }
     ASSERT(T > 0);
 
     long N = spectralOrder->getGaussianNumberFromTruncation(T);
