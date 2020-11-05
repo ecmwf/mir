@@ -15,6 +15,7 @@
 #include <utility>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/FloatCompare.h"
 
 #include "mir/api/Atlas.h"
 
@@ -46,13 +47,26 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
         }
 
         auto mass = array::make_view<double, 1>(nodes.field(name_));
-        ASSERT(0 < nbRealPts && nbRealPts <= mass.size());
+        ASSERT(0 < nbRealPts && nbRealPts <= idx_t(mass.size()));
         mass.assign(0.);
 
 
+        // North/South pole points
+        std::vector<bool> northPole(nodes.size(), false);
+        std::vector<bool> southPole(nodes.size(), false);
+
+        for (idx_t n = 0; n < nodes.size(); ++n) {
+            if (eckit::types::is_approximately_equal(0., coords(n, 0)) &&
+                eckit::types::is_approximately_equal(0., coords(n, 1))) {
+                (coords(n, 2) > 0 ? northPole : southPole)[n] = true;
+            }
+        }
+
+
+        // Nodal distributions (except to pole points)
         // assumes:
         // - nb_cols == 3 implies triangle
-        // - nb_cols == 4 implies quadrilateral
+        // - nb_cols == 4 implies quadrilater%al
         // - no other element is supported at the time
         const auto& connectivity = mesh.cells().node_connectivity();
 
@@ -88,6 +102,32 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
                 }
             }
         }
+
+
+        // North/South pole nodal re-distribution
+        auto poleNodalDistribution = [&mass, nbRealPts](std::vector<bool>& pole) {
+            ASSERT(0 < nbRealPts && nbRealPts <= idx_t(pole.size()));
+
+            double contribution = 0.;
+            size_t nb           = 0;
+            for (idx_t i = 0; i < nbRealPts; ++i) {
+                if (pole[i]) {
+                    contribution += mass[i];
+                    nb++;
+                }
+            }
+
+            if (nb > 0) {
+                auto nodalDistribution = contribution / double(nb);
+                for (idx_t i = 0; i < nbRealPts; ++i) {
+                    if (pole[i]) {
+                        mass[i] = nodalDistribution;
+                    }
+                }
+            }
+        };
+        poleNodalDistribution(northPole);
+        poleNodalDistribution(southPole);
     }
 
     return mesh.nodes().field(name_);

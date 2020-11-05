@@ -13,6 +13,7 @@
 #include "GribField.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstring>
 #include <iomanip>

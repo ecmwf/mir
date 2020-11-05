@@ -34,6 +34,8 @@ public:
     operator bool() const { return active_; }
 
     void hash(eckit::MD5&) const;
+    bool sameAs(const Cropping&) const;
+
     void boundingBox(const util::BoundingBox&);
     const util::BoundingBox& boundingBox() const;
 

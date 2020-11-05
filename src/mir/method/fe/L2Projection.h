@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_fe_ConservativeFiniteElement_h
-#define mir_method_fe_ConservativeFiniteElement_h
+#ifndef mir_method_fe_L2Projection_h
+#define mir_method_fe_L2Projection_h
 
 #include <memory>
 
@@ -32,7 +32,11 @@ namespace method {
 namespace fe {
 
 
-class ConservativeFiniteElement : public MethodWeighted {
+/**
+ * @brief The L2 Projection interpolation method
+ * See <https://earthsystemcog.org/doc/detail/2201/>
+ */
+class L2Projection : public MethodWeighted {
 public:
     // -- Types
     // None
@@ -42,11 +46,11 @@ public:
 
     // -- Constructors
 
-    ConservativeFiniteElement(const param::MIRParametrisation&);
+    L2Projection(const param::MIRParametrisation&);
 
     // -- Destructor
 
-    virtual ~ConservativeFiniteElement();
+    virtual ~L2Projection();
 
     // -- Convertors
     // None
@@ -93,12 +97,15 @@ private:
 
     // -- Overridden methods
 
-    // From MethodWeighted
+    // From Method
     void hash(eckit::MD5&) const;
-    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
+    int version() const;
     bool sameAs(const Method&) const;
     void print(std::ostream&) const;
+
+    // From MethodWeighted
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const;
     virtual const char* name() const;
 
     // -- Class members

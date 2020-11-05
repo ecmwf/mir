@@ -128,10 +128,10 @@ public:
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 
-        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>(
-            "conservative-finite-element-method-input", "Conservative FEM for input mesh"));
-        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>(
-            "conservative-finite-element-method-output", "Conservative FEM for output mesh"));
+        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
+                                                                               "L2 Projection FEM method for input"));
+        options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
+                                                                               "L2 Projection FEM method for output"));
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
