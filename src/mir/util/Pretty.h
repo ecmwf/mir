@@ -95,8 +95,10 @@ public:
     // -- Constructors
 
     Pretty(int count);
+    Pretty(long count);
     Pretty(size_t count);
     Pretty(int count, const Plural& plural) : plural_(plural), count_(count) {}
+    Pretty(long count, const Plural& plural) : plural_(plural), count_(static_cast<int>(count)) {}
     Pretty(size_t count, const Plural& plural) : plural_(plural), count_(static_cast<int>(count)) {}
     Pretty(const Pretty&) = delete;
 

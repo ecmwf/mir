@@ -28,6 +28,9 @@ static const Pretty::Plural noPlural("", "");
 Pretty::Pretty(int count) : Pretty(count, noPlural) {}
 
 
+Pretty::Pretty(long count) : Pretty(count, noPlural) {}
+
+
 Pretty::Pretty(size_t count) : Pretty(count, noPlural) {}
 
 
