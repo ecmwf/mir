@@ -76,13 +76,13 @@ std::vector<util::GridBox> RegularGG::gridBoxes() const {
     // longitude edges
     bool periodic = isPeriodicWestEast();
     auto lon0     = bbox_.west();
-    auto inc      = (bbox_.east() - bbox_.west()) / (Ni_ - 1);
+    auto inc      = (bbox_.east() - bbox_.west()).fraction() / (Ni_ - 1);
     eckit::Fraction half(1, 2);
 
     std::vector<double> lonEdges(Ni_ + 1, 0.);
     lonEdges[0] = (lon0 - inc / 2).value();
     for (size_t i = 0; i < Ni_; ++i) {
-        lonEdges[i + 1] = (lon0 + (i + half) * inc.fraction()).value();
+        lonEdges[i + 1] = (lon0 + (i + half) * inc).value();
     }
 
 
