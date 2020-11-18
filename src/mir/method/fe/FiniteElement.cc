@@ -86,7 +86,7 @@ static void normalise(triplet_vector_t& triplets) {
 static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
                                                  const atlas::array::ArrayView<double, 2>& icoords,
                                                  const atlas::mesh::HybridElements::Connectivity& connectivity,
-                                                 const Point3& p, size_t ip, size_t firstVirtualPoint,
+                                                 const Point3& p, size_t ip, size_t firstVirtualPoint, bool validateQuads,
                                                  size_t& nbProjectionAttempts,
                                                  const element_tree_t::NodeList& closest) {
 
@@ -167,9 +167,11 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
                 atlas::PointXYZ{icoords(idx[2], XX), icoords(idx[2], YY), icoords(idx[2], ZZ)},
                 atlas::PointXYZ{icoords(idx[3], XX), icoords(idx[3], YY), icoords(idx[3], ZZ)});
 
-            if (!quad.validate()) {  // somewhat expensive sanity check
-                Log::warning() << "Invalid Quad : " << quad << std::endl;
-                throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
+            if( validateQuads ) {
+                if (! quad.validate() ) {  // somewhat expensive sanity check
+                    Log::warning() << "Invalid Quad [" << elem_id << "]: " << quad << std::endl;
+                    throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
+                }
             }
 
             // pick an epsilon based on a characteristic length (sqrt(area))
@@ -225,6 +227,9 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
     auto params = meshGeneratorParams_;
     repres.fill(params);
 
+
+
+
     double d;
     if (!repres.getLongestElementDiagonal(d)) {
         params.meshCellLongestDiagonal_ = true;
@@ -267,6 +272,14 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
     log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
+
+    const bool validateQuads = [&]{
+        // A hack to get access from specific input representation
+        auto p = meshGeneratorParams();
+        in.fill(p);
+        bool meshCanContainInvalidQuads = p.getBool("invalid_quads",false);
+        return not meshCanContainInvalidQuads;
+    }();
 
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
@@ -336,7 +349,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
                 size_t nbProjectionAttempts = 0;
                 triplet_vector_t triplets   = projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip,
-                                                                     firstVirtualPoint, nbProjectionAttempts, closest);
+                                                                     firstVirtualPoint, validateQuads, nbProjectionAttempts, closest);
 
                 nbMaxElementsSearched   = std::max(nbMaxElementsSearched, closest.size());
                 nbMinElementsSearched   = std::min(nbMinElementsSearched, closest.size());
