@@ -54,12 +54,13 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
     md5 << grid;
     md5 << meshGeneratorParams;
 
-    auto j = mesh_cache.find(md5);
+    auto sign(md5.digest());
+    auto j = mesh_cache.find(sign);
     if (j != mesh_cache.end()) {
         return *j;
     }
 
-    atlas::Mesh& mesh = mesh_cache[md5];
+    atlas::Mesh& mesh = mesh_cache[sign];
     ASSERT(!mesh.generated());
 
     try {
@@ -129,11 +130,11 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
     }
     catch (...) {
         // Make sure we don't leave an incomplete entry in the cache
-        mesh_cache.erase(md5);
+        mesh_cache.erase(sign);
         throw;
     }
 
-    mesh_cache.footprint(md5, caching::InMemoryCacheUsage(mesh.footprint(), 0));
+    mesh_cache.footprint(sign, caching::InMemoryCacheUsage(mesh.footprint(), 0));
 
     ASSERT(mesh.generated());
     return mesh;
