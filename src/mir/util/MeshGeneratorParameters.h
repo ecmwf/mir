@@ -41,7 +41,7 @@ public:
     // -- Constructors
 
     MeshGeneratorParameters();
-    MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation&);
+    MeshGeneratorParameters(const param::MIRParametrisation&, const std::string& label = "");
     MeshGeneratorParameters(const MeshGeneratorParameters&) = default;
 
     // -- Destructor

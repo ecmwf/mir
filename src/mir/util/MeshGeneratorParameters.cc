@@ -36,22 +36,22 @@ MeshGeneratorParameters::MeshGeneratorParameters() {
     set("force_include_south_pole", false);
 }
 
-MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const param::MIRParametrisation& param) :
+MeshGeneratorParameters::MeshGeneratorParameters(const param::MIRParametrisation& param, const std::string& l) :
     MeshGeneratorParameters() {
-    ASSERT(!label.empty());
+    auto label(l.empty() ? "" : l + "-");
 
     const param::MIRParametrisation& user = param.userParametrisation();
-    user.get(label + "-mesh-generator", meshGenerator_);
-    user.get(label + "-mesh-cell-centres", meshCellCentres_);
-    user.get(label + "-mesh-cell-longest-diagonal", meshCellLongestDiagonal_);
-    user.get(label + "-mesh-node-lumped-mass-matrix", meshNodeLumpedMassMatrix_);
-    user.get(label + "-mesh-node-to-cell-connectivity", meshNodeToCellConnectivity_);
-    user.get(label + "-mesh-file-ll", fileLonLat_);
-    user.get(label + "-mesh-file-xy", fileXY_);
-    user.get(label + "-mesh-file-xyz", fileXYZ_);
+    user.get(label + "mesh-generator", meshGenerator_);
+    user.get(label + "mesh-cell-centres", meshCellCentres_);
+    user.get(label + "mesh-cell-longest-diagonal", meshCellLongestDiagonal_);
+    user.get(label + "mesh-node-lumped-mass-matrix", meshNodeLumpedMassMatrix_);
+    user.get(label + "mesh-node-to-cell-connectivity", meshNodeToCellConnectivity_);
+    user.get(label + "mesh-file-ll", fileLonLat_);
+    user.get(label + "mesh-file-xy", fileXY_);
+    user.get(label + "mesh-file-xyz", fileXYZ_);
 
     for (auto& k : {"triangulate", "force_include_north_pole", "force_include_south_pole"}) {
-        auto key   = label + "-mesh-generator-" + std::string(k);
+        auto key   = label + "mesh-generator-" + std::string(k);
         auto value = false;
         std::replace(key.begin(), key.end(), '_', '-');
 
@@ -60,11 +60,11 @@ MeshGeneratorParameters::MeshGeneratorParameters(const std::string& label, const
     }
 
     bool three_dimensional = true;
-    user.get(label + "-mesh-generator-three-dimensional", three_dimensional);
+    user.get(label + "mesh-generator-three-dimensional", three_dimensional);
     set("3d", three_dimensional);
 
     double angle = getDouble("angle");
-    if (user.get(label + "-mesh-generator-angle", angle)) {
+    if (user.get(label + "mesh-generator-angle", angle)) {
         set("angle", angle);
     }
 }
