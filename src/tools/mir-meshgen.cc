@@ -41,7 +41,6 @@ private:
 
 public:
     MIRMeshGen(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<std::string>("output", "Gmsh output file"));
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<std::string>("mesh-generator", "Mesh generator"));
@@ -62,10 +61,14 @@ public:
 
         options_.push_back(
             new SimpleOption<bool>("mesh-generator-invalid-quads", "Allow invalid quadrilaterals (default false)"));
-        options_.push_back(
-            new SimpleOption<std::string>("coordinates", "Write coordinates field, 'lonlat' (default), 'xy' or 'xyz'"));
+
+        options_.push_back(new SimpleOption<std::string>(
+            "coordinates", "Write coordinates field, 'lonlat' (default), 'xy', 'xyz', or 'ij"));
         options_.push_back(new SimpleOption<bool>("ghost", "Write ghost nodes/elements (default true)"));
-        options_.push_back(new SimpleOption<bool>("values", "Write field values (default true)"));
+        options_.push_back(
+            new SimpleOption<std::string>("write",
+                                          "Write mesh and/or field values, options are 'mesh-and-values' (default), "
+                                          "'mesh-and-values-separately', 'mesh', 'values' and 'no'"));
         options_.push_back(
             new SimpleOption<bool>("overwrite", "Overwrite output file '<input file>.msh' (default true))"));
     }
@@ -81,6 +84,30 @@ void MIRMeshGen::usage(const std::string& tool) const {
 }
 
 
+eckit::PathName get_path(const eckit::PathName& base, std::string ext, bool overwrite) {
+    eckit::PathName out = base + ext;
+    for (size_t counter = 1; !overwrite && out.exists(); ++counter) {
+        std::ostringstream name;
+        name << base << "." << std::setw(4) << std::setfill('0') << counter << ext;
+        out = name.str();
+    }
+    return out;
+}
+
+
+void write_values(const mir::data::MIRField& field, atlas::output::Output out) {
+    for (size_t which = 0; which < field.dimensions(); ++which) {
+        auto& v = field.values(which);
+        atlas::Field f("values", const_cast<double*>(v.data()), atlas::array::make_shape(v.size()));
+        if (field.hasMissing()) {
+            f.metadata().set("missing_value_type", "equals").set("missing_value", field.missingValue());
+        }
+
+        out.write(f);
+    }
+}
+
+
 void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
     using namespace mir::param;
 
@@ -88,10 +115,13 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
     // Setup options
     static DefaultParametrisation defaults;
     const ConfigurationWrapper commandLine(args);
-
     mir::util::MIRStatistics statistics;
-    auto overwrite = args.getBool("overwrite", true);
-    auto values    = args.getBool("values", true);
+
+    auto overwrite       = args.getBool("overwrite", true);
+    auto write           = args.getString("write", "mesh-and-values");
+    auto writeSeparately = write == "mesh-and-values-separately";
+    auto writeMesh       = write.find("mesh") != std::string::npos;
+    auto writeValues     = write.find("values") != std::string::npos;
 
     atlas::util::Config config;
     config.set("coordinates", args.getString("coordinates", "xyz"));
@@ -120,7 +150,6 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
             mir::util::MeshGeneratorParameters meshGenParams(param);
             rep->fill(meshGenParams);
             meshGenParams.set("invalid_quads", args.getBool("mesh-generator-invalid-quads", false));
-
             eckit::Log::info() << meshGenParams << std::endl;
 
             atlas::Mesh mesh;
@@ -131,26 +160,25 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
 
 
             // Write mesh & field values
-            auto out = path + ".msh";
-            for (size_t counter = 1; !overwrite && out.exists(); ++counter) {
-                std::ostringstream name;
-                name << path << "." << std::setw(4) << std::setfill('0') << counter << ".msh";
-                out = name.str();
-            }
+            if (writeSeparately) {
+                auto a = get_path(path, ".msh", overwrite);
+                auto b = get_path(path, ".values.msh", overwrite);
+                eckit::Timer time("Writing '" + a + "' and '" + b + "'");
 
-            {
+                atlas::output::Gmsh(a, config).write(mesh);
+                write_values(field, atlas::output::Gmsh(b, config));
+            }
+            else {
+                auto out = get_path(path, ".msh", overwrite);
                 eckit::Timer time("Writing '" + out + "'");
                 atlas::output::Gmsh gmsh(out, config);
-                gmsh.write(mesh);
 
-                for (size_t which = 0; values && which < field.dimensions(); ++which) {
-                    auto& v = field.values(which);
-                    atlas::Field f("values", const_cast<double*>(v.data()), atlas::array::make_shape(v.size()));
-                    if (field.hasMissing()) {
-                        f.metadata().set("missing_value_type", "equals").set("missing_value", field.missingValue());
-                    }
+                if (writeMesh) {
+                    gmsh.write(mesh);
+                }
 
-                    gmsh.write(f);
+                if (writeValues) {
+                    write_values(field, gmsh);
                 }
             }
         }
