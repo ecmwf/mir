@@ -117,6 +117,7 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
             // Generating mesh
             mir::util::MeshGeneratorParameters meshGenParams(param);
             rep->fill(meshGenParams);
+            eckit::Log::info() << meshGenParams << std::endl;
 
             atlas::Mesh mesh;
             {
