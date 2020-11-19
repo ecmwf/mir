@@ -61,6 +61,8 @@ public:
             new SimpleOption<bool>("mesh-generator-force-include-south-pole", "Generate including South pole"));
 
         options_.push_back(
+            new SimpleOption<bool>("mesh-generator-invalid-quads", "Allow invalid quadrilaterals (default false)"));
+        options_.push_back(
             new SimpleOption<std::string>("coordinates", "Write coordinates field, 'lonlat' (default), 'xy' or 'xyz'"));
         options_.push_back(new SimpleOption<bool>("ghost", "Write ghost nodes/elements (default true)"));
         options_.push_back(new SimpleOption<bool>("values", "Write field values (default true)"));
@@ -117,6 +119,8 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
             // Generating mesh
             mir::util::MeshGeneratorParameters meshGenParams(param);
             rep->fill(meshGenParams);
+            meshGenParams.set("invalid_quads", args.getBool("mesh-generator-invalid-quads", false));
+
             eckit::Log::info() << meshGenParams << std::endl;
 
             atlas::Mesh mesh;
