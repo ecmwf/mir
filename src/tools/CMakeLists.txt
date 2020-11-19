@@ -24,6 +24,7 @@ endforeach()
 if(mir_HAVE_ATLAS)
     foreach(tool IN ITEMS
         mir-load-legendre
+        mir-meshgen
         mir-spectral-transform
         mir-spectral-transform-points
         mir-triangulate)
