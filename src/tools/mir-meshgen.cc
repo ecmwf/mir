@@ -137,27 +137,30 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
 
             // Creating grid
             auto field = input->field();
-            mir::repres::RepresentationHandle rep(field.representation());
-
-            atlas::Grid grid;
-            {
-                eckit::Timer time("Creating grid");
-                grid = rep->atlasGrid();
-            }
-
-
-            // Generating mesh
-            mir::util::MeshGeneratorParameters meshGenParams(param);
-            rep->fill(meshGenParams);
-            meshGenParams.set("invalid_quads", args.getBool("mesh-generator-invalid-quads", false));
-            eckit::Log::info() << meshGenParams << std::endl;
 
             atlas::Mesh mesh;
-            {
-                eckit::Timer time("Generating mesh");
-                mesh = mir::caching::InMemoryMeshCache::atlasMesh(statistics, grid, meshGenParams);
-            }
 
+            if( writeMesh ) {
+                mir::repres::RepresentationHandle rep(field.representation());
+
+                atlas::Grid grid;
+                {
+                    eckit::Timer time("Creating grid");
+                    grid = rep->atlasGrid();
+                }
+
+
+                // Generating mesh
+                mir::util::MeshGeneratorParameters meshGenParams(param);
+                rep->fill(meshGenParams);
+                meshGenParams.set("invalid_quads", args.getBool("mesh-generator-invalid-quads", false));
+                eckit::Log::info() << meshGenParams << std::endl;
+
+                {
+                    eckit::Timer time("Generating mesh");
+                    mesh = mir::caching::InMemoryMeshCache::atlasMesh(statistics, grid, meshGenParams);
+                }
+            }
 
             // Write mesh & field values
             if (writeSeparately) {
