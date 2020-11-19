@@ -30,7 +30,3 @@ md5GridSection=383b1a933ea4e23c83773251155b3abf/6fcea9a744c0c8f139b43cd69c43b1bb
 md5GridSection=6ae0076681a2541abe053ab52fa60f30, centre=lfpw, gridType=lambert, edition=1:
 - first_point_bottom_left: true
 
-# ORCA grids (temporary)
-centre=ecmf, gridType=unstructured_grid, unstructuredGridType=eORCA1, unstructuredGridSubtype=T grid:
-- grid: eORCA1_T
-
