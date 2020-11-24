@@ -619,25 +619,6 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 }
 
 
-CASE("Bytes") {
-    auto& log = eckit::Log::info();
-
-    SECTION("to_string(to_bytes(...))") {
-        auto coffee = "c000ffee";
-        for (auto& drink : {
-             "c000ffee",
-             "C000FFEE",
-             "C000FfeE",
-             "c000fFEe",
-            }) {
-            auto brew = Bytes::to_string(Bytes::to_bytes(drink));
-            log << "'" << brew << "' == to_string(to_bytes('" << drink << "'))" << std::endl;
-            EXPECT(brew == coffee);
-        }
-    }
-}
-
-
 }  // namespace unit
 }  // namespace tests
 }  // namespace mir
