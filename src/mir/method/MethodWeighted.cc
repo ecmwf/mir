@@ -300,7 +300,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
-    if (!in.isGlobal()) {
+    if (!in.isGlobal() || canIntroduceMissingValues()) {
         auto begin = W.begin(0);
         auto end(begin);
         for (size_t r = 0; r < W.rows(); r++) {
