@@ -12,6 +12,7 @@
 
 #include "mir/output/GeoPointsFileOutputXYV.h"
 
+#include <limits>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -53,8 +54,8 @@ size_t GeoPointsFileOutputXYV::save(const param::MIRParametrisation& param, cont
 
 
 size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, context::Context& ctx) {
-
-    const data::MIRField& field = ctx.field();
+    const auto& field = ctx.field();
+    auto mv           = field.hasMissing() ? field.missingValue() : std::numeric_limits<double>::quiet_NaN();
 
     eckit::DataHandle& handle = dataHandle();
     eckit::Offset position    = handle.position();
@@ -103,7 +104,9 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
         while (it->next()) {
             const auto& p = it->pointUnrotated();
             ASSERT(v != values.cend());
-            out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << *v;
+            if (*v != mv) {
+                out << "\n" << p.lon().value() << ' ' << p.lat().value() << ' ' << *v;
+            }
             ++v;
 
             latitudes.push_back(p.lat().value());
