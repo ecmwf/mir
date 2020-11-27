@@ -4520,6 +4520,9 @@ ratio.mass:
 - 211181  # Radon
 - 211182  # Sulphur Hexafluoride
 - 211203  # GEMS Ozone
+- 211247  # Nitrate fine mode aerosol mass mixing ratio
+- 211248  # Nitrate coarse mode aerosol mass mixing ratio
+- 211249  # Ammonium aerosol mass mixing ratio
 - 217003  # Hydrogen peroxide
 - 217004  # Methane
 - 217006  # Nitric acid
