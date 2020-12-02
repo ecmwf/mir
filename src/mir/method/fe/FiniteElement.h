@@ -37,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FiniteElement();
+    virtual ~FiniteElement() override;
 
     // -- Convertors
     // None
@@ -119,7 +119,7 @@ class FiniteElementFactory : public MethodFactory {
 
 protected:
     FiniteElementFactory(const std::string&);
-    virtual ~FiniteElementFactory();
+    virtual ~FiniteElementFactory() override;
 
 public:
     static void list(std::ostream&);

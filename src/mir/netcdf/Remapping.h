@@ -25,7 +25,7 @@ class Remapping : public HyperCube::Remapping, public eckit::Counted {
 
 public:
     Remapping(size_t = 0);
-    virtual ~Remapping();
+    virtual ~Remapping() override;
 
     void validate() const;
 
@@ -33,7 +33,7 @@ public:
     // -- Members
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // - Friend
     friend std::ostream& operator<<(std::ostream& s, const Remapping& v) {

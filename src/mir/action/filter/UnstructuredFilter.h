@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~UnstructuredFilter();
+    virtual ~UnstructuredFilter() override;
 
     // -- Convertors
     // None

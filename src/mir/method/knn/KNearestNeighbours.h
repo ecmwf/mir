@@ -41,7 +41,7 @@ class KNearestNeighbours : public MethodWeighted {
 public:
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
-    virtual ~KNearestNeighbours();
+    virtual ~KNearestNeighbours() override;
 
     virtual void hash(eckit::MD5&) const;
 
@@ -55,7 +55,7 @@ protected:
     virtual bool sameAs(const Method& other) const = 0;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     virtual bool canIntroduceMissingValues() const;
 

@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SphericalHarmonics();
+    virtual ~SphericalHarmonics() override;
 
     // -- Convertors
     // None

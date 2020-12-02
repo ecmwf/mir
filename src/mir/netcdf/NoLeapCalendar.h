@@ -23,10 +23,10 @@ namespace netcdf {
 class NoLeapCalendar : public Calendar {
 public:
     NoLeapCalendar(const Variable&);
-    virtual ~NoLeapCalendar();
+    virtual ~NoLeapCalendar() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

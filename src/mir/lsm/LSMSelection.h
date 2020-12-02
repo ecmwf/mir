@@ -76,7 +76,7 @@ protected:
 
     // -- Destructor
 
-    virtual ~LSMSelection();
+    virtual ~LSMSelection() override;
 
     // -- Members
 

@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedClassic();
+    virtual ~ReducedClassic() override;
 
     // -- Convertors
     // None

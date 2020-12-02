@@ -23,7 +23,7 @@ namespace netcdf {
 class InputAttribute : public Attribute {
 public:
     InputAttribute(Endowed& owner, const std::string& name, Value* value);
-    virtual ~InputAttribute();
+    virtual ~InputAttribute() override;
 
 private:
     // From Atttribute

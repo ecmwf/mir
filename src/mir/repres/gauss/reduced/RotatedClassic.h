@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedClassic();  // Change to virtual if base class
+    virtual ~RotatedClassic() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

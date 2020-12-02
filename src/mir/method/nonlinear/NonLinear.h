@@ -51,7 +51,7 @@ public:
     NonLinear(const NonLinear&) = delete;
     void operator=(const NonLinear&) = delete;
 
-    virtual ~NonLinear();
+    virtual ~NonLinear() override;
 
     /// Update interpolation linear system to account for non-linearities
     virtual bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
@@ -83,7 +83,7 @@ private:
 
 protected:
     NonLinearFactory(const std::string& name);
-    virtual ~NonLinearFactory();
+    virtual ~NonLinearFactory() override;
 
 public:
     static const NonLinear* build(const std::string& name, const param::MIRParametrisation&);

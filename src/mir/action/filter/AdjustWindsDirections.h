@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AdjustWindsDirections();  // Change to virtual if base class
+    virtual ~AdjustWindsDirections() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

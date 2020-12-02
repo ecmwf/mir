@@ -44,7 +44,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SimpleParametrisation();
+    virtual ~SimpleParametrisation() override;
 
     // -- Convertors
     // None
@@ -113,7 +113,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     void json(eckit::JSON&) const;
     size_t size() const;
 

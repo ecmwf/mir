@@ -80,7 +80,7 @@ private:
     virtual bool sameAs(const MIRInput&) const;
 
     // From ArtificialInput
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual data::MIRValuesVector fill(size_t) const;
 
     // -- Class members

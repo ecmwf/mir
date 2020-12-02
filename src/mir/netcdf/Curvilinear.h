@@ -24,7 +24,7 @@ class Curvilinear : public GridSpec {
 public:
     Curvilinear(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-    virtual ~Curvilinear();
+    virtual ~Curvilinear() override;
 
     // -- Methods
 

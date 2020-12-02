@@ -36,7 +36,7 @@ class LegendreLoader {
 
 public:
     LegendreLoader(const param::MIRParametrisation&, const eckit::PathName&);
-    virtual ~LegendreLoader();
+    virtual ~LegendreLoader() override;
 
     LegendreLoader(const LegendreLoader&) = delete;
     LegendreLoader& operator=(const LegendreLoader&) = delete;
@@ -75,7 +75,7 @@ class LegendreLoaderFactory {
 
 protected:
     LegendreLoaderFactory(const std::string&);
-    virtual ~LegendreLoaderFactory();
+    virtual ~LegendreLoaderFactory() override;
 
 public:
     static LegendreLoader* build(const param::MIRParametrisation&, const eckit::PathName&);

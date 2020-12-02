@@ -28,7 +28,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
     GribInput();
 
-    virtual ~GribInput();
+    virtual ~GribInput() override;
 
     // For debugging only
     void marsRequest(std::ostream&) const;

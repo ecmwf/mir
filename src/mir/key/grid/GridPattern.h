@@ -69,7 +69,7 @@ public:
 
 protected:
     GridPattern(const std::string&);
-    virtual ~GridPattern();
+    virtual ~GridPattern() override;
 
     // -- Members
 

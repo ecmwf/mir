@@ -25,7 +25,7 @@ public:
     Rectilinear(const Variable&, double north, double south, const std::vector<double>& latitudes, double west,
                 double east, const std::vector<double>& longitudes);
 
-    virtual ~Rectilinear();
+    virtual ~Rectilinear() override;
 
     // -- Methods
 

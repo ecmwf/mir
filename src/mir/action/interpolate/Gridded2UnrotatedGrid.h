@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2UnrotatedGrid();
+    virtual ~Gridded2UnrotatedGrid() override;
 
     // -- Convertors
     // None

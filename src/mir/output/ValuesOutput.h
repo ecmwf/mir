@@ -93,7 +93,7 @@ private:
     virtual bool sameAs(const MIROutput&) const;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

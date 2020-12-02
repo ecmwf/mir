@@ -23,10 +23,10 @@ namespace netcdf {
 class JulianCalendar : public Calendar {
 public:
     JulianCalendar(const Variable&);
-    virtual ~JulianCalendar();
+    virtual ~JulianCalendar() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

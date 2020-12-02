@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ORCAPattern();
+    virtual ~ORCAPattern() override;
 
     // -- Convertors
     // None
@@ -61,7 +61,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None

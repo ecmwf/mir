@@ -24,7 +24,7 @@ class SimpleInputVariable : public InputVariable {
 public:
     SimpleInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
 
-    virtual ~SimpleInputVariable();
+    virtual ~SimpleInputVariable() override;
 
 private:
     std::vector<std::string> coordinates() const;
@@ -36,7 +36,7 @@ private:
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeCellMethodVariable();
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void validate() const;
     virtual bool identified() const;
 

@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EquatorialAzimuthalEquidistant();  // Change to virtual if base class
+    virtual ~EquatorialAzimuthalEquidistant() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

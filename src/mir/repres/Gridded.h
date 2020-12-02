@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded();
+    virtual ~Gridded() override;
 
     // -- Convertors
     // None

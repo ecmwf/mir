@@ -24,11 +24,11 @@ class CoordinateOutputVariable : public OutputVariable {
 public:
     CoordinateOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
-    virtual ~CoordinateOutputVariable();
+    virtual ~CoordinateOutputVariable() override;
 
 private:
     virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

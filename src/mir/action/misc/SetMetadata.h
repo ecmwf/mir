@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SetMetadata();  // Change to virtual if base class
+    virtual ~SetMetadata() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

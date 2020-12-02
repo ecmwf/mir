@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gaussian();  // Change to virtual if base class
+    virtual ~Gaussian() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

@@ -23,11 +23,11 @@ namespace netcdf {
 class CellMethodOutputVariable : public OutputVariable {
 public:
     CellMethodOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~CellMethodOutputVariable();
+    virtual ~CellMethodOutputVariable() override;
 
 private:
     virtual void merge(const Variable&, MergePlan& plan);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

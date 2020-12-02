@@ -23,7 +23,7 @@ namespace netcdf {
 class DummyVariable : public Variable {
 public:
     DummyVariable(const Variable& parent);
-    virtual ~DummyVariable();
+    virtual ~DummyVariable() override;
 
 protected:
     const Variable& parent_;

@@ -68,7 +68,7 @@ public:
 
 protected:
     Executor(const std::string&);
-    virtual ~Executor();
+    virtual ~Executor() override;
 
     // -- Members
 

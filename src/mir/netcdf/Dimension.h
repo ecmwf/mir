@@ -32,7 +32,7 @@ namespace netcdf {
 class Dimension {
 public:
     Dimension(Dataset& owner, const std::string& name, size_t len);
-    virtual ~Dimension();
+    virtual ~Dimension() override;
 
     Dimension(const Dimension&) = delete;
     Dimension& operator=(const Dimension&) = delete;

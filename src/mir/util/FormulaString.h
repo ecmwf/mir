@@ -25,10 +25,10 @@ namespace util {
 class FormulaString : public Formula {
 public:
     FormulaString(const param::MIRParametrisation& parametrisation, const std::string& value);
-    virtual ~FormulaString();
+    virtual ~FormulaString() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void execute(context::Context&) const;
     virtual bool sameAs(const Action&) const;
     virtual const char* name() const;

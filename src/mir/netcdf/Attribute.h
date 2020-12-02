@@ -32,7 +32,7 @@ namespace netcdf {
 class Attribute {
 public:
     Attribute(Endowed& owner, const std::string& name, Value* value);
-    virtual ~Attribute();
+    virtual ~Attribute() override;
 
     // -- Methods
     virtual bool sameAs(const Attribute&) const;

@@ -23,7 +23,7 @@ namespace netcdf {
 class MergeDataMatrix : public Matrix {
 public:
     MergeDataMatrix(Matrix* out, Matrix* in, size_t size);
-    virtual ~MergeDataMatrix();
+    virtual ~MergeDataMatrix() override;
 
 private:
     Matrix* out_;

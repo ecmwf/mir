@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon();  // Change to virtual if base class
+    virtual ~IrregularLatlon() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

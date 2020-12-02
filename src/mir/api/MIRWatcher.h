@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRWatcher();
+    virtual ~MIRWatcher() override;
 
     // -- Convertors
     // None

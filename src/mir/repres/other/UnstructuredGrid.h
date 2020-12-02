@@ -75,7 +75,7 @@ protected:
 
     // From Representation
     virtual bool extendBoundingBoxOnIntersect() const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None

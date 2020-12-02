@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SecondOrder();
+    virtual ~SecondOrder() override;
 
     // -- Convertors
     // None
@@ -77,7 +77,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void fill(grib_info&, const repres::Representation&) const;
     virtual std::string type(const repres::Representation*) const;
 

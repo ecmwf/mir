@@ -43,7 +43,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Set();
+    virtual ~Set() override;
 
     // -- Convertors
     // None

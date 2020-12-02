@@ -45,7 +45,7 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
 private:
     std::string method_;
     virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
 };
 
@@ -60,7 +60,7 @@ private:
 
 protected:
     DistanceWeightingWithLSMFactory(const std::string& name);
-    virtual ~DistanceWeightingWithLSMFactory();
+    virtual ~DistanceWeightingWithLSMFactory() override;
 
 public:
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&,

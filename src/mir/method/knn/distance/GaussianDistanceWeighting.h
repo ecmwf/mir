@@ -31,7 +31,7 @@ private:
     double stddev_;
     double exponentFactor_;
     virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
 };
 

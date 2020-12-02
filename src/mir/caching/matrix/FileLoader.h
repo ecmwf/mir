@@ -27,12 +27,12 @@ class FileLoader : public MatrixLoader {
 public:
     FileLoader(const std::string& name, const eckit::PathName&);
 
-    virtual ~FileLoader();
+    virtual ~FileLoader() override;
 
     static bool shared();
 
 protected:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
 private:
     virtual const void* address() const;

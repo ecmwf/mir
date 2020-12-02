@@ -101,7 +101,7 @@ private:
     virtual void setCropping(const util::BoundingBox&);
     virtual bool hasCropping() const;
     virtual const util::BoundingBox& getCropping() const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

@@ -45,7 +45,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation();
+    virtual ~Gridded2GriddedInterpolation() override;
 
     // -- Convertors
     // None

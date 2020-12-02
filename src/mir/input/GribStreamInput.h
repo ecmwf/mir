@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribStreamInput();  // Change to virtual if base class
+    virtual ~GribStreamInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

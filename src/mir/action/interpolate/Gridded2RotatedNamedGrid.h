@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedNamedGrid();
+    virtual ~Gridded2RotatedNamedGrid() override;
 
     // -- Convertors
     // None
@@ -62,7 +62,7 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // From Gridded2RotatedGrid
     virtual bool sameAs(const Action&) const;

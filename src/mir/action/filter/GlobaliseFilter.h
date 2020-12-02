@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GlobaliseFilter();  // Change to virtual if base class
+    virtual ~GlobaliseFilter() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

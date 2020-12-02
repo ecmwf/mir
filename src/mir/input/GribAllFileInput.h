@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribAllFileInput();  // Change to virtual if base class
+    virtual ~GribAllFileInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

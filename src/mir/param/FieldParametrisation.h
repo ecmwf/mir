@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FieldParametrisation();  // Change to virtual if base class
+    virtual ~FieldParametrisation() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

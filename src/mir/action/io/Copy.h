@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Copy();
+    virtual ~Copy() override;
 
     // -- Convertors
     // None

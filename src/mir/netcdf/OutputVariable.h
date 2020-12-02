@@ -23,7 +23,7 @@ namespace netcdf {
 class OutputVariable : public Variable {
 public:
     OutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~OutputVariable();
+    virtual ~OutputVariable() override;
 
 private:
     // -- Members
@@ -33,7 +33,7 @@ private:
 
     // From variable
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void create(int nc) const;
     virtual void save(int nc) const;
 

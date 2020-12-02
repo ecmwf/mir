@@ -41,7 +41,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FormulaAction();  // Change to virtual if base class
+    virtual ~FormulaAction() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

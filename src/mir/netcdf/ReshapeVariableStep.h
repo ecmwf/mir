@@ -31,7 +31,7 @@ namespace netcdf {
 class ReshapeVariableStep : public Step {
 public:
     ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth);
-    virtual ~ReshapeVariableStep();
+    virtual ~ReshapeVariableStep() override;
 
 private:
     // Members

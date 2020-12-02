@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGG();
+    virtual ~RegularGG() override;
 
     // -- Convertors
     // None

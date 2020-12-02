@@ -27,7 +27,7 @@ class KNearest : public KNearestNeighbours {
 public:
     KNearest(const param::MIRParametrisation&);
 
-    virtual ~KNearest();
+    virtual ~KNearest() override;
 
 private:
     virtual const char* name() const;

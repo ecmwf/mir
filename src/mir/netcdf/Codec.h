@@ -34,7 +34,7 @@ namespace netcdf {
 class Codec : public eckit::Counted {
 public:
     Codec();
-    virtual ~Codec();
+    virtual ~Codec() override;
 
     Codec(const Codec&) = delete;
     void operator=(const Codec&) = delete;
@@ -81,7 +81,7 @@ class CodecFactory {
 protected:
     CodecFactory(const std::string&);
 
-    virtual ~CodecFactory();
+    virtual ~CodecFactory() override;
 
 public:
     static Codec* build(const std::string&, const Variable&);

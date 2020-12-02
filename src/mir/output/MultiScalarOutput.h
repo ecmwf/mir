@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarOutput();  // Change to virtual if base class
+    virtual ~MultiScalarOutput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -87,7 +87,7 @@ private:
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

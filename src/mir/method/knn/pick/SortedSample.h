@@ -31,7 +31,7 @@ struct SortedSample : Pick {
     virtual void hash(eckit::MD5&) const;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     Sample sample_;
 };
 

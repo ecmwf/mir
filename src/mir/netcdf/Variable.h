@@ -39,7 +39,7 @@ namespace netcdf {
 class Variable : public Endowed {
 public:
     Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~Variable();
+    virtual ~Variable() override;
 
     // -- Methods
 

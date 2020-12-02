@@ -44,7 +44,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MappedMask();
+    virtual ~MappedMask() override;
 
     // -- Convertors
     // None
@@ -76,7 +76,7 @@ protected:
     virtual bool active() const;
     virtual bool cacheable() const;
     virtual void hash(eckit::MD5&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual std::string cacheName() const;
 
     // -- Class members

@@ -49,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShToGridded();
+    virtual ~ShToGridded() override;
 
     // -- Convertors
     // None

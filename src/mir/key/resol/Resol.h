@@ -79,7 +79,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None

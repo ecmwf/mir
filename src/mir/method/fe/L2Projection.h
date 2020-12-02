@@ -50,7 +50,7 @@ public:
 
     // -- Destructor
 
-    virtual ~L2Projection();
+    virtual ~L2Projection() override;
 
     // -- Convertors
     // None

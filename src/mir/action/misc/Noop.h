@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Noop();  // Change to virtual if base class
+    virtual ~Noop() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

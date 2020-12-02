@@ -50,7 +50,7 @@ public:  // methods
     bool get(const std::string& name, std::vector<std::string>& value) const;
 
 protected:  // methods
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
 private:  // members
     // Store a reference to the configuration, so that the wrapper can mimic a MIRParametrisation

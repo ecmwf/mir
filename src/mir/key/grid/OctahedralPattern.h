@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~OctahedralPattern();
+    virtual ~OctahedralPattern() override;
 
     // -- Convertors
     // None
@@ -60,7 +60,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None

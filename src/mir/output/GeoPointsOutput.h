@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsOutput();
+    virtual ~GeoPointsOutput() override;
 
     // -- Convertors
     // None

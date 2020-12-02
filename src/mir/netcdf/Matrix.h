@@ -79,7 +79,7 @@ public:
     Codec* codec() const;
 
 protected:
-    virtual ~Matrix();
+    virtual ~Matrix() override;
 
     // -- Members
 

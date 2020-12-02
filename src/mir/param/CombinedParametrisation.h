@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CombinedParametrisation();  // Change to virtual if base class
+    virtual ~CombinedParametrisation() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -87,7 +87,7 @@ private:
     virtual const MIRParametrisation& fieldParametrisation() const;
 
     // From MIRParametrisation
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     virtual bool has(const std::string& name) const;
 

@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FrameFilter();  // Change to virtual if base class
+    virtual ~FrameFilter() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

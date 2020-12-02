@@ -124,7 +124,7 @@ private:
     // -- Overridden methods
 
     // From MIRParametrisation
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual const MIRParametrisation& userParametrisation() const;
     virtual const MIRParametrisation& fieldParametrisation() const;
 

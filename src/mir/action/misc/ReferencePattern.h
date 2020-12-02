@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReferencePattern();  // Change to virtual if base class
+    virtual ~ReferencePattern() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

@@ -29,7 +29,7 @@ struct ClimateFilter : DistanceWeighting {
 
 private:
     virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
     double halfDelta_;
     double delta_;

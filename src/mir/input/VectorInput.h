@@ -38,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorInput();  // Change to virtual if base class
+    virtual ~VectorInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

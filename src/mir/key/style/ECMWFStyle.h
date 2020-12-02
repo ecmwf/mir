@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ECMWFStyle();
+    virtual ~ECMWFStyle() override;
 
     // -- Convertors
     // None
@@ -66,7 +66,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

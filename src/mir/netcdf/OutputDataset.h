@@ -30,7 +30,7 @@ namespace netcdf {
 class OutputDataset : public Dataset {
 public:
     OutputDataset(const std::string&, NCFileCache&, int format = 0);
-    virtual ~OutputDataset();
+    virtual ~OutputDataset() override;
 
     // -- Methods
 
@@ -50,7 +50,7 @@ private:
 
     // From Dataset
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

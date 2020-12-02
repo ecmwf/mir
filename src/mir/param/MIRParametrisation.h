@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRParametrisation();
+    virtual ~MIRParametrisation() override;
 
     // -- Convertors
     // None

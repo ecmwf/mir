@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedGrid();
+    virtual ~Gridded2RotatedGrid() override;
 
     // -- Convertors
     // None

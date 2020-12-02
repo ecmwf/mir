@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedOctahedral();  // Change to virtual if base class
+    virtual ~RotatedOctahedral() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

@@ -27,7 +27,7 @@ class NearestNeighbour : public KNearestNeighbours {
 public:
     NearestNeighbour(const param::MIRParametrisation&);
 
-    virtual ~NearestNeighbour();
+    virtual ~NearestNeighbour() override;
 
 private:
     virtual const char* name() const;

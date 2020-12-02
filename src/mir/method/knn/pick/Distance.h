@@ -29,7 +29,7 @@ struct Distance : Pick {
     virtual bool sameAs(const Pick&) const;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
     double distance_;
 };

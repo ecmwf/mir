@@ -39,7 +39,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarInput();  // Change to virtual if base class
+    virtual ~MultiScalarInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

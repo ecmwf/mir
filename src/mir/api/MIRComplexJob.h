@@ -50,7 +50,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRComplexJob();
+    virtual ~MIRComplexJob() override;
 
     // -- Convertors
     // None
@@ -108,7 +108,7 @@ private:
 
     // From MIRParametrisation
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

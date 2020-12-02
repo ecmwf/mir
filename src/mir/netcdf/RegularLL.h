@@ -25,7 +25,7 @@ public:
     RegularLL(const Variable&, double north, double south, double south_north_increment, double west, double east,
               double west_east_increment);
 
-    virtual ~RegularLL();
+    virtual ~RegularLL() override;
 
     // -- Methods
 

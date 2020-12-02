@@ -37,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShVodToUV();  // Change to virtual if base class
+    virtual ~ShVodToUV() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

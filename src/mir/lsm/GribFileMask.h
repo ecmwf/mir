@@ -77,7 +77,7 @@ protected:
     virtual bool active() const;
     virtual bool cacheable() const = 0;
     virtual void hash(eckit::MD5&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

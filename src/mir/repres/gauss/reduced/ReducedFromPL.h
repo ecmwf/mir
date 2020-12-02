@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedFromPL();
+    virtual ~ReducedFromPL() override;
 
     // -- Convertors
     // None

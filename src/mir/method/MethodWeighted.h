@@ -61,7 +61,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MethodWeighted();
+    virtual ~MethodWeighted() override;
 
     // -- Convertors
     // None

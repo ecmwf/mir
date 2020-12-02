@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Reduced();
+    virtual ~Reduced() override;
 
     // -- Convertors
     // None

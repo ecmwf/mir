@@ -27,7 +27,7 @@ namespace netcdf {
 class GregorianCalendar : public Calendar {
 public:
     GregorianCalendar(const Variable&);
-    virtual ~GregorianCalendar();
+    virtual ~GregorianCalendar() override;
 
 private:
     eckit::DateTime reference_;
@@ -39,7 +39,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     template <class T>
     void _decode(std::vector<T>& v) const;

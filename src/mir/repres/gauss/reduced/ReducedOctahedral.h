@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedOctahedral();
+    virtual ~ReducedOctahedral() override;
 
     // -- Convertors
     // None

@@ -23,14 +23,14 @@ namespace netcdf {
 class PackingCodec : public Codec {
 public:
     PackingCodec(const Variable&);
-    virtual ~PackingCodec();
+    virtual ~PackingCodec() override;
 
 private:
     double scale_factor_;
     double add_offset_;
 
     // -- Methods
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void decode(std::vector<double>&) const;
 };
 

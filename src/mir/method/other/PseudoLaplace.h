@@ -28,7 +28,7 @@ class PseudoLaplace : public MethodWeighted {
 public:
     PseudoLaplace(const param::MIRParametrisation&);
 
-    virtual ~PseudoLaplace();
+    virtual ~PseudoLaplace() override;
 
 protected:
     virtual void hash(eckit::MD5&) const;
@@ -36,7 +36,7 @@ protected:
 private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                           const repres::Representation& out) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual const char* name() const;
     virtual bool sameAs(const Method& other) const;
 };

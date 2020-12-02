@@ -30,7 +30,7 @@ namespace netcdf {
 class DummyMatrix : public Matrix {
 public:
     DummyMatrix(const Variable&);
-    virtual ~DummyMatrix();
+    virtual ~DummyMatrix() override;
 
 private:
     Matrix* other_;

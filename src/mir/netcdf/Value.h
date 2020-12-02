@@ -31,7 +31,7 @@ namespace netcdf {
 class Value {
 public:
     Value(Type& type);
-    virtual ~Value();
+    virtual ~Value() override;
 
     virtual void createAttribute(int nc, int varid, const std::string& name, const std::string& path) = 0;
     virtual Value* clone() const                                                                      = 0;

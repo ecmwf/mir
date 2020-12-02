@@ -50,7 +50,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRStyle();
+    virtual ~MIRStyle() override;
 
     // -- Convertors
     // None
@@ -124,7 +124,7 @@ class MIRStyleFactory {
 
 protected:
     MIRStyleFactory(const std::string&);
-    virtual ~MIRStyleFactory();
+    virtual ~MIRStyleFactory() override;
 
 public:
     static MIRStyle* build(const param::MIRParametrisation&);

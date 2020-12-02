@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~LatLon();
+    virtual ~LatLon() override;
 
     // -- Convertors
     // None
@@ -82,7 +82,7 @@ protected:
 
     virtual void fill(api::MIRJob&) const;
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     virtual void makeName(std::ostream&) const;
 

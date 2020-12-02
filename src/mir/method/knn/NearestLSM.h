@@ -27,7 +27,7 @@ class NearestLSM : public KNearestNeighbours {
 public:
     NearestLSM(const param::MIRParametrisation&);
 
-    virtual ~NearestLSM();
+    virtual ~NearestLSM() override;
 
 private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,

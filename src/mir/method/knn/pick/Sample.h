@@ -30,7 +30,7 @@ struct Sample : Pick {
     virtual void hash(eckit::MD5&) const;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     size_t nClosest_;
     double distance_;
 };

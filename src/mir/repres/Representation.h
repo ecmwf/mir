@@ -140,7 +140,7 @@ public:
 protected:
     // -- Destructor
 
-    virtual ~Representation();
+    virtual ~Representation() override;
 
     // -- Members
     // None

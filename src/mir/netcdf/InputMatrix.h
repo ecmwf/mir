@@ -30,7 +30,7 @@ namespace netcdf {
 class InputMatrix : public Matrix {
 public:
     InputMatrix(Type& type, int varid, const std::string& name, size_t size, NCFile& file);
-    virtual ~InputMatrix();
+    virtual ~InputMatrix() override;
 
 private:
     NCFile& file_;

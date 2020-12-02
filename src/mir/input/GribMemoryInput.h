@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribMemoryInput();  // Change to virtual if base class
+    virtual ~GribMemoryInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -76,7 +76,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual bool sameAs(const MIRInput& other) const;
 
     // -- Class members

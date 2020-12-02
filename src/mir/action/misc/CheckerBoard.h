@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CheckerBoard();  // Change to virtual if base class
+    virtual ~CheckerBoard() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

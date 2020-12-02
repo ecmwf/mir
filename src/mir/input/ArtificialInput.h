@@ -27,7 +27,7 @@ class ArtificialInput : public MIRInput, protected param::FieldParametrisation {
 public:
     // -- Destructor
 
-    virtual ~ArtificialInput();
+    virtual ~ArtificialInput() override;
 
     // -- Convertors
     // None
@@ -68,7 +68,7 @@ protected:
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const;
     virtual data::MIRField field() const;
     virtual void setAuxiliaryInformation(const std::string& yaml);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual bool sameAs(const MIRInput&) const;
 
     // From FieldParametrisation
@@ -128,7 +128,7 @@ class ArtificialInputFactory {
 
 protected:
     ArtificialInputFactory(const std::string& name);
-    virtual ~ArtificialInputFactory();
+    virtual ~ArtificialInputFactory() override;
 
 public:
     static ArtificialInput* build(const std::string&, const param::MIRParametrisation&);

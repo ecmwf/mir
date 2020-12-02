@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Albers();  // Change to virtual if base class
+    virtual ~Albers() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

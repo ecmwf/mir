@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedLL();
+    virtual ~RotatedLL() override;
 
     // -- Convertors
     // None

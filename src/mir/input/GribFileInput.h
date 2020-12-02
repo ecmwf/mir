@@ -82,7 +82,7 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual bool sameAs(const MIRInput& other) const;
 
     // From GribInput

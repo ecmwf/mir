@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper();  // Change to virtual if base class
+    virtual ~AreaCropper() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
