@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_other_PseudoLaplace_H
-#define mir_method_other_PseudoLaplace_H
+#ifndef mir_method_other_PseudoLaplace_h
+#define mir_method_other_PseudoLaplace_h
 
 #include "mir/method/MethodWeighted.h"
 
@@ -28,17 +28,17 @@ class PseudoLaplace : public MethodWeighted {
 public:
     PseudoLaplace(const param::MIRParametrisation&);
 
-    virtual ~PseudoLaplace() override;
+    ~PseudoLaplace() override;
 
 protected:
-    virtual void hash(eckit::MD5&) const override;
+    void hash(eckit::MD5&) const override;
 
 private:
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const override;
-    virtual void print(std::ostream&) const override;
-    virtual const char* name() const override;
-    virtual bool sameAs(const Method& other) const override;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
+    void print(std::ostream&) const override;
+    const char* name() const override;
+    bool sameAs(const Method&) const override;
 };
 
 

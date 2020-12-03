@@ -41,11 +41,11 @@ using prec_t = decltype(std::cout.precision());
 
 class MIRStatistics : public mir::tools::MIRTool {
 private:
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const override;
 
-    int minimumPositionalArguments() const { return 1; }
+    int minimumPositionalArguments() const override { return 1; }
 
     struct PerPointStatistics {
         static void list(std::ostream& out) { out << eckit::StringTools::join(", ", perPointStats()) << std::endl; }

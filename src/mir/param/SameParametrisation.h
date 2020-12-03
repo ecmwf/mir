@@ -81,22 +81,22 @@ private:
     // -- Overridden methods
 
     // From MIRParametrisation
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
-    bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    bool get(const std::string& name, std::string& value) const;
-    bool get(const std::string& name, bool& value) const;
-    bool get(const std::string& name, int& value) const;
-    bool get(const std::string& name, long& value) const;
-    bool get(const std::string& name, float& value) const;
-    bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    bool get(const std::string& name, std::vector<int>& value) const;
-    bool get(const std::string& name, std::vector<long>& value) const;
-    bool get(const std::string& name, std::vector<float>& value) const;
-    bool get(const std::string& name, std::vector<double>& value) const;
-    bool get(const std::string& name, std::vector<std::string>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None

@@ -57,7 +57,7 @@ public:
     virtual bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
                            const double& missingValue) const = 0;
 
-    virtual bool sameAs(const NonLinear& other) const = 0;
+    virtual bool sameAs(const NonLinear&) const = 0;
 
     virtual void hash(eckit::MD5&) const = 0;
 
@@ -93,7 +93,7 @@ public:
 
 template <class T>
 class NonLinearBuilder : public NonLinearFactory {
-    virtual NonLinear* make(const param::MIRParametrisation& param) override { return new T(param); }
+    NonLinear* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}

@@ -49,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShToGridded() override;
+    ~ShToGridded() override;
 
     // -- Convertors
     // None
@@ -78,9 +78,9 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override        = 0;
-    virtual bool sameAs(const Action& other) const override = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
+    void print(std::ostream&) const override  = 0;
+    bool sameAs(const Action&) const override = 0;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -104,9 +104,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const override;
+    void execute(context::Context&) const override;
 
-    virtual bool mergeWithNext(const Action&) override;
+    bool mergeWithNext(const Action&) override;
 
     // -- Class members
     // None
@@ -115,9 +115,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const ShToGriddedTransform& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

@@ -181,34 +181,42 @@ class TSettings : public Setting {
 public:
     TSettings(const T& value) : value_(value) {}
 
-    void get(const std::string& name, std::string&) const { throw CannotConvert(TNamed<T>(), "string", name, value_); }
-    void get(const std::string& name, bool&) const { throw CannotConvert(TNamed<T>(), "bool", name, value_); }
-    void get(const std::string& name, int&) const { throw CannotConvert(TNamed<T>(), "int", name, value_); }
-    void get(const std::string& name, long&) const { throw CannotConvert(TNamed<T>(), "long", name, value_); }
-    void get(const std::string& name, size_t&) const { throw CannotConvert(TNamed<T>(), "size_t", name, value_); }
-    void get(const std::string& name, float&) const { throw CannotConvert(TNamed<T>(), "float", name, value_); }
-    void get(const std::string& name, double&) const { throw CannotConvert(TNamed<T>(), "double", name, value_); }
+    void get(const std::string& name, std::string&) const override {
+        throw CannotConvert(TNamed<T>(), "string", name, value_);
+    }
+    void get(const std::string& name, bool&) const override { throw CannotConvert(TNamed<T>(), "bool", name, value_); }
+    void get(const std::string& name, int&) const override { throw CannotConvert(TNamed<T>(), "int", name, value_); }
+    void get(const std::string& name, long&) const override { throw CannotConvert(TNamed<T>(), "long", name, value_); }
+    void get(const std::string& name, size_t&) const override {
+        throw CannotConvert(TNamed<T>(), "size_t", name, value_);
+    }
+    void get(const std::string& name, float&) const override {
+        throw CannotConvert(TNamed<T>(), "float", name, value_);
+    }
+    void get(const std::string& name, double&) const override {
+        throw CannotConvert(TNamed<T>(), "double", name, value_);
+    }
 
-    void get(const std::string& name, std::vector<int>&) const {
+    void get(const std::string& name, std::vector<int>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<int>", name, value_);
     }
-    void get(const std::string& name, std::vector<long>&) const {
+    void get(const std::string& name, std::vector<long>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<long>", name, value_);
     }
-    void get(const std::string& name, std::vector<size_t>&) const {
+    void get(const std::string& name, std::vector<size_t>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<size_t>", name, value_);
     }
-    void get(const std::string& name, std::vector<float>&) const {
+    void get(const std::string& name, std::vector<float>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<float>", name, value_);
     }
-    void get(const std::string& name, std::vector<double>&) const {
+    void get(const std::string& name, std::vector<double>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<double>", name, value_);
     }
-    void get(const std::string& name, std::vector<std::string>&) const {
+    void get(const std::string& name, std::vector<std::string>&) const override {
         throw CannotConvert(TNamed<T>(), "vector<string>", name, value_);
     }
 
-    bool match(const std::string& name, const MIRParametrisation& other) const {
+    bool match(const std::string& name, const MIRParametrisation& other) const override {
         T value;
         if (other.get(name, value)) {
             return value_ == value;
@@ -216,11 +224,11 @@ public:
         return false;
     }
 
-    void copyValueTo(const std::string& name, SimpleParametrisation& param) const { param.set(name, value_); }
+    void copyValueTo(const std::string& name, SimpleParametrisation& param) const override { param.set(name, value_); }
 
-    void print(std::ostream& out) const { out << value_; }
+    void print(std::ostream& out) const override { out << value_; }
 
-    void json(eckit::JSON& out) const { out << value_; }
+    void json(eckit::JSON& out) const override { out << value_; }
 };
 
 

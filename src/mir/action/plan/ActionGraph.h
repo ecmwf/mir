@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_action_plan_ActionGraph_H
-#define mir_action_plan_ActionGraph_H
+#ifndef mir_action_plan_ActionGraph_h
+#define mir_action_plan_ActionGraph_h
 
 
 #include <iosfwd>
@@ -52,7 +52,7 @@ public:
 
     // -- Destructor
 
-    ~ActionGraph();  // Change to virtual if base class
+    ~ActionGraph();
 
     // -- Convertors
     // None
@@ -91,7 +91,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

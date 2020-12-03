@@ -28,18 +28,18 @@ namespace context {
 
 
 namespace {
-class MissingInput : public input::MIRInput {
-    virtual const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const { NOTIMP; }
+class MissingInput final : public input::MIRInput {
+    const param::MIRParametrisation& parametrisation(size_t /*which*/ = 0) const override { NOTIMP; }
 
-    virtual bool sameAs(const MIRInput&) const { NOTIMP; }
+    bool sameAs(const MIRInput&) const override { NOTIMP; }
 
-    virtual void print(std::ostream& out) const { out << "MissingInput[]"; }
+    void print(std::ostream& out) const override { out << "MissingInput[]"; }
 
-    virtual data::MIRField field() const { NOTIMP; }
+    data::MIRField field() const override { NOTIMP; }
 
 public:
-    MissingInput()  = default;
-    ~MissingInput() = default;
+    MissingInput()           = default;
+    ~MissingInput() override = default;
 };
 }  // namespace
 
@@ -96,13 +96,13 @@ class ScalarContent : public Content {
 
     double value_;
 
-    virtual void print(std::ostream& out) const { out << "ScalarContent[value=" << value_ << "]"; }
+    void print(std::ostream& out) const override { out << "ScalarContent[value=" << value_ << "]"; }
 
-    virtual double scalar() const { return value_; }
+    double scalar() const override { return value_; }
 
-    virtual bool isScalar() const { return true; }
+    bool isScalar() const override { return true; }
 
-    virtual Content* clone() const { return new ScalarContent(value_); }
+    Content* clone() const override { return new ScalarContent(value_); }
 
 public:
     ScalarContent(double value) : value_(value) {}
@@ -112,13 +112,13 @@ public:
 class FieldContent : public Content {
     data::MIRField field_;
 
-    data::MIRField& field() { return field_; }
+    data::MIRField& field() override { return field_; }
 
-    virtual void print(std::ostream& out) const { out << "FieldContent[field=" << field_ << "]"; }
+    void print(std::ostream& out) const override { out << "FieldContent[field=" << field_ << "]"; }
 
-    virtual bool isField() const { return true; }
+    bool isField() const override { return true; }
 
-    virtual Content* clone() const { return new FieldContent(field_); }
+    Content* clone() const override { return new FieldContent(field_); }
 
 public:
     FieldContent(const data::MIRField& field) : field_(field) {}
@@ -128,19 +128,16 @@ class ExtensionContent : public Content {
 
     std::unique_ptr<Extension> extension_;
 
-    virtual void print(std::ostream& out) const { out << "ExtensionContent[" << *extension_ << "]"; }
+    void print(std::ostream& out) const override { out << "ExtensionContent[" << *extension_ << "]"; }
 
-    virtual bool isExtension() const { return true; }
+    bool isExtension() const override { return true; }
 
+    Extension& extension() const override { return *extension_; }
 
-    virtual Extension& extension() const { return *extension_; }
-
-    virtual Content* clone() const { return new ExtensionContent(extension_->clone()); }
+    Content* clone() const override { return new ExtensionContent(extension_->clone()); }
 
 public:
     ExtensionContent(Extension* extension) : extension_(extension) { ASSERT(extension_); }
-
-    ~ExtensionContent() = default;
 };
 
 

@@ -88,9 +88,6 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
 }
 
 
-GribFileMask::~GribFileMask() = default;
-
-
 void GribFileMask::hash(eckit::MD5& md5) const {
     Mask::hash(md5);
     md5.add(path_.asString());

@@ -69,7 +69,7 @@ public:
                       std::ostream& o = eckit::Log::info(), double time = 5.);
 
     private:
-        bool hasOutput();
+        bool hasOutput() override;
         const double time_;
     };
 
@@ -84,7 +84,7 @@ public:
                         std::ostream& o = eckit::Log::info(), size_t count = 10000);
 
     private:
-        bool hasOutput();
+        bool hasOutput() override;
         const size_t count_;
     };
 

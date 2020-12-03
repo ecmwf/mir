@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_WeightMatrix_H
-#define mir_method_WeightMatrix_H
+#ifndef mir_method_WeightMatrix_h
+#define mir_method_WeightMatrix_h
 
 #include <iosfwd>
 #include <vector>
@@ -65,7 +65,7 @@ public:  // methods
     using SparseMatrix::iterator;
 
 private:  // members
-    void print(std::ostream& s) const;
+    void print(std::ostream&) const;
 
     friend std::ostream& operator<<(std::ostream& out, const WeightMatrix& m) {
         m.print(out);

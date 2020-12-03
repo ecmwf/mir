@@ -24,15 +24,15 @@ class ScalarCoordinateInputVariable : public InputVariable {
 public:
     ScalarCoordinateInputVariable(Dataset& owner, const std::string& name, int id,
                                   const std::vector<Dimension*>& dimensions);
-    virtual ~ScalarCoordinateInputVariable() override;
+    ~ScalarCoordinateInputVariable() override;
 
 private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                  const std::vector<Dimension*>& dimensions) const override;
-    virtual Dimension* getVirtualDimension() override;
-    virtual Variable* makeCoordinateVariable() override;
-    virtual Variable* makeScalarCoordinateVariable() override;
-    virtual void print(std::ostream&) const override;
+    Dimension* getVirtualDimension() override;
+    Variable* makeCoordinateVariable() override;
+    Variable* makeScalarCoordinateVariable() override;
+    void print(std::ostream&) const override;
 };
 
 

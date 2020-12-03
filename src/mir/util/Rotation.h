@@ -14,6 +14,7 @@
 #define mir_util_Rotation_h
 
 #include <iosfwd>
+
 #include "mir/util/Types.h"
 
 
@@ -77,14 +78,15 @@ public:
                       double south_pole_rotation_angle      = 0.0);
 
     // -- Destructor
-    ~Rotation();  // Change to virtual if base class
+
+    ~Rotation() = default;
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    bool operator==(const Rotation& other) const;
+    bool operator==(const Rotation&) const;
 
     // -- Methods
 
@@ -99,7 +101,7 @@ public:
 
     void fill(grib_info&) const;
     void fill(api::MIRJob&) const;
-    void makeName(std::ostream& out) const;
+    void makeName(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -116,7 +118,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
     atlas::Projection atlasProjection() const;
 
     // -- Overridden methods

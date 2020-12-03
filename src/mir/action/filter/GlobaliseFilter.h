@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GlobaliseFilter() override;  // Change to virtual if base class
+    ~GlobaliseFilter() override;
 
     // -- Convertors
     // None
@@ -83,9 +83,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const override;
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
 
     // -- Class members
@@ -95,9 +95,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GlobaliseFilter& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 

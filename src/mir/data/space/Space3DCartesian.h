@@ -25,7 +25,7 @@ class Space3DCartesian : public SpaceLinear {
 
     // -- Overridden methods
 
-    size_t dimensions() const;
+    size_t dimensions() const override;
 };
 
 

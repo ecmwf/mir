@@ -36,7 +36,7 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     context::Context ctx_;  // Not a reference, so we have a copy
     const ActionNode& node_;
 
-    virtual void execute() {
+    void execute() override {
         eckit::Log::info() << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
         eckit::Log::info() << "<=== Done " << node_ << std::endl;
@@ -52,9 +52,6 @@ public:
 
 
 ThreadExecutor::ThreadExecutor(const std::string& name) : Executor(name) {}
-
-
-ThreadExecutor::~ThreadExecutor() = default;
 
 
 void ThreadExecutor::print(std::ostream& out) const {

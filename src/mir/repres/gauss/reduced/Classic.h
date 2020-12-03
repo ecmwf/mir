@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Classic() override;  // Change to virtual if base class
+    ~Classic() override;
 
     // -- Convertors
     // None
@@ -62,11 +62,11 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual atlas::Grid atlasGrid() const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation& other) const override;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    atlas::Grid atlasGrid() const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -91,9 +91,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Classic& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

@@ -87,11 +87,11 @@ public:
 template <class T>
 class LegendreLoaderBuilder : public LegendreLoaderFactory {
 
-    virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) override {
+    LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) override {
         return new T(param, path);
     }
 
-    virtual bool shared() const override { return T::shared(); }
+    bool shared() const override { return T::shared(); }
 
 public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}

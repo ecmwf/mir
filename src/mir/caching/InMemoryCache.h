@@ -35,7 +35,7 @@ public:  // methods
     explicit InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
                            const char* variable);
 
-    ~InMemoryCache();
+    ~InMemoryCache() override;
 
     iterator find(const std::string& key) const;
     T& insert(const std::string& key, T*);
@@ -44,7 +44,7 @@ public:  // methods
     iterator end() const { return 0; }
 
     void footprint(const std::string& key, const InMemoryCacheUsage&);
-    const std::string& name() const;
+    const std::string& name() const override;
 
     void reserve(size_t size, bool inSharedMemory);
     void reserve(const InMemoryCacheUsage&);
@@ -58,9 +58,9 @@ private:
     void purge();
     T& create(const std::string& key);
 
-    virtual InMemoryCacheUsage footprint() const;
-    virtual InMemoryCacheUsage capacity() const;
-    virtual InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false);
+    InMemoryCacheUsage footprint() const override;
+    InMemoryCacheUsage capacity() const override;
+    InMemoryCacheUsage purge(const InMemoryCacheUsage&, bool force = false) override;
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;

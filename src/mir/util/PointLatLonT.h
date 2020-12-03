@@ -44,9 +44,9 @@ protected:
     virtual void print(std::ostream& out) const { out << "PointLatLon[" << lat_ << "," << lon_ << "]"; }
 
 private:
-    friend std::ostream& operator<<(std::ostream& s, const PointLatLonT& p) {
-        p.print(s);
-        return s;
+    friend std::ostream& operator<<(std::ostream& out, const PointLatLonT& p) {
+        p.print(out);
+        return out;
     }
 };
 

@@ -10,11 +10,8 @@
  */
 
 
-#ifndef mir_api_Atlas_H
-#define mir_api_Atlas_H
-
-#include <array>
-#include <vector>
+#ifndef mir_api_Atlas_h
+#define mir_api_Atlas_h
 
 #include "mir/api/mir_config.h"
 

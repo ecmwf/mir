@@ -120,7 +120,7 @@ public:
 
 template <class T>
 class TruncationBuilder : public TruncationFactory {
-    virtual Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) override {
+    Truncation* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) override {
         return new T(parametrisation, targetGaussianN);
     }
 

@@ -32,8 +32,7 @@ public:
     SimpleExecutor(const std::string& name);
 
     // -- Destructor
-
-    ~SimpleExecutor();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -59,7 +58,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -83,9 +82,9 @@ private:
 
     // -- Overridden methods
     //
-    virtual void execute(context::Context&, const ActionNode&) const override;
-    virtual void wait() const override;
-    virtual void parametrisation(const param::MIRParametrisation&) override;
+    void execute(context::Context&, const ActionNode&) const override;
+    void wait() const override;
+    void parametrisation(const param::MIRParametrisation&) override;
 
     // -- Class members
     // None

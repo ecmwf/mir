@@ -23,11 +23,11 @@ class MIRList : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs& args);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const override;
 
-    int minimumPositionalArguments() const { return 1; }
+    int minimumPositionalArguments() const override { return 1; }
 
 public:
     // -- Constructors

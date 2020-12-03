@@ -52,7 +52,7 @@ public:
 
     // -- Destructor
 
-    ~Field();  // Change to virtual if base class
+    ~Field() override;
 
     // -- Convertors
     // None
@@ -112,7 +112,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

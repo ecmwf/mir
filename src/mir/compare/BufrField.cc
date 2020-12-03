@@ -394,9 +394,6 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
 }
 
 
-BufrField::~BufrField() = default;
-
-
 void BufrField::json(eckit::JSON& json) const {
     json.startObject();
     FieldBase::json(json);

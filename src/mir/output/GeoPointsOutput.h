@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsOutput() override;
+    ~GeoPointsOutput() override;
 
     // -- Convertors
     // None
@@ -69,8 +69,8 @@ protected:
     // -- Overridden methods
 
     // From MIROutput
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
@@ -96,9 +96,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsOutput& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

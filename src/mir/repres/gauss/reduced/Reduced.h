@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Reduced() override;
+    ~Reduced() override;
 
     // -- Convertors
     // None
@@ -84,15 +84,15 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual bool sameAs(const Representation&) const override;
-    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 
     // from Representation
-    virtual bool isPeriodicWestEast() const override;
-    virtual void estimate(api::MIREstimation&) const override;
-    virtual std::vector<util::GridBox> gridBoxes() const override;
+    bool isPeriodicWestEast() const override;
+    void estimate(api::MIREstimation&) const override;
+    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
 
@@ -110,10 +110,10 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
-    virtual size_t numberOfPoints() const override;
-    virtual bool getLongestElementDiagonal(double&) const override;
-    virtual std::string factory() const override;
+    size_t frame(MIRValuesVector& values, size_t size, double missingValue, bool estimate = false) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
+    std::string factory() const override;
 
     // -- Class members
     // None
@@ -122,9 +122,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Reduced& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

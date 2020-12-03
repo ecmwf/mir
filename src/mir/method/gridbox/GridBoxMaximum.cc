@@ -31,7 +31,7 @@ namespace gridbox {
 struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     using NonLinear::NonLinear;
     bool treatment(Matrix& /*A*/, WeightMatrix& W, Matrix& /*B*/, const data::MIRValuesVector& values,
-                   const double& missingValue) const {
+                   const double& missingValue) const override {
 
         // locate rows referring input maximum value, and set rows to pick only those
         ASSERT(W.cols() == values.size());
@@ -68,15 +68,16 @@ struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     }
 
 private:
-    bool sameAs(const NonLinear& other) const {
+    bool sameAs(const NonLinear& other) const override {
         auto o = dynamic_cast<const GridBoxMaximum*>(&other);
         return o != nullptr;
     }
 
-    void print(std::ostream& out) const { out << "GridBoxMaximum[]"; }
-    bool canIntroduceMissingValues() const { return true; }
+    void print(std::ostream& out) const override { out << "GridBoxMaximum[]"; }
 
-    void hash(eckit::MD5& h) const {
+    bool canIntroduceMissingValues() const override { return true; }
+
+    void hash(eckit::MD5& h) const override {
         std::ostringstream s;
         s << *this;
         h.add(s.str());

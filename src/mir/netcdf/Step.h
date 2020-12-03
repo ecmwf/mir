@@ -34,12 +34,12 @@ public:
     Step()          = default;
     virtual ~Step() = default;
 
-    virtual int rank() const              = 0;
-    virtual void execute(MergePlan& plan) = 0;
-    virtual bool merge(Step* other);
+    virtual int rank() const         = 0;
+    virtual void execute(MergePlan&) = 0;
+    virtual bool merge(Step*);
 
 private:
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
     friend std::ostream& operator<<(std::ostream& s, const Step& v) {
         v.print(s);
         return s;

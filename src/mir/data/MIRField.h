@@ -48,13 +48,13 @@ public:
     // -- Constructors
 
     /// @note not in Field
-    MIRField(const MIRField& other);
+    MIRField(const MIRField&);
     MIRField(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
     MIRField(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
 
-    ~MIRField();  // Change to virtual if base class
+    ~MIRField();
 
     // -- Convertors
     // None
@@ -62,7 +62,7 @@ public:
     // -- Operators
 
     /// @note not in Field
-    MIRField& operator=(const MIRField& other);
+    MIRField& operator=(const MIRField&);
 
     // -- Methods
 
@@ -113,7 +113,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None
@@ -173,7 +173,7 @@ public:
 
 template <class T>
 class FieldBuilder : public FieldFactory {
-    virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) override {
+    MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) override {
         return new T(param, hasMissing, missingValue);
     }
 

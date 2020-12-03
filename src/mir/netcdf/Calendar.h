@@ -29,11 +29,10 @@ namespace netcdf {
 
 class Calendar : public Codec {
 public:
-    Calendar()          = default;
-    virtual ~Calendar() = default;
+    Calendar() = default;
 
 private:
-    virtual bool timeAxis() const;
+    bool timeAxis() const override;
 };
 
 

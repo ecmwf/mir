@@ -27,10 +27,10 @@ public:
     FormulaBinop(const param::MIRParametrisation& parametrisation, const std::string& name, Formula* arg1,
                  Formula* arg2);
 
-    virtual ~FormulaBinop() override;
+    ~FormulaBinop() override;
 
 private:
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 };
 
 

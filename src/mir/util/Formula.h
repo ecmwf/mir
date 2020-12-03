@@ -25,10 +25,10 @@ namespace util {
 class Formula : public action::Action {
 public:
     using Action::Action;
-    virtual ~Formula() override;
+    ~Formula() override;
 
 private:
-    virtual void print(std::ostream&) const override = 0;
+    void print(std::ostream&) const override = 0;
 
     friend std::ostream& operator<<(std::ostream& out, const Formula& f) {
         f.print(out);

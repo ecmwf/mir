@@ -27,9 +27,6 @@ EmptyOutput::EmptyOutput() = default;
 EmptyOutput::EmptyOutput(const std::string&) {}
 
 
-EmptyOutput::~EmptyOutput() = default;
-
-
 size_t EmptyOutput::copy(const param::MIRParametrisation&, context::Context&) {
     return 0;
 }

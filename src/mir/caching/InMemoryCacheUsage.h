@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_caching_InMemoryCacheUsage_H
-#define mir_caching_InMemoryCacheUsage_H
+#ifndef mir_caching_InMemoryCacheUsage_h
+#define mir_caching_InMemoryCacheUsage_h
 
 #include <iosfwd>
 

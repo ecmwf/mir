@@ -13,8 +13,10 @@
 #include "mir/lsm/FileLSM.h"
 
 #include <iostream>
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
+
 #include "mir/lsm/GribFileMaskFromUser.h"
 #include "mir/param/MIRParametrisation.h"
 
@@ -27,9 +29,6 @@ static FileLSM __lsm_selection("file");
 
 
 FileLSM::FileLSM(const std::string& name) : LSMSelection(name) {}
-
-
-FileLSM::~FileLSM() = default;
 
 
 void FileLSM::print(std::ostream& out) const {

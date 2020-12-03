@@ -140,7 +140,7 @@ public:
 protected:
     // -- Destructor
 
-    virtual ~Representation() override;
+    ~Representation() override;
 
     // -- Members
     // None
@@ -226,7 +226,7 @@ public:
 
 template <class T>
 class RepresentationBuilder : public RepresentationFactory {
-    virtual Representation* make(const param::MIRParametrisation& param) override { return new T(param); }
+    Representation* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     RepresentationBuilder(const std::string& name) : RepresentationFactory(name) {}

@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRegularGG();  // Change to virtual if base class
+    ~ShToRegularGG();
 
     // -- Convertors
     // None

@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SetMetadata() override;  // Change to virtual if base class
+    ~SetMetadata() override;
 
     // -- Convertors
     // None
@@ -47,7 +47,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context&) const override;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -62,7 +62,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -85,8 +85,8 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -95,9 +95,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const SetMetadata& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

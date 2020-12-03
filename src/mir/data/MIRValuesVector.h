@@ -111,7 +111,7 @@ public:
     ~MIRValuesVectorT() noexcept { deallocate(); }
 
     /// Assign operator (copy)
-    MIRValuesVectorT& operator=(const MIRValuesVectorT<T, A>& other);
+    MIRValuesVectorT& operator=(const MIRValuesVectorT<T, A>&);
 
     /// Assign operator (move)
     MIRValuesVectorT& operator=(MIRValuesVectorT<T, A>&&) noexcept;

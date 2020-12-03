@@ -14,7 +14,6 @@
 #define mir_action_interpolate_Gridded2TypedGrid_h
 
 #include "mir/action/interpolate/Gridded2UnrotatedGrid.h"
-
 #include "mir/param/SimpleParametrisation.h"
 
 
@@ -34,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2TypedGrid() override;
+    ~Gridded2TypedGrid() override;
 
     // -- Convertors
     // None
@@ -64,8 +63,8 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual bool sameAs(const Action&) const override;
-    virtual void print(std::ostream&) const override;
+    bool sameAs(const Action&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -85,10 +84,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual const char* name() const override;
+    const char* name() const override;
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const override;
+    const repres::Representation* outputRepresentation() const override;
 
     // -- Class members
     // None

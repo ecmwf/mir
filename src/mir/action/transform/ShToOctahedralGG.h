@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToOctahedralGG();  // Change to virtual if base class
+    ~ShToOctahedralGG();
 
     // -- Convertors
     // None

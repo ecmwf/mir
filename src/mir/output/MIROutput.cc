@@ -46,7 +46,7 @@ static void init() {
 // Extension handling
 struct OutputFromExtension : public MIROutputFactory {
 
-    virtual MIROutput* make(const std::string& path) {
+    MIROutput* make(const std::string& path) override {
         const eckit::PathName p(path);
         const std::string ext = p.extension();
 
@@ -76,7 +76,7 @@ struct OutputFromExtension : public MIROutputFactory {
 
     OutputFromExtension() : MIROutputFactory("extension") {}
 
-    ~OutputFromExtension() { m_extensions->clear(); }
+    ~OutputFromExtension() override { m_extensions->clear(); }
 
 } static _extension;
 

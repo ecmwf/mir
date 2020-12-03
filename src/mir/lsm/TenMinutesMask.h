@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TenMinutesMask() override;
+    ~TenMinutesMask() override;
 
     // -- Convertors
     // None
@@ -74,12 +74,12 @@ private:
 
     // -- Overridden methods
 
-    virtual bool active() const override;
-    virtual bool cacheable() const override;
-    virtual void hash(eckit::MD5&) const override;
-    virtual const std::vector<bool>& mask() const override;
-    virtual void print(std::ostream&) const override;
-    virtual std::string cacheName() const override;
+    bool active() const override;
+    bool cacheable() const override;
+    void hash(eckit::MD5&) const override;
+    const std::vector<bool>& mask() const override;
+    void print(std::ostream&) const override;
+    std::string cacheName() const override;
 
     // -- Class members
     // None

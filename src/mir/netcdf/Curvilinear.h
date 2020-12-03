@@ -24,7 +24,7 @@ class Curvilinear : public GridSpec {
 public:
     Curvilinear(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-    virtual ~Curvilinear() override;
+    ~Curvilinear() override;
 
     // -- Methods
 
@@ -46,18 +46,17 @@ private:
     Curvilinear(const Curvilinear&);
     Curvilinear& operator=(const Curvilinear&);
 
-
     // - Methods
 
-    virtual void print(std::ostream& s) const override;
+    void print(std::ostream&) const override;
 
     // From GridSpec
-    virtual bool has(const std::string& name) const override;
-    virtual bool get(const std::string&, long&) const override;
-    virtual bool get(const std::string&, std::string&) const override;
-    virtual bool get(const std::string& name, double& value) const override;
-    virtual bool get(const std::string& name, std::vector<double>& value) const override;
-    virtual void reorder(MIRValuesVector& values) const override;
+    bool has(const std::string& name) const override;
+    bool get(const std::string& name, long&) const override;
+    bool get(const std::string& name, std::string&) const override;
+    bool get(const std::string& name, double&) const override;
+    bool get(const std::string& name, std::vector<double>&) const override;
+    void reorder(MIRValuesVector&) const override;
 };
 
 

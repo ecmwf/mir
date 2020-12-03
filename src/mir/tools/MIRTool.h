@@ -34,9 +34,9 @@ class MIRTool : public eckit::Tool {
 protected:
     using options_t = std::vector<eckit::option::Option*>;
 
-    virtual void run();
+    void run() override;
 
-    virtual void execute(const eckit::option::CmdArgs& args) = 0;
+    virtual void execute(const eckit::option::CmdArgs&) = 0;
 
     virtual int numberOfPositionalArguments() const { return -1; }
 

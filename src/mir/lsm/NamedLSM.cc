@@ -67,9 +67,6 @@ static std::string sane(const std::string& insane) {
 NamedLSM::NamedLSM(const std::string& name) : LSMSelection(name) {}
 
 
-NamedLSM::~NamedLSM() = default;
-
-
 void NamedLSM::print(std::ostream& out) const {
     out << "NamedLSM[name=" << name_ << "]";
 }

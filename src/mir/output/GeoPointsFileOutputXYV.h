@@ -87,9 +87,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GeoPointsFileOutputXYV& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedLL() override;
+    ~RotatedLL() override;
 
     // -- Convertors
     // None
@@ -65,7 +65,7 @@ private:
 
     // -- Overridden methods
     Iterator* iterator() const override;
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     atlas::Grid atlasGrid() const override;
 
@@ -86,9 +86,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RegularLL& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

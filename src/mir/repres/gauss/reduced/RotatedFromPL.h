@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedFromPL() override;  // Change to virtual if base class
+    ~RotatedFromPL() override;
 
     // -- Convertors
     // None
@@ -63,7 +63,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -83,13 +83,13 @@ private:
 
     // -- Overridden methods
 
-    virtual Iterator* iterator() const override;
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual atlas::Grid atlasGrid() const override;
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation&) const override;
+    Iterator* iterator() const override;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    atlas::Grid atlasGrid() const override;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -98,9 +98,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RotatedFromPL& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

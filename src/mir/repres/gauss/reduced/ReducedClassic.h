@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedClassic() override;
+    ~ReducedClassic() override;
 
     // -- Convertors
     // None
@@ -79,10 +79,10 @@ private:
 
     // -- Overridden methods
 
-    virtual Iterator* iterator() const override;
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation&) const override;
+    Iterator* iterator() const override;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None

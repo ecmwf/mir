@@ -14,6 +14,7 @@
 #define mir_action_transform_ShToPoints_h
 
 #include <vector>
+
 #include "mir/action/transform/ShToGridded.h"
 
 
@@ -34,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToPoints();  // Change to virtual if base class
+    ~ShToPoints();
 
     // -- Convertors
     // None

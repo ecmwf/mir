@@ -81,9 +81,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const override;
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -92,9 +92,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 

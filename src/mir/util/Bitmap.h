@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    ~Bitmap();  // Change to virtual if base class
+    ~Bitmap();
 
     // -- Convertors
     // None
@@ -65,7 +65,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

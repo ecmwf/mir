@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Simple() override;
+    ~Simple() override;
 
     // -- Convertors
     // None
@@ -76,9 +76,9 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const override;
-    virtual void fill(grib_info&, const repres::Representation&) const override;
-    virtual std::string type(const repres::Representation*) const override;
+    void print(std::ostream&) const override;
+    void fill(grib_info&, const repres::Representation&) const override;
+    std::string type(const repres::Representation*) const override;
 
     // -- Overridden methods
     // None

@@ -25,18 +25,18 @@ class SharedMemoryLoader : public MatrixLoader {
 public:
     SharedMemoryLoader(const std::string& name, const eckit::PathName&);
 
-    virtual ~SharedMemoryLoader() override;
+    ~SharedMemoryLoader() override;
 
     static void loadSharedMemory(const eckit::PathName&);
     static void unloadSharedMemory(const eckit::PathName&);
 
 protected:
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const override;
-    virtual size_t size() const override;
-    virtual bool inSharedMemory() const override;
+    const void* address() const override;
+    size_t size() const override;
+    bool inSharedMemory() const override;
 
     void* address_;
     size_t size_;

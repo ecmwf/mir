@@ -33,9 +33,9 @@ class MIRWeightMatrixDiff : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const {
+    void usage(const std::string& tool) const override {
         eckit::Log::info()
             << "\n"
             << "Usage: " << tool
@@ -43,7 +43,7 @@ class MIRWeightMatrixDiff : public mir::tools::MIRTool {
             << std::endl;
     }
 
-    int numberOfPositionalArguments() const { return 2; }
+    int numberOfPositionalArguments() const override { return 2; }
 
 public:
     // -- Constructors
@@ -70,13 +70,13 @@ struct diff_t {
 
 
 struct strict_diff_t : diff_t {
-    bool operator()(double a, double b) const { return a != b; }
+    bool operator()(double a, double b) const override { return a != b; }
 };
 
 
 struct approximate_diff_t : diff_t {
     approximate_diff_t(double eps) : eps_(eps) {}
-    bool operator()(double a, double b) const { return !eckit::types::is_approximately_equal(a, b, eps_); }
+    bool operator()(double a, double b) const override { return !eckit::types::is_approximately_equal(a, b, eps_); }
     const double eps_;
 };
 

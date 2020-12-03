@@ -34,8 +34,8 @@ namespace unit {
 
 
 struct TestWatcher : api::MIRWatcher {
-    void print(std::ostream&) const {}
-    bool failure(std::exception& e, const mir::action::Action& action) {
+    void print(std::ostream&) const override {}
+    bool failure(std::exception& e, const mir::action::Action& action) override {
         eckit::Log::error() << "Exception: '" << e.what() << "' on " << action << std::endl;
         throw;
     }

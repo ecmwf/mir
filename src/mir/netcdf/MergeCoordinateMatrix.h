@@ -23,15 +23,15 @@ namespace netcdf {
 class MergeCoordinateMatrix : public Matrix {
 public:
     MergeCoordinateMatrix(Matrix* out, Matrix* in, size_t size);
-    virtual ~MergeCoordinateMatrix() override;
+    ~MergeCoordinateMatrix() override;
 
 private:
     Matrix* out_;
     Matrix* in_;
 
-    virtual void print(std::ostream& out) const override;
+    void print(std::ostream&) const override;
 
-    virtual void dumpTree(std::ostream&, size_t) const override;
+    void dumpTree(std::ostream&, size_t) const override;
 };
 
 

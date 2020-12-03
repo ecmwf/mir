@@ -25,13 +25,13 @@ namespace util {
 class FormulaIdent : public Formula {
 public:
     FormulaIdent(const param::MIRParametrisation& parametrisation, const std::string& name);
-    virtual ~FormulaIdent() override;
+    ~FormulaIdent() override;
 
 private:
-    virtual void print(std::ostream&) const override;
-    virtual void execute(context::Context&) const override;
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
 private:  // members
     std::string name_;

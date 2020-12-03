@@ -14,6 +14,7 @@
 #define mir_action_transform_ShToReducedGGPLGiven_h
 
 #include <vector>
+
 #include "mir/action/transform/ShToGridded.h"
 
 
@@ -34,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToReducedGGPLGiven() override;  // Change to virtual if base class
+    ~ShToReducedGGPLGiven() override;
 
     // -- Convertors
     // None

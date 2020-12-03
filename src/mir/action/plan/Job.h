@@ -64,8 +64,8 @@ public:
 
     // -- Methods
 
-    void execute(util::MIRStatistics& statistics) const;
-    void estimate(api::MIREstimation& estimation) const;
+    void execute(util::MIRStatistics&) const;
+    void estimate(api::MIREstimation&) const;
 
     const ActionPlan& plan() const;
 

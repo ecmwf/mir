@@ -50,7 +50,7 @@ public:
 
     // -- Destructor
 
-    virtual ~L2Projection() override;
+    ~L2Projection() override;
 
     // -- Convertors
     // None
@@ -106,7 +106,7 @@ private:
     // From MethodWeighted
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const override;
-    virtual const char* name() const override;
+    const char* name() const override;
 
     // -- Class members
     // None

@@ -24,13 +24,13 @@ class DataOutputVariable : public OutputVariable {
 public:
     DataOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
 
-    virtual ~DataOutputVariable() override;
+    ~DataOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan) override;
-    virtual void print(std::ostream&) const override;
-    virtual const std::string& ncname() const override;
-    virtual void collectField(std::vector<Field*>&) const override;
+    void merge(const Variable&, MergePlan&) override;
+    void print(std::ostream&) const override;
+    const std::string& ncname() const override;
+    void collectField(std::vector<Field*>&) const override;
 
     mutable std::string ncname_;
 };

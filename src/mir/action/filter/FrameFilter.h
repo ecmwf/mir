@@ -10,8 +10,8 @@
  */
 
 
-#ifndef FrameFilter_H
-#define FrameFilter_H
+#ifndef mir_action_FrameFilter_h
+#define mir_action_FrameFilter_h
 
 #include "mir/action/plan/Action.h"
 
@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FrameFilter() override;  // Change to virtual if base class
+    ~FrameFilter() override;
 
     // -- Convertors
     // None
@@ -57,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -83,10 +83,10 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const override;
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
 
     // -- Class members
@@ -96,12 +96,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const FrameFilter& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif

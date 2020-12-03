@@ -36,7 +36,7 @@ public:
 
     // -- Methods
     virtual bool sameAs(const Attribute&) const;
-    virtual void dump(std::ostream& out) const;
+    virtual void dump(std::ostream&) const;
     virtual void create(int nc) const;
     virtual void clone(Endowed& owner) const;
     virtual void merge(const Attribute&);
@@ -62,7 +62,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream& out) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // Friends
     friend std::ostream& operator<<(std::ostream& out, const Attribute& v) {

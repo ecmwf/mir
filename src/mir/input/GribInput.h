@@ -28,7 +28,7 @@ class GribInput : public MIRInput, public param::FieldParametrisation {
 public:
     GribInput();
 
-    virtual ~GribInput() override;
+    ~GribInput() override;
 
     // For debugging only
     void marsRequest(std::ostream&) const;
@@ -55,32 +55,32 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
-    virtual data::MIRField field() const override;
-    virtual grib_handle* gribHandle(size_t which = 0) const override;
-    virtual void setAuxiliaryInformation(const std::string&) override;
-    virtual bool only(size_t paramId) override;
-    virtual size_t dimensions() const override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
+    void setAuxiliaryInformation(const std::string&) override;
+    bool only(size_t paramId) override;
+    size_t dimensions() const override;
 
     /// From MIRParametrisation
-    virtual bool has(const std::string& name) const override;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const override;
-    virtual bool get(const std::string& name, bool& value) const override;
-    virtual bool get(const std::string& name, int& value) const override;
-    virtual bool get(const std::string& name, long& value) const override;
-    virtual bool get(const std::string& name, float& value) const override;
-    virtual bool get(const std::string& name, double& value) const override;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const override;
-    virtual bool get(const std::string& name, std::vector<long>& value) const override;
-    virtual bool get(const std::string& name, std::vector<float>& value) const override;
-    virtual bool get(const std::string& name, std::vector<double>& value) const override;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const override;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // From FieldParametrisation
-    virtual void latitudes(std::vector<double>&) const override;
-    virtual void longitudes(std::vector<double>&) const override;
+    void latitudes(std::vector<double>&) const override;
+    void longitudes(std::vector<double>&) const override;
 };
 
 

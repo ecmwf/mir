@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToReducedGG();  // Change to virtual if base class
+    ~ShToReducedGG();
 
     // -- Convertors
     // None

@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AdjustWindsDirections() override;  // Change to virtual if base class
+    ~AdjustWindsDirections() override;
 
     // -- Convertors
     // None
@@ -58,7 +58,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,9 +79,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const override;
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -90,9 +90,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AdjustWinds& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 

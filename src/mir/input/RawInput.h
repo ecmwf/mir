@@ -37,8 +37,7 @@ public:
     RawInput(const RawMetadata& metadata, const double* values, size_t count);
 
     // -- Destructor
-
-    ~RawInput();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -86,12 +85,12 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
     const param::MIRParametrisation& parametrisation(size_t which) const override;
     data::MIRField field() const override;
     bool next() override;
     size_t copy(double* values, size_t size) const override;
-    bool sameAs(const MIRInput& other) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // From MIRParametrisation
     bool has(const std::string& name) const override;

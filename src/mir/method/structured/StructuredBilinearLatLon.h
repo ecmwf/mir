@@ -36,7 +36,7 @@ private:
 
     void print(std::ostream&) const override;
 
-    virtual bool sameAs(const Method& other) const override;
+    bool sameAs(const Method&) const override;
 };
 
 

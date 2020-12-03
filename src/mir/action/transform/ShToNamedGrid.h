@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToNamedGrid();  // Change to virtual if base class
+    ~ShToNamedGrid();
 
     // -- Convertors
     // None

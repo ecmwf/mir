@@ -10,8 +10,8 @@
  */
 
 
-#ifndef GribStreamOutput_H
-#define GribStreamOutput_H
+#ifndef mir_output_GribStreamOutput_h
+#define mir_output_GribStreamOutput_h
 
 #include "mir/output/GribOutput.h"
 
@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    ~GribStreamOutput();  // Change to virtual if base class
+    ~GribStreamOutput() override;
 
     // -- Convertors
     // None
@@ -82,7 +82,7 @@ private:
     // -- Overridden methods
     // From MIROutput
 
-    void out(const void* message, size_t length, bool interpolated);
+    void out(const void* message, size_t length, bool interpolated) override;
 
     // -- Class members
     // None
@@ -91,12 +91,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribStreamOutput& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif

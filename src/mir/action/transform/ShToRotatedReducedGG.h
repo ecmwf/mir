@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedReducedGG();  // Change to virtual if base class
+    ~ShToRotatedReducedGG();
 
     // -- Convertors
     // None

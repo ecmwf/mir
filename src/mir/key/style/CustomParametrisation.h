@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CustomParametrisation() override;  // Change to virtual if base class
+    ~CustomParametrisation() override;
 
     // -- Convertors
     // None
@@ -68,25 +68,25 @@ protected:
     // -- Overridden methods
 
     // From MIRParametrisation
-    virtual const MIRParametrisation& userParametrisation() const override;
-    virtual const MIRParametrisation& fieldParametrisation() const override;
+    const MIRParametrisation& userParametrisation() const override;
+    const MIRParametrisation& fieldParametrisation() const override;
 
-    virtual bool has(const std::string& name) const override;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const override;
-    virtual bool get(const std::string& name, bool& value) const override;
-    virtual bool get(const std::string& name, int& value) const override;
-    virtual bool get(const std::string& name, long& value) const override;
-    virtual bool get(const std::string& name, float& value) const override;
-    virtual bool get(const std::string& name, double& value) const override;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const override;
-    virtual bool get(const std::string& name, std::vector<long>& value) const override;
-    virtual bool get(const std::string& name, std::vector<float>& value) const override;
-    virtual bool get(const std::string& name, std::vector<double>& value) const override;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const override;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
-    virtual void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

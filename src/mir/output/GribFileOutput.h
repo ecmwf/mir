@@ -10,8 +10,8 @@
  */
 
 
-#ifndef GribFileOutput_H
-#define GribFileOutput_H
+#ifndef mir_output_GribFileOutput_h
+#define mir_output_GribFileOutput_h
 
 #include "eckit/filesystem/PathName.h"
 
@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~GribFileOutput();  // Change to virtual if base class
+    ~GribFileOutput() override;
 
     // -- Convertors
     // None
@@ -81,12 +81,12 @@ private:
 
     // -- Overridden methods
     // From MIROutput
-    virtual bool sameAs(const MIROutput& other) const override;
-    virtual void print(std::ostream&) const override;  // Change to virtual if base class
+    bool sameAs(const MIROutput&) const override;
+    void print(std::ostream&) const override;
 
     // From GribInput
 
-    virtual eckit::DataHandle& dataHandle() override;
+    eckit::DataHandle& dataHandle() override;
 
     // -- Class members
     // None
@@ -95,12 +95,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribFileOutput& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace output
 }  // namespace mir
+
+
 #endif

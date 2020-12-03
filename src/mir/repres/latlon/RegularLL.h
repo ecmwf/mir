@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularLL() override;
+    ~RegularLL() override;
 
     // -- Convertors
     // None
@@ -79,7 +79,7 @@ private:
     util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
     std::vector<util::GridBox> gridBoxes() const override;
 
-    virtual std::string factory() const override;
+    std::string factory() const override;
 
     // -- Class members
     // None
@@ -88,9 +88,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RegularLL& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

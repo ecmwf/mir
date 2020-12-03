@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ORCAPattern() override;
+    ~ORCAPattern() override;
 
     // -- Convertors
     // None
@@ -61,7 +61,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -87,7 +87,7 @@ private:
 
     // -- Class methods
 
-    virtual const Grid* make(const std::string& name) const override;
+    const Grid* make(const std::string& name) const override;
 
     // -- Friends
     // None

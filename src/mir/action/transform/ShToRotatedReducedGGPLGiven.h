@@ -14,6 +14,7 @@
 #define mir_action_transform_ShToRotatedReducedGGPLGiven_h
 
 #include <vector>
+
 #include "mir/action/transform/ShToGridded.h"
 #include "mir/util/Rotation.h"
 
@@ -35,7 +36,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedReducedGGPLGiven();  // Change to virtual if base class
+    ~ShToRotatedReducedGGPLGiven();
 
     // -- Convertors
     // None

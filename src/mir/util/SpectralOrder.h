@@ -117,7 +117,7 @@ public:
 
 template <class T>
 class SpectralOrderBuilder : public SpectralOrderFactory {
-    virtual SpectralOrder* make() override { return new T(); }
+    SpectralOrder* make() override { return new T(); }
 
 public:
     SpectralOrderBuilder(const std::string& name) : SpectralOrderFactory(name) {}

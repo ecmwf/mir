@@ -51,7 +51,7 @@ public:
 
     // -- Destructor
 
-    ~LandSeaMasks();
+    ~LandSeaMasks() = default;
 
     // -- Convertors
     // None

@@ -62,9 +62,6 @@ void Rotation::normalize() {
 }
 
 
-Rotation::~Rotation() = default;
-
-
 void Rotation::print(std::ostream& out) const {
     out << "Rotation["
         << "south_pole_latitude=" << south_pole_latitude_ << ",south_pole_longitude=" << south_pole_longitude_

@@ -23,11 +23,11 @@ namespace netcdf {
 class ScalarCoordinateOutputVariable : public OutputVariable {
 public:
     ScalarCoordinateOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~ScalarCoordinateOutputVariable() override;
+    ~ScalarCoordinateOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan) override;
-    virtual void print(std::ostream&) const override;
+    void merge(const Variable&, MergePlan&) override;
+    void print(std::ostream&) const override;
 };
 
 

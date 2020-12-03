@@ -45,7 +45,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation() override;
+    ~Gridded2GriddedInterpolation() override;
 
     // -- Convertors
     // None
@@ -73,12 +73,12 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const override = 0;
-    virtual void print(std::ostream&) const override  = 0;
+    bool sameAs(const Action&) const override = 0;
+    void print(std::ostream&) const override  = 0;
 
     // -- Class members
     // None
@@ -95,15 +95,15 @@ private:
 
     // -- Methods
 
-    virtual util::BoundingBox outputBoundingBox() const override = 0;
+    util::BoundingBox outputBoundingBox() const override = 0;
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const override;
-    virtual bool mergeWithNext(const Action&) override;
-    virtual bool canCrop() const override;
+    void execute(context::Context&) const override;
+    bool mergeWithNext(const Action&) override;
+    bool canCrop() const override;
 
-    method::Cropping cropping(context::Context& ctx) const;
+    method::Cropping cropping(context::Context&) const;
 
     // -- Class members
     // None

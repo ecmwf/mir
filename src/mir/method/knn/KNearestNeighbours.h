@@ -41,25 +41,25 @@ class KNearestNeighbours : public MethodWeighted {
 public:
     explicit KNearestNeighbours(const param::MIRParametrisation&);
 
-    virtual ~KNearestNeighbours() override;
+    ~KNearestNeighbours() override;
 
-    virtual void hash(eckit::MD5&) const override;
+    void hash(eckit::MD5&) const override;
 
 protected:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out, const pick::Pick& pick, const distance::DistanceWeighting&) const;
 
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const override;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
 
-    virtual bool sameAs(const Method& other) const override = 0;
+    bool sameAs(const Method&) const override = 0;
 
 private:
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 
-    virtual bool canIntroduceMissingValues() const override;
+    bool canIntroduceMissingValues() const override;
 
-    virtual const char* name() const override = 0;
+    const char* name() const override = 0;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;

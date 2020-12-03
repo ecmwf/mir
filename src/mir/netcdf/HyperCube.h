@@ -110,7 +110,7 @@ inline  // For speed
 }
 
 
-std::ostream& operator<<(std::ostream& out, const HyperCube& cube);
+std::ostream& operator<<(std::ostream&, const HyperCube&);
 
 
 }  // namespace netcdf

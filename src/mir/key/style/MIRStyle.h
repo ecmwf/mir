@@ -134,7 +134,7 @@ public:
 
 template <class T>
 class MIRStyleBuilder : public MIRStyleFactory {
-    virtual MIRStyle* make(const param::MIRParametrisation& param) override { return new T(param); }
+    MIRStyle* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MIRStyleBuilder(const std::string& name) : MIRStyleFactory(name) {}

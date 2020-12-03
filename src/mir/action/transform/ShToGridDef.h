@@ -14,6 +14,7 @@
 #define mir_action_transform_ShToGridDef_h
 
 #include <string>
+
 #include "mir/action/transform/ShToGridded.h"
 
 
@@ -34,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToGridDef();  // Change to virtual if base class
+    ~ShToGridDef();
 
     // -- Convertors
     // None

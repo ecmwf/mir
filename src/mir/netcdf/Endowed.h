@@ -37,8 +37,8 @@ public:
     void add(Attribute*);
 
     void getAttributes(int nc, int i, int nattr);
-    void copyAttributes(const Endowed& other);
-    void mergeAttributes(const Endowed& other);
+    void copyAttributes(const Endowed&);
+    void mergeAttributes(const Endowed&);
 
     virtual const std::string& path() const = 0;
     virtual int varid() const               = 0;

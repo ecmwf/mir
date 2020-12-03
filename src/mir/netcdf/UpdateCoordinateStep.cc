@@ -12,6 +12,8 @@
 
 #include "mir/netcdf/UpdateCoordinateStep.h"
 
+#include <iostream>
+
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/MergeCoordinateStep.h"
@@ -19,14 +21,11 @@
 #include "mir/netcdf/ReshapeVariableStep.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
 
 namespace mir {
 namespace netcdf {
 
 UpdateCoordinateStep::UpdateCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
-
-UpdateCoordinateStep::~UpdateCoordinateStep() = default;
 
 int UpdateCoordinateStep::rank() const {
     return 1;

@@ -25,7 +25,7 @@ public:
     Rectilinear(const Variable&, double north, double south, const std::vector<double>& latitudes, double west,
                 double east, const std::vector<double>& longitudes);
 
-    virtual ~Rectilinear() override;
+    ~Rectilinear() override;
 
     // -- Methods
 
@@ -51,15 +51,15 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const override;
+    void print(std::ostream&) const override;
 
     // From GridSpec
-    virtual bool has(const std::string& name) const override;
-    virtual bool get(const std::string&, long&) const override;
-    virtual bool get(const std::string&, std::string&) const override;
-    virtual bool get(const std::string& name, double& value) const override;
-    virtual bool get(const std::string& name, std::vector<double>& value) const override;
-    virtual void reorder(MIRValuesVector& values) const override;
+    bool has(const std::string& name) const override;
+    bool get(const std::string&, long&) const override;
+    bool get(const std::string&, std::string&) const override;
+    bool get(const std::string& name, double& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    void reorder(MIRValuesVector& values) const override;
 };
 
 

@@ -23,7 +23,7 @@ namespace netcdf {
 class VirtualInputDimension : public Dimension {
 public:
     VirtualInputDimension(Dataset& owner, const std::string& name);
-    virtual ~VirtualInputDimension() override;
+    ~VirtualInputDimension() override;
 
 private:
     // Members
@@ -31,10 +31,10 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream&) const override;
-    virtual void clone(Dataset& owner) const override;
-    virtual int id() const override;
-    virtual void realDimensions(std::vector<size_t>& dims) const override;
+    void print(std::ostream&) const override;
+    void clone(Dataset& owner) const override;
+    int id() const override;
+    void realDimensions(std::vector<size_t>& dims) const override;
 };
 
 

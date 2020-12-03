@@ -24,8 +24,6 @@ namespace netcdf {
 
 MergeCoordinateStep::MergeCoordinateStep(Variable& out, const Variable& in) : out_(out), in_(in) {}
 
-MergeCoordinateStep::~MergeCoordinateStep() = default;
-
 int MergeCoordinateStep::rank() const {
     return 4;
 }

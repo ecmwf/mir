@@ -25,7 +25,8 @@ struct SimulateMissingValue : NonLinear {
     SimulateMissingValue(const param::MIRParametrisation&);
 
 private:
-    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values, const double&) const override;
+    bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
+                   const double&) const override;
     bool sameAs(const NonLinear&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;

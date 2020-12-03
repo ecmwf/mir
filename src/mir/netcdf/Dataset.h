@@ -35,7 +35,7 @@ namespace netcdf {
 class Dataset : public Endowed {
 public:
     Dataset(const std::string&);
-    virtual ~Dataset() override;
+    ~Dataset() override;
 
     // -- Methods
 
@@ -58,7 +58,7 @@ public:
 
     // From Endowed
 
-    virtual const std::string& path() const override;
+    const std::string& path() const override;
 
 protected:
     // -- Members
@@ -72,12 +72,12 @@ private:
 
     // From Endowed
 
-    virtual int varid() const override;
-    virtual const std::string& name() const override;
+    int varid() const override;
+    const std::string& name() const override;
 
     // - Methods
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& s, const Dataset& v) {

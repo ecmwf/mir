@@ -23,13 +23,13 @@ namespace util {
 class FormulaNumber : public Formula {
 public:
     FormulaNumber(const param::MIRParametrisation& parametrisation, double value);
-    virtual ~FormulaNumber() override;
+    ~FormulaNumber() override;
 
 private:
-    virtual void print(std::ostream&) const override;
-    virtual void execute(context::Context&) const override;
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
 private:  // members
     double value_;

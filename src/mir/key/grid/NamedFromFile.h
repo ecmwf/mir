@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NamedFromFile() override;
+    ~NamedFromFile() override;
 
     // -- Convertors
     // None
@@ -62,10 +62,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override;
-    virtual size_t gaussianNumber() const override;
-    virtual const repres::Representation* representation() const override;
-    virtual const repres::Representation* representation(const util::Rotation&) const override;
+    void print(std::ostream&) const override;
+    size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
+    const repres::Representation* representation(const util::Rotation&) const override;
 
     // -- Class members
     // None

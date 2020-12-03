@@ -24,9 +24,6 @@ namespace action {
 SimpleExecutor::SimpleExecutor(const std::string& name) : Executor(name) {}
 
 
-SimpleExecutor::~SimpleExecutor() = default;
-
-
 void SimpleExecutor::print(std::ostream& out) const {
     out << "SimpleExecutor[]";
 }

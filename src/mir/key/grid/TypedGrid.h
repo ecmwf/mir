@@ -13,9 +13,9 @@
 #ifndef mir_key_grid_TypedGrid_h
 #define mir_key_grid_TypedGrid_h
 
-#include "mir/key/grid/Grid.h"
-
 #include <set>
+
+#include "mir/key/grid/Grid.h"
 
 
 namespace mir {
@@ -64,10 +64,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override;
-    virtual const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
-    virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const override;
-    virtual size_t gaussianNumber() const override;
+    void print(std::ostream&) const override;
+    const repres::Representation* representation(const param::MIRParametrisation&) const override = 0;
+    void parametrisation(const std::string& grid, param::SimpleParametrisation&) const override;
+    size_t gaussianNumber() const override;
 
     // -- Class members
     // None

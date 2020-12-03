@@ -32,7 +32,7 @@ bool GribMemoryOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }
 
-void GribMemoryOutput::out(const void* message, size_t length, bool interpolated) {
+void GribMemoryOutput::out(const void* message, size_t length, bool /*interpolated*/) {
     ASSERT(length <= size_);
     length_ = length;
     ::memcpy(message_, message, length);

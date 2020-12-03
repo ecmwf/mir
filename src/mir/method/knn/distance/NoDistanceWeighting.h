@@ -28,9 +28,9 @@ struct NoDistanceWeighting : DistanceWeighting {
                     std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
-    virtual bool sameAs(const DistanceWeighting&) const override;
-    virtual void print(std::ostream&) const override;
-    virtual void hash(eckit::MD5&) const override;
+    bool sameAs(const DistanceWeighting&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 

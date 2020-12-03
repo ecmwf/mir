@@ -10,8 +10,8 @@
  */
 
 
-#ifndef BitmapFilter_H
-#define BitmapFilter_H
+#ifndef mir_action_BitmapFilter_h
+#define mir_action_BitmapFilter_h
 
 #include "mir/action/plan/Action.h"
 
@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~BitmapFilter() override;  // Change to virtual if base class
+    ~BitmapFilter() override;
 
     // -- Convertors
     // None
@@ -60,7 +60,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -87,10 +87,10 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const override;
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
 
     // -- Class members
@@ -100,12 +100,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const BitmapFilter& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif

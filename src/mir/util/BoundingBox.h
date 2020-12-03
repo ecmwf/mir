@@ -57,9 +57,9 @@ public:
 
     // -- Operators
 
-    BoundingBox& operator=(const BoundingBox& other);
+    BoundingBox& operator=(const BoundingBox&);
 
-    bool operator==(const BoundingBox& other) const;
+    bool operator==(const BoundingBox&) const;
 
     bool operator!=(const BoundingBox& other) const { return !operator==(other); }
 

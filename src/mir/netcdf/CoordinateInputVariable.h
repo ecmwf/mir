@@ -23,17 +23,17 @@ namespace netcdf {
 class CoordinateInputVariable : public InputVariable {
 public:
     CoordinateInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~CoordinateInputVariable() override;
+    ~CoordinateInputVariable() override;
 
 private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                  const std::vector<Dimension*>& dimensions) const override;
 
-    virtual Variable* makeCoordinateVariable() override;
-    virtual Variable* makeScalarCoordinateVariable() override;
+    Variable* makeCoordinateVariable() override;
+    Variable* makeScalarCoordinateVariable() override;
     const char* kind() const override;
 
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 };
 
 

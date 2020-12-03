@@ -79,7 +79,7 @@ public:
     Codec* codec() const;
 
 protected:
-    virtual ~Matrix() override;
+    ~Matrix() override;
 
     // -- Members
 
@@ -95,7 +95,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream& out) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& out, const Matrix& v) {

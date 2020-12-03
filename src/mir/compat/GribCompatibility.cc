@@ -64,21 +64,21 @@ class CombinedGribCompatibility : public GribCompatibility {
 
     std::vector<const GribCompatibility*> list_;
 
-    virtual void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation,
-                         grib_handle* h, grib_info& info) const {
+    void execute(const output::MIROutput& output, const param::MIRParametrisation& parametrisation, grib_handle* h,
+                 grib_info& info) const override {
         for (auto c : list_) {
             c->execute(output, parametrisation, h, info);
         }
     }
 
-    virtual void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
+    void printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const override {
         for (auto c : list_) {
             c->printParametrisation(out, param);
         }
     }
 
-    virtual bool sameParametrisation(const param::MIRParametrisation& param1,
-                                     const param::MIRParametrisation& param2) const {
+    bool sameParametrisation(const param::MIRParametrisation& param1,
+                             const param::MIRParametrisation& param2) const override {
 
         for (auto c : list_) {
             if (!c->sameParametrisation(param1, param2)) {
@@ -89,14 +89,14 @@ class CombinedGribCompatibility : public GribCompatibility {
         return true;
     }
 
-    virtual void initialise(const metkit::mars::MarsRequest& request,
-                            std::map<std::string, std::string>& postproc) const {
+    void initialise(const metkit::mars::MarsRequest& request,
+                    std::map<std::string, std::string>& postproc) const override {
         for (auto c : list_) {
             c->initialise(request, postproc);
         }
     }
 
-    virtual void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         out << "CombinedGribCompatibility[";
         const char* sep = "";
         for (auto c : list_) {

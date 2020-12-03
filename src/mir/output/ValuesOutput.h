@@ -33,8 +33,7 @@ public:
     ValuesOutput();
 
     // -- Destructor
-
-    ~ValuesOutput();  // Change to virtual if base class
+    // None
 
     // -- Convertors
     // None
@@ -88,12 +87,12 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&) override;
-    virtual bool sameAs(const MIROutput&) const override;
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-    virtual void print(std::ostream&) const override;
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

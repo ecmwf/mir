@@ -12,12 +12,12 @@
 
 #include <netcdf.h>
 
+#include "mir/netcdf/Type.h"
+
 #include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <vector>
-
-#include "mir/netcdf/Type.h"
 
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Dimension.h"
@@ -28,6 +28,7 @@
 #include "mir/netcdf/UpdateCoordinateStep.h"
 #include "mir/netcdf/ValueT.h"
 #include "mir/netcdf/Variable.h"
+
 
 namespace mir {
 namespace netcdf {
@@ -164,18 +165,17 @@ class TypeT : public Type {
 
 public:
     TypeT(int code, const std::string& name, const std::string& dump, int super) : Type(code, name, dump, super) {}
-    virtual ~TypeT() = default;
 
 private:
-    virtual Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path);
+    Value* attributeValue(int nc, int id, const char* name, size_t len, const std::string& path) override;
 
-    virtual bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
-    virtual bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan);
-    virtual void save(const Matrix&, int nc, int varid, const std::string& path) const;
+    bool coordinateOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
+    bool cellMethodOutputVariableMerge(Variable& out, const Variable& in, MergePlan& plan) override;
+    void save(const Matrix&, int nc, int varid, const std::string& path) const override;
 
-    virtual void print(std::ostream& out) const;
-    virtual void dump(std::ostream& out, const Matrix&) const;
-    virtual void printValues(std::ostream& out, const Matrix&) const;
+    void print(std::ostream& out) const override;
+    void dump(std::ostream& out, const Matrix&) const override;
+    void printValues(std::ostream& out, const Matrix&) const override;
 };
 
 template <class T>

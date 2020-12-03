@@ -60,7 +60,7 @@ template <class T>
 class ConditionT : public Condition {
     const char* key_;
     T value_;
-    virtual bool eval(grib_handle*) const;
+    bool eval(grib_handle*) const override;
 
 public:
     ConditionT(const char* key, const T& value) : key_(key), value_(value) {}
@@ -128,28 +128,32 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
 class ConditionOR : public Condition {
     const Condition* left_;
     const Condition* right_;
-    virtual bool eval(grib_handle* h) const { return left_->eval(h) || right_->eval(h); }
+    bool eval(grib_handle* h) const override { return left_->eval(h) || right_->eval(h); }
 
 public:
     ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
 
+/*
 class ConditionAND : public Condition {
     const Condition* left_;
     const Condition* right_;
-    virtual bool eval(grib_handle* h) const { return left_->eval(h) && right_->eval(h); }
+     bool eval(grib_handle* h) const override  { return left_->eval(h) && right_->eval(h); }
 
 public:
     ConditionAND(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
+*/
 
+/*
 class ConditionNOT : public Condition {
     const Condition* c_;
-    virtual bool eval(grib_handle* h) const { return !c_->eval(h); }
+     bool eval(grib_handle* h) const  override { return !c_->eval(h); }
 
 public:
     ConditionNOT(const Condition* c) : c_(c) {}
 };
+*/
 
 
 }  // namespace

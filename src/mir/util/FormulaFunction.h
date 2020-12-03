@@ -39,17 +39,17 @@ public:
     FormulaFunction(const param::MIRParametrisation& parametrisation, const std::string& name,
                     std::vector<Formula*>& args);
 
-    virtual ~FormulaFunction() override;
+    ~FormulaFunction() override;
 
 protected:  // members
     const Function& function_;
     std::vector<Formula*> args_;
 
 private:
-    virtual void print(std::ostream&) const override;
-    virtual void execute(context::Context&) const override;
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    void print(std::ostream&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 };
 
 

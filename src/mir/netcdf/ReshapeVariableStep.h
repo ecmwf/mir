@@ -31,7 +31,7 @@ namespace netcdf {
 class ReshapeVariableStep : public Step {
 public:
     ReshapeVariableStep(Variable& out, const Dimension& dimension, size_t growth);
-    virtual ~ReshapeVariableStep() override;
+    ~ReshapeVariableStep() override;
 
 private:
     // Members
@@ -42,10 +42,10 @@ private:
     ReshapeVariableStep* next_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const override;
-    virtual int rank() const override;
-    virtual void execute(MergePlan& plan) override;
-    virtual bool merge(Step* other) override;
+    void print(std::ostream&) const override;
+    int rank() const override;
+    void execute(MergePlan&) override;
+    bool merge(Step*) override;
 };
 
 

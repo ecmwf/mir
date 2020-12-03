@@ -25,7 +25,7 @@ class Space3DVectorZonalMeridionalVertical : public SpaceLinear {
 
     // -- Overridden methods
 
-    size_t dimensions() const;
+    size_t dimensions() const override;
 };
 
 

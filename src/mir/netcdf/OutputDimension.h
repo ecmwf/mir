@@ -23,7 +23,7 @@ namespace netcdf {
 class OutputDimension : public Dimension {
 public:
     OutputDimension(Dataset& owner, const std::string& name, size_t len);
-    virtual ~OutputDimension() override;
+    ~OutputDimension() override;
 
 private:
     mutable int id_;
@@ -33,10 +33,10 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream&) const override;
-    virtual void create(int nc) const override;
-    virtual int id() const override;
-    virtual void grow(size_t) override;
+    void print(std::ostream&) const override;
+    void create(int nc) const override;
+    int id() const override;
+    void grow(size_t) override;
 };
 
 

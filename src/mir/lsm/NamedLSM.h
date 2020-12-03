@@ -35,8 +35,7 @@ public:
     NamedLSM(const std::string& name);
 
     // -- Destructor
-
-    ~NamedLSM();
+    // None
 
     // -- Convertors
     // None
@@ -65,17 +64,18 @@ private:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
 
     // -- Class methods
 
-    Mask* create(const param::MIRParametrisation&, const repres::Representation&, const std::string& which) const;
+    Mask* create(const param::MIRParametrisation&, const repres::Representation&,
+                 const std::string& which) const override;
 
     std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
-                         const std::string& which) const;
+                         const std::string& which) const override;
 
     // -- Friends
     // None
@@ -107,12 +107,12 @@ public:
 
 template <class T>
 class NamedMaskBuilder : public NamedMaskFactory {
-    virtual Mask* make(const param::MIRParametrisation& param, const repres::Representation& representation,
-                       const std::string& which) {
+    Mask* make(const param::MIRParametrisation& param, const repres::Representation& representation,
+               const std::string& which) override {
         return new T(name_, path_, param, representation, which);
     }
-    virtual void hashCacheKey(eckit::MD5& md5, const param::MIRParametrisation& parametrisation,
-                              const repres::Representation& representation, const std::string& which) {
+    void hashCacheKey(eckit::MD5& md5, const param::MIRParametrisation& parametrisation,
+                      const repres::Representation& representation, const std::string& which) override {
         T::hashCacheKey(md5, path_, parametrisation, representation, which);
     }
 

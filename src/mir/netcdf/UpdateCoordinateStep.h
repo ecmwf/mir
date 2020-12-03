@@ -30,7 +30,6 @@ namespace netcdf {
 class UpdateCoordinateStep : public Step {
 public:
     UpdateCoordinateStep(Variable& out, const Variable& in);
-    ~UpdateCoordinateStep();
 
 private:
     // Members
@@ -39,9 +38,9 @@ private:
     const Variable& in_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const override;
-    virtual int rank() const override;
-    virtual void execute(MergePlan& plan) override;
+    void print(std::ostream&) const override;
+    int rank() const override;
+    void execute(MergePlan&) override;
 };
 
 

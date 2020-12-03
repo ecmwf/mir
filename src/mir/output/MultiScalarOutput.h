@@ -14,6 +14,7 @@
 #define mir_output_MultiScalarOutput_h
 
 #include <vector>
+
 #include "mir/output/MIROutput.h"
 
 
@@ -32,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarOutput() override;  // Change to virtual if base class
+    ~MultiScalarOutput() override;
 
     // -- Convertors
     // None
@@ -80,14 +81,14 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
-    virtual size_t save(const param::MIRParametrisation&, context::Context&) override;
-    virtual size_t set(const param::MIRParametrisation&, context::Context&) override;
-    virtual bool sameAs(const MIROutput&) const override;
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-    virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
-    virtual void print(std::ostream&) const override;
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t set(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

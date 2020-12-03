@@ -14,6 +14,7 @@
 #define mir_netcdf_Remapping_h
 
 #include "eckit/memory/Counted.h"
+
 #include "mir/netcdf/HyperCube.h"
 
 
@@ -25,7 +26,7 @@ class Remapping : public HyperCube::Remapping, public eckit::Counted {
 
 public:
     Remapping(size_t = 0);
-    virtual ~Remapping() override;
+    ~Remapping() override;
 
     void validate() const;
 

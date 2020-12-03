@@ -10,8 +10,8 @@
  */
 
 
-#ifndef IrregularLatlon_H
-#define IrregularLatlon_H
+#ifndef mir_repres_IrregularLatlon_h
+#define mir_repres_IrregularLatlon_h
 
 #include "mir/repres/Gridded.h"
 
@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon() override;  // Change to virtual if base class
+    ~IrregularLatlon() override;
 
     // -- Convertors
     // None
@@ -56,7 +56,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -88,21 +88,21 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t numberOfPoints() const override;
-    virtual bool getLongestElementDiagonal(double&) const override;
-    virtual void validate(const MIRValuesVector&) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(util::MeshGeneratorParameters&) const override;
+    void fill(grib_info&) const override;
+    void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation&) const override;
-    virtual atlas::Grid atlasGrid() const override;
-    virtual util::Domain domain() const override;
-    virtual Iterator* iterator() const override;
-    virtual bool isPeriodicWestEast() const override;
-    virtual bool includesNorthPole() const override;
-    virtual bool includesSouthPole() const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
+    atlas::Grid atlasGrid() const override;
+    util::Domain domain() const override;
+    Iterator* iterator() const override;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None
@@ -111,9 +111,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const IrregularLatlon& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

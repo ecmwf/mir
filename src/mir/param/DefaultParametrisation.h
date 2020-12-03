@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~DefaultParametrisation() override;
+    ~DefaultParametrisation() override;
 
     // -- Convertors
     // None

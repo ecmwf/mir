@@ -30,14 +30,14 @@ namespace netcdf {
 class DummyMatrix : public Matrix {
 public:
     DummyMatrix(const Variable&);
-    virtual ~DummyMatrix() override;
+    ~DummyMatrix() override;
 
 private:
     Matrix* other_;
 
     // Methods
 
-    virtual void print(std::ostream& out) const override;
+    void print(std::ostream&) const override;
 };
 
 

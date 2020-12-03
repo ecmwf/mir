@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Iterator() override;
+    ~Iterator() override;
 
     // -- Convertors
 
@@ -74,7 +74,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const override  = 0;
+    void print(std::ostream&) const override = 0;
     virtual bool next(Latitude&, Longitude&) = 0;
 
     // -- Overridden methods

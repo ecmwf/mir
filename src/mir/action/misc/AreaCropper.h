@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper() override;  // Change to virtual if base class
+    ~AreaCropper() override;
 
     // -- Convertors
     // None
@@ -54,7 +54,7 @@ public:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const override;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -68,7 +68,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -90,12 +90,12 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
-    virtual bool isCropAction() const override;
-    virtual bool canCrop() const override;
-    virtual util::BoundingBox outputBoundingBox() const override;
-    virtual void estimate(context::Context& ctx, api::MIREstimation& estimation) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    bool isCropAction() const override;
+    bool canCrop() const override;
+    util::BoundingBox outputBoundingBox() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -104,9 +104,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const AreaCropper& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

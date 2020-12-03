@@ -24,7 +24,7 @@ class SimpleInputVariable : public InputVariable {
 public:
     SimpleInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
 
-    virtual ~SimpleInputVariable() override;
+    ~SimpleInputVariable() override;
 
 private:
     std::vector<std::string> coordinates() const override;
@@ -32,13 +32,13 @@ private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                  const std::vector<Dimension*>& dimensions) const override;
 
-    virtual Variable* makeDataVariable() override;
-    virtual Variable* makeCoordinateVariable() override;
-    virtual Variable* makeCellMethodVariable() override;
+    Variable* makeDataVariable() override;
+    Variable* makeCoordinateVariable() override;
+    Variable* makeCellMethodVariable() override;
 
-    virtual void print(std::ostream&) const override;
-    virtual void validate() const override;
-    virtual bool identified() const override;
+    void print(std::ostream&) const override;
+    void validate() const override;
+    bool identified() const override;
 
     Variable* addMissingCoordinates() override;
 };

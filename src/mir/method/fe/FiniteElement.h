@@ -37,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FiniteElement() override;
+    ~FiniteElement() override;
 
     // -- Convertors
     // None
@@ -112,14 +112,14 @@ private:
 class FiniteElementFactory : public MethodFactory {
     std::string name_;
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
-    virtual FiniteElement* make(const param::MIRParametrisation&)  override                 = 0;
+    FiniteElement* make(const param::MIRParametrisation&) override                          = 0;
 
     FiniteElementFactory(const FiniteElementFactory&) = delete;
     FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;
 
 protected:
     FiniteElementFactory(const std::string&);
-    virtual ~FiniteElementFactory() override;
+    ~FiniteElementFactory() override;
 
 public:
     static void list(std::ostream&);
@@ -129,11 +129,11 @@ public:
 
 template <class T>
 class FiniteElementBuilder : public FiniteElementFactory {
-    virtual FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) override {
+    FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) override {
         return new T(param, label);
     }
 
-    virtual FiniteElement* make(const param::MIRParametrisation& param) override { return new T(param); }
+    FiniteElement* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     FiniteElementBuilder(const std::string& name) : FiniteElementFactory(name) {}

@@ -23,11 +23,11 @@ class MIRMakeLSM : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const override;
 
-    int minimumPositionalArguments() const { return 2; }
+    int minimumPositionalArguments() const override { return 2; }
 
 public:
     // -- Constructors

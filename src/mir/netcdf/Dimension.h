@@ -58,7 +58,7 @@ protected:
 
 private:
     // -- Methods
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
 

@@ -21,7 +21,7 @@
 
 class LSM : public eckit::Tool {
 
-    virtual void run();
+    void run() override;
 
     void usage(const std::string& tool);
 

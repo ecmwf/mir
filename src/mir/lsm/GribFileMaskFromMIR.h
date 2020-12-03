@@ -29,8 +29,8 @@ public:
 private:
     std::string name_;
 
-    virtual bool cacheable() const;
-    virtual std::string cacheName() const;
+    bool cacheable() const override;
+    std::string cacheName() const override;
 };
 
 

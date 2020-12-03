@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Regular() override;  // Change to virtual if base class
+    ~Regular() override;
 
     // -- Convertors
     // None
@@ -70,15 +70,15 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual bool sameAs(const Representation&) const override;
-    virtual atlas::Grid atlasGrid() const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    atlas::Grid atlasGrid() const override;
+    void makeName(std::ostream&) const override;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 
     // from Representation
-    virtual bool isPeriodicWestEast() const override;
+    bool isPeriodicWestEast() const override;
 
     // -- Class members
     // None
@@ -98,9 +98,9 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const override;
-    virtual size_t numberOfPoints() const override;
-    virtual bool getLongestElementDiagonal(double&) const override;
+    size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
 
     // -- Class members
     // None
@@ -109,9 +109,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Regular& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

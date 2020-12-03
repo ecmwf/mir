@@ -14,6 +14,7 @@
 #define mir_input_MultiScalarInput_h
 
 #include <vector>
+
 #include "mir/input/MIRInput.h"
 
 
@@ -39,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MultiScalarInput() override;  // Change to virtual if base class
+    ~MultiScalarInput() override;
 
     // -- Convertors
     // None
@@ -53,7 +54,7 @@ public:
 
     // -- Overridden methods
 
-    virtual size_t dimensions() const override;
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -88,12 +89,12 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
-    virtual data::MIRField field() const override;
-    virtual bool next() override;
-    virtual bool sameAs(const MIRInput& other) const override;
-    virtual void print(std::ostream& out) const override;
-    virtual grib_handle* gribHandle(size_t which = 0) const override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    bool sameAs(const MIRInput&) const override;
+    void print(std::ostream&) const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
 
     // -- Class members
     // None

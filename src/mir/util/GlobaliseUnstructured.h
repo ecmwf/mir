@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    ~GlobaliseUnstructured();  // Change to virtual if base class
+    ~GlobaliseUnstructured();
 
     // -- Methods
 

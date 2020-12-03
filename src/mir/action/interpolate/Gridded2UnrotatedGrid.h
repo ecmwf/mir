@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2UnrotatedGrid() override;
+    ~Gridded2UnrotatedGrid() override;
 
     // -- Convertors
     // None
@@ -78,7 +78,7 @@ private:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual util::BoundingBox outputBoundingBox() const override;
+    util::BoundingBox outputBoundingBox() const override;
 
     // -- Class members
     // None

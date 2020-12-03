@@ -44,9 +44,8 @@ public:
 
     // -- Overridden methods
 
-    void linearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
-
-    void unlinearise(const Space::Matrix&, Space::Matrix&, double missingValue) const;
+    void linearise(const Space::Matrix&, Space::Matrix&, double missingValue) const override;
+    void unlinearise(const Space::Matrix&, Space::Matrix&, double missingValue) const override;
 
     // -- Class members
     // None

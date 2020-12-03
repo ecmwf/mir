@@ -36,14 +36,14 @@ class MIRLoadMatrix : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const {
+    void usage(const std::string& tool) const override {
         eckit::Log::info() << "\n"
                            << "Usage: " << tool << " [--load] [--unload] [--dump=path] <path>" << std::endl;
     }
 
-    int minimumPositionalArguments() const { return 1; }
+    int minimumPositionalArguments() const override { return 1; }
 
 public:
     // -- Constructors

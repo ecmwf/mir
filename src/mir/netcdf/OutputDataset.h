@@ -30,11 +30,11 @@ namespace netcdf {
 class OutputDataset : public Dataset {
 public:
     OutputDataset(const std::string&, NCFileCache&, int format = 0);
-    virtual ~OutputDataset() override;
+    ~OutputDataset() override;
 
     // -- Methods
 
-    void merge(Dataset& other);
+    void merge(Dataset&);
     void save() const;
 
 private:
@@ -50,7 +50,7 @@ private:
 
     // From Dataset
 
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 };
 
 

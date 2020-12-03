@@ -10,8 +10,8 @@
  */
 
 
-#ifndef RotatedSH_H
-#define RotatedSH_H
+#ifndef mir_repres_RotatedSH_h
+#define mir_repres_RotatedSH_h
 
 #include "mir/repres/sh/SphericalHarmonics.h"
 
@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedSH() override;  // Change to virtual if base class
+    ~RotatedSH() override;
 
     // -- Convertors
     // None
@@ -56,7 +56,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -84,9 +84,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation& other) const override;
+    void fill(grib_info&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None
@@ -95,12 +95,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RotatedSH& p)
-    //	{ p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace repres
 }  // namespace mir
+
+
 #endif

@@ -61,7 +61,7 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     friend std::ostream& operator<<(std::ostream& s, const GridSpec& v) {
@@ -91,9 +91,7 @@ private:
 
 template <class T>
 class GridSpecGuesserBuilder : public GridSpecGuesser {
-
-
-    virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const {
+    GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const override {
         return T::guess(variable, latitudes, longitudes);
     }
 

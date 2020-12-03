@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gaussian() override;  // Change to virtual if base class
+    ~Gaussian() override;
 
     // -- Convertors
     // None
@@ -85,11 +85,11 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual bool sameAs(const Representation&) const override;
-    virtual void validate(const MIRValuesVector&) const override;
-    virtual bool extendBoundingBoxOnIntersect() const override;
+    void fill(util::MeshGeneratorParameters&) const override;
+    void fill(api::MIRJob&) const override;
+    bool sameAs(const Representation&) const override;
+    void validate(const MIRValuesVector&) const override;
+    bool extendBoundingBoxOnIntersect() const override;
 
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
@@ -117,9 +117,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Gaussian& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~None() override;
+    ~None() override;
 
     // -- Convertors
     // None

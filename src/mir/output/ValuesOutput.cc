@@ -25,9 +25,6 @@ namespace output {
 ValuesOutput::ValuesOutput() : missingValue_(9999), hasMissing_(false) {}
 
 
-ValuesOutput::~ValuesOutput() = default;
-
-
 size_t ValuesOutput::copy(const param::MIRParametrisation&, context::Context&) {
     NOTIMP;
 }

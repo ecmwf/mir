@@ -26,9 +26,9 @@
 
 class MIRGaussianFractions : public mir::tools::MIRTool {
 private:
-    void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
-    int numberOfPositionalArguments() const { return 0; }
+    void execute(const eckit::option::CmdArgs&) override;
+    void usage(const std::string& tool) const override;
+    int numberOfPositionalArguments() const override { return 0; }
 
 public:
     MIRGaussianFractions(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {

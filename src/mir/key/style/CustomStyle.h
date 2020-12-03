@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CustomStyle() override;
+    ~CustomStyle() override;
 
     // -- Convertors
     // None
@@ -61,7 +61,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -87,9 +87,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend std::ostream& operator<<(std::ostream& s, const CustomStyle& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

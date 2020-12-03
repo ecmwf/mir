@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SphericalHarmonics() override;
+    ~SphericalHarmonics() override;
 
     // -- Convertors
     // None
@@ -67,7 +67,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -94,22 +94,22 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const override;
-    virtual void fill(api::MIRJob&) const override;
-    virtual void estimate(api::MIREstimation&) const override;
-    virtual std::string factory() const override;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    void estimate(api::MIREstimation&) const override;
+    std::string factory() const override;
 
-    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;
-    virtual size_t truncation() const override;
+    const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;
+    size_t truncation() const override;
 
-    virtual void comparison(std::string&) const override;
+    void comparison(std::string&) const override;
 
-    virtual void validate(const MIRValuesVector&) const override;
+    void validate(const MIRValuesVector&) const override;
 
-    virtual void setComplexPacking(grib_info&) const override;
-    virtual void setSimplePacking(grib_info&) const override;
-    virtual void makeName(std::ostream&) const override;
-    virtual bool sameAs(const Representation& other) const override;
+    void setComplexPacking(grib_info&) const override;
+    void setSimplePacking(grib_info&) const override;
+    void makeName(std::ostream&) const override;
+    bool sameAs(const Representation&) const override;
 
     bool isPeriodicWestEast() const override;
     bool includesNorthPole() const override;
@@ -122,9 +122,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const SphericalHarmonics& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

@@ -57,7 +57,7 @@ public:
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
 
-    virtual bool sameAs(const Method& other) const = 0;
+    virtual bool sameAs(const Method&) const = 0;
 
     // For optimising plan
     virtual bool canCrop() const                         = 0;
@@ -97,7 +97,7 @@ public:
 
 template <class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const param::MIRParametrisation& param) override { return new T(param); }
+    Method* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}

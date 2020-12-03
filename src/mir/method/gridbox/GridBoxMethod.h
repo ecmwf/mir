@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GridBoxMethod() override;
+    ~GridBoxMethod() override;
 
     // -- Convertors
     // None

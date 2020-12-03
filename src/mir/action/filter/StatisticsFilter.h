@@ -45,8 +45,7 @@ public:
     StatisticsFilter(const StatisticsFilter&) = delete;
 
     // -- Destructor
-
-    virtual ~StatisticsFilter() = default;
+    // None
 
     // -- Convertors
     // None
@@ -95,10 +94,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
     void print(std::ostream&) const override;
-    virtual void execute(context::Context&) const override;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None

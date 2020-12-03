@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedNamedGrid();  // Change to virtual if base class
+    ~ShToRotatedNamedGrid();
 
     // -- Convertors
     // None

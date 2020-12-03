@@ -10,8 +10,8 @@
  */
 
 
-#ifndef SelectField_H
-#define SelectField_H
+#ifndef mir_action_SelectField_h
+#define mir_action_SelectField_h
 
 #include "mir/action/plan/Action.h"
 
@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SelectField() override;  // Change to virtual if base class
+    ~SelectField() override;
 
     // -- Convertors
     // None
@@ -45,7 +45,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const override;
+    void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -59,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -85,8 +85,8 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
 
     // -- Class members
     // None
@@ -95,12 +95,12 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const SelectField& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
 }  // namespace action
 }  // namespace mir
+
+
 #endif

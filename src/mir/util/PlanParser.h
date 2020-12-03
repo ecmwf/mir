@@ -36,7 +36,7 @@ namespace util {
 class PlanParser : public eckit::StreamParser {
 
 public:  // methods
-    PlanParser(std::istream& in);
+    PlanParser(std::istream&);
 
     void parse(action::ActionPlan& p, const param::MIRParametrisation&);
 

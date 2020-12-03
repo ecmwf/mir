@@ -16,6 +16,7 @@
 #include <iosfwd>
 
 #include "eckit/filesystem/PathName.h"
+
 #include "mir/lsm/Mask.h"
 
 
@@ -44,8 +45,7 @@ public:
                  const std::string& which);
 
     // -- Destructor
-
-    ~GribFileMask();
+    // None
 
     // -- Convertors
     // None
@@ -74,10 +74,10 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool active() const override;
-    virtual bool cacheable() const override = 0;
-    virtual void hash(eckit::MD5&) const override;
-    virtual void print(std::ostream&) const override;
+    bool active() const override;
+    bool cacheable() const override = 0;
+    void hash(eckit::MD5&) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

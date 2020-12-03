@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~UnstructuredFilter() override;
+    ~UnstructuredFilter() override;
 
     // -- Convertors
     // None
@@ -77,10 +77,10 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const override;
-    virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const override;
-    virtual void estimate(context::Context&, api::MIREstimation&) const override;
+    void execute(context::Context&) const override;
+    bool sameAs(const Action&) const override;
+    const char* name() const override;
+    void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

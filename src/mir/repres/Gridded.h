@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded() override;
+    ~Gridded() override;
 
     // -- Convertors
     // None
@@ -69,8 +69,8 @@ protected:
 
     util::Domain domain() const override;
     const util::BoundingBox& boundingBox() const override;
-    virtual bool getLongestElementDiagonal(double&) const override;
-    virtual void estimate(api::MIREstimation&) const override;
+    bool getLongestElementDiagonal(double&) const override;
+    void estimate(api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -87,9 +87,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void setComplexPacking(grib_info&) const override;
-    virtual void setSimplePacking(grib_info&) const override;
-    virtual void setGivenPacking(grib_info&) const override;
+    void setComplexPacking(grib_info&) const override;
+    void setSimplePacking(grib_info&) const override;
+    void setGivenPacking(grib_info&) const override;
 
     // -- Class members
     // None
@@ -98,9 +98,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const Gridded& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

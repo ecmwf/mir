@@ -23,9 +23,9 @@ class MIRPoints : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const {
+    void usage(const std::string& tool) const override {
         eckit::Log::info() << "\n"
                               "Usage: "
                            << tool << std::endl;

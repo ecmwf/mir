@@ -14,7 +14,9 @@
 #define mir_lsm_MappedMask_h
 
 #include <iosfwd>
+
 #include "eckit/filesystem/PathName.h"
+
 #include "mir/lsm/Mask.h"
 
 
@@ -44,7 +46,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MappedMask() override;
+    ~MappedMask() override;
 
     // -- Convertors
     // None
@@ -73,11 +75,11 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool active() const override;
-    virtual bool cacheable() const override;
-    virtual void hash(eckit::MD5&) const override;
-    virtual void print(std::ostream&) const override;
-    virtual std::string cacheName() const override;
+    bool active() const override;
+    bool cacheable() const override;
+    void hash(eckit::MD5&) const override;
+    void print(std::ostream&) const override;
+    std::string cacheName() const override;
 
     // -- Class members
     // None
@@ -97,7 +99,7 @@ private:
 
     // -- Overridden methods
 
-    virtual const std::vector<bool>& mask() const override;
+    const std::vector<bool>& mask() const override;
 
     // -- Class members
     // None

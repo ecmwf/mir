@@ -26,7 +26,7 @@ class InputDimension : public Dimension {
 
 public:
     InputDimension(Dataset& owner, const std::string& name, int id, size_t len);
-    virtual ~InputDimension() override;
+    ~InputDimension() override;
 
 private:
     // Members
@@ -36,10 +36,10 @@ private:
     // -- Methods
 
     // From Dimension
-    virtual void print(std::ostream&) const override;
-    virtual void clone(Dataset& owner) const override;
-    virtual int id() const override;
-    virtual void realDimensions(std::vector<size_t>& dims) const override;
+    void print(std::ostream&) const override;
+    void clone(Dataset& owner) const override;
+    int id() const override;
+    void realDimensions(std::vector<size_t>& dims) const override;
 };
 
 

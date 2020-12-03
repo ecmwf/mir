@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGG() override;
+    ~RegularGG() override;
 
     // -- Convertors
     // None
@@ -79,10 +79,10 @@ private:
 
     // -- Overridden methods
 
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
-    virtual bool sameAs(const Representation&) const override;
-    virtual Iterator* iterator() const override;
-    virtual std::string factory() const override;
+    const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
+    bool sameAs(const Representation&) const override;
+    Iterator* iterator() const override;
+    std::string factory() const override;
 
     // From Representation
     std::vector<util::GridBox> gridBoxes() const override;
@@ -94,9 +94,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const RegularGG& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

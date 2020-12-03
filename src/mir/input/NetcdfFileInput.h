@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NetcdfFileInput() override;  // Change to virtual if base class
+    ~NetcdfFileInput() override;
 
     // -- Convertors
     // None
@@ -98,29 +98,29 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const override;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const override;
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
-    virtual data::MIRField field() const override;
-    virtual bool next() override;
-    virtual size_t dimensions() const override;
-    virtual grib_handle* gribHandle(size_t which) const override;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    size_t dimensions() const override;
+    grib_handle* gribHandle(size_t which) const override;
 
     // From FieldParametrisation
-    virtual bool has(const std::string& name) const override;
+    bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const override;
-    virtual bool get(const std::string& name, bool& value) const override;
-    virtual bool get(const std::string& name, int& value) const override;
-    virtual bool get(const std::string& name, long& value) const override;
-    virtual bool get(const std::string& name, float& value) const override;
-    virtual bool get(const std::string& name, double& value) const override;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const override;
-    virtual bool get(const std::string& name, std::vector<long>& value) const override;
-    virtual bool get(const std::string& name, std::vector<float>& value) const override;
-    virtual bool get(const std::string& name, std::vector<double>& value) const override;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const override;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None
@@ -129,9 +129,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const NetcdfFileInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

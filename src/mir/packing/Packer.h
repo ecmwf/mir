@@ -132,7 +132,7 @@ public:
 
 template <class T>
 class PackerBuilder : public PackerFactory {
-    virtual Packer* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) {
+    Packer* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) override {
         return new T(user, field);
     }
 

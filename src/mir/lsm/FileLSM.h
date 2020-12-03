@@ -30,8 +30,7 @@ public:
     FileLSM(const std::string& name);
 
     // -- Destructor
-
-    virtual ~FileLSM() override;
+    // None
 
     // -- Convertors
     // None
@@ -57,7 +56,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -84,11 +83,11 @@ private:
 
     // -- Class methods
 
-    virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
-                         const std::string& which) const override;
+    Mask* create(const param::MIRParametrisation&, const repres::Representation&,
+                 const std::string& which) const override;
 
-    virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
-                                 const std::string& which) const override;
+    std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
+                         const std::string& which) const override;
 
     // -- Friends
     // None

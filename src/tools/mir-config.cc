@@ -25,14 +25,14 @@ class MIRConfig : public mir::tools::MIRTool {
 
     // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const override;
 
-    int minimumPositionalArguments() const { return 0; }
+    int minimumPositionalArguments() const override { return 0; }
 
     void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
-        using namespace mir ::param;
+        using namespace mir::param;
 
         static SimpleParametrisation empty;
         static DefaultParametrisation defaults;
@@ -92,8 +92,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         class DummyField : public mir::param::FieldParametrisation {
             long paramId_;
-            virtual void print(std::ostream&) const {}
-            virtual bool get(const std::string& name, long& value) const {
+            void print(std::ostream&) const override {}
+            bool get(const std::string& name, long& value) const override {
                 if (name == "paramId") {
                     value = paramId_;
                     return true;

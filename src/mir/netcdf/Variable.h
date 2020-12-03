@@ -39,7 +39,7 @@ namespace netcdf {
 class Variable : public Endowed {
 public:
     Variable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~Variable() override;
+    ~Variable() override;
 
     // -- Methods
 
@@ -65,8 +65,8 @@ public:
     virtual void merge(const Variable&, MergePlan&);
 
     // From Endowed
-    virtual const std::string& name() const override;
-    virtual const std::string& path() const override;
+    const std::string& name() const override;
+    const std::string& path() const override;
 
     Matrix* matrix() const;
 
@@ -141,7 +141,7 @@ private:
     void getAttribute(const std::string& name, std::string& value) const;
     void getAttribute(const std::string& name, double& value) const;
 
-    virtual void print(std::ostream& s) const = 0;
+    virtual void print(std::ostream&) const = 0;
 
     // -- Friends
     //

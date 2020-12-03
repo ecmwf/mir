@@ -27,22 +27,22 @@ class NearestLSM : public KNearestNeighbours {
 public:
     NearestLSM(const param::MIRParametrisation&);
 
-    virtual ~NearestLSM() override;
+    ~NearestLSM() override;
 
 private:
-    virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const override;
+    void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
+                  const repres::Representation& out) const override;
 
     /// Update matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const override;
+    void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const override;
 
-    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const override;
+    lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const override;
 
-    virtual const char* name() const override;
-    virtual bool sameAs(const Method& other) const override;
+    const char* name() const override;
+    bool sameAs(const Method&) const override;
 
-    virtual const pick::Pick& pick() const override;
-    virtual const distance::DistanceWeighting& distanceWeighting() const override;
+    const pick::Pick& pick() const override;
+    const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::DistanceWeightingWithLSM distanceWeighting_;

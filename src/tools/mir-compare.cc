@@ -12,17 +12,18 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
+
 #include "mir/compare/FieldComparator.h"
 #include "mir/tools/MIRTool.h"
 
 
 class MIRCompare : public mir::tools::MIRTool {
 protected:
-    virtual void execute(const eckit::option::CmdArgs& args);
+    void execute(const eckit::option::CmdArgs&) override;
 
-    virtual int numberOfPositionalArguments() const { return 2; }
+    int numberOfPositionalArguments() const override { return 2; }
 
-    virtual void usage(const std::string& tool) const;
+    void usage(const std::string& tool) const override;
 
 public:
     MIRCompare(int argc, char** argv);

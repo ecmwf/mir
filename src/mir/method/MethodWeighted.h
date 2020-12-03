@@ -61,7 +61,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MethodWeighted() override;
+    ~MethodWeighted() override;
 
     // -- Convertors
     // None
@@ -71,9 +71,9 @@ public:
 
     // -- Methods
 
-    virtual void hash(eckit::MD5&) const override;
+    void hash(eckit::MD5&) const override;
 
-    virtual int version() const override;
+    int version() const override;
 
     virtual const WeightMatrix& getMatrix(context::Context&, const repres::Representation& in,
                                           const repres::Representation& out) const;
@@ -99,8 +99,8 @@ protected:
     // -- Overridden methods
 
     // From Method
-    virtual bool sameAs(const Method&) const override = 0;
-    virtual void print(std::ostream&) const override  = 0;
+    bool sameAs(const Method&) const override = 0;
+    void print(std::ostream&) const override  = 0;
 
     // -- Class members
     // None
@@ -146,11 +146,11 @@ private:
     // -- Overridden methods
 
     // From Method
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
-    virtual bool canCrop() const override;
-    virtual void setCropping(const mir::util::BoundingBox&) override;
-    virtual bool hasCropping() const override;
-    virtual const util::BoundingBox& getCropping() const override;
+    void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    bool canCrop() const override;
+    void setCropping(const util::BoundingBox&) override;
+    bool hasCropping() const override;
+    const util::BoundingBox& getCropping() const override;
 
 
     /// Update matrix to account for field masked values

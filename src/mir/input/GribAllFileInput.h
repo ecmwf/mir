@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribAllFileInput() override;  // Change to virtual if base class
+    ~GribAllFileInput() override;
 
     // -- Convertors
     // None
@@ -83,15 +83,15 @@ private:
 
     // -- Overridden methods
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
-    virtual data::MIRField field() const override;
-    virtual bool next() override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
 
-    virtual bool sameAs(const MIRInput& other) const override;
-    virtual void print(std::ostream& out) const override;
+    bool sameAs(const MIRInput&) const override;
+    void print(std::ostream&) const override;
 
-    virtual grib_handle* gribHandle(size_t which = 0) const override;
-    virtual size_t dimensions() const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
+    size_t dimensions() const override;
 
     // -- Class members
     // None

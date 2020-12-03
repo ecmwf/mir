@@ -29,9 +29,6 @@ namespace output {
 RawOutput::RawOutput(double* values, size_t count) : values_(values), count_(count), size_(0) {}
 
 
-RawOutput::~RawOutput() = default;
-
-
 bool RawOutput::sameAs(const MIROutput& other) const {
     return this == &other;
 }

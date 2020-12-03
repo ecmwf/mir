@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    ~ReducedLL();  // Change to virtual if base class
+    ~ReducedLL();
 
     // -- Convertors
     // None
@@ -67,7 +67,7 @@ protected:
     bool includesNorthPole() const override;
     bool includesSouthPole() const override;
 
-    void print(std::ostream&) const override;  // Change to virtual if base class
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -94,10 +94,10 @@ private:
     Iterator* iterator() const override;
 
     void makeName(std::ostream&) const override;
-    bool sameAs(const Representation& other) const override;
+    bool sameAs(const Representation&) const override;
 
-    virtual size_t numberOfPoints() const override;
-    virtual bool getLongestElementDiagonal(double&) const override;
+    size_t numberOfPoints() const override;
+    bool getLongestElementDiagonal(double&) const override;
 
     // From Representation
     std::vector<util::GridBox> gridBoxes() const override;
@@ -109,9 +109,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const ReducedLL& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

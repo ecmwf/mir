@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~GribDataHandleInput();  // Change to virtual if base class
+    ~GribDataHandleInput() override;
 
     // -- Convertors
     // None
@@ -80,11 +80,11 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const override;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const override;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
     // From GribInput
-    virtual eckit::DataHandle& dataHandle() override;
+    eckit::DataHandle& dataHandle() override;
 
     // -- Class members
     // None
@@ -93,9 +93,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribDataHandleInput& p)
-    // { p.print(s); return s; }
+    // None
 };
 
 

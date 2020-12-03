@@ -14,6 +14,7 @@
 #define mir_util_Increments_h
 
 #include <iosfwd>
+
 #include "mir/util/LatitudeIncrement.h"
 #include "mir/util/LongitudeIncrement.h"
 
@@ -53,7 +54,7 @@ public:
 
     // -- Destructor
 
-    ~Increments();
+    ~Increments() = default;
 
     // -- Convertors
     // None

@@ -57,7 +57,7 @@ public:
 
     static const GribCompatibility& lookup(const std::string&);
 
-    static void list(std::ostream& out);
+    static void list(std::ostream&);
 
 protected:
     GribCompatibility(const std::string&);

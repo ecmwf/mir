@@ -31,9 +31,6 @@ RawInput::RawInput(const RawMetadata& metadata, const double* values, size_t cou
     metadata_(metadata), values_(values), count_(count) {}
 
 
-RawInput::~RawInput() = default;
-
-
 bool RawInput::sameAs(const MIRInput& other) const {
     return this == &other;
 }

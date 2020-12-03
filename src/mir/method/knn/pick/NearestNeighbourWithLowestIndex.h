@@ -29,12 +29,12 @@ struct NearestNeighbourWithLowestIndex : Pick {
     NearestNeighbourWithLowestIndex& operator=(const NearestNeighbourWithLowestIndex&) = delete;
 
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
-    virtual size_t n() const override;
-    virtual bool sameAs(const Pick&) const override;
+    size_t n() const override;
+    bool sameAs(const Pick&) const override;
 
 private:
-    virtual void print(std::ostream&) const override;
-    virtual void hash(eckit::MD5&) const override;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 
     size_t nClosest_;
 };

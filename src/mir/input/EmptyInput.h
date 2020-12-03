@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EmptyInput() override;  // Change to virtual if base class
+    ~EmptyInput() override;
 
     // -- Convertors
     // None
@@ -78,15 +78,15 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const override;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const override;
+    void print(std::ostream&) const override;
+    bool sameAs(const MIRInput&) const override;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
-    virtual data::MIRField field() const override;
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
 
-    virtual bool next() override;
+    bool next() override;
 
-    // virtual bool get(const std::string&, double&) const override;
+    // bool get(const std::string&, double&) const override;
 
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;
@@ -98,9 +98,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const EmptyInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 

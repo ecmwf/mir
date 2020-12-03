@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribStreamInput() override;  // Change to virtual if base class
+    ~GribStreamInput() override;
 
     // -- Convertors
     // None
@@ -53,7 +53,7 @@ public:
 
     // -- Overridden methods
 
-    virtual bool next() override;
+    bool next() override;
 
     // -- Class members
     // None
@@ -100,9 +100,7 @@ private:
     // None
 
     // -- Friends
-
-    // friend ostream& operator<<(ostream& s,const GribStreamInput& p)
-    //  { p.print(s); return s; }
+    // None
 };
 
 
