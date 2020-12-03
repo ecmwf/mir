@@ -16,6 +16,7 @@
 #include <sstream>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
@@ -36,7 +37,7 @@ static void init() {
 }
 
 
-GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern) {
+GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_(pattern_) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
@@ -75,7 +76,7 @@ bool GridPattern::match(const std::string& name) {
     bool conflicts = false;
     auto k         = m->cend();
     for (auto j = m->cbegin(); j != m->cend() && !conflicts; ++j) {
-        if (j->second->pattern_.match(name)) {
+        if (j->second->regex_.match(name)) {
             conflicts = k != m->cend();
             k         = j;
         }
@@ -96,7 +97,7 @@ const Grid& GridPattern::lookup(const std::string& name) {
 
     auto k = m->cend();
     for (auto j = m->cbegin(); j != m->cend(); ++j) {
-        if (j->second->pattern_.match(name)) {
+        if (j->second->regex_.match(name)) {
             eckit::Log::debug<LibMir>() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->cend()) {

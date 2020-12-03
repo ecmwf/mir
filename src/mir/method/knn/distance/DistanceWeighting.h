@@ -33,7 +33,7 @@ class DistanceWeighting {
 public:
     DistanceWeighting();
 
-    virtual ~DistanceWeighting();
+    virtual ~DistanceWeighting() override;
 
     virtual void operator()(size_t ip, const Point3& point,
                             const std::vector<search::PointSearch::PointValueType>& neighbours,
@@ -66,7 +66,7 @@ private:
 
 protected:
     DistanceWeightingFactory(const std::string& name);
-    virtual ~DistanceWeightingFactory();
+    virtual ~DistanceWeightingFactory() override;
 
 public:
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&);

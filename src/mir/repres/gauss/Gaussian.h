@@ -86,7 +86,8 @@ protected:
     // -- Overridden methods
 
     virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual bool sameAs(const Representation&) const override;
+    virtual void fill(api::MIRJob&) const;
+    virtual bool sameAs(const Representation&) const;
     virtual void validate(const MIRValuesVector&) const;
     virtual bool extendBoundingBoxOnIntersect() const;
 

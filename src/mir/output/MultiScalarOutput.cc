@@ -41,8 +41,7 @@ void MultiScalarOutput::appendScalarOutput(MIROutput* out) {
 
 
 size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
-
-    input::MIRInput& input = ctx.input();
+    auto& input = ctx.input();
 
     try {
         auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
@@ -65,8 +64,8 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
 
 
 size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    data::MIRField& field  = ctx.field();
-    input::MIRInput& input = ctx.input();
+    auto& field = ctx.field();
+    auto& input = ctx.input();
 
     ASSERT(field.dimensions() > 0);
 
@@ -92,6 +91,39 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "MultiScalarOutput::save() not implemented for input of type: " << input;
+        throw eckit::SeriousBug(os.str());
+    }
+}
+
+
+size_t MultiScalarOutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
+    auto& field = ctx.field();
+    auto& input = ctx.input();
+
+    ASSERT(field.dimensions() > 0);
+
+    try {
+        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        size_t size  = 0;
+        size_t count = 0;
+
+        for (auto& c : components_) {
+            context::Context componentCtx(*(multi.components_[count]), ctx.statistics());
+
+            data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
+            u.update(field.direct(count), 0);
+            u.metadata(0, field.metadata(0));
+            componentCtx.field(u);
+
+            size += c->set(param, componentCtx);
+            count++;
+        }
+
+        return size;
+    }
+    catch (std::bad_cast&) {
+        std::ostringstream os;
+        os << "MultiScalarOutput::set() not implemented for input of type: " << input;
         throw eckit::SeriousBug(os.str());
     }
 }

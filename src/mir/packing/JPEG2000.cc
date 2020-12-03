@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+#include "eckit/exception/Exceptions.h"
+
+#include "mir/repres/Gridded.h"
 #include "mir/util/Grib.h"
 
 
@@ -21,11 +24,7 @@ namespace mir {
 namespace packing {
 
 
-static JPEG2000 __packer1("grid_jpeg");
-static JPEG2000 __packer2("jpeg");
-
-
-JPEG2000::JPEG2000(const std::string& name) : Packer(name) {}
+static PackerBuilder<JPEG2000> __packer("jpeg");
 
 
 JPEG2000::~JPEG2000() = default;
@@ -36,10 +35,17 @@ void JPEG2000::print(std::ostream& out) const {
 }
 
 
-void JPEG2000::fill(grib_info& info, const repres::Representation&, const param::MIRParametrisation&,
-                    const param::MIRParametrisation&) const {
+void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
     info.packing.packing_type = CODES_UTIL_PACKING_TYPE_JPEG;
+}
+
+
+std::string JPEG2000::type(const repres::Representation* repres) const {
+    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
+        return "grid_jpeg";
+    }
+    NOTIMP;
 }
 
 

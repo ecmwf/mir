@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/RegularPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 
@@ -40,7 +40,7 @@ const Grid* RegularPattern::make(const std::string& name) const {
 }
 
 
-static RegularPattern pattern("^[fF][1-9][0-9]*$");
+static RegularPattern __pattern("^[fF][1-9][0-9]*$");
 
 
 }  // namespace grid

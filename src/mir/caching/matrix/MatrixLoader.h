@@ -63,7 +63,7 @@ class MatrixLoaderFactory {
 
 protected:
     MatrixLoaderFactory(const std::string&);
-    virtual ~MatrixLoaderFactory();
+    virtual ~MatrixLoaderFactory() override;
 
 public:
     static MatrixLoader* build(const std::string&, const eckit::PathName&);

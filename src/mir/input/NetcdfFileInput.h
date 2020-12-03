@@ -14,7 +14,7 @@
 #define mir_input_NetcdfFileInput_h
 
 #include "mir/api/mir_config.h"
-#if MIR_HAVE_NETCDF
+#if defined(mir_HAVE_NETCDF)
 
 #include <string>
 
@@ -111,9 +111,16 @@ private:
 
     virtual bool get(const std::string& name, std::string& value) const;
     virtual bool get(const std::string& name, bool& value) const;
+    virtual bool get(const std::string& name, int& value) const;
     virtual bool get(const std::string& name, long& value) const;
+    virtual bool get(const std::string& name, float& value) const;
     virtual bool get(const std::string& name, double& value) const;
+
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
+    virtual bool get(const std::string& name, std::vector<long>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
     // -- Class members
     // None

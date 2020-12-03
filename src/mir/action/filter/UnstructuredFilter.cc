@@ -30,9 +30,6 @@ namespace mir {
 namespace action {
 
 
-static ActionBuilder<UnstructuredFilter> __filter("filter.unstructured");
-
-
 UnstructuredFilter::~UnstructuredFilter() = default;
 
 
@@ -78,6 +75,9 @@ void UnstructuredFilter::estimate(context::Context&, api::MIREstimation& estimat
 const char* UnstructuredFilter::name() const {
     return "UnstructuredFilter";
 }
+
+
+static ActionBuilder<UnstructuredFilter> __action("filter.unstructured");
 
 
 }  // namespace action

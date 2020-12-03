@@ -118,25 +118,28 @@ bool NetcdfFileInput::has(const std::string& name) const {
 }
 
 
-bool NetcdfFileInput::get(const std::string& name, long& value) const {
-    return currentField().get(name, value) || FieldParametrisation::get(name, value);
-}
-
-
 bool NetcdfFileInput::get(const std::string& name, std::string& value) const {
     return currentField().get(name, value) || FieldParametrisation::get(name, value);
 }
 
 
 bool NetcdfFileInput::get(const std::string& name, bool& value) const {
+    return FieldParametrisation::get(name, value);
+}
 
-    // NOTE: this disables checking for duplicate points for any NetCDF file!!
-    if (name == "check-duplicate-points") {
-        value = false;
-        return true;
-    }
 
-    return false;
+bool NetcdfFileInput::get(const std::string& name, int& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, long& value) const {
+    return currentField().get(name, value) || FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, float& value) const {
+    return FieldParametrisation::get(name, value);
 }
 
 
@@ -145,8 +148,28 @@ bool NetcdfFileInput::get(const std::string& name, double& value) const {
 }
 
 
+bool NetcdfFileInput::get(const std::string& name, std::vector<int>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<long>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<float>& value) const {
+    return FieldParametrisation::get(name, value);
+}
+
+
 bool NetcdfFileInput::get(const std::string& name, std::vector<double>& value) const {
     return currentField().get(name, value) || FieldParametrisation::get(name, value);
+}
+
+
+bool NetcdfFileInput::get(const std::string& name, std::vector<std::string>& value) const {
+    return FieldParametrisation::get(name, value);
 }
 
 

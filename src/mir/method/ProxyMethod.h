@@ -94,8 +94,9 @@ private:
 
     // From Method
     virtual void hash(eckit::MD5&) const;
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
-    virtual bool sameAs(const Method&) const override;
+    virtual int version() const;
+    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual bool sameAs(const Method&) const;
     virtual bool canCrop() const;
     virtual void setCropping(const util::BoundingBox&);
     virtual bool hasCropping() const;

@@ -49,7 +49,6 @@ void Gridded::setGivenPacking(grib_info&) const {
 
 
 util::Domain Gridded::domain() const {
-
     const Latitude& n  = includesNorthPole() ? Latitude::NORTH_POLE : bbox_.north();
     const Latitude& s  = includesSouthPole() ? Latitude::SOUTH_POLE : bbox_.south();
     const Longitude& w = bbox_.west();

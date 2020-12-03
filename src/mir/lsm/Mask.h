@@ -46,7 +46,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Mask();
+    virtual ~Mask() override;
 
     // -- Convertors
     // None

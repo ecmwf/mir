@@ -28,12 +28,11 @@ namespace action {
 
 AdjustWindsDirections::AdjustWindsDirections(const param::MIRParametrisation& parametrisation) :
     Action(parametrisation) {
+    std::vector<double> rotation;
+    ASSERT(parametrisation_.userParametrisation().get("rotation", rotation));
+    ASSERT_KEYWORD_ROTATION_SIZE(rotation.size());
 
-    std::vector<double> value;
-    ASSERT(parametrisation_.userParametrisation().get("rotation", value));
-    ASSERT_KEYWORD_ROTATION_SIZE(value.size());
-
-    rotation_ = util::Rotation(value[0], value[1]);
+    rotation_ = util::Rotation(rotation[0], rotation[1]);
 }
 
 
@@ -52,10 +51,8 @@ void AdjustWindsDirections::print(std::ostream& out) const {
 
 
 void AdjustWindsDirections::execute(context::Context& ctx) const {
-
     data::MIRField& field = ctx.field();
     data::CartesianVector2DField cf(field.representation(), field.hasMissing(), field.missingValue());
-
 
     ASSERT((field.dimensions() % 2) == 0);
     for (size_t i = 0; i < field.dimensions(); i += 2) {
@@ -77,7 +74,7 @@ const char* AdjustWindsDirections::name() const {
 }
 
 
-static ActionBuilder<AdjustWindsDirections> filter("filter.adjust-winds-directions");
+static ActionBuilder<AdjustWindsDirections> __action("filter.adjust-winds-directions");
 
 
 }  // namespace action

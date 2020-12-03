@@ -95,7 +95,7 @@ protected:
     const std::string path_;
 
     NamedMaskFactory(const std::string& name, const std::string& path);
-    virtual ~NamedMaskFactory();
+    virtual ~NamedMaskFactory() override;
 
 public:
     static Mask* build(const param::MIRParametrisation&, const repres::Representation&, const std::string& which);

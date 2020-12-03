@@ -45,17 +45,23 @@ do
 
             mars)
             ok=0
-            m=$(echo $n | tr '/' '_')
-            if [[ -f "${tests_assertions_dir}/$m" ]]
+            m=$(echo $n)
+            if [[ -a "$m" ]]
             then
-                ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
-            elif [[ -f "${tmp_assertions_dir}/$m" ]]
-            then
-                ln -sf "${tmp_assertions_dir}/$m" data.in.$t && ok=1
+                ln -sf "$m" data.in.$t && ok=1
             else
-                echo "retrieve,$n,target=data.in.$t" > mars.r.$t
-                $mars_script mars.r.$t || rm data.in.$t
-                cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
+                m=$(echo $n | tr '/' '_')
+                if [[ -f "${tests_assertions_dir}/$m" ]]
+                then
+                    ln -sf "${tests_assertions_dir}/$m" data.in.$t && ok=1
+                elif [[ -f "${tmp_assertions_dir}/$m" ]]
+                then
+                    ln -sf "${tmp_assertions_dir}/$m" data.in.$t && ok=1
+                else
+                    echo "retrieve,$n,target=data.in.$t" > mars.r.$t
+                    $mars_script mars.r.$t || rm data.in.$t
+                    cp data.in.$t "${tmp_assertions_dir}/$m" && ok=1
+                fi
             fi
             env=
             state=mir

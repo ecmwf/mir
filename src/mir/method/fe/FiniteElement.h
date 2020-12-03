@@ -105,7 +105,7 @@ private:
 
     // -- Friends
 
-    friend class ConservativeFiniteElement;
+    friend class L2Projection;
 };
 
 

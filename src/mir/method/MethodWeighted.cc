@@ -97,7 +97,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
     auto o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
            (sameNonLinearities(nonLinear_, o->nonLinear_)) &&
-           lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_ == o->cropping_;
+           lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
 }
 
 
@@ -145,7 +145,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     eckit::MD5 hash;
     hash << *this << shortName_in << shortName_out << in.boundingBox() << out.boundingBox();
 
-    std::string disk_key   = std::string(name()) + "/" + shortName_in + "/" + shortName_out + "-" + std::string(hash);
+    std::string version_str;
+    auto v = version();
+    if (v) {
+        version_str = std::to_string(v) + "/";
+    }
+
+    std::string disk_key =
+        std::string(name()) + "/" + version_str + shortName_in + "/" + shortName_out + "-" + std::string(hash);
     std::string memory_key = disk_key;
 
     // Add masks if any
@@ -293,7 +300,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     ASSERT(W.cols() == npts_inp);
 
     std::vector<size_t> forceMissing;  // reserving size unnecessary (not the general case)
-    if (!in.isGlobal()) {
+    if (!in.isGlobal() || canIntroduceMissingValues()) {
         auto begin = W.begin(0);
         auto end(begin);
         for (size_t r = 0; r < W.rows(); r++) {
@@ -486,6 +493,16 @@ void MethodWeighted::hash(eckit::MD5& md5) const {
     for (auto& n : nonLinear_) {
         n->hash(md5);
     }
+
+    auto v = version();
+    if (v != 0) {
+        md5.add(v);
+    }
+}
+
+
+int MethodWeighted::version() const {
+    return 0;
 }
 
 

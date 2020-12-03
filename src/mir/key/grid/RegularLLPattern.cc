@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/RegularLLPattern.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/key/grid/RegularLL.h"
 
@@ -39,7 +39,7 @@ const Grid* RegularLLPattern::make(const std::string& name) const {
 
 
 #define fp "[+]?([0-9]*[.])?[0-9]+([eE][-+][0-9]+)?"
-static RegularLLPattern pattern("^" fp "/" fp "$");
+static RegularLLPattern __pattern("^" fp "/" fp "$");
 #undef fp
 
 

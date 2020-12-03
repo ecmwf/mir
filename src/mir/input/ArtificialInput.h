@@ -128,7 +128,7 @@ class ArtificialInputFactory {
 
 protected:
     ArtificialInputFactory(const std::string& name);
-    virtual ~ArtificialInputFactory();
+    virtual ~ArtificialInputFactory() override;
 
 public:
     static ArtificialInput* build(const std::string&, const param::MIRParametrisation&);

@@ -25,7 +25,7 @@ namespace metkit {
 namespace mars {
 class MarsRequest;
 }
-}
+}  // namespace metkit
 
 namespace mir {
 namespace param {
@@ -61,7 +61,7 @@ public:
 
 protected:
     GribCompatibility(const std::string&);
-    virtual ~GribCompatibility();
+    virtual ~GribCompatibility() override;
 
     virtual void print(std::ostream&) const = 0;
 

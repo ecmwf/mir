@@ -35,7 +35,7 @@ public:
     Function(const Function&) = delete;
     void operator=(const Function&) = delete;
 
-    virtual ~Function();
+    virtual ~Function() override;
 
     virtual void execute(context::Context&) const = 0;
 

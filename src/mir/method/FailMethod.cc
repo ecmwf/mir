@@ -56,6 +56,11 @@ void FailMethod::execute(context::Context&, const repres::Representation&, const
 void FailMethod::hash(eckit::MD5&) const {}
 
 
+int FailMethod::version() const {
+    NOTIMP;
+}
+
+
 void FailMethod::print(std::ostream& out) const {
     out << "FailMethod[]";
 }

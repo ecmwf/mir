@@ -34,27 +34,28 @@ namespace method {
 
 
 struct StructuredBicubic final : public ProxyMethod {
-    StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
+    explicit StructuredBicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bicubic") {}
 };
 
 
 struct StructuredBilinear final : public ProxyMethod {
-    StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
+    explicit StructuredBilinear(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-bilinear") {}
 };
 
 
 struct StructuredBiquasicubic final : public ProxyMethod {
-    StructuredBiquasicubic(const param::MIRParametrisation& param) : ProxyMethod(param, "structured-biquasicubic") {}
+    explicit StructuredBiquasicubic(const param::MIRParametrisation& param) :
+        ProxyMethod(param, "structured-biquasicubic") {}
 };
 
 
 struct GridBoxAverage final : public ProxyMethod {
-    GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
+    explicit GridBoxAverage(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-average") {}
 };
 
 
 struct GridBoxMaximum final : public ProxyMethod {
-    GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
+    explicit GridBoxMaximum(const param::MIRParametrisation& param) : ProxyMethod(param, "grid-box-maximum") {}
 };
 
 
@@ -72,7 +73,8 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ProxyMethod::atlas_config_
 }
 
 
-ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type) : Method(param), type_(type) {
+ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string type) :
+    Method(param), type_(std::move(type)) {
 
     // // "interpolation" should return one of the methods registered above
     // param.get("interpolation", type_);
@@ -90,6 +92,11 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
 void ProxyMethod::hash(eckit::MD5& md5) const {
     md5.add(options_);
     md5.add(cropping_);
+}
+
+
+int ProxyMethod::version() const {
+    return 0;
 }
 
 
@@ -119,7 +126,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     };
 
     eckit::Timer timer("ProxyMethod::execute", eckit::Log::info());
-    auto report = [](eckit::Timer& timer, std::string msg) {
+    auto report = [](eckit::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();
         timer.start();
@@ -157,7 +164,8 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
 
 bool ProxyMethod::sameAs(const Method& other) const {
     auto o = dynamic_cast<const ProxyMethod*>(&other);
-    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_);
+    return (o != nullptr) && atlasOptionsDigest(options_) == atlasOptionsDigest(o->options_) &&
+           cropping_.sameAs(o->cropping_);
 }
 
 

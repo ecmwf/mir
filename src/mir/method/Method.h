@@ -46,11 +46,13 @@ public:
     Method(const param::MIRParametrisation&);
     Method(const Method&) = delete;
 
-    virtual ~Method();
+    virtual ~Method() override;
 
     void operator=(const Method&) = delete;
 
     virtual void hash(eckit::MD5&) const = 0;
+
+    virtual int version() const = 0;
 
     virtual void execute(context::Context&, const repres::Representation& in,
                          const repres::Representation& out) const = 0;
@@ -85,7 +87,7 @@ class MethodFactory {
 
 protected:
     MethodFactory(const std::string&);
-    virtual ~MethodFactory();
+    virtual ~MethodFactory() override;
 
 public:
     static void list(std::ostream&);

@@ -18,6 +18,8 @@ list(APPEND mir_srcs
     action/calc/FormulaAction.h
     action/context/Context.cc
     action/context/Context.h
+    action/filter/AddRandomFilter.cc
+    action/filter/AddRandomFilter.h
     action/filter/AdjustWindsDirections.cc
     action/filter/AdjustWindsDirections.h
     action/filter/AdjustWindsScaleCosLatitude.cc
@@ -80,6 +82,8 @@ list(APPEND mir_srcs
     action/io/Copy.h
     action/io/Save.cc
     action/io/Save.h
+    action/io/Set.cc
+    action/io/Set.h
     action/misc/AreaCropper.cc
     action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
@@ -272,6 +276,7 @@ list(APPEND mir_srcs
     input/RawMetadata.h
     input/VectorInput.cc
     input/VectorInput.h
+    iterator/UnstructuredIterator.h
     iterator/detail/RegularIterator.cc
     iterator/detail/RegularIterator.h
     key/Key.cc
@@ -379,14 +384,14 @@ list(APPEND mir_srcs
     method/fe/BuildNodeLumpedMassMatrix.h
     method/fe/CalculateCellLongestDiagonal.cc
     method/fe/CalculateCellLongestDiagonal.h
-    method/fe/ConservativeFiniteElement.cc
-    method/fe/ConservativeFiniteElement.h
     method/fe/FEBilinear.cc
     method/fe/FEBilinear.h
     method/fe/FELinear.cc
     method/fe/FELinear.h
     method/fe/FiniteElement.cc
     method/fe/FiniteElement.h
+    method/fe/L2Projection.cc
+    method/fe/L2Projection.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
@@ -669,7 +674,6 @@ list(APPEND mir_srcs
     stats/statistics/Spectral.h
     stats/statistics/StatisticsT.cc
     stats/statistics/StatisticsT.h
-    style/MIRStyle.h
     tools/Count.cc
     tools/Count.h
     tools/MIRTool.cc
@@ -728,6 +732,8 @@ list(APPEND mir_srcs
     util/Pretty.cc
     util/Pretty.h
     util/RectangularDomain.h
+    util/Regex.cc
+    util/Regex.h
     util/Rotation.cc
     util/Rotation.h
     util/SpectralOrder.cc
@@ -740,7 +746,7 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
-if (mir_HAVE_NETCDF)
+if(mir_HAVE_NETCDF)
     list(APPEND mir_srcs
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
@@ -875,7 +881,7 @@ if (mir_HAVE_NETCDF)
 endif()
 
 
-if (HAVE_PNG)
+if(mir_HAVE_PNG)
     list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
 endif()
 
@@ -899,7 +905,7 @@ if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
 endif()
 
-if (HAVE_PNG)
+if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
 endif()
 

@@ -26,7 +26,6 @@ namespace action {
 
 
 SelectField::SelectField(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {
-
     ASSERT(parametrisation_.get("which", which_));
 }
 
@@ -56,7 +55,7 @@ const char* SelectField::name() const {
 }
 
 
-static ActionBuilder<SelectField> action("select.field");
+static ActionBuilder<SelectField> __action("select.field");
 
 
 }  // namespace action

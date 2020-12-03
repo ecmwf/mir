@@ -43,7 +43,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Rules();
+    virtual ~Rules() override;
 
     // -- Operators
 
@@ -65,7 +65,7 @@ private:
     // -- Methods
 
     SimpleParametrisation& lookup(long paramId);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Friends
 

@@ -79,21 +79,32 @@ endif()
 foreach(_t ${_test_reqs})
     separate_arguments(_t)
     list(GET _t -1 _out)
+    list(GET _t -2 _in)
+    unset(extraEnvironment)
+    if(_in MATCHES "[.]nc$")
+        set(_extraEnvironment "MIR_CHECK_DUPLICATE_POINTS=0")
+    endif()
     string(REGEX REPLACE "[.]grib$" "" _label ${_out})
     ecbuild_add_test(
         TARGET       ${_label}
         COMMAND      $<TARGET_FILE:mir-tool>
         ARGS         "--caching=0" ${_t}
         TEST_DEPENDS download_mir_tests_files
-        ENVIRONMENT  ${_testEnvironment})
+        ENVIRONMENT  ${_testEnvironment} ${_extraEnvironment})
 endforeach()
 
 
-if(HAVE_TEST_ASSERTIONS)
-    add_subdirectory(assertions)
+# ecCodes really doesn't build tools, so disabling testing is required
+if(eccodes_HAVE_BUILD_TOOLS)
+    if (HAVE_TEST_ASSERTIONS)
+        add_subdirectory(assertions)
+    endif()
+    add_subdirectory(tool)
+else()
+    message(WARNING "${PROJECT_NAME}: assertion tests (option TEST_ASSERTIONS) requires ecCodes option BUILD_TOOLS, tests disabled")
+    message(WARNING "${PROJECT_NAME}: tool tests requires ecCodes option BUILD_TOOLS, tests disabled")
 endif()
 
 add_subdirectory(plans)
-add_subdirectory(tool)
 add_subdirectory(unit)
 

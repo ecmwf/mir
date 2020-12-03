@@ -53,7 +53,10 @@ public:
     void operator=(const GridPattern&) = delete;
 
     // -- Methods
-    // None
+
+    static bool match(const std::string&);
+    static const Grid& lookup(const std::string&);
+    static void list(std::ostream&);
 
     // -- Overridden methods
     // None
@@ -62,18 +65,16 @@ public:
     // None
 
     // -- Class methods
-
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string&);
-    static void list(std::ostream&);
+    // None
 
 protected:
     GridPattern(const std::string&);
-    virtual ~GridPattern();
+    virtual ~GridPattern() override;
 
     // -- Members
 
-    eckit::Regex pattern_;
+    const std::string pattern_;
+    const eckit::Regex regex_;
 
     // -- Methods
 
