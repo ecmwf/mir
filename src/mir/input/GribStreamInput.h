@@ -53,7 +53,7 @@ public:
 
     // -- Overridden methods
 
-    virtual bool next();
+    virtual bool next() override;
 
     // -- Class members
     // None

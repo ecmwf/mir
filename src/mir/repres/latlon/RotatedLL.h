@@ -64,20 +64,20 @@ private:
     // None
 
     // -- Overridden methods
-    Iterator* iterator() const;
-    void print(std::ostream&) const;  // Change to virtual if base class
+    Iterator* iterator() const override;
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
-    atlas::Grid atlasGrid() const;
+    atlas::Grid atlasGrid() const override;
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
 
-    void makeName(std::ostream&) const;
+    void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 
     // From Representation
-    const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;
-    std::string factory() const;
+    const RotatedLL* croppedRepresentation(const util::BoundingBox&) const override;
+    std::string factory() const override;
 
     // -- Class members
     // None

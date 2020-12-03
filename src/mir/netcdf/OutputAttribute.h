@@ -31,11 +31,11 @@ private:
     bool valid_;
 
     // From Atttribute
-    virtual void create(int nc) const;
+    virtual void create(int nc) const override;
     virtual void print(std::ostream& out) const override;
-    virtual void clone(Endowed& owner) const;
-    virtual void merge(const Attribute&);
-    virtual void invalidate();
+    virtual void clone(Endowed& owner) const override;
+    virtual void merge(const Attribute&) override;
+    virtual void invalidate() override;
 };
 
 

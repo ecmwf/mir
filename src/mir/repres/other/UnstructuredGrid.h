@@ -74,7 +74,7 @@ protected:
     // -- Methods
 
     // From Representation
-    virtual bool extendBoundingBoxOnIntersect() const;
+    virtual bool extendBoundingBoxOnIntersect() const override;
     virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
@@ -97,25 +97,25 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(api::MIRJob&) const override;
+    virtual void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual atlas::Grid atlasGrid() const;
-    virtual void validate(const MIRValuesVector&) const;
+    virtual atlas::Grid atlasGrid() const override;
+    virtual void validate(const MIRValuesVector&) const override;
 
-    virtual util::Domain domain() const;
-    virtual Iterator* iterator() const;
-    virtual void makeName(std::ostream&) const;
+    virtual util::Domain domain() const override;
+    virtual Iterator* iterator() const override;
+    virtual void makeName(std::ostream&) const override;
     virtual bool sameAs(const Representation&) const override;
 
     // Domain operations
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
+    virtual bool isPeriodicWestEast() const override;
+    virtual bool includesNorthPole() const override;
+    virtual bool includesSouthPole() const override;
 
-    virtual size_t numberOfPoints() const;
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
+    virtual size_t numberOfPoints() const override;
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
 
     // -- Class members
     // None

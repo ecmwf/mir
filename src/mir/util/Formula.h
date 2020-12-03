@@ -28,7 +28,7 @@ public:
     virtual ~Formula() override;
 
 private:
-    virtual void print(std::ostream&) const = 0;
+    virtual void print(std::ostream&) const override = 0;
 
     friend std::ostream& operator<<(std::ostream& out, const Formula& f) {
         f.print(out);

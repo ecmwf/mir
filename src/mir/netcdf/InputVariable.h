@@ -36,11 +36,11 @@ protected:
 
     // From variable
     virtual void print(std::ostream&) const override;
-    virtual Variable* clone(Dataset& owner) const;
+    virtual Variable* clone(Dataset& owner) const override;
 
     // From Endowed
 
-    virtual int varid() const;
+    virtual int varid() const override;
 };
 
 

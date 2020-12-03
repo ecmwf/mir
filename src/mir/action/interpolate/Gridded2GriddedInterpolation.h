@@ -73,12 +73,12 @@ protected:
 
     const method::Method& method() const;
     virtual const repres::Representation* outputRepresentation() const = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const = 0;
-    virtual void print(std::ostream&) const  = 0;
+    virtual bool sameAs(const Action&) const override = 0;
+    virtual void print(std::ostream&) const override  = 0;
 
     // -- Class members
     // None
@@ -95,13 +95,13 @@ private:
 
     // -- Methods
 
-    virtual util::BoundingBox outputBoundingBox() const = 0;
+    virtual util::BoundingBox outputBoundingBox() const override = 0;
 
     // -- Overridden methods
 
     virtual void execute(context::Context&) const override;
-    virtual bool mergeWithNext(const Action&);
-    virtual bool canCrop() const;
+    virtual bool mergeWithNext(const Action&) override;
+    virtual bool canCrop() const override;
 
     method::Cropping cropping(context::Context& ctx) const;
 

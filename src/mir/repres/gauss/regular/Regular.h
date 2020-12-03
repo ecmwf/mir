@@ -70,15 +70,15 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(api::MIRJob&) const override;
     virtual bool sameAs(const Representation&) const override;
-    virtual atlas::Grid atlasGrid() const;
-    virtual void makeName(std::ostream&) const;
-    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
+    virtual atlas::Grid atlasGrid() const override;
+    virtual void makeName(std::ostream&) const override;
+    virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
 
     // from Representation
-    virtual bool isPeriodicWestEast() const;
+    virtual bool isPeriodicWestEast() const override;
 
     // -- Class members
     // None
@@ -98,9 +98,9 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const;
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
+    virtual size_t frame(MIRValuesVector&, size_t size, double missingValue, bool estimate = false) const override;
+    virtual size_t numberOfPoints() const override;
+    virtual bool getLongestElementDiagonal(double&) const override;
 
     // -- Class members
     // None

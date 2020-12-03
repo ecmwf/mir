@@ -50,7 +50,7 @@ private:
 
     // - Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 };
 
 

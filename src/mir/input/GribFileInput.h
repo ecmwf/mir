@@ -86,7 +86,7 @@ private:
     virtual bool sameAs(const MIRInput& other) const override;
 
     // From GribInput
-    virtual eckit::DataHandle& dataHandle();
+    virtual eckit::DataHandle& dataHandle() override;
 
     // -- Class members
     // None

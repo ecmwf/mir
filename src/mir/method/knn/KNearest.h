@@ -30,10 +30,10 @@ public:
     virtual ~KNearest() override;
 
 private:
-    virtual const char* name() const;
+    virtual const char* name() const override;
     virtual bool sameAs(const Method& other) const override;
-    virtual const pick::Pick& pick() const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    virtual const pick::Pick& pick() const override;
+    virtual const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     std::unique_ptr<const distance::DistanceWeighting> distanceWeighting_;

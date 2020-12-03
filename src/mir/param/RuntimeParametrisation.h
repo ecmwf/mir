@@ -66,21 +66,21 @@ public:
     // -- Overridden methods
 
     // From MIRParametrisation
-    virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string& name) const override;
 
     // From SimpleParametrisation
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, int& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, float& value) const;
-    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::string& value) const override;
+    virtual bool get(const std::string& name, bool& value) const override;
+    virtual bool get(const std::string& name, int& value) const override;
+    virtual bool get(const std::string& name, long& value) const override;
+    virtual bool get(const std::string& name, float& value) const override;
+    virtual bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<float>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+    virtual bool get(const std::string& name, std::vector<int>& value) const override;
+    virtual bool get(const std::string& name, std::vector<long>& value) const override;
+    virtual bool get(const std::string& name, std::vector<float>& value) const override;
+    virtual bool get(const std::string& name, std::vector<double>& value) const override;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None
@@ -125,8 +125,8 @@ private:
 
     // From MIRParametrisation
     virtual void print(std::ostream&) const override;
-    virtual const MIRParametrisation& userParametrisation() const;
-    virtual const MIRParametrisation& fieldParametrisation() const;
+    virtual const MIRParametrisation& userParametrisation() const override;
+    virtual const MIRParametrisation& fieldParametrisation() const override;
 
     // -- Class members
     // None

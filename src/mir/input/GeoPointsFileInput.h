@@ -107,11 +107,11 @@ private:
     virtual void print(std::ostream&) const override;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const override;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
+    virtual data::MIRField field() const override;
 
-    virtual bool next();
-    virtual size_t dimensions() const;
+    virtual bool next() override;
+    virtual size_t dimensions() const override;
 
     // -- Class members
     // None

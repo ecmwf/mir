@@ -56,7 +56,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -88,21 +88,21 @@ private:
 
     // -- Overridden methods
 
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
-    virtual void validate(const MIRValuesVector&) const;
+    virtual size_t numberOfPoints() const override;
+    virtual bool getLongestElementDiagonal(double&) const override;
+    virtual void validate(const MIRValuesVector&) const override;
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(util::MeshGeneratorParameters&) const override;
 
-    virtual void makeName(std::ostream&) const;
+    virtual void makeName(std::ostream&) const override;
     virtual bool sameAs(const Representation&) const override;
-    virtual atlas::Grid atlasGrid() const;
-    virtual util::Domain domain() const;
-    virtual Iterator* iterator() const;
-    virtual bool isPeriodicWestEast() const;
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
+    virtual atlas::Grid atlasGrid() const override;
+    virtual util::Domain domain() const override;
+    virtual Iterator* iterator() const override;
+    virtual bool isPeriodicWestEast() const override;
+    virtual bool includesNorthPole() const override;
+    virtual bool includesSouthPole() const override;
 
     // -- Class members
     // None

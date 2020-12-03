@@ -93,14 +93,14 @@ private:
     // -- Overridden methods
 
     // From Method
-    virtual void hash(eckit::MD5&) const;
-    virtual int version() const;
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
-    virtual bool sameAs(const Method&) const;
-    virtual bool canCrop() const;
-    virtual void setCropping(const util::BoundingBox&);
-    virtual bool hasCropping() const;
-    virtual const util::BoundingBox& getCropping() const;
+    virtual void hash(eckit::MD5&) const override;
+    virtual int version() const override;
+    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
+    virtual bool sameAs(const Method&) const override;
+    virtual bool canCrop() const override;
+    virtual void setCropping(const util::BoundingBox&) override;
+    virtual bool hasCropping() const override;
+    virtual const util::BoundingBox& getCropping() const override;
     virtual void print(std::ostream&) const override;
 
     // -- Class members

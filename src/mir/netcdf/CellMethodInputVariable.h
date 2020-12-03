@@ -29,12 +29,12 @@ private:
     // From InputVariable
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
 
     // From variable
 
     virtual void print(std::ostream&) const override;
-    const char* kind() const;
+    const char* kind() const override;
 };
 
 

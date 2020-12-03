@@ -94,20 +94,20 @@ private:
 
 
     virtual void print(std::ostream& out) const override;
-    virtual bool wrapped() const;
-    virtual bool less_than(const FieldBase& other) const;
-    virtual void whiteListEntries(std::ostream&) const;
-    virtual size_t differences(const FieldBase& other) const;
-    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const;
-    virtual void compareExtra(std::ostream&, const FieldBase& other) const;
-    virtual bool same(const FieldBase& other) const;
-    virtual bool match(const FieldBase& other) const;
-    virtual std::ostream& printGrid(std::ostream&) const;
-    virtual bool match(const std::string&, const std::string&) const;
-    virtual size_t numberOfPoints() const;
-    virtual const std::string& format() const;
-    virtual bool canCompareFieldValues() const;
-    virtual void json(eckit::JSON& json) const;
+    virtual bool wrapped() const override;
+    virtual bool less_than(const FieldBase& other) const override;
+    virtual void whiteListEntries(std::ostream&) const override;
+    virtual size_t differences(const FieldBase& other) const override;
+    virtual std::ostream& printDifference(std::ostream&, const FieldBase& other) const override;
+    virtual void compareExtra(std::ostream&, const FieldBase& other) const override;
+    virtual bool same(const FieldBase& other) const override;
+    virtual bool match(const FieldBase& other) const override;
+    virtual std::ostream& printGrid(std::ostream&) const override;
+    virtual bool match(const std::string&, const std::string&) const override;
+    virtual size_t numberOfPoints() const override;
+    virtual const std::string& format() const override;
+    virtual bool canCompareFieldValues() const override;
+    virtual void json(eckit::JSON& json) const override;
 };
 
 

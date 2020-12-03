@@ -31,7 +31,7 @@ private:
     virtual void print(std::ostream&) const override;
     virtual void execute(context::Context&) const override;
     virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const;
+    virtual const char* name() const override;
 
 private:  // members
     std::string value_;

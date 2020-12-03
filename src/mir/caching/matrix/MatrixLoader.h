@@ -41,9 +41,9 @@ public:
     virtual const void* address() const = 0;
     virtual size_t size() const         = 0;
 
-    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape&);
+    virtual eckit::linalg::SparseMatrix::Layout allocate(eckit::linalg::SparseMatrix::Shape&) override;
 
-    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape);
+    virtual void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) override;
 
     static eckit::Channel& log();
     static eckit::Channel& info();

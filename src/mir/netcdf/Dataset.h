@@ -58,7 +58,7 @@ public:
 
     // From Endowed
 
-    virtual const std::string& path() const;
+    virtual const std::string& path() const override;
 
 protected:
     // -- Members
@@ -72,8 +72,8 @@ private:
 
     // From Endowed
 
-    virtual int varid() const;
-    virtual const std::string& name() const;
+    virtual int varid() const override;
+    virtual const std::string& name() const override;
 
     // - Methods
 

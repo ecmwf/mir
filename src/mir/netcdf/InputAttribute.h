@@ -28,7 +28,7 @@ public:
 private:
     // From Atttribute
     virtual void print(std::ostream& out) const override;
-    virtual void clone(Endowed& owner) const;
+    virtual void clone(Endowed& owner) const override;
 };
 
 

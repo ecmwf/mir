@@ -27,11 +27,11 @@ public:
 
 private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
 
-    virtual Variable* makeCoordinateVariable();
-    virtual Variable* makeScalarCoordinateVariable();
-    const char* kind() const;
+    virtual Variable* makeCoordinateVariable() override;
+    virtual Variable* makeScalarCoordinateVariable() override;
+    const char* kind() const override;
 
     virtual void print(std::ostream&) const override;
 };

@@ -31,7 +31,7 @@ private:
 
     // -- Methods
     virtual void print(std::ostream&) const override;
-    virtual void decode(std::vector<double>&) const;
+    virtual void decode(std::vector<double>&) const override;
 };
 
 

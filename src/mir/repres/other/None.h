@@ -65,7 +65,7 @@ protected:
     // -- Overridden methods
 
     // from Representation
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

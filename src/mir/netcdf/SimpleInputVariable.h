@@ -27,20 +27,20 @@ public:
     virtual ~SimpleInputVariable() override;
 
 private:
-    std::vector<std::string> coordinates() const;
+    std::vector<std::string> coordinates() const override;
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
 
-    virtual Variable* makeDataVariable();
-    virtual Variable* makeCoordinateVariable();
-    virtual Variable* makeCellMethodVariable();
+    virtual Variable* makeDataVariable() override;
+    virtual Variable* makeCoordinateVariable() override;
+    virtual Variable* makeCellMethodVariable() override;
 
     virtual void print(std::ostream&) const override;
-    virtual void validate() const;
-    virtual bool identified() const;
+    virtual void validate() const override;
+    virtual bool identified() const override;
 
-    Variable* addMissingCoordinates();
+    Variable* addMissingCoordinates() override;
 };
 
 

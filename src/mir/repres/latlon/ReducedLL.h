@@ -61,13 +61,13 @@ protected:
 
     // -- Overridden methods
 
-    atlas::Grid atlasGrid() const;
+    atlas::Grid atlasGrid() const override;
 
-    bool isPeriodicWestEast() const;
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Class members
     // None
@@ -85,22 +85,22 @@ private:
 
     // -- Overridden methods
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
-    void fill(util::MeshGeneratorParameters&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
+    void fill(util::MeshGeneratorParameters&) const override;
 
-    void validate(const MIRValuesVector&) const;
+    void validate(const MIRValuesVector&) const override;
 
-    Iterator* iterator() const;
+    Iterator* iterator() const override;
 
-    void makeName(std::ostream&) const;
+    void makeName(std::ostream&) const override;
     bool sameAs(const Representation& other) const override;
 
-    virtual size_t numberOfPoints() const;
-    virtual bool getLongestElementDiagonal(double&) const;
+    virtual size_t numberOfPoints() const override;
+    virtual bool getLongestElementDiagonal(double&) const override;
 
     // From Representation
-    std::vector<util::GridBox> gridBoxes() const;
+    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
     // None

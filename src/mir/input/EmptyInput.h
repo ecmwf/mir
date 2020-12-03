@@ -81,12 +81,12 @@ private:
     virtual void print(std::ostream&) const override;  // Change to virtual if base class
     virtual bool sameAs(const MIRInput& other) const override;
 
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
+    virtual data::MIRField field() const override;
 
-    virtual bool next();
+    virtual bool next() override;
 
-    // virtual bool get(const std::string&, double&) const;
+    // virtual bool get(const std::string&, double&) const override;
 
     virtual void latitudes(std::vector<double>&) const;
     virtual void longitudes(std::vector<double>&) const;

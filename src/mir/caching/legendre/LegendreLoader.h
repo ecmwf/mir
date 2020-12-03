@@ -91,7 +91,7 @@ class LegendreLoaderBuilder : public LegendreLoaderFactory {
         return new T(param, path);
     }
 
-    virtual bool shared() const { return T::shared(); }
+    virtual bool shared() const override { return T::shared(); }
 
 public:
     LegendreLoaderBuilder(const std::string& name) : LegendreLoaderFactory(name) {}

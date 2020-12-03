@@ -81,7 +81,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void out(const void* message, size_t length, bool interpolated);
+    virtual void out(const void* message, size_t length, bool interpolated) override;
     virtual void print(std::ostream&) const override;
     virtual bool sameAs(const MIROutput& other) const override;
 

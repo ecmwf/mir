@@ -31,18 +31,18 @@ public:
 
 private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const;
+                          const repres::Representation& out) const override;
 
     /// Update matrix to account for field masked values
-    virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const;
+    virtual void applyMasks(WeightMatrix&, const lsm::LandSeaMasks&) const override;
 
-    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
+    virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const override;
 
-    virtual const char* name() const;
+    virtual const char* name() const override;
     virtual bool sameAs(const Method& other) const override;
 
-    virtual const pick::Pick& pick() const;
-    virtual const distance::DistanceWeighting& distanceWeighting() const;
+    virtual const pick::Pick& pick() const override;
+    virtual const distance::DistanceWeighting& distanceWeighting() const override;
 
     std::unique_ptr<const pick::Pick> pick_;
     distance::DistanceWeightingWithLSM distanceWeighting_;

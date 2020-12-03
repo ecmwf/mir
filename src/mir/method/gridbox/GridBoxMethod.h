@@ -81,13 +81,13 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
+                  const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
-    void print(std::ostream&) const;
-    bool validateMatrixWeights() const;
-    const char* name() const;
+    void print(std::ostream&) const override;
+    bool validateMatrixWeights() const override;
+    const char* name() const override;
 
     // -- Class members
     // None

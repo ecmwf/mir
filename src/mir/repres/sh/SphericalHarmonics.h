@@ -53,7 +53,7 @@ public:
 
     // -- Overridden methods
 
-    util::Domain domain() const { return util::Domain(); }
+    util::Domain domain() const override { return util::Domain(); }
 
     // -- Class members
     // None
@@ -67,7 +67,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -94,26 +94,26 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual void estimate(api::MIREstimation&) const;
-    virtual std::string factory() const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(api::MIRJob&) const override;
+    virtual void estimate(api::MIREstimation&) const override;
+    virtual std::string factory() const override;
 
-    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const;
-    virtual size_t truncation() const;
+    virtual const Representation* truncate(size_t truncation, const MIRValuesVector&, MIRValuesVector&) const override;
+    virtual size_t truncation() const override;
 
-    virtual void comparison(std::string&) const;
+    virtual void comparison(std::string&) const override;
 
-    virtual void validate(const MIRValuesVector&) const;
+    virtual void validate(const MIRValuesVector&) const override;
 
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void makeName(std::ostream&) const;
+    virtual void setComplexPacking(grib_info&) const override;
+    virtual void setSimplePacking(grib_info&) const override;
+    virtual void makeName(std::ostream&) const override;
     virtual bool sameAs(const Representation& other) const override;
 
-    bool isPeriodicWestEast() const;
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    bool isPeriodicWestEast() const override;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None

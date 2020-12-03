@@ -30,21 +30,21 @@ private:
     mutable std::string ncname_;
 
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
-                                 const std::vector<Dimension*>& dimensions) const;
+                                 const std::vector<Dimension*>& dimensions) const override;
     virtual void print(std::ostream&) const override;
-    virtual const std::string& ncname() const;
-    virtual void collectField(std::vector<Field*>&) const;
+    virtual const std::string& ncname() const override;
+    virtual void collectField(std::vector<Field*>&) const override;
 
-    virtual size_t count2DValues() const;
-    virtual void get2DValues(MIRValuesVector&, size_t i) const;
+    virtual size_t count2DValues() const override;
+    virtual void get2DValues(MIRValuesVector&, size_t i) const override;
 
     // Used during identtification
-    virtual void addCoordinateVariable(const Variable*);
-    virtual Variable* addMissingCoordinates();
-    const char* kind() const;
-    void dumpAttributes(std::ostream& s, const char* prefix) const;
+    virtual void addCoordinateVariable(const Variable*) override;
+    virtual Variable* addMissingCoordinates() override;
+    const char* kind() const override;
+    void dumpAttributes(std::ostream& s, const char* prefix) const override;
 
-    virtual std::vector<std::string> coordinates() const;
+    virtual std::vector<std::string> coordinates() const override;
 };
 
 

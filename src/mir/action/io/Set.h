@@ -70,8 +70,8 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
-    void custom(std::ostream&) const;
+    void print(std::ostream&) const override;
+    void custom(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -94,11 +94,11 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
-    virtual const char* name() const;
-    virtual bool isEndAction() const;
-    virtual void estimate(context::Context&, api::MIREstimation&) const;
+    virtual void execute(context::Context&) const override;
+    virtual bool sameAs(const Action&) const override;
+    virtual const char* name() const override;
+    virtual bool isEndAction() const override;
+    virtual void estimate(context::Context&, api::MIREstimation&) const override;
 
     // -- Class members
     // None

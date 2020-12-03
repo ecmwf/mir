@@ -43,23 +43,23 @@ public:
 
     virtual ~KNearestNeighbours() override;
 
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const override;
 
 protected:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out, const pick::Pick& pick, const distance::DistanceWeighting&) const;
 
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const;
+                          const repres::Representation& out) const override;
 
-    virtual bool sameAs(const Method& other) const = 0;
+    virtual bool sameAs(const Method& other) const override = 0;
 
 private:
     virtual void print(std::ostream&) const override;
 
-    virtual bool canIntroduceMissingValues() const;
+    virtual bool canIntroduceMissingValues() const override;
 
-    virtual const char* name() const = 0;
+    virtual const char* name() const override = 0;
 
     virtual const pick::Pick& pick() const                               = 0;
     virtual const distance::DistanceWeighting& distanceWeighting() const = 0;

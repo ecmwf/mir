@@ -17,6 +17,7 @@ project(mir VERSION 1.7.2 LANGUAGES CXX)
 set(PERSISTENT_NAMESPACE "eckit" CACHE INTERNAL "") # needed for generating .b files for persistent support
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-reorder -Wno-sign-compare")
 
 
 ecbuild_add_option(FEATURE BUILD_TOOLS        DEFAULT OFF DESCRIPTION "build the command line tools (install)")

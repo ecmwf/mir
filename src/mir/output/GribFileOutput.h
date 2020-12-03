@@ -86,7 +86,7 @@ private:
 
     // From GribInput
 
-    virtual eckit::DataHandle& dataHandle();
+    virtual eckit::DataHandle& dataHandle() override;
 
     // -- Class members
     // None

@@ -26,10 +26,10 @@ struct MissingIfAnyMissing : NonLinear {
 
 private:
     bool treatment(Matrix& A, WeightMatrix& W, Matrix& B, const data::MIRValuesVector& values,
-                   const double& missingValue) const;
+                   const double& missingValue) const override;
     bool sameAs(const NonLinear&) const override;
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
 };
 
 

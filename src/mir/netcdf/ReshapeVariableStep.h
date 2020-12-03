@@ -43,9 +43,9 @@ private:
 
     // -- Methods
     virtual void print(std::ostream& out) const override;
-    virtual int rank() const;
-    virtual void execute(MergePlan& plan);
-    virtual bool merge(Step* other);
+    virtual int rank() const override;
+    virtual void execute(MergePlan& plan) override;
+    virtual bool merge(Step* other) override;
 };
 
 

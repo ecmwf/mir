@@ -57,7 +57,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -82,8 +82,8 @@ private:
     // -- Overridden methods
 
     virtual void execute(context::Context&, const ActionNode& node) const override;
-    virtual void wait() const;
-    virtual void parametrisation(const param::MIRParametrisation&);
+    virtual void wait() const override;
+    virtual void parametrisation(const param::MIRParametrisation&) override;
 
     // -- Class members
     // None

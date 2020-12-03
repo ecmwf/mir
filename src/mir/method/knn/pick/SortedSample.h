@@ -25,10 +25,10 @@ namespace pick {
 
 struct SortedSample : Pick {
     SortedSample(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
-    virtual size_t n() const;
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    virtual size_t n() const override;
     virtual bool sameAs(const Pick&) const override;
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const override;
 
 private:
     virtual void print(std::ostream&) const override;

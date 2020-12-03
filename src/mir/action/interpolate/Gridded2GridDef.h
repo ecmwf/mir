@@ -82,11 +82,11 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual void custom(std::ostream&) const;
-    virtual const char* name() const;
+    virtual void custom(std::ostream&) const override;
+    virtual const char* name() const override;
 
     // From Gridded2GriddedInterpolation
-    virtual const repres::Representation* outputRepresentation() const;
+    virtual const repres::Representation* outputRepresentation() const override;
 
     // -- Class members
     // None

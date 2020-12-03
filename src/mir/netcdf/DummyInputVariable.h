@@ -32,9 +32,9 @@ protected:
 
     virtual Variable* makeOutputVariable(Dataset& owner, const std::string& name,
                                          const std::vector<Dimension*>& dimensions) const;
-    virtual bool dummy() const;
-    virtual bool sameAsDummy(const Variable&) const;
-    virtual const std::string& ncname() const;
+    virtual bool dummy() const override;
+    virtual bool sameAsDummy(const Variable&) const override;
+    virtual const std::string& ncname() const override;
 
     // From variable
 
@@ -42,7 +42,7 @@ protected:
 
     // From Endowed
 
-    virtual int varid() const;
+    virtual int varid() const override;
 };
 
 

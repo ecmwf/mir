@@ -57,12 +57,12 @@ private:
     virtual void print(std::ostream& s) const override;
 
     // From GridSpec
-    virtual bool has(const std::string& name) const;
-    virtual bool get(const std::string&, long&) const;
-    virtual bool get(const std::string&, std::string&) const;
-    virtual bool get(const std::string& name, double& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual void reorder(MIRValuesVector& values) const;
+    virtual bool has(const std::string& name) const override;
+    virtual bool get(const std::string&, long&) const override;
+    virtual bool get(const std::string&, std::string&) const override;
+    virtual bool get(const std::string& name, double& value) const override;
+    virtual bool get(const std::string& name, std::vector<double>& value) const override;
+    virtual void reorder(MIRValuesVector& values) const override;
 };
 
 

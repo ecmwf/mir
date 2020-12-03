@@ -28,13 +28,13 @@ public:
 
 private:
     void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,
-                                 const repres::Representation& out) const;
+                                 const repres::Representation& out) const override;
 
-    const char* name() const;
+    const char* name() const override;
 
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     virtual bool sameAs(const Method& other) const override;
 };

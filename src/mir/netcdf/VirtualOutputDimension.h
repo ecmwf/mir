@@ -34,10 +34,10 @@ private:
 
     // From Dimension
     virtual void print(std::ostream&) const override;
-    virtual void create(int nc) const;
-    virtual int id() const;
-    virtual void grow(size_t);
-    virtual bool inUse() const;
+    virtual void create(int nc) const override;
+    virtual int id() const override;
+    virtual void grow(size_t) override;
+    virtual bool inUse() const override;
 };
 
 

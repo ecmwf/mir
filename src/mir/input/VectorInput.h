@@ -86,13 +86,13 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual const param::MIRParametrisation& parametrisation(size_t which) const;
-    virtual data::MIRField field() const;
-    virtual bool next();
+    virtual const param::MIRParametrisation& parametrisation(size_t which) const override;
+    virtual data::MIRField field() const override;
+    virtual bool next() override;
     virtual bool sameAs(const MIRInput& other) const override;
     virtual void print(std::ostream& out) const override;
-    virtual grib_handle* gribHandle(size_t which = 0) const;
-    virtual size_t dimensions() const;
+    virtual grib_handle* gribHandle(size_t which = 0) const override;
+    virtual size_t dimensions() const override;
 
     // -- Class members
     // None

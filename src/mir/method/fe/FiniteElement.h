@@ -88,11 +88,11 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    void hash(eckit::MD5&) const;
+    void hash(eckit::MD5&) const override;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                  const repres::Representation& out) const;
+                  const repres::Representation& out) const override;
     bool sameAs(const Method&) const override;
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -112,7 +112,7 @@ private:
 class FiniteElementFactory : public MethodFactory {
     std::string name_;
     virtual FiniteElement* make(const param::MIRParametrisation&, const std::string& label) = 0;
-    virtual FiniteElement* make(const param::MIRParametrisation&)                           = 0;
+    virtual FiniteElement* make(const param::MIRParametrisation&)  override                 = 0;
 
     FiniteElementFactory(const FiniteElementFactory&) = delete;
     FiniteElementFactory& operator=(const FiniteElementFactory&) = delete;

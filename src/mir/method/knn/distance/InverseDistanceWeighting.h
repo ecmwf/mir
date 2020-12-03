@@ -25,14 +25,14 @@ namespace distance {
 struct InverseDistanceWeighting : DistanceWeighting {
     InverseDistanceWeighting(const param::MIRParametrisation&);
     void operator()(size_t ip, const Point3& point, const std::vector<search::PointSearch::PointValueType>& neighbours,
-                    std::vector<WeightMatrix::Triplet>& triplets) const;
+                    std::vector<WeightMatrix::Triplet>& triplets) const override;
 
 private:
     double power_;
     double halfPower_;
     virtual bool sameAs(const DistanceWeighting&) const override;
     virtual void print(std::ostream&) const override;
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const override;
 };
 
 

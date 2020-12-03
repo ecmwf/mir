@@ -63,9 +63,9 @@ protected:
     // -- Overridden methods
 
     virtual void print(std::ostream&) const override;
-    virtual size_t gaussianNumber() const;
-    virtual const repres::Representation* representation() const;
-    virtual const repres::Representation* representation(const util::Rotation&) const;
+    virtual size_t gaussianNumber() const override;
+    virtual const repres::Representation* representation() const override;
+    virtual const repres::Representation* representation(const util::Rotation&) const override;
 
     // -- Class members
     // None

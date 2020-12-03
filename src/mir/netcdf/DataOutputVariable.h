@@ -27,10 +27,10 @@ public:
     virtual ~DataOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan);
+    virtual void merge(const Variable&, MergePlan& plan) override;
     virtual void print(std::ostream&) const override;
-    virtual const std::string& ncname() const;
-    virtual void collectField(std::vector<Field*>&) const;
+    virtual const std::string& ncname() const override;
+    virtual void collectField(std::vector<Field*>&) const override;
 
     mutable std::string ncname_;
 };

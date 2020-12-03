@@ -82,21 +82,21 @@ protected:
     // from Representation
     virtual bool sameAs(const Representation&) const override;
 
-    virtual bool includesNorthPole() const;
-    virtual bool includesSouthPole() const;
-    virtual bool isPeriodicWestEast() const;
+    virtual bool includesNorthPole() const override;
+    virtual bool includesSouthPole() const override;
+    virtual bool isPeriodicWestEast() const override;
 
-    virtual void fill(grib_info&) const;
-    virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual void reorder(long scanningMode, MIRValuesVector&) const;
-    virtual void validate(const MIRValuesVector&) const;
-    virtual void makeName(std::ostream&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(util::MeshGeneratorParameters&) const override;
+    virtual void reorder(long scanningMode, MIRValuesVector&) const override;
+    virtual void validate(const MIRValuesVector&) const override;
+    virtual void makeName(std::ostream&) const override;
     virtual void print(std::ostream&) const override;
-    virtual bool extendBoundingBoxOnIntersect() const;
+    virtual bool extendBoundingBoxOnIntersect() const override;
 
-    virtual ::atlas::Grid atlasGrid() const;
-    virtual Iterator* iterator() const;
-    virtual size_t numberOfPoints() const;
+    virtual ::atlas::Grid atlasGrid() const override;
+    virtual Iterator* iterator() const override;
+    virtual size_t numberOfPoints() const override;
 
     // -- Class members
     // None

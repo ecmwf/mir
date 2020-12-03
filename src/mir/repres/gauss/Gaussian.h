@@ -85,14 +85,14 @@ protected:
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
-    virtual void validate(const MIRValuesVector&) const;
-    virtual bool extendBoundingBoxOnIntersect() const;
+    virtual void fill(util::MeshGeneratorParameters&) const override;
+    virtual void fill(api::MIRJob&) const override;
+    virtual bool sameAs(const Representation&) const override;
+    virtual void validate(const MIRValuesVector&) const override;
+    virtual bool extendBoundingBoxOnIntersect() const override;
 
-    bool includesNorthPole() const;
-    bool includesSouthPole() const;
+    bool includesNorthPole() const override;
+    bool includesSouthPole() const override;
 
     // -- Class members
     // None

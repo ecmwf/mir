@@ -68,7 +68,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -91,11 +91,11 @@ private:
     // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const;
-    virtual bool isCropAction() const;
-    virtual bool canCrop() const;
-    virtual util::BoundingBox outputBoundingBox() const;
-    virtual void estimate(context::Context& ctx, api::MIREstimation& estimation) const;
+    virtual const char* name() const override;
+    virtual bool isCropAction() const override;
+    virtual bool canCrop() const override;
+    virtual util::BoundingBox outputBoundingBox() const override;
+    virtual void estimate(context::Context& ctx, api::MIREstimation& estimation) const override;
 
     // -- Class members
     // None

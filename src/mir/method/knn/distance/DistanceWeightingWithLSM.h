@@ -36,7 +36,7 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
     DistanceWeightingWithLSM(const param::MIRParametrisation&);
 
     void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
-                    std::vector<WeightMatrix::Triplet>&) const {
+                    std::vector<WeightMatrix::Triplet>&) const override {
         throw eckit::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
     }
 
@@ -46,7 +46,7 @@ private:
     std::string method_;
     virtual bool sameAs(const DistanceWeighting&) const override;
     virtual void print(std::ostream&) const override;
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const override;
 };
 
 

@@ -44,12 +44,12 @@ private:
     template <class T>
     void _decode(std::vector<T>& v) const;
 
-    virtual void decode(std::vector<double>&) const;
-    virtual void decode(std::vector<float>&) const;
-    virtual void decode(std::vector<long>&) const;
-    virtual void decode(std::vector<short>&) const;
-    virtual void decode(std::vector<unsigned char>&) const;
-    virtual void decode(std::vector<long long>&) const;
+    virtual void decode(std::vector<double>&) const override;
+    virtual void decode(std::vector<float>&) const override;
+    virtual void decode(std::vector<long>&) const override;
+    virtual void decode(std::vector<short>&) const override;
+    virtual void decode(std::vector<unsigned char>&) const override;
+    virtual void decode(std::vector<long long>&) const override;
 
     virtual void encode(std::vector<double>&) const override;
     virtual void encode(std::vector<float>&) const override;
@@ -58,8 +58,8 @@ private:
     virtual void encode(std::vector<unsigned char>&) const override;
     virtual void encode(std::vector<long long>&) const override;
 
-    virtual void addAttributes(Variable&) const;
-    virtual void updateAttributes(int nc, int varid, const std::string& path);
+    virtual void addAttributes(Variable&) const override;
+    virtual void updateAttributes(int nc, int varid, const std::string& path) override;
 };
 
 

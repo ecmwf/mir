@@ -37,9 +37,9 @@ private:
 
     // From Dimension
     virtual void print(std::ostream&) const override;
-    virtual void clone(Dataset& owner) const;
-    virtual int id() const;
-    virtual void realDimensions(std::vector<size_t>& dims) const;
+    virtual void clone(Dataset& owner) const override;
+    virtual int id() const override;
+    virtual void realDimensions(std::vector<size_t>& dims) const override;
 };
 
 

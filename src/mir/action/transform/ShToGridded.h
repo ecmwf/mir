@@ -78,9 +78,9 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const        = 0;
-    virtual bool sameAs(const Action& other) const = 0;
-    virtual void estimate(context::Context&, api::MIREstimation& estimation) const;
+    virtual void print(std::ostream&) const override        = 0;
+    virtual bool sameAs(const Action& other) const override = 0;
+    virtual void estimate(context::Context&, api::MIREstimation& estimation) const override;
 
     // -- Class members
     // None
@@ -106,7 +106,7 @@ private:
 
     virtual void execute(context::Context&) const override;
 
-    virtual bool mergeWithNext(const Action&);
+    virtual bool mergeWithNext(const Action&) override;
 
     // -- Class members
     // None

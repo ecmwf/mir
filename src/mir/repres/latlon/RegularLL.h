@@ -63,23 +63,23 @@ private:
 
     // -- Overridden methods
 
-    Iterator* iterator() const;
-    void print(std::ostream&) const;
+    Iterator* iterator() const override;
+    void print(std::ostream&) const override;
 
-    atlas::Grid atlasGrid() const;
+    atlas::Grid atlasGrid() const override;
 
-    void fill(grib_info&) const;
-    void fill(api::MIRJob&) const;
+    void fill(grib_info&) const override;
+    void fill(api::MIRJob&) const override;
 
-    void makeName(std::ostream&) const;
+    void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 
     // From Representation
-    const RegularLL* croppedRepresentation(const util::BoundingBox&) const;
-    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
-    std::vector<util::GridBox> gridBoxes() const;
+    const RegularLL* croppedRepresentation(const util::BoundingBox&) const override;
+    util::BoundingBox extendBoundingBox(const util::BoundingBox&) const override;
+    std::vector<util::GridBox> gridBoxes() const override;
 
-    virtual std::string factory() const;
+    virtual std::string factory() const override;
 
     // -- Class members
     // None

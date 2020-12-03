@@ -34,12 +34,12 @@ private:
     // From variable
 
     virtual void print(std::ostream&) const override;
-    virtual void create(int nc) const;
-    virtual void save(int nc) const;
+    virtual void create(int nc) const override;
+    virtual void save(int nc) const override;
 
     // From Endowed
 
-    virtual int varid() const;
+    virtual int varid() const override;
 };
 
 

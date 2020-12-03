@@ -36,9 +36,9 @@ protected:
     virtual void print(std::ostream&) const override;
 
 private:
-    virtual const void* address() const;
-    virtual size_t size() const;
-    virtual bool inSharedMemory() const;
+    virtual const void* address() const override;
+    virtual size_t size() const override;
+    virtual bool inSharedMemory() const override;
 
     void* address_;
     size_t size_;

@@ -31,7 +31,7 @@ private:
 
     virtual void print(std::ostream& out) const override;
 
-    virtual void dumpTree(std::ostream&, size_t) const;
+    virtual void dumpTree(std::ostream&, size_t) const override;
 };
 
 

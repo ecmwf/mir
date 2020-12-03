@@ -77,8 +77,8 @@ private:
     // -- Methods
 
     virtual void print(std::ostream&) const override;
-    virtual void fill(grib_info&, const repres::Representation&) const;
-    virtual std::string type(const repres::Representation*) const;
+    virtual void fill(grib_info&, const repres::Representation&) const override;
+    virtual std::string type(const repres::Representation*) const override;
 
     // -- Overridden methods
     // None

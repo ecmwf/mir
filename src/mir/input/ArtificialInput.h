@@ -63,29 +63,29 @@ protected:
     // -- Overridden methods
 
     // From MIRInput
-    virtual bool next();
-    virtual size_t dimensions() const;
-    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const;
-    virtual data::MIRField field() const;
-    virtual void setAuxiliaryInformation(const std::string& yaml);
+    virtual bool next() override;
+    virtual size_t dimensions() const override;
+    virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const override;
+    virtual data::MIRField field() const override;
+    virtual void setAuxiliaryInformation(const std::string& yaml) override;
     virtual void print(std::ostream&) const override;
     virtual bool sameAs(const MIRInput&) const override;
 
     // From FieldParametrisation
-    virtual bool has(const std::string& name) const;
+    virtual bool has(const std::string& name) const override;
 
-    virtual bool get(const std::string& name, std::string& value) const;
-    virtual bool get(const std::string& name, bool& value) const;
-    virtual bool get(const std::string& name, int& value) const;
-    virtual bool get(const std::string& name, long& value) const;
-    virtual bool get(const std::string& name, float& value) const;
-    virtual bool get(const std::string& name, double& value) const;
+    virtual bool get(const std::string& name, std::string& value) const override;
+    virtual bool get(const std::string& name, bool& value) const override;
+    virtual bool get(const std::string& name, int& value) const override;
+    virtual bool get(const std::string& name, long& value) const override;
+    virtual bool get(const std::string& name, float& value) const override;
+    virtual bool get(const std::string& name, double& value) const override;
 
-    virtual bool get(const std::string& name, std::vector<int>& value) const;
-    virtual bool get(const std::string& name, std::vector<long>& value) const;
-    virtual bool get(const std::string& name, std::vector<float>& value) const;
-    virtual bool get(const std::string& name, std::vector<double>& value) const;
-    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+    virtual bool get(const std::string& name, std::vector<int>& value) const override;
+    virtual bool get(const std::string& name, std::vector<long>& value) const override;
+    virtual bool get(const std::string& name, std::vector<float>& value) const override;
+    virtual bool get(const std::string& name, std::vector<double>& value) const override;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None

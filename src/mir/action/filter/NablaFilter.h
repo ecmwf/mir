@@ -65,8 +65,8 @@ protected:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
-    void custom(std::ostream&) const;
+    void print(std::ostream&) const override;
+    void custom(std::ostream&) const override;
 
     // -- Class members
     // None

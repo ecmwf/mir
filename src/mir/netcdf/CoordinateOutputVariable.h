@@ -27,7 +27,7 @@ public:
     virtual ~CoordinateOutputVariable() override;
 
 private:
-    virtual void merge(const Variable&, MergePlan& plan);
+    virtual void merge(const Variable&, MergePlan& plan) override;
     virtual void print(std::ostream&) const override;
 };
 

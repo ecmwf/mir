@@ -96,8 +96,8 @@ private:
 
     // From Action
     virtual bool sameAs(const Action&) const override;
-    virtual const char* name() const;
-    void print(std::ostream&) const;
+    virtual const char* name() const override;
+    void print(std::ostream&) const override;
     virtual void execute(context::Context&) const override;
 
     // -- Class members

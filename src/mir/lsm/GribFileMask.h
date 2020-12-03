@@ -74,9 +74,9 @@ protected:
 
     // -- Overridden methods
 
-    virtual bool active() const;
-    virtual bool cacheable() const = 0;
-    virtual void hash(eckit::MD5&) const;
+    virtual bool active() const override;
+    virtual bool cacheable() const override = 0;
+    virtual void hash(eckit::MD5&) const override;
     virtual void print(std::ostream&) const override;
 
     // -- Class members
@@ -99,7 +99,7 @@ private:
 
     // -- Overridden methods
 
-    const std::vector<bool>& mask() const;
+    const std::vector<bool>& mask() const override;
 
     // -- Class members
     // None

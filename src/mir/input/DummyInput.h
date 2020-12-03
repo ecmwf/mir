@@ -80,7 +80,7 @@ private:
 
     // From ArtificialInput
     virtual void print(std::ostream&) const override;
-    virtual data::MIRValuesVector fill(size_t) const;
+    virtual data::MIRValuesVector fill(size_t) const override;
 
     // -- Class members
     // None

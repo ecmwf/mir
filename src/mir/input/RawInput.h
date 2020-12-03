@@ -86,28 +86,28 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    void print(std::ostream&) const;  // Change to virtual if base class
-    const param::MIRParametrisation& parametrisation(size_t which) const;
-    data::MIRField field() const;
-    bool next();
-    size_t copy(double* values, size_t size) const;
+    void print(std::ostream&) const override;  // Change to virtual if base class
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    size_t copy(double* values, size_t size) const override;
     bool sameAs(const MIRInput& other) const override;
 
     // From MIRParametrisation
-    bool has(const std::string& name) const;
+    bool has(const std::string& name) const override;
 
-    bool get(const std::string& name, std::string& value) const;
-    bool get(const std::string& name, bool& value) const;
-    bool get(const std::string& name, int& value) const;
-    bool get(const std::string& name, long& value) const;
-    bool get(const std::string& name, float& value) const;
-    bool get(const std::string& name, double& value) const;
+    bool get(const std::string& name, std::string& value) const override;
+    bool get(const std::string& name, bool& value) const override;
+    bool get(const std::string& name, int& value) const override;
+    bool get(const std::string& name, long& value) const override;
+    bool get(const std::string& name, float& value) const override;
+    bool get(const std::string& name, double& value) const override;
 
-    bool get(const std::string& name, std::vector<int>& value) const;
-    bool get(const std::string& name, std::vector<long>& value) const;
-    bool get(const std::string& name, std::vector<float>& value) const;
-    bool get(const std::string& name, std::vector<double>& value) const;
-    bool get(const std::string& name, std::vector<std::string>& value) const;
+    bool get(const std::string& name, std::vector<int>& value) const override;
+    bool get(const std::string& name, std::vector<long>& value) const override;
+    bool get(const std::string& name, std::vector<float>& value) const override;
+    bool get(const std::string& name, std::vector<double>& value) const override;
+    bool get(const std::string& name, std::vector<std::string>& value) const override;
 
     // -- Class members
     // None

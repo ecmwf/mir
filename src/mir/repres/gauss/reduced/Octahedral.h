@@ -62,10 +62,10 @@ protected:
     // None
 
     // -- Overridden methods
-    virtual void fill(grib_info&) const;
-    virtual void fill(api::MIRJob&) const;
-    virtual atlas::Grid atlasGrid() const;
-    virtual void makeName(std::ostream&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void fill(api::MIRJob&) const override;
+    virtual atlas::Grid atlasGrid() const override;
+    virtual void makeName(std::ostream&) const override;
     virtual bool sameAs(const Representation& other) const override;
 
     // -- Class members
@@ -83,7 +83,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(util::MeshGeneratorParameters&) const;
+    virtual void fill(util::MeshGeneratorParameters&) const override;
 
     // -- Class members
     // None

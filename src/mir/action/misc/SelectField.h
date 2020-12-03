@@ -59,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -86,7 +86,7 @@ private:
     // -- Overridden methods
 
     virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const;
+    virtual const char* name() const override;
 
     // -- Class members
     // None

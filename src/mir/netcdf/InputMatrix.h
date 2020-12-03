@@ -37,21 +37,21 @@ private:
     int varid_;
 
     // Methods
-    virtual void read(std::vector<double>&) const;
-    virtual void read(std::vector<float>&) const;
-    virtual void read(std::vector<long>&) const;
-    virtual void read(std::vector<short>&) const;
-    virtual void read(std::vector<unsigned char>&) const;
-    virtual void read(std::vector<long long>&) const;
+    virtual void read(std::vector<double>&) const override;
+    virtual void read(std::vector<float>&) const override;
+    virtual void read(std::vector<long>&) const override;
+    virtual void read(std::vector<short>&) const override;
+    virtual void read(std::vector<unsigned char>&) const override;
+    virtual void read(std::vector<long long>&) const override;
 
-    virtual void read(std::vector<double>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
-    virtual void read(std::vector<float>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
-    virtual void read(std::vector<long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
-    virtual void read(std::vector<short>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const;
+    virtual void read(std::vector<double>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const override;
+    virtual void read(std::vector<float>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const override;
+    virtual void read(std::vector<long>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const override;
+    virtual void read(std::vector<short>&, const std::vector<size_t>& start, const std::vector<size_t>& count) const override;
     virtual void read(std::vector<unsigned char>&, const std::vector<size_t>& start,
-                      const std::vector<size_t>& count) const;
+                      const std::vector<size_t>& count) const override;
     virtual void read(std::vector<long long>&, const std::vector<size_t>& start,
-                      const std::vector<size_t>& count) const;
+                      const std::vector<size_t>& count) const override;
 
     virtual void print(std::ostream& out) const override;
 };

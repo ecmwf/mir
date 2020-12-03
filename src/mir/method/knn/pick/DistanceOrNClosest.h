@@ -25,13 +25,13 @@ namespace pick {
 
 struct DistanceOrNClosest : Pick {
     DistanceOrNClosest(const param::MIRParametrisation&);
-    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
-    size_t n() const;
+    void pick(const search::PointSearch&, const Point3&, neighbours_t&) const override;
+    size_t n() const override;
     bool sameAs(const Pick&) const override;
 
 private:
-    void print(std::ostream&) const;
-    void hash(eckit::MD5&) const;
+    void print(std::ostream&) const override;
+    void hash(eckit::MD5&) const override;
     NClosestOrNearest nClosest_;
     double distance_;
 };

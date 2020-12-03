@@ -60,8 +60,8 @@ protected:
 
     // -- Overridden methods
 
-    void print(std::ostream&) const;
-    bool deleteWithNext(const Action&);
+    void print(std::ostream&) const override;
+    bool deleteWithNext(const Action&) override;
 
     // -- Class members
     // None
@@ -85,7 +85,7 @@ private:
 
     virtual void execute(context::Context& ctx) const override;
     virtual bool sameAs(const Action& other) const override;
-    virtual const char* name() const;
+    virtual const char* name() const override;
 
 
     // -- Class members

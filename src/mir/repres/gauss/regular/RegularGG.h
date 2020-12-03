@@ -59,7 +59,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -79,13 +79,13 @@ private:
 
     // -- Overridden methods
 
-    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
+    virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const override;
     virtual bool sameAs(const Representation&) const override;
-    virtual Iterator* iterator() const;
-    virtual std::string factory() const;
+    virtual Iterator* iterator() const override;
+    virtual std::string factory() const override;
 
     // From Representation
-    std::vector<util::GridBox> gridBoxes() const;
+    std::vector<util::GridBox> gridBoxes() const override;
 
     // -- Class members
     // None

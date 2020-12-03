@@ -66,7 +66,7 @@ protected:
     // -- Overridden methods
 
     // From GeoPointsOutput
-    virtual eckit::DataHandle& dataHandle() const;
+    virtual eckit::DataHandle& dataHandle() const override;
 
     // -- Class members
     // None

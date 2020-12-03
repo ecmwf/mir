@@ -69,8 +69,8 @@ protected:
     // -- Overridden methods
 
     // From MIROutput
-    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
-    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
+    virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None

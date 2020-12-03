@@ -65,8 +65,8 @@ public:
     virtual void merge(const Variable&, MergePlan&);
 
     // From Endowed
-    virtual const std::string& name() const;
-    virtual const std::string& path() const;
+    virtual const std::string& name() const override;
+    virtual const std::string& path() const override;
 
     Matrix* matrix() const;
 

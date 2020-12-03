@@ -31,13 +31,13 @@ public:
     virtual ~PseudoLaplace() override;
 
 protected:
-    virtual void hash(eckit::MD5&) const;
+    virtual void hash(eckit::MD5&) const override;
 
 private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
-                          const repres::Representation& out) const;
+                          const repres::Representation& out) const override;
     virtual void print(std::ostream&) const override;
-    virtual const char* name() const;
+    virtual const char* name() const override;
     virtual bool sameAs(const Method& other) const override;
 };
 

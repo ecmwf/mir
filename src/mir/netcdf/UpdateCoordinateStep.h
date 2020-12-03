@@ -40,8 +40,8 @@ private:
 
     // -- Methods
     virtual void print(std::ostream& out) const override;
-    virtual int rank() const;
-    virtual void execute(MergePlan& plan);
+    virtual int rank() const override;
+    virtual void execute(MergePlan& plan) override;
 };
 
 

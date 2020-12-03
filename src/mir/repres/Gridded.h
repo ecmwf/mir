@@ -67,10 +67,10 @@ protected:
 
     // -- Overridden methods
 
-    util::Domain domain() const;
-    const util::BoundingBox& boundingBox() const;
-    virtual bool getLongestElementDiagonal(double&) const;
-    virtual void estimate(api::MIREstimation&) const;
+    util::Domain domain() const override;
+    const util::BoundingBox& boundingBox() const override;
+    virtual bool getLongestElementDiagonal(double&) const override;
+    virtual void estimate(api::MIREstimation&) const override;
 
     // -- Class members
     // None
@@ -87,9 +87,9 @@ private:
 
     // -- Overridden methods
 
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void setGivenPacking(grib_info&) const;
+    virtual void setComplexPacking(grib_info&) const override;
+    virtual void setSimplePacking(grib_info&) const override;
+    virtual void setGivenPacking(grib_info&) const override;
 
     // -- Class members
     // None

@@ -56,7 +56,7 @@ protected:
 
     // -- Methods
 
-    void print(std::ostream&) const;  // Change to virtual if base class
+    void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Overridden methods
     // None
@@ -84,8 +84,8 @@ private:
 
     // -- Overridden methods
 
-    virtual void fill(grib_info&) const;
-    virtual void makeName(std::ostream&) const;
+    virtual void fill(grib_info&) const override;
+    virtual void makeName(std::ostream&) const override;
     virtual bool sameAs(const Representation& other) const override;
 
     // -- Class members

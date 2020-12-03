@@ -85,10 +85,10 @@ private:
     // -- Class methods
 
     virtual Mask* create(const param::MIRParametrisation&, const repres::Representation&,
-                         const std::string& which) const;
+                         const std::string& which) const override;
 
     virtual std::string cacheKey(const param::MIRParametrisation&, const repres::Representation&,
-                                 const std::string& which) const;
+                                 const std::string& which) const override;
 
     // -- Friends
     // None
