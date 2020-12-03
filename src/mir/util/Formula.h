@@ -25,7 +25,7 @@ namespace util {
 class Formula : public action::Action {
 public:
     using Action::Action;
-    virtual ~Formula();
+    virtual ~Formula() override;
 
 private:
     virtual void print(std::ostream&) const = 0;

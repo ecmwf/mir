@@ -93,7 +93,7 @@ private:
     std::set<std::string> ignored_;
 
 
-    virtual void print(std::ostream& out) const;
+    virtual void print(std::ostream& out) const override;
     virtual bool wrapped() const;
     virtual bool less_than(const FieldBase& other) const;
     virtual void whiteListEntries(std::ostream&) const;

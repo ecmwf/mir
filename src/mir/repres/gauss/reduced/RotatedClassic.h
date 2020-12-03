@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedClassic();  // Change to virtual if base class
+    virtual ~RotatedClassic() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -88,7 +88,7 @@ private:
     virtual atlas::Grid atlasGrid() const;
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None

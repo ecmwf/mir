@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Regular();  // Change to virtual if base class
+    virtual ~Regular() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -72,7 +72,7 @@ protected:
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;

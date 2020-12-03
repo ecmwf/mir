@@ -37,7 +37,7 @@ public:
 
     // -- Destructor
 
-    virtual ~FiniteElement();
+    virtual ~FiniteElement() override;
 
     // -- Convertors
     // None
@@ -91,7 +91,7 @@ private:
     void hash(eckit::MD5&) const;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
+    bool sameAs(const Method&) const override;
     void print(std::ostream&) const;
 
     // -- Overridden methods
@@ -119,7 +119,7 @@ class FiniteElementFactory : public MethodFactory {
 
 protected:
     FiniteElementFactory(const std::string&);
-    virtual ~FiniteElementFactory();
+    virtual ~FiniteElementFactory() override;
 
 public:
     static void list(std::ostream&);
@@ -129,11 +129,11 @@ public:
 
 template <class T>
 class FiniteElementBuilder : public FiniteElementFactory {
-    virtual FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) {
+    virtual FiniteElement* make(const param::MIRParametrisation& param, const std::string& label) override {
         return new T(param, label);
     }
 
-    virtual FiniteElement* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual FiniteElement* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     FiniteElementBuilder(const std::string& name) : FiniteElementFactory(name) {}

@@ -49,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MIRJob();
+    virtual ~MIRJob() override;
 
     // -- Convertors
     // None
@@ -136,7 +136,7 @@ private:
     // -- Overridden methods
 
     // From SimpleParametrisation
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

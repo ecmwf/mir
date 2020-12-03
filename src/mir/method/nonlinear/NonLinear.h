@@ -93,7 +93,7 @@ public:
 
 template <class T>
 class NonLinearBuilder : public NonLinearFactory {
-    virtual NonLinear* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual NonLinear* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     NonLinearBuilder(const std::string& name) : NonLinearFactory(name) {}

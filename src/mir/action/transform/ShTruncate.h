@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShTruncate();  // Change to virtual if base class
+    virtual ~ShTruncate() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -79,9 +79,9 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
+    virtual bool sameAs(const Action&) const override;
 
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
 
     virtual const char* name() const;
 

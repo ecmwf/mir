@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsFileInput();  // Change to virtual if base class
+    virtual ~GeoPointsFileInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -104,8 +104,8 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream&) const override;  // Change to virtual if base class
+    virtual bool sameAs(const MIRInput& other) const override;
 
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;

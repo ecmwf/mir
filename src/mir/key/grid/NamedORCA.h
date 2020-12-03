@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NamedORCA();
+    virtual ~NamedORCA() override;
 
     // -- Convertors
     // None
@@ -63,7 +63,7 @@ protected:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual size_t gaussianNumber() const;
     virtual const repres::Representation* representation() const;
     virtual const repres::Representation* representation(const util::Rotation&) const;

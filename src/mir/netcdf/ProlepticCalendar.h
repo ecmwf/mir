@@ -23,10 +23,10 @@ namespace netcdf {
 class ProlepticCalendar : public Calendar {
 public:
     ProlepticCalendar(const Variable&);
-    virtual ~ProlepticCalendar();
+    virtual ~ProlepticCalendar() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

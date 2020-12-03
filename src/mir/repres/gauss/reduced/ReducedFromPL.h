@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReducedFromPL();
+    virtual ~ReducedFromPL() override;
 
     // -- Convertors
     // None
@@ -84,7 +84,7 @@ private:
     virtual Iterator* iterator() const;
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None

@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ReferencePattern();  // Change to virtual if base class
+    virtual ~ReferencePattern() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -45,7 +45,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context& ctx) const;
+    virtual void execute(context::Context& ctx) const override;
 
     // -- Class members
     // None
@@ -83,7 +83,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action& other) const override;
     virtual const char* name() const;
 
     // -- Class members

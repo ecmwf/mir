@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2RotatedGrid();
+    virtual ~Gridded2RotatedGrid() override;
 
     // -- Convertors
     // None
@@ -66,7 +66,7 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual bool sameAs(const Action&) const;
+    virtual bool sameAs(const Action&) const override;
 
     // -- Class members
     // None

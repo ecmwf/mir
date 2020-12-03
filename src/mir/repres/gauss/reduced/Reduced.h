@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Reduced();
+    virtual ~Reduced() override;
 
     // -- Convertors
     // None
@@ -86,7 +86,7 @@ protected:
 
     virtual void fill(grib_info&) const;
     virtual void fill(api::MIRJob&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
     virtual util::BoundingBox extendBoundingBox(const util::BoundingBox&) const;
 
     // from Representation

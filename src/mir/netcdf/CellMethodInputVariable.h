@@ -23,7 +23,7 @@ namespace netcdf {
 class CellMethodInputVariable : public InputVariable {
 public:
     CellMethodInputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~CellMethodInputVariable();
+    virtual ~CellMethodInputVariable() override;
 
 private:
     // From InputVariable
@@ -33,7 +33,7 @@ private:
 
     // From variable
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     const char* kind() const;
 };
 

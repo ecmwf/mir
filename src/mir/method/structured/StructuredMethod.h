@@ -65,7 +65,7 @@ protected:
 
     virtual bool sameAs(const Method& other) const = 0;
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
 private:
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,

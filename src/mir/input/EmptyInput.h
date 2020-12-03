@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~EmptyInput();  // Change to virtual if base class
+    virtual ~EmptyInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -78,8 +78,8 @@ private:
 
     // -- Overridden methods
 
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream&) const override;  // Change to virtual if base class
+    virtual bool sameAs(const MIRInput& other) const override;
 
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;

@@ -45,7 +45,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2GriddedInterpolation();
+    virtual ~Gridded2GriddedInterpolation() override;
 
     // -- Convertors
     // None
@@ -99,7 +99,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
     virtual bool mergeWithNext(const Action&);
     virtual bool canCrop() const;
 

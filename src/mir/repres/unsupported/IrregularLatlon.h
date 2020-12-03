@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~IrregularLatlon();  // Change to virtual if base class
+    virtual ~IrregularLatlon() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -96,7 +96,7 @@ private:
     virtual void fill(util::MeshGeneratorParameters&) const;
 
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
     virtual atlas::Grid atlasGrid() const;
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;

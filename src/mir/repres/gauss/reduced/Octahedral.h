@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Octahedral();  // Change to virtual if base class
+    virtual ~Octahedral() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -66,7 +66,7 @@ protected:
     virtual void fill(api::MIRJob&) const;
     virtual atlas::Grid atlasGrid() const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation& other) const override;
 
     // -- Class members
     // None

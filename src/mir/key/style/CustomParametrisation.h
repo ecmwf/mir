@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CustomParametrisation();  // Change to virtual if base class
+    virtual ~CustomParametrisation() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -86,7 +86,7 @@ protected:
     virtual bool get(const std::string& name, std::vector<double>& value) const;
     virtual bool get(const std::string& name, std::vector<std::string>& value) const;
 
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
+    virtual void print(std::ostream&) const override;  // Change to virtual if base class
 
     // -- Class members
     // None

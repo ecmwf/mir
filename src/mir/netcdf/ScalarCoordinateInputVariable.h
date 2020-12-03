@@ -24,7 +24,7 @@ class ScalarCoordinateInputVariable : public InputVariable {
 public:
     ScalarCoordinateInputVariable(Dataset& owner, const std::string& name, int id,
                                   const std::vector<Dimension*>& dimensions);
-    virtual ~ScalarCoordinateInputVariable();
+    virtual ~ScalarCoordinateInputVariable() override;
 
 private:
     Variable* makeOutputVariable(Dataset& owner, const std::string& name,
@@ -32,7 +32,7 @@ private:
     virtual Dimension* getVirtualDimension();
     virtual Variable* makeCoordinateVariable();
     virtual Variable* makeScalarCoordinateVariable();
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

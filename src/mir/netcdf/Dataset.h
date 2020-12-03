@@ -35,7 +35,7 @@ namespace netcdf {
 class Dataset : public Endowed {
 public:
     Dataset(const std::string&);
-    virtual ~Dataset();
+    virtual ~Dataset() override;
 
     // -- Methods
 

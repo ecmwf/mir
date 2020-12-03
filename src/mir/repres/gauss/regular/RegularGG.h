@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGG();
+    virtual ~RegularGG() override;
 
     // -- Convertors
     // None
@@ -80,7 +80,7 @@ private:
     // -- Overridden methods
 
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
     virtual Iterator* iterator() const;
     virtual std::string factory() const;
 

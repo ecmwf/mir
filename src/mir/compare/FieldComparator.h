@@ -54,7 +54,7 @@ public:
 class DefaultWhiteLister : public WhiteLister {
     virtual bool whiteListed(const MultiFile&, const Field&) const { return false; }
     virtual bool ignoreError(const MultiFile&, const Field&) const { return false; }
-    virtual ~DefaultWhiteLister();
+    virtual ~DefaultWhiteLister() override;
 
 public:
     static const WhiteLister& instance();

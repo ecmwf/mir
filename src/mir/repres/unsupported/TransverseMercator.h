@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TransverseMercator();  // Change to virtual if base class
+    virtual ~TransverseMercator() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

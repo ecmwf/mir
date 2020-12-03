@@ -95,10 +95,10 @@ private:
     // -- Overridden methods
 
     // From Action
-    virtual bool sameAs(const Action&) const;
+    virtual bool sameAs(const Action&) const override;
     virtual const char* name() const;
     void print(std::ostream&) const;
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
 
     // -- Class members
     // None

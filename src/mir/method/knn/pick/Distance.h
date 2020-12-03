@@ -26,10 +26,10 @@ struct Distance : Pick {
     Distance(const param::MIRParametrisation&);
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
     size_t n() const;
-    virtual bool sameAs(const Pick&) const;
+    virtual bool sameAs(const Pick&) const override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
     double distance_;
 };

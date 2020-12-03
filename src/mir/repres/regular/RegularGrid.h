@@ -41,7 +41,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RegularGrid();
+    virtual ~RegularGrid() override;
 
     // -- Convertors
     // None
@@ -80,7 +80,7 @@ protected:
     // -- Overridden methods
 
     // from Representation
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
 
     virtual bool includesNorthPole() const;
     virtual bool includesSouthPole() const;
@@ -91,7 +91,7 @@ protected:
     virtual void reorder(long scanningMode, MIRValuesVector&) const;
     virtual void validate(const MIRValuesVector&) const;
     virtual void makeName(std::ostream&) const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual bool extendBoundingBoxOnIntersect() const;
 
     virtual ::atlas::Grid atlasGrid() const;

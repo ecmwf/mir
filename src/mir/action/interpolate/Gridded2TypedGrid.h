@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gridded2TypedGrid();
+    virtual ~Gridded2TypedGrid() override;
 
     // -- Convertors
     // None
@@ -64,8 +64,8 @@ protected:
     // -- Overridden methods
 
     // From Gridded2GriddedInterpolation
-    virtual bool sameAs(const Action&) const;
-    virtual void print(std::ostream&) const;
+    virtual bool sameAs(const Action&) const override;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None

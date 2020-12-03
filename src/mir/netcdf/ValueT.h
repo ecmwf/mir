@@ -36,7 +36,7 @@ public:
 private:
     T value_;
 
-    virtual void print(std::ostream& out) const { out << value_; }
+    virtual void print(std::ostream& out) const override { out << value_; }
 
     virtual void dump(std::ostream& out) const;
 
@@ -48,7 +48,7 @@ private:
 
     virtual ValueT* clone() const { return new ValueT(type_, value_); }
 
-    virtual bool sameAs(const Value& other) const {
+    virtual bool sameAs(const Value& other) const override {
         auto o = dynamic_cast<const ValueT*>(&other);
         return (o != nullptr) && (o->value_ == value_);
     }

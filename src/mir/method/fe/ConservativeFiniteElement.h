@@ -46,7 +46,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ConservativeFiniteElement();
+    virtual ~ConservativeFiniteElement() override;
 
     // -- Convertors
     // None
@@ -97,7 +97,7 @@ private:
     void hash(eckit::MD5&) const;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
+    bool sameAs(const Method&) const override;
     void print(std::ostream&) const;
     virtual const char* name() const;
 

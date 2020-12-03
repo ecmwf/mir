@@ -87,7 +87,7 @@ public:
 template <class T>
 class LegendreLoaderBuilder : public LegendreLoaderFactory {
 
-    virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) {
+    virtual LegendreLoader* make(const param::MIRParametrisation& param, const eckit::PathName& path) override {
         return new T(param, path);
     }
 

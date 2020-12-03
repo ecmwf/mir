@@ -92,11 +92,11 @@ private:
     // From MIROutput
     virtual size_t copy(const param::MIRParametrisation&, context::Context&);
     virtual size_t save(const param::MIRParametrisation&, context::Context&);
-    virtual bool sameAs(const MIROutput&) const;
+    virtual bool sameAs(const MIROutput&) const override;
     virtual bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const;
     virtual bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const;
     virtual void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&);
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -120,7 +120,7 @@ class PNGEncoderFactory {
 
 protected:
     PNGEncoderFactory(const std::string&);
-    virtual ~PNGEncoderFactory();
+    virtual ~PNGEncoderFactory() override;
 
 public:
     // This is 'const' as the representation uses reference counting
@@ -132,7 +132,7 @@ public:
 
 template <class T>
 class PNGEncoderBuilder : public PNGEncoderFactory {
-    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation& param, const data::MIRField& field) {
+    virtual PNGOutput::PNGEncoder* make(const param::MIRParametrisation& param, const data::MIRField& field) override {
         return new T(param, field);
     }
 

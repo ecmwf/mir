@@ -25,7 +25,7 @@ class Remapping : public HyperCube::Remapping, public eckit::Counted {
 
 public:
     Remapping(size_t = 0);
-    virtual ~Remapping();
+    virtual ~Remapping() override;
 
     void validate() const;
 

@@ -82,8 +82,8 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const MIRInput& other) const;
+    virtual void print(std::ostream&) const override;
+    virtual bool sameAs(const MIRInput& other) const override;
 
     // From GribInput
     virtual eckit::DataHandle& dataHandle();

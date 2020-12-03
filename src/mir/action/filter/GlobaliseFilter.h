@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GlobaliseFilter();  // Change to virtual if base class
+    virtual ~GlobaliseFilter() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -83,8 +83,8 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context& ctx) const;
-    virtual bool sameAs(const Action& other) const;
+    virtual void execute(context::Context& ctx) const override;
+    virtual bool sameAs(const Action& other) const override;
     virtual const char* name() const;
 
 

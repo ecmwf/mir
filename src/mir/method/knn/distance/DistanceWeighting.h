@@ -76,7 +76,7 @@ public:
 
 template <class T>
 class DistanceWeightingBuilder : public DistanceWeightingFactory {
-    virtual DistanceWeighting* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual DistanceWeighting* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     DistanceWeightingBuilder(const std::string& name) : DistanceWeightingFactory(name) {}

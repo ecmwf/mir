@@ -27,11 +27,11 @@ class NearestNeighbour : public KNearestNeighbours {
 public:
     NearestNeighbour(const param::MIRParametrisation&);
 
-    virtual ~NearestNeighbour();
+    virtual ~NearestNeighbour() override;
 
 private:
     virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
+    virtual bool sameAs(const Method& other) const override;
     virtual const pick::Pick& pick() const;
     virtual const distance::DistanceWeighting& distanceWeighting() const;
 

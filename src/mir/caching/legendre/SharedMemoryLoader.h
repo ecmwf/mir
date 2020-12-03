@@ -25,7 +25,7 @@ class SharedMemoryLoader : public LegendreLoader {
 public:
     SharedMemoryLoader(const param::MIRParametrisation&, const eckit::PathName&);
 
-    virtual ~SharedMemoryLoader();
+    virtual ~SharedMemoryLoader() override;
 
     static void loadSharedMemory(const eckit::PathName&);
     static void unloadSharedMemory(const eckit::PathName&);
@@ -33,7 +33,7 @@ public:
     static bool shared();
 
 protected:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
 private:
     virtual const void* address() const;

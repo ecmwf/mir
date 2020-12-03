@@ -83,7 +83,7 @@ private:
 
     // -- Overridden methods
     //
-    virtual void execute(context::Context&, const ActionNode&) const;
+    virtual void execute(context::Context&, const ActionNode&) const override;
     virtual void wait() const;
     virtual void parametrisation(const param::MIRParametrisation&);
 

@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedGG();  // Change to virtual if base class
+    virtual ~RotatedGG() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -90,7 +90,7 @@ private:
 
     virtual const Gridded* croppedRepresentation(const util::BoundingBox&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
 
     // -- Class members
     // None

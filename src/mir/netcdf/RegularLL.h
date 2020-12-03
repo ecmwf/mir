@@ -25,7 +25,7 @@ public:
     RegularLL(const Variable&, double north, double south, double south_north_increment, double west, double east,
               double west_east_increment);
 
-    virtual ~RegularLL();
+    virtual ~RegularLL() override;
 
     // -- Methods
 
@@ -54,7 +54,7 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream& s) const override;
 
     // From GridSpec
     virtual bool has(const std::string& name) const;

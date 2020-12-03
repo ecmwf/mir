@@ -30,7 +30,7 @@ namespace netcdf {
 class InputDataset : public Dataset {
 public:
     InputDataset(const std::string&, NCFileCache&);
-    virtual ~InputDataset();
+    virtual ~InputDataset() override;
 
     virtual std::vector<Field*> fields() const;
 

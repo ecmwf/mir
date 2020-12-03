@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~StretchedLL();  // Change to virtual if base class
+    virtual ~StretchedLL() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

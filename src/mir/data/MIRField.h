@@ -173,7 +173,7 @@ public:
 
 template <class T>
 class FieldBuilder : public FieldFactory {
-    virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) {
+    virtual MIRField* make(const param::MIRParametrisation& param, bool hasMissing, double missingValue) override {
         return new T(param, hasMissing, missingValue);
     }
 

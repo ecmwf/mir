@@ -121,7 +121,7 @@ public:
 
 template <class T>
 class IntgridBuilder : public IntgridFactory {
-    virtual Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) {
+    virtual Intgrid* make(const param::MIRParametrisation& parametrisation, long targetGaussianN) override {
         return new T(parametrisation, targetGaussianN);
     }
 

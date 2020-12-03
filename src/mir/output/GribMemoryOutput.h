@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GribMemoryOutput();  // Change to virtual if base class
+    virtual ~GribMemoryOutput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -82,8 +82,8 @@ private:
     // -- Overridden methods
 
     virtual void out(const void* message, size_t length, bool interpolated);
-    virtual void print(std::ostream&) const;
-    virtual bool sameAs(const MIROutput& other) const;
+    virtual void print(std::ostream&) const override;
+    virtual bool sameAs(const MIROutput& other) const override;
 
     // -- Class members
     // None

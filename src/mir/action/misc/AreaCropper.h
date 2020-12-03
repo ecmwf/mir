@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AreaCropper();  // Change to virtual if base class
+    virtual ~AreaCropper() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -54,7 +54,7 @@ public:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -90,7 +90,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action& other) const;
+    virtual bool sameAs(const Action& other) const override;
     virtual const char* name() const;
     virtual bool isCropAction() const;
     virtual bool canCrop() const;

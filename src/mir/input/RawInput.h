@@ -91,7 +91,7 @@ private:
     data::MIRField field() const;
     bool next();
     size_t copy(double* values, size_t size) const;
-    bool sameAs(const MIRInput& other) const;
+    bool sameAs(const MIRInput& other) const override;
 
     // From MIRParametrisation
     bool has(const std::string& name) const;

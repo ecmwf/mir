@@ -38,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~VectorInput();  // Change to virtual if base class
+    virtual ~VectorInput() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -89,8 +89,8 @@ private:
     virtual const param::MIRParametrisation& parametrisation(size_t which) const;
     virtual data::MIRField field() const;
     virtual bool next();
-    virtual bool sameAs(const MIRInput& other) const;
-    virtual void print(std::ostream& out) const;
+    virtual bool sameAs(const MIRInput& other) const override;
+    virtual void print(std::ostream& out) const override;
     virtual grib_handle* gribHandle(size_t which = 0) const;
     virtual size_t dimensions() const;
 

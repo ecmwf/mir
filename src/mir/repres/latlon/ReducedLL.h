@@ -94,7 +94,7 @@ private:
     Iterator* iterator() const;
 
     void makeName(std::ostream&) const;
-    bool sameAs(const Representation& other) const;
+    bool sameAs(const Representation& other) const override;
 
     virtual size_t numberOfPoints() const;
     virtual bool getLongestElementDiagonal(double&) const;

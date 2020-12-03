@@ -25,7 +25,7 @@ public:
     Rectilinear(const Variable&, double north, double south, const std::vector<double>& latitudes, double west,
                 double east, const std::vector<double>& longitudes);
 
-    virtual ~Rectilinear();
+    virtual ~Rectilinear() override;
 
     // -- Methods
 
@@ -51,7 +51,7 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream& s) const override;
 
     // From GridSpec
     virtual bool has(const std::string& name) const;

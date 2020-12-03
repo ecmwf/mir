@@ -27,7 +27,7 @@ struct DistanceAndNClosest : Pick {
     DistanceAndNClosest(const param::MIRParametrisation&);
     void pick(const search::PointSearch&, const Point3&, neighbours_t&) const;
     size_t n() const;
-    bool sameAs(const Pick&) const;
+    bool sameAs(const Pick&) const override;
 
 private:
     void print(std::ostream&) const;

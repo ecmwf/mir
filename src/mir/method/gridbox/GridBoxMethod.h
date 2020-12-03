@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GridBoxMethod();
+    virtual ~GridBoxMethod() override;
 
     // -- Convertors
     // None
@@ -84,7 +84,7 @@ private:
     void hash(eckit::MD5&) const;
     void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
                   const repres::Representation& out) const;
-    bool sameAs(const Method&) const;
+    bool sameAs(const Method&) const override;
     void print(std::ostream&) const;
     bool validateMatrixWeights() const;
     const char* name() const;

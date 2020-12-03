@@ -74,7 +74,7 @@ public:
 
 template <class T>
 class PickBuilder : public PickFactory {
-    virtual Pick* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual Pick* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     PickBuilder(const std::string& name) : PickFactory(name) {}

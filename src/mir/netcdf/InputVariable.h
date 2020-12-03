@@ -23,7 +23,7 @@ namespace netcdf {
 class InputVariable : public Variable {
 public:
     InputVariable(Dataset& owner, const std::string& name, int id, const std::vector<Dimension*>& dimensions);
-    virtual ~InputVariable();
+    virtual ~InputVariable() override;
 
 protected:
     // Members
@@ -35,7 +35,7 @@ protected:
                                          const std::vector<Dimension*>& dimensions) const = 0;
 
     // From variable
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual Variable* clone(Dataset& owner) const;
 
     // From Endowed

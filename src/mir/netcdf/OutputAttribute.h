@@ -23,7 +23,7 @@ namespace netcdf {
 class OutputAttribute : public Attribute {
 public:
     OutputAttribute(Endowed& owner, const std::string& name, Value* value);
-    virtual ~OutputAttribute();
+    virtual ~OutputAttribute() override;
 
 private:
     // -- Members
@@ -32,7 +32,7 @@ private:
 
     // From Atttribute
     virtual void create(int nc) const;
-    virtual void print(std::ostream& out) const;
+    virtual void print(std::ostream& out) const override;
     virtual void clone(Endowed& owner) const;
     virtual void merge(const Attribute&);
     virtual void invalidate();

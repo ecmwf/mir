@@ -42,7 +42,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Save();  // Change to virtual if base class
+    virtual ~Save() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -96,8 +96,8 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
-    virtual bool sameAs(const Action&) const;
+    virtual void execute(context::Context&) const override;
+    virtual bool sameAs(const Action&) const override;
     virtual const char* name() const;
     virtual bool isEndAction() const;
     virtual void estimate(context::Context&, api::MIREstimation& estimation) const;

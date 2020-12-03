@@ -145,7 +145,7 @@ public:
 
 template <class T>
 class MIROutputBuilder : public MIROutputFactory {
-    virtual MIROutput* make(const std::string& path) { return new T(path); }
+    virtual MIROutput* make(const std::string& path) override { return new T(path); }
 
 public:
     MIROutputBuilder(const std::string& name) : MIROutputFactory(name) {}

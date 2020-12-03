@@ -33,7 +33,7 @@ class MatrixLoader : public eckit::linalg::SparseMatrix::Allocator {
 
 public:
     MatrixLoader(const std::string&, const eckit::PathName&);
-    virtual ~MatrixLoader();
+    virtual ~MatrixLoader() override;
 
     MatrixLoader(const MatrixLoader&) = delete;
     MatrixLoader& operator=(const MatrixLoader&) = delete;
@@ -73,7 +73,7 @@ public:
 
 template <class T>
 class MatrixLoaderBuilder : public MatrixLoaderFactory {
-    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) { return new T(name, path); }
+    virtual MatrixLoader* make(const std::string& name, const eckit::PathName& path) override { return new T(name, path); }
 
 public:
     MatrixLoaderBuilder(const std::string& name) : MatrixLoaderFactory(name) {}

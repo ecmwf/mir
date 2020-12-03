@@ -87,10 +87,10 @@ private:
     // -- Overridden methods
 
     // From MIRInput
-    virtual bool sameAs(const MIRInput&) const { return false; }
+    virtual bool sameAs(const MIRInput&) const override { return false; }
 
     // From ArtificialInput
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual data::MIRValuesVector fill(size_t) const;
 
     // -- Class members

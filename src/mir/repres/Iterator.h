@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Iterator();
+    virtual ~Iterator() override;
 
     // -- Convertors
 

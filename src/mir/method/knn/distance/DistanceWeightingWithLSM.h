@@ -44,8 +44,8 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
 
 private:
     std::string method_;
-    virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
+    virtual bool sameAs(const DistanceWeighting&) const override;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
 };
 
@@ -72,7 +72,7 @@ public:
 
 template <class T>
 class DistanceWeightingWithLSMBuilder : public DistanceWeightingWithLSMFactory {
-    virtual DistanceWeighting* make(const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) {
+    virtual DistanceWeighting* make(const param::MIRParametrisation& param, const lsm::LandSeaMasks& lsm) override {
         return new T(param, lsm);
     }
 

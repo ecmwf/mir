@@ -27,7 +27,7 @@ class NearestLSM : public KNearestNeighbours {
 public:
     NearestLSM(const param::MIRParametrisation&);
 
-    virtual ~NearestLSM();
+    virtual ~NearestLSM() override;
 
 private:
     virtual void assemble(util::MIRStatistics&, WeightMatrix&, const repres::Representation& in,
@@ -39,7 +39,7 @@ private:
     virtual lsm::LandSeaMasks getMasks(const repres::Representation& in, const repres::Representation& out) const;
 
     virtual const char* name() const;
-    virtual bool sameAs(const Method& other) const;
+    virtual bool sameAs(const Method& other) const override;
 
     virtual const pick::Pick& pick() const;
     virtual const distance::DistanceWeighting& distanceWeighting() const;

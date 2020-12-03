@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedLL();
+    virtual ~RotatedLL() override;
 
     // -- Convertors
     // None
@@ -73,7 +73,7 @@ private:
     void fill(api::MIRJob&) const;
 
     void makeName(std::ostream&) const;
-    bool sameAs(const Representation&) const;
+    bool sameAs(const Representation&) const override;
 
     // From Representation
     const RotatedLL* croppedRepresentation(const util::BoundingBox&) const;

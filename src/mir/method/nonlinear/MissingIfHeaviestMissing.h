@@ -27,7 +27,7 @@ struct MissingIfHeaviestMissing : NonLinear {
                    const double& missingValue) const;
 
 private:
-    bool sameAs(const NonLinear&) const;
+    bool sameAs(const NonLinear&) const override;
     void print(std::ostream&) const;
     void hash(eckit::MD5&) const;
 };

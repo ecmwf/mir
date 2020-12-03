@@ -65,7 +65,7 @@ private:
 
     // -- Overridden methods
 
-    bool sameAs(const Action&) const;
+    bool sameAs(const Action&) const override;
     const char* name() const;
     const repres::Representation* outputRepresentation() const;
     void print(std::ostream&) const;

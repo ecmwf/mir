@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~StretchedSH();  // Change to virtual if base class
+    virtual ~StretchedSH() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

@@ -75,7 +75,7 @@ protected:
 
     // From Representation
     virtual bool extendBoundingBoxOnIntersect() const;
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -107,7 +107,7 @@ private:
     virtual util::Domain domain() const;
     virtual Iterator* iterator() const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
 
     // Domain operations
     virtual bool isPeriodicWestEast() const;

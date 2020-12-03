@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ClenshawCurtisPattern();
+    virtual ~ClenshawCurtisPattern() override;
 
     // -- Convertors
     // None
@@ -60,7 +60,7 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None
@@ -86,7 +86,7 @@ private:
 
     // -- Class methods
 
-    virtual const Grid* make(const std::string& name) const;
+    virtual const Grid* make(const std::string& name) const override;
 
     // -- Friends
     // None

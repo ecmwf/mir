@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~SetMetadata();  // Change to virtual if base class
+    virtual ~SetMetadata() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -47,7 +47,7 @@ public:
     // -- Overridden methods
     // None
 
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
 
     // -- Class members
     // None
@@ -85,7 +85,7 @@ private:
 
     // -- Overridden methods
 
-    virtual bool sameAs(const Action&) const;
+    virtual bool sameAs(const Action&) const override;
     virtual const char* name() const;
 
     // -- Class members

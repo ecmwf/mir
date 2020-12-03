@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~AzimuthRange();  // Change to virtual if base class
+    virtual ~AzimuthRange() override;  // Change to virtual if base class
 
     // -- Convertors
     // None

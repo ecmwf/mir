@@ -28,8 +28,8 @@ struct ClimateFilter : DistanceWeighting {
                     std::vector<WeightMatrix::Triplet>& triplets) const;
 
 private:
-    virtual bool sameAs(const DistanceWeighting&) const;
-    virtual void print(std::ostream&) const;
+    virtual bool sameAs(const DistanceWeighting&) const override;
+    virtual void print(std::ostream&) const override;
     virtual void hash(eckit::MD5&) const;
     double halfDelta_;
     double delta_;

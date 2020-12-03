@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Gaussian();  // Change to virtual if base class
+    virtual ~Gaussian() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -86,7 +86,7 @@ protected:
     // -- Overridden methods
 
     virtual void fill(util::MeshGeneratorParameters&) const;
-    virtual bool sameAs(const Representation&) const;
+    virtual bool sameAs(const Representation&) const override;
     virtual void validate(const MIRValuesVector&) const;
     virtual bool extendBoundingBoxOnIntersect() const;
 

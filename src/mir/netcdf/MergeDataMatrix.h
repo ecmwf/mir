@@ -23,13 +23,13 @@ namespace netcdf {
 class MergeDataMatrix : public Matrix {
 public:
     MergeDataMatrix(Matrix* out, Matrix* in, size_t size);
-    virtual ~MergeDataMatrix();
+    virtual ~MergeDataMatrix() override;
 
 private:
     Matrix* out_;
     Matrix* in_;
 
-    virtual void print(std::ostream& out) const;
+    virtual void print(std::ostream& out) const override;
 
     virtual void dumpTree(std::ostream&, size_t) const;
 };

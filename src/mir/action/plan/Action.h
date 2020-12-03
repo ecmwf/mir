@@ -161,7 +161,7 @@ public:
 
 template <class T>
 class ActionBuilder : public ActionFactory {
-    virtual Action* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual Action* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     ActionBuilder(const std::string& name) : ActionFactory(name) {}

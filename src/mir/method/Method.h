@@ -95,7 +95,7 @@ public:
 
 template <class T>
 class MethodBuilder : public MethodFactory {
-    virtual Method* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual Method* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     MethodBuilder(const std::string& name) : MethodFactory(name) {}

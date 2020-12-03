@@ -23,10 +23,10 @@ namespace netcdf {
 class SimpleOutputVariable : public OutputVariable {
 public:
     SimpleOutputVariable(Dataset& owner, const std::string& name, const std::vector<Dimension*>& dimensions);
-    virtual ~SimpleOutputVariable();
+    virtual ~SimpleOutputVariable() override;
 
 private:
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 };
 
 

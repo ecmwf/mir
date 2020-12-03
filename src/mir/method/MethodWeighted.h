@@ -61,7 +61,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MethodWeighted();
+    virtual ~MethodWeighted() override;
 
     // -- Convertors
     // None
@@ -144,7 +144,7 @@ private:
     // -- Overridden methods
 
     // From Method
-    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const;
+    virtual void execute(context::Context&, const repres::Representation& in, const repres::Representation& out) const override;
     virtual bool canCrop() const;
     virtual void setCropping(const mir::util::BoundingBox&);
     virtual bool hasCropping() const;

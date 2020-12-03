@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~CCSDS();
+    virtual ~CCSDS() override;
 
     // -- Convertors
     // None
@@ -76,7 +76,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
     virtual void fill(grib_info&, const repres::Representation&, const param::MIRParametrisation&,
                       const param::MIRParametrisation&) const;
 

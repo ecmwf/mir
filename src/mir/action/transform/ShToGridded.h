@@ -49,7 +49,7 @@ public:
 
     // -- Destructor
 
-    virtual ~ShToGridded();
+    virtual ~ShToGridded() override;
 
     // -- Convertors
     // None
@@ -104,7 +104,7 @@ private:
 
     // -- Overridden methods
 
-    virtual void execute(context::Context&) const;
+    virtual void execute(context::Context&) const override;
 
     virtual bool mergeWithNext(const Action&);
 

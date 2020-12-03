@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    virtual ~GeoPointsFileOutput();
+    virtual ~GeoPointsFileOutput() override;
 
     // -- Convertors
     // None
@@ -84,8 +84,8 @@ private:
     // -- Overridden methods
 
     // From MIROutput
-    virtual void print(std::ostream&) const;  // Change to virtual if base class
-    virtual bool sameAs(const MIROutput& other) const;
+    virtual void print(std::ostream&) const override;  // Change to virtual if base class
+    virtual bool sameAs(const MIROutput& other) const override;
 
     // -- Class members
     // None

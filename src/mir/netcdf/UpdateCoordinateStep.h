@@ -39,7 +39,7 @@ private:
     const Variable& in_;
 
     // -- Methods
-    virtual void print(std::ostream& out) const;
+    virtual void print(std::ostream& out) const override;
     virtual int rank() const;
     virtual void execute(MergePlan& plan);
 };

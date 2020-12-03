@@ -31,7 +31,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RotatedSH();  // Change to virtual if base class
+    virtual ~RotatedSH() override;  // Change to virtual if base class
 
     // -- Convertors
     // None
@@ -86,7 +86,7 @@ private:
 
     virtual void fill(grib_info&) const;
     virtual void makeName(std::ostream&) const;
-    virtual bool sameAs(const Representation& other) const;
+    virtual bool sameAs(const Representation& other) const override;
 
     // -- Class members
     // None

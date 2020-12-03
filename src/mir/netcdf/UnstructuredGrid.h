@@ -24,7 +24,7 @@ class UnstructuredGrid : public GridSpec {
 public:
     UnstructuredGrid(const Variable&, const std::vector<double>& latitudes, const std::vector<double>& longitudes);
 
-    virtual ~UnstructuredGrid();
+    virtual ~UnstructuredGrid() override;
 
     // -- Methods
 
@@ -48,7 +48,7 @@ private:
 
     // - Methods
 
-    virtual void print(std::ostream& s) const;
+    virtual void print(std::ostream& s) const override;
 
     // From GridSpec
     virtual bool has(const std::string& name) const;

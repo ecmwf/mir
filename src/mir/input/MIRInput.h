@@ -142,7 +142,7 @@ public:
 
 template <class T>
 class MIRInputBuilder : public MIRInputFactory {
-    virtual MIRInput* make(const std::string& path) { return new T(path); }
+    virtual MIRInput* make(const std::string& path) override { return new T(path); }
 
 public:
     MIRInputBuilder(unsigned long magic) : MIRInputFactory(magic) {}

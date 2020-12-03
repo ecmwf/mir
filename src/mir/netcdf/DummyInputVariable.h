@@ -23,7 +23,7 @@ namespace netcdf {
 class DummyInputVariable : public Variable {
 public:
     DummyInputVariable(Dataset& owner, const Variable& parent);
-    virtual ~DummyInputVariable();
+    virtual ~DummyInputVariable() override;
 
 protected:
     const Variable& parent_;
@@ -38,7 +38,7 @@ protected:
 
     // From variable
 
-    virtual void print(std::ostream&) const;
+    virtual void print(std::ostream&) const override;
 
     // From Endowed
 

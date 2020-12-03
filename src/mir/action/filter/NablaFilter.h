@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    virtual ~NablaFilter();
+    virtual ~NablaFilter() override;
 
     // -- Convertors
     // None
@@ -98,7 +98,7 @@ private:
 class NablaFilterFactory : public ActionFactory {
 protected:
     NablaFilterFactory(const std::string& name);
-    virtual ~NablaFilterFactory();
+    virtual ~NablaFilterFactory() override;
 
 public:
     static void list(std::ostream&);
@@ -107,7 +107,7 @@ public:
 
 template <class T>
 class NablaFilterBuilder : public NablaFilterFactory {
-    virtual NablaFilter* make(const param::MIRParametrisation& param) { return new T(param); }
+    virtual NablaFilter* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     NablaFilterBuilder(const std::string& name) : NablaFilterFactory(name) {}
