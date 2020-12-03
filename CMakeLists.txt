@@ -27,7 +27,7 @@ ecbuild_add_option(FEATURE NETCDF             DEFAULT ON  DESCRIPTION "support f
 ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support for PNG encoding" REQUIRED_PACKAGES PNG)
 
 ecbuild_find_package(NAME eccodes VERSION 2.19 REQUIRED)
-ecbuild_find_package(NAME eckit   VERSION 1.10 REQUIRED)
+ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
 ecbuild_find_package(NAME atlas   VERSION 0.20 REQUIRED)
 
 add_subdirectory(src)
