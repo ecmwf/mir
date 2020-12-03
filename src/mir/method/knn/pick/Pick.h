@@ -34,7 +34,7 @@ public:
     using neighbours_t = std::vector<search::PointSearch::PointValueType>;
 
     Pick();
-    virtual ~Pick() override;
+    virtual ~Pick();
 
     Pick(const Pick&) = delete;
     Pick& operator=(const Pick&) = delete;
@@ -64,7 +64,7 @@ private:
 
 protected:
     PickFactory(const std::string& name);
-    virtual ~PickFactory() override;
+    virtual ~PickFactory();
 
 public:
     static const Pick* build(const std::string& name, const param::MIRParametrisation&);

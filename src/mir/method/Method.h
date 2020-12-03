@@ -46,7 +46,7 @@ public:
     Method(const param::MIRParametrisation&);
     Method(const Method&) = delete;
 
-    virtual ~Method() override;
+    virtual ~Method();
 
     void operator=(const Method&) = delete;
 
@@ -87,7 +87,7 @@ class MethodFactory {
 
 protected:
     MethodFactory(const std::string&);
-    virtual ~MethodFactory() override;
+    virtual ~MethodFactory();
 
 public:
     static void list(std::ostream&);

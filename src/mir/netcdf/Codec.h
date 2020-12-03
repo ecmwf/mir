@@ -81,7 +81,7 @@ class CodecFactory {
 protected:
     CodecFactory(const std::string&);
 
-    virtual ~CodecFactory() override;
+    virtual ~CodecFactory();
 
 public:
     static Codec* build(const std::string&, const Variable&);

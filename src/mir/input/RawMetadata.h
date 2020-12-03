@@ -40,7 +40,7 @@ public:
 
     // -- Destructor
 
-    virtual ~RawMetadata() override;
+    virtual ~RawMetadata();
 
     // -- Convertors
     // None

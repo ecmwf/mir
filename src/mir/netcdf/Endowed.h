@@ -31,7 +31,7 @@ namespace netcdf {
 class Endowed {
 public:
     Endowed();
-    virtual ~Endowed() override;
+    virtual ~Endowed();
 
     // -- Methods
     void add(Attribute*);

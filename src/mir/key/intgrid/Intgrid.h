@@ -111,7 +111,7 @@ class IntgridFactory {
 
 protected:
     IntgridFactory(const std::string&);
-    virtual ~IntgridFactory() override;
+    virtual ~IntgridFactory();
 
 public:
     static Intgrid* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);

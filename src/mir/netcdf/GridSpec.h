@@ -33,7 +33,7 @@ namespace netcdf {
 class GridSpec {
 public:
     GridSpec(const Variable&);
-    virtual ~GridSpec() override;
+    virtual ~GridSpec();
 
     GridSpec(const GridSpec&) = delete;
     void operator=(const GridSpec&) = delete;
@@ -80,7 +80,7 @@ public:
 
 protected:
     GridSpecGuesser(size_t priority);
-    virtual ~GridSpecGuesser() override;
+    virtual ~GridSpecGuesser();
 
     virtual GridSpec* guess(const Variable& variable, const Variable& latitudes, const Variable& longitudes) const = 0;
 

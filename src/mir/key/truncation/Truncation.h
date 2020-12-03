@@ -110,7 +110,7 @@ class TruncationFactory {
 
 protected:
     TruncationFactory(const std::string&);
-    virtual ~TruncationFactory() override;
+    virtual ~TruncationFactory();
 
 public:
     static Truncation* build(const std::string&, const param::MIRParametrisation&, long targetGaussianN);

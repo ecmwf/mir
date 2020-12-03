@@ -60,7 +60,7 @@ private:
 
 protected:
     DistanceWeightingWithLSMFactory(const std::string& name);
-    virtual ~DistanceWeightingWithLSMFactory() override;
+    virtual ~DistanceWeightingWithLSMFactory();
 
 public:
     static const DistanceWeighting* build(const std::string& name, const param::MIRParametrisation&,

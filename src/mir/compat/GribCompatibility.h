@@ -61,7 +61,7 @@ public:
 
 protected:
     GribCompatibility(const std::string&);
-    virtual ~GribCompatibility() override;
+    virtual ~GribCompatibility();
 
     virtual void print(std::ostream&) const = 0;
 

@@ -33,7 +33,7 @@ public:
     // -- Members
     // -- Methods
 
-    virtual void print(std::ostream&) const override;
+    virtual void print(std::ostream&) const;
 
     // - Friend
     friend std::ostream& operator<<(std::ostream& s, const Remapping& v) {

@@ -97,7 +97,7 @@ private:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const override;
+    virtual void print(std::ostream&) const;
 
     // -- Overridden methods
     // None

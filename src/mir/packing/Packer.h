@@ -45,7 +45,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Packer() override;
+    virtual ~Packer();
 
     // -- Convertors
     // None
@@ -121,7 +121,7 @@ class PackerFactory {
 
 protected:
     PackerFactory(const std::string&);
-    virtual ~PackerFactory() override;
+    virtual ~PackerFactory();
 
 public:
     static Packer* build(const std::string&, const param::MIRParametrisation& user,

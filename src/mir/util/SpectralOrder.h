@@ -107,7 +107,7 @@ class SpectralOrderFactory {
 
 protected:
     SpectralOrderFactory(const std::string&);
-    virtual ~SpectralOrderFactory() override;
+    virtual ~SpectralOrderFactory();
 
 public:
     static SpectralOrder* build(const std::string&);

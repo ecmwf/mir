@@ -38,7 +38,7 @@ public:
 
     // -- Destructor
 
-    virtual ~Space() override;
+    virtual ~Space();
 
     // -- Convertors
     // None
@@ -113,7 +113,7 @@ private:
 
 protected:
     SpaceChooser(const std::string&, Space* choice, size_t component, size_t dimensions);
-    virtual ~SpaceChooser() override;
+    virtual ~SpaceChooser();
 
 public:
     static const Space& lookup(const std::string& name);
