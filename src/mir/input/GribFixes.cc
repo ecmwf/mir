@@ -95,7 +95,7 @@ void GribFixes::readConfigurationFiles() {
             auto key   = StringTools::trim(keyValue[0]);
             auto value = StringTools::trim(keyValue[1]);
 
-            if (value.find("/") != std::string::npos) {
+            if (value.find('/') != std::string::npos) {
                 auto values = StringTools::split("/", value);
                 id->set(key, values);
             }

@@ -120,7 +120,7 @@ void MIRField::validate() const {
 void MIRField::handle(size_t which, size_t handle) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    return field_->handle(which, handle);
+    field_->handle(which, handle);
 }
 
 

@@ -421,7 +421,7 @@ void ECMWFStyle::prepare(action::ActionPlan& plan, input::MIRInput& input, outpu
 
         std::string nabla;
         if (user.get("nabla", nabla)) {
-            for (auto operation : eckit::StringTools::split("/", nabla)) {
+            for (const auto& operation : eckit::StringTools::split("/", nabla)) {
                 plan.add("filter." + operation);
             }
         }
