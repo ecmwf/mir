@@ -31,6 +31,7 @@ public:
 
     SphericalHarmonics(const param::MIRParametrisation&);
     SphericalHarmonics(size_t truncation);
+    SphericalHarmonics(const SphericalHarmonics&) = delete;
 
     // -- Destructor
 
@@ -40,7 +41,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    SphericalHarmonics& operator=(const SphericalHarmonics&) = delete;
 
     // -- Methods
 
@@ -79,18 +81,12 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    SphericalHarmonics(const SphericalHarmonics&);
-    SphericalHarmonics& operator=(const SphericalHarmonics&);
-
     // -- Members
 
     size_t truncation_;
 
     // -- Methods
     // None
-
 
     // -- Overridden methods
 

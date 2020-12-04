@@ -38,7 +38,8 @@ public:
     // None
 
     // -- Constructors
-    // None
+
+    Executor(const Executor&) = delete;
 
     // -- Destructor
     // None
@@ -47,7 +48,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Executor& operator=(const Executor&) = delete;
 
     // -- Methods
 
@@ -88,10 +90,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    Executor(const Executor&);
-    Executor& operator=(const Executor&);
-
     // -- Members
     // None
 

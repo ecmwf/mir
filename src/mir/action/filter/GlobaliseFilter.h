@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     GlobaliseFilter(const param::MIRParametrisation&);
+    GlobaliseFilter(const GlobaliseFilter&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    GlobaliseFilter& operator=(const GlobaliseFilter&) = delete;
 
     // -- Methods
     // None
@@ -70,13 +72,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    GlobaliseFilter(const GlobaliseFilter&);
-    GlobaliseFilter& operator=(const GlobaliseFilter&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
@@ -86,7 +83,6 @@ private:
     void execute(context::Context&) const override;
     bool sameAs(const Action&) const override;
     const char* name() const override;
-
 
     // -- Class members
     // None

@@ -30,6 +30,7 @@ public:
     // -- Constructors
 
     ThreadExecutor(const std::string& name);
+    ThreadExecutor(const ThreadExecutor&) = delete;
 
     // -- Destructor
     // None
@@ -38,7 +39,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    ThreadExecutor& operator=(const ThreadExecutor&) = delete;
 
     // -- Methods
     // None
@@ -70,10 +72,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ThreadExecutor(const ThreadExecutor&);
-    ThreadExecutor& operator=(const ThreadExecutor&);
-
     // -- Members
     // None
 

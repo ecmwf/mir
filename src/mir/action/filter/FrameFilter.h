@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     FrameFilter(const param::MIRParametrisation&);
+    FrameFilter(const FrameFilter&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    FrameFilter& operator=(const FrameFilter&) = delete;
 
     // -- Methods
     // None
@@ -69,11 +71,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    FrameFilter(const FrameFilter&);
-    FrameFilter& operator=(const FrameFilter&);
-
     // -- Members
 
     size_t size_;
@@ -87,7 +84,6 @@ private:
     bool sameAs(const Action&) const override;
     const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
-
 
     // -- Class members
     // None

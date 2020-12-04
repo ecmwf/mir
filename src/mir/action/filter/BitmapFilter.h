@@ -31,6 +31,7 @@ public:
     // -- Constructors
 
     BitmapFilter(const param::MIRParametrisation&);
+    BitmapFilter(const BitmapFilter&) = delete;
 
     // -- Destructor
 
@@ -40,7 +41,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    BitmapFilter& operator=(const BitmapFilter&) = delete;
 
     // -- Methods
     // None
@@ -72,11 +74,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    BitmapFilter(const BitmapFilter&);
-    BitmapFilter& operator=(const BitmapFilter&);
-
     // -- Members
 
     std::string path_;
@@ -91,7 +88,6 @@ private:
     bool sameAs(const Action&) const override;
     const char* name() const override;
     void estimate(context::Context&, api::MIREstimation&) const override;
-
 
     // -- Class members
     // None

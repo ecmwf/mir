@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     StretchedRotatedLL(const param::MIRParametrisation&);
+    StretchedRotatedLL(const StretchedRotatedLL&) = delete;
 
     // -- Destructor
-
-    ~StretchedRotatedLL() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    StretchedRotatedLL& operator=(const StretchedRotatedLL&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    StretchedRotatedLL();
-
-    // No copy allowed
-
-    StretchedRotatedLL(const StretchedRotatedLL&);
-    StretchedRotatedLL& operator=(const StretchedRotatedLL&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

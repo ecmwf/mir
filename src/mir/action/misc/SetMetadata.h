@@ -30,6 +30,7 @@ public:
     // -- Constructors
 
     SetMetadata(const param::MIRParametrisation&);
+    SetMetadata(const SetMetadata&) = delete;
 
     // -- Destructor
 
@@ -39,7 +40,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    SetMetadata& operator=(const SetMetadata&) = delete;
 
     // -- Methods
     // None
@@ -74,11 +76,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    SetMetadata(const SetMetadata&);
-    SetMetadata& operator=(const SetMetadata&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None

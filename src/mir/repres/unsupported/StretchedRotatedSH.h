@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     StretchedRotatedSH(const param::MIRParametrisation&);
+    StretchedRotatedSH(const StretchedRotatedSH&) = delete;
 
     // -- Destructor
-
-    ~StretchedRotatedSH() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    StretchedRotatedSH& operator=(const StretchedRotatedSH&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    StretchedRotatedSH();
-
-    // No copy allowed
-
-    StretchedRotatedSH(const StretchedRotatedSH&);
-    StretchedRotatedSH& operator=(const StretchedRotatedSH&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

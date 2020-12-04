@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     EquatorialAzimuthalEquidistant(const param::MIRParametrisation&);
+    EquatorialAzimuthalEquidistant(const EquatorialAzimuthalEquidistant&) = delete;
 
     // -- Destructor
-
-    ~EquatorialAzimuthalEquidistant() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    EquatorialAzimuthalEquidistant& operator=(const EquatorialAzimuthalEquidistant&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    EquatorialAzimuthalEquidistant();
-
-    // No copy allowed
-
-    EquatorialAzimuthalEquidistant(const EquatorialAzimuthalEquidistant&);
-    EquatorialAzimuthalEquidistant& operator=(const EquatorialAzimuthalEquidistant&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     AzimuthRange(const param::MIRParametrisation&);
+    AzimuthRange(const AzimuthRange&) = delete;
 
     // -- Destructor
-
-    ~AzimuthRange() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    AzimuthRange& operator=(const AzimuthRange&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    AzimuthRange();
-
-    // No copy allowed
-
-    AzimuthRange(const AzimuthRange&);
-    AzimuthRange& operator=(const AzimuthRange&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

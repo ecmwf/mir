@@ -47,7 +47,6 @@ public:
     // -- Constructors
 
     Field(const param::MIRParametrisation&, bool hasMissing = false, double missingValue = 0);
-
     Field(const repres::Representation*, bool hasMissing = false, double missingValue = 0);
 
     // -- Destructor
@@ -124,9 +123,13 @@ protected:
     // None
 
 private:
-    // No copy allowed (except with "clone")
-    Field(const Field&);
-    Field& operator=(const Field&);
+    // -- Constructors
+
+    Field(const Field&);  // (use clone to copy)
+
+    // -- Operators
+
+    Field& operator=(const Field&);  // (use clone to copy)
 
     // -- Members
 
@@ -141,6 +144,7 @@ private:
     mutable bool hasMissing_;
 
     // -- Methods
+    // None
 
     // -- Overridden methods
     // None

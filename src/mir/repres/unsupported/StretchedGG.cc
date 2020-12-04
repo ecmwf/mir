@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 
 namespace mir {
 namespace repres {
@@ -24,24 +22,13 @@ namespace repres {
 StretchedGG::StretchedGG(const param::MIRParametrisation& /*parametrisation*/) {}
 
 
-StretchedGG::StretchedGG() = default;
-
-
-StretchedGG::~StretchedGG() = default;
-
-
 void StretchedGG::print(std::ostream& out) const {
     out << "StretchedGG["
         << "]";
 }
 
 
-void StretchedGG::fill(grib_info& /*info*/) const {
-    NOTIMP;
-}
-
-
-static RepresentationBuilder<StretchedGG> stretchedGG("stretched_gg");
+static RepresentationBuilder<StretchedGG> __repres("stretched_gg");
 
 
 }  // namespace repres

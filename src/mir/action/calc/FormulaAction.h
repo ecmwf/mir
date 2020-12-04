@@ -38,6 +38,7 @@ public:
     // -- Constructors
 
     FormulaAction(const param::MIRParametrisation&);
+    FormulaAction(const FormulaAction&) = delete;
 
     // -- Destructor
 
@@ -47,7 +48,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    FormulaAction& operator=(const FormulaAction&) = delete;
 
     // -- Methods
     // None
@@ -79,11 +81,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    FormulaAction(const FormulaAction&);
-    FormulaAction& operator=(const FormulaAction&);
-
     // -- Members
 
     std::unique_ptr<util::Formula> formula_;

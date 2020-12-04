@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     CheckerBoard(const param::MIRParametrisation&);
+    CheckerBoard(const CheckerBoard&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    CheckerBoard& operator=(const CheckerBoard&) = delete;
 
     // -- Methods
     // None
@@ -71,12 +73,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    CheckerBoard(const CheckerBoard&);
-    CheckerBoard& operator=(const CheckerBoard&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None

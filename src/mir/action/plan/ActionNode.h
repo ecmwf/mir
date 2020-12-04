@@ -40,6 +40,7 @@ public:
     // -- Constructors
 
     ActionNode(const Action&, api::MIRWatcher*);
+    ActionNode(const ActionNode&) = delete;
 
     // -- Destructor
 
@@ -49,7 +50,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    ActionNode& operator=(const ActionNode&) = delete;
 
     // -- Methods
 
@@ -90,10 +92,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ActionNode(const ActionNode&);
-    ActionNode& operator=(const ActionNode&);
-
     // -- Members
 
     const Action& action_;

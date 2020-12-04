@@ -30,6 +30,7 @@ public:
     // -- Constructors
 
     SimpleExecutor(const std::string& name);
+    SimpleExecutor(const SimpleExecutor&) = delete;
 
     // -- Destructor
     // None
@@ -38,7 +39,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    SimpleExecutor& operator=(const SimpleExecutor&) = delete;
 
     // -- Methods
     // None
@@ -70,10 +72,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    SimpleExecutor(const SimpleExecutor&);
-    SimpleExecutor& operator=(const SimpleExecutor&);
-
     // -- Members
     // None
 

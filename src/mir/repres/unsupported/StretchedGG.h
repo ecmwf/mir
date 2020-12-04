@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     StretchedGG(const param::MIRParametrisation&);
+    StretchedGG(const StretchedGG&) = delete;
 
     // -- Destructor
-
-    ~StretchedGG() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    StretchedGG& operator=(const StretchedGG&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    StretchedGG();
-
-    // No copy allowed
-
-    StretchedGG(const StretchedGG&);
-    StretchedGG& operator=(const StretchedGG&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

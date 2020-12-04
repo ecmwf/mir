@@ -49,6 +49,7 @@ public:
     // -- Constructors
 
     ActionGraph();
+    ActionGraph(const ActionGraph&) = delete;
 
     // -- Destructor
 
@@ -58,7 +59,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    ActionGraph& operator=(const ActionGraph&) = delete;
 
     // -- Methods
 
@@ -103,10 +105,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-    ActionGraph(const ActionGraph&);
-    ActionGraph& operator=(const ActionGraph&);
-
     // -- Members
     // None
 

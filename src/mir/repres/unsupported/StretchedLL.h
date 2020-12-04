@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     StretchedLL(const param::MIRParametrisation&);
+    StretchedLL(const StretchedLL&) = delete;
 
     // -- Destructor
-
-    ~StretchedLL() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    StretchedLL& operator=(const StretchedLL&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    StretchedLL();
-
-    // No copy allowed
-
-    StretchedLL(const StretchedLL&);
-    StretchedLL& operator=(const StretchedLL&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

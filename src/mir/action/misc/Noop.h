@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     Noop(const param::MIRParametrisation&);
+    Noop(const Noop&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    Noop& operator=(const Noop&) = delete;
 
     // -- Methods
     // None
@@ -71,12 +73,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    Noop(const Noop&);
-    Noop& operator=(const Noop&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None

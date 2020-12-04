@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     Albers(const param::MIRParametrisation&);
+    Albers(const Albers&) = delete;
 
     // -- Destructor
-
-    ~Albers() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    Albers& operator=(const Albers&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    Albers();
-
-    // No copy allowed
-
-    Albers(const Albers&);
-    Albers& operator=(const Albers&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

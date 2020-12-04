@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     SelectField(const param::MIRParametrisation&);
+    SelectField(const SelectField&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    SelectField& operator=(const SelectField&) = delete;
 
     // -- Methods
     // None
@@ -71,11 +73,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    SelectField(const SelectField&);
-    SelectField& operator=(const SelectField&);
-
     // -- Members
 
     size_t which_;

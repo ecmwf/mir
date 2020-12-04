@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     TransverseMercator(const param::MIRParametrisation&);
+    TransverseMercator(const TransverseMercator&) = delete;
 
     // -- Destructor
-
-    ~TransverseMercator() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    TransverseMercator& operator=(const TransverseMercator&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,23 +70,14 @@ protected:
     // None
 
 private:
-    TransverseMercator();
-
-    // No copy allowed
-
-    TransverseMercator(const TransverseMercator&);
-    TransverseMercator& operator=(const TransverseMercator&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
+    // None
 
     // -- Class members
     // None

@@ -13,14 +13,14 @@
 #ifndef mir_repres_RotatedSH_h
 #define mir_repres_RotatedSH_h
 
-#include "mir/repres/sh/SphericalHarmonics.h"
+#include "mir/repres/Gridded.h"
 
 
 namespace mir {
 namespace repres {
 
 
-class RotatedSH : public sh::SphericalHarmonics {
+class RotatedSH : public Gridded {
 public:
     // -- Exceptions
     // None
@@ -28,18 +28,20 @@ public:
     // -- Constructors
 
     RotatedSH(const param::MIRParametrisation&);
+    RotatedSH(const RotatedSH&) = delete;
 
     // -- Destructor
-
-    ~RotatedSH() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
-    // None
+
+    RotatedSH& operator=(const RotatedSH&) = delete;
 
     // -- Methods
+    // // None
 
     // -- Overridden methods
     // None
@@ -68,25 +70,14 @@ protected:
     // None
 
 private:
-    RotatedSH();
-
-    // No copy allowed
-
-    RotatedSH(const RotatedSH&);
-    RotatedSH& operator=(const RotatedSH&);
-
     // -- Members
-
+    // None
 
     // -- Methods
     // None
 
-
     // -- Overridden methods
-
-    void fill(grib_info&) const override;
-    void makeName(std::ostream&) const override;
-    bool sameAs(const Representation&) const override;
+    // None
 
     // -- Class members
     // None

@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     ReferencePattern(const param::MIRParametrisation&);
+    ReferencePattern(const ReferencePattern&) = delete;
 
     // -- Destructor
 
@@ -37,7 +38,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    ReferencePattern& operator=(const ReferencePattern&) = delete;
 
     // -- Methods
     // None
@@ -71,12 +73,8 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    ReferencePattern(const ReferencePattern&);
-    ReferencePattern& operator=(const ReferencePattern&);
-
     // -- Members
+    // None
 
     // -- Methods
     // None

@@ -28,6 +28,7 @@ public:
     // -- Constructors
 
     AdjustWindsScaleCosLatitude(const param::MIRParametrisation&);
+    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&) = delete;
 
     // -- Destructor
     // None
@@ -36,7 +37,8 @@ public:
     // None
 
     // -- Operators
-    // None
+
+    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&) = delete;
 
     // -- Methods
     // None
@@ -68,11 +70,6 @@ protected:
     // None
 
 private:
-    // No copy allowed
-
-    AdjustWindsScaleCosLatitude(const AdjustWindsScaleCosLatitude&);
-    AdjustWindsScaleCosLatitude& operator=(const AdjustWindsScaleCosLatitude&);
-
     // -- Members
     // None
 
