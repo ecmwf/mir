@@ -272,19 +272,16 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
     log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
-
-    const bool validateQuads = [&]{
-        // A hack to get access from specific input representation
-        auto p = meshGeneratorParams();
-        in.fill(p);
-        bool meshCanContainInvalidQuads = p.getBool("invalid_quads",false);
-        return not meshCanContainInvalidQuads;
-    }();
-
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
 
     const atlas::Mesh& inMesh    = atlasMesh(statistics, in);
+    const bool validateQuads = [&] {
+        bool expectValidElements = true;
+        inMesh.metadata().get("valid_elements",expectValidElements);
+        return expectValidElements;
+    }();
+
     const util::Domain& inDomain = in.domain();
 
     const atlas::mesh::Nodes& inNodes = inMesh.nodes();
