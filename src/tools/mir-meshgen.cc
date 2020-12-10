@@ -140,7 +140,7 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
 
             atlas::Mesh mesh;
 
-            if( writeMesh ) {
+            if (writeMesh) {
                 mir::repres::RepresentationHandle rep(field.representation());
 
                 atlas::Grid grid;

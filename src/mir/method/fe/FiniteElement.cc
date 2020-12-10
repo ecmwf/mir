@@ -86,8 +86,8 @@ static void normalise(triplet_vector_t& triplets) {
 static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
                                                  const atlas::array::ArrayView<double, 2>& icoords,
                                                  const atlas::mesh::HybridElements::Connectivity& connectivity,
-                                                 const Point3& p, size_t ip, size_t firstVirtualPoint, bool validateQuads,
-                                                 size_t& nbProjectionAttempts,
+                                                 const Point3& p, size_t ip, size_t firstVirtualPoint,
+                                                 bool validateQuads, size_t& nbProjectionAttempts,
                                                  const element_tree_t::NodeList& closest) {
 
     if (closest.empty()) {
@@ -167,8 +167,8 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
                 atlas::PointXYZ{icoords(idx[2], XX), icoords(idx[2], YY), icoords(idx[2], ZZ)},
                 atlas::PointXYZ{icoords(idx[3], XX), icoords(idx[3], YY), icoords(idx[3], ZZ)});
 
-            if( validateQuads ) {
-                if (! quad.validate() ) {  // somewhat expensive sanity check
+            if (validateQuads) {
+                if (!quad.validate()) {  // somewhat expensive sanity check
                     Log::warning() << "Invalid Quad [" << elem_id << "]: " << quad << std::endl;
                     throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
                 }
@@ -227,9 +227,6 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
     auto params = meshGeneratorParams_;
     repres.fill(params);
 
-
-
-
     double d;
     if (!repres.getLongestElementDiagonal(d)) {
         params.meshCellLongestDiagonal_ = true;
@@ -275,10 +272,10 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
 
-    const atlas::Mesh& inMesh    = atlasMesh(statistics, in);
-    const bool validateQuads = [&] {
+    const atlas::Mesh& inMesh = atlasMesh(statistics, in);
+    const bool validateQuads  = [&] {
         bool expectValidElements = true;
-        inMesh.metadata().get("valid_elements",expectValidElements);
+        inMesh.metadata().get("valid_elements", expectValidElements);
         return expectValidElements;
     }();
 
@@ -345,8 +342,9 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                 element_tree_t::NodeList closest = eTree->findInSphere(p, R);
 
                 size_t nbProjectionAttempts = 0;
-                triplet_vector_t triplets   = projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip,
-                                                                     firstVirtualPoint, validateQuads, nbProjectionAttempts, closest);
+                triplet_vector_t triplets =
+                    projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip, firstVirtualPoint,
+                                             validateQuads, nbProjectionAttempts, closest);
 
                 nbMaxElementsSearched   = std::max(nbMaxElementsSearched, closest.size());
                 nbMinElementsSearched   = std::min(nbMinElementsSearched, closest.size());
