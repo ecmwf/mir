@@ -214,6 +214,7 @@ static bool connect(const eckit::geometry::Point2& q, Segment& line,
     return false;
 }
 
+#if 0
 static void p(int n, eckit::geometry::Point2 p0, double val0, eckit::geometry::Point2 p1, double val1,
               eckit::geometry::Point2 p2, double val2) {
 
@@ -250,6 +251,7 @@ static void p(int n, eckit::geometry::Point2 p0, double val0, eckit::geometry::P
 
     NOTIMP;
 }
+#endif
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
     using namespace atlas;

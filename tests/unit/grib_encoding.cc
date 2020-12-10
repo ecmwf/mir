@@ -67,9 +67,7 @@ protected:
 
         if (handle == nullptr) {
 
-            grib_info info = {{
-                0,
-            }};
+            grib_info info;
 
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;
@@ -550,9 +548,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
             // initialise a new grib handle from samples
             grib_handle* handle(nullptr);
 
-            grib_info info = {{
-                0,
-            }};
+            grib_info info;
 
             // paramId "Indicates a missing value"
             auto j                                    = info.packing.extra_settings_count++;

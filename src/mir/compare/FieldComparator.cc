@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <memory>
 
 #include "eckit/exception/Exceptions.h"
@@ -47,7 +48,11 @@ namespace mir {
 namespace compare {
 
 
-static caching::InMemoryCache<eckit::AutoStdFile> cache_("files", 256, 0, "PGEN_COMPARE_FILE_CACHE");
+constexpr long bufferSize      = 5L * 1024 * 1024 * 1024;
+constexpr size_t cacheCapacity = 256;
+
+// TODO: change name of env. variable
+static caching::InMemoryCache<eckit::AutoStdFile> cache_("files", cacheCapacity, 0, "PGEN_COMPARE_FILE_CACHE");
 
 
 WhiteLister::~WhiteLister() = default;
@@ -289,13 +294,16 @@ void FieldComparator::error(const char* what) {
 
 
 double FieldComparator::normalised(double longitude) const {
+    constexpr double globe     = 360.;
+    constexpr double reference = 0.;
+
     if (normaliseLongitudes_) {
-        while (longitude < 0) {
-            longitude += 360;
+        while (longitude < reference) {
+            longitude += globe;
         }
 
-        while (longitude >= 360) {
-            longitude -= 360;
+        while (longitude >= globe) {
+            longitude -= globe;
         }
     }
     return longitude;
@@ -356,8 +364,7 @@ void FieldComparator::getField(const MultiFile& multi, eckit::Buffer& buffer, Fi
 
 
 size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
-
-    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
+    eckit::Buffer buffer(bufferSize);
 
     fields.clear();
     size_t duplicates = 0;
@@ -391,9 +398,9 @@ size_t FieldComparator::count(const MultiFile& multi, FieldSet& fields) {
 
 
 size_t FieldComparator::list(const std::string& path) {
+    eckit::Buffer buffer(bufferSize);
 
     MultiFile multi(path, path);
-    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
     FieldSet fields;
     size_t result = 0;
 
@@ -429,8 +436,9 @@ size_t FieldComparator::list(const std::string& path) {
 
 
 void FieldComparator::json(eckit::JSON& json, const std::string& path) {
+    eckit::Buffer buffer(bufferSize);
+
     MultiFile multi(path, path);
-    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
 
     int err;
     off_t pos;
@@ -472,18 +480,17 @@ double relative_error(double a, double b) {
 
 
 struct Statistics {
-    double min_;
-    double max_;
-    double average_;
+    double min_     = std::numeric_limits<double>::quiet_NaN();
+    double max_     = std::numeric_limits<double>::quiet_NaN();
+    double average_ = std::numeric_limits<double>::quiet_NaN();
 
-    size_t missing_;
-    size_t values_;
+    size_t missing_ = 0;
+    size_t values_  = 0;
 };
 
 
 static void getStats(const Field& field, Statistics& stats) {
-
-    eckit::Buffer buffer(5L * 1024 * 1024 * 1024);
+    eckit::Buffer buffer(bufferSize);
 
     eckit::AutoStdFile& f = open(field.path());
     size_t size           = buffer.size();
@@ -503,16 +510,14 @@ static void getStats(const Field& field, Statistics& stats) {
     double missingValue;
     GRIB_CALL(codes_get_double(h, "missingValue", &missingValue));
 
-    double values[count];
+    std::vector<double> values(count);
 
     size = count;
-    GRIB_CALL(codes_get_double_array(h, "values", values, &size));
+    GRIB_CALL(codes_get_double_array(h, "values", values.data(), &size));
     ASSERT(size == count);
     ASSERT(size);
 
-    stats = {
-        0,
-    };
+    stats = Statistics();
 
     size_t first = 0;
     for (size_t i = 0; i < size; i++) {
@@ -561,6 +566,8 @@ void FieldComparator::compareFieldStatistics(const MultiFile& multi1, const Mult
     Statistics s2;
     getStats(field2, s2);
 
+    constexpr double relativeErrorMax = 0.01;
+
     if (s1.values_ != s2.values_) {
         eckit::Log::info() << "Number of data values mismatch:"
                            << "\n  " << multi1 << ": " << s1.values_ << " " << field1 << "\n  " << multi2 << ": "
@@ -575,14 +582,14 @@ void FieldComparator::compareFieldStatistics(const MultiFile& multi1, const Mult
         error("statistics-mismatches");
     }
 
-    if (relative_error(s1.min_, s2.min_) > 0.01) {
+    if (relative_error(s1.min_, s2.min_) > relativeErrorMax) {
         eckit::Log::info() << "Minimum relative error too large: " << relative_error(s1.min_, s2.min_) << "\n  "
                            << multi1 << ": " << s1.min_ << " " << field1 << "\n  " << multi2 << ": " << s2.min_ << " "
                            << field2 << std::endl;
         error("statistics-mismatches");
     }
 
-    if (relative_error(s1.max_, s2.max_) > 0.01) {
+    if (relative_error(s1.max_, s2.max_) > relativeErrorMax) {
         eckit::Log::info() << "Maximum relative error too large: " << relative_error(s1.max_, s2.max_) << "\n  "
                            << multi1 << ": " << s1.max_ << " " << field1 << "\n  " << multi2 << ": " << s2.max_ << " "
                            << field2 << std::endl;
@@ -590,7 +597,7 @@ void FieldComparator::compareFieldStatistics(const MultiFile& multi1, const Mult
     }
 
 
-    if (relative_error(s1.average_, s2.average_) > 0.01) {
+    if (relative_error(s1.average_, s2.average_) > relativeErrorMax) {
         eckit::Log::info() << "Average relative error too large: " << relative_error(s1.average_, s2.average_) << "\n  "
                            << multi1 << ": " << s1.average_ << " " << field1 << "\n  " << multi2 << ": " << s2.average_
                            << " " << field2 << std::endl;
@@ -683,6 +690,7 @@ void FieldComparator::whiteListEntries(const Field& field, const MultiFile& mult
 
 void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& multi2, const Field& field,
                                    const FieldSet& fields, bool& show) {
+    constexpr size_t maxWarnings = 5;
 
     struct Compare {
         const Field& field_;
@@ -739,7 +747,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
         for (const auto& other : flds) {
             if (other.match(field)) {
 
-                if (cnt >= 5) {
+                if (cnt >= maxWarnings) {
                     eckit::Log::info() << " # ..." << std::endl;
                     break;
                 }
@@ -759,7 +767,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
         if (cnt == 0) {
             for (const auto& other : flds) {
 
-                if (cnt >= 5) {
+                if (cnt >= maxWarnings) {
                     eckit::Log::info() << " # ..." << std::endl;
                     break;
                 }
@@ -790,7 +798,7 @@ void FieldComparator::missingField(const MultiFile& multi1, const MultiFile& mul
                 saved_++;
             }
 
-            if (cnt++ >= 5) {
+            if (cnt++ >= maxWarnings) {
                 eckit::Log::info() << " # ..." << std::endl;
                 break;
             }
