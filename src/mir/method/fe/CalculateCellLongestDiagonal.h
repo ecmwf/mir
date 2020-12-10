@@ -46,7 +46,7 @@ public:
 
     // -- Operators
 
-    double operator()(atlas::Mesh&) const;
+    double operator()(atlas::Mesh&, bool include_virtual_points) const;
 
     // -- Methods
     // None

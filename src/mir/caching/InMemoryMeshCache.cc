@@ -85,8 +85,8 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
 
         // Calculate the mesh cells longest diagonal
         if (meshGeneratorParams.meshCellLongestDiagonal_) {
-            trace::ResourceUsage timer("Mesh: CalculateCellLongestDiagonal");
-            method::fe::CalculateCellLongestDiagonal()(mesh);
+            trace::ResourceUsage usage("CalculateCellLongestDiagonal");
+            method::fe::CalculateCellLongestDiagonal()(mesh, grid.domain().global());
         }
 
         // Calculate node-lumped mass matrix
