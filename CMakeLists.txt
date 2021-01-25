@@ -27,15 +27,24 @@ ecbuild_add_option(FEATURE PNG                DEFAULT OFF DESCRIPTION "support f
 
 ecbuild_find_package(NAME eccodes VERSION 2.19 REQUIRED)
 ecbuild_find_package(NAME eckit   VERSION 1.14 REQUIRED)
-ecbuild_find_package(NAME atlas   VERSION 0.20 REQUIRED)
+
+ecbuild_add_option(FEATURE ATLAS DEFAULT ON DESCRIPTION "support for Atlas" REQUIRED_PACKAGES "atlas VERSION 0.20")
+
+
+set(MIR_LIBRARIES mir)
+
+if(HAVE_BUILD_TOOLS)
+    set(mir_INSTALL_TOOLS)
+else()
+    set(mir_INSTALL_TOOLS NOINSTALL)
+endif()
+
 
 add_subdirectory(src)
 add_subdirectory(etc)
 add_subdirectory(share)
 add_subdirectory(tests)
 
-
-set(MIR_LIBRARIES mir)
 
 ecbuild_add_resources(TARGET ${PROJECT_NAME}_top_files SOURCES AUTHORS README NOTICE LICENSE INSTALL COPYING)
 ecbuild_install_project(NAME ${PROJECT_NAME})

@@ -6,14 +6,21 @@ configure_file(api/mir_config.h.in api/mir_config.h)
 configure_file(api/mir_version.h.in api/mir_version.h)
 configure_file(api/mir_version.cc.in api/mir_version.cc)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
-        DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/api/mir_config.h ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.h
+    DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
 
 
-list(APPEND mir_srcs api/mir_version.cc)
-
-
-list(APPEND mir_srcs
+ecbuild_add_library(
+    TARGET             mir
+    INSTALL_HEADERS    LISTED
+    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
+    GENERATED          api/mir_version.cc
+    TEMPLATES          caching/InMemoryCache.cc
+    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+    SOURCES
+    api/mir_version.cc
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -32,8 +39,6 @@ list(APPEND mir_srcs
     action/filter/GlobaliseFilter.h
     action/filter/NablaFilter.cc
     action/filter/NablaFilter.h
-    action/filter/NablaFilterFVMT.cc
-    action/filter/NablaFilterFVMT.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
@@ -112,49 +117,6 @@ list(APPEND mir_srcs
     action/plan/SimpleExecutor.h
     action/plan/ThreadExecutor.cc
     action/plan/ThreadExecutor.h
-    action/transform/InvtransScalar.cc
-    action/transform/InvtransScalar.h
-    action/transform/InvtransVodTouv.cc
-    action/transform/InvtransVodTouv.h
-    action/transform/ShToGridDef.cc
-    action/transform/ShToGridDef.h
-    action/transform/ShToGridded.cc
-    action/transform/ShToGridded.h
-    action/transform/ShToNamedGrid.cc
-    action/transform/ShToNamedGrid.h
-    action/transform/ShToOctahedralGG.cc
-    action/transform/ShToOctahedralGG.h
-    action/transform/ShToPoints.cc
-    action/transform/ShToPoints.h
-    action/transform/ShToReducedGG.cc
-    action/transform/ShToReducedGG.h
-    action/transform/ShToReducedGGPLGiven.cc
-    action/transform/ShToReducedGGPLGiven.h
-    action/transform/ShToRegularGG.cc
-    action/transform/ShToRegularGG.h
-    action/transform/ShToRegularLL.cc
-    action/transform/ShToRegularLL.h
-    action/transform/ShToRotatedNamedGrid.cc
-    action/transform/ShToRotatedNamedGrid.h
-    action/transform/ShToRotatedOctahedralGG.cc
-    action/transform/ShToRotatedOctahedralGG.h
-    action/transform/ShToRotatedReducedGG.cc
-    action/transform/ShToRotatedReducedGG.h
-    action/transform/ShToRotatedReducedGGPLGiven.cc
-    action/transform/ShToRotatedReducedGGPLGiven.h
-    action/transform/ShToRotatedRegularGG.cc
-    action/transform/ShToRotatedRegularGG.h
-    action/transform/ShToRotatedRegularLL.cc
-    action/transform/ShToRotatedRegularLL.h
-    action/transform/ShToTypedGrid.cc
-    action/transform/ShToTypedGrid.h
-    action/transform/ShTruncate.cc
-    action/transform/ShTruncate.h
-    action/transform/ShVodToUV.cc
-    action/transform/ShVodToUV.h
-    action/transform/TransCache.cc
-    action/transform/TransCache.h
-    api/Atlas.h
     api/MIRComplexJob.cc
     api/MIRComplexJob.h
     api/MIREstimation.h
@@ -172,24 +134,10 @@ list(APPEND mir_srcs
     caching/InMemoryCacheStatistics.h
     caching/InMemoryCacheUsage.cc
     caching/InMemoryCacheUsage.h
-    caching/InMemoryMeshCache.cc
-    caching/InMemoryMeshCache.h
-    caching/LegendreCache.cc
-    caching/LegendreCache.h
     caching/MeshCache.cc
     caching/MeshCache.h
     caching/WeightCache.cc
     caching/WeightCache.h
-    caching/legendre/FileLoader.cc
-    caching/legendre/FileLoader.h
-    caching/legendre/LegendreLoader.cc
-    caching/legendre/LegendreLoader.h
-    caching/legendre/MappedMemoryLoader.cc
-    caching/legendre/MappedMemoryLoader.h
-    caching/legendre/NoLoader.cc
-    caching/legendre/NoLoader.h
-    caching/legendre/SharedMemoryLoader.cc
-    caching/legendre/SharedMemoryLoader.h
     caching/matrix/FileLoader.cc
     caching/matrix/FileLoader.h
     caching/matrix/MatrixLoader.cc
@@ -376,22 +324,8 @@ list(APPEND mir_srcs
     method/Method.h
     method/MethodWeighted.cc
     method/MethodWeighted.h
-    method/ProxyMethod.cc
-    method/ProxyMethod.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/fe/BuildNodeLumpedMassMatrix.cc
-    method/fe/BuildNodeLumpedMassMatrix.h
-    method/fe/CalculateCellLongestDiagonal.cc
-    method/fe/CalculateCellLongestDiagonal.h
-    method/fe/FEBilinear.cc
-    method/fe/FEBilinear.h
-    method/fe/FELinear.cc
-    method/fe/FELinear.h
-    method/fe/FiniteElement.cc
-    method/fe/FiniteElement.h
-    method/fe/L2Projection.cc
-    method/fe/L2Projection.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
@@ -460,12 +394,6 @@ list(APPEND mir_srcs
     method/nonlinear/SimulateMissingValue.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
-    method/structured/StructuredBilinearLatLon.cc
-    method/structured/StructuredBilinearLatLon.h
-    method/structured/StructuredLinear3D.cc
-    method/structured/StructuredLinear3D.h
-    method/structured/StructuredMethod.cc
-    method/structured/StructuredMethod.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -666,8 +594,6 @@ list(APPEND mir_srcs
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc
     stats/statistics/GridBoxIntegral.h
-    stats/statistics/Integral.cc
-    stats/statistics/Integral.h
     stats/statistics/SimplePackingEntropy.cc
     stats/statistics/SimplePackingEntropy.h
     stats/statistics/Spectral.cc
@@ -731,7 +657,6 @@ list(APPEND mir_srcs
     util/PointLatLonT.h
     util/Pretty.cc
     util/Pretty.h
-    util/RectangularDomain.h
     util/Regex.cc
     util/Regex.h
     util/Rotation.cc
@@ -746,8 +671,98 @@ list(APPEND mir_srcs
     util/Wind.cc
     util/Wind.h)
 
+
+if(mir_HAVE_ATLAS)
+    target_link_libraries(mir PUBLIC atlas)
+    target_sources(mir PRIVATE 
+        action/filter/NablaFilterFVMT.cc
+        action/filter/NablaFilterFVMT.h
+        action/transform/InvtransScalar.cc
+        action/transform/InvtransScalar.h
+        action/transform/InvtransVodTouv.cc
+        action/transform/InvtransVodTouv.h
+        action/transform/ShToGridDef.cc
+        action/transform/ShToGridDef.h
+        action/transform/ShToGridded.cc
+        action/transform/ShToGridded.h
+        action/transform/ShToNamedGrid.cc
+        action/transform/ShToNamedGrid.h
+        action/transform/ShToOctahedralGG.cc
+        action/transform/ShToOctahedralGG.h
+        action/transform/ShToPoints.cc
+        action/transform/ShToPoints.h
+        action/transform/ShToReducedGG.cc
+        action/transform/ShToReducedGG.h
+        action/transform/ShToReducedGGPLGiven.cc
+        action/transform/ShToReducedGGPLGiven.h
+        action/transform/ShToRegularGG.cc
+        action/transform/ShToRegularGG.h
+        action/transform/ShToRegularLL.cc
+        action/transform/ShToRegularLL.h
+        action/transform/ShToRotatedNamedGrid.cc
+        action/transform/ShToRotatedNamedGrid.h
+        action/transform/ShToRotatedOctahedralGG.cc
+        action/transform/ShToRotatedOctahedralGG.h
+        action/transform/ShToRotatedReducedGG.cc
+        action/transform/ShToRotatedReducedGG.h
+        action/transform/ShToRotatedReducedGGPLGiven.cc
+        action/transform/ShToRotatedReducedGGPLGiven.h
+        action/transform/ShToRotatedRegularGG.cc
+        action/transform/ShToRotatedRegularGG.h
+        action/transform/ShToRotatedRegularLL.cc
+        action/transform/ShToRotatedRegularLL.h
+        action/transform/ShToTypedGrid.cc
+        action/transform/ShToTypedGrid.h
+        action/transform/ShTruncate.cc
+        action/transform/ShTruncate.h
+        action/transform/ShVodToUV.cc
+        action/transform/ShVodToUV.h
+        action/transform/TransCache.cc
+        action/transform/TransCache.h
+        caching/InMemoryMeshCache.cc
+        caching/InMemoryMeshCache.h
+        caching/LegendreCache.cc
+        caching/LegendreCache.h
+        caching/legendre/FileLoader.cc
+        caching/legendre/FileLoader.h
+        caching/legendre/LegendreLoader.cc
+        caching/legendre/LegendreLoader.h
+        caching/legendre/MappedMemoryLoader.cc
+        caching/legendre/MappedMemoryLoader.h
+        caching/legendre/NoLoader.cc
+        caching/legendre/NoLoader.h
+        caching/legendre/SharedMemoryLoader.cc
+        caching/legendre/SharedMemoryLoader.h
+        method/ProxyMethod.cc
+        method/ProxyMethod.h
+        method/fe/BuildNodeLumpedMassMatrix.cc
+        method/fe/BuildNodeLumpedMassMatrix.h
+        method/fe/CalculateCellLongestDiagonal.cc
+        method/fe/CalculateCellLongestDiagonal.h
+        method/fe/FEBilinear.cc
+        method/fe/FEBilinear.h
+        method/fe/FELinear.cc
+        method/fe/FELinear.h
+        method/fe/FiniteElement.cc
+        method/fe/FiniteElement.h
+        method/fe/L2Projection.cc
+        method/fe/L2Projection.h
+        method/structured/StructuredBilinearLatLon.cc
+        method/structured/StructuredBilinearLatLon.h
+        method/structured/StructuredLinear3D.cc
+        method/structured/StructuredLinear3D.h
+        method/structured/StructuredMethod.cc
+        method/structured/StructuredMethod.h
+        stats/statistics/Integral.cc
+        stats/statistics/Integral.h)
+else()
+    target_sources(mir PRIVATE util/Atlas.h util/Atlas.cc)
+endif()
+
+
 if(mir_HAVE_NETCDF)
-    list(APPEND mir_srcs
+    target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
+    target_sources(mir PRIVATE 
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
         netcdf/Attribute.cc
@@ -880,32 +895,8 @@ if(mir_HAVE_NETCDF)
         netcdf/VirtualOutputDimension.h)
 endif()
 
-
-if(mir_HAVE_PNG)
-    list(APPEND mir_srcs output/PNGOutput.cc output/PNGOutput.h)
-endif()
-
-
-list(APPEND mir_tmpls caching/InMemoryCache.cc)
-
-
-ecbuild_add_library(
-    TARGET             mir
-    INSTALL_HEADERS    LISTED
-    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-    SOURCES            ${mir_srcs}
-    GENERATED          api/mir_version.cc
-    TEMPLATES          ${mir_tmpls}
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
-    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
-                       $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
-)
-
-if(mir_HAVE_NETCDF)
-    target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
-endif()
-
 if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
+    target_sources(mir PRIVATE output/PNGOutput.h output/PNGOutput.cc)
 endif()
 

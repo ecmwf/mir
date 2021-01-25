@@ -24,7 +24,6 @@
 #include "eckit/option/VectorOption.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
@@ -45,6 +44,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
 

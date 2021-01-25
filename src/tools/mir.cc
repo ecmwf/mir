@@ -28,7 +28,6 @@
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
 #include "mir/api/mir_config.h"
-#include "mir/caching/legendre/LegendreLoader.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/Space.h"
@@ -42,7 +41,6 @@
 #include "mir/lsm/LSMSelection.h"
 #include "mir/lsm/NamedLSM.h"
 #include "mir/method/Method.h"
-#include "mir/method/fe/FiniteElement.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 #include "mir/method/knn/pick/Pick.h"
@@ -57,6 +55,11 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
+
+#if defined mir_HAVE_ATLAS
+#include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/method/fe/FiniteElement.h"
+#endif
 
 #if defined(mir_HAVE_PNG)
 #include "mir/output/PNGOutput.h"
@@ -128,10 +131,12 @@ public:
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
 
+#if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
                                                                                "L2 Projection FEM method for input"));
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
                                                                                "L2 Projection FEM method for output"));
+#endif
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
             "non-linear",
@@ -306,8 +311,10 @@ public:
         options_.push_back(new Separator("Caching"));
         options_.push_back(new FactoryOption<caching::matrix::MatrixLoaderFactory>(
             "matrix-loader", "Select how to load matrices in memory"));
+#if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<caching::legendre::LegendreLoaderFactory>(
             "legendre-loader", "Select how to load Legendre coefficients in memory"));
+#endif
 
         //==============================================
         // Only show these options if debug channel is active

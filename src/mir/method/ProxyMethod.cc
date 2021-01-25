@@ -23,10 +23,10 @@
 #include "eckit/log/Timer.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

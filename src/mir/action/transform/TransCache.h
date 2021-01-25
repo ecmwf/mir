@@ -15,8 +15,8 @@
 
 #include <iosfwd>
 
-#include "mir/api/Atlas.h"
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

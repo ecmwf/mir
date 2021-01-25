@@ -19,9 +19,9 @@
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
 namespace mir {

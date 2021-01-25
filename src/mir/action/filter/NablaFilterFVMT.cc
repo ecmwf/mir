@@ -20,13 +20,13 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

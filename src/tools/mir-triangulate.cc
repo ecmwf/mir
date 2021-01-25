@@ -26,12 +26,12 @@
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Types.h"
 
 
 class MIRTriangulate : public mir::tools::MIRTool {

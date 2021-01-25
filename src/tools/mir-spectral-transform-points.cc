@@ -20,11 +20,11 @@
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Types.h"
 
 
 class MIRSpectralTransformPoints : public mir::tools::MIRTool {

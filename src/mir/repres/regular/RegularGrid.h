@@ -13,9 +13,8 @@
 #ifndef mir_repres_regular_RegularGrid_h
 #define mir_repres_regular_RegularGrid_h
 
-#include "mir/api/Atlas.h"
-
 #include "mir/repres/Gridded.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

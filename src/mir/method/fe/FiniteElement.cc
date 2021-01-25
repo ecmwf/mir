@@ -28,13 +28,13 @@
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

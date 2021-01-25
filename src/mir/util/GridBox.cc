@@ -18,7 +18,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Types.h"
 
 
 static constexpr double GLOBE      = 360.;

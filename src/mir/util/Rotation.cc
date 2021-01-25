@@ -18,12 +18,11 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
-#include "mir/util/RectangularDomain.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -124,7 +123,8 @@ atlas::Projection Rotation::atlasProjection() const {
 
 BoundingBox Rotation::boundingBox(const BoundingBox& bbox) const {
 
-    RectangularDomain before({bbox.west().value(), bbox.east().value()}, {bbox.south().value(), bbox.north().value()});
+    atlas::RectangularDomain before({bbox.west().value(), bbox.east().value()},
+                                    {bbox.south().value(), bbox.north().value()});
     ASSERT(before);
 
     auto after = atlasProjection().lonlatBoundingBox(before);

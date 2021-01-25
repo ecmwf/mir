@@ -17,11 +17,11 @@
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

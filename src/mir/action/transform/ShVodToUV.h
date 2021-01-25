@@ -14,7 +14,7 @@
 #define mir_action_transform_ShVodToUV_h
 
 #include "mir/action/plan/Action.h"
-#include "mir/api/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

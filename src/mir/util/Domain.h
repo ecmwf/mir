@@ -14,7 +14,7 @@
 #define mir_util_Domain_h
 
 #include "mir/util/BoundingBox.h"
-#include "mir/util/RectangularDomain.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -32,7 +32,7 @@ public:
 
     // -- Convertors
 
-    operator RectangularDomain() const;
+    operator atlas::RectangularDomain() const;
 
     // -- Operators
 

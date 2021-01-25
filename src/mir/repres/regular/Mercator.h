@@ -13,9 +13,8 @@
 #ifndef mir_repres_regular_Mercator_h
 #define mir_repres_regular_Mercator_h
 
-#include "mir/api/Atlas.h"
-
 #include "mir/repres/regular/RegularGrid.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

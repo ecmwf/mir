@@ -22,7 +22,6 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/ConfigurationWrapper.h"
@@ -33,6 +32,7 @@
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Types.h"
 
 
 using neighbours_t = std::vector<mir::search::PointSearch::PointValueType>;
@@ -161,18 +161,21 @@ private:
 
 struct CoordinatesFromAtlas : Coordinates {
     CoordinatesFromAtlas(const atlas::Grid& grid) : Coordinates("atlas") {
-
+#if defined(mir_HAVE_ATLAS)
         auto N = size_t(grid.size());
         lats_.assign(N, std::numeric_limits<double>::signaling_NaN());
         lons_.assign(N, std::numeric_limits<double>::signaling_NaN());
 
         size_t n = 0;
-        for (const atlas::Grid::PointLonLat p : grid.lonlat()) {
+        for (auto p : grid.lonlat()) {
             ASSERT(n < N);
             lats_[n] = p.lat();
             lons_[n] = p.lon();
             ++n;
         }
+#else
+        NOTIMP;
+#endif
     }
     const coord_t& latitudes() const { return lats_; }
     const coord_t& longitudes() const { return lons_; }

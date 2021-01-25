@@ -17,7 +17,7 @@
 
 #include "eckit/filesystem/PathName.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

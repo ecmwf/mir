@@ -14,8 +14,8 @@
 #define mir_action_transform_ShToGridded_h
 
 #include "mir/action/plan/Action.h"
-#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

@@ -21,7 +21,6 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
@@ -29,6 +28,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

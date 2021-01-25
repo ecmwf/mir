@@ -13,9 +13,9 @@
 #ifndef mir_method_fe_FiniteElement_h
 #define mir_method_fe_FiniteElement_h
 
-#include "mir/api/Atlas.h"
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

@@ -16,7 +16,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "mir/api/Atlas.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

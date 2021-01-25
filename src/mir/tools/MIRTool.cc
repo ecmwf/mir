@@ -18,9 +18,9 @@
 #include "eckit/system/Library.h"
 #include "eckit/system/LibraryManager.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/api/mir_config.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

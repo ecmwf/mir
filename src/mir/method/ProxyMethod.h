@@ -13,9 +13,9 @@
 #ifndef mir_method_ProxyMethod_h
 #define mir_method_ProxyMethod_h
 
-#include "mir/api/Atlas.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

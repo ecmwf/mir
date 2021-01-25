@@ -5,6 +5,7 @@
 
 #include "mir/api/mir_version.h"
 
+#cmakedefine mir_HAVE_ATLAS
 #cmakedefine mir_HAVE_NETCDF
 #cmakedefine mir_HAVE_PNG
 

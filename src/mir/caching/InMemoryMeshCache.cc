@@ -18,13 +18,13 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

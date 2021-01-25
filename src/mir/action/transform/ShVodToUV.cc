@@ -21,12 +21,12 @@
 #include "atlas/trans/VorDivToUV.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/api/Atlas.h"
 #include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
 

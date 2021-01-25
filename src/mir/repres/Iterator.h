@@ -15,7 +15,6 @@
 
 #include <iosfwd>
 
-#include "mir/api/Atlas.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Types.h"
 

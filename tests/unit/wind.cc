@@ -15,10 +15,11 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
-#include "mir/api/Atlas.h"
+
 #include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
 #define EXPECTV(a)                                \
