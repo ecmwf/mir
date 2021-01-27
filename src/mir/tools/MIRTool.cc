@@ -15,6 +15,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/system/Library.h"
 #include "eckit/system/LibraryManager.h"
 
 #include "mir/api/Atlas.h"

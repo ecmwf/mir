@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 
 #include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
