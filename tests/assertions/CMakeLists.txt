@@ -2,7 +2,11 @@ find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
 
-file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test *.fail)
+if(mars_HAVE_ATLAS)
+    file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test *.fail)
+else()
+    file(GLOB_RECURSE test_files LIST_DIRECTORIES false core.*.test *.fail)
+endif()
 
 if(MARS_SCRIPT)
     foreach(_t ${test_files})

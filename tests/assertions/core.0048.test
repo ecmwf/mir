@@ -1,0 +1,6 @@
+# Mars request
+regular_ll.2-2.grib2
+# Mir tool options
+--grid=O32 --interpolation=nn
+# grib_get assertions
+gridName=O32
