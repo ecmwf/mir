@@ -10,14 +10,11 @@
  */
 
 
-#include "mir/util/Types.h"
-
-#include <algorithm>
+#include "mir/util/Atlas.h"
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
 
-#include "mir/util/Angles.h"
 #include "mir/util/Grib.h"
 
 
@@ -29,9 +26,20 @@ Domain::Range::Range(double min, double max) : min_(min), max_(max) {
 }
 
 
-Domain::Domain(Domain::Range&& lon, Domain::Range&& lat, std::string) : lon_(lon), lat_(lat) {
+Domain::Domain(Domain::Range&& lon, Domain::Range&& lat, const std::string&) : lon_(lon), lat_(lat) {
     ASSERT(lon_.max_ - lon_.min_ <= mir::Longitude::GLOBE.value());
     ASSERT(mir::Latitude::SOUTH_POLE.value() <= lat_.min_ && lat_.max_ <= mir::Latitude::NORTH_POLE.value());
+}
+
+
+bool Domain::zonal_band() const {
+    return mir::Longitude(east() - west()) == mir::Longitude::GLOBE;
+}
+
+
+bool Domain::operator==(const Domain& other) const {
+    return mir::Latitude(north() - other.north()) == 0 && mir::Latitude(south() - other.south()) == 0 &&
+           mir::Longitude(west() - other.west()) == 0 && mir::Longitude(east() - other.east()) == 0;
 }
 
 
@@ -58,24 +66,35 @@ util::Rotation::Rotation(const PointLonLat& southPole) :
 
 
 namespace grid {
-LinearSpacing::LinearSpacing(value_type /*a*/, value_type /*b*/, long n, bool /*endpoint*/) : Spacing(n) {
+LinearSpacing::LinearSpacing(value_type /*a*/, value_type /*b*/, long n, bool /*endpoint*/) : Spacing(size_t(n)) {
     NOTIMP;
 }
 }  // namespace grid
 
 
-Projection::Projection(const Projection::Spec& spec) : spec_(spec) {
-    ASSERT(spec.empty());
+Grid::Projection Grid::projection() const {
+    NOTIMP;
 }
 
 
-StructuredGrid::StructuredGrid(const std::string& name, const Domain& domain) {
-    ASSERT(domain.north() == globalDomain.north());
-    ASSERT(domain.south() == globalDomain.south());
-    ASSERT(domain.west() == globalDomain.west());
-    ASSERT(domain.east() == globalDomain.east());
+StructuredGrid::StructuredGrid(const Grid&) {
+    NOTIMP;
+}
 
+
+idx_t StructuredGrid::nx() const {
+    ASSERT(!pl_.empty());
+    auto mm = std::minmax_element(pl_.begin(), pl_.end());
+    ASSERT(*mm.first == *mm.second);
+    return *mm.first;
+}
+
+
+GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
+    ASSERT(domain == globalDomain);
     ASSERT(name.size() > 1);
+    spec_.set("name", name);
+
     auto c = name.front();
     auto n = eckit::Translator<std::string, idx_t>()(name.substr(1));
     ASSERT(n > 0);
@@ -99,38 +118,13 @@ StructuredGrid::StructuredGrid(const std::string& name, const Domain& domain) {
     NOTIMP;
 }
 
-
-StructuredGrid::StructuredGrid(const Grid&) {
-    NOTIMP;
+GaussianGrid::GaussianGrid(const std::vector<long>& pl, const Domain& domain) {
+    ASSERT(domain == globalDomain);
+    pl_ = pl;
 }
 
 
-idx_t StructuredGrid::nx() const {
-    ASSERT(!pl_.empty());
-    auto mm = std::minmax_element(pl_.begin(), pl_.end());
-    ASSERT(*mm.first == *mm.second);
-    return *mm.first;
-}
-
-
-Grid::Grid(const Grid::Spec& spec) : spec_(spec) {
-    NOTIMP;
-}
-
-
-Grid::Grid(const Grid&) {
-    NOTIMP;
-}
-
-
-Grid::Projection Grid::projection() const {
-    NOTIMP;
-}
-
-
-UnstructuredGrid::UnstructuredGrid(points_t&& points) : points_(points) {
-    NOTIMP;
-}
+UnstructuredGrid::UnstructuredGrid(std::vector<PointXY>&& points) : points_(points) {}
 
 
 }  // namespace atlas

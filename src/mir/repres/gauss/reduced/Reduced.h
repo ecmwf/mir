@@ -78,8 +78,9 @@ protected:
     Iterator* rotatedIterator(const util::Rotation&) const;
 
     const std::vector<long>& pls() const;
-    template <typename PlVector>
-    void setNj(const PlVector&, const Latitude& s, const Latitude& n);
+    static std::vector<long> pls(const std::string&);
+
+    void setNj(const std::vector<long>&, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e) const;
 
     // -- Overridden methods

@@ -59,12 +59,13 @@ struct Domain {
     };
     const Range lon_;
     const Range lat_;
-    Domain(Range&& lon, Range&& lat, std::string /*units*/ = "");
-    double north() const { return lat_.max_; }
-    double south() const { return lat_.min_; }
-    double west() const { return lon_.min_; }
-    double east() const { return lon_.max_; }
-    bool zonal_band() const { return mir::Longitude(lon_.max_ - lon_.min_) == mir::Longitude::GLOBE; }
+    Domain(Range&& lon, Range&& lat, const std::string& /*units*/ = "");
+    inline double north() const { return lat_.max_; }
+    inline double south() const { return lat_.min_; }
+    inline double west() const { return lon_.min_; }
+    inline double east() const { return lon_.max_; }
+    bool zonal_band() const;
+    bool operator==(const Domain&) const;
     operator bool() const { return true; }
 };
 using RectangularDomain = Domain;
@@ -77,9 +78,6 @@ struct Library {
     }
     void initialise(const eckit::option::CmdArgs&) {}
     void finalise() {}
-
-private:
-    Library() = default;
 };
 
 
@@ -122,7 +120,6 @@ struct Config : public eckit::LocalConfiguration {
 }  // namespace util
 
 
-static const util::Config defaultConfig;
 static const Domain globalDomain({mir::Longitude::GREENWICH.value(), mir::Longitude::GLOBE.value()},
                                  {mir::Latitude::SOUTH_POLE.value(), mir::Latitude::NORTH_POLE.value()});
 
@@ -132,7 +129,8 @@ namespace grid {
 
 struct Spacing : protected std::vector<double> {
     using Spec = util::Config;
-    Spec spec() const { return defaultConfig; }
+    Spec spec_;
+    Spec spec() const { return spec_; }
 
     using vector = vector<value_type>;
     using vector::vector;
@@ -173,7 +171,8 @@ struct Projection {
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
-    Projection(const Spec& spec = defaultConfig);
+    Projection() = default;
+    Projection(const Spec& spec) : spec_(spec) {}
     operator bool() const { return true; }
     mir::Point2 xy(const mir::Point2& p) const { return p; }
     mir::Point2 lonlat(const mir::Point2& p) const { return p; }
@@ -181,9 +180,7 @@ struct Projection {
 };
 
 
-using idx_t    = long;
-using pl_t     = std::vector<idx_t>;
-using points_t = std::vector<PointXY>;
+using idx_t = long;
 
 
 struct Grid {
@@ -191,10 +188,9 @@ struct Grid {
     using Projection = atlas::Projection;
     Spec spec_;
     Spec spec() const { return spec_; }
-    Grid(const Spec& spec = defaultConfig);
-    Grid(const Grid&);
+    Grid() = default;
+    Grid(const Spec& spec) : spec_(spec) {}
     operator bool() const { return false; }
-    Grid& operator=(const Grid&) = default;
     Projection projection() const;
 };
 
@@ -204,7 +200,6 @@ struct StructuredGrid : Grid {
     using YSpace = grid::Spacing;
     using Grid::Grid;
     StructuredGrid(const Grid&);
-    StructuredGrid(const std::string& name, const Domain& = globalDomain);
     StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(),
                    const Domain& = globalDomain) :
         lon_(lon), lat_(lat) {}
@@ -213,32 +208,28 @@ struct StructuredGrid : Grid {
     idx_t ny() const { return idx_t(pl_.size()); }
 
 protected:
-    StructuredGrid(const pl_t& pl, const Domain&) : pl_(pl) {}
-    pl_t pl_;
+    std::vector<long> pl_;
     XSpace lon_;
     YSpace lat_;
 };
-using RegularGrid = StructuredGrid;
 
 
-struct ReducedGaussianGrid : StructuredGrid {
-    ReducedGaussianGrid(const std::string& name, const Domain& domain = globalDomain) : StructuredGrid(name, domain) {}
-    ReducedGaussianGrid(const pl_t& pl, const Domain& domain = globalDomain) : StructuredGrid(pl, domain) {}
-    ReducedGaussianGrid(const Spec& spec) : ReducedGaussianGrid(spec.getString("name")) {}
-    const pl_t& nx() const { return pl_; }
-};
-
-
-struct RegularGaussianGrid : StructuredGrid {
-    RegularGaussianGrid(const std::string& name, const Domain& domain = globalDomain) : StructuredGrid(name, domain) {}
-    idx_t nx() const { return pl_.at(0); }
+struct GaussianGrid : StructuredGrid {
+    GaussianGrid(const std::string& name, const Domain& domain = globalDomain);
+    GaussianGrid(const std::vector<long>& pl, const Domain& domain = globalDomain);
+    const std::vector<long>& nx() const { return pl_; }
 };
 
 
 struct UnstructuredGrid : Grid {
-    points_t points_;
-    UnstructuredGrid(points_t&& points);
+    std::vector<PointXY> points_;
+    UnstructuredGrid(std::vector<PointXY>&& points);
 };
+
+
+using RegularGrid         = StructuredGrid;
+using RegularGaussianGrid = GaussianGrid;
+using ReducedGaussianGrid = GaussianGrid;
 
 
 }  // namespace atlas
