@@ -15,6 +15,7 @@
 #include <ostream>
 #include <string>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/repres/other/ClenshawCurtis.h"
