@@ -14,6 +14,7 @@
 
 #include <algorithm>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Angles.h"
@@ -21,6 +22,17 @@
 
 
 namespace atlas {
+
+
+Domain::Range::Range(double min, double max) : min_(min), max_(max) {
+    ASSERT(min <= max);
+}
+
+
+Domain::Domain(Domain::Range&& lon, Domain::Range&& lat, std::string) : lon_(lon), lat_(lat) {
+    ASSERT(lon_.max_ - lon_.min_ <= mir::Longitude::GLOBE.value());
+    ASSERT(mir::Latitude::SOUTH_POLE.value() <= lat_.min_ && lat_.max_ <= mir::Latitude::NORTH_POLE.value());
+}
 
 
 bool projection::ProjectionFactory::has(const std::string&) {
@@ -39,11 +51,22 @@ void util::gaussian_quadrature_npole_spole(size_t /*N*/, double* /*latitudes*/, 
 }
 
 
+util::Rotation::Rotation(const PointLonLat& southPole) :
+    PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
+    ASSERT(southPole == *this);
+}
+
+
 namespace grid {
 LinearSpacing::LinearSpacing(value_type /*a*/, value_type /*b*/, long n, bool /*endpoint*/) : Spacing(n) {
     NOTIMP;
 }
 }  // namespace grid
+
+
+Projection::Projection(const Projection::Spec& spec) : spec_(spec) {
+    ASSERT(spec.empty());
+}
 
 
 StructuredGrid::StructuredGrid(const std::string& name, const Domain& domain) {
@@ -77,9 +100,36 @@ StructuredGrid::StructuredGrid(const std::string& name, const Domain& domain) {
 }
 
 
+StructuredGrid::StructuredGrid(const Grid&) {
+    NOTIMP;
+}
+
+
 idx_t StructuredGrid::nx() const {
+    ASSERT(!pl_.empty());
     auto mm = std::minmax_element(pl_.begin(), pl_.end());
-    return *mm.first == *mm.second ? *mm.first : NOTIMP;
+    ASSERT(*mm.first == *mm.second);
+    return *mm.first;
+}
+
+
+Grid::Grid(const Grid::Spec& spec) : spec_(spec) {
+    NOTIMP;
+}
+
+
+Grid::Grid(const Grid&) {
+    NOTIMP;
+}
+
+
+Grid::Projection Grid::projection() const {
+    NOTIMP;
+}
+
+
+UnstructuredGrid::UnstructuredGrid(points_t&& points) : points_(points) {
+    NOTIMP;
 }
 
 

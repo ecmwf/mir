@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "eckit/config/LocalConfiguration.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 #include "eckit/geometry/SphereT.h"
@@ -54,16 +53,13 @@ struct PointLonLat : public eckit::geometry::Point2 {
 
 struct Domain {
     struct Range {
-        Range(double min, double max) : min_(min), max_(max) { ASSERT(min <= max); }
+        Range(double min, double max);
         const double min_;
         const double max_;
     };
     const Range lon_;
     const Range lat_;
-    Domain(Range&& lon, Range&& lat, std::string /*units*/ = "") : lon_(lon), lat_(lat) {
-        ASSERT(lon_.max_ - lon_.min_ <= mir::Longitude::GLOBE.value());
-        ASSERT(mir::Latitude::SOUTH_POLE.value() <= lat_.min_ && lat_.max_ <= mir::Latitude::NORTH_POLE.value());
-    }
+    Domain(Range&& lon, Range&& lat, std::string /*units*/ = "");
     double north() const { return lat_.max_; }
     double south() const { return lat_.min_; }
     double west() const { return lon_.min_; }
@@ -104,10 +100,7 @@ using Earth = eckit::geometry::SphereT<DatumIFS>;
 
 struct Rotation : PointLonLat {
     // no rotation supported
-    Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()}) :
-        PointLonLat(mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()) {
-        ASSERT(southPole == *this);
-    }
+    Rotation(const PointLonLat& southPole = {mir::Longitude::GREENWICH.value(), mir::Latitude::SOUTH_POLE.value()});
     bool rotated() const { return false; }
     inline void rotate(const double*) const {}
     inline mir::Longitude south_pole_longitude() const { return lon(); }
@@ -164,9 +157,9 @@ struct LinearSpacing : public Spacing {
 
 
 namespace projection {
-namespace ProjectionFactory {
-bool has(const std::string&);
-}  // namespace ProjectionFactory
+struct ProjectionFactory {
+    static bool has(const std::string&);
+};
 }  // namespace projection
 
 
@@ -180,7 +173,7 @@ struct Projection {
     using Spec = util::Config;
     Spec spec_;
     Spec spec() const { return spec_; }
-    Projection(const Spec& spec = defaultConfig) : spec_(spec) { ASSERT(spec.empty()); }
+    Projection(const Spec& spec = defaultConfig);
     operator bool() const { return true; }
     mir::Point2 xy(const mir::Point2& p) const { return p; }
     mir::Point2 lonlat(const mir::Point2& p) const { return p; }
@@ -198,11 +191,11 @@ struct Grid {
     using Projection = atlas::Projection;
     Spec spec_;
     Spec spec() const { return spec_; }
-    Grid(const Spec& spec = defaultConfig) : spec_(spec) { NOTIMP; }
-    Grid(const Grid&) { NOTIMP; }
+    Grid(const Spec& spec = defaultConfig);
+    Grid(const Grid&);
     operator bool() const { return false; }
     Grid& operator=(const Grid&) = default;
-    Projection projection() const { NOTIMP; }
+    Projection projection() const;
 };
 
 
@@ -210,7 +203,7 @@ struct StructuredGrid : Grid {
     using XSpace = grid::Spacing;
     using YSpace = grid::Spacing;
     using Grid::Grid;
-    StructuredGrid(const Grid&) { NOTIMP; }
+    StructuredGrid(const Grid&);
     StructuredGrid(const std::string& name, const Domain& = globalDomain);
     StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(),
                    const Domain& = globalDomain) :
@@ -244,7 +237,7 @@ struct RegularGaussianGrid : StructuredGrid {
 
 struct UnstructuredGrid : Grid {
     points_t points_;
-    UnstructuredGrid(points_t&& points) : points_(points) { NOTIMP; }
+    UnstructuredGrid(points_t&& points);
 };
 
 
