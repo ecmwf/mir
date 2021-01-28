@@ -91,6 +91,9 @@ foreach(_t ${_test_reqs})
         ARGS         "--caching=0" ${_t}
         TEST_DEPENDS download_mir_tests_files
         ENVIRONMENT  ${_testEnvironment} ${_extraEnvironment})
+    if(NOT mir_HAVE_ATLAS AND (_label MATCHES "_sh_to_grid_" OR _label MATCHES "[123]_to_rotation_89_1"))
+        set_tests_properties(${_label} PROPERTIES DISABLED TRUE)
+    endif()
 endforeach()
 
 
@@ -105,6 +108,10 @@ else()
     message(WARNING "${PROJECT_NAME}: tool tests requires ecCodes option BUILD_TOOLS, tests disabled")
 endif()
 
-add_subdirectory(plans)
+
+# defaults exercise non-core functionality
+if(mir_HAVE_ATLAS)
+    add_subdirectory(plans)
+endif()
 add_subdirectory(unit)
 

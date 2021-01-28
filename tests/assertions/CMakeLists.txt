@@ -1,7 +1,7 @@
 find_program(MARS_SCRIPT NAMES mars false)
 
 ecbuild_configure_file(mir-test.sh.in mir-test.sh @ONLY)
-    
+
 if(MARS_SCRIPT)
     file(GLOB_RECURSE test_files LIST_DIRECTORIES false *.test)
 
