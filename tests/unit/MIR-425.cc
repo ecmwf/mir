@@ -56,10 +56,9 @@ CASE("MIR-425") {
     ASSERT(input->next());
 
 
-    SECTION("Test interpolation=linear, should not contain missing values") {
+    SECTION("Test default interpolation, should not contain missing values") {
         param::SimpleParametrisation user;
         user.set("grid", std::vector<double>{1., 1.});
-        user.set("interpolation", "linear");
 
         param::CombinedParametrisation param(user, input->parametrisation(), defaults);
         std::unique_ptr<action::Action> action(new action::interpolate::Gridded2RegularLL(param));
@@ -71,7 +70,7 @@ CASE("MIR-425") {
     }
 
 
-    SECTION("Test interpolation=nn (default), should not contain missing values") {
+    SECTION("Test interpolation=nn, should not contain missing values") {
         param::SimpleParametrisation user;
         user.set("grid", std::vector<double>{1., 1.});
         user.set("interpolation", "nn");
