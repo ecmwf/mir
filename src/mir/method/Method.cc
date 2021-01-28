@@ -17,6 +17,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/config/LibMir.h"
 
@@ -72,19 +73,21 @@ void MethodFactory::list(std::ostream& out) {
 }
 
 
-Method* MethodFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+Method* MethodFactory::build(std::string& names, const param::MIRParametrisation& param) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "MethodFactory: looking for '" << name << "'" << std::endl;
-
-    auto j = m->find(name);
-    if (j == m->end()) {
-        list(eckit::Log::error() << "MethodFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("MethodFactory: unknown '" + name + "'");
+    for (const auto& name : eckit::StringTools::split("/", names)) {
+        eckit::Log::debug<LibMir>() << "MethodFactory: looking for '" << name << "'" << std::endl;
+        auto j = m->find(name);
+        if (j != m->end()) {
+            names = name;
+            return j->second->make(param);
+        }
     }
 
-    return j->second->make(param);
+    list(eckit::Log::error() << "MethodFactory: no valid options in '" << names << "', choices are: ");
+    throw eckit::SeriousBug("MethodFactory: no valid options in '" + names + "'");
 }
 
 

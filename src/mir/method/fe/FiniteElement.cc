@@ -27,6 +27,7 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/config/LibMir.h"
@@ -421,20 +422,22 @@ void FiniteElementFactory::list(std::ostream& out) {
 }
 
 
-FiniteElement* FiniteElementFactory::build(const std::string& method, const std::string& label,
+FiniteElement* FiniteElementFactory::build(std::string& names, const std::string& label,
                                            const param::MIRParametrisation& param) {
     pthread_once(&once, init);
     std::lock_guard<std::mutex> guard(*mtx);
 
-    eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << method << "'" << std::endl;
-
-    auto j = m->find(method);
-    if (j == m->end()) {
-        list(eckit::Log::error() << "FiniteElementFactory: unknown '" << method << "', choices are: ");
-        throw eckit::SeriousBug("FiniteElementFactory: unknown '" + method + "'");
+    for (const auto& name : eckit::StringTools::split("/", names)) {
+        eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << name << "'" << std::endl;
+        auto j = m->find(name);
+        if (j != m->end()) {
+            names = name;
+            return j->second->make(param, label);
+        }
     }
 
-    return j->second->make(param, label);
+    list(eckit::Log::error() << "FiniteElementFactory: no valid options in '" << names << "', choices are: ");
+    throw eckit::SeriousBug("FiniteElementFactory: no valid options in '" + names + "'");
 }
 
 

@@ -91,7 +91,7 @@ protected:
 
 public:
     static void list(std::ostream&);
-    static Method* build(const std::string&, const param::MIRParametrisation&);
+    static Method* build(std::string& names, const param::MIRParametrisation&);
 };
 
 

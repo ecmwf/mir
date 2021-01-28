@@ -123,7 +123,7 @@ protected:
 
 public:
     static void list(std::ostream&);
-    static FiniteElement* build(const std::string& method, const std::string& label, const param::MIRParametrisation&);
+    static FiniteElement* build(std::string& names, const std::string& label, const param::MIRParametrisation&);
 };
 
 
