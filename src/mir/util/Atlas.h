@@ -57,8 +57,9 @@ struct Domain {
         const double min_;
         const double max_;
     };
-    const Range lon_;
-    const Range lat_;
+    const Range lon_ = {mir::Longitude::GREENWICH.value(), mir::Longitude::GLOBE.value()};
+    const Range lat_ = {mir::Latitude::SOUTH_POLE.value(), mir::Latitude::NORTH_POLE.value()};
+    Domain()         = default;
     Domain(Range&& lon, Range&& lat, const std::string& /*units*/ = "");
     inline double north() const { return lat_.max_; }
     inline double south() const { return lat_.min_; }
@@ -68,6 +69,8 @@ struct Domain {
     bool operator==(const Domain&) const;
     operator bool() const { return true; }
 };
+
+
 using RectangularDomain = Domain;
 
 
@@ -120,10 +123,6 @@ struct Config : public eckit::LocalConfiguration {
 }  // namespace util
 
 
-static const Domain globalDomain({mir::Longitude::GREENWICH.value(), mir::Longitude::GLOBE.value()},
-                                 {mir::Latitude::SOUTH_POLE.value(), mir::Latitude::NORTH_POLE.value()});
-
-
 namespace grid {
 
 
@@ -161,9 +160,9 @@ struct ProjectionFactory {
 }  // namespace projection
 
 
-namespace MeshGenerator {
-using Parameters = util::Config;
-}
+struct MeshGenerator {
+    using Parameters = util::Config;
+};
 
 
 struct Projection {
@@ -190,7 +189,7 @@ struct Grid {
     Spec spec() const { return spec_; }
     Grid() = default;
     Grid(const Spec& spec) : spec_(spec) {}
-    operator bool() const { return false; }
+    operator bool() const { return true; }
     Projection projection() const;
 };
 
@@ -200,8 +199,7 @@ struct StructuredGrid : Grid {
     using YSpace = grid::Spacing;
     using Grid::Grid;
     StructuredGrid(const Grid&);
-    StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(),
-                   const Domain& = globalDomain) :
+    StructuredGrid(const XSpace& lon, const YSpace& lat, const Projection& = Projection(), const Domain& = Domain()) :
         lon_(lon), lat_(lat) {}
     idx_t nx(idx_t j) const { return pl_.at(size_t(j)); }
     idx_t nx() const;
@@ -215,8 +213,8 @@ protected:
 
 
 struct GaussianGrid : StructuredGrid {
-    GaussianGrid(const std::string& name, const Domain& domain = globalDomain);
-    GaussianGrid(const std::vector<long>& pl, const Domain& domain = globalDomain);
+    GaussianGrid(const std::string& name, const Domain& = Domain());
+    GaussianGrid(const std::vector<long>& pl, const Domain& = Domain());
     const std::vector<long>& nx() const { return pl_; }
 };
 

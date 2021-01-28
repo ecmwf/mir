@@ -91,7 +91,7 @@ idx_t StructuredGrid::nx() const {
 
 
 GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
-    ASSERT(domain == globalDomain);
+    ASSERT(domain == Domain());
     ASSERT(name.size() > 1);
     spec_.set("name", name);
 
@@ -118,8 +118,9 @@ GaussianGrid::GaussianGrid(const std::string& name, const Domain& domain) {
     NOTIMP;
 }
 
+
 GaussianGrid::GaussianGrid(const std::vector<long>& pl, const Domain& domain) {
-    ASSERT(domain == globalDomain);
+    ASSERT(domain == Domain());
     pl_ = pl;
 }
 
