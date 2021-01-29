@@ -14,6 +14,7 @@ foreach(tool IN ITEMS
     mir-list
     mir-load-matrix
     mir-make-lsm
+    mir-plot-lsm
     mir-points
     mir-statistics
     mir-weight-matrix-diff)
