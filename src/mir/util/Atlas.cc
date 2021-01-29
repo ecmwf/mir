@@ -12,9 +12,11 @@
 
 #include "mir/util/Atlas.h"
 
-#include "eckit/exception/Exceptions.h"
+#include <algorithm>
+
 #include "eckit/utils/Translator.h"
 
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -45,6 +47,13 @@ bool Domain::operator==(const Domain& other) const {
 
 bool projection::ProjectionFactory::has(const std::string&) {
     return false;
+}
+
+
+void util::gaussian_latitudes_npole_equator(size_t N, double* latitudes) {
+    std::vector<double> tmp(2 * N);
+    codes_get_gaussian_latitudes(long(N), tmp.data());
+    std::copy_n(tmp.begin(), N, latitudes);
 }
 
 
