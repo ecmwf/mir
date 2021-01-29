@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
@@ -53,6 +52,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 #if defined mir_HAVE_ATLAS
@@ -362,7 +362,7 @@ struct MIR : tools::MIRTool {
 
 
 void MIR::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("mir");
+    trace::ResourceUsage usage("mir");
     const param::ConfigurationWrapper args_wrap(args);
 
     // If we want to control the backend in MARS/PRODGEN, we can move that to MIRJob

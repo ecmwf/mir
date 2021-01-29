@@ -16,7 +16,6 @@
 #include <sys/mman.h>
 #include <memory>
 
-#include "eckit/log/TraceTimer.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
@@ -25,6 +24,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 using eckit::MMap;
@@ -106,7 +106,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
 
     Log::debug() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
-    eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
+    trace::Timer timer("Extract points from  LSM");
 
     // NOTE: this is not using 3D coordinate systems
     // mask_.reserve(grid.size());

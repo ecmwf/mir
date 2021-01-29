@@ -17,6 +17,7 @@
 
 #include "eckit/filesystem/PathName.h"
 
+#include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
 
@@ -46,10 +47,6 @@ public:
     virtual bool inSharedMemory() const = 0;
 
     atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
-
-    static eckit::Channel& log();
-    static eckit::Channel& info();
-    static eckit::Channel& warn();
 
 protected:
     const param::MIRParametrisation& parametrisation_;

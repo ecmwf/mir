@@ -90,7 +90,8 @@ void InMemoryCacheBase::checkTotalFootprint() {
             totalFootprint += j->footprint();
         }
 
-        log() << "CACHE-checkTotalFootprint size " << totalFootprint << ", max is " << maximumCapacity << std::endl;
+        Log::debug() << "CACHE-checkTotalFootprint size " << totalFootprint << ", max is " << maximumCapacity
+                     << std::endl;
 
         if (totalFootprint > maximumCapacity) {
 
@@ -100,18 +101,12 @@ void InMemoryCacheBase::checkTotalFootprint() {
             for (auto& j : *m) {
                 InMemoryCacheUsage purged = j->purge(p);
                 if (purged) {
-                    log() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;
+                    Log::debug() << "CACHE-checkTotalFootprint purged " << purged << " from " << j->name() << std::endl;
                     more = true;
                 }
             }
         }
     }
-}
-
-
-eckit::Channel& InMemoryCacheBase::log() {
-    static auto& channel = Log::debug();
-    return channel;
 }
 
 

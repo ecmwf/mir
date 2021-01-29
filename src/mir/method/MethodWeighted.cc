@@ -16,13 +16,13 @@
 #include <sstream>
 #include <string>
 
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
+#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/data/Space.h"
@@ -33,6 +33,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -105,7 +106,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
+    trace::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
 
     computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
 
@@ -125,7 +126,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
-    eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
+    trace::Timer timer("MethodWeighted::getMatrix");
 
 
     double here                   = timer.elapsed();
@@ -286,7 +287,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
-    eckit::TraceTimer<LibMir> timer("MethodWeighted::execute");
+    trace::Timer timer("MethodWeighted::execute");
     auto& log = Log::debug();
     log << "MethodWeighted::execute" << std::endl;
 
@@ -329,7 +330,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
 
         std::ostringstream os;
         os << "Interpolating field (" << Pretty(npts_inp) << " -> " << Pretty(npts_out) << ")";
-        eckit::TraceTimer<LibMir> trace(os.str());
+        trace::Timer trace(os.str());
 
         // compute some statistics on the result
         // This is expensive so we might want to skip it in production code
@@ -360,7 +361,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
                 for (auto& n : nonLinear_) {
                     std::ostringstream str;
                     str << *n;
-                    eckit::TraceTimer<LibMir> t(str.str());
+                    trace::Timer t(str.str());
 
                     if (n->treatment(mi, M, mo, field.values(i), missingValue)) {
                         if (matrixValidate_) {
@@ -414,7 +415,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
         W.setIdentity(W.rows(), W.cols());
     }
     else {
-        eckit::TraceTimer<LibMir> timer("Assemble matrix");
+        trace::Timer timer("Assemble matrix");
         assemble(ctx.statistics(), W, in, out);
         W.cleanup(pruneEpsilon_);
     }
@@ -427,8 +428,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
 
 
 void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
-
-    eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
+    trace::Timer timer("MethodWeighted::applyMasks");
     auto& log = Log::debug();
 
     log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;

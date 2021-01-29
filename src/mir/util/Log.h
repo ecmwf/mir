@@ -29,6 +29,7 @@ struct Log final : protected eckit::Log {
     using eckit::Log::warning;
 
     using eckit::Log::applicationFormat;
+    using eckit::Log::syserr;
 };
 
 

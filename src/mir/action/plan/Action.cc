@@ -21,7 +21,7 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/TraceResourceUsage.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -40,7 +40,7 @@ void Action::custom(std::ostream& out) const {
 
 
 void Action::perform(context::Context& ctx) const {
-    mir::util::TraceResourceUsage usage(name());
+    trace::ResourceUsage usage(name());
     execute(ctx);
 }
 

@@ -17,16 +17,13 @@
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/output/GribFileOutput.h"
@@ -38,11 +35,13 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/search/PointSearch.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -90,8 +89,7 @@ struct MIRClimateFilter : tools::MIRTool {
 void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
     // statistics, timers and options
-    eckit::ResourceUsage usage("MIRClimateFilter");
-    eckit::TraceTimer<LibMir> timer("MIRClimateFilter");
+    trace::Trace timer("MIRClimateFilter");
 
     std::unique_ptr<input::MIRInput> in(new input::GribFileInput(args(0)));
     ASSERT(in);
@@ -220,7 +218,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                 t = timer.elapsed();
 
                 Point3 P;
-                atlas::util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
+                util::Earth::convertSphericalToCartesian({lon[0], lat[j]}, P);
 
                 std::vector<search::PointSearch::PointValueType> closest;
                 tree.closestWithinRadius(P, distance, closest);

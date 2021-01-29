@@ -17,6 +17,7 @@
 
 #include "eckit/types/FloatCompare.h"
 
+#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 
@@ -48,12 +49,12 @@ GridBox::GridBox(double north, double west, double south, double east) :
 
 
 double GridBox::area() const {
-    return atlas::util::Earth::area({west_, north_}, {east_, south_});
+    return util::Earth::area({west_, north_}, {east_, south_});
 }
 
 
 double GridBox::diagonal() const {
-    return atlas::util::Earth::distance({west_, north_}, {east_, south_});
+    return util::Earth::distance({west_, north_}, {east_, south_});
 }
 
 

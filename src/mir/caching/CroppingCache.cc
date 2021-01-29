@@ -17,6 +17,7 @@
 #include "eckit/serialisation/FileStream.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -45,7 +46,7 @@ size_t CroppingCacheEntry::footprint() const {
 
 
 void CroppingCacheEntry::save(const eckit::PathName& path) const {
-    eckit::TraceTimer<LibMir> timer("Saving cropping to cache");
+    trace::Timer timer("Saving cropping to cache");
 
     eckit::FileStream f(path, "w");
     auto c = eckit::closer(f);
@@ -63,7 +64,7 @@ void CroppingCacheEntry::save(const eckit::PathName& path) const {
 
 
 void CroppingCacheEntry::load(const eckit::PathName& path) {
-    eckit::TraceTimer<LibMir> timer("Loading cropping from cache");
+    trace::Timer timer("Loading cropping from cache");
 
     eckit::FileStream f(path, "r");
     auto c = eckit::closer(f);

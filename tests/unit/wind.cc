@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 
+#include "eckit/config/Configuration.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/config/LibMir.h"

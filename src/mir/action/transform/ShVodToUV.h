@@ -14,6 +14,7 @@
 #define mir_action_transform_ShVodToUV_h
 
 #include "mir/action/plan/Action.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
 

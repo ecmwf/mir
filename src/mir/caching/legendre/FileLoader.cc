@@ -19,6 +19,7 @@
 #include "eckit/log/Bytes.h"
 
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 
@@ -30,7 +31,7 @@ namespace legendre {
 FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path), buffer_(size_t(path.size())) {
 
-    log() << "Loading Legendre coefficients from " << path << std::endl;
+    Log::debug() << "Loading Legendre coefficients from " << path << std::endl;
 
     eckit::AutoStdFile file(path);
     ASSERT(std::fread(buffer_, 1, buffer_.size(), file) == buffer_.size());

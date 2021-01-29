@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
@@ -26,6 +25,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -66,7 +66,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     auto& log = Log::debug();
 
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
+    trace::Timer timer("KNearestNeighbours::assemble");
 
     const size_t nbOutputPoints = out.numberOfPoints();
 

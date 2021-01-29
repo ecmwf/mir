@@ -30,6 +30,7 @@
 #include "mir/search/PointSearch.h"
 #include "mir/stats/detail/Counter.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 
@@ -181,7 +182,7 @@ private:
 };
 
 
-size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const Coordinates& coord1,
+size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const Coordinates& coord1,
             const Coordinates& coord2) {
 
     ASSERT(coord1.size() == coord2.size());
@@ -217,25 +218,25 @@ size_t diff(eckit::Channel& log, double toleranceLat, double toleranceLon, const
 
         if (dlat > toleranceLat || dlon > toleranceLon) {
             ++Ndiff;
-            showPointAt(log, n);
+            showPointAt(out, n);
         }
     }
 
-    log << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
+    out << "\n|" << coord1.name() << " - " << coord2.name() << "|: #Δ = " << Ndiff << " of " << N;
 
     if (Ndiff > 0) {
         if (statsLat.max() > toleranceLat) {
-            showPointAt(log, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
-            showCoordMinMax(log, coord1.name() + " latitude", coord1.latitudes());
-            showCoordMinMax(log, coord2.name() + " latitude", coord2.latitudes());
+            showPointAt(out, statsLat.maxIndex() - 1) << " <- max(|Δlat|) = " << statsLat.max();
+            showCoordMinMax(out, coord1.name() + " latitude", coord1.latitudes());
+            showCoordMinMax(out, coord2.name() + " latitude", coord2.latitudes());
         }
         if (statsLon.max() > toleranceLon) {
-            showPointAt(log, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
-            showCoordMinMax(log, coord1.name() + " longitude", coord1.longitudes());
-            showCoordMinMax(log, coord2.name() + " longitude", coord2.longitudes());
+            showPointAt(out, statsLon.maxIndex() - 1) << " <- max(|Δlon|) = " << statsLon.max();
+            showCoordMinMax(out, coord1.name() + " longitude", coord1.longitudes());
+            showCoordMinMax(out, coord2.name() + " longitude", coord2.longitudes());
         }
     }
-    log << std::endl;
+    out << std::endl;
 
     return Ndiff;
 }
@@ -252,7 +253,7 @@ const neighbours_t& getNeighbours(const Point2& p, size_t n, const repres::Repre
     }
 
     search::PointSearch::PointType pt;
-    atlas::util::Earth::convertSphericalToCartesian(p, pt);
+    util::Earth::convertSphericalToCartesian(p, pt);
 
     search::PointSearch sptree(param, rep);
 
@@ -345,7 +346,7 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
 
                     log << "- " << c++ << " -"
                         << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
-                        << " distance=" << atlas::util::Earth::distance(p, q) / 1000. << " (km)"
+                        << " distance=" << util::Earth::distance(p, q) / 1000. << " (km)"
                         << " value=" << values[i] << std::endl;
                 }
             }

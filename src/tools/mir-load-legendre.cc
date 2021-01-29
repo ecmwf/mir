@@ -25,6 +25,7 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 
@@ -56,7 +57,7 @@ struct MIRLoadLegendre : tools::MIRTool {
 };
 
 
-void display(eckit::Channel& out, caching::legendre::LegendreLoader* loader, std::string path) {
+void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, std::string path) {
     ASSERT(loader);
 
     // clang-format off

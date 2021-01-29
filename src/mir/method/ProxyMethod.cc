@@ -24,6 +24,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {

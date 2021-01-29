@@ -21,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 
@@ -58,7 +59,7 @@ bool L2Projection::sameAs(const Method& other) const {
 
 void L2Projection::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                             const repres::Representation& out) const {
-    eckit::Channel& log = Log::debug();
+    auto& log = Log::debug();
     log << "L2Projection::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 

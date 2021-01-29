@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
@@ -44,6 +43,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
@@ -186,7 +186,7 @@ atlas::Grid output_grid(const param::MIRParametrisation& parametrisation,
 }
 
 void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
-    eckit::ResourceUsage usage("MIRSpectralTransform");
+    trace::ResourceUsage usage("MIRSpectralTransform");
 
     // Setup options
     static param::DefaultParametrisation defaults;

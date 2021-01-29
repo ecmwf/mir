@@ -20,7 +20,6 @@ ecbuild_add_library(
     PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
     PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
     SOURCES
-    api/mir_version.cc
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -124,6 +123,7 @@ ecbuild_add_library(
     api/MIRJob.h
     api/MIRWatcher.cc
     api/MIRWatcher.h
+    api/mir_version.cc
     caching/CroppingCache.cc
     caching/CroppingCache.h
     caching/InMemoryCache.cc
@@ -605,6 +605,7 @@ ecbuild_add_library(
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
+    util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
     util/BoundingBox.cc
@@ -667,8 +668,8 @@ ecbuild_add_library(
     util/SpectralOrder.h
     util/SpectralOrderT.cc
     util/SpectralOrderT.h
-    util/TraceResourceUsage.cc
-    util/TraceResourceUsage.h
+    util/Trace.cc
+    util/Trace.h
     util/Types.h
     util/Wind.cc
     util/Wind.h)
@@ -676,7 +677,7 @@ ecbuild_add_library(
 
 if(mir_HAVE_ATLAS)
     target_link_libraries(mir PUBLIC atlas)
-    target_sources(mir PRIVATE 
+    target_sources(mir PRIVATE
         action/filter/NablaFilterFVMT.cc
         action/filter/NablaFilterFVMT.h
         action/transform/InvtransScalar.cc
@@ -758,13 +759,13 @@ if(mir_HAVE_ATLAS)
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
-    target_sources(mir PRIVATE util/Atlas.h util/Atlas.cc)
+    target_sources(mir PRIVATE util/Atlas.cc)
 endif()
 
 
 if(mir_HAVE_NETCDF)
     target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
-    target_sources(mir PRIVATE 
+    target_sources(mir PRIVATE
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
         netcdf/Attribute.cc

@@ -24,8 +24,6 @@
 #include <sstream>
 #include <utility>
 
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 #include "eckit/utils/StringTools.h"
 
@@ -34,6 +32,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -264,7 +263,7 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 
 void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Channel& log = Log::debug();
+    auto& log = Log::debug();
 
     log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
@@ -287,8 +286,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     // generate k-d tree with cell centres
     std::unique_ptr<element_tree_t> eTree;
     {
-        eckit::ResourceUsage usage("FiniteElement::assemble create k-d tree", log);
-        eckit::TraceTimer<LibMir> timer("k-d tree: create");
+        trace::Trace timer("k-d tree: create");
         eTree.reset(atlas::interpolation::method::create_element_centre_index(inMesh));
     }
 

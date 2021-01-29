@@ -45,10 +45,6 @@ public:
 
     void deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg::SparseMatrix::Shape) override;
 
-    static eckit::Channel& log();
-    static eckit::Channel& info();
-    static eckit::Channel& warn();
-
 protected:
     eckit::PathName path_;
 };

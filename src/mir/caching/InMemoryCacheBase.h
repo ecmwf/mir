@@ -43,7 +43,6 @@ public:  // methods
 
 protected:
     void checkTotalFootprint();
-    static eckit::Channel& log();
 
 private:
     virtual InMemoryCacheUsage footprint() const                                    = 0;

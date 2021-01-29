@@ -20,15 +20,19 @@
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace caching {
+
 
 inline static double utime() {
     struct timeval t;
     ::gettimeofday(&t, 0);
     return double(t.tv_sec) + double(t.tv_usec) * 0.000001;
 }
+
 
 template <class T>
 InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity, size_t shared_capacity,
@@ -40,15 +44,15 @@ InMemoryCache<T>::InMemoryCache(const std::string& name, size_t memory_capacity,
 
 template <class T>
 InMemoryCache<T>::~InMemoryCache() {
-    // log() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
+    // Log::debug() << "Deleting InMemoryCache " << name_ << " capacity=" << capacity_ << ", entries: " <<
     // cache_.size() << std::endl;
     for (auto& j : cache_) {
-        // log() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
+        // Log::debug() << "Deleting InMemoryCache " << name_ << " " << *(j.second->ptr_) << std::endl;
         delete j.second;
     }
 
     // std::string title = "InMemoryCache(" + name_ + ")";
-    // statistics_.report(title.c_str(), log());
+    // statistics_.report(title.c_str(), Log::debug());
 }
 
 
@@ -70,11 +74,12 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     return 0;
 }
 
+
 template <class T>
 void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsage& usage) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    log() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
+    Log::debug() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
 
 
     auto k = cache_.find(key);
@@ -92,8 +97,8 @@ void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsag
 
     statistics_.required_ = result;
 
-    log() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << " required " << result << " capacity "
-          << capacity_ << std::endl;
+    Log::debug() << "CACHE-FOOTPRINT-" << name_ << " total " << footprint() << " required " << result << " capacity "
+                 << capacity_ << std::endl;
 }
 
 
@@ -112,9 +117,9 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
     auto u = usage;
     auto p = (f + u) - c;
 
-    log() << "CACHE-RESERVE-" << name_ << " "
-          << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
-          << std::endl;
+    Log::debug() << "CACHE-RESERVE-" << name_ << " "
+                 << " => " << u << " footprint: " << f << " capacity: " << c << " f+u: " << f + u << " f+u-c: " << p
+                 << std::endl;
 
 
     if (p) {
@@ -155,7 +160,7 @@ T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
 
     statistics_.insertions_++;
 
-    // log() << "Insert in InMemoryCache " << *ptr << std::endl;
+    // Log::debug() << "Insert in InMemoryCache " << *ptr << std::endl;
 
     auto k = cache_.find(key);
     if (k != cache_.end()) {
@@ -259,7 +264,7 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
         return purged;
     }
 
-    log() << "CACHE " << name_ << " purging " << amount << std::endl;
+    Log::debug() << "CACHE " << name_ << " purging " << amount << std::endl;
 
     while (purged < amount) {
 
@@ -292,11 +297,11 @@ InMemoryCacheUsage InMemoryCache<T>::purge(const InMemoryCacheUsage& amount, boo
 
         purged += best->second->footprint_;
 
-        log() << "CACHE " << name_ << " decache " << best->first << std::endl;
+        Log::debug() << "CACHE " << name_ << " decache " << best->first << std::endl;
         delete best->second;
         cache_.erase(best);
 
-        log() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
+        Log::debug() << "CACHE " << name_ << " purging " << amount << " purged " << purged << std::endl;
     }
 
     return purged;

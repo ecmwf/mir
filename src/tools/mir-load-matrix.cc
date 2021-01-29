@@ -67,7 +67,7 @@ struct MIRLoadMatrix : tools::MIRTool {
 };
 
 
-void display(eckit::Channel& out, caching::matrix::MatrixLoader* loader, const std::string& path) {
+void display(Log::Channel& out, caching::matrix::MatrixLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off

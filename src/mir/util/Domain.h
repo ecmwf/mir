@@ -13,8 +13,8 @@
 #ifndef mir_util_Domain_h
 #define mir_util_Domain_h
 
+#include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {

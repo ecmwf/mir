@@ -20,6 +20,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 namespace mir {

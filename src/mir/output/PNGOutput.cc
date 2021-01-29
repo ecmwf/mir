@@ -25,7 +25,6 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
@@ -37,9 +36,11 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/LatLon.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -77,7 +78,7 @@ size_t PNGOutput::copy(const param::MIRParametrisation&, context::Context&) {
 }
 
 size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
-    eckit::TraceResourceUsage<LibMir> usage("PNGOutput::save");
+    trace::ResourceUsage usage("PNGOutput::save");
     auto timing(ctx.statistics().saveTimer());
 
     const auto& field = ctx.field();

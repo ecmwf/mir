@@ -279,7 +279,7 @@ void Variable::validate() const {
     for (size_t i = 0; not_supported[i] != nullptr; ++i) {
         auto j = attributes_.find(not_supported[i]);
         if (j != attributes_.end()) {
-            throw MergeError("Variable " + name_ + " has an unsupported attribute: " + not_supported[i]);
+            throw exception::MergeError("Variable " + name_ + " has an unsupported attribute: " + not_supported[i]);
         }
     }
 }

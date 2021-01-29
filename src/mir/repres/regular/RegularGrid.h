@@ -14,6 +14,7 @@
 #define mir_repres_regular_RegularGrid_h
 
 #include "mir/repres/Gridded.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
 
@@ -61,10 +62,6 @@ public:
     // None
 
 protected:
-    // -- Types
-
-    using LLCOORDS = eckit::geometry::LLCOORDS;
-
     // -- Members
 
     ::atlas::RegularGrid grid_;

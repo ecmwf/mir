@@ -16,6 +16,7 @@
 #include <iosfwd>
 
 #include "mir/caching/legendre/LegendreLoader.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
 

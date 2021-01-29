@@ -14,12 +14,11 @@
 
 #include <iostream>
 
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/lsm/Mask.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -50,7 +49,7 @@ std::string LandSeaMasks::cacheName() const {
 
 LandSeaMasks LandSeaMasks::lookup(const param::MIRParametrisation& parametrisation, const repres::Representation& in,
                                   const repres::Representation& out) {
-    eckit::TraceTimer<LibMir>("LandSeaMasks::lookup");
+    trace::Timer("LandSeaMasks::lookup");
     return LandSeaMasks(Mask::lookupInput(parametrisation, in), Mask::lookupOutput(parametrisation, out));
 }
 

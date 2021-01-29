@@ -16,6 +16,8 @@
 #include "eckit/option/SimpleOption.h"
 #include "eckit/types/Fraction.h"
 
+#include "mir/util/Atlas.h"
+
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/stats/detail/PNormsT.h"
 #include "mir/tools/MIRTool.h"

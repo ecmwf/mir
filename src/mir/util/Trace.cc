@@ -10,33 +10,35 @@
  */
 
 
-#include "mir/util/TraceResourceUsage.h"
+#include "mir/util/Trace.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/ResourceUsage.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/util/Log.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
-namespace util {
+namespace trace {
 
 
-TraceResourceUsage::TraceResourceUsage(const char* name) {
+template <>
+detail::TraceT<eckit::ResourceUsage>::TraceT(const std::string& name, Log::Channel& log) {
     static bool usage = eckit::LibResource<bool, LibMir>(
         "mir-trace-resource-usage;"
         "$MIR_TRACE_RESOURCE_USAGE",
         false);
     if (usage) {
-        info_ = new eckit::ResourceUsage(name, Log::debug());
+        info_ = new eckit::ResourceUsage(name.c_str(), log);
     }
 }
 
-TraceResourceUsage::~TraceResourceUsage() {
-    delete info_;
+
+template <>
+double detail::TraceT<eckit::ResourceUsage>::elapsed() {
+    NOTIMP;
 }
 
 
-}  // namespace util
+}  // namespace trace
 }  // namespace mir

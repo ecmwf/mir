@@ -82,13 +82,12 @@ public:
         /// @param count how often to output progress, based on total counter
         /// @param o output stream
         ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
-                        std::ostream& o = Log::info(), size_t count = 10000);
+                        Log::Channel& o = Log::info(), size_t count = 10000);
 
     private:
         bool hasOutput() override;
         const size_t count_;
     };
-
 
     // -- Exceptions
     // None

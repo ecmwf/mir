@@ -15,6 +15,7 @@
 
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/Types.h"
 
 

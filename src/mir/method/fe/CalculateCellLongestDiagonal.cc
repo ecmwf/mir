@@ -18,7 +18,9 @@
 #include "atlas/array/MakeView.h"
 #include "atlas/runtime/Trace.h"
 
+#include "mir/util/Atlas.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 

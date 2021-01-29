@@ -16,7 +16,7 @@
 #include <iosfwd>
 #include <string>
 
-#include "mir/util/Types.h"
+#include "mir/util/Atlas.h"
 
 
 namespace mir {

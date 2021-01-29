@@ -19,6 +19,7 @@
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -31,24 +32,6 @@ LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation,
 
 
 LegendreLoader::~LegendreLoader() = default;
-
-
-eckit::Channel& LegendreLoader::log() {
-    static auto& channel = Log::debug();
-    return channel;
-}
-
-
-eckit::Channel& LegendreLoader::info() {
-    static auto& channel = Log::info();
-    return channel;
-}
-
-
-eckit::Channel& LegendreLoader::warn() {
-    static auto& channel = Log::warning();
-    return channel;
-}
 
 
 static pthread_once_t once                              = PTHREAD_ONCE_INIT;

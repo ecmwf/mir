@@ -22,6 +22,7 @@ namespace exception {
 
 
 using mir::exception::SeriousBug;
+using mir::exception::UserError;
 
 
 struct NCError : public eckit::Exception {

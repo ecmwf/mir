@@ -77,7 +77,7 @@ bool Pretty::ProgressTimer::hasOutput() {
 
 
 Pretty::ProgressCounter::ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
-                                         std::ostream& o, size_t count) :
+                                         Log::Channel& o, size_t count) :
     PrettyProgress(name, limit, units, o), count_(count) {}
 
 

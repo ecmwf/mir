@@ -44,23 +44,6 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
 }
 
 
-eckit::Channel& MatrixLoader::log() {
-    static auto& channel = Log::debug();
-    return channel;
-}
-
-eckit::Channel& MatrixLoader::info() {
-    static auto& channel = Log::info();
-    return channel;
-}
-
-
-eckit::Channel& MatrixLoader::warn() {
-    static auto& channel = Log::warning();
-    return channel;
-}
-
-
 static pthread_once_t once                            = PTHREAD_ONCE_INIT;
 static eckit::Mutex* local_mutex                      = nullptr;
 static std::map<std::string, MatrixLoaderFactory*>* m = nullptr;

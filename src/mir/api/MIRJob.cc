@@ -133,7 +133,7 @@ MIRJob& MIRJob::_setScalar(const std::string& name, const T& value) {
 
 template <class T>
 MIRJob& MIRJob::_setVector(const std::string& name, const T& value, size_t outputCount) {
-    eckit::Channel& out = Log::debug();
+    auto& out = Log::debug();
 
     out << "MIRJob: set '" << name << "'='";
     const char* sep = "";

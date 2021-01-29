@@ -15,7 +15,6 @@
 #include <string>
 
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -24,6 +23,7 @@
 #include "mir/search/PointSearch.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -62,7 +62,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     using eckit::geometry::ZZ;
 
     Log::debug() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
-    eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
+    trace::Timer timer("PseudoLaplace::assemble");
 
 
     search::PointSearch sptree(parametrisation_, in);

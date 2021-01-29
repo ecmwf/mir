@@ -17,8 +17,6 @@
 #include <sstream>
 #include <vector>
 
-#include "eckit/log/ResourceUsage.h"
-#include "eckit/log/TraceTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
@@ -30,6 +28,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -57,7 +56,7 @@ bool GridBoxMethod::sameAs(const Method& other) const {
 
 void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Channel& log = Log::debug();
+    auto& log = Log::debug();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
@@ -106,8 +105,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
     {
-        eckit::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
-        eckit::TraceTimer<LibMir> timer("k-d tree: create");
+        trace::Trace usage("GridBoxMethod::assemble create k-d tree", log);
         tree.reset(new search::PointSearch(parametrisation_, in));
     }
 

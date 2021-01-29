@@ -23,6 +23,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -44,10 +45,9 @@ void UnstructuredFilter::print(std::ostream& out) const {
 
 
 void UnstructuredFilter::execute(context::Context& ctx) const {
-    using LLCOORDS = eckit::geometry::LLCOORDS;
-
-    data::MIRField& field = ctx.field();
+    auto& field = ctx.field();
     repres::RepresentationHandle repres(field.representation());
+
     size_t N = repres->numberOfPoints();
     ASSERT(N);
 

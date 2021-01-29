@@ -20,6 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -60,7 +61,7 @@ const char* WeightCacheTraits::extension() {
 
 void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W, const eckit::PathName& path) {
     Log::debug() << "Inserting weights in cache : " << path << "" << std::endl;
-    eckit::TraceTimer<LibMir> timer("Saving weights to cache");
+    trace::Timer timer("Saving weights to cache");
 
     static size_t matrixMaxFootprint = eckit::Resource<size_t>("$MIR_MATRIX_MAX_FOOTPRINT", 0);
     if (matrixMaxFootprint > 0) {
@@ -78,8 +79,7 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
 
 
 void WeightCacheTraits::load(const eckit::CacheManagerBase& manager, value_type& w, const eckit::PathName& path) {
-
-    eckit::TraceTimer<LibMir> timer("Loading weights from cache");
+    trace::Timer timer("Loading weights from cache");
 
     value_type tmp(matrix::MatrixLoaderFactory::build(manager.loader(), path));
     w.swap(tmp);

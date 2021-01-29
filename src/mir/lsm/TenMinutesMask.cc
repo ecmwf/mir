@@ -20,11 +20,11 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 static eckit::Mutex local_mutex;
@@ -55,7 +55,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
 
     if (ten_minutes_.empty()) {
 
-        eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
+        trace::Timer timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
         Log::debug() << "TenMinutesMask loading " << path_ << std::endl;
 
@@ -77,7 +77,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
         }
     }
 
-    eckit::TraceTimer<LibMir> timer("Extract point from 10 minutes LSM");
+    trace::Timer timer("Extract point from 10 minutes LSM");
 
 
     // NOTE: this is not using 3D coordinate systems
