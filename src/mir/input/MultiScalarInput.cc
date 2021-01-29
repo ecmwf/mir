@@ -13,8 +13,9 @@
 #include "mir/input/MultiScalarInput.h"
 
 #include <iostream>
-#include "eckit/exception/Exceptions.h"
+
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

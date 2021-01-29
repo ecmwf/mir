@@ -14,14 +14,13 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

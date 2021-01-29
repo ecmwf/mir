@@ -12,10 +12,10 @@
 
 #include "mir/method/knn/pick/NClosest.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -31,8 +31,7 @@ NClosest::NClosest(const param::MIRParametrisation& param) {
 }
 
 
-void NClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                    Pick::neighbours_t& closest) const {
+void NClosest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
     tree.closestNPoints(p, nClosest_, closest);
     ASSERT(closest.size() == nClosest_);
 }

@@ -14,9 +14,8 @@
 
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/repres/other/ORCA.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

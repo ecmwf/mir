@@ -14,12 +14,12 @@
 
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

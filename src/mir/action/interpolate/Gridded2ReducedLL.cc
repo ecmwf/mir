@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

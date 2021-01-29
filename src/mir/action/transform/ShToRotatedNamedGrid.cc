@@ -18,7 +18,7 @@
 #include "mir/action/transform/InvtransVodTouv.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

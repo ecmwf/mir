@@ -15,12 +15,10 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
@@ -34,7 +32,7 @@ void InvtransVodTouv::print(std::ostream& out) const {
 
 void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                               const param::MIRParametrisation& parametrisation) const {
-    eckit::Timer timer("InvtransVodTouv::sh2grid", eckit::Log::debug<LibMir>());
+    eckit::Timer timer("InvtransVodTouv::sh2grid", Log::debug());
 
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);
@@ -53,8 +51,8 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
     const MIRValuesVector& field_d  = field.values(1);
 
     if (field_vo.size() != field_d.size()) {
-        eckit::Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
-                            << field_d.size() << std::endl;
+        Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
+                     << field_d.size() << std::endl;
         ASSERT(field_vo.size() == field_d.size());
     }
 

@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -46,12 +46,12 @@ SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t compon
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("SpaceChooser: duplicate '" + name + "'");
+        throw exception::SeriousBug("SpaceChooser: duplicate '" + name + "'");
     }
 
     if (component_ >= dimensions_) {
-        throw eckit::SeriousBug("SpaceChooser: '" + name + "' component (" + std::to_string(component_) +
-                                ") is not below dimensions (" + std::to_string(dimensions_) + ")");
+        throw exception::SeriousBug("SpaceChooser: '" + name + "' component (" + std::to_string(component_) +
+                                    ") is not below dimensions (" + std::to_string(dimensions_) + ")");
     }
 
     (*m)[name] = this;
@@ -70,12 +70,12 @@ const Space& SpaceChooser::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "SpaceChooser: looking for '" << name << "'" << std::endl;
+    Log::debug() << "SpaceChooser: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "SpaceChooser: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("SpaceChooser: unknown '" + name + "'");
+        list(Log::error() << "SpaceChooser: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("SpaceChooser: unknown '" + name + "'");
     }
 
     return *((j->second)->choice_);

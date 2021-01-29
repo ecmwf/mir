@@ -605,7 +605,6 @@ ecbuild_add_library(
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
-    util/Assert.h
     util/Bitmap.cc
     util/Bitmap.h
     util/BoundingBox.cc
@@ -616,6 +615,7 @@ ecbuild_add_library(
     util/Domain.h
     util/Error.cc
     util/Error.h
+    util/Exceptions.h
     util/Formula.cc
     util/Formula.h
     util/FormulaBinop.cc
@@ -643,6 +643,8 @@ ecbuild_add_library(
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h
+    util/Log.cc
+    util/Log.h
     util/LongitudeDouble.cc
     util/LongitudeDouble.h
     util/LongitudeFraction.cc

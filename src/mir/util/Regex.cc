@@ -12,8 +12,8 @@
 
 #include <map>
 
-#include "eckit/log/Log.h"
 
+#include "mir/util/Log.h"
 #include "mir/util/Regex.h"
 
 
@@ -43,7 +43,7 @@ Regex::Regex(const std::string& pattern) : pattern_(pattern) {
         regex_.assign(regex_t(pattern_, std::regex_constants::extended));
     }
     catch (const std::regex_error& e) {
-        eckit::Log::error() << "regex_error caught: " << e.what() << ", code: " << regex_code.at(e.code()) << std::endl;
+        Log::error() << "regex_error caught: " << e.what() << ", code: " << regex_code.at(e.code()) << std::endl;
         throw;
     }
 }

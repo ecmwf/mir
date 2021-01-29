@@ -42,11 +42,11 @@ void UpdateCoordinateStep::execute(MergePlan& /*plan*/) {
     const std::vector<Dimension *> &dims = out_.dimensions();
     ASSERT(dims.size() == 1);
 
-    eckit::Log::info() << *this << std::endl;
+    Log::info() << *this << std::endl;
 
     std::vector<Variable *> v = plan.field().variablesForDimension(*dims[0]);
     for (std::vector<Variable *>::iterator j = v.begin(); j != v.end(); ++j) {
-        eckit::Log::info() << "Affects: " << **j << std::endl;
+        Log::info() << "Affects: " << **j << std::endl;
         (*j)->mustMerge(true);
         plan.add(new ReshapeVariableStep(**j, *dims[0], growth_));
     }

@@ -16,15 +16,15 @@
 #include <sys/mman.h>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 using eckit::MMap;
@@ -76,8 +76,8 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
 
     int fd = ::open(path_.localPath(), O_RDONLY);
     if (fd < 0) {
-        eckit::Log::error() << "open(" << path_ << ')' << eckit::Log::syserr << std::endl;
-        throw eckit::FailedSystemCall("open");
+        Log::error() << "open(" << path_ << ')' << Log::syserr << std::endl;
+        throw exception::FailedSystemCall("open");
     }
 
     FDClose close(fd);
@@ -89,8 +89,8 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
 
     void* address = MMap::mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0);
     if (address == MAP_FAILED) {
-        eckit::Log::error() << "open(" << path_ << ',' << size << ')' << eckit::Log::syserr << std::endl;
-        throw eckit::FailedSystemCall("mmap");
+        Log::error() << "open(" << path_ << ',' << size << ')' << Log::syserr << std::endl;
+        throw exception::FailedSystemCall("mmap");
     }
 
     Unmapper unmap(address, size);
@@ -104,7 +104,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
     const size_t ROWS = Nj;
     const size_t COLS = Ni;
 
-    eckit::Log::debug<LibMir>() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
+    Log::debug() << "LSM: Ni=" << Ni << ", Nj=" << Nj << std::endl;
 
     eckit::TraceTimer<LibMir> timer("Extract points from  LSM");
 
@@ -123,7 +123,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
             std::ostringstream oss;
             oss << "GRID "
                 << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
-            throw eckit::SeriousBug(oss.str());
+            throw exception::SeriousBug(oss.str());
         }
         ASSERT(lat >= Latitude::SOUTH_POLE);
 
@@ -131,7 +131,7 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
             std::ostringstream oss;
             oss << "GRID "
                 << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
-            throw eckit::SeriousBug(oss.str());
+            throw exception::SeriousBug(oss.str());
         }
         ASSERT(lat <= Latitude::NORTH_POLE);
 

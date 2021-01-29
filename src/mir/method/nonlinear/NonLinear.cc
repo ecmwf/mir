@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -54,7 +54,7 @@ NonLinearFactory::NonLinearFactory(const std::string& name) : name_(name) {
         (*m)[name] = this;
         return;
     }
-    throw eckit::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
+    throw exception::SeriousBug("NonLinearFactory: duplicated NonLinear '" + name + "'");
 }
 
 
@@ -68,12 +68,12 @@ const NonLinear* NonLinearFactory::build(const std::string& name, const param::M
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No NonLinearFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No NonLinearFactory '" + name + "'");
+        list(Log::error() << "No NonLinearFactory '" << name << "', choices are:\n");
+        throw exception::SeriousBug("No NonLinearFactory '" + name + "'");
     }
 
     return j->second->make(param);

@@ -12,11 +12,12 @@
 
 #include "mir/param/FieldParametrisation.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
-#include "mir/config/LibMir.h"
+
 #include "mir/param/Rules.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -40,7 +41,7 @@ FieldParametrisation::~FieldParametrisation() = default;
 
 bool FieldParametrisation::has(const std::string& name) const {
 
-    eckit::Log::debug<LibMir>() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
+    Log::debug() << "FieldParametrisation::has(" << name << ") " << *this << std::endl;
     return false;
 }
 
@@ -167,14 +168,14 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
 void FieldParametrisation::latitudes(std::vector<double>&) const {
     std::ostringstream os;
     os << "FieldParametrisation::latitudes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void FieldParametrisation::longitudes(std::vector<double>&) const {
     std::ostringstream os;
     os << "FieldParametrisation::longitudes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 

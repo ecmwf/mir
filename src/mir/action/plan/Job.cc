@@ -12,18 +12,17 @@
 
 #include "mir/action/plan/Job.h"
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Copy.h"
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/api/MIRJob.h"
-#include "mir/config/LibMir.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/Key.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -56,9 +55,9 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
             plan_->add(new action::io::Copy(job, output_));
             ASSERT(plan_->ended());
 
-            if (eckit::Log::debug<LibMir>()) {
-                plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:"
-                                                           "\n");
+            if (Log::debug()) {
+                plan_->dump(Log::debug() << "Action plan is:"
+                                            "\n");
             }
 
             return;
@@ -76,9 +75,9 @@ Job::Job(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& outp
         plan_->compress();
     }
 
-    if (eckit::Log::debug<LibMir>()) {
-        plan_->dump(eckit::Log::debug<LibMir>() << "Action plan is:"
-                                                   "\n");
+    if (Log::debug()) {
+        plan_->dump(Log::debug() << "Action plan is:"
+                                    "\n");
     }
 }
 

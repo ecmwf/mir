@@ -16,7 +16,6 @@
 #include <memory>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/action/context/Context.h"
@@ -25,6 +24,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Types.h"
 
@@ -202,7 +202,7 @@ void NablaFilterFVMT<T>::execute(context::Context& ctx) const {
     // Generate mesh (disabling incompatible features)
     auto& field = ctx.field();
     if (field.hasMissing()) {
-        throw eckit::UserError(std::string(name()) + ": missing values not supported");
+        throw exception::UserError(std::string(name()) + ": missing values not supported");
     }
 
     auto params = meshGeneratorParams_;

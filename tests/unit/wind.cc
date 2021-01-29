@@ -13,13 +13,12 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
-#include "mir/util/Types.h"
+#include "mir/util/Log.h"
 #include "mir/util/Wind.h"
 
 #define EXPECTV(a)                                \
@@ -47,7 +46,7 @@ private:
 
 CASE("MIR-324") {
     using util::Wind;
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
 
 
     auto PARAMID_U = LibMir::instance().configuration().getLong("parameter-id-u", 131);

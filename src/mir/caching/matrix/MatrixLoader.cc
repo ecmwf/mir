@@ -12,12 +12,11 @@
 
 #include "mir/caching/matrix/MatrixLoader.h"
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -46,18 +45,18 @@ void MatrixLoader::deallocate(eckit::linalg::SparseMatrix::Layout, eckit::linalg
 
 
 eckit::Channel& MatrixLoader::log() {
-    static auto& channel = eckit::Log::debug<LibMir>();
+    static auto& channel = Log::debug();
     return channel;
 }
 
 eckit::Channel& MatrixLoader::info() {
-    static auto& channel = eckit::Log::info();
+    static auto& channel = Log::info();
     return channel;
 }
 
 
 eckit::Channel& MatrixLoader::warn() {
-    static auto& channel = eckit::Log::warning();
+    static auto& channel = Log::warning();
     return channel;
 }
 
@@ -76,7 +75,7 @@ MatrixLoaderFactory::MatrixLoaderFactory(const std::string& name) : name_(name) 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MatrixLoaderFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("MatrixLoaderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -94,12 +93,12 @@ MatrixLoader* MatrixLoaderFactory::build(const std::string& name, const eckit::P
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "MatrixLoaderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "MatrixLoaderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "MatrixLoaderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("MatrixLoaderFactory: unknown '" + name + "'");
+        list(Log::error() << "MatrixLoaderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("MatrixLoaderFactory: unknown '" + name + "'");
     }
 
     return j->second->make(name, path);

@@ -12,14 +12,14 @@
 
 #include "mir/output/MIROutput.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/output/GribFileOutput.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -52,14 +52,13 @@ struct OutputFromExtension : public MIROutputFactory {
 
         auto j = m_extensions->find(ext);
         if (j == m_extensions->cend()) {
-            list(eckit::Log::debug<LibMir>()
-                 << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
-            eckit::Log::debug<LibMir>() << ", returning 'grib'" << std::endl;
+            list(Log::debug() << "OutputFromExtension: unknown extension '" << ext << "', choices are: ");
+            Log::debug() << ", returning 'grib'" << std::endl;
 
             return new GribFileOutput(p);
         }
 
-        eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
+        Log::debug() << "MIROutputFactory: returning '" << ext << "' for '" << path << "'" << std::endl;
         return j->second->make(path);
     }
 
@@ -87,7 +86,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m_formats->find(name) != m_formats->end()) {
-        throw eckit::SeriousBug("MIROutputFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("MIROutputFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m_formats->find(name) == m_formats->end());
@@ -96,7 +95,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
     for (auto& ext : extensions) {
         ASSERT(!ext.empty());
         if (m_extensions->find(ext) != m_extensions->end()) {
-            throw eckit::SeriousBug("MIROutputFactory: duplicate extension '" + ext + "'");
+            throw exception::SeriousBug("MIROutputFactory: duplicate extension '" + ext + "'");
         }
 
         ASSERT(m_extensions->find(name) == m_extensions->end());
@@ -124,12 +123,12 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
 
     auto j = m_formats->find(format);
     if (j == m_formats->cend()) {
-        list(eckit::Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
-        eckit::Log::error() << std::endl;
-        throw eckit::SeriousBug("MIROutputFactory: unknown '" + format + "'");
+        list(Log::error() << "MIROutputFactory: unknown '" << format << "', choices are: ");
+        Log::error() << std::endl;
+        throw exception::SeriousBug("MIROutputFactory: unknown '" + format + "'");
     }
 
-    eckit::Log::debug<LibMir>() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
+    Log::debug() << "MIROutputFactory: returning '" << format << "' for '" << path << "'" << std::endl;
     return j->second->make(path);
 }
 
@@ -160,7 +159,7 @@ void MIROutput::prepare(const param::MIRParametrisation&, action::ActionPlan&, i
 void MIROutput::estimate(const param::MIRParametrisation&, api::MIREstimation&, context::Context&) const {
     std::ostringstream oss;
     oss << "MIROutput::estimate not implemented for " << *this;
-    throw eckit::SeriousBug(oss.str());
+    throw exception::SeriousBug(oss.str());
 }
 
 

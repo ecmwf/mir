@@ -26,7 +26,6 @@
 #include <sys/types.h>
 
 //#include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Timer.h"
 #include "eckit/maths/Functions.h"
@@ -37,6 +36,7 @@
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Error.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
 
 
@@ -68,7 +68,7 @@ class Unloader {
     Unloader() = default;
 
 public:
-    /// This ensures unloader is destructed in correct order with other static objects (like eckit::Log)
+    /// This ensures unloader is destructed in correct order with other static objects (like Log)
     static Unloader& instance() {
         static Unloader unloader;
         return unloader;
@@ -85,7 +85,7 @@ public:
                 SharedMemoryLoader::unloadSharedMemory(path);
             }
             catch (std::exception& e) {
-                eckit::Log::error() << e.what() << std::endl;
+                Log::error() << e.what() << std::endl;
             }
         }
     }
@@ -101,7 +101,7 @@ public:
 
         key_t key = ::ftok(path.asString().c_str(), 1);
         if (key == key_t(-1)) {
-            throw eckit::FailedSystemCall("ftok(" + path.asString() + ")");
+            throw exception::FailedSystemCall("ftok(" + path.asString() + ")");
         }
         SYSCALL(semaphore_ = ::semget(key, 1, IPC_CREAT | 0600));
     }
@@ -128,7 +128,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     if (real.asString().size() >= INFO_PATH - 1) {
         warn() << msg.str() << ", path name too long, maximum=" << INFO_PATH;
-        throw eckit::SeriousBug(msg.str());
+        throw exception::SeriousBug(msg.str());
     }
 
     // Try to get an exclusive lock, we may be waiting for another process
@@ -140,7 +140,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
         warn() << msg.str() << "::ftok(" << real.asString() << "), " << util::Error();
-        throw eckit::FailedSystemCall(msg.str());
+        throw exception::FailedSystemCall(msg.str());
     }
 
     // NOTE: size is based on file.size() which is assumed to be bigger than the memory footprint. Real size would be:
@@ -170,7 +170,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
                << ", shmget: failed to acquire shared memory, check the maximum authorised on this system (Linux ipcs "
                   "-l, macOS/BSD ipcs -M), "
                << util::Error() << std::endl;
-        throw eckit::FailedSystemCall(msg.str());
+        throw exception::FailedSystemCall(msg.str());
     }
     msg << ", shmid=" << shmid << std::endl;
 
@@ -197,7 +197,7 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     address_ = eckit::Shmget::shmat(shmid, nullptr, 0);
     if (address_ == (void*)-1) {
         warn() << msg.str() << ", shmat: failed to attach shared memory, " << util::Error() << std::endl;
-        throw eckit::FailedSystemCall(msg.str());
+        throw exception::FailedSystemCall(msg.str());
     }
 
 
@@ -212,12 +212,12 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
             if (nfo->magic != MAGIC) {
                 warn() << msg.str() << ", bad magic=" << nfo->magic << std::endl;
-                throw eckit::SeriousBug(msg.str());
+                throw exception::SeriousBug(msg.str());
             }
 
             if (real.asString() != nfo->path) {
                 warn() << msg.str() << ", path mismatch, file='" << nfo->path << "'" << std::endl;
-                throw eckit::SeriousBug(msg.str());
+                throw exception::SeriousBug(msg.str());
             }
         }
         else {
@@ -273,7 +273,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
     key_t key = ::ftok(real.asString().c_str(), 1);
     if (key == key_t(-1)) {
         warn() << "SharedMemoryLoader: ::ftok(" << real.asString() << ")" << std::endl;
-        throw eckit::FailedSystemCall("SharedMemoryLoader: ::ftok");
+        throw exception::FailedSystemCall("SharedMemoryLoader: ::ftok");
     }
 
     int shmid = eckit::Shmget::shmget(key, 0, 0600);

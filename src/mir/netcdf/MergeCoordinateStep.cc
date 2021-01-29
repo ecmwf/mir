@@ -47,7 +47,7 @@ void MergeCoordinateStep::execute(MergePlan& /*plan*/) {
         return;
     }
 
-    eckit::Log::info() << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
+    Log::info() << "MergeCoordinateStep::execute() " << out_ << ", Output variable cube:" << out_.cube() << std::endl;
 
     // Resize dimensions
 

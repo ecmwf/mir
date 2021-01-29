@@ -12,11 +12,11 @@
 
 #include "mir/method/knn/pick/DistanceOrNClosest.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -32,8 +32,7 @@ DistanceOrNClosest::DistanceOrNClosest(const param::MIRParametrisation& param) :
 }
 
 
-void DistanceOrNClosest::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                              Pick::neighbours_t& closest) const {
+void DistanceOrNClosest::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
     // TODO: improve k-d tree interface; this is slow because distance might be excessive
     tree.closestWithinRadius(p, distance_, closest);
     if (closest.size() < nClosest_.n()) {

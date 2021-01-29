@@ -109,9 +109,9 @@ public:
     template <class T>
     T getAttributeValue(const std::string& name) const {
         T result;
-        // eckit::Log::info() << "getAttributeValue ==> " << name << std::endl;
+        // Log::info() << "getAttributeValue ==> " << name << std::endl;
         getAttribute(name, result);
-        // eckit::Log::info() << "getAttributeValue <== " << result << std::endl;
+        // Log::info() << "getAttributeValue <== " << result << std::endl;
         return result;
     }
 

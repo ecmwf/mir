@@ -15,6 +15,12 @@
 
 #include "mir/key/grid/Grid.h"
 
+namespace mir {
+namespace util {
+class Increments;
+}
+}  // namespace mir
+
 
 namespace mir {
 namespace key {
@@ -48,6 +54,7 @@ public:
     // -- Overridden methods
 
     size_t gaussianNumber() const override;
+    const repres::Representation* representation() const override;
 
     // -- Class members
     // None
@@ -60,7 +67,8 @@ private:
     // None
 
     // -- Methods
-    // None
+
+    util::Increments increments() const;
 
     // -- Overridden methods
 

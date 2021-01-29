@@ -24,7 +24,6 @@
 #include "png.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/thread/AutoLock.h"
@@ -34,13 +33,13 @@
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/LatLon.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -48,8 +47,8 @@ namespace output {
 
 void call_zero(int bad, const std::string& msg) {
     if (bad != 0) {
-        eckit::Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
-        throw eckit::SeriousBug(msg);
+        Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
+        throw exception::SeriousBug(msg);
     }
 }
 
@@ -88,7 +87,7 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
 
     atlas::RegularGrid grid(rep->atlasGrid());
     if (!grid) {
-        throw eckit::UserError("PNGOutput: field should be on a regular grid");
+        throw exception::UserError("PNGOutput: field should be on a regular grid");
     }
     auto Ni = size_t(grid.nx());
     auto Nj = size_t(grid.ny());
@@ -110,7 +109,7 @@ size_t PNGOutput::save(const param::MIRParametrisation& param, context::Context&
             path = name.str();
         }
 
-        eckit::Log::debug<LibMir>() << "PNGOutput: writing to '" + path.asString() + "'" << std::endl;
+        Log::debug() << "PNGOutput: writing to '" + path.asString() + "'" << std::endl;
 
         // initialize
         FILE* fp;
@@ -205,7 +204,7 @@ PNGEncoderFactory::PNGEncoderFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PNGEncoderFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("PNGEncoderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -226,12 +225,12 @@ const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametris
         name += 'a';
     }
 
-    eckit::Log::debug<LibMir>() << "PNGEncoderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "PNGEncoderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "PNGEncoderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
+        list(Log::error() << "PNGEncoderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("PNGEncoderFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, field);
@@ -287,7 +286,7 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         maxEncode_ = (UINT_T(1) << N_C_CHANNELS * N_BYTES_PER_CHANNEL * 8) - 1;
         maxScale_  = double(maxEncode_) / (max_ - min_);
 
-        eckit::Log::debug<LibMir>() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
+        Log::debug() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
     }
 
     void encode(png_bytep& p, const double& value) const {

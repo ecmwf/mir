@@ -14,13 +14,13 @@
 
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -64,12 +64,12 @@ void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Ve
 
 void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
 
-    // eckit::Log::debug<LibMir>() << "MethodWeighted::multiply: "
+    // Log::debug() << "MethodWeighted::multiply: "
     //                                "A[" << rows()        << ',' << cols()        << "] * "
     //                                "B[" << values.rows() << ',' << values.cols() << "] = "
     //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
 
-    // eckit::Log::info() << "Multiply: "
+    // Log::info() << "Multiply: "
     //                                "A[" << rows()        << ',' << cols()        << "] * "
     //                                "B[" << values.rows() << ',' << values.cols() << "] = "
     //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
@@ -132,9 +132,9 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t r     = rows();
         size_t c     = cols();
         size_t total = r * c;
-        eckit::Log::debug<LibMir>() << "WeightMatrix::cleanup fixed " << Pretty(fixed, {"value"}) << " out of "
-                                    << Pretty(count) << " (matrix is " << Pretty(r) << "x" << Pretty(c)
-                                    << ", total=" << Pretty(total) << ")" << std::endl;
+        Log::debug() << "WeightMatrix::cleanup fixed " << Pretty(fixed, {"value"}) << " out of " << Pretty(count)
+                     << " (matrix is " << Pretty(r) << "x" << Pretty(c) << ", total=" << Pretty(total) << ")"
+                     << std::endl;
     }
 
     prune(0.);
@@ -143,7 +143,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
 void WeightMatrix::validate(const char* when) const {
 
-    bool logErrors = (eckit::Log::debug<LibMir>());
+    bool logErrors = (Log::debug());
 
     size_t errors = 0;
 
@@ -167,23 +167,23 @@ void WeightMatrix::validate(const char* when) const {
 
             if (errors < 50) {
                 if (errors == 0) {
-                    eckit::Log::debug<LibMir>() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
+                    Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
                 }
 
-                eckit::Log::debug<LibMir>() << "Row: " << i;
+                Log::debug() << "Row: " << i;
                 size_t n = 0;
                 for (const_iterator it = begin(i); it != end(i); ++it, ++n) {
                     if (n > 10) {
-                        eckit::Log::debug<LibMir>() << " ...";
+                        Log::debug() << " ...";
                         break;
                     }
-                    eckit::Log::debug<LibMir>() << " [" << *it << "]";
+                    Log::debug() << " [" << *it << "]";
                 }
 
-                eckit::Log::debug<LibMir>() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
+                Log::debug() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
             }
             else if (errors == 50) {
-                eckit::Log::debug<LibMir>() << "..." << std::endl;
+                Log::debug() << "..." << std::endl;
             }
             errors++;
         }

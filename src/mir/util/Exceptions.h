@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_util_Assert_h
-#define mir_util_Assert_h
+#ifndef mir_util_Exceptions_h
+#define mir_util_Exceptions_h
 
 #include "eckit/exception/Exceptions.h"
 
@@ -23,5 +23,33 @@
     ASSERT_MSG((size) == (count), m ": values size equals iterator count")
 #define ASSERT_VALUES_SIZE_EQ_NUMBER_OF_COEFFS(m, size, count) \
     ASSERT_MSG((size) == (count), m ": values size equals number of coefficients")
+
+
+namespace mir {
+namespace exception {
+
+
+using eckit::BadValue;
+using eckit::CantOpenFile;
+using eckit::FailedSystemCall;
+using eckit::SeriousBug;
+using eckit::UserError;
+using eckit::WriteError;
+
+
+class CannotConvert : public eckit::Exception {
+public:
+    template <class T>
+    CannotConvert(const char* from, const char* to, const std::string& name, const T& value) {
+        std::ostringstream os;
+        os << "Cannot convert " << value << " from " << from << " to " << to << " (requesting " << name << ")";
+        reason(os.str());
+    }
+};
+
+
+}  // namespace exception
+}  // namespace mir
+
 
 #endif

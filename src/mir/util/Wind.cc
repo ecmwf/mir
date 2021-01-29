@@ -13,11 +13,11 @@
 #include "mir/util/Wind.h"
 
 #include "eckit/config/Configuration.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -63,7 +63,7 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, long& u, l
         }
     }
 
-    eckit::Log::debug<LibMir>() << "Wind: u/v = " << u << "/" << v << std::endl;
+    Log::debug() << "Wind: u/v = " << u << "/" << v << std::endl;
 }
 
 

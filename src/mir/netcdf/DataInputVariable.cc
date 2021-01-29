@@ -12,8 +12,6 @@
 
 #include <numeric>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/DataInputVariable.h"
 #include "mir/netcdf/DataOutputVariable.h"
@@ -21,6 +19,8 @@
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Field.h"
 #include "mir/netcdf/Matrix.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -73,8 +73,8 @@ Variable* DataInputVariable::addMissingCoordinates() {
             found = (d->name() == (*c)->name());
         }
         if (!found) {
-            eckit::Log::warning() << "Variable '" << name() << ": dimension '" << d->name()
-                                  << "' not listed in coordinates" << std::endl;
+            Log::warning() << "Variable '" << name() << ": dimension '" << d->name() << "' not listed in coordinates"
+                           << std::endl;
 
             if (dataset_.hasVariable(d->name())) {
                 addCoordinateVariable(&dataset_.variable(d->name()));

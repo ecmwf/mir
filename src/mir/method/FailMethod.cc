@@ -14,8 +14,8 @@
 
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -48,8 +48,8 @@ const util::BoundingBox& FailMethod::getCropping() const {
 
 void FailMethod::execute(context::Context&, const repres::Representation&, const repres::Representation&) const {
     std::string msg = "FailMethod: this interpolation method fails intentionally";
-    eckit::Log::error() << msg << std::endl;
-    throw eckit::UserError(msg);
+    Log::error() << msg << std::endl;
+    throw exception::UserError(msg);
 }
 
 

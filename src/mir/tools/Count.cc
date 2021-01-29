@@ -15,14 +15,12 @@
 #include <memory>
 
 #include "eckit/log/JSON.h"
-#include "eckit/log/Log.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
 #include "mir/util/Pretty.h"
 
@@ -190,7 +188,7 @@ void Count::countOnNamedGrid(std::string grid) {
 
     if (!key::grid::Grid::known(grid)) {
         // avoid 'grid=auto' or 'grid=av' without failure
-        eckit::Log::debug<LibMir>() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
+        Log::debug() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
         return;
     }
 

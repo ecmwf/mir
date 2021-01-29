@@ -19,7 +19,6 @@
 #include <sstream>
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
@@ -29,11 +28,12 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFixes.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 #include "mir/util/LongitudeDouble.h"
 #include "mir/util/Wind.h"
 
@@ -78,7 +78,7 @@ bool ConditionT<long>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err <<
+        // Log::debug() << "ConditionT<long>::eval(" << ",key=" << key_ << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key_);
     }
@@ -97,7 +97,7 @@ bool ConditionT<double>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err <<
+        // Log::debug() << "ConditionT<double>::eval(" << ",key=" << key_ << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key_);
     }
@@ -117,8 +117,8 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
     }
 
     if (err != 0) {
-        eckit::Log::debug<LibMir>() << "ConditionT<std::string>::eval("
-                                    << ",key=" << key_ << ") failed " << err << std::endl;
+        Log::debug() << "ConditionT<std::string>::eval("
+                     << ",key=" << key_ << ") failed " << err << std::endl;
         GRIB_ERROR(err, key_);
     }
 
@@ -189,11 +189,11 @@ void wrongly_encoded_grib(const std::string& msg) {
     static bool abortIfWronglyEncodedGRIB = eckit::Resource<bool>("$MIR_ABORT_IF_WRONGLY_ENCODED_GRIB", false);
 
     if (abortIfWronglyEncodedGRIB) {
-        eckit::Log::error() << msg << std::endl;
-        throw eckit::UserError(msg);
+        Log::error() << msg << std::endl;
+        throw exception::UserError(msg);
     }
 
-    eckit::Log::warning() << msg << std::endl;
+    Log::warning() << msg << std::endl;
 }
 
 
@@ -565,7 +565,7 @@ void get_unique_missing_value(const MIRValuesVector& values, double& missing) {
         return;
     }
 
-    throw eckit::SeriousBug("GribInput: get_unique_missing_value: failed to get a unique missing value.");
+    throw exception::SeriousBug("GribInput: get_unique_missing_value: failed to get a unique missing value.");
 }
 
 
@@ -631,7 +631,7 @@ data::MIRField GribInput::field() const {
     long localDefinitionNumber = 0;
     if (codes_get_long(grib_, "localDefinitionNumber", &localDefinitionNumber) == CODES_SUCCESS) {
         if (localDefinitionNumber == 4) {
-            throw eckit::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
+            throw exception::UserError("GribInput: GRIB localDefinitionNumber=4 ('ocean') not supported");
         }
     }
 
@@ -679,8 +679,7 @@ data::MIRField GribInput::field() const {
 
             // if there are no missing values yet, set them
             if (missingValuesPresent == 0) {
-                eckit::Log::debug<LibMir>()
-                    << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
+                Log::debug() << "GribInput::field(): introducing missing values (setting bitmap)." << std::endl;
                 missingValuesPresent = 1;
                 get_unique_missing_value(values, missing);
             }
@@ -692,8 +691,8 @@ data::MIRField GribInput::field() const {
 
 
             // values array: copy values row by row, and when a fixed (0) entry is found, insert missing values
-            eckit::Log::debug<LibMir>() << "GribInput::field(): correcting values array with " << new_values
-                                        << " new missing values." << std::endl;
+            Log::debug() << "GribInput::field(): correcting values array with " << new_values << " new missing values."
+                         << std::endl;
 
             MIRValuesVector values_extended;
             values_extended.reserve(count + new_values);
@@ -758,7 +757,7 @@ bool GribInput::has(const std::string& name) const {
 
     bool ok = codes_is_defined(grib_, key) != 0;
 
-    // eckit::Log::debug<LibMir>() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") <<
+    // Log::debug() << "GribInput::has(" << name << ",key=" << key << ") " << (ok ? "yes" : "no") <<
     // std::endl;
     return ok;
 }
@@ -781,14 +780,14 @@ bool GribInput::get(const std::string& name, bool& value) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "codes_get_bool(" << name << ",key=" << key << ") failed " << err <<
+        // Log::debug() << "codes_get_bool(" << name << ",key=" << key << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key);
     }
 
     value = temp != 0;
 
-    // eckit::Log::debug<LibMir>() << "codes_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
+    // Log::debug() << "codes_get_bool(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
@@ -820,11 +819,11 @@ bool GribInput::get(const std::string& name, long& value) const {
     }
 
     if (err != 0) {
-        eckit::Log::debug<LibMir>() << "codes_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
+        Log::debug() << "codes_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // eckit::Log::debug<LibMir>() << "codes_get_long(" << name << ",key=" << key << ") " << value << std::endl;
+    // Log::debug() << "codes_get_long(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
@@ -855,12 +854,12 @@ bool GribInput::get(const std::string& name, double& value) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "codes_get_double(" << name << ",key=" << key << ") failed " << err <<
+        // Log::debug() << "codes_get_double(" << name << ",key=" << key << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // eckit::Log::debug<LibMir>() << "codes_get_double(" << name << ",key=" << key << ") " << value << std::endl;
+    // Log::debug() << "codes_get_double(" << name << ",key=" << key << ") " << value << std::endl;
     return true;
 }
 
@@ -887,8 +886,8 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
     }
 
     if (err != 0) {
-        eckit::Log::debug<LibMir>() << "codes_get_long_array(" << name << ",key=" << key << ") failed " << err
-                                    << " count=" << count << std::endl;
+        Log::debug() << "codes_get_long_array(" << name << ",key=" << key << ") failed " << err << " count=" << count
+                     << std::endl;
         GRIB_ERROR(err, key);
     }
 
@@ -901,7 +900,7 @@ bool GribInput::get(const std::string& name, std::vector<long>& value) const {
 
     ASSERT(value.size());
 
-    // eckit::Log::debug<LibMir>() << "codes_get_long_array(" << name << ",key=" << key << ") size=" << value.size() <<
+    // Log::debug() << "codes_get_long_array(" << name << ",key=" << key << ") size=" << value.size() <<
     // std::endl;
     if (name == "pl") {
 
@@ -949,12 +948,12 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "codes_get_string(" << name << ",key=" << key << ") failed " << err <<
+        // Log::debug() << "codes_get_string(" << name << ",key=" << key << ") failed " << err <<
         // std::endl;
         GRIB_ERROR(err, key);
     }
 
-    // eckit::Log::info() << err << "  " << size << " " << name << std::endl;
+    // Log::info() << err << "  " << size << " " << name << std::endl;
 
     ASSERT(size < sizeof(buffer) - 1);
 
@@ -964,7 +963,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
     value = buffer;
 
-    // eckit::Log::debug<LibMir>() << "codes_get_string(" << name << ",key=" << key << ") " << value << std::endl;
+    // Log::debug() << "codes_get_string(" << name << ",key=" << key << ") " << value << std::endl;
 
     return true;
 }
@@ -993,7 +992,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     }
 
     if (err != 0) {
-        // eckit::Log::debug<LibMir>() << "codes_get_double_array(" << name << ",key=" << key << ") failed " << err << "
+        // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") failed " << err << "
         // count=" << count << std::endl;
         GRIB_ERROR(err, key);
     }
@@ -1007,7 +1006,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
 
     ASSERT(value.size());
 
-    // eckit::Log::debug<LibMir>() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
+    // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
     // << std::endl;
 
 
@@ -1086,11 +1085,11 @@ void GribInput::setAuxiliaryInformation(const std::string& yaml) {
     eckit::ValueMap keyValue = eckit::YAMLParser::decodeString(yaml);
     for (const auto& kv : keyValue) {
         if (kv.first == "latitudes") {
-            eckit::Log::debug<LibMir>() << "Loading auxilary file '" << kv.second << "'" << std::endl;
+            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
             auxilaryValues(kv.second, latitudes_);
         }
         else if (kv.first == "longitudes") {
-            eckit::Log::debug<LibMir>() << "Loading auxilary file '" << kv.second << "'" << std::endl;
+            Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
             auxilaryValues(kv.second, longitudes_);
         }
     }

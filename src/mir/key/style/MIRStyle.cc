@@ -14,13 +14,13 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -48,7 +48,7 @@ MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MIRStyleFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("MIRStyleFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -69,15 +69,15 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
 
     std::string name;
     if (!params.get("style", name)) {
-        throw eckit::SeriousBug("MIRStyleFactory: cannot get 'style'");
+        throw exception::SeriousBug("MIRStyleFactory: cannot get 'style'");
     }
 
-    eckit::Log::debug<LibMir>() << "MIRStyleFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "MIRStyleFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "MIRStyleFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("MIRStyleFactory: unknown '" + name + "'");
+        list(Log::error() << "MIRStyleFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("MIRStyleFactory: unknown '" + name + "'");
     }
 
     return j->second->make(params);

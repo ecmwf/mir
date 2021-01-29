@@ -19,6 +19,7 @@
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -38,7 +39,7 @@ const GridSpec& Field::gridSpec() const {
     if (!gridSpec_) {
         // TODO: may need a mutex
         gridSpec_.reset(GridSpec::create(variable_));
-        eckit::Log::info() << *gridSpec_ << std::endl;
+        Log::info() << *gridSpec_ << std::endl;
     }
     return *gridSpec_;
 }
@@ -105,7 +106,7 @@ static eckit::Value standard_names;
 
 static void init() {
     standard_names = eckit::YAMLParser::decodeFile("~mir/etc/mir/netcdf.yaml");
-    standard_names.dump(eckit::Log::info()) << std::endl;
+    standard_names.dump(Log::info()) << std::endl;
 }
 
 
@@ -114,7 +115,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t which) const {
     pthread_once(&once, init);
 
     eckit::Value s = standard_names[standardName_];
-    eckit::Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;
+    Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;
 
     if (s.isMap()) {
         eckit::ValueMap m = s;
@@ -123,8 +124,7 @@ void Field::setMetadata(data::MIRField& mirField, size_t which) const {
         }
     }
     else {
-        eckit::Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "] " << variable_
-                              << std::endl;
+        Log::warning() << "No mapping for NetCDF standard name [" << standardName_ << "] " << variable_ << std::endl;
     }
 }
 

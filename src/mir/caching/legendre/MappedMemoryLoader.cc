@@ -16,11 +16,12 @@
 #include <sys/mman.h>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Log.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -35,8 +36,8 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 
     fd_ = ::open(path.localPath(), O_RDONLY);
     if (fd_ < 0) {
-        eckit::Log::error() << "open(" << path << ')' << eckit::Log::syserr << std::endl;
-        throw eckit::FailedSystemCall("open");
+        Log::error() << "open(" << path << ')' << Log::syserr << std::endl;
+        throw exception::FailedSystemCall("open");
     }
 
     eckit::Stat::Struct s;
@@ -47,8 +48,8 @@ MappedMemoryLoader::MappedMemoryLoader(const param::MIRParametrisation& parametr
 
     address_ = eckit::MMap::mmap(nullptr, size_, PROT_READ, MAP_SHARED, fd_, 0);
     if (address_ == MAP_FAILED) {
-        eckit::Log::error() << "open(" << path << ',' << size_ << ')' << eckit::Log::syserr << std::endl;
-        throw eckit::FailedSystemCall("mmap");
+        Log::error() << "open(" << path << ',' << size_ << ')' << Log::syserr << std::endl;
+        throw exception::FailedSystemCall("mmap");
     }
 }
 

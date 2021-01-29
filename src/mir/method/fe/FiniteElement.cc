@@ -30,12 +30,10 @@
 #include "eckit/utils/StringTools.h"
 
 #include "mir/caching/InMemoryMeshCache.h"
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Pretty.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -171,8 +169,8 @@ static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
                 atlas::PointXYZ{icoords(idx[3], XX), icoords(idx[3], YY), icoords(idx[3], ZZ)});
 
             if (!quad.validate()) {  // somewhat expensive sanity check
-                eckit::Log::warning() << "Invalid Quad : " << quad << std::endl;
-                throw eckit::SeriousBug("Found invalid quadrilateral in mesh", Here());
+                Log::warning() << "Invalid Quad : " << quad << std::endl;
+                throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
             }
 
             // pick an epsilon based on a characteristic length (sqrt(area))
@@ -266,7 +264,7 @@ void FiniteElement::hash(eckit::MD5& md5) const {
 
 void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    eckit::Channel& log = Log::debug();
 
     log << "FiniteElement::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
@@ -380,7 +378,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
             }
         }
         log << std::endl;
-        throw eckit::SeriousBug(msg.str());
+        throw exception::SeriousBug(msg.str());
     }
 
 
@@ -394,7 +392,7 @@ FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFact
     std::lock_guard<std::mutex> guard(*mtx);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -428,7 +426,7 @@ FiniteElement* FiniteElementFactory::build(std::string& names, const std::string
     std::lock_guard<std::mutex> guard(*mtx);
 
     for (const auto& name : eckit::StringTools::split("/", names)) {
-        eckit::Log::debug<LibMir>() << "FiniteElementFactory: looking for '" << name << "'" << std::endl;
+        Log::debug() << "FiniteElementFactory: looking for '" << name << "'" << std::endl;
         auto j = m->find(name);
         if (j != m->end()) {
             names = name;
@@ -436,8 +434,8 @@ FiniteElement* FiniteElementFactory::build(std::string& names, const std::string
         }
     }
 
-    list(eckit::Log::error() << "FiniteElementFactory: no valid options in '" << names << "', choices are: ");
-    throw eckit::SeriousBug("FiniteElementFactory: no valid options in '" + names + "'");
+    list(Log::error() << "FiniteElementFactory: no valid options in '" << names << "', choices are: ");
+    throw exception::SeriousBug("FiniteElementFactory: no valid options in '" + names + "'");
 }
 
 

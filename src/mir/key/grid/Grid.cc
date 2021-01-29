@@ -14,15 +14,15 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -49,7 +49,7 @@ static void read_configuration_files() {
     // Read config file, attaching new Grid's grids to parametrisations
     eckit::PathName path("~mir/etc/mir/grids.yaml");
     if (path.exists()) {
-        eckit::Log::debug<LibMir>() << "Grid: reading from '" << path << "'" << std::endl;
+        Log::debug() << "Grid: reading from '" << path << "'" << std::endl;
 
         eckit::ValueMap grids = eckit::YAMLParser::decodeFile(path);
         for (const auto& g : grids) {
@@ -67,7 +67,7 @@ static void read_configuration_files() {
                                                               : ng->set(p.first, p.second.as<std::string>());
             }
 
-            eckit::Log::debug<LibMir>() << ng << std::endl;
+            Log::debug() << ng << std::endl;
         }
     }
 }
@@ -107,35 +107,35 @@ void Grid::list(std::ostream& out) {
 const repres::Representation* Grid::representation() const {
     std::ostringstream os;
     os << "Grid::representation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 const repres::Representation* Grid::representation(const util::Rotation&) const {
     std::ostringstream os;
     os << "Grid::representation(Rotation&) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 const repres::Representation* Grid::representation(const param::MIRParametrisation&) const {
     std::ostringstream os;
     os << "Grid::representation(MIRParametrisation&) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Grid::parametrisation(const std::string&, param::SimpleParametrisation&) const {
     std::ostringstream os;
     os << "Grid::parametrisation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t Grid::gaussianNumber() const {
     std::ostringstream os;
     os << "Grid::gaussianNumber() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -145,7 +145,7 @@ const Grid& Grid::lookup(const std::string& key) {
 
     read_configuration_files();
 
-    eckit::Log::debug<LibMir>() << "Grid: looking for '" << key << "'" << std::endl;
+    Log::debug() << "Grid: looking for '" << key << "'" << std::endl;
 
     // Look for specific key matches
     auto j = m->find(key);
@@ -159,8 +159,8 @@ const Grid& Grid::lookup(const std::string& key) {
         return GridPattern::lookup(key);
     }
 
-    list(eckit::Log::error() << "No Grid '" << key << "', choices are:\n");
-    throw eckit::SeriousBug("No Grid '" + key + "'");
+    list(Log::error() << "No Grid '" << key << "', choices are:\n");
+    throw exception::SeriousBug("No Grid '" + key + "'");
 }
 
 

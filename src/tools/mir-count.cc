@@ -26,57 +26,16 @@
 #include "mir/tools/Count.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Increments.h"
+#include "mir/util/Log.h"
 
 
+using namespace mir;
 using prec_t = decltype(std::cout.precision());
 
 
-class MIRCount : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-
-    int minimumPositionalArguments() const { return 0; }
-
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
-                              "\n"
-                              "\nUsage:"
-                              "\n\t"
-                           << tool
-                           << " [--area=N/W/S/E] file.grib [file.grib [...]]"
-                              "\n\t"
-                           << tool
-                           << " [--area=N/W/S/E] --grid=WE/SN"
-                              "\n\t"
-                           << tool
-                           << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
-                              "\n\t"
-                           << tool
-                           << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
-                              "\n"
-                              "\n"
-                              "Examples:"
-                              "\n\t"
-                              "% "
-                           << tool
-                           << " 1.grib"
-                              "\n\t"
-                              "% "
-                           << tool
-                           << " --area=6/0/0/6 1.grib 2.grib"
-                              "\n\t"
-                              "% "
-                           << tool
-                           << " --area=6/0/0/6 --gridname=O1280"
-                              "\n\t"
-                              "% "
-                           << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
-    }
-
-public:
+struct MIRCount : tools::MIRTool {
     MIRCount(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         // options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors,
         // default false"));
@@ -85,13 +44,51 @@ public:
         options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
+
+    int minimumPositionalArguments() const override { return 0; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\nCount MIR representation number of values, compared to the GRIB numberOfValues."
+                       "\n"
+                       "\nUsage:"
+                       "\n\t"
+                    << tool
+                    << " [--area=N/W/S/E] file.grib [file.grib [...]]"
+                       "\n\t"
+                    << tool
+                    << " [--area=N/W/S/E] --grid=WE/SN"
+                       "\n\t"
+                    << tool
+                    << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
+                       "\n\t"
+                    << tool
+                    << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
+                       "\n"
+                       "\n"
+                       "Examples:"
+                       "\n\t"
+                       "% "
+                    << tool
+                    << " 1.grib"
+                       "\n\t"
+                       "% "
+                    << tool
+                    << " --area=6/0/0/6 1.grib 2.grib"
+                       "\n\t"
+                       "% "
+                    << tool
+                    << " --area=6/0/0/6 --gridname=O1280"
+                       "\n\t"
+                       "% "
+                    << tool << " --area=6/0/0/6 --grid=1/1 --ni-nj" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
 void MIRCount::execute(const eckit::option::CmdArgs& args) {
-    using mir::util::BoundingBox;
-
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     eckit::JSON j(log);
 
     prec_t precision;
@@ -106,7 +103,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     if (args.get("grid", grid)) {
         ASSERT(!args.has("gridname"));
 
-        mir::tools::Count counter(area);
+        tools::Count counter(area);
         counter.countOnGridIncrements(grid);
 
         counter.json(j);
@@ -119,7 +116,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     if (args.get("gridname", gridname)) {
         ASSERT(!args.has("grid"));
 
-        mir::tools::Count counter(area);
+        tools::Count counter(area);
         counter.countOnNamedGrid(gridname);
 
         counter.json(j);
@@ -128,7 +125,7 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
 
     // count each file(s) message(s)
-    mir::tools::Count counter(area);
+    tools::Count counter(area);
 
     j.startObject();
     j << "files";
@@ -136,12 +133,12 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
 
     for (size_t i = 0, k = 0; i < args.count(); ++i, k = 0) {
 
-        mir::input::GribFileInput grib(args(i));
+        input::GribFileInput grib(args(i));
         while (grib.next()) {
             ++k;
 
-            auto field = static_cast<const mir::input::MIRInput&>(grib).field();
-            mir::repres::RepresentationHandle rep(field.representation());
+            auto field = static_cast<const input::MIRInput&>(grib).field();
+            repres::RepresentationHandle rep(field.representation());
 
             counter.countOnRepresentation(*rep);
 

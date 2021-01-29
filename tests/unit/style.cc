@@ -16,7 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/action/calc/FormulaAction.h"
@@ -29,6 +28,7 @@
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -76,7 +76,7 @@ struct TestingOutput : InputOutput {
 
 CASE("ECMWFStyle") {
 
-    eckit::Log::info() << std::boolalpha;
+    Log::info() << std::boolalpha;
     static const param::DefaultParametrisation defaults;
 
     std::vector<bool> _no_yes{false, true};
@@ -157,23 +157,23 @@ CASE("ECMWFStyle") {
                                                        plan_has_action(plan, WRONG_ACTION_3);
 
                         static size_t c = 1;
-                        eckit::Log::info() << "Test " << c++ << ":"
-                                           << "\n\t"
-                                              "formula."
-                                           << when << ", formula." << when << ".metadata"
-                                           << "\n\t"
-                                              "in:   "
-                                           << in
-                                           << "\n\t"
-                                              "user: "
-                                           << user
-                                           << "\n\t"
-                                              "plan: "
-                                           << plan
-                                           << "\n\t"
-                                              "has "
-                                           << when << " formula: " << plan_has_this_formula << " (should be "
-                                           << plan_should_have_formula << ")" << std::endl;
+                        Log::info() << "Test " << c++ << ":"
+                                    << "\n\t"
+                                       "formula."
+                                    << when << ", formula." << when << ".metadata"
+                                    << "\n\t"
+                                       "in:   "
+                                    << in
+                                    << "\n\t"
+                                       "user: "
+                                    << user
+                                    << "\n\t"
+                                       "plan: "
+                                    << plan
+                                    << "\n\t"
+                                       "has "
+                                    << when << " formula: " << plan_has_this_formula << " (should be "
+                                    << plan_should_have_formula << ")" << std::endl;
 
                         EXPECT(plan_has_this_formula == plan_should_have_formula);
                         EXPECT(!plan_has_wrong_formulae);

@@ -14,8 +14,7 @@
 #define mir_iterator_UnstructuredIterator_h
 
 #include "mir/repres/Iterator.h"
-
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

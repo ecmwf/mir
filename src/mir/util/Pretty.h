@@ -16,8 +16,9 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
+
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -44,7 +45,7 @@ public:
     };
 
     struct PrettyProgress : public eckit::Timer {
-        PrettyProgress(const std::string& name, size_t limit, const Plural& units, std::ostream&);
+        PrettyProgress(const std::string& name, size_t limit, const Plural& units, Log::Channel&);
         virtual ~PrettyProgress() = default;
         bool operator++();
 
@@ -65,8 +66,8 @@ public:
         /// @param units unit/units
         /// @param time how often to output progress, based on elapsed time
         /// @param o output stream
-        ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
-                      std::ostream& o = eckit::Log::info(), double time = 5.);
+        ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units, Log::Channel& o = Log::info(),
+                      double time = 5.);
 
     private:
         bool hasOutput() override;
@@ -81,7 +82,7 @@ public:
         /// @param count how often to output progress, based on total counter
         /// @param o output stream
         ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
-                        std::ostream& o = eckit::Log::info(), size_t count = 10000);
+                        std::ostream& o = Log::info(), size_t count = 10000);
 
     private:
         bool hasOutput() override;

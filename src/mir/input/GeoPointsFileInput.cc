@@ -16,7 +16,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/serialisation/IfstreamStream.h"
 #include "eckit/utils/Tokenizer.h"
@@ -24,6 +23,7 @@
 
 #include "mir/data/MIRField.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -41,7 +41,7 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
 
     std::ifstream in(path_.c_str());
     if (!in) {
-        throw eckit::CantOpenFile(path_);
+        throw exception::CantOpenFile(path_);
     }
 
     auto magic   = char(in.peek());
@@ -50,19 +50,19 @@ GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     if (count == 0) {
         std::ostringstream oss;
         oss << path_ << " is not a valid geopoints file";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     if (which_ == -1 && count > 1) {
         std::ostringstream oss;
         oss << path_ << " is a multi-field geopoints file with " << count << " fields, please select which";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     if (which_ >= int(count)) {
         std::ostringstream oss;
         oss << path_ << " contains " << count << " fields, requested index is " << which_;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     // set dimensions
@@ -120,12 +120,13 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             parse(line + 8, v);
             ASSERT(v.size() == 1);
 
-            format = v[0] == "XYV" ? XYV
-                                   : v[0] == "XY_VECTOR"
-                                         ? XY_VECTOR
-                                         : v[0] == "POLAR_VECTOR"
-                                               ? POLAR_VECTOR
-                                               : throw eckit::SeriousBug(path_ + " invalid format line '" + line + "'");
+            format = v[0] == "XYV"
+                         ? XYV
+                         : v[0] == "XY_VECTOR"
+                               ? XY_VECTOR
+                               : v[0] == "POLAR_VECTOR"
+                                     ? POLAR_VECTOR
+                                     : throw exception::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
         if (!data && std::strncmp(line, "# ", 2) == 0) {

@@ -15,11 +15,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -62,19 +62,19 @@ public:
     virtual data::MIRField& field() {
         std::ostringstream oss;
         oss << "Cannot get field from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual double scalar() const {
         std::ostringstream oss;
         oss << "Cannot get field from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual Extension& extension() const {
         std::ostringstream oss;
         oss << "Cannot get extension from " << *this;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     virtual bool isField() const { return false; }

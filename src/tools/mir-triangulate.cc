@@ -21,7 +21,6 @@
 #include "atlas/output/Gmsh.h"
 #include "atlas/util/CoordinateEnums.h"
 
-#include "eckit/geometry/Point2.h"
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
@@ -34,45 +33,44 @@
 #include "mir/util/Types.h"
 
 
-class MIRTriangulate : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-    void usage(const std::string& tool) const;
-    int minimumPositionalArguments() const { return 0; }
+using namespace mir;
 
-public:
-    MIRTriangulate(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
+
+struct MIRTriangulate : tools::MIRTool {
+    MIRTriangulate(int argc, char** argv) : MIRTool(argc, argv) {
         options_.push_back(new eckit::option::SimpleOption<std::string>("output", "Gmsh output file"));
     }
+
+    int minimumPositionalArguments() const override { return 0; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\nGRIB Delaunay triangulation."
+                       "\n"
+                       "\nUsage:"
+                       "\n\t"
+                    << tool << " [--output=example.msh] file.grib [file.grib [...]]" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
-void MIRTriangulate::usage(const std::string& tool) const {
-    eckit::Log::info() << "\nGRIB Delaunay triangulation."
-                          "\n"
-                          "\nUsage:"
-                          "\n\t"
-                       << tool << " [--output=example.msh] file.grib [file.grib [...]]" << std::endl;
-}
-
 class Segment {
-    std::deque<eckit::geometry::Point2> points_;
-    eckit::geometry::Point2 inside_;
+    std::deque<Point2> points_;
+    Point2 inside_;
 
 public:
     // Segment() {}
 
-    explicit Segment(const eckit::geometry::Point2& start, const eckit::geometry::Point2& end,
-                     const eckit::geometry::Point2& inside) :
-        inside_(inside) {
+    explicit Segment(const Point2& start, const Point2& end, const Point2& inside) : inside_(inside) {
         points_.push_back(start);
         points_.push_back(end);
     }
 
-    const eckit::geometry::Point2& start() const { return points_.front(); }
-    const eckit::geometry::Point2& end() const { return points_.back(); }
+    const Point2& start() const { return points_.front(); }
+    const Point2& end() const { return points_.back(); }
 
-    bool inside(const eckit::geometry::Point2& pt) const {
+    bool inside(const Point2& pt) const {
         bool in  = false;
         double y = pt.y();
         double x = pt.x();
@@ -179,14 +177,14 @@ public:
     }
 };
 
-static std::map<Segment, eckit::geometry::Point2> cache;
+static std::map<Segment, Point2> cache;
 
-static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const eckit::geometry::Point2& p2) {
-    return eckit::geometry::Point2::middle(p1, p2);
+static Point2 middle(const Point2& p1, const Point2& p2) {
+    return Point2::middle(p1, p2);
     // Segment s(p1, p2);
     // auto j = cache.find(s);
     // if (j == cache.end()) {
-    //     auto q = eckit::geometry::Point2::middle(p1, p2);
+    //     auto q = Point2::middle(p1, p2);
     //     cache[Segment(p1, p2)] = q;
     //     cache[Segment(p2, p1)] = q;
     //     j = cache.find(s);
@@ -194,8 +192,8 @@ static eckit::geometry::Point2 middle(const eckit::geometry::Point2& p1, const e
     // return j->second;
 }
 
-static bool connect(const eckit::geometry::Point2& q, Segment& line,
-                    const std::map<eckit::geometry::Point2, std::set<Segment> >& ends, std::set<Segment>& segments) {
+static bool connect(const Point2& q, Segment& line, const std::map<Point2, std::set<Segment> >& ends,
+                    std::set<Segment>& segments) {
 
     auto j = ends.find(q);
     if (j != ends.end()) {
@@ -215,8 +213,8 @@ static bool connect(const eckit::geometry::Point2& q, Segment& line,
 }
 
 #if 0
-static void p(int n, eckit::geometry::Point2 p0, double val0, eckit::geometry::Point2 p1, double val1,
-              eckit::geometry::Point2 p2, double val2) {
+static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
+              Point2 p2, double val2) {
 
 
     std::cout << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
@@ -254,8 +252,8 @@ static void p(int n, eckit::geometry::Point2 p0, double val0, eckit::geometry::P
 #endif
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
-    using namespace atlas;
-    // auto& log = eckit::Log::info();
+    using atlas::LAT;
+    using atlas::LON;
 
     std::string output = args.getString("output", "");
     // bool alternate     = args.getBool("alternate", false);
@@ -263,7 +261,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
     // loop over each file(s) message(s)
     for (size_t a = 0; a < args.count(); ++a) {
-        std::unique_ptr<mir::input::MIRInput> input(new mir::input::GribFileInput(args(a)));
+        std::unique_ptr<input::MIRInput> input(new input::GribFileInput(args(a)));
 
         while (input->next()) {
             // eckit::Timer tim(alternate ? "Delaunay triangulation (alternate)" : "Delaunay triangulation");
@@ -272,15 +270,15 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
             double missingValue = field.missingValue();
 
             // Build a mesh from grid
-            mir::repres::RepresentationHandle rep(field.representation());
+            repres::RepresentationHandle rep(field.representation());
 
-            mir::util::MeshGeneratorParameters param;
+            util::MeshGeneratorParameters param;
             rep->fill(param);
             param.set("triangulate", true);
 
 
-            MeshGenerator generate(param.meshGenerator_, param);
-            Mesh mesh = generate(rep->atlasGrid());
+            atlas::MeshGenerator generate(param.meshGenerator_, param);
+            auto mesh = generate(rep->atlasGrid());
 
             const auto& values = field.values(0);
 
@@ -293,23 +291,23 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
                     path = name.str();
                 }
 
-                output::Gmsh(path).write(mesh);
+                atlas::output::Gmsh(path).write(mesh);
             }
 
 
             // Write mesh connectivity
             const auto& connectivity = mesh.cells().node_connectivity();
-            const auto coord         = array::make_view<double, 2>(mesh.nodes().lonlat());
+            const auto coord         = atlas::array::make_view<double, 2>(mesh.nodes().lonlat());
 
 
-            eckit::geometry::Point2 pa;
-            eckit::geometry::Point2 pb;
+            Point2 pa;
+            Point2 pb;
 
-            std::map<eckit::geometry::Point2, std::set<Segment> > ends;
+            std::map<Point2, std::set<Segment> > ends;
 
             std::set<Segment> segments;
 
-            for (idx_t e = 0; e < connectivity.rows(); ++e) {
+            for (atlas::idx_t e = 0; e < connectivity.rows(); ++e) {
                 const auto row = connectivity.row(e);
 
                 auto size      = size_t(row.size());
@@ -331,15 +329,15 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
 
                 auto row0 = row(0);
-                eckit::geometry::Point2 p0(coord(row0, LON), coord(row0, LAT));
+                Point2 p0(coord(row0, LON), coord(row0, LAT));
                 // double val0 = values[row0];
 
                 auto row1 = row(1);
-                eckit::geometry::Point2 p1(coord(row1, LON), coord(row1, LAT));
+                Point2 p1(coord(row1, LON), coord(row1, LAT));
                 // double val1 = values[row1];
 
                 auto row2 = row(2);
-                eckit::geometry::Point2 p2(coord(row2, LON), coord(row2, LAT));
+                Point2 p2(coord(row2, LON), coord(row2, LAT));
                 // double val2 = values[row2];
                 // p(n, p0, val0, p1, val1, p2, val2);
 

@@ -14,15 +14,15 @@
 
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
-#include "eckit/log/Log.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -44,7 +44,7 @@ GribFixes::~GribFixes() {
 
 bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    auto& log = eckit::Log::warning();
+    auto& log = Log::warning();
 
     for (auto& f : fixes_) {
         if ((f.first)->matches(input)) {

@@ -12,10 +12,12 @@
 
 #include "mir/compat/GribCompatibility.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/Tokenizer.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -132,8 +134,8 @@ const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
             return *(new CombinedGribCompatibility(name, v));
         }
 
-        list(eckit::Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("GribCompatibility: unknown '" + name + "'");
+        list(Log::error() << "GribCompatibility: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("GribCompatibility: unknown '" + name + "'");
     }
 
     return *(j->second);

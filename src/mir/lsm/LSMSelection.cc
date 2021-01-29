@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -68,12 +68,12 @@ const LSMSelection& LSMSelection::lookup(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "LSMSelection: looking for '" << name << "'" << std::endl;
+    Log::debug() << "LSMSelection: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("LSMSelection: unknown '" + name + "'");
+        list(Log::error() << "LSMSelection: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("LSMSelection: unknown '" + name + "'");
     }
 
     return *(j->second);

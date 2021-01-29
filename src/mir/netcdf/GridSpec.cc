@@ -15,13 +15,14 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -49,7 +50,7 @@ GridSpec* GridSpec::create(const Variable& variable) {
     if (spec == nullptr) {
         std::ostringstream oss;
         oss << "Cannot guess GridSpec for " << variable;
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     return spec;
@@ -83,7 +84,7 @@ GridSpec* GridSpecGuesser::guess(const Variable& variable) {
     for (auto& j : *m) {
         auto spec = j.second->guess(variable, latitudes, longitudes);
         if (spec != nullptr) {
-            eckit::Log::info() << "GRIDSPEC is " << *spec << std::endl;
+            Log::info() << "GRIDSPEC is " << *spec << std::endl;
             return spec;
         }
     }

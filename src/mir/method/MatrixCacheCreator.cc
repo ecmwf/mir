@@ -18,6 +18,7 @@
 
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/MethodWeighted.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -47,7 +48,7 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
 
         case 0:
             // child
-            eckit::Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
+            Log::info() << "MatrixCacheCreator::create running in sub-process " << ::getpid() << std::endl;
 
             try {
                 owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
@@ -55,14 +56,14 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
                 ::_exit(0);
             }
             catch (std::exception& e) {
-                eckit::Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
+                Log::error() << "MatrixCacheCreator::create failed " << e.what() << std::endl;
             }
             ::_exit(1);
             // break;
 
         case -1:
             // error
-            eckit::Log::error() << "MatrixCacheCreator::create failed to fork(): " << eckit::Log::syserr << std::endl;
+            Log::error() << "MatrixCacheCreator::create failed to fork(): " << Log::syserr << std::endl;
             owner_.createMatrix(ctx_, in_, out_, W, masks_, cropping_);
             return;
             // break;
@@ -70,11 +71,11 @@ void MatrixCacheCreator::create(const eckit::PathName& path, WeightMatrix& W, bo
 
     // Parent
 
-    eckit::Log::info() << "MatrixCacheCreator::create wait for " << pid << std::endl;
+    Log::info() << "MatrixCacheCreator::create wait for " << pid << std::endl;
     int code = 0;
     SYSCALL(::waitpid(pid, &code, 0));
     saved = true;
-    eckit::Log::info() << "MatrixCacheCreator::create " << pid << " finished with code " << code << std::endl;
+    Log::info() << "MatrixCacheCreator::create " << pid << " finished with code " << code << std::endl;
     ASSERT(code == 0);
 }
 

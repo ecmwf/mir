@@ -17,13 +17,13 @@
 #include <iostream>
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/truncation/Ordinal.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -49,7 +49,7 @@ TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("TruncationFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("TruncationFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -69,7 +69,7 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "TruncationFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
     ASSERT(!name.empty());
 
     auto j = m->find(name);
@@ -83,8 +83,8 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
         return new truncation::Ordinal(number, parametrisation);
     }
 
-    list(eckit::Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("TruncationFactory: unknown '" + name + "'");
+    list(Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("TruncationFactory: unknown '" + name + "'");
 }
 
 

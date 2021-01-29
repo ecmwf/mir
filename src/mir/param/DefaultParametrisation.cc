@@ -10,9 +10,9 @@
  */
 
 
-#include "mir/config/LibMir.h"
-
 #include "mir/param/DefaultParametrisation.h"
+
+#include "mir/config/LibMir.h"
 
 
 namespace mir {

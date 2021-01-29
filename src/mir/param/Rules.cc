@@ -13,7 +13,6 @@
 #include "mir/param/Rules.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
@@ -21,6 +20,8 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -69,7 +70,7 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
         warning_.erase(w);
 
         std::string m = msg() + "post-processing defaults might not be appropriate";
-        eckit::Log::warning() << "Warning: " << m << std::endl;
+        Log::warning() << "Warning: " << m << std::endl;
         return s;
     }
 
@@ -79,11 +80,11 @@ const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleVa
         static bool abortIfUnknownParameterClass =
             eckit::Resource<bool>("$MIR_ABORT_IF_UNKNOWN_PARAMETER_CLASS", false);
         if (abortIfUnknownParameterClass) {
-            eckit::Log::error() << m << std::endl;
-            throw eckit::UserError(m);
+            Log::error() << m << std::endl;
+            throw exception::UserError(m);
         }
 
-        eckit::Log::warning() << "Warning: " << m << std::endl;
+        Log::warning() << "Warning: " << m << std::endl;
     }
 
     return s;
@@ -128,11 +129,11 @@ void Rules::readConfigurationFiles() {
         static bool abortIfConfigurationFilesNotFound =
             eckit::Resource<bool>("$MIR_ABORT_IF_CONFIGURATION_NOT_FOUND", false);
         if (abortIfConfigurationFilesNotFound) {
-            eckit::Log::error() << msg << std::endl;
-            throw eckit::UserError(msg);
+            Log::error() << msg << std::endl;
+            throw exception::UserError(msg);
         }
 
-        eckit::Log::warning() << msg << std::endl;
+        Log::warning() << msg << std::endl;
         return;
     }
 
@@ -146,7 +147,7 @@ void Rules::readConfigurationFiles() {
 
         const auto& config = classesMap.find(klass);
         if (config == classesMap.end()) {
-            throw eckit::UserError("Rules: unkown class '" + klass + "'");
+            throw exception::UserError("Rules: unkown class '" + klass + "'");
         }
         const eckit::ValueMap& klassConfig = config->second;
 
@@ -172,11 +173,11 @@ void Rules::readConfigurationFiles() {
                 }
 
                 if (pidConfig.has(keyName)) {
-                    throw eckit::UserError("Rules: parameter " + std::to_string(paramId) + " has ambigous key '" +
-                                           keyName +
-                                           "'"
-                                           " from classes " +
-                                           klasses);
+                    throw exception::UserError("Rules: parameter " + std::to_string(paramId) + " has ambigous key '" +
+                                               keyName +
+                                               "'"
+                                               " from classes " +
+                                               klasses);
                 }
 
                 pidConfig.set(keyName, keyValue);

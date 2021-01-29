@@ -15,11 +15,12 @@
 #include <cmath>
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -44,8 +45,8 @@ ClimateFilter::ClimateFilter(const param::MIRParametrisation& param) {
 
         const std::string msg = "ClimateFilter: " + str("distance", distance) + " should be greater than " +
                                 str("climate-filter-delta", delta_);
-        eckit::Log::error() << msg << std::endl;
-        throw eckit::UserError(msg);
+        Log::error() << msg << std::endl;
+        throw exception::UserError(msg);
     }
 
     halfDelta_ = distance / 2.;

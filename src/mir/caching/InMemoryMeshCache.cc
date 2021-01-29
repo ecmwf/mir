@@ -18,7 +18,6 @@
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
 #include "mir/util/MIRStatistics.h"
@@ -45,7 +44,7 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
                                          const util::MeshGeneratorParameters& meshGeneratorParams) {
     std::lock_guard<std::mutex> guard(local_mutex);
 
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
     eckit::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")", log);
     auto cacheUse(statistics.cacheUser(mesh_cache));
 

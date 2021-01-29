@@ -14,12 +14,12 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -29,14 +29,14 @@ namespace util {
 long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
     std::ostringstream os;
     os << "SpectralOrder::getTruncationFromGaussianNumber() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 long SpectralOrder::getGaussianNumberFromTruncation(const long&) const {
     std::ostringstream os;
     os << "SpectralOrder::getGaussianNumberFromTruncation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -55,7 +55,7 @@ SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -74,12 +74,12 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "SpectralOrderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("SpectralOrderFactory: unknown '" + name + "'");
+        list(Log::error() << "SpectralOrderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("SpectralOrderFactory: unknown '" + name + "'");
     }
 
     return j->second->make();

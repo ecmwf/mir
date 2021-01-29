@@ -13,12 +13,11 @@
 #include "mir/caching/InMemoryCacheBase.h"
 
 #include "eckit/config/Resource.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -111,7 +110,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
 
 
 eckit::Channel& InMemoryCacheBase::log() {
-    static auto& channel = eckit::Log::debug<LibMir>();
+    static auto& channel = Log::debug();
     return channel;
 }
 

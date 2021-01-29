@@ -14,12 +14,16 @@
 
 #include <netcdf.h>
 
+
 namespace mir {
 namespace netcdf {
+namespace exception {
+
 
 NCError::NCError(int e, const std::string& call, const std::string& path) :
     eckit::Exception(std::string("NCError: ") + nc_strerror(e) + +" " + call + " (" + path + ")") {}
 
 
+}  // namespace exception
 }  // namespace netcdf
 }  // namespace mir

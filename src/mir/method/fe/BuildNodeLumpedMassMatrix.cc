@@ -14,9 +14,9 @@
 
 #include <utility>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
+#include "mir/util/Exceptions.h"
 #include "mir/util/Types.h"
 
 

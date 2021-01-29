@@ -14,9 +14,11 @@
 
 #include <cmath>
 #include <complex>
-#include "eckit/exception/Exceptions.h"
+
 #include "eckit/types/FloatCompare.h"
+
 #include "mir/util/Angles.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

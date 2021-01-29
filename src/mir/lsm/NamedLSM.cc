@@ -17,16 +17,16 @@
 #include <iostream>
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/lsm/GribFileMaskFromMIR.h"
 #include "mir/lsm/MappedMask.h"
 #include "mir/lsm/TenMinutesMask.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -89,7 +89,7 @@ NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& p
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name_) != m->end()) {
-        throw eckit::SeriousBug("NamedMaskFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("NamedMaskFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name_) == m->end());
@@ -113,11 +113,11 @@ Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repr
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
     name = sane(name);
 
-    eckit::Log::debug<LibMir>() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, representation, which);
@@ -133,11 +133,11 @@ std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
     name = sane(name);
 
-    eckit::Log::debug<LibMir>() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "NamedMaskFactory: looking for '" << name << "'" << std::endl;
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
+        list(Log::error() << "NamedMaskFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("NamedMaskFactory: unknown '" + name + "'");
     }
 
     eckit::MD5 md5;

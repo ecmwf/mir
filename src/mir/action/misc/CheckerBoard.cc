@@ -16,13 +16,12 @@
 #include <iostream>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

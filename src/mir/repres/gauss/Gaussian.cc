@@ -16,16 +16,14 @@
 #include <cmath>
 #include <map>
 
-#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Angles.h"
-#include "mir/util/Assert.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/Types.h"
@@ -96,8 +94,8 @@ bool Gaussian::includesSouthPole() const {
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
-    eckit::Log::debug<LibMir>() << "Gaussian::validate checked " << Pretty(values.size(), {"value"})
-                                << ", iterator counts " << Pretty(count) << " (" << domain() << ")." << std::endl;
+    Log::debug() << "Gaussian::validate checked " << Pretty(values.size(), {"value"}) << ", iterator counts "
+                 << Pretty(count) << " (" << domain() << ")." << std::endl;
 
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("Gaussian", values.size(), count);
 }
@@ -238,7 +236,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(N);
     auto j = ml->find(N);
     if (j == ml->end()) {
-        eckit::Timer timer("Gaussian latitudes " + std::to_string(N), eckit::Log::debug<LibMir>());
+        eckit::Timer timer("Gaussian latitudes " + std::to_string(N), Log::debug());
 
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
@@ -266,7 +264,7 @@ const std::vector<double>& Gaussian::weights(size_t N) {
     ASSERT(N);
     auto j = mw->find(N);
     if (j == mw->end()) {
-        eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), eckit::Log::debug<LibMir>());
+        eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), Log::debug());
 
         // calculate quadrature weights and insert in known-N-weights map
         // FIXME: innefficient interface, latitudes are discarded

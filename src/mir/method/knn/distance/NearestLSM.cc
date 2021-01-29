@@ -12,11 +12,11 @@
 
 #include "mir/method/knn/distance/NearestLSM.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

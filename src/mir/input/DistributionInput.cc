@@ -15,10 +15,9 @@
 #include <algorithm>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/stats/Distribution.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

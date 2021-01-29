@@ -13,7 +13,6 @@
 #include "mir/action/interpolate/Gridded2GriddedInterpolation.h"
 
 #include <sstream>
-#include "eckit/exception/Exceptions.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
@@ -23,6 +22,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -102,7 +102,7 @@ method::Cropping Gridded2GriddedInterpolation::cropping(context::Context& ctx) c
                 << "\n\t"
                    "Output: "
                 << outputBoundingBox();
-            throw eckit::UserError(msg.str());
+            throw exception::UserError(msg.str());
         }
     }
 

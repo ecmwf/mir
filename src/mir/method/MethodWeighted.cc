@@ -23,7 +23,6 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/InMemoryCache.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/data/Space.h"
@@ -34,6 +33,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -105,8 +105,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 void MethodWeighted::createMatrix(context::Context& ctx, const repres::Representation& in,
                                   const repres::Representation& out, WeightMatrix& W, const lsm::LandSeaMasks& masks,
                                   const Cropping& /*cropping*/) const {
-    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]",
-                               eckit::Log::debug<LibMir>());
+    eckit::ResourceUsage usage(std::string("MethodWeighted::createMatrix [") + name() + "]", Log::debug());
 
     computeMatrixWeights(ctx, in, out, W, validateMatrixWeights());
 
@@ -123,7 +122,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
                                               const repres::Representation& out) const {
 
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;
     eckit::TraceTimer<LibMir> timer("MethodWeighted::getMatrix");
@@ -288,7 +287,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     static bool check_stats = eckit::Resource<bool>("mirCheckStats", false);
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::execute");
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
     log << "MethodWeighted::execute" << std::endl;
 
     // setup sizes & checks
@@ -411,7 +410,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
     auto timing(ctx.statistics().computeMatrixTimer());
 
     if (in.sameAs(out) && !matrixAssemble_) {
-        eckit::Log::debug<LibMir>() << "Matrix is identity" << std::endl;
+        Log::debug() << "Matrix is identity" << std::endl;
         W.setIdentity(W.rows(), W.cols());
     }
     else {
@@ -430,7 +429,7 @@ void MethodWeighted::computeMatrixWeights(context::Context& ctx, const repres::R
 void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks) const {
 
     eckit::TraceTimer<LibMir> timer("MethodWeighted::applyMasks");
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
 
     log << "MethodWeighted::applyMasks(" << masks << ")" << std::endl;
 

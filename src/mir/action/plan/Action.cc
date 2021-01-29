@@ -12,21 +12,15 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-//#include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"
 #include "mir/api/MIREstimation.h"
-#include "mir/config/LibMir.h"
-//#include "mir/data/MIRField.h"
-//#include "mir/method/Method.h"
-//#include "mir/param/CombinedParametrisation.h"
-//#include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
-//#include "mir/util/MIRStatistics.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/TraceResourceUsage.h"
 
 
@@ -83,13 +77,13 @@ util::BoundingBox Action::outputBoundingBox() const {
 void Action::estimate(context::Context&, api::MIREstimation& /*estimation*/) const {
     std::ostringstream oss;
     oss << "Action::estimate not implemented for " << *this;
-    throw eckit::SeriousBug(oss.str());
+    throw exception::SeriousBug(oss.str());
 }
 
 
 void Action::estimateNumberOfGridPoints(context::Context&, api::MIREstimation& estimation,
                                         const repres::Representation& out) {
-    // eckit::Timer timer("estimateNumberOfGridPoints", eckit::Log::error());
+    // eckit::Timer timer("estimateNumberOfGridPoints", Log::error());
     estimation.numberOfGridPoints(out.numberOfPoints());
 }
 
@@ -100,7 +94,7 @@ void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation
     data::MIRField& field = ctx.field();
     ASSERT(field.dimensions() == 1);
     if (field.hasMissing()) {
-        eckit::Timer timer("estimateMissingValues", eckit::Log::error());
+        eckit::Timer timer("estimateMissingValues", Log::error());
 
         param::DefaultParametrisation runtime;
         param::CombinedParametrisation combined(runtime, runtime, runtime);
@@ -143,7 +137,7 @@ ActionFactory::ActionFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("ActionFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("ActionFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -162,7 +156,7 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "ActionFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "ActionFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
@@ -183,8 +177,8 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
                             oss << "ActionFactory: ambiguous '" << name << "'"
                                 << ", could be '" << j->first << "'"
                                 << " or '" << p->first << "'";
-                            eckit::Log::error() << "   " << j->first << std::endl;
-                            throw eckit::SeriousBug(oss.str());
+                            Log::error() << "   " << j->first << std::endl;
+                            throw exception::SeriousBug(oss.str());
                         }
 
                         j = p;
@@ -197,8 +191,8 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
             }
         }
         if (j == m->end()) {
-            list(eckit::Log::error() << "ActionFactory: unknown '" << name << "', choices are: ");
-            throw eckit::SeriousBug("ActionFactory: unknown '" + name + "'");
+            list(Log::error() << "ActionFactory: unknown '" << name << "', choices are: ");
+            throw exception::SeriousBug("ActionFactory: unknown '" + name + "'");
         }
     }
 

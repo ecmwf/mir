@@ -14,13 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -36,19 +34,19 @@ LegendreLoader::~LegendreLoader() = default;
 
 
 eckit::Channel& LegendreLoader::log() {
-    static auto& channel = eckit::Log::debug<LibMir>();
+    static auto& channel = Log::debug();
     return channel;
 }
 
 
 eckit::Channel& LegendreLoader::info() {
-    static auto& channel = eckit::Log::info();
+    static auto& channel = Log::info();
     return channel;
 }
 
 
 eckit::Channel& LegendreLoader::warn() {
-    static auto& channel = eckit::Log::warning();
+    static auto& channel = Log::warning();
     return channel;
 }
 
@@ -67,7 +65,7 @@ LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(na
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("LegendreLoaderFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("LegendreLoaderFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -89,12 +87,12 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
     std::string name = "mapped-memory";
     params.get("legendre-loader", name);
 
-    eckit::Log::debug<LibMir>() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
+        list(Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
     return j->second->make(params, path);
@@ -108,12 +106,12 @@ bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& para
     std::string name = "mapped-memory";
     params.get("legendre-loader", name);
 
-    eckit::Log::debug<LibMir>() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "LegendreLoaderFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
+        list(Log::error() << "LegendreLoaderFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("LegendreLoaderFactory: unknown '" + name + "'");
     }
 
     return j->second->shared();

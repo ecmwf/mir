@@ -23,6 +23,8 @@
 #include "mir/api/MIRJob.h"
 #include "mir/api/MIRWatcher.h"
 #include "mir/input/MIRInput.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -79,28 +81,28 @@ void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
     std::unique_ptr<eckit::Timer> timer;
 
     if (printActionGraph) {
-        timer.reset(new eckit::Timer("MIRComplexJob::execute", eckit::Log::info()));
+        timer.reset(new eckit::Timer("MIRComplexJob::execute", Log::info()));
     }
 
     context::Context ctx(*input_, statistics);
 
     if (printActionGraph) {
-        eckit::Log::info() << ">>>>>>>>>>>>"
-                              "\n"
-                           << *input_ << std::endl;
+        Log::info() << ">>>>>>>>>>>>"
+                       "\n"
+                    << *input_ << std::endl;
     }
 
     const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
 
     if (printActionGraph) {
-        graph.dump(eckit::Log::info(), 1);
+        graph.dump(Log::info(), 1);
     }
     graph.execute(ctx, executor);
 
     executor.wait();
 
     if (printActionGraph) {
-        eckit::Log::info() << "<<<<<<<<<<<" << std::endl;
+        Log::info() << "<<<<<<<<<<<" << std::endl;
     }
 }
 
@@ -129,7 +131,7 @@ MIRComplexJob& MIRComplexJob::add(api::MIRJob* job, input::MIRInput& input, outp
     if (input_ != &input) {
         std::ostringstream oss;
         oss << "MIRComplexJob: all jobs must share the same input (for now)";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
 

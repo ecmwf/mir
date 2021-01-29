@@ -14,10 +14,9 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -31,7 +30,7 @@ Gridded2Points::Gridded2Points(const param::MIRParametrisation& parametrisation)
     ASSERT(parametrisation_.get("longitudes", longitudes_));
 
     if (latitudes_.empty() || longitudes_.empty()) {
-        throw eckit::UserError("Gridded2Points: requires 'latitudes' and 'longitudes'");
+        throw exception::UserError("Gridded2Points: requires 'latitudes' and 'longitudes'");
     }
     ASSERT(latitudes_.size() == longitudes_.size());
 }

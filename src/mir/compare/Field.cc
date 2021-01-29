@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -21,6 +20,7 @@
 #include "mir/compare/Field.h"
 #include "mir/compare/FieldSet.h"
 #include "mir/compare/GribField.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

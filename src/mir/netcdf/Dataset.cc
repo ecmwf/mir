@@ -141,7 +141,7 @@ std::vector<Variable*> Dataset::variablesForDimension(const Dimension& dim) cons
 const Variable& Dataset::variable(const std::string& name) const {
     auto j = variables_.find(name);
     if (j == variables_.end()) {
-        throw eckit::UserError("Cannot find netcdf variable '" + name + "'");
+        throw exception::UserError("Cannot find netcdf variable '" + name + "'");
     }
     return *(j->second);
 }
@@ -150,7 +150,7 @@ const Variable& Dataset::variable(const std::string& name) const {
 Variable& Dataset::variable(const std::string& name) {
     auto j = variables_.find(name);
     if (j == variables_.end()) {
-        throw eckit::UserError("Cannot find netcdf variable '" + name + "'");
+        throw exception::UserError("Cannot find netcdf variable '" + name + "'");
     }
     return *(j->second);
 }

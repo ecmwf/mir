@@ -15,14 +15,13 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/api/MIRJob.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Types.h"
 
 
 namespace mir {

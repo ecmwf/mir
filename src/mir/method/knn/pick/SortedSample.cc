@@ -26,8 +26,7 @@ namespace pick {
 SortedSample::SortedSample(const param::MIRParametrisation& param) : sample_(param) {}
 
 
-void SortedSample::pick(const search::PointSearch& tree, const eckit::geometry::Point3& p,
-                        Pick::neighbours_t& closest) const {
+void SortedSample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighbours_t& closest) const {
     sample_.pick(tree, p, closest);
 
     std::sort(closest.begin(), closest.end(),

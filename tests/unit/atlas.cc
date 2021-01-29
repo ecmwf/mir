@@ -13,7 +13,6 @@
 #include <iostream>
 #include <memory>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
@@ -33,7 +32,7 @@ using Handle = repres::RepresentationHandle;
 
 
 CASE("Test number of points representation <=> grid") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     using key::grid::Grid;
     using repres::latlon::RegularLL;
@@ -60,7 +59,7 @@ CASE("Test number of points representation <=> grid") {
 
 
 CASE("Test number of points representation <=> cropped grid") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     using repres::latlon::RegularLL;
 
@@ -102,7 +101,7 @@ CASE("Test number of points representation <=> cropped grid") {
 
 
 CASE("MIR-374") {
-    auto& log  = eckit::Log::info();
+    auto& log  = Log::info();
     auto old   = log.precision(16);
     double eps = 1.e-6;
 

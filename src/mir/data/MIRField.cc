@@ -14,13 +14,13 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/Field.h"
 #include "mir/data/MIRFieldStats.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -46,7 +46,7 @@ MIRField::MIRField(const MIRField& other) : field_(other.field_) {
 
 void MIRField::copyOnWrite() {
     if (field_->count() > 1) {
-        // eckit::Log::info() << "XXXX copyOnWrite " << *field_ << std::endl;
+        // Log::info() << "XXXX copyOnWrite " << *field_ << std::endl;
         Field* f = field_->clone();
         field_->detach();
         field_ = f;
@@ -59,7 +59,7 @@ void MIRField::copyOnWrite() {
 void MIRField::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // eckit::Log::info() << "MIRField::update " << *field_ << std::endl;
+    // Log::info() << "MIRField::update " << *field_ << std::endl;
 
     copyOnWrite();
     field_->update(values, which, recomputeHasMissing);
@@ -139,7 +139,7 @@ MIRFieldStats MIRField::statistics(size_t i) const {
 
 
 void MIRField::representation(const repres::Representation* representation) {
-    // eckit::Log::info() << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
+    // Log::info() << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
     copyOnWrite();
@@ -157,7 +157,7 @@ const MIRValuesVector& MIRField::values(size_t which) const {
 MIRValuesVector& MIRField::direct(size_t which) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // eckit::Log::info() << "MIRField::direct " << *field_ << std::endl;
+    // Log::info() << "MIRField::direct " << *field_ << std::endl;
     copyOnWrite();
     return field_->direct(which);
 }
@@ -166,7 +166,7 @@ MIRValuesVector& MIRField::direct(size_t which) {
 void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // eckit::Log::info() << "MIRField::paramId " << *field_ << std::endl;
+    // Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
     field_->metadata(which, md);
@@ -175,7 +175,7 @@ void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
 void MIRField::metadata(size_t which, const std::string& name, long value) {
     eckit::AutoLock<eckit::Mutex> lock(mutex_);
 
-    // eckit::Log::info() << "MIRField::paramId " << *field_ << std::endl;
+    // Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
     copyOnWrite();
     field_->metadata(which, name, value);
@@ -264,12 +264,12 @@ MIRField* FieldFactory::build(const std::string& name, const param::MIRParametri
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "FieldFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "FieldFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "FieldFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("FieldFactory: unknown '" + name + "'");
+        list(Log::error() << "FieldFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("FieldFactory: unknown '" + name + "'");
     }
 
     return j->second->make(params, hasMissing, missingValue);

@@ -14,9 +14,8 @@
 
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/netcdf/Variable.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -53,7 +52,7 @@ void Rectilinear::print(std::ostream& s) const {
 
 
 bool Rectilinear::has(const std::string& name) const {
-    // eckit::Log::info() << "has " << name << std::endl;
+    // Log::info() << "has " << name << std::endl;
 
     // Note: only "gridded" is supported
     return (name == "gridded");
@@ -61,7 +60,7 @@ bool Rectilinear::has(const std::string& name) const {
 
 
 bool Rectilinear::get(const std::string& name, std::vector<double>& values) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
     if (name == "latitudes") {
         values = latitudes_;
@@ -78,14 +77,14 @@ bool Rectilinear::get(const std::string& name, std::vector<double>& values) cons
 
 
 bool Rectilinear::get(const std::string& /*name*/, long& /*value*/) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
 
     return false;
 }
 
 
 bool Rectilinear::get(const std::string& name, std::string& value) const {
-    // eckit::Log::info() << "get " << name << std::endl;
+    // Log::info() << "get " << name << std::endl;
     if (name == "gridType") {
         value = "irregular_latlon";
         return true;

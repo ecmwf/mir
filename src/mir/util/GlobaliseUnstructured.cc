@@ -14,14 +14,13 @@
 
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/search/PointSearch.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

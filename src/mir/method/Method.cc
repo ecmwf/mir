@@ -14,12 +14,12 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/StringTools.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -46,7 +46,7 @@ MethodFactory::MethodFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("MethodFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("MethodFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -78,7 +78,7 @@ Method* MethodFactory::build(std::string& names, const param::MIRParametrisation
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     for (const auto& name : eckit::StringTools::split("/", names)) {
-        eckit::Log::debug<LibMir>() << "MethodFactory: looking for '" << name << "'" << std::endl;
+        Log::debug() << "MethodFactory: looking for '" << name << "'" << std::endl;
         auto j = m->find(name);
         if (j != m->end()) {
             names = name;
@@ -86,8 +86,8 @@ Method* MethodFactory::build(std::string& names, const param::MIRParametrisation
         }
     }
 
-    list(eckit::Log::error() << "MethodFactory: no valid options in '" << names << "', choices are: ");
-    throw eckit::SeriousBug("MethodFactory: no valid options in '" + names + "'");
+    list(Log::error() << "MethodFactory: no valid options in '" << names << "', choices are: ");
+    throw exception::SeriousBug("MethodFactory: no valid options in '" + names + "'");
 }
 
 

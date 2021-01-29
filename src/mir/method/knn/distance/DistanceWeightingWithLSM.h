@@ -15,7 +15,7 @@
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
-#include "eckit/exception/Exceptions.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -37,7 +37,7 @@ struct DistanceWeightingWithLSM : DistanceWeighting {
 
     void operator()(size_t, const Point3&, const std::vector<search::PointSearch::PointValueType>&,
                     std::vector<WeightMatrix::Triplet>&) const override {
-        throw eckit::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
+        throw exception::SeriousBug("DistanceWeightingWithLSM: not to be used directly");
     }
 
     const DistanceWeighting* distanceWeighting(const param::MIRParametrisation&, const lsm::LandSeaMasks& lsm) const;

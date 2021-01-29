@@ -15,14 +15,14 @@
 #include <iomanip>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -89,7 +89,7 @@ void ArtificialInput::setAuxiliaryInformation(const std::string& yaml) {
 
     eckit::ValueMap map = eckit::YAMLParser::decodeString(yaml);
     for (const auto& kv : map) {
-        eckit::Log::debug<LibMir>() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
+        Log::debug() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
         kv.second.isDouble() ? parametrisation_.set(kv.first, kv.second.as<double>())
                              : kv.second.isNumber() ? parametrisation_.set(kv.first, kv.second.as<long long>())
                                                     : parametrisation_.set(kv.first, kv.second.as<std::string>());
@@ -191,7 +191,7 @@ ArtificialInputFactory::ArtificialInputFactory(const std::string& name) : name_(
     if (m->find(name) != m->end()) {
         std::ostringstream oss;
         oss << "ArtificialInputFactory: duplicate '" << name << "'";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     (*m)[name] = this;
@@ -208,12 +208,12 @@ ArtificialInput* ArtificialInputFactory::build(const std::string& name, const pa
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "ArtificialInputFactory: unknown '" << name << "', choices are: ");
-        eckit::Log::warning() << std::endl;
+        list(Log::error() << "ArtificialInputFactory: unknown '" << name << "', choices are: ");
+        Log::warning() << std::endl;
     }
 
     return j->second->make(param);

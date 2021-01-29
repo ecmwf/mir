@@ -17,14 +17,11 @@
 #include <string>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/io/Copy.h"
 #include "mir/action/io/Save.h"
 #include "mir/action/plan/ActionPlan.h"
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/resol/Resol.h"
 #include "mir/output/MIROutput.h"
@@ -32,6 +29,8 @@
 #include "mir/param/SameParametrisation.h"
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/DeprecatedFunctionality.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -118,17 +117,18 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     if (user.has("griddef")) {
         if (user.has("rotation")) {
-            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
+            throw exception::UserError("ECMWFStyle: option 'rotation' is incompatible with 'griddef'");
         }
         return "griddef";
     }
 
     if (user.has("latitudes") || user.has("longitudes")) {
         if (user.has("latitudes") != user.has("longitudes")) {
-            throw eckit::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
+            throw exception::UserError("ECMWFStyle: options 'latitudes' and 'longitudes' have to be provided together");
         }
         if (user.has("rotation")) {
-            throw eckit::UserError("ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
+            throw exception::UserError(
+                "ECMWFStyle: option 'rotation' is incompatible with 'latitudes' and 'longitudes'");
         }
         return "points";
     }
@@ -139,7 +139,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
     }
 
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
+    Log::debug() << "ECMWFStyle: did not determine target from parametrisation" << std::endl;
     return "";
 }
 
@@ -205,7 +205,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
     bool uv2uv    = option(user, "uv2uv", false) || uv_input;  // where "MIR knowledge of winds" is hardcoded
 
     if (vod2uv && uv_input) {
-        throw eckit::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
+        throw exception::UserError("ECMWFStyle: option 'vod2uv' is incompatible with input U/V");
     }
 
     if (resol.resultIsSpectral()) {
@@ -251,7 +251,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
     resol::Resol resol(parametrisation_, true);
-    eckit::Log::debug<LibMir>() << "ECMWFStyle: resol=" << resol << std::endl;
+    Log::debug() << "ECMWFStyle: resol=" << resol << std::endl;
 
     // the runtime parametrisation above is needed to satisfy this assertion
     ASSERT(resol.resultIsSpectral());
@@ -275,7 +275,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
     bool uv2uv    = option(user, "uv2uv", false);
 
     if (vod2uv) {
-        eckit::Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
+        Log::error() << "ECMWFStyle: option 'vod2uv' does not support gridded input" << std::endl;
         ASSERT(!vod2uv);
     }
 

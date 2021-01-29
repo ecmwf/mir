@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
@@ -41,6 +40,7 @@
 #include "mir/repres/other/UnstructuredGrid.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
@@ -51,38 +51,9 @@
 using namespace mir;
 
 
-class MIRSpectralTransform : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-
-    int minimumPositionalArguments() const { return 2; }
-
-    void usage(const std::string& tool) const {
-        eckit::Log::info() << "\n"
-                              "Usage: "
-                           << tool
-                           << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value "
-                              "[...]]] input.grib output.grib"
-                              "\n"
-                              "Examples: "
-                              "\n"
-                              "  % "
-                           << tool
-                           << " --grid=1/1 --area=90/-180/-90/179 in out"
-                              "\n"
-                              "  % "
-                           << tool
-                           << " --gridname=O32 --validate=false in out"
-                              "\n"
-                              "  % "
-                           << tool << " --griddef=weather-params.pts in out" << std::endl;
-    }
-
-public:
+struct MIRSpectralTransform : tools::MIRTool {
     MIRSpectralTransform(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::Separator;
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         options_.push_back(new Separator("Output grid (mandatory one option)"));
         options_.push_back(
@@ -116,6 +87,31 @@ public:
         options_.push_back(new SimpleOption<bool>("caching", "MIR: caching (default true)"));
         options_.push_back(new SimpleOption<bool>("validate", "MIR: validate results (default false)"));
     }
+
+    int minimumPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " --grid=WE/SN|--gridname=<namedgrid>|--griddef=<path> [--key1=value [--key2=value "
+                       "[...]]] input.grib output.grib"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --grid=1/1 --area=90/-180/-90/179 in out"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --gridname=O32 --validate=false in out"
+                       "\n"
+                       "  % "
+                    << tool << " --griddef=weather-params.pts in out" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 const repres::Representation* output_representation(std::ostream& log,
@@ -166,7 +162,7 @@ const repres::Representation* output_representation(std::ostream& log,
         return key::grid::Grid::lookup(gridname).representation();
     }
 
-    throw eckit::UserError("MIRSpectralTransform: could not create output representation");
+    throw exception::UserError("MIRSpectralTransform: could not create output representation");
 }
 
 atlas::Grid output_grid(const param::MIRParametrisation& parametrisation,
@@ -206,17 +202,17 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
     const size_t multiScalar = args.getUnsigned("multi-scalar", 1);
     if (multiScalar < 1) {
-        throw eckit::UserError("Option 'multi-scalar' has to be greater than or equal to one");
+        throw exception::UserError("Option 'multi-scalar' has to be greater than or equal to one");
     }
 
     size_t multiTransform = args.getUnsigned("multi-transform", multiScalar);
     if (multiTransform < 1 || multiTransform > multiScalar) {
-        throw eckit::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) +
-                               "] ('multi-scalar')");
+        throw exception::UserError("Option 'multi-transform' has to be in range [1, " + std::to_string(multiScalar) +
+                                   "] ('multi-scalar')");
     }
 
     if ((args.has("grid") ? 1 : 0) + (args.has("gridname") ? 1 : 0) + (args.has("griddef") ? 1 : 0) != 1) {
-        throw eckit::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
+        throw exception::UserError("Output description is required: either 'grid', 'gridname' or 'griddef'");
     }
 
     // Setup output (file)
@@ -248,7 +244,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     util::MIRStatistics statistics;
 
     {
-        auto& log = eckit::Log::info();
+        auto& log = Log::info();
 
         eckit::Timer total_timer("Total time");
 

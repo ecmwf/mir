@@ -31,7 +31,7 @@ static long long offset = 0;
 
 
 static eckit::DateTime reference(const std::string& /*units*/) {
-    // eckit::Log::info() << "===== " << units << std::endl;
+    // Log::info() << "===== " << units << std::endl;
     return eckit::DateTime();
 }
 

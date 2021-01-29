@@ -16,6 +16,8 @@
 #include "eckit/log/ResourceUsage.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace util {
@@ -27,7 +29,7 @@ TraceResourceUsage::TraceResourceUsage(const char* name) {
         "$MIR_TRACE_RESOURCE_USAGE",
         false);
     if (usage) {
-        info_ = new eckit::ResourceUsage(name, eckit::Log::debug<LibMir>());
+        info_ = new eckit::ResourceUsage(name, Log::debug());
     }
 }
 

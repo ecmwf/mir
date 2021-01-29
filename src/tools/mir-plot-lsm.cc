@@ -24,6 +24,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
 using namespace mir;

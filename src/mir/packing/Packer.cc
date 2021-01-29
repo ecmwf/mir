@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -45,7 +45,7 @@ PackerFactory::PackerFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("PackerFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("PackerFactory: duplicate '" + name + "'");
     }
 
     (*m)[name] = this;
@@ -64,12 +64,12 @@ Packer* PackerFactory::build(const std::string& name, const param::MIRParametris
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "PackerFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "PackerFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "PackerFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("PackerFactory: unknown '" + name + "'");
+        list(Log::error() << "PackerFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("PackerFactory: unknown '" + name + "'");
     }
 
     return j->second->make(user, field);

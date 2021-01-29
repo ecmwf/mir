@@ -17,21 +17,20 @@
 #include <sstream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -42,7 +41,7 @@ namespace gridbox {
 GridBoxMethod::GridBoxMethod(const param::MIRParametrisation& parametrisation) : MethodWeighted(parametrisation) {
     if (parametrisation.userParametrisation().has("rotation") ||
         parametrisation.fieldParametrisation().has("rotation")) {
-        throw eckit::UserError("GridBoxMethod: rotated input/output not supported");
+        throw exception::UserError("GridBoxMethod: rotated input/output not supported");
     }
 }
 
@@ -58,14 +57,14 @@ bool GridBoxMethod::sameAs(const Method& other) const {
 
 void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    eckit::Channel& log = eckit::Log::debug<LibMir>();
+    eckit::Channel& log = Log::debug();
     log << "GridBoxMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
 
 
     if (!in.domain().contains(out.domain())) {
         std::ostringstream msg;
         msg << "GridBoxMethod: input must contain output (input:" << in.domain() << ", output:" << out.domain() << ")";
-        throw eckit::UserError(msg.str());
+        throw exception::UserError(msg.str());
     }
 
     const Pretty::Plural gridBoxes("grid box", "grid boxes");
@@ -172,7 +171,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     log << "Intersected " << Pretty(weights_triplets.size(), gridBoxes) << std::endl;
 
     if (nbFailures > 0) {
-        auto& warning = eckit::Log::warning();
+        auto& warning = Log::warning();
         warning << "Failed to intersect " << Pretty(nbFailures, gridBoxes) << ":";
         size_t count = 0;
         for (const auto& f : failures) {

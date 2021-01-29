@@ -13,12 +13,13 @@
 #include <algorithm>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -32,7 +33,7 @@ CASE("BoundingBox") {
 
     using util::BoundingBox;
 
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     auto old  = log.precision(16);
 
     const std::vector<BoundingBox> boxes{
@@ -297,7 +298,7 @@ CASE("Representation::extendBoundingBox") {
     using key::grid::Grid;
     using util::BoundingBox;
 
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     auto old  = log.precision(16);
 
     SECTION("Gaussian") {

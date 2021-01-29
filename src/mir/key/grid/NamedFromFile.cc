@@ -14,9 +14,9 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -40,8 +40,8 @@ void NamedFromFile::print(std::ostream& out) const {
 size_t NamedFromFile::gaussianNumber() const {
     long N = 64;
     if (!get("gaussianNumber", N)) {
-        eckit::Log::warning() << "NamedFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
-                              << " (hardcoded!)" << std::endl;
+        Log::warning() << "NamedFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
+                       << " (hardcoded!)" << std::endl;
     }
     return size_t(N);
 }

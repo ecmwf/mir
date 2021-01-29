@@ -15,7 +15,6 @@
 #include <limits>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/HandleBuf.h"
 #include "eckit/serialisation/HandleStream.h"
 
@@ -25,6 +24,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/other/UnstructuredGrid.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -79,7 +79,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
         const MIRValuesVector& values = field.values(j);
 
 
-        // eckit::Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
+        // Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
 
 
         out << "#GEO"
@@ -124,7 +124,7 @@ size_t GeoPointsFileOutputXYV::saveText(const param::MIRParametrisation& param, 
 
     delete out.rdbuf();
 
-    // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
+    // Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
     return size_t(handle.position() - position);
 }
@@ -157,7 +157,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
 
         const MIRValuesVector& values = field.values(j);
 
-        // eckit::Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
+        // Log::info() << "GeoPointsFileOutputXYV::save => " << handle << std::endl;
 
         out << "GEO";
         out << "XYV";
@@ -204,7 +204,7 @@ size_t GeoPointsFileOutputXYV::saveBinary(const param::MIRParametrisation& param
     repres::other::UnstructuredGrid::check(oss.str(), latitudes, longitudes);
 
 
-    // eckit::Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
+    // Log::info() << "GeoPointsFileOutputXYV::save <= " << handle.position() - position << std::endl;
 
     return size_t(handle.position() - position);
 }

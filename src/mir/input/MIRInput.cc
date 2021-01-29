@@ -15,15 +15,15 @@
 #include <cstdio>
 #include <iomanip>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -51,35 +51,35 @@ grib_handle* MIRInput::gribHandle(size_t) const {
 void MIRInput::setAuxiliaryInformation(const std::string&) {
     std::ostringstream os;
     os << "MIRInput::setAuxiliaryInformation() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 bool MIRInput::next() {
     std::ostringstream os;
     os << "MIRInput::next() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 bool MIRInput::only(size_t) {
     std::ostringstream os;
     os << "MIRInput::only() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t MIRInput::copy(double*, size_t) const {
     std::ostringstream os;
     os << "MIRInput::copy() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t MIRInput::dimensions() const {
     std::ostringstream os;
     os << "MIRInput::dimensions() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -99,7 +99,7 @@ MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
     if (m->find(magic) != m->end()) {
         std::ostringstream oss;
         oss << "MIRInputFactory: duplicate '" << std::hex << magic << "'";
-        throw eckit::SeriousBug(oss.str());
+        throw exception::SeriousBug(oss.str());
     }
 
     (*m)[magic] = this;
@@ -169,14 +169,14 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
     std::ostringstream oss;
     oss << "0x" << std::hex << magic << std::dec << " (" << smagic << ")";
-    eckit::Log::debug<LibMir>() << "MIRInputFactory: looking for '" << oss.str() << "'" << std::endl;
+    Log::debug() << "MIRInputFactory: looking for '" << oss.str() << "'" << std::endl;
 
     auto j = m->find(magic);
     if (j == m->end()) {
-        list(eckit::Log::warning() << "MIRInputFactory: unknown '" << oss.str() << "', choices are: ");
-        eckit::Log::warning() << std::endl;
+        list(Log::warning() << "MIRInputFactory: unknown '" << oss.str() << "', choices are: ");
+        Log::warning() << std::endl;
 
-        eckit::Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
+        Log::warning() << "MIRInputFactory: assuming 'GRIB'" << std::endl;
         return aux(new GribFileInput(path));
     }
 

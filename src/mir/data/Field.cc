@@ -10,16 +10,17 @@
  */
 
 
+#include "mir/data/Field.h"
+
 #include <algorithm>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/Types.h"
 
 #include "eckit/thread/AutoLock.h"
-#include "mir/data/Field.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

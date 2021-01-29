@@ -12,12 +12,12 @@
 
 #include <string>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
+#include "mir/util/Log.h"
 
 // define EXPECTV(a) log << "\tEXPECT(" << #a <<")" << std::endl; EXPECT(a)
 
@@ -31,7 +31,7 @@ CASE("NamedGrid") {
 
     using util::BoundingBox;
 
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     auto old  = log.precision(16);
 
 

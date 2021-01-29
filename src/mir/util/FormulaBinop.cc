@@ -14,10 +14,9 @@
 #include <functional>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/FormulaBinop.h"
 #include "mir/util/Function.h"
 #include "mir/util/MIRStatistics.h"

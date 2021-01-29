@@ -15,14 +15,13 @@
 #include <memory>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -65,19 +64,19 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
     Latitude min_lat;
     Latitude max_lat;
     getRepresentationPoints(in, icoords, min_lat, max_lat);
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", "
-                                << max_lat << ")" << std::endl;
+    Log::debug() << "StructuredBilinearLatLon::assemble latitude (min,max) = (" << min_lat << ", " << max_lat << ")"
+                 << std::endl;
 
     // set northern & southern-most parallel point indices
     std::vector<size_t> parallel_north(pl.front());
     std::vector<size_t> parallel_south(pl.back());
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
+    Log::debug() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
     for (long i = 0; i < pl.front(); ++i) {
         parallel_north[i] = size_t(i);
     }
 
-    eckit::Log::debug<LibMir>() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
+    Log::debug() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
     const size_t inpts = in.numberOfPoints();
     for (long i = pl.back(), j = 0; i > 0; i--, j++) {
         parallel_south[j] = size_t(inpts - i);
@@ -93,7 +92,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
     // interpolate each output point in turn
     {
-        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, eckit::Log::debug<LibMir>());
+        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
 
         std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;
@@ -243,7 +242,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 double w_tr = w1.value() * wt.value();
                 double w_tl = w2.value() * wt.value();
 
-                //            eckit::Log::info() << " --> LL "
+                //            Log::info() << " --> LL "
                 //                      << lon << " ["
                 //                      << tl_lon << "/" << tr_lon << ","
                 //                      << bl_lon << "/" << br_lon << "] "

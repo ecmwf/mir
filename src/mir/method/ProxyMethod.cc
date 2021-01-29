@@ -15,18 +15,15 @@
 #include <algorithm>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/MD5.h"
-
-#include "eckit/log/Log.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/Timer.h"
+#include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Types.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -125,7 +122,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
-    eckit::Timer timer("ProxyMethod::execute", eckit::Log::info());
+    eckit::Timer timer("ProxyMethod::execute", Log::info());
     auto report = [](eckit::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();

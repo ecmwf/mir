@@ -14,12 +14,13 @@
 
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/stats/Statistics.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -42,7 +43,7 @@ StatisticsFilter::StatisticsFilter(const param::MIRParametrisation& param) : Act
         ASSERT(statistics_.back());
     }
 
-    param.get("precision", precision_ = size_t(eckit::Log::info().precision()));
+    param.get("precision", precision_ = size_t(Log::info().precision()));
 }
 
 
@@ -88,7 +89,7 @@ void StatisticsFilter::print(std::ostream& out) const {
 
 
 void StatisticsFilter::execute(context::Context& ctx) const {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     auto old  = log.precision(static_cast<decltype(log.precision())>(precision_));
 
     auto& field = ctx.field();

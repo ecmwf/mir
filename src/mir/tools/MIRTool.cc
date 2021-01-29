@@ -12,14 +12,14 @@
 
 #include "mir/tools/MIRTool.h"
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/system/Library.h"
 #include "eckit/system/LibraryManager.h"
 
-#include "mir/api/mir_config.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 
@@ -50,17 +50,16 @@ void MIRTool::run() {
                                 minimumPositionalArguments());
 
     if (args.has("version")) {
-        auto& log = eckit::Log::info();
-
         using eckit::system::LibraryManager;
+
         for (const auto& lib_name : LibraryManager::list()) {
             auto& lib = LibraryManager::lookup(lib_name);
-            log << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(sha1len)
-                << " home:" << lib.libraryHome() << std::endl;
+            Log::info() << lib.name() << " " << lib.version() << " git-sha1:" << lib.gitsha1(sha1len)
+                        << " home:" << lib.libraryHome() << std::endl;
         }
 
-        log << "eccodes " << ECCODES_VERSION_STR << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, sha1len)
-            << std::endl;
+        Log::info() << "eccodes " << ECCODES_VERSION_STR
+                    << " git-sha1:" << std::string(codes_get_git_sha1()).substr(0, sha1len) << std::endl;
     }
 
     init(args);

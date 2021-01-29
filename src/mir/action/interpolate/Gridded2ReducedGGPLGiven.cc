@@ -14,10 +14,9 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedFromPL.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

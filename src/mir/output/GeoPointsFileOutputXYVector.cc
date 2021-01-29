@@ -14,7 +14,6 @@
 
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/HandleBuf.h"
 
 #include "mir/action/context/Context.h"
@@ -22,6 +21,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -58,7 +58,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
         const MIRValuesVector& values_v = field.values(j + 1);
         ASSERT(values_u.size() == values_v.size());
 
-        // eckit::Log::info() << "GeoPointsFileOutputXYVector::save => " << handle << std::endl;
+        // Log::info() << "GeoPointsFileOutputXYVector::save => " << handle << std::endl;
 
 
         out << "#GEO"
@@ -91,7 +91,7 @@ size_t GeoPointsFileOutputXYVector::save(const param::MIRParametrisation& param,
 
     delete out.rdbuf();
 
-    // eckit::Log::info() << "GeoPointsFileOutputXYVector::save <= " << handle.position() - position << std::endl;
+    // Log::info() << "GeoPointsFileOutputXYVector::save <= " << handle.position() - position << std::endl;
 
     return size_t(handle.position() - position);
 }

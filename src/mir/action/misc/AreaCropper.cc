@@ -15,19 +15,17 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/caching/CroppingCache.h"
 #include "mir/caching/InMemoryCache.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
-#include "mir/util/Assert.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -93,7 +91,7 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     while (iter->next()) {
         const auto& point = iter->pointUnrotated();
 
-        // eckit::Log::debug<LibMir>() << point << " ====> " << bbox.contains(point) << std::endl;
+        // Log::debug() << point << " ====> " << bbox.contains(point) << std::endl;
 
         if (bbox.contains(point)) {
             const Latitude& lat = point.lat();
@@ -129,7 +127,7 @@ void AreaCropper::crop(const repres::Representation& repres, util::BoundingBox& 
     if (m.empty()) {
         std::ostringstream oss;
         oss << "Cropping " << repres << " to " << bbox << " returns no points";
-        throw eckit::UserError(oss.str());
+        throw exception::UserError(oss.str());
     }
 
     mapping.clear();
@@ -165,7 +163,7 @@ util::BoundingBox AreaCropper::outputBoundingBox() const {
 static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repres::Representation* representation,
                                      const util::BoundingBox& bbox) {
 
-    eckit::Log::debug<LibMir>() << "Creating cropping cache entry for " << bbox << std::endl;
+    Log::debug() << "Creating cropping cache entry for " << bbox << std::endl;
     c.bbox_ = bbox;
     c.mapping_.clear();
     AreaCropper::crop(*representation, c.bbox_, c.mapping_);
@@ -260,13 +258,13 @@ void AreaCropper::execute(context::Context& ctx) const {
         }
 
         repres::RepresentationHandle cropped(representation->croppedRepresentation(c.bbox_));
-        // eckit::Log::debug<LibMir>() << *cropped << std::endl;
+        // Log::debug() << *cropped << std::endl;
 
         if (result.empty()) {
             std::ostringstream oss;
             oss << "AreaCropper: failed to crop " << *representation << " with bbox " << c.bbox_
                 << " cropped=" << *cropped;
-            throw eckit::UserError(oss.str());
+            throw exception::UserError(oss.str());
         }
 
         cropped->validate(result);

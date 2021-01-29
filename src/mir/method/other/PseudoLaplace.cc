@@ -14,16 +14,16 @@
 
 #include <string>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/Vector.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/search/PointSearch.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -61,7 +61,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     using eckit::geometry::YY;
     using eckit::geometry::ZZ;
 
-    eckit::Log::debug<LibMir>() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+    Log::debug() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("PseudoLaplace::assemble");
 
 
@@ -162,7 +162,7 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
-    eckit::Log::debug<LibMir>() << "NearestLSM fill-in sparse matrix " << timer.elapsed() << std::endl;
+    Log::debug() << "NearestLSM fill-in sparse matrix " << timer.elapsed() << std::endl;
 }
 
 

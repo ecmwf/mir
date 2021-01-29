@@ -89,7 +89,7 @@ void BitmapFilter::execute(context::Context& ctx) const {
             os << "BitmapFilter::execute size mismatch: values=" << values.size() << ", bitmap=" << b.width() << "x"
                << b.height() << "=" << b.width() * b.height();
 
-            throw eckit::UserError(os.str());
+            throw exception::UserError(os.str());
         }
 
 

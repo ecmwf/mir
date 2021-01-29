@@ -15,18 +15,18 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/TraceTimer.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/method/knn/distance/DistanceWeighting.h"
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -63,7 +63,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics& stats, WeightMatrix& W, c
 void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                                   const repres::Representation& out, const pick::Pick& pick,
                                   const distance::DistanceWeighting& distanceWeighting) const {
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
 
     log << *this << "::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     eckit::TraceTimer<LibMir> timer("KNearestNeighbours::assemble");
@@ -134,7 +134,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
     }
 
     if (weights_triplets.empty()) {
-        throw eckit::SeriousBug("KNearestNeighbours: failed to interpolate");
+        throw exception::SeriousBug("KNearestNeighbours: failed to interpolate");
     }
 
     // fill-in sparse matrix

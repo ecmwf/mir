@@ -15,14 +15,14 @@
 #include <iostream>
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/NamedGrid.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -45,7 +45,7 @@ IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("IntgridFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("IntgridFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -65,7 +65,7 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "IntgridFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "IntgridFactory: looking for '" << name << "'" << std::endl;
     ASSERT(!name.empty());
 
     auto j = m->find(name);
@@ -78,8 +78,8 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
         return new intgrid::NamedGrid(name, parametrisation);
     }
 
-    list(eckit::Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");
-    throw eckit::SeriousBug("IntgridFactory: unknown '" + name + "'");
+    list(Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");
+    throw exception::SeriousBug("IntgridFactory: unknown '" + name + "'");
 }
 
 

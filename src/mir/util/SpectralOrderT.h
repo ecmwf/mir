@@ -15,8 +15,7 @@
 
 #include <cmath>
 
-#include "eckit/exception/Exceptions.h"
-
+#include "mir/util/Exceptions.h"
 #include "mir/util/SpectralOrder.h"
 
 

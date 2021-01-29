@@ -15,12 +15,12 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Timer.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 namespace mir {
 namespace action {
@@ -32,7 +32,7 @@ void InvtransScalar::print(std::ostream& out) const {
 
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
-    auto& log = eckit::Log::debug<LibMir>();
+    auto& log = Log::debug();
     eckit::Timer mainTimer("InvtransScalar::sh2grid", log);
 
     // set invtrans options

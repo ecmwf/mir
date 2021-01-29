@@ -13,13 +13,13 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Bytes.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "mir/caching/InMemoryCache.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
+#include "mir/util/Exceptions.h"
 
 namespace mir {
 namespace caching {

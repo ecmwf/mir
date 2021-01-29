@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -50,7 +50,7 @@ PickFactory::PickFactory(const std::string& name) : name_(name) {
         (*m)[name] = this;
         return;
     }
-    throw eckit::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
+    throw exception::SeriousBug("PickFactory: duplicated Pick '" + name + "'");
 }
 
 
@@ -64,12 +64,12 @@ const Pick* PickFactory::build(const std::string& name, const param::MIRParametr
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "PickFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "PickFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No PickFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No PickFactory '" + name + "'");
+        list(Log::error() << "No PickFactory '" << name << "', choices are:\n");
+        throw exception::SeriousBug("No PickFactory '" + name + "'");
     }
 
     return j->second->make(param);

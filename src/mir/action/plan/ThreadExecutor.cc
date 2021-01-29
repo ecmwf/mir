@@ -12,12 +12,12 @@
 
 #include "mir/action/plan/ThreadExecutor.h"
 
-#include "eckit/log/Log.h"
 #include "eckit/thread/ThreadPool.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/ActionNode.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -37,9 +37,9 @@ class ThreadExecutorTask : public eckit::ThreadPoolTask {
     const ActionNode& node_;
 
     void execute() override {
-        eckit::Log::info() << "===> Execute " << node_ << std::endl;
+        Log::info() << "===> Execute " << node_ << std::endl;
         node_.execute(ctx_, owner_);
-        eckit::Log::info() << "<=== Done " << node_ << std::endl;
+        Log::info() << "<=== Done " << node_ << std::endl;
     }
 
 public:

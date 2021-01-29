@@ -23,6 +23,7 @@
 #include "mir/netcdf/MergePlan.h"
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Value.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -60,7 +61,7 @@ const Variable& Variable::lookupInDataset(const std::string& standardName, const
     for (const auto& k : dataset_.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(*this) && v.getAttributeValue<std::string>("standard_name") == standardName) {
-            eckit::Log::info() << "Variable::lookup" << v << " has standard_name " << standardName << std::endl;
+            Log::info() << "Variable::lookup" << v << " has standard_name " << standardName << std::endl;
             return v;
         }
     }
@@ -68,7 +69,7 @@ const Variable& Variable::lookupInDataset(const std::string& standardName, const
     for (const auto& k : dataset_.variables()) {
         Variable& v = *(k.second);
         if (v.sharesDimensions(*this) && v.getAttributeValue<std::string>("units") == units) {
-            eckit::Log::info() << "Variable::lookup" << v << " has units " << units << std::endl;
+            Log::info() << "Variable::lookup" << v << " has units " << units << std::endl;
             return v;
         }
     }
@@ -78,7 +79,7 @@ const Variable& Variable::lookupInDataset(const std::string& standardName, const
     size_t i = coord.size() - n;
 
     const Variable& v = dataset_.variable(coord[i]);
-    eckit::Log::info() << "Variable::lookup" << v << " is number " << i << std::endl;
+    Log::info() << "Variable::lookup" << v << " is number " << i << std::endl;
     return v;
 }
 
@@ -95,10 +96,10 @@ void Variable::setMatrix(Matrix* matrix) {
         auto j = attributes_.find("_FillValue");
         auto k = attributes_.find("missing_value");
         if (j != attributes_.end() && k != attributes_.end()) {
-            eckit::Log::warning() << "Variable '" << name() << "' has both 'missing_value' and '_FillValue' attributes"
-                                  << std::endl;
-            // throw MergeError(std::string("Variable ") + name() + " has both 'missing_value' and '_FillValue'
-            // attributes");
+            Log::warning() << "Variable '" << name() << "' has both 'missing_value' and '_FillValue' attributes"
+                           << std::endl;
+            // throw exception::MergeError(std::string("Variable ") + name() + " has both 'missing_value' and
+            // '_FillValue' attributes");
         }
         if (j == attributes_.end()) {
             j = k;
@@ -122,7 +123,7 @@ size_t Variable::numberOfValues() const {
 std::vector<std::string> Variable::coordinates() const {
     std::ostringstream os;
     os << "Variable::coordinates() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -228,7 +229,7 @@ bool Variable::scalar() const {
 
 Matrix* Variable::matrix() const {
     if (matrix_ == nullptr) {
-        eckit::Log::warning() << "Variable::matrix '" << *this << std::endl;
+        Log::warning() << "Variable::matrix '" << *this << std::endl;
     }
     ASSERT(matrix_ != nullptr);
     return matrix_;
@@ -250,14 +251,14 @@ void Variable::addVirtualDimension(size_t where, Dimension* dim) {
 Dimension* Variable::getVirtualDimension() {
     std::ostringstream os;
     os << "Variable::getVirtualDimension() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Variable::addCoordinateVariable(const Variable*) {
     std::ostringstream os;
     os << "Variable::addCoordinateVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -287,21 +288,21 @@ void Variable::validate() const {
 void Variable::create(int /*nc*/) const {
     std::ostringstream os;
     os << "Variable::create() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Variable::save(int /*nc*/) const {
     std::ostringstream os;
     os << "Variable::save() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 Variable* Variable::clone(Dataset& /*owner*/) const {
     std::ostringstream os;
     os << "Variable::clone() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -314,35 +315,35 @@ void Variable::merge(const Variable& other, MergePlan& plan) {
 Variable* Variable::makeDataVariable() {
     std::ostringstream os;
     os << "Variable::makeDataVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 Variable* Variable::makeCoordinateVariable() {
     std::ostringstream os;
     os << "Variable::makeCoordinateVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 Variable* Variable::makeSimpleVariable() {
     std::ostringstream os;
     os << "Variable::makeSimpleVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 Variable* Variable::makeCellMethodVariable() {
     std::ostringstream os;
     os << "Variable::makeCellMethodVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 Variable* Variable::makeScalarCoordinateVariable() {
     std::ostringstream os;
     os << "Variable::makeScalarCoordinateVariable() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -369,7 +370,7 @@ bool Variable::dummy() const {
 bool Variable::sameAsDummy(const Variable&) const {
     std::ostringstream os;
     os << "Variable::sameAsDummy() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -439,14 +440,14 @@ void Variable::values(std::vector<double>& v) const {
 void Variable::get2DValues(MIRValuesVector&, size_t) const {
     std::ostringstream os;
     os << "Variable::get2DValues() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 size_t Variable::count2DValues() const {
     std::ostringstream os;
     os << "Variable::count2DValues() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 

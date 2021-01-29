@@ -15,10 +15,11 @@
 #include <cstdio>
 #include <ostream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Log.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

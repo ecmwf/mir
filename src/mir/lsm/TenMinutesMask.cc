@@ -15,7 +15,6 @@
 #include <cstdio>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -24,6 +23,8 @@
 #include "mir/config/LibMir.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 static eckit::Mutex local_mutex;
@@ -56,7 +57,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
 
         eckit::TraceTimer<LibMir> timer("Load 10 minutes LSM");
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-        eckit::Log::debug<LibMir>() << "TenMinutesMask loading " << path_ << std::endl;
+        Log::debug() << "TenMinutesMask loading " << path_ << std::endl;
 
         eckit::AutoStdFile file(path_);
         ten_minutes_.resize(ROWS);

@@ -14,13 +14,12 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -43,9 +42,9 @@ DistanceWeightingWithLSM::DistanceWeightingWithLSM(const param::MIRParametrisati
     parametrisation.get("distance-weighting-with-lsm", name);
 
     if (!DistanceWeightingWithLSMFactory::has(name)) {
-        DistanceWeightingWithLSMFactory::list(eckit::Log::error()
+        DistanceWeightingWithLSMFactory::list(Log::error()
                                               << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
+        throw exception::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
     }
 
     method_ = name;
@@ -83,7 +82,8 @@ DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::stri
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name + "'");
+        throw exception::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name +
+                                    "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -103,12 +103,12 @@ const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::strin
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "DistanceWeightingWithLSMFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "DistanceWeightingWithLSMFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
+        list(Log::error() << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
+        throw exception::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
     }
 
     return j->second->make(param, lsm);

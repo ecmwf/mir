@@ -14,9 +14,8 @@
 
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/repres/Gridded.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 

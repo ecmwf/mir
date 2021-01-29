@@ -14,11 +14,11 @@
 
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -50,7 +50,7 @@ DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : na
         (*m)[name] = this;
         return;
     }
-    throw eckit::SeriousBug("DistanceWeightingFactory: duplicated DistanceWeighting '" + name + "'");
+    throw exception::SeriousBug("DistanceWeightingFactory: duplicated DistanceWeighting '" + name + "'");
 }
 
 
@@ -65,12 +65,12 @@ const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "DistanceWeightingFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "DistanceWeightingFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "No DistanceWeightingFactory '" << name << "', choices are:\n");
-        throw eckit::SeriousBug("No DistanceWeightingFactory '" + name + "'");
+        list(Log::error() << "No DistanceWeightingFactory '" << name << "', choices are:\n");
+        throw exception::SeriousBug("No DistanceWeightingFactory '" + name + "'");
     }
 
     return j->second->make(param);

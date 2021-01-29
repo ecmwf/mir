@@ -370,14 +370,14 @@ BufrField::BufrField(const char* buffer, size_t size, const std::string& path, o
                 break;
 
             default:
-                throw eckit::SeriousBug(std::string("Unsupported BUFR type: ") + codes_get_type_name(t));
+                throw exception::SeriousBug(std::string("Unsupported BUFR type: ") + codes_get_type_name(t));
         }
 
 
         if (entriesByName_.find(name) != entriesByName_.end()) {
             std::ostringstream oss;
             oss << "BufrEntry duplicate name [" << name << "]";
-            throw eckit::SeriousBug(oss.str());
+            throw exception::SeriousBug(oss.str());
         }
 
         ASSERT(entriesByName_.find(name) == entriesByName_.end());

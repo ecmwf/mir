@@ -15,9 +15,9 @@
 #include <ostream>
 
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Log.h"
 
 #include "mir/method/WeightMatrix.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

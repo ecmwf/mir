@@ -15,12 +15,12 @@
 #include <map>
 #include <set>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -74,19 +74,19 @@ const Executor& Executor::lookup(const param::MIRParametrisation& params) {
 
     std::string name;
     if (!params.get("executor", name)) {
-        throw eckit::SeriousBug("Executor cannot get executor");
+        throw exception::SeriousBug("Executor cannot get executor");
     }
 
-    eckit::Log::debug<LibMir>() << "Looking for Executor [" << name << "]" << std::endl;
+    Log::debug() << "Looking for Executor [" << name << "]" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        eckit::Log::error() << "No Executor for [" << name << "]" << std::endl;
-        eckit::Log::error() << "Executors are:" << std::endl;
+        Log::error() << "No Executor for [" << name << "]" << std::endl;
+        Log::error() << "Executors are:" << std::endl;
         for (auto& k : *m) {
-            eckit::Log::error() << "   " << k.first << std::endl;
+            Log::error() << "   " << k.first << std::endl;
         }
-        throw eckit::SeriousBug("No Executor called " + name);
+        throw exception::SeriousBug("No Executor called " + name);
     }
 
     j->second->parametrisation(params);

@@ -15,9 +15,11 @@
 #include <iostream>
 #include <map>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -55,8 +57,8 @@ const Function& Function::lookup(const std::string& name) {
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "Function: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("Function: unknown '" + name + "'");
+        list(Log::error() << "Function: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("Function: unknown '" + name + "'");
     }
 
     return *(j->second);

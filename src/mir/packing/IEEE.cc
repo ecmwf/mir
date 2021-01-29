@@ -15,11 +15,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Gridded.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -34,8 +34,8 @@ IEEE::IEEE(const param::MIRParametrisation& user, const param::MIRParametrisatio
     if ((user.get("accuracy", bits) || field.get("accuracy", bits)) && (bits != 32 && bits != 64)) {
         std::ostringstream msg;
         msg << *this << ": only supports bitsPerValue 32 and 64 (from input, or as set by 'accuracy')";
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
+        Log::error() << msg.str() << std::endl;
+        throw exception::UserError(msg.str());
     }
 }
 

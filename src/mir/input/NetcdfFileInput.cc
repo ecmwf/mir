@@ -14,11 +14,11 @@
 
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/netcdf/Field.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -29,7 +29,7 @@ NetcdfFileInput::NetcdfFileInput(const eckit::PathName& path) :
     path_(path), cache_(*this), dataset_(path, *this), fields_(dataset_.fields()), current_(-1) {
 
     for (auto field : fields_) {
-        eckit::Log::info() << "NC " << *field << std::endl;
+        Log::info() << "NC " << *field << std::endl;
     }
 }
 
@@ -88,7 +88,7 @@ data::MIRField NetcdfFileInput::field() const {
 
     if (modifyMissingValue) {
         mv = std::numeric_limits<double>::lowest();
-        eckit::Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
+        Log::warning() << "Modifying missing value from NaN to " << mv << std::endl;
     }
 
     data::MIRField field(*this, hasMissing, mv);

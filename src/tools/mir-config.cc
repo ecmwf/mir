@@ -10,7 +10,6 @@
  */
 
 
-#include "eckit/log/Log.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
@@ -19,25 +18,49 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Log.h"
 
 
-class MIRConfig : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
 
-    void execute(const eckit::option::CmdArgs&) override;
+struct MIRConfig : tools::MIRTool {
+    MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
+        using eckit::option::SimpleOption;
 
-    void usage(const std::string& tool) const override;
+        options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
+        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
+    }
 
     int minimumPositionalArguments() const override { return 0; }
 
-    void display(const mir::param::MIRParametrisation& metadata, const std::string& key) const {
-        using namespace mir::param;
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << ""
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --param-id=157"
+                       "\n"
+                       "  % "
+                    << tool << " --key=lsm input1.grib input2.grib" << std::endl;
+    }
 
-        static SimpleParametrisation empty;
-        static DefaultParametrisation defaults;
-        const CombinedParametrisation combined(empty, metadata, defaults);
-        const MIRParametrisation& param(combined);
+    void execute(const eckit::option::CmdArgs&) override;
+
+    void display(const param::MIRParametrisation& metadata, const std::string& key) const {
+        static param::SimpleParametrisation empty;
+        static param::DefaultParametrisation defaults;
+        const param::CombinedParametrisation combined(empty, metadata, defaults);
+        const param::MIRParametrisation& param(combined);
 
         long paramId = 0;
         ASSERT(metadata.get("paramId", paramId));
@@ -45,39 +68,9 @@ class MIRConfig : public mir::tools::MIRTool {
         std::string value = "???";
         param.get(key, value);
 
-        eckit::Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
-    }
-
-public:
-    // -- Constructors
-
-    MIRConfig(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
-        using eckit::option::SimpleOption;
-        options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
-        options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
+        Log::info() << "paramId=" << paramId << ": " << key << "=" << value << std::endl;
     }
 };
-
-
-void MIRConfig::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool
-                       << " [--key=key] [[--param-id=value]|[input1.grib [input2.grib [...]]]]"
-                          "\n"
-                          "Examples: "
-                          "\n"
-                          "  % "
-                       << tool
-                       << ""
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --param-id=157"
-                          "\n"
-                          "  % "
-                       << tool << " --key=lsm input1.grib input2.grib" << std::endl;
-}
 
 
 void MIRConfig::execute(const eckit::option::CmdArgs& args) {
@@ -90,7 +83,7 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
     long paramId = 0;
     if (args.get("param-id", paramId) || args.count() == 0) {
 
-        class DummyField : public mir::param::FieldParametrisation {
+        class DummyField : public param::FieldParametrisation {
             long paramId_;
             void print(std::ostream&) const override {}
             bool get(const std::string& name, long& value) const override {
@@ -112,14 +105,15 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
         for (size_t i = 0; i < args.count(); i++) {
 
             // Display configuration for each input file message(s)
-            mir::input::GribFileInput grib(args(i));
+            input::GribFileInput grib(args(i));
             while (grib.next()) {
-                mir::input::MIRInput& input = grib;
+                input::MIRInput& input = grib;
                 display(input.parametrisation(), key);
             }
         }
     }
 }
+
 
 int main(int argc, char** argv) {
     MIRConfig tool(argc, argv);

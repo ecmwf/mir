@@ -15,44 +15,39 @@
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Formula.h"
 #include "mir/util/FormulaParser.h"
+#include "mir/util/Log.h"
 
 
-class MIRFormula : public mir::tools::MIRTool {
+using namespace mir;
 
-    // -- Overridden methods
+
+struct MIRFormula : tools::MIRTool {
+    using MIRTool::MIRTool;
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool << std::endl;
+    }
 
     void execute(const eckit::option::CmdArgs&) override;
-
-    void usage(const std::string& tool) const override;
-
-public:
-    // -- Constructors
-
-    MIRFormula(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {}
 };
-
-
-void MIRFormula::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool << std::endl;
-}
 
 
 void MIRFormula::execute(const eckit::option::CmdArgs&) {
     // std::istringstream in("sqrt(-(-2 + 3 - 4   - 5*10/2))");
     std::istringstream in("2 ^ 10");
-    mir::util::FormulaParser p(in);
+    util::FormulaParser p(in);
 
-    mir::param::SimpleParametrisation param;
+    param::SimpleParametrisation param;
 
-    mir::util::Formula* f = p.parse(param);
-    eckit::Log::info() << (*f) << std::endl;
+    util::Formula* f = p.parse(param);
+    Log::info() << (*f) << std::endl;
 
-    mir::context::Context ctx;
+    context::Context ctx;
     f->perform(ctx);
 
-    eckit::Log::info() << ctx << std::endl;
+    Log::info() << ctx << std::endl;
 }
 
 

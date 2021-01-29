@@ -15,11 +15,10 @@
 #include <iostream>
 #include <typeinfo>  // bad_cast exception
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/VectorInput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -50,7 +49,7 @@ size_t VectorOutput::copy(const param::MIRParametrisation& param, context::Conte
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::copy() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -86,7 +85,7 @@ size_t VectorOutput::save(const param::MIRParametrisation& param, context::Conte
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::save() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 
@@ -109,7 +108,7 @@ size_t VectorOutput::set(const param::MIRParametrisation& param, context::Contex
     catch (std::bad_cast&) {
         std::ostringstream os;
         os << "VectorOutput::set() not implemented for input of type: " << input;
-        throw eckit::SeriousBug(os.str());
+        throw exception::SeriousBug(os.str());
     }
 }
 

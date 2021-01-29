@@ -13,9 +13,8 @@
 #include <cstring>
 #include <iostream>
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/output/GribMemoryOutput.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

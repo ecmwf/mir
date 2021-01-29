@@ -15,13 +15,13 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/data/MIRValuesVector.h"
 #include "mir/method/WeightMatrix.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

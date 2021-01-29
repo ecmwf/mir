@@ -12,10 +12,9 @@
 
 #include "mir/method/knn/NearestNeighbour.h"
 
-#include "eckit/exception/Exceptions.h"
-
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {

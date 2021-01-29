@@ -13,7 +13,6 @@
 #include <iostream>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
@@ -27,9 +26,7 @@
 #include "mir/action/filter/NablaFilter.h"
 #include "mir/action/plan/Executor.h"
 #include "mir/api/MIRJob.h"
-#include "mir/api/mir_config.h"
 #include "mir/caching/matrix/MatrixLoader.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/Space.h"
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
@@ -52,9 +49,11 @@
 #include "mir/stats/Distribution.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
+#include "mir/util/Types.h"
 
 #if defined mir_HAVE_ATLAS
 #include "mir/caching/legendre/LegendreLoader.h"
@@ -69,24 +68,9 @@
 using namespace mir;
 
 
-class MIR : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
-
-    void usage(const std::string& tool) const;
-
-    int minimumPositionalArguments() const { return 2; }
-
-    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
-
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
-
-public:
+struct MIR : tools::MIRTool {
     MIR(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::option::FactoryOption;
-        using eckit::option::Separator;
-        using eckit::option::SimpleOption;
-        using eckit::option::VectorOption;
+        using namespace eckit::option;
 
         //==============================================
         options_.push_back(new Separator("Spectral transforms"));
@@ -318,7 +302,7 @@ public:
 
         //==============================================
         // Only show these options if debug channel is active
-        if (eckit::Log::debug<LibMir>()) {
+        if (Log::debug()) {
             options_.push_back(new Separator("Debugging"));
             options_.push_back(new SimpleOption<bool>(
                 "dryrun", "Only read data from source, no interpolation done or output produced"));
@@ -342,32 +326,39 @@ public:
 #endif
         }
     }
+
+    int minimumPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info() << "\n"
+                       "Usage: "
+                    << tool
+                    << " [--key1=value [--key2=value [...]]] input.grib output.grib"
+                       "\n"
+                       "Examples: "
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --reduced=80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool
+                    << " --regular=80 input.grib output.grib"
+                       "\n"
+                       "  % "
+                    << tool << " --truncation=63 input.grib output.grib" << std::endl;
+    }
+
+    void execute(const eckit::option::CmdArgs&) override;
+
+    void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
+
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
 };
-
-
-void MIR::usage(const std::string& tool) const {
-    eckit::Log::info() << "\n"
-                          "Usage: "
-                       << tool
-                       << " [--key1=value [--key2=value [...]]] input.grib output.grib"
-                          "\n"
-                          "Examples: "
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --grid=2/2 --area=90/-8/12/80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --reduced=80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool
-                       << " --regular=80 input.grib output.grib"
-                          "\n"
-                          "  % "
-                       << tool << " --truncation=63 input.grib output.grib" << std::endl;
-}
 
 
 void MIR::execute(const eckit::option::CmdArgs& args) {
@@ -437,19 +428,18 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
     eckit::Timer timer("Total time");
 
     util::MIRStatistics statistics;
-    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
-                                << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.next()) {
-        eckit::Log::debug<LibMir>() << "============> " << what << ": " << (++i) << std::endl;
+        Log::debug() << "============> " << what << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 
-    statistics.report(eckit::Log::info());
+    statistics.report(Log::info());
 
-    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+                << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 
 
@@ -459,19 +449,18 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
     std::string what = "field";
 
     util::MIRStatistics statistics;
-    eckit::Log::debug<LibMir>() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend."
-                                << std::endl;
+    Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
 
     size_t i = 0;
     while (input.only(paramId)) {
-        eckit::Log::debug<LibMir>() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
+        Log::debug() << "============> paramId: " << paramId << ": " << (++i) << std::endl;
         job.execute(input, output, statistics);
     }
 
-    statistics.report(eckit::Log::info());
+    statistics.report(Log::info());
 
-    eckit::Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                       << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+                << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 
 

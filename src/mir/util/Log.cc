@@ -10,27 +10,17 @@
  */
 
 
-#include "mir/key/intgrid/NamedGrid.h"
+#include "mir/util/Log.h"
 
-#include "mir/util/Exceptions.h"
+#include "mir/config/LibMir.h"
 
 
 namespace mir {
-namespace key {
-namespace intgrid {
 
 
-NamedGrid::NamedGrid(const std::string& gridname, const param::MIRParametrisation& parametrisation) :
-    Intgrid(parametrisation), gridname_(gridname) {
-    ASSERT(!gridname_.empty());
+Log::Channel& Log::debug() {
+    return eckit::Log::debug<LibMir>();
 }
 
 
-const std::string& NamedGrid::gridname() const {
-    return gridname_;
-}
-
-
-}  // namespace intgrid
-}  // namespace key
 }  // namespace mir

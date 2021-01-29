@@ -15,16 +15,16 @@
 #include <algorithm>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
-#include "mir/config/LibMir.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/method/Method.h"
 #include "mir/param/RuntimeParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -40,7 +40,7 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
     // object is cached
 
 
-    eckit::Log::debug<LibMir>() << "GribFileMask loading " << path_ << std::endl;
+    Log::debug() << "GribFileMask loading " << path_ << std::endl;
 
     mir::input::GribFileInput file(path_);
     const mir::input::MIRInput& input = file;
@@ -54,17 +54,17 @@ GribFileMask::GribFileMask(const eckit::PathName& path, const param::MIRParametr
     std::string interpolation;
     if (!parametrisation.get("lsm-interpolation-" + which, interpolation)) {
         if (!parametrisation.get("lsm-interpolation", interpolation)) {
-            throw eckit::SeriousBug("No interpolation method defined for land-sea mask");
+            throw exception::SeriousBug("No interpolation method defined for land-sea mask");
         }
     }
 
     std::unique_ptr<method::Method> method(method::MethodFactory::build(interpolation, runtime));
-    eckit::Log::debug<LibMir>() << "LSM interpolation method is " << *method << std::endl;
+    Log::debug() << "LSM interpolation method is " << *method << std::endl;
 
     if (!(field.representation()->isGlobal())) {
         std::ostringstream oss;
         oss << "LSM file '" << path_ << "' should be global";
-        throw eckit::UserError(oss.str());
+        throw exception::UserError(oss.str());
     }
 
     util::MIRStatistics dummy;  // TODO: use the global one

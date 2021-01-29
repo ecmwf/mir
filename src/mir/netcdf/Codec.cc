@@ -19,8 +19,8 @@
 #include "eckit/thread/Mutex.h"
 #include "eckit/thread/Once.h"
 
-#include "mir/config/LibMir.h"
 #include "mir/netcdf/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -36,98 +36,98 @@ Codec::~Codec() = default;
 void Codec::decode(std::vector<double>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<double> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::decode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<float> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::decode(std::vector<long>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::decode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<short> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::decode(std::vector<unsigned char>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<unsigned char> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::decode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::decode(std::vector<long long> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<double>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<double> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<float>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<float> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<long>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<short>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<short> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<unsigned char>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<unsigned char> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::encode(std::vector<long long>&) const {
     std::ostringstream os;
     os << "Variable::encode(std::vector<long long> &) not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::addAttributes(Variable&) const {
     std::ostringstream os;
     os << "Variable::addAttributes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
 void Codec::updateAttributes(int /*nc*/, int /*varid*/, const std::string& /*path*/) {
     std::ostringstream os;
     os << "Variable::updateAttributes() not implemented for " << *this;
-    throw eckit::SeriousBug(os.str());
+    throw exception::SeriousBug(os.str());
 }
 
 
@@ -150,7 +150,7 @@ CodecFactory::CodecFactory(const std::string& name) : name_(name) {
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
     if (m->find(name) != m->end()) {
-        throw eckit::SeriousBug("CodecFactory: duplicate '" + name + "'");
+        throw exception::SeriousBug("CodecFactory: duplicate '" + name + "'");
     }
 
     ASSERT(m->find(name) == m->end());
@@ -169,12 +169,12 @@ Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-    eckit::Log::debug<LibMir>() << "CodecFactory: looking for '" << name << "'" << std::endl;
+    Log::debug() << "CodecFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(eckit::Log::error() << "CodecFactory: unknown '" << name << "', choices are: ");
-        throw eckit::SeriousBug("CodecFactory: unknown '" + name + "'");
+        list(Log::error() << "CodecFactory: unknown '" << name << "', choices are: ");
+        throw exception::SeriousBug("CodecFactory: unknown '" + name + "'");
     }
 
     return j->second->make(variable);

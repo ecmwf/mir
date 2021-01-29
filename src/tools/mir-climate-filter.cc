@@ -14,11 +14,9 @@
 #include <limits>
 #include <memory>
 
-#include "eckit/exception/Exceptions.h"
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/linalg/Matrix.h"
 #include "eckit/linalg/Vector.h"
-#include "eckit/log/Log.h"
 #include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Seconds.h"
 #include "eckit/log/TraceTimer.h"
@@ -41,6 +39,8 @@
 #include "mir/search/PointSearch.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Domain.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/Pretty.h"
 #include "mir/util/Types.h"
@@ -49,14 +49,30 @@
 using namespace mir;
 
 
-class MIRClimateFilter : public mir::tools::MIRTool {
-private:
-    void execute(const eckit::option::CmdArgs&);
+struct MIRClimateFilter : tools::MIRTool {
+    MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
+        using eckit::linalg::LinearAlgebra;
+        using namespace eckit::option;
 
-    int numberOfPositionalArguments() const { return 2; }
+        options_.push_back(
+            new VectorOption<size_t>("k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
+        options_.push_back(
+            new SimpleOption<double>("distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
+        options_.push_back(new SimpleOption<double>(
+            "delta", "Climate filter width of filter edge [m], must be greater than 'distance' (default 1000.)"));
+        options_.push_back(new SimpleOption<double>(
+            "weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
+        options_.push_back(
+            new SimpleOption<bool>("no-backend", "No linear algebra backend (minimum memory requirements)"));
+        options_.push_back(new FactoryOption<LinearAlgebra>(
+            "backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
+        options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
+    }
 
-    void usage(const std::string& tool) const {
-        eckit::Log::info()
+    int numberOfPositionalArguments() const override { return 2; }
+
+    void usage(const std::string& tool) const override {
+        Log::info()
             << "\nClimate filter (topographic data smoothing operator) for GRIB global regular_ll (no missing values.)"
                "\n"
                "\nUsage: "
@@ -67,24 +83,7 @@ private:
             << tool << " --delta=1000 --distance=5000 --k=4/100 lsm lsm-filtered" << std::endl;
     }
 
-public:
-    MIRClimateFilter(int argc, char** argv) : MIRTool(argc, argv) {
-        using eckit::linalg::LinearAlgebra;
-        options_.push_back(new eckit::option::VectorOption<size_t>(
-            "k", "Range of neighbour points to weight (k, default [4, infty[)", 2));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "distance", "Climate filter radius [m] of neighbours to weight (default 1.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "delta", "Climate filter width of filter edge [m], must be greater than 'distance' (default 1000.)"));
-        options_.push_back(new eckit::option::SimpleOption<double>(
-            "weight-min", "Climate filter point minimum relative weight ([0, 1], default 0.001)"));
-        options_.push_back(new eckit::option::SimpleOption<bool>(
-            "no-backend", "No linear algebra backend (minimum memory requirements)"));
-        options_.push_back(new eckit::option::FactoryOption<LinearAlgebra>(
-            "backend", "Linear algebra backend (default '" + LinearAlgebra::backend().name() + "')"));
-        options_.push_back(
-            new eckit::option::FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
-    }
+    void execute(const eckit::option::CmdArgs&) override;
 };
 
 
@@ -100,7 +99,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
     std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(args(1)));
     ASSERT(out);
 
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     util::MIRStatistics statistics;
     context::Context ctx(*in, statistics);
 
@@ -148,7 +147,8 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         {
             auto ll = dynamic_cast<const repres::latlon::RegularLL*>(static_cast<const repres::Representation*>(rep));
             if ((ll == nullptr) || !rep->domain().isGlobal() || ctx.field().hasMissing()) {
-                throw eckit::UserError("MIRClimateFilter: input field should be global regular_ll, no missing values");
+                throw exception::UserError(
+                    "MIRClimateFilter: input field should be global regular_ll, no missing values");
             }
             Ni = ll->Ni();
             Nj = ll->Nj();
@@ -327,6 +327,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
             << "field/s" << std::endl;
     }
 }
+
 
 int main(int argc, char** argv) {
     MIRClimateFilter tool(argc, argv);

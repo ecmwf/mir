@@ -15,8 +15,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/key/grid/GridPattern.h"
@@ -24,6 +22,8 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/regular/Lambert.h"
 #include "mir/repres/regular/LambertAzimuthalEqualArea.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -62,7 +62,7 @@ void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametris
     for (auto kv_str : eckit::StringTools::split(";", grid)) {
         auto kv = eckit::StringTools::split("=", kv_str);
         if (kv.size() != 2) {
-            throw eckit::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
+            throw exception::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
         }
 
         auto& key   = kv[0];
@@ -90,7 +90,7 @@ size_t TypedGrid::gaussianNumber() const {
     }
 
     N = 64;
-    eckit::Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+    Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
     return N;
 }
 
@@ -109,8 +109,8 @@ void TypedGrid::checkRequiredKeys(const param::MIRParametrisation& param) const 
     if (!missingKeys.empty()) {
         std::ostringstream msg;
         msg << *this << ": required keys are missing: " << missingKeys;
-        eckit::Log::error() << msg.str() << std::endl;
-        throw eckit::UserError(msg.str());
+        Log::error() << msg.str() << std::endl;
+        throw exception::UserError(msg.str());
     }
 }
 

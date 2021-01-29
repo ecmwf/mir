@@ -10,7 +10,6 @@
  */
 
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 
 #include <memory>
@@ -23,6 +22,7 @@
 #include "mir/param/CombinedParametrisation.h"
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 
 
@@ -35,7 +35,7 @@ namespace unit {
 
 
 CASE("MIR-425") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
     auto old  = log.precision(16);
 
     /*

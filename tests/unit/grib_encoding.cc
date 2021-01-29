@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 
-#include "eckit/log/Log.h"
 #include "eckit/testing/Test.h"
 #include "eckit/thread/AutoLock.h"
 
@@ -27,6 +26,7 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -315,8 +315,7 @@ public:
 }  // namespace
 
 CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
-
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     struct test_t {
         std::string grid;
@@ -407,8 +406,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
 }
 
 CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
-
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     struct test_t {
         std::string grid;
@@ -474,7 +472,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
 }
 
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     struct test_t {
         util::Increments increments;
@@ -535,7 +533,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
 }
 
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
-    auto& log = eckit::Log::info();
+    auto& log = Log::info();
 
     RepresentationHandle repres(new repres::latlon::RegularLL(util::Increments(1, 1)));
     log << "Test " << *(repres) << "..." << std::endl;

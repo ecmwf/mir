@@ -16,15 +16,14 @@
 #include <iostream>
 #include <limits>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/key/intgrid/None.h"
 #include "mir/key/truncation/Ordinal.h"
 #include "mir/key/truncation/Truncation.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/SpectralOrder.h"
 
 
@@ -151,7 +150,7 @@ long Resol::getTargetGaussianNumber() const {
     // unstructured grids (hardcoded)
     if (user.has("griddef") || user.has("latitudes") || user.has("longitudes")) {
         N = 64;
-        eckit::Log::warning() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+        Log::warning() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
         ASSERT(N >= 0);
         return N;
     }
