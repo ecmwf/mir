@@ -196,7 +196,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
 
 
         {
-            Pretty::ProgressTimer progress("Locating", Nj, {"row"}, log);
+            trace::ProgressTimer progress("Locating", Nj, {"row"}, log);
             double farthest = 0;
             double tClosest = 0;
             double tMatrixA = 0;

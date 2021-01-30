@@ -13,9 +13,12 @@
 #include "mir/util/Trace.h"
 
 #include "eckit/config/Resource.h"
+#include "eckit/log/ETA.h"
+#include "eckit/log/Seconds.h"
 
 #include "mir/config/LibMir.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Pretty.h"
 
 
 namespace mir {
@@ -37,6 +40,29 @@ detail::TraceT<eckit::ResourceUsage>::TraceT(const std::string& name, Log::Chann
 template <>
 double detail::TraceT<eckit::ResourceUsage>::elapsed() {
     NOTIMP;
+}
+
+
+ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Plural& units, Log::Channel& o, double time) :
+    Timer(name, o), lastTime_(0.), counter_(0), units_(units), limit_(limit), time_(time) {}
+
+
+bool ProgressTimer::operator++() {
+    bool hasOutput = (0 < counter_) && (lastTime_ + time_ < elapsed());
+
+    if (hasOutput) {
+        lastTime_   = elapsed();
+        double rate = double(counter_) / lastTime_;
+        output() << Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
+                 << units_(counter_) << "/s"
+                 << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
+    }
+
+    if (counter_ < limit_) {
+        ++counter_;
+    }
+
+    return hasOutput;
 }
 
 

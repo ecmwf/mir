@@ -51,8 +51,29 @@ struct TimerAndResourceUsage : eckit::Timer, eckit::ResourceUsage {
 
 using ResourceUsage = detail::TraceT<eckit::ResourceUsage>;
 using Trace         = detail::TraceT<detail::TimerAndResourceUsage>;
-
 using eckit::Timer;
+
+
+struct ProgressTimer : public Timer {
+    using Plural = Log::Plural;
+
+    /// @param name of the timer
+    /// @param limit counter maximum value
+    /// @param units unit/units
+    /// @param time how often to output progress, based on elapsed time
+    /// @param o output stream
+    ProgressTimer(const std::string& name, size_t limit, const Plural& units, Log::Channel& = Log::info(),
+                  double time = 5.);
+    bool operator++();
+
+private:
+    double lastTime_;
+    size_t counter_;
+
+    const Plural units_;
+    const size_t limit_;
+    const double time_;
+};
 
 
 }  // namespace trace

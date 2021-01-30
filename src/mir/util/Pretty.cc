@@ -15,23 +15,9 @@
 #include <iostream>
 
 #include "eckit/log/BigNum.h"
-#include "eckit/log/ETA.h"
-#include "eckit/log/Seconds.h"
 
 
 namespace mir {
-
-
-static const Pretty::Plural noPlural("", "");
-
-
-Pretty::Pretty(int count) : Pretty(count, noPlural) {}
-
-
-Pretty::Pretty(long count) : Pretty(count, noPlural) {}
-
-
-Pretty::Pretty(size_t count) : Pretty(count, noPlural) {}
 
 
 void Pretty::print(std::ostream& s) const {
@@ -39,50 +25,6 @@ void Pretty::print(std::ostream& s) const {
     if (plural_) {
         s << ' ' << plural_(count_);
     }
-}
-
-
-Pretty::PrettyProgress::PrettyProgress(const std::string& name, size_t limit, const Pretty::Plural& units,
-                                       Log::Channel& o) :
-    Timer(name, o), lastTime_(0.), counter_(0), units_(units), limit_(limit) {}
-
-
-bool Pretty::PrettyProgress::operator++() {
-    bool out = hasOutput();
-
-    if (out) {
-        lastTime_   = elapsed();
-        double rate = double(counter_) / lastTime_;
-        output() << Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
-                 << units_(counter_) << "/s"
-                 << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
-    }
-
-    if (counter_ < limit_) {
-        ++counter_;
-    }
-
-    return out;
-}
-
-
-Pretty::ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units,
-                                     Log::Channel& o, double time) :
-    PrettyProgress(name, limit, units, o), time_(time) {}
-
-
-bool Pretty::ProgressTimer::hasOutput() {
-    return (0 < counter_) && (lastTime_ + time_ < elapsed());
-}
-
-
-Pretty::ProgressCounter::ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
-                                         Log::Channel& o, size_t count) :
-    PrettyProgress(name, limit, units, o), count_(count) {}
-
-
-bool Pretty::ProgressCounter::hasOutput() {
-    return (0 < counter_) && (counter_ % count_ == 0);
 }
 
 

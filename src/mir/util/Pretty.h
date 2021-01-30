@@ -16,8 +16,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/log/Timer.h"
-
 #include "mir/util/Log.h"
 
 
@@ -28,78 +26,16 @@ class Pretty {
 public:
     // -- Types
 
-    struct Plural {
-        Plural(std::string one) : Plural(one, one + "s") {}
-        Plural(std::string one, std::string notOne) : s_{one, notOne} {}
-        Plural(const Plural& other) : s_{other.s_[0], other.s_[1]} {}
-        ~Plural() = default;
-
-        const std::string& operator()(int count) const { return s_[count != 1]; }
-        const std::string& operator()(size_t count) const { return s_[count != 1]; }
-
-        operator bool() const { return !s_[0].empty(); }
-        Plural& operator=(const Plural&) = delete;
-
-    private:
-        const std::string s_[2];
-    };
-
-    struct PrettyProgress : public eckit::Timer {
-        PrettyProgress(const std::string& name, size_t limit, const Plural& units, Log::Channel&);
-        virtual ~PrettyProgress() = default;
-        bool operator++();
-
-    protected:
-        double lastTime_;
-        size_t counter_;
-
-    private:
-        virtual bool hasOutput() = 0;
-        const Plural units_;
-        const size_t limit_;
-    };
-
-    struct ProgressTimer : PrettyProgress {
-
-        /// @param name of the timer
-        /// @param limit counter maximum value
-        /// @param units unit/units
-        /// @param time how often to output progress, based on elapsed time
-        /// @param o output stream
-        ProgressTimer(const std::string& name, size_t limit, const Pretty::Plural& units, Log::Channel& o = Log::info(),
-                      double time = 5.);
-
-    private:
-        bool hasOutput() override;
-        const double time_;
-    };
-
-    struct ProgressCounter : PrettyProgress {
-
-        /// @param name of the timer
-        /// @param limit counter maximum value
-        /// @param units unit/units
-        /// @param count how often to output progress, based on total counter
-        /// @param o output stream
-        ProgressCounter(const std::string& name, size_t limit, const Pretty::Plural& units,
-                        Log::Channel& o = Log::info(), size_t count = 10000);
-
-    private:
-        bool hasOutput() override;
-        const size_t count_;
-    };
+    using Plural = Log::Plural;
 
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Pretty(int count);
-    Pretty(long count);
-    Pretty(size_t count);
-    Pretty(int count, const Plural& plural) : plural_(plural), count_(count) {}
-    Pretty(long count, const Plural& plural) : plural_(plural), count_(static_cast<int>(count)) {}
-    Pretty(size_t count, const Plural& plural) : plural_(plural), count_(static_cast<int>(count)) {}
+    Pretty(int count, const Plural& plural = Plural()) : plural_(plural), count_(count) {}
+    Pretty(long count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
+    Pretty(size_t count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
     Pretty(const Pretty&) = delete;
 
     // -- Destructor

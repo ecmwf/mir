@@ -110,7 +110,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     }
 
     {
-        Pretty::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
+        trace::ProgressTimer progress("Intersecting", outBoxes.size(), gridBoxes, log);
 
         const std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t i = 0;
