@@ -21,6 +21,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -92,7 +93,7 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
 
     // interpolate each output point in turn
     {
-        Pretty::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
+        trace::ProgressTimer progress("Interpolating", nbOutputPoints, {"point"}, Log::debug());
 
         std::unique_ptr<repres::Iterator> it(out.iterator());
         size_t ip = 0;

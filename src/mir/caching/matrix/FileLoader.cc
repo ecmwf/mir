@@ -14,8 +14,6 @@
 
 #include <ostream>
 
-#include "eckit/log/Bytes.h"
-
 #include "mir/method/WeightMatrix.h"
 #include "mir/util/Log.h"
 #include "mir/util/Types.h"
@@ -39,7 +37,7 @@ FileLoader::FileLoader(const std::string& name, const eckit::PathName& path) :
 FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
-    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(double(buffer_.size())) << "]";
+    out << "FileLoader[path=" << path_ << ",size=" << Log::Bytes(buffer_.size()) << "]";
 }
 
 const void* FileLoader::address() const {

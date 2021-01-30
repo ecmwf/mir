@@ -286,7 +286,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     // generate k-d tree with cell centres
     std::unique_ptr<element_tree_t> eTree;
     {
-        trace::Trace timer("k-d tree: create");
+        trace::ResourceUsage timer("k-d tree: create");
         eTree.reset(atlas::interpolation::method::create_element_centre_index(inMesh));
     }
 
@@ -313,7 +313,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     weights_triplets.reserve(nbOutputPoints * 4);  // preallocate space as if all elements where quads
 
     {
-        Pretty::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
+        trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
         const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
 
@@ -357,7 +357,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         }
     }
 
-    log << "Projected " << Log::Pretty(nbProjections) << " of " << Pretty(nbOutputPoints, {"point"}) << " ("
+    log << "Projected " << Log::Pretty(nbProjections) << " of " << Log::Pretty(nbOutputPoints, {"point"}) << " ("
         << Log::Pretty(nbFailures, {"failure"}) << ")\n"
         << "k-d tree: searched between " << Log::Pretty(nbMinElementsSearched) << " and "
         << Log::Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "

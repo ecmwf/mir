@@ -16,7 +16,6 @@
 #include <sys/mman.h>
 #include <iostream>
 
-#include "eckit/log/Bytes.h"
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"
 
@@ -64,7 +63,7 @@ MappedMemoryLoader::~MappedMemoryLoader() {
 }
 
 void MappedMemoryLoader::print(std::ostream& out) const {
-    out << "MappedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(double(size_)) << "]";
+    out << "MappedMemoryLoader[path=" << path_ << ",size=" << Log::Bytes(size_) << "]";
 }
 
 const void* MappedMemoryLoader::address() const {

@@ -13,7 +13,12 @@
 #ifndef mir_util_Log_h
 #define mir_util_Log_h
 
+#include <iosfwd>
+#include <string>
+
+#include "eckit/log/Bytes.h"
 #include "eckit/log/Log.h"
+#include "eckit/log/Seconds.h"
 
 
 namespace mir {
@@ -33,11 +38,21 @@ struct Log final : protected eckit::Log {
     using eckit::Log::syserr;
 
 
+    using Seconds = eckit::Seconds;
+
+
+    struct Bytes : public eckit::Bytes {
+        template <typename T>
+        Bytes(T bytes) : eckit::Bytes(double(bytes)) {}
+    };
+
+
     struct Plural {
         Plural() = default;
         Plural(std::string one) : Plural(one, one + "s") {}
         Plural(std::string one, std::string notOne) : s_{one, notOne} {}
         Plural(const Plural& other) : s_{other.s_[0], other.s_[1]} {}
+        ~Plural() = default;
 
         const std::string& operator()(int count) const { return s_[count != 1]; }
         const std::string& operator()(size_t count) const { return s_[count != 1]; }

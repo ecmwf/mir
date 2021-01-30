@@ -13,10 +13,10 @@
 #include "mir/caching/CroppingCache.h"
 
 #include "eckit/io/AutoCloser.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/serialisation/FileStream.h"
 
 #include "mir/config/LibMir.h"
+#include "mir/util/Log.h"
 #include "mir/util/Trace.h"
 
 
@@ -33,7 +33,7 @@ CroppingCache::CroppingCache() :
 
 void CroppingCacheEntry::print(std::ostream& out) const {
     out << "CroppingCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
-        << ",size=" << eckit::Bytes(double(sizeof(size_t) * mapping_.size())) << "]";
+        << ",size=" << Log::Bytes(sizeof(size_t) * mapping_.size()) << "]";
 }
 
 

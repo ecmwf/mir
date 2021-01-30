@@ -105,7 +105,7 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     // set input k-d tree for grid boxes indices
     std::unique_ptr<search::PointSearch> tree;
     {
-        trace::Trace usage("GridBoxMethod::assemble create k-d tree", log);
+        trace::ResourceUsage usage("GridBoxMethod::assemble create k-d tree", log);
         tree.reset(new search::PointSearch(parametrisation_, in));
     }
 

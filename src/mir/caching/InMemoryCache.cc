@@ -13,8 +13,6 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include "eckit/log/Bytes.h"
-#include "eckit/log/Seconds.h"
 #include "eckit/thread/AutoLock.h"
 
 #include "mir/caching/InMemoryCache.h"

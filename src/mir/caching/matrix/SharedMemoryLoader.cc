@@ -26,7 +26,6 @@
 #include <sys/types.h>
 
 //#include "eckit/config/Resource.h"
-#include "eckit/log/Bytes.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
 #include "eckit/memory/Shmget.h"
@@ -152,15 +151,14 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     size_ = shmsize;
 
-    msg << ", size: " << shmsize << " (" << eckit::Bytes(double(shmsize)) << "), key: 0x" << std::hex << key << std::dec
-        << ", page size: " << eckit::Bytes(double(page_size))
-        << ", pages: " << Log::Pretty(shmsize / size_t(page_size));
+    msg << ", size: " << shmsize << " (" << Log::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
+        << ", page size: " << Log::Bytes(page_size) << ", pages: " << Log::Pretty(shmsize / size_t(page_size));
 
 #ifdef IPC_INFO
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(::shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    msg << ", maximum shared memory segment size: " << eckit::Bytes(double((shm_info.shmmax >> 10) * 1024));
+    msg << ", maximum shared memory segment size: " << Log::Bytes((shm_info.shmmax >> 10) * 1024);
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
@@ -300,8 +298,7 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
 
 void SharedMemoryLoader::print(std::ostream& out) const {
-    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(double(size_)) << ",unload=" << unload_
-        << "]";
+    out << "SharedMemoryLoader[path=" << path_ << ",size=" << Log::Bytes(size_) << ",unload=" << unload_ << "]";
 }
 
 

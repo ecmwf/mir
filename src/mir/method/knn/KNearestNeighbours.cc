@@ -113,7 +113,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                 {
                     double t = timer.elapsed();
                     pick.pick(sptree, p, closest);
-                    search += timer.elapsed() - t;
+                    search += timer.elapsed(t);
                     if (closest.empty()) {
                         continue;
                     }
@@ -127,7 +127,7 @@ void KNearestNeighbours::assemble(util::MIRStatistics&, WeightMatrix& W, const r
                 {
                     double t = timer.elapsed();
                     std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
-                    insert += timer.elapsed() - t;
+                    insert += timer.elapsed(t);
                 }
             }
         }

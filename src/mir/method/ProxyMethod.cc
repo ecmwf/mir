@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <vector>
 
-#include "eckit/log/Seconds.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"

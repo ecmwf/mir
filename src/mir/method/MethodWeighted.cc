@@ -133,7 +133,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     double here                   = timer.elapsed();
     const lsm::LandSeaMasks masks = getMasks(in, out);
-    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsed() - here << "s, "
+    log << "MethodWeighted::getMatrix land-sea masks: " << timer.elapsedSeconds(here) << ", "
         << (masks.active() ? "active" : "not active") << std::endl;
 
 
@@ -170,7 +170,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
     {
         auto j     = matrix_cache.find(memory_key);
         auto found = j != matrix_cache.end();
-        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsed() - here << "s, "
+        log << "MethodWeighted::getMatrix cache key: " << memory_key << " " << timer.elapsedSeconds(here) << ", "
             << (found ? "found" : "not found") << " in memory cache" << std::endl;
         if (found) {
             const WeightMatrix& mat = *j;
@@ -207,7 +207,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
         }
     }
 
-    log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsed() - here << "s" << std::endl;
+    log << "MethodWeighted::getMatrix create weights matrix: " << timer.elapsedSeconds(here) << std::endl;
     log << "MethodWeighted::getMatrix matrix W " << W << std::endl;
 
     // insert matrix in the in-memory cache and update memory footprint

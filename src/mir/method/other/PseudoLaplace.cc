@@ -158,7 +158,6 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
     // fill-in sparse matrix
     W.setFromTriplets(weights_triplets);
-    Log::debug() << "NearestLSM fill-in sparse matrix " << timer.elapsed() << std::endl;
 }
 
 

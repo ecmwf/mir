@@ -15,7 +15,6 @@
 #include <memory>
 #include <string>
 
-#include "eckit/log/Bytes.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
@@ -62,7 +61,7 @@ void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, const
 
     // clang-format off
     out << "\n" "path:\t'" << path << "'"
-        << "\n" "size:\t" << eckit::Bytes(double(loader->size()))
+        << "\n" "size:\t" << Log::Bytes(loader->size())
         << "\n" "address:\t" << std::hex << loader->address() << std::dec
         << "\n" "inSharedMemory:\t" << std::boolalpha << loader->inSharedMemory() << std::noboolalpha
         << std::endl;

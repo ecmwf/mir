@@ -14,10 +14,9 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/ETA.h"
-#include "eckit/log/Seconds.h"
+#include "eckit/log/ResourceUsage.h"
 
 #include "mir/config/LibMir.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
@@ -25,26 +24,23 @@ namespace mir {
 namespace trace {
 
 
-template <>
-detail::TraceT<eckit::ResourceUsage>::TraceT(const std::string& name, Log::Channel& log) {
+ResourceUsage::ResourceUsage(const char* name, Log::Channel& log) : Timer(name, log) {
     static bool usage = eckit::LibResource<bool, LibMir>(
         "mir-trace-resource-usage;"
         "$MIR_TRACE_RESOURCE_USAGE",
         false);
-    if (usage) {
-        info_ = new eckit::ResourceUsage(name.c_str(), log);
-    }
+    info_ = usage ? new eckit::ResourceUsage(name, log) : nullptr;
 }
 
 
-template <>
-double detail::TraceT<eckit::ResourceUsage>::elapsed() {
-    NOTIMP;
+ResourceUsage::~ResourceUsage() {
+    delete info_;
 }
 
 
-ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Plural& units, Log::Channel& o, double time) :
-    Timer(name, o), lastTime_(0.), counter_(0), units_(units), limit_(limit), time_(time) {}
+ProgressTimer::ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, Log::Channel& out,
+                             double time) :
+    Timer(name, out), lastTime_(0.), counter_(0), units_(units), limit_(limit), time_(time) {}
 
 
 bool ProgressTimer::operator++() {
@@ -53,7 +49,7 @@ bool ProgressTimer::operator++() {
     if (hasOutput) {
         lastTime_   = elapsed();
         double rate = double(counter_) / lastTime_;
-        output() << Log::Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
+        output() << Log::Pretty(counter_, units_) << " in " << Log::Seconds(lastTime_) << ", rate: " << rate << " "
                  << units_(counter_) << "/s"
                  << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
     }

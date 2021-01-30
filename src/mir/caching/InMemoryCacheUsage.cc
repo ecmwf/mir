@@ -14,10 +14,12 @@
 
 #include <sstream>
 
-#include "eckit/log/Bytes.h"
 #include "eckit/serialisation/Stream.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/Translator.h"
+
+#include "mir/util/Log.h"
+
 
 namespace mir {
 namespace caching {
@@ -123,7 +125,7 @@ void InMemoryCacheUsage::decode(eckit::Stream& s) {
 }
 
 void InMemoryCacheUsage::print(std::ostream& out) const {
-    out << "[memory=" << eckit::Bytes(double(memory_)) << ",shared=" << eckit::Bytes(double(shared_)) << "]";
+    out << "[memory=" << Log::Bytes(memory_) << ",shared=" << Log::Bytes(shared_) << "]";
 }
 
 size_t InMemoryCacheUsage::memory() const {

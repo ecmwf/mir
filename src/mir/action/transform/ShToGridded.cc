@@ -15,6 +15,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "eckit/system/MemoryInfo.h"
 #include "eckit/system/SystemInfo.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"

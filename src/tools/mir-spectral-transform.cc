@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/Seconds.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
@@ -455,8 +454,8 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
         statistics.report(log);
 
-        log << Log::Pretty(int(i * multiScalar), what) << " in " << eckit::Seconds(total_timer.elapsed())
-            << ", rate: " << double(i) / double(total_timer.elapsed()) << " " << what << "/s" << std::endl;
+        log << Log::Pretty(int(i * multiScalar), what) << " in " << total_timer.elapsedSeconds()
+            << ", rate: " << double(i) / total_timer.elapsed() << " " << what << "/s" << std::endl;
     }
 }
 

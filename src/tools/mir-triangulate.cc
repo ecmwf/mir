@@ -253,8 +253,8 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
 #endif
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
-    using atlas::LAT;
-    using atlas::LON;
+    using LLCOORDS::LAT;
+    using LLCOORDS::LON;
 
     std::string output = args.getString("output", "");
     // bool alternate     = args.getBool("alternate", false);

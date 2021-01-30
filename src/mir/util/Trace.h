@@ -13,64 +13,59 @@
 #ifndef mir_util_Trace_h
 #define mir_util_Trace_h
 
-#include "eckit/log/ResourceUsage.h"
 #include "eckit/log/Timer.h"
 
 #include "mir/util/Log.h"
+
+
+namespace eckit {
+class ResourceUsage;
+}
 
 
 namespace mir {
 namespace trace {
 
 
-namespace detail {
+struct Timer : public eckit::Timer {
+    using eckit::Timer::elapsed;
+    using eckit::Timer::Timer;
+    double elapsed(double t) { return eckit::Timer::elapsed() - t; }
+    Log::Seconds elapsedSeconds(double t = 0, bool compact = false) { return {elapsed(t), compact}; }
+};
 
 
-template <typename T>
-struct TraceT {
-    explicit TraceT(const std::string& name, Log::Channel& log = Log::debug()) { info_ = new T(name.c_str(), log); }
-    ~TraceT() { delete info_; }
-    double elapsed() { return info_->elapsed(); }
+struct ResourceUsage : public Timer {
+    explicit ResourceUsage(const std::string& name, Log::Channel& out = Log::debug()) :
+        ResourceUsage(name.c_str(), out) {}
+    explicit ResourceUsage(const char* name, Log::Channel& out = Log::debug());
+    ~ResourceUsage();
 
 private:
-    TraceT(const TraceT&) = delete;
-    TraceT& operator=(const TraceT&) = delete;
+    ResourceUsage(const ResourceUsage&) = delete;
+    ResourceUsage& operator=(const ResourceUsage&) = delete;
 
-    T* info_ = nullptr;
+    eckit::ResourceUsage* info_;
 };
-
-
-struct TimerAndResourceUsage : eckit::Timer, eckit::ResourceUsage {
-    TimerAndResourceUsage(const std::string& name, Log::Channel& log = Log::debug()) :
-        Timer(name, log), ResourceUsage(name, log) {}
-};
-
-
-}  // namespace detail
-
-
-using ResourceUsage = detail::TraceT<eckit::ResourceUsage>;
-using Trace         = detail::TraceT<detail::TimerAndResourceUsage>;
-using eckit::Timer;
 
 
 struct ProgressTimer : public Timer {
-    using Plural = Log::Plural;
 
     /// @param name of the timer
     /// @param limit counter maximum value
     /// @param units unit/units
     /// @param time how often to output progress, based on elapsed time
-    /// @param o output stream
-    ProgressTimer(const std::string& name, size_t limit, const Plural& units, Log::Channel& = Log::info(),
+    /// @param out output stream
+    ProgressTimer(const std::string& name, size_t limit, const Log::Plural& units, Log::Channel& out = Log::info(),
                   double time = 5.);
+
     bool operator++();
 
 private:
     double lastTime_;
     size_t counter_;
 
-    const Plural units_;
+    const Log::Plural units_;
     const size_t limit_;
     const double time_;
 };

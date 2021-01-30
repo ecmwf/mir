@@ -73,36 +73,36 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
 
         // If meshgenerator did not create xyz field already, do it now.
         {
-            trace::Trace timer("Mesh: BuildXYZField");
+            trace::ResourceUsage timer("Mesh: BuildXYZField");
             atlas::mesh::actions::BuildXYZField()(mesh);
         }
 
         // Calculate barycenters of mesh cells
         if (meshGeneratorParams.meshCellCentres_) {
-            trace::Trace timer("Mesh: BuildCellCentres");
+            trace::ResourceUsage timer("Mesh: BuildCellCentres");
             atlas::mesh::actions::BuildCellCentres()(mesh);
         }
 
         // Calculate the mesh cells longest diagonal
         if (meshGeneratorParams.meshCellLongestDiagonal_) {
-            trace::Trace timer("Mesh: CalculateCellLongestDiagonal");
+            trace::ResourceUsage timer("Mesh: CalculateCellLongestDiagonal");
             method::fe::CalculateCellLongestDiagonal()(mesh);
         }
 
         // Calculate node-lumped mass matrix
         if (meshGeneratorParams.meshNodeLumpedMassMatrix_) {
-            trace::Trace timer("Mesh: BuildNodeLumpedMassMatrix");
+            trace::ResourceUsage timer("Mesh: BuildNodeLumpedMassMatrix");
             method::fe::BuildNodeLumpedMassMatrix()(mesh);
         }
 
         // Calculate node-to-cell ("inverse") connectivity
         if (meshGeneratorParams.meshNodeToCellConnectivity_) {
-            trace::Trace timer("Mesh: BuildNode2CellConnectivity");
+            trace::ResourceUsage timer("Mesh: BuildNode2CellConnectivity");
             atlas::mesh::actions::BuildNode2CellConnectivity{mesh}();
         }
 
         // Some information
-        log << "Mesh[cells=" << Log::Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
+        log << "Mesh[cells=" << Log::Pretty(mesh.cells().size()) << ",nodes=" << Log::Pretty(mesh.nodes().size()) << ","
             << meshGeneratorParams << "]" << std::endl;
 
         // Write file(s)

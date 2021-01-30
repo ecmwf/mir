@@ -56,7 +56,7 @@
 
 namespace eckit {
 namespace option {
-struct CmdArgs;
+class CmdArgs;
 }
 }  // namespace eckit
 

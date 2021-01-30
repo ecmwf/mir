@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/log/Seconds.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -437,8 +436,8 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 
     statistics.report(Log::info());
 
-    Log::info() << Log::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Log::Pretty(i, what) << " in " << timer.elapsedSeconds() << ", rate: " << double(i) / timer.elapsed()
+                << " " << what << "/s" << std::endl;
 }
 
 
@@ -458,8 +457,8 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
 
     statistics.report(Log::info());
 
-    Log::info() << Log::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
-                << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
+    Log::info() << Log::Pretty(i, what) << " in " << timer.elapsedSeconds() << ", rate: " << double(i) / timer.elapsed()
+                << " " << what << "/s" << std::endl;
 }
 
 

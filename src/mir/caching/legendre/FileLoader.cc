@@ -16,7 +16,6 @@
 #include <ostream>
 
 #include "eckit/io/StdFile.h"
-#include "eckit/log/Bytes.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -40,7 +39,7 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
 FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
-    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(double(buffer_.size())) << "]";
+    out << "FileLoader[path=" << path_ << ",size=" << Log::Bytes(buffer_.size()) << "]";
 }
 
 const void* FileLoader::address() const {
