@@ -18,7 +18,7 @@
 
 #include "mir/config/LibMir.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -53,7 +53,7 @@ bool ProgressTimer::operator++() {
     if (hasOutput) {
         lastTime_   = elapsed();
         double rate = double(counter_) / lastTime_;
-        output() << Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
+        output() << Log::Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
                  << units_(counter_) << "/s"
                  << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
     }

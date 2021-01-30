@@ -22,7 +22,7 @@
 #include "mir/repres/latlon/RegularLL.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Increments.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -114,7 +114,7 @@ void Count::count(const PointLatLon& point) {
 
 
 void Count::print(std::ostream& out) const {
-    out << Pretty(count_) << " out of " << Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
+    out << Log::Pretty(count_) << " out of " << Log::Pretty(countTotal_) << ", north=" << n_ << " (bbox.n - n "
         << bbox_.north() - n_ << ")"
         << ", west=" << w_ << " (w - bbox.w " << w_ - bbox_.west() << ")"
         << ", south=" << s_ << " (s - bbox.s " << s_ - bbox_.south() << ")"

@@ -31,7 +31,7 @@
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 #include "mir/util/Trace.h"
 
 
@@ -357,15 +357,15 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         }
     }
 
-    log << "Projected " << Pretty(nbProjections) << " of " << Pretty(nbOutputPoints, {"point"}) << " ("
-        << Pretty(nbFailures, {"failure"}) << ")\n"
-        << "k-d tree: searched between " << Pretty(nbMinElementsSearched) << " and "
-        << Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
-        << Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
+    log << "Projected " << Log::Pretty(nbProjections) << " of " << Pretty(nbOutputPoints, {"point"}) << " ("
+        << Log::Pretty(nbFailures, {"failure"}) << ")\n"
+        << "k-d tree: searched between " << Log::Pretty(nbMinElementsSearched) << " and "
+        << Log::Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
+        << Log::Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
 
     if ((nbFailures > 0) && !failuresAreMissingValues) {
         std::stringstream msg;
-        msg << "Failed to project " << Pretty(nbFailures, {"point"});
+        msg << "Failed to project " << Log::Pretty(nbFailures, {"point"});
         log << msg.str() << ":";
         size_t count = 0;
         for (const auto& f : failures) {

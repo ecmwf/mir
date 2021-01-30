@@ -27,7 +27,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -66,9 +66,9 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         throw exception::UserError(msg.str());
     }
 
-    const Pretty::Plural gridBoxes("grid box", "grid boxes");
-    log << "GridBoxMethod: intersect " << Pretty(out.numberOfPoints()) << " from "
-        << Pretty(in.numberOfPoints(), gridBoxes) << std::endl;
+    const Log::Plural gridBoxes("grid box", "grid boxes");
+    log << "GridBoxMethod: intersect " << Log::Pretty(out.numberOfPoints()) << " from "
+        << Log::Pretty(in.numberOfPoints(), gridBoxes) << std::endl;
 
 
     // init structure used to fill in sparse matrix
@@ -166,11 +166,11 @@ void GridBoxMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             ++i;
         }
     }
-    log << "Intersected " << Pretty(weights_triplets.size(), gridBoxes) << std::endl;
+    log << "Intersected " << Log::Pretty(weights_triplets.size(), gridBoxes) << std::endl;
 
     if (nbFailures > 0) {
         auto& warning = Log::warning();
-        warning << "Failed to intersect " << Pretty(nbFailures, gridBoxes) << ":";
+        warning << "Failed to intersect " << Log::Pretty(nbFailures, gridBoxes) << ":";
         size_t count = 0;
         for (const auto& f : failures) {
             warning << "\n\tpoint " << f.first << " " << f.second;

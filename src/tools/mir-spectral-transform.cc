@@ -39,8 +39,8 @@
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Rotation.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
@@ -327,7 +327,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldPairsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << Pretty(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << Log::Pretty(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field pair)
@@ -398,7 +398,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     F = std::min(multiTransform, multiScalar - numberOfFieldsProcessed);
                     ASSERT(F > 0);
 
-                    log << "MIRSpectralTransform: transforming " << Pretty(int(F), what) << "..." << std::endl;
+                    log << "MIRSpectralTransform: transforming " << Log::Pretty(int(F), what) << "..." << std::endl;
 
                     // set input working area
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
@@ -455,7 +455,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
         statistics.report(log);
 
-        log << Pretty(int(i * multiScalar), what) << " in " << eckit::Seconds(total_timer.elapsed())
+        log << Log::Pretty(int(i * multiScalar), what) << " in " << eckit::Seconds(total_timer.elapsed())
             << ", rate: " << double(i) / double(total_timer.elapsed()) << " " << what << "/s" << std::endl;
     }
 }

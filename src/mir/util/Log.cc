@@ -12,6 +12,10 @@
 
 #include "mir/util/Log.h"
 
+#include <iostream>
+
+#include "eckit/log/BigNum.h"
+
 #include "mir/config/LibMir.h"
 
 
@@ -20,6 +24,14 @@ namespace mir {
 
 Log::Channel& Log::debug() {
     return eckit::Log::debug<LibMir>();
+}
+
+
+void Log::Pretty::print(std::ostream& s) const {
+    s << eckit::BigNum(count_);
+    if (plural_) {
+        s << ' ' << plural_(count_);
+    }
 }
 
 

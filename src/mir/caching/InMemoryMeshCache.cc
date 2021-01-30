@@ -19,9 +19,9 @@
 
 #include "mir/method/fe/BuildNodeLumpedMassMatrix.h"
 #include "mir/method/fe/CalculateCellLongestDiagonal.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -102,7 +102,7 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
         }
 
         // Some information
-        log << "Mesh[cells=" << Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
+        log << "Mesh[cells=" << Log::Pretty(mesh.cells().size()) << ",nodes=" << Pretty(mesh.nodes().size()) << ","
             << meshGeneratorParams << "]" << std::endl;
 
         // Write file(s)

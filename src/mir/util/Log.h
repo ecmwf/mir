@@ -20,15 +20,18 @@ namespace mir {
 
 
 struct Log final : protected eckit::Log {
-    using Channel = decltype(Log::debug());
-    static Channel& debug();
-
     using eckit::Log::error;
     using eckit::Log::info;
     using eckit::Log::warning;
 
+
+    using Channel = decltype(Log::debug());
+    static Channel& debug();
+
+
     using eckit::Log::applicationFormat;
     using eckit::Log::syserr;
+
 
     struct Plural {
         Plural() = default;
@@ -49,6 +52,27 @@ struct Log final : protected eckit::Log {
 
     private:
         std::string s_[2];
+    };
+
+
+    struct Pretty {
+        Pretty(int count, const Plural& plural = Plural()) : plural_(plural), count_(count) {}
+        Pretty(long count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
+        Pretty(size_t count, const Plural& plural = Plural()) : plural_(plural), count_(static_cast<int>(count)) {}
+
+        Pretty& operator=(const Pretty&) = delete;
+        Pretty(const Pretty&)            = delete;
+
+    private:
+        const Plural& plural_;
+        int count_;
+
+        void print(std::ostream&) const;
+
+        friend std::ostream& operator<<(std::ostream& s, const Pretty& p) {
+            p.print(s);
+            return s;
+        }
     };
 };
 

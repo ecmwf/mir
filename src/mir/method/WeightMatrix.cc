@@ -19,7 +19,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Exceptions.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 #include "mir/util/Types.h"
 
 
@@ -132,9 +132,9 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t r     = rows();
         size_t c     = cols();
         size_t total = r * c;
-        Log::debug() << "WeightMatrix::cleanup fixed " << Pretty(fixed, {"value"}) << " out of " << Pretty(count)
-                     << " (matrix is " << Pretty(r) << "x" << Pretty(c) << ", total=" << Pretty(total) << ")"
-                     << std::endl;
+        Log::debug() << "WeightMatrix::cleanup fixed " << Log::Pretty(fixed, {"value"}) << " out of "
+                     << Log::Pretty(count) << " (matrix is " << Log::Pretty(r) << "x" << Log::Pretty(c)
+                     << ", total=" << Log::Pretty(total) << ")" << std::endl;
     }
 
     prune(0.);

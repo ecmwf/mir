@@ -31,8 +31,8 @@
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -331,7 +331,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     for (size_t i = 0; i < field.dimensions(); i++) {
 
         std::ostringstream os;
-        os << "Interpolating field (" << Pretty(npts_inp) << " -> " << Pretty(npts_out) << ")";
+        os << "Interpolating field (" << Log::Pretty(npts_inp) << " -> " << Log::Pretty(npts_out) << ")";
         trace::Timer trace(os.str());
 
         // compute some statistics on the result
@@ -482,8 +482,8 @@ void MethodWeighted::applyMasks(WeightMatrix& W, const lsm::LandSeaMasks& masks)
     }
 
     // log corrections
-    log << "MethodWeighted: applyMasks corrected " << Pretty(fix) << " out of " << Pretty(W.rows(), {"output point"})
-        << std::endl;
+    log << "MethodWeighted: applyMasks corrected " << Log::Pretty(fix) << " out of "
+        << Log::Pretty(W.rows(), {"output point"}) << std::endl;
 }
 
 

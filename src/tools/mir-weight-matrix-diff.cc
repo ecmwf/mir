@@ -26,7 +26,7 @@
 #include "mir/stats/detail/CounterBinary.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 
 using namespace mir;
@@ -82,7 +82,6 @@ struct approximate_diff_t : diff_t {
 void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
     using caching::matrix::MatrixLoaderFactory;
     using method::WeightMatrix;
-    using Plural = Pretty::Plural;
 
     struct shape_t : std::vector<WeightMatrix::Size> {
         shape_t(const WeightMatrix& m) : std::vector<WeightMatrix::Size>{m.nonZeros(), m.rows(), m.cols()} {}
@@ -160,7 +159,7 @@ void MIRWeightMatrixDiff::execute(const eckit::option::CmdArgs& args) {
         ASSERT(j == b.end());
 
         if (d > 0) {
-            throw exception::BadValue(std::to_string(d) + " " + Plural{"difference"}(d));
+            throw exception::BadValue(std::to_string(d) + " " + Log::Plural("difference")(d));
         }
     }
 }

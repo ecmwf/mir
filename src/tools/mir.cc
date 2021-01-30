@@ -48,8 +48,8 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/SpectralOrder.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
@@ -437,7 +437,7 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 
     statistics.report(Log::info());
 
-    Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+    Log::info() << Log::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
                 << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 
@@ -458,7 +458,7 @@ void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput
 
     statistics.report(Log::info());
 
-    Log::info() << Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
+    Log::info() << Log::Pretty(i, what) << " in " << eckit::Seconds(timer.elapsed())
                 << ", rate: " << double(i) / double(timer.elapsed()) << " " << what << "/s" << std::endl;
 }
 

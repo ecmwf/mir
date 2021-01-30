@@ -18,7 +18,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -37,7 +37,7 @@ bool SecondOrder::check(const repres::Representation& repres) const {
     if (n < 4) {
         // NOTE: There is a bug in ecCodes if the user asks 1 value and select second-order
         // Once this fixed, remove this code
-        Log::warning() << "Field has " << Pretty(n, {"value"}) << " < 4, ignoring packer " << *this << std::endl;
+        Log::warning() << "Field has " << Log::Pretty(n, {"value"}) << " < 4, ignoring packer " << *this << std::endl;
         return false;
     }
     return true;

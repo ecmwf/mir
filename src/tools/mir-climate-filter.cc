@@ -40,7 +40,6 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -320,7 +319,7 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
         }
 
 
-        log << Pretty(field, {"field"}) << " in " << eckit::Seconds(timer.elapsed())
+        log << Log::Pretty(field, {"field"}) << " in " << eckit::Seconds(timer.elapsed())
             << ", rate: " << double(field) / double(timer.elapsed()) << " "
             << "field/s" << std::endl;
     }

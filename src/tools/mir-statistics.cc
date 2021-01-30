@@ -30,8 +30,8 @@
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Types.h"
 
 
@@ -120,7 +120,7 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
 
         size_t Nfirst = firstInput.field().values(0).size();
         ASSERT(Nfirst > 0);
-        log << "Using " << Pretty(Nfirst, {"grid point"}) << std::endl;
+        log << "Using " << Log::Pretty(Nfirst, {"grid point"}) << std::endl;
 
         // set paramId/metadata-specific method per-point statistics
         std::string statistics = "scalar";

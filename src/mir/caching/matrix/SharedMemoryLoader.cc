@@ -37,7 +37,6 @@
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Trace.h"
 
 
@@ -154,7 +153,8 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
     size_ = shmsize;
 
     msg << ", size: " << shmsize << " (" << eckit::Bytes(double(shmsize)) << "), key: 0x" << std::hex << key << std::dec
-        << ", page size: " << eckit::Bytes(double(page_size)) << ", pages: " << Pretty(shmsize / size_t(page_size));
+        << ", page size: " << eckit::Bytes(double(page_size))
+        << ", pages: " << Log::Pretty(shmsize / size_t(page_size));
 
 #ifdef IPC_INFO
     // Only on Linux?

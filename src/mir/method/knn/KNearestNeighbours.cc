@@ -24,7 +24,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 

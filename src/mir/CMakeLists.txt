@@ -658,8 +658,6 @@ ecbuild_add_library(
     util/PlanParser.cc
     util/PlanParser.h
     util/PointLatLonT.h
-    util/Pretty.cc
-    util/Pretty.h
     util/Regex.cc
     util/Regex.h
     util/Rotation.cc

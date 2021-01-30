@@ -24,8 +24,8 @@
 #include "mir/util/Angles.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
-#include "mir/util/Pretty.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -95,8 +95,8 @@ bool Gaussian::includesSouthPole() const {
 void Gaussian::validate(const MIRValuesVector& values) const {
     const size_t count = numberOfPoints();
 
-    Log::debug() << "Gaussian::validate checked " << Pretty(values.size(), {"value"}) << ", iterator counts "
-                 << Pretty(count) << " (" << domain() << ")." << std::endl;
+    Log::debug() << "Gaussian::validate checked " << Log::Pretty(values.size(), {"value"}) << ", iterator counts "
+                 << Log::Pretty(count) << " (" << domain() << ")." << std::endl;
 
     ASSERT_VALUES_SIZE_EQ_ITERATOR_COUNT("Gaussian", values.size(), count);
 }

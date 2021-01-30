@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/util/Pretty.h"
+#include "mir/util/Log.h"
 
 #include <iostream>
 
