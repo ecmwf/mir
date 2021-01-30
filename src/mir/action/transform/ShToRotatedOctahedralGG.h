@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedOctahedralGG();
+    ~ShToRotatedOctahedralGG() override;
 
     // -- Convertors
     // None

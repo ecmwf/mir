@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToOctahedralGG();
+    ~ShToOctahedralGG() override;
 
     // -- Convertors
     // None

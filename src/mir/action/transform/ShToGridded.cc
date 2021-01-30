@@ -15,7 +15,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "eckit/log/Timer.h"
 #include "eckit/system/SystemInfo.h"
 #include "eckit/thread/AutoLock.h"
 #include "eckit/thread/Mutex.h"
@@ -43,15 +42,14 @@ namespace transform {
 
 static eckit::Mutex amutex;
 
-
-static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", 8L * 1024 * 1024 * 1024,
-                                                      8L * 1024 * 1024 * 1024, "$MIR_COEFFICIENT_CACHE");
+constexpr size_t CAPACITY_MEMORY = 8L * 1024 * 1024 * 1024;
+constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
+static caching::InMemoryCache<TransCache> trans_cache("mirCoefficient", CAPACITY_MEMORY, CAPACITY_SHARED,
+                                                      "$MIR_COEFFICIENT_CACHE");
 
 
 static atlas::trans::Cache getTransCache(atlas::trans::LegendreCacheCreator& creator, const std::string& key,
                                          const param::MIRParametrisation& parametrisation, context::Context& ctx) {
-
-
     auto j = trans_cache.find(key);
     if (j != trans_cache.end()) {
         ASSERT(j->transCache_);
@@ -175,7 +173,7 @@ void ShToGridded::transform(data::MIRField& field, const repres::Representation&
 
     atlas_trans_t trans;
     try {
-        eckit::Timer time("ShToGridded::caching", Log::debug());
+        trace::Timer time("ShToGridded::caching", Log::debug());
 
         bool caching = true;
         parametrisation_.get("caching", caching);

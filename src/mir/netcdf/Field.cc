@@ -72,8 +72,10 @@ bool Field::has(const std::string& name) const {
 
 
 bool Field::get(const std::string& name, long& value) const {
+    constexpr long MISSING = 255;
+
     if (name == "paramId") {
-        value = 255;
+        value = MISSING;
         return true;
     }
     return gridSpec().get(name, value);

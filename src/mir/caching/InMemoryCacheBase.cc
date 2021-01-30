@@ -67,10 +67,11 @@ void InMemoryCacheBase::checkTotalFootprint() {
     pthread_once(&once, init);
     eckit::AutoLock<eckit::Mutex> lock(local_mutex);
 
-
+    constexpr size_t CAPACITY_MEMORY = 1024LL * 1024 * 1024 * 1024 * 1024 * 1024;
+    constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
     static eckit::Resource<InMemoryCacheUsage> totalInMemoryCacheCapacity(
         "mirTotalInMemoryCacheCapacity;$MIR_TOTAL_CACHE_MEMORY_FOOTPRINT",
-        InMemoryCacheUsage(1024LL * 1024 * 1024 * 1024 * 1024 * 1024, 1024LL * 1024 * 1024 * 1024 * 1024 * 1024));
+        InMemoryCacheUsage(CAPACITY_MEMORY, CAPACITY_SHARED));
 
     InMemoryCacheUsage maximumCapacity = totalInMemoryCacheCapacity;
 

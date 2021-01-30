@@ -29,7 +29,6 @@
 //#include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
 #include "eckit/memory/Shmget.h"
 //#include "eckit/os/SemLocker.h"
 #include "eckit/runtime/Main.h"
@@ -38,6 +37,7 @@
 #include "mir/util/Error.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -113,7 +113,7 @@ public:
 SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametrisation, const eckit::PathName& path) :
     LegendreLoader(parametrisation, path), address_(nullptr), size_(size_t(path.size())), unload_(false) {
 
-    eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
+    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
 
     std::string name;
     if (parametrisation.get("legendre-loader", name)) {
@@ -148,14 +148,14 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
     ASSERT(page_size > 0);
     size_t shmsize = ((size_ + page_size - 1) / page_size) * page_size + sizeof(SHMInfo);
 
-    msg << ", size: " << shmsize << " (" << eckit::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
-        << ", page size: " << eckit::Bytes(page_size) << ", pages: " << Pretty(shmsize / page_size);
+    msg << ", size: " << shmsize << " (" << eckit::Bytes(double(shmsize)) << "), key: 0x" << std::hex << key << std::dec
+        << ", page size: " << eckit::Bytes(page_size) << ", pages: " << Pretty(shmsize / size_t(page_size));
 
 #ifdef IPC_INFO
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(::shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    msg << ", maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024);
+    msg << ", maximum shared memory segment size: " << eckit::Bytes(double((shm_info.shmmax >> 10) * 1024));
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
@@ -217,7 +217,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
             }
         }
         else {
-            eckit::Timer("SharedMemoryLoader: loading into shared memory", Log::debug());
+            trace::Timer("SharedMemoryLoader: loading into shared memory", Log::debug());
 
             eckit::AutoStdFile file(real);
             ASSERT(std::fread(address_, 1, size_, file) == size_);

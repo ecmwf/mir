@@ -42,7 +42,9 @@ namespace method {
 
 
 static eckit::Mutex local_mutex;
-static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", 512 * 1024 * 1024, 0,
+
+constexpr size_t CAPACITY = 512 * 1024 * 1024;
+static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", CAPACITY, 0,
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
 
@@ -147,7 +149,7 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     std::string version_str;
     auto v = version();
-    if (v) {
+    if (bool(v)) {
         version_str = std::to_string(v) + "/";
     }
 

@@ -29,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToReducedGG<Invtrans>::ShToReducedGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("reduced", N_));
 }
 

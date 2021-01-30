@@ -42,7 +42,8 @@ void Grids::grid(const atlas::StructuredGrid& grid) {
 
     std::vector<int> diff;
     diff.reserve(half);
-    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + half, std::back_inserter(diff));
+    eckit::DIFFencode(points_per_latitudes.begin(), points_per_latitudes.begin() + long(half),
+                      std::back_inserter(diff));
 
     std::vector<int> rle;
     eckit::RLEencode2(diff.begin(), diff.end(), std::back_inserter(rle), 1000);
@@ -53,6 +54,7 @@ void Grids::grid(const atlas::StructuredGrid& grid) {
     eckit::RLEprint(Log::info(), rle.begin(), rle.end());
     Log::info() << std::endl;
 }
+
 
 void Grids::run() {
     for (const std::string& name :

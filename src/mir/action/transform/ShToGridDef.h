@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToGridDef();
+    ~ShToGridDef() override;
 
     // -- Convertors
     // None

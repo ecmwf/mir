@@ -118,7 +118,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         }
 
         if ((removed != 0.) && (non_zero > 0)) {
-            double d = removed / non_zero;
+            double d = removed / double(non_zero);
             for (iterator it = begin(i); it != end(i); ++it) {
                 const double a = *it;
                 if (a != 0.) {

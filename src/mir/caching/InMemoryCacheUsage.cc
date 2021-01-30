@@ -123,7 +123,7 @@ void InMemoryCacheUsage::decode(eckit::Stream& s) {
 }
 
 void InMemoryCacheUsage::print(std::ostream& out) const {
-    out << "[memory=" << eckit::Bytes(memory_) << ",shared=" << eckit::Bytes(shared_) << "]";
+    out << "[memory=" << eckit::Bytes(double(memory_)) << ",shared=" << eckit::Bytes(double(shared_)) << "]";
 }
 
 size_t InMemoryCacheUsage::memory() const {

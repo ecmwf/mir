@@ -71,13 +71,13 @@ private:
 
     // From Iterator
 
-    void print(std::ostream& out) const {
+    void print(std::ostream& out) const override {
         out << "UnstructuredGridIterator[";
         Iterator::print(out);
         out << "]";
     }
 
-    bool next(Latitude& lat, Longitude& lon) {
+    bool next(Latitude& lat, Longitude& lon) override {
         if (i_ < size_) {
             lat = latitudes_[i_];
             lon = longitudes_[i_];

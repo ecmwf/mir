@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedRegularLL();
+    ~ShToRotatedRegularLL() override;
 
     // -- Convertors
     // None

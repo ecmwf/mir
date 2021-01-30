@@ -72,7 +72,7 @@ void display(Log::Channel& out, caching::matrix::MatrixLoader* loader, const std
 
     // clang-format off
     out << "\n" "path:\t'" << path << "'"
-        << "\n" "size:\t" << eckit::Bytes(loader->size())
+        << "\n" "size:\t" << eckit::Bytes(double(loader->size()))
         << "\n" "address:\t" << std::hex << loader->address() << std::dec
         << "\n" "inSharedMemory:\t" << std::boolalpha << loader->inSharedMemory() << std::noboolalpha
         << std::endl;
@@ -81,7 +81,7 @@ void display(Log::Channel& out, caching::matrix::MatrixLoader* loader, const std
 
 
 void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
-    using namespace caching::matrix;
+    using caching::matrix::SharedMemoryLoader;
     using method::WeightMatrix;
 
     Log::debug().setStream(std::cerr);
@@ -120,7 +120,7 @@ void MIRLoadMatrix::execute(const eckit::option::CmdArgs& args) {
                            "load"
                         << std::endl;
 
-            auto loader = MatrixLoaderFactory::build(matrixLoader, path);
+            auto loader = caching::matrix::MatrixLoaderFactory::build(matrixLoader, path);
             WeightMatrix W(loader);
             display(Log::info(), loader, path);
 

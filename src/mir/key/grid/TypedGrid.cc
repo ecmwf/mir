@@ -38,6 +38,9 @@ TypedGrid::TypedGrid(const std::string& key, const std::set<std::string>& requir
 }
 
 
+TypedGrid::~TypedGrid() = default;
+
+
 void TypedGrid::print(std::ostream& out) const {
     out << "TypedGrid[key=" << key_ << ",requiredKeys=[";
     auto sep = "";
@@ -59,7 +62,7 @@ void TypedGrid::print(std::ostream& out) const {
 void TypedGrid::parametrisation(const std::string& grid, param::SimpleParametrisation& param) const {
     // set a new parametrisation containing only required or optional keys
     param::SimpleParametrisation p;
-    for (auto kv_str : eckit::StringTools::split(";", grid)) {
+    for (auto& kv_str : eckit::StringTools::split(";", grid)) {
         auto kv = eckit::StringTools::split("=", kv_str);
         if (kv.size() != 2) {
             throw exception::UserError("Gridded2TypedGrid: invalid key=value pair, got '" + kv_str + "'");
@@ -89,9 +92,9 @@ size_t TypedGrid::gaussianNumber() const {
         return size_t(N);
     }
 
-    N = 64;
-    Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
-    return N;
+    constexpr size_t N0 = 64;
+    Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N0 << " (hardcoded!)" << std::endl;
+    return N0;
 }
 
 
@@ -119,7 +122,7 @@ template <typename Repres>
 struct TypedGeneric final : public TypedGrid {
     using TypedGrid::TypedGrid;
 
-    const repres::Representation* representation(const param::MIRParametrisation& param) const {
+    const repres::Representation* representation(const param::MIRParametrisation& param) const override {
         // check for missing keys, set return representation
         checkRequiredKeys(param);
         return new Repres(param);

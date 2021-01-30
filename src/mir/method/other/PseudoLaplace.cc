@@ -57,10 +57,6 @@ bool PseudoLaplace::sameAs(const Method& other) const {
 
 void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
                              const repres::Representation& out) const {
-    using eckit::geometry::XX;
-    using eckit::geometry::YY;
-    using eckit::geometry::ZZ;
-
     Log::debug() << "PseudoLaplace::assemble (input: " << in << ", output: " << out << ")" << std::endl;
     trace::Timer timer("PseudoLaplace::assemble");
 
@@ -114,9 +110,9 @@ void PseudoLaplace::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         for (size_t j = 0; j < npts; ++j) {
             Point3 np = closest[j].point();
 
-            const double dx = np[XX] - p[XX];
-            const double dy = np[YY] - p[YY];
-            const double dz = np[ZZ] - p[ZZ];
+            const double dx = np[XYZCOORDS::XX] - p[XYZCOORDS::XX];
+            const double dy = np[XYZCOORDS::YY] - p[XYZCOORDS::YY];
+            const double dz = np[XYZCOORDS::ZZ] - p[XYZCOORDS::ZZ];
 
             Ixx += dx * dx;
             Ixy += dx * dy;

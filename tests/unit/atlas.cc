@@ -41,7 +41,7 @@ CASE("Test number of points representation <=> grid") {
 
     Handle representations[] = {
         new RegularLL(util::Increments(1., 1.)),
-        new RegularLL(util::Increments(1., 1.), util::BoundingBox(90, 0, 90, 360)),
+        new RegularLL(util::Increments(1., 1.), util::BoundingBox()),
         Grid::lookup("O16").representation(),
         Grid::lookup("O1280").representation(),
     };

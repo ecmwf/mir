@@ -125,7 +125,7 @@ CASE("BoundingBox") {
                 }
             }
         }
-    };
+    }
 
     SECTION("intersects (combinations)") {
         for (const auto& A : boxes) {

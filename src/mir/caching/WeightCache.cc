@@ -68,8 +68,8 @@ void WeightCacheTraits::save(const eckit::CacheManagerBase&, const value_type& W
         size_t size = W.footprint();
         if (size > matrixMaxFootprint) {
             std::ostringstream oss;
-            oss << "WeightCacheTraits::save: matrix too large " << size << " (" << eckit::Bytes(size)
-                << "), maximum is " << eckit::Bytes(matrixMaxFootprint);
+            oss << "WeightCacheTraits::save: matrix too large " << size << " (" << eckit::Bytes(double(size))
+                << "), maximum is " << eckit::Bytes(double(matrixMaxFootprint));
             throw exception::UserError(oss.str());
         }
     }

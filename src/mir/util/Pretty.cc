@@ -52,10 +52,10 @@ bool Pretty::PrettyProgress::operator++() {
 
     if (out) {
         lastTime_   = elapsed();
-        double rate = counter_ / lastTime_;
+        double rate = double(counter_) / lastTime_;
         output() << Pretty(counter_, units_) << " in " << eckit::Seconds(lastTime_) << ", rate: " << rate << " "
                  << units_(counter_) << "/s"
-                 << ", ETA: " << eckit::ETA((limit_ - counter_) / rate) << std::endl;
+                 << ", ETA: " << eckit::ETA(double(limit_ - counter_) / rate) << std::endl;
     }
 
     if (counter_ < limit_) {

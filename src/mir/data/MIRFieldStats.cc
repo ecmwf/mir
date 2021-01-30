@@ -37,8 +37,8 @@ MIRFieldStats::MIRFieldStats(const MIRValuesVector& vs, size_t missing) :
             sqsum_ += v * v;
         }
 
-        mean_  = sum / count_;
-        stdev_ = std::sqrt(sqsum_ / count_ - mean_ * mean_);
+        mean_  = sum / double(count_);
+        stdev_ = std::sqrt(sqsum_ / double(count_) - mean_ * mean_);
     }
 }
 

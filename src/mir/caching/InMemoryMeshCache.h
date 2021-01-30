@@ -87,10 +87,15 @@ private:
     // -- Constructors
 
     InMemoryMeshCache();
+    InMemoryMeshCache(const InMemoryMeshCache&) = delete;
 
     // -- Destructor
 
     virtual ~InMemoryMeshCache() = default;
+
+    // -- Operators
+
+    void operator=(const InMemoryMeshCache&) = delete;
 
     // -- Members
     // None

@@ -238,7 +238,7 @@ public:
 
 class EncodeReduced : public EncodeTest {
     size_t numberOfValues_;
-    size_t numberOfValues() const { return numberOfValues_; }
+    size_t numberOfValues() const override { return numberOfValues_; }
 
 public:
     EncodeReduced(const repres::Representation* rep, size_t numberOfValues) :
@@ -249,7 +249,7 @@ public:
 
 class EncodeReducedGaussianGrid final : public EncodeReduced {
     size_t gaussianNumber_;
-    std::string gribSample(long edition) const {
+    std::string gribSample(long edition) const override {
         return std::string("reduced_gg_pl_" + std::to_string(gaussianNumber_) + "_grib" + std::to_string(edition));
     }
 
@@ -262,7 +262,7 @@ public:
 
 class EncodeRegular : public EncodeTest {
     size_t Ni_, Nj_;
-    size_t numberOfValues() const { return Ni_ * Nj_; }
+    size_t numberOfValues() const override { return Ni_ * Nj_; }
     size_t Ni() const { return Ni_; }
     size_t Nj() const { return Nj_; }
 
@@ -272,7 +272,7 @@ public:
         ASSERT(Nj_);
     }
 
-    ~EncodeRegular() = default;
+    ~EncodeRegular() override = default;
 
     size_t NiEncodedInGrib(long edition) {
         eckit::AutoLock<eckit::Mutex> lock(local_mutex);
@@ -296,7 +296,9 @@ public:
 };
 
 class EncodeRegularGaussianGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const { return std::string("regular_gg_pl_grib" + std::to_string(edition)); }
+    std::string gribSample(long edition) const override {
+        return std::string("regular_gg_pl_grib" + std::to_string(edition));
+    }
 
 public:
     EncodeRegularGaussianGrid(const repres::Representation* rep, size_t Ni, size_t Nj, size_t gaussianNumber) :
@@ -306,7 +308,9 @@ public:
 };
 
 class EncodeRegularLatLonGrid final : public EncodeRegular {
-    std::string gribSample(long edition) const { return std::string("regular_ll_pl_grib" + std::to_string(edition)); }
+    std::string gribSample(long edition) const override {
+        return std::string("regular_ll_pl_grib" + std::to_string(edition));
+    }
 
 public:
     using EncodeRegular::EncodeRegular;

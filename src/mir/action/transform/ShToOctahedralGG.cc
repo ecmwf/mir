@@ -29,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToOctahedralGG<Invtrans>::ShToOctahedralGG(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("octahedral", N_));
 }
 

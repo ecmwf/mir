@@ -120,25 +120,23 @@ MappedMask::MappedMask(const std::string& name, const eckit::PathName& path, con
         Longitude lon = p.lon().normalise(Longitude::GREENWICH);
 
         if (lat < Latitude::SOUTH_POLE) {
-            std::ostringstream oss;
-            oss << "GRID "
-                << " returns a latitude of " << lat << " (lat+90)=" << (lat + 90.0);
-            throw exception::SeriousBug(oss.str());
+            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
+                       " (lat+90)=" + std::to_string((lat + Latitude::NORTH_POLE).value());
+            throw exception::SeriousBug(msg);
         }
         ASSERT(lat >= Latitude::SOUTH_POLE);
 
         if (lat > Latitude::NORTH_POLE) {
-            std::ostringstream oss;
-            oss << "GRID "
-                << " returns a latitude of " << lat << " (lat-90)=" << (lat - 90.0);
-            throw exception::SeriousBug(oss.str());
+            auto msg = "GRID  returns a latitude of " + std::to_string(lat.value()) +
+                       " (lat-90)=" + std::to_string((lat + Latitude::SOUTH_POLE).value());
+            throw exception::SeriousBug(msg);
         }
         ASSERT(lat <= Latitude::NORTH_POLE);
 
-        int row = int((90.0 - lat.value()) * (ROWS - 1) / Latitude::GLOBE.value());
+        int row = int((90.0 - lat.value()) * double(ROWS - 1) / Latitude::GLOBE.value());
         ASSERT(row >= 0 && row < int(ROWS));
 
-        int col = int(lon.value() * COLS / Longitude::GLOBE.value());
+        int col = int(lon.value() * double(COLS) / Longitude::GLOBE.value());
         ASSERT(col >= 0 && col < int(COLS));
 
         size_t pos  = COLS * size_t(row) + size_t(col);

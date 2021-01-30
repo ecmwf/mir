@@ -36,7 +36,7 @@ namespace structured {
 class StructuredMethod : public MethodWeighted {
 public:
     StructuredMethod(const param::MIRParametrisation&);
-    ~StructuredMethod();
+    ~StructuredMethod() override;
 
 protected:
     // Utility types

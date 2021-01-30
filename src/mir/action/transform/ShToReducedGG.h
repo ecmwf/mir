@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToReducedGG();
+    ~ShToReducedGG() override;
 
     // -- Convertors
     // None

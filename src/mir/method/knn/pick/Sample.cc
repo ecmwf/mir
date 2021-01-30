@@ -53,7 +53,7 @@ void Sample::pick(const search::PointSearch& tree, const Point3& p, Pick::neighb
     }
 
     // closest.resize(nClosest_);  // FIXME: better than below (but has black magic)
-    closest.erase(closest.begin() + nClosest_, closest.end());
+    closest.erase(closest.begin() + long(nClosest_), closest.end());
 }
 
 

@@ -242,7 +242,7 @@ size_t diff(Log::Channel& out, double toleranceLat, double toleranceLon, const C
 }
 
 
-const neighbours_t& getNeighbours(const Point2& p, size_t n, const repres::Representation& rep,
+const neighbours_t& getNeighbours(Point2 p, size_t n, const repres::Representation& rep,
                                   const param::MIRParametrisation& param) {
     static std::map<std::string, neighbours_t> cache;
 
@@ -344,9 +344,10 @@ void MIRGetData::execute(const eckit::option::CmdArgs& args) {
                     Point2 q(crd->longitudes()[i], crd->latitudes()[i]);
                     ASSERT(i < values.size());
 
+                    constexpr double THOUSAND = 1000;
                     log << "- " << c++ << " -"
                         << " index=" << i << " latitude=" << q[1] << " longitude=" << q[0]
-                        << " distance=" << util::Earth::distance(p, q) / 1000. << " (km)"
+                        << " distance=" << util::Earth::distance(p, q) / THOUSAND << " (km)"
                         << " value=" << values[i] << std::endl;
                 }
             }

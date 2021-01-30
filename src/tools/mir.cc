@@ -15,7 +15,6 @@
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/FactoryOption.h"
 #include "eckit/option/Separator.h"
@@ -425,7 +424,7 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
 
 
 void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what) {
-    eckit::Timer timer("Total time");
+    trace::Timer timer("Total time");
 
     util::MIRStatistics statistics;
     Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
@@ -444,7 +443,7 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 
 
 void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
-    eckit::Timer timer("Total time");
+    trace::Timer timer("Total time");
 
     std::string what = "field";
 

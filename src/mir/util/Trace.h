@@ -50,8 +50,9 @@ struct TimerAndResourceUsage : eckit::Timer, eckit::ResourceUsage {
 
 
 using ResourceUsage = detail::TraceT<eckit::ResourceUsage>;
-using Timer         = detail::TraceT<eckit::Timer>;
 using Trace         = detail::TraceT<detail::TimerAndResourceUsage>;
+
+using eckit::Timer;
 
 
 }  // namespace trace

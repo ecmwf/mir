@@ -13,7 +13,6 @@
 #include <iostream>
 
 #include "eckit/config/Resource.h"
-#include "eckit/log/Timer.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/ActionGraph.h"
@@ -25,6 +24,7 @@
 #include "mir/input/MIRInput.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -60,49 +60,36 @@ void MIRComplexJob::clear() {
 
 
 void MIRComplexJob::execute(util::MIRStatistics& statistics) const {
-
-    if (jobs_.empty()) {
-        return;
-    }
-
     static bool printActionGraph = eckit::Resource<bool>("$MIR_PRINT_ACTION_GRAPH", false);
 
-    action::ActionGraph graph;
-
-    size_t i = 0;
-    for (auto j = jobs_.begin(); j != jobs_.end(); ++j, ++i) {
-        graph.add((*j)->plan(), watchers_[i]);
-    }
-
-    if (input_ == nullptr) {
+    if (jobs_.empty() || input_ == nullptr) {
         return;
     }
 
-    std::unique_ptr<eckit::Timer> timer;
-
-    if (printActionGraph) {
-        timer.reset(new eckit::Timer("MIRComplexJob::execute", Log::info()));
+    action::ActionGraph graph;
+    size_t i = 0;
+    for (auto& j : jobs_) {
+        graph.add(j->plan(), watchers_[i++]);
     }
 
-    context::Context ctx(*input_, statistics);
+    std::unique_ptr<trace::Timer> timer(printActionGraph ? new trace::Timer("MIRComplexJob::execute", Log::info())
+                                                         : nullptr);
 
     if (printActionGraph) {
         Log::info() << ">>>>>>>>>>>>"
                        "\n"
                     << *input_ << std::endl;
-    }
-
-    const action::Executor& executor = action::Executor::lookup((*jobs_.begin())->parametrisation());
-
-    if (printActionGraph) {
         graph.dump(Log::info(), 1);
     }
-    graph.execute(ctx, executor);
 
+    context::Context ctx(*input_, statistics);
+
+    auto& executor = action::Executor::lookup(jobs_.front()->parametrisation());
+    graph.execute(ctx, executor);
     executor.wait();
 
     if (printActionGraph) {
-        Log::info() << "<<<<<<<<<<<" << std::endl;
+        Log::info() << "<<<<<<<<<<<<" << std::endl;
     }
 }
 

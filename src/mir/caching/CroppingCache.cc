@@ -33,7 +33,7 @@ CroppingCache::CroppingCache() :
 
 void CroppingCacheEntry::print(std::ostream& out) const {
     out << "CroppingCacheEntry[size=" << mapping_.size() << ",bbox=" << bbox_
-        << ",size=" << eckit::Bytes(sizeof(size_t) * mapping_.size()) << "]";
+        << ",size=" << eckit::Bytes(double(sizeof(size_t) * mapping_.size())) << "]";
 }
 
 

@@ -27,7 +27,6 @@
 
 //#include "eckit/config/Resource.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/log/Timer.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/memory/Padded.h"
 #include "eckit/memory/Shmget.h"
@@ -39,6 +38,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -115,8 +115,7 @@ public:
 
 SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::PathName& path) :
     MatrixLoader(name, path), address_(nullptr), size_(0), unload_(false) {
-
-    eckit::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
+    trace::Timer timer("SharedMemoryLoader: loading '" + path.asString() + "'", Log::debug());
 
     unload_ = name.substr(0, 4) == "tmp-";
 
@@ -154,14 +153,14 @@ SharedMemoryLoader::SharedMemoryLoader(const std::string& name, const eckit::Pat
 
     size_ = shmsize;
 
-    msg << ", size: " << shmsize << " (" << eckit::Bytes(shmsize) << "), key: 0x" << std::hex << key << std::dec
-        << ", page size: " << eckit::Bytes(page_size) << ", pages: " << Pretty(shmsize / page_size);
+    msg << ", size: " << shmsize << " (" << eckit::Bytes(double(shmsize)) << "), key: 0x" << std::hex << key << std::dec
+        << ", page size: " << eckit::Bytes(double(page_size)) << ", pages: " << Pretty(shmsize / size_t(page_size));
 
 #ifdef IPC_INFO
     // Only on Linux?
     struct shminfo shm_info;
     SYSCALL(::shmctl(0, IPC_INFO, reinterpret_cast<shmid_ds*>(&shm_info)));
-    msg << ", maximum shared memory segment size: " << eckit::Bytes((shm_info.shmmax >> 10) * 1024);
+    msg << ", maximum shared memory segment size: " << eckit::Bytes(double((shm_info.shmmax >> 10) * 1024));
 #endif
 
     // This may return EINVAL is the segment is too large 256MB
@@ -301,7 +300,8 @@ void SharedMemoryLoader::unloadSharedMemory(const eckit::PathName& path) {
 
 
 void SharedMemoryLoader::print(std::ostream& out) const {
-    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << ",unload=" << unload_ << "]";
+    out << "SharedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(double(size_)) << ",unload=" << unload_
+        << "]";
 }
 
 

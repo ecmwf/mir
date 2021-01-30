@@ -35,7 +35,7 @@ public:
 
     // -- Destructor
 
-    ~ShToPoints();
+    ~ShToPoints() override;
 
     // -- Convertors
     // None

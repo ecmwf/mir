@@ -40,6 +40,8 @@ struct NablaOperation {
         nodes_(fvm_.node_columns().nodes()),
         nodeIsGhost_(nodes_) {}
 
+    virtual ~NablaOperation() = default;
+
     virtual void operator()(data::MIRField&) const = 0;
 
 protected:
@@ -83,7 +85,7 @@ protected:
         auto variables = field.variables() > 0 ? field.variables() : 1;
         ASSERT(variables > 0);
 
-        data.dimensions(variables);
+        data.dimensions(size_t(variables));
 
         using atlas::array::Range;
         const auto view = variables == 1 ? atlas::array::make_view<double, 1>(field).slice(Range::all(), Range::dummy())
@@ -115,7 +117,7 @@ private:
 };
 
 
-struct ScalarGradient : NablaOperation {
+struct ScalarGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarGradient"; }
     void operator()(data::MIRField& field) const override {
@@ -131,7 +133,7 @@ struct ScalarGradient : NablaOperation {
 };
 
 
-struct ScalarLaplacian : NablaOperation {
+struct ScalarLaplacian final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "ScalarLaplacian"; }
     void operator()(data::MIRField& field) const override {
@@ -144,7 +146,7 @@ struct ScalarLaplacian : NablaOperation {
 };
 
 
-struct UVGradient : NablaOperation {
+struct UVGradient final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVGradient"; }
     void operator()(data::MIRField& field) const override {
@@ -162,7 +164,7 @@ struct UVGradient : NablaOperation {
 };
 
 
-struct UVDivergence : NablaOperation {
+struct UVDivergence final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVDivergence"; }
     void operator()(data::MIRField& field) const override {
@@ -175,7 +177,7 @@ struct UVDivergence : NablaOperation {
 };
 
 
-struct UVVorticity : NablaOperation {
+struct UVVorticity final : NablaOperation {
     using NablaOperation::NablaOperation;
     static const char* name() { return "UVVorticity"; }
     void operator()(data::MIRField& field) const override {

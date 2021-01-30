@@ -29,7 +29,7 @@ public:
     using ni_type = std::function<long(size_t)>;
     GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni,
                      const util::Rotation& = util::Rotation());
-    ~GaussianIterator();
+    ~GaussianIterator() override;
 
 private:
     const std::vector<double>& latitudes_;
@@ -47,8 +47,8 @@ private:
     size_t count_;
 
 protected:
-    void print(std::ostream&) const;
-    bool next(Latitude&, Longitude&);
+    void print(std::ostream&) const override;
+    bool next(Latitude&, Longitude&) override;
     size_t resetToRow(size_t j);
 };
 

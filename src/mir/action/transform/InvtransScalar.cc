@@ -15,12 +15,11 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/log/Timer.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 namespace mir {
@@ -34,7 +33,7 @@ void InvtransScalar::print(std::ostream& out) const {
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
     auto& log = Log::debug();
-    eckit::Timer mainTimer("InvtransScalar::sh2grid", log);
+    trace::Timer mainTimer("InvtransScalar::sh2grid", log);
 
     // set invtrans options
     atlas::util::Config config;
@@ -46,7 +45,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
     // set input working area (avoid copies for one field only)
     MIRValuesVector input;
     if (F > 1) {
-        eckit::Timer timer("InvtransScalar: interlacing spectra", log);
+        trace::Timer timer("InvtransScalar: interlacing spectra", log);
 
         auto T = size_t(trans.truncation());
         ASSERT(T > 0);
@@ -67,13 +66,13 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
     // inverse transform
     {
-        eckit::Timer timer("InvtransScalar: invtrans", log);
+        trace::Timer timer("InvtransScalar: invtrans", log);
         trans.invtrans(int(F), F > 1 ? input.data() : field.values(0).data(), output.data(), config);
     }
 
     // set field values (again, avoid copies for one field only)
     if (F > 1) {
-        eckit::Timer timer("InvtransScalar: copying grid-point values", log);
+        trace::Timer timer("InvtransScalar: copying grid-point values", log);
 
         auto here = output.cbegin();
         for (size_t i = 0; i < F; ++i) {

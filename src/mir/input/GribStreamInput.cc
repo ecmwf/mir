@@ -26,7 +26,8 @@ namespace input {
 
 
 static size_t buffer_size() {
-    static size_t size = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", 64 * 1024 * 1024);
+    constexpr size_t BUFFER_SIZE = 64 * 1024 * 1024;
+    static size_t size           = eckit::Resource<size_t>("$MIR_GRIB_INPUT_BUFFER_SIZE", BUFFER_SIZE);
     return size;
 }
 
@@ -83,8 +84,8 @@ bool GribStreamInput::next() {
         }
 
         if (e == CODES_BUFFER_TOO_SMALL) {
-            Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")"
-                         << std::endl;
+            Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(double(len))
+                         << ")" << std::endl;
             GRIB_ERROR(e, "wmo_read_any_from_stream");
         }
 
@@ -107,9 +108,9 @@ bool GribStreamInput::next() {
 
 
     if (e == CODES_BUFFER_TOO_SMALL) {
-        Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(len) << ")"
+        Log::debug() << "GribStreamInput::next() message is " << len << " bytes (" << eckit::Bytes(double(len)) << ")"
                      << std::endl;
-        Log::debug() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(buffer_.size())
+        Log::debug() << "Buffer size is " << buffer_.size() << " bytes (" << eckit::Bytes(double(buffer_.size()))
                      << "), rerun with:" << std::endl;
         Log::debug() << "env MIR_GRIB_INPUT_BUFFER_SIZE=" << len << std::endl;
         GRIB_ERROR(e, "wmo_read_any_from_stream");

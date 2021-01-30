@@ -15,7 +15,6 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/Separator.h"
 #include "eckit/option/SimpleOption.h"
@@ -246,7 +245,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
     {
         auto& log = Log::info();
 
-        eckit::Timer total_timer("Total time");
+        trace::Timer total_timer("Total time");
 
         const std::string what(vod2uv ? "vo/d field pair" : "field");
 
@@ -272,7 +271,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
             // Cesàro summation filtering
             if (cesaro) {
-                eckit::Timer timer("time on Cesàro summation filtering", log);
+                trace::Timer timer("time on Cesàro summation filtering", log);
 
                 std::vector<double> filter(T + 1);
                 {
@@ -335,7 +334,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     MIRValuesVector input_vo;
                     MIRValuesVector input_d;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", log);
+                        trace::Timer timer("time on interlacing spectra", log);
                         input_vo.resize(F * N * 2);
                         input_d.resize(F * N * 2);
 
@@ -354,7 +353,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", log);
+                        trace::Timer timer("time on invtrans", log);
                         const size_t which = numberOfFieldPairsProcessed * 2;
                         trans.invtrans(int(F), F > 1 ? input_vo.data() : field.values(which + 0).data(),
                                        F > 1 ? input_d.data() : field.values(which + 1).data(), out.data(),
@@ -364,7 +363,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // set field values, forcing u/v paramId (copies are necessary since fields are paired)
                     // Note: transformed u and v fields are contiguous, we save them in alternate order
                     {
-                        eckit::Timer timer("time on copying grid-point values", log);
+                        trace::Timer timer("time on copying grid-point values", log);
 
                         auto u = paramIdu;
                         auto v = paramIdv;
@@ -405,7 +404,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
                     // spectral coefficients are "interlaced", avoid copies if transforming only one field)
                     MIRValuesVector in;
                     if (F > 1) {
-                        eckit::Timer timer("time on interlacing spectra", log);
+                        trace::Timer timer("time on interlacing spectra", log);
                         in.resize(F * N * 2);
 
                         for (size_t f = 0; f < F; ++f) {
@@ -420,14 +419,14 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
 
                     // inverse transform
                     {
-                        eckit::Timer timer("time on invtrans", log);
+                        trace::Timer timer("time on invtrans", log);
                         trans.invtrans(int(F), F > 1 ? in.data() : field.values(numberOfFieldsProcessed).data(),
                                        out.data(), atlas::option::global());
                     }
 
                     // set field values (again, avoid copies for one field only)
                     if (F > 1) {
-                        eckit::Timer timer("time on copying grid-point values", log);
+                        trace::Timer timer("time on copying grid-point values", log);
 
                         auto here = out.cbegin();
                         for (size_t f = 0; f < F; ++f) {
@@ -446,7 +445,7 @@ void MIRSpectralTransform::execute(const eckit::option::CmdArgs& args) {
             // set field representation
             field.representation(outputRepresentation);
             if (validate) {
-                eckit::Timer timer("time on validate", log);
+                trace::Timer timer("time on validate", log);
                 field.validate();
             }
 

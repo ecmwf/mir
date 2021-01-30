@@ -29,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToNamedGrid<Invtrans>::ShToNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 }
 

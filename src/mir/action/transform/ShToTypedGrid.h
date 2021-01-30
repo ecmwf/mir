@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToTypedGrid();
+    ~ShToTypedGrid() override;
 
     // -- Convertors
     // None

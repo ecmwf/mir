@@ -57,12 +57,12 @@ struct MIRLoadLegendre : tools::MIRTool {
 };
 
 
-void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, std::string path) {
+void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, const std::string& path) {
     ASSERT(loader);
 
     // clang-format off
     out << "\n" "path:\t'" << path << "'"
-        << "\n" "size:\t" << eckit::Bytes(loader->size())
+        << "\n" "size:\t" << eckit::Bytes(double(loader->size()))
         << "\n" "address:\t" << std::hex << loader->address() << std::dec
         << "\n" "inSharedMemory:\t" << std::boolalpha << loader->inSharedMemory() << std::noboolalpha
         << std::endl;
@@ -71,7 +71,9 @@ void display(Log::Channel& out, caching::legendre::LegendreLoader* loader, std::
 
 
 void MIRLoadLegendre::execute(const eckit::option::CmdArgs& args) {
-    using namespace caching::legendre;
+    using caching::legendre::LegendreLoader;
+    using caching::legendre::LegendreLoaderFactory;
+    using caching::legendre::SharedMemoryLoader;
 
     Log::debug().setStream(std::cerr);
     Log::info().setStream(std::cerr);

@@ -551,7 +551,7 @@ static void getStats(const Field& field, Statistics& stats) {
         }
     }
 
-    stats.average_ /= stats.values_;
+    stats.average_ /= double(stats.values_);
 }
 
 

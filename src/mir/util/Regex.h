@@ -81,6 +81,14 @@ protected:
     // None
 
 private:
+    // -- Constructors
+
+    Regex(const Regex&) = delete;
+
+    // -- Operators
+
+    void operator=(const Regex&) = delete;
+
     // -- Members
 
     const std::string pattern_;

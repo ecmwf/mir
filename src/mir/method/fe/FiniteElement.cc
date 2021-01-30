@@ -75,7 +75,7 @@ static void normalise(triplet_vector_t& triplets) {
     }
 
     // if no reasonable weight sum is found, distribute equitably
-    const double invSum = 1. / triplets.size();
+    const double invSum = 1. / double(triplets.size());
     for (auto& t : triplets) {
         t.value() = invSum;
     }

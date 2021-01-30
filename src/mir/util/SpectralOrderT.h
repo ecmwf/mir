@@ -45,16 +45,16 @@ public:
     // None
 
     // -- Overridden methods
-    long getTruncationFromGaussianNumber(const long& N) const override {
+    long getTruncationFromGaussianNumber(long N) const override {
         ASSERT(N);
 
-        long T = long(ceil(4. / double(ORDER + 1) * N) - 1);
+        long T = long(ceil(4. / double(ORDER + 1) * double(N)) - 1);
         ASSERT(T);
 
         return T;
     }
 
-    long getGaussianNumberFromTruncation(const long& T) const override {
+    long getGaussianNumberFromTruncation(long T) const override {
         ASSERT(T);
 
         long N = long(double(T + 1) * double(ORDER + 1) / 4.);

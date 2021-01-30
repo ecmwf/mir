@@ -52,11 +52,8 @@ void ReferencePattern::execute(context::Context& ctx) const {
     bool normalize = false;
     parametrisation_.get("0-1", normalize);
 
-    std::vector<long> frequencies;
-    if (!parametrisation_.get("frequencies", frequencies)) {
-        frequencies.push_back(6);
-        frequencies.push_back(3);
-    }
+    std::vector<double> frequencies{6., 3.};
+    parametrisation_.get("frequencies", frequencies);
 
     bool hasMissing     = field.hasMissing();
     double missingValue = field.missingValue();

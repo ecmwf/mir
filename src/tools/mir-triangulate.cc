@@ -265,7 +265,7 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
         std::unique_ptr<input::MIRInput> input(new input::GribFileInput(args(a)));
 
         while (input->next()) {
-            // eckit::Timer tim(alternate ? "Delaunay triangulation (alternate)" : "Delaunay triangulation");
+            // trace::Timer tim(alternate ? "Delaunay triangulation (alternate)" : "Delaunay triangulation");
 
             auto field          = input->field();
             double missingValue = field.missingValue();

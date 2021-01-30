@@ -36,7 +36,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedReducedGGPLGiven();
+    ~ShToRotatedReducedGGPLGiven() override;
 
     // -- Convertors
     // None

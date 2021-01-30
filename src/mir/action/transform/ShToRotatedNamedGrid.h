@@ -34,7 +34,7 @@ public:
 
     // -- Destructor
 
-    ~ShToRotatedNamedGrid();
+    ~ShToRotatedNamedGrid() override;
 
     // -- Convertors
     // None

@@ -18,16 +18,14 @@
 #include "mir/util/SpectralOrder.h"
 
 
-using namespace eckit::testing;
-
-
 namespace mir {
 namespace tests {
 namespace unit {
 
 
 CASE("test_spectral_order") {
-    using namespace util;
+    using util::SpectralOrder;
+    using util::SpectralOrderFactory;
 
     // Cases from hsh2gg.F
 
@@ -131,5 +129,5 @@ CASE("test_spectral_order") {
 
 
 int main(int argc, char** argv) {
-    return run_tests(argc, argv, false);
+    return eckit::testing::run_tests(argc, argv, false);
 }

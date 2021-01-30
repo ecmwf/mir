@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    virtual ~TypedGrid() = default;
+    virtual ~TypedGrid() override;
 
     // -- Convertors
     // None

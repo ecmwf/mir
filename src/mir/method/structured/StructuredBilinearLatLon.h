@@ -24,7 +24,7 @@ namespace structured {
 class StructuredBilinearLatLon : public StructuredMethod {
 public:
     StructuredBilinearLatLon(const param::MIRParametrisation&);
-    ~StructuredBilinearLatLon();
+    ~StructuredBilinearLatLon() override;
 
 private:
     void assembleStructuredInput(WeightMatrix&, const repres::Representation& in,

@@ -33,8 +33,9 @@ GlobaliseUnstructured::GlobaliseUnstructured(const param::MIRParametrisation& pa
     globaliseGridname_ = "O16";
     parametrisation_.get("globalise-gridname", globaliseGridname_);
 
-    globaliseMissingRadius_ = 555975.;  // Earth great-circle distance of approx. 5 degree
-    parametrisation_.get("globalise-missing-radius", globaliseMissingRadius_);
+    // Earth great-circle distance of approx. 5 degree
+    constexpr double EARTH_GC_5DEG = 555975.;
+    parametrisation_.get("globalise-missing-radius", globaliseMissingRadius_ = EARTH_GC_5DEG);
 
     ASSERT(globaliseMissingRadius_ > 0.);
 }

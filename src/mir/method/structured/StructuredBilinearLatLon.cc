@@ -68,18 +68,18 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                  << std::endl;
 
     // set northern & southern-most parallel point indices
-    std::vector<size_t> parallel_north(pl.front());
-    std::vector<size_t> parallel_south(pl.back());
+    std::vector<size_t> parallel_north(size_t(pl.front()));
+    std::vector<size_t> parallel_south(size_t(pl.back()));
 
     Log::debug() << "StructuredBilinearLatLon::assemble first row: " << pl.front() << std::endl;
-    for (long i = 0; i < pl.front(); ++i) {
-        parallel_north[i] = size_t(i);
+    for (size_t i = 0; i < size_t(pl.front()); ++i) {
+        parallel_north[i] = i;
     }
 
     Log::debug() << "StructuredBilinearLatLon::assemble last row: " << pl.back() << std::endl;
     const size_t inpts = in.numberOfPoints();
     for (long i = pl.back(), j = 0; i > 0; i--, j++) {
-        parallel_south[j] = size_t(inpts - i);
+        parallel_south[size_t(j)] = inpts - size_t(i);
     }
 
     //    std::ofstream outfile ("mir.coeffs");
@@ -140,21 +140,18 @@ void StructuredBilinearLatLon::assembleStructuredInput(WeightMatrix& W, const re
                 ASSERT(pl.size() >= 2);  // at least 2 lines of latitude
 
                 if (eckit::types::is_approximately_equal(max_lat.value(), p.lat().value())) {
-
-                    top_n = pl[0];
-                    bot_n = pl[1];
+                    top_n = size_t(pl[0]);
+                    bot_n = size_t(pl[1]);
                     top_i = 0;
                     bot_i = top_i + top_n;
                 }
                 else if (eckit::types::is_approximately_equal(min_lat.value(), p.lat().value())) {
-
-                    top_n = pl[pl.size() - 2];
-                    bot_n = pl[pl.size() - 1];
+                    top_n = size_t(pl[pl.size() - 2]);
+                    bot_n = size_t(pl[pl.size() - 1]);
                     bot_i = inpts - bot_n;
                     top_i = bot_i - top_n;
                 }
                 else {
-
                     top_lat = icoords[top_i].lat();
                     bot_lat = icoords[bot_i].lat();
 

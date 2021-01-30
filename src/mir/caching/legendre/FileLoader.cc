@@ -40,7 +40,7 @@ FileLoader::FileLoader(const param::MIRParametrisation& parametrisation, const e
 FileLoader::~FileLoader() = default;
 
 void FileLoader::print(std::ostream& out) const {
-    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(buffer_.size()) << "]";
+    out << "FileLoader[path=" << path_ << ",size=" << eckit::Bytes(double(buffer_.size())) << "]";
 }
 
 const void* FileLoader::address() const {

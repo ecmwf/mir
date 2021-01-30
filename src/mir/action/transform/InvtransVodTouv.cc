@@ -15,11 +15,10 @@
 #include <iostream>
 #include <vector>
 
-#include "eckit/log/Timer.h"
-
 #include "mir/data/MIRField.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 #include "mir/util/Wind.h"
 
@@ -34,7 +33,7 @@ void InvtransVodTouv::print(std::ostream& out) const {
 
 void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                               const param::MIRParametrisation& parametrisation) const {
-    eckit::Timer timer("InvtransVodTouv::sh2grid", Log::debug());
+    trace::Timer timer("InvtransVodTouv::sh2grid", Log::debug());
 
     size_t number_of_fields = field.dimensions();
     ASSERT(number_of_fields == 2);

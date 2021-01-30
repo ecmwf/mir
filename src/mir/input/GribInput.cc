@@ -451,9 +451,9 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
 
         double globe = LongitudeDouble::GLOBE.value();
         if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
-            we = globe / Ni;
+            we = globe / double(Ni);
         }
-        else if (!eckit::types::is_approximately_equal(Lon1 + (Ni - 1) * we, Lon2, eps)) {
+        else if (!eckit::types::is_approximately_equal(Lon1 + double(Ni - 1) * we, Lon2, eps)) {
 
             // TODO refactor, not really specific to "periodic regular grids", but useful
             std::ostringstream msgs;

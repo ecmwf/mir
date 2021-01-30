@@ -44,8 +44,8 @@ public:
 
     // -- Methods
 
-    virtual long getTruncationFromGaussianNumber(const long&) const;
-    virtual long getGaussianNumberFromTruncation(const long&) const;
+    virtual long getTruncationFromGaussianNumber(long) const;
+    virtual long getGaussianNumberFromTruncation(long) const;
     virtual void print(std::ostream&) const = 0;
 
     // -- Overridden methods

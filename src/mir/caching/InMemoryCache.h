@@ -41,7 +41,7 @@ public:  // methods
     T& insert(const std::string& key, T*);
     T& operator[](const std::string& key);
 
-    iterator end() const { return 0; }
+    iterator end() const { return nullptr; }
 
     void footprint(const std::string& key, const InMemoryCacheUsage&);
     const std::string& name() const override;
@@ -79,7 +79,12 @@ private:
         double insert_;
         InMemoryCacheUsage footprint_;
 
-        Entry(T* ptr) : ptr_(ptr), hits_(1), last_(::time(0)), insert_(::time(0)), footprint_(size_t(1), size_t(0)) {}
+        Entry(T* ptr) :
+            ptr_(ptr),
+            hits_(1),
+            last_(double(::time(nullptr))),
+            insert_(double(::time(nullptr))),
+            footprint_(size_t(1), size_t(0)) {}
     };
 
     std::map<std::string, Entry*> cache_;

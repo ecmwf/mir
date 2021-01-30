@@ -182,7 +182,7 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 }
 
 
-void Count::countOnNamedGrid(std::string grid) {
+void Count::countOnNamedGrid(const std::string& grid) {
     ASSERT(!grid.empty());
     reset();
 
@@ -197,7 +197,7 @@ void Count::countOnNamedGrid(std::string grid) {
 }
 
 
-void Count::countOnGridIncrements(std::vector<double> grid) {
+void Count::countOnGridIncrements(const std::vector<double>& grid) {
     ASSERT_KEYWORD_GRID_SIZE(grid.size());
     reset();
 

@@ -64,7 +64,7 @@ MappedMemoryLoader::~MappedMemoryLoader() {
 }
 
 void MappedMemoryLoader::print(std::ostream& out) const {
-    out << "MappedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(size_) << "]";
+    out << "MappedMemoryLoader[path=" << path_ << ",size=" << eckit::Bytes(double(size_)) << "]";
 }
 
 const void* MappedMemoryLoader::address() const {

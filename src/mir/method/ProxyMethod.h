@@ -63,7 +63,7 @@ protected:
 
     // -- Destructor
 
-    virtual ~ProxyMethod() = default;
+    virtual ~ProxyMethod() override;
 
     // -- Members
     // None

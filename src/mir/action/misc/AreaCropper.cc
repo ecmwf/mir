@@ -33,6 +33,13 @@ namespace mir {
 namespace action {
 
 
+static eckit::Mutex local_mutex;
+
+constexpr size_t CAPACITY = 256 * 1024 * 1024;
+static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", CAPACITY, 0,
+                                                                 "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
+
+
 struct LL {
     double lat_;
     double lon_;
@@ -46,11 +53,6 @@ struct LL {
         return lat_ > other.lat_;
     }
 };
-
-
-static eckit::Mutex local_mutex;
-static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", 256 * 1024 * 1024, 0,
-                                                                 "$MIR_AREA_CACHE_MEMORY_FOOTPRINT");
 
 
 AreaCropper::AreaCropper(const param::MIRParametrisation& parametrisation) : Action(parametrisation), caching_(true) {

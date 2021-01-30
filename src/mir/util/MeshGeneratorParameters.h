@@ -46,7 +46,7 @@ public:
 
     // -- Destructor
 
-    virtual ~MeshGeneratorParameters() = default;
+    virtual ~MeshGeneratorParameters() override = default;
 
     // -- Convertors
     // None
@@ -69,8 +69,8 @@ public:
     // -- Methods
 
     bool sameAs(const MeshGeneratorParameters&) const;
-    void hash(eckit::Hash&) const;
-    void print(std::ostream&) const;
+    void hash(eckit::Hash&) const override;
+    void print(std::ostream&) const override;
 
     // -- Overridden methods
     // None

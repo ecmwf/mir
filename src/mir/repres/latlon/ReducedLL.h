@@ -32,7 +32,7 @@ public:
 
     // -- Destructor
 
-    ~ReducedLL();
+    ~ReducedLL() override;
 
     // -- Convertors
     // None

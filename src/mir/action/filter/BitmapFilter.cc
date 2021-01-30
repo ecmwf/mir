@@ -32,8 +32,9 @@ namespace action {
 
 
 static eckit::Mutex local_mutex;
-static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", 256 * 1024 * 1024, 0,
-                                                  "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
+
+constexpr size_t CAPACITY = 256 * 1024 * 1024;
+static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", CAPACITY, 0, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
 
 
 BitmapFilter::BitmapFilter(const param::MIRParametrisation& parametrisation) : Action(parametrisation) {

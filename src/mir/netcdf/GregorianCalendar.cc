@@ -45,7 +45,8 @@ GregorianCalendar::GregorianCalendar(const Variable& variable) :
     auto reference_time = static_cast<long long>(eckit::Second(reference_.time()));
     auto reference_date = static_cast<long long>(reference_.date().julian());
 
-    offset_ = reference_date * 24 * 60 * 60 + reference_time;
+    constexpr long long DAY_IN_SECONDS = 24 * 60 * 60;
+    offset_                            = reference_date * DAY_IN_SECONDS + reference_time;
     if (offset == 0) {  // Not thread safe
         offset = offset_;
     }

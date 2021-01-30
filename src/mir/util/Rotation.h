@@ -75,7 +75,7 @@ public:
     explicit Rotation(const param::MIRParametrisation&);
     explicit Rotation(const Latitude& south_pole_latitude   = Latitude::SOUTH_POLE,
                       const Longitude& south_pole_longitude = Longitude::GREENWICH,
-                      double south_pole_rotation_angle      = 0.0);
+                      double south_pole_rotation_angle      = 0.);
 
     // -- Destructor
 

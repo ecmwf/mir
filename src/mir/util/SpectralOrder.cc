@@ -26,14 +26,14 @@ namespace mir {
 namespace util {
 
 
-long SpectralOrder::getTruncationFromGaussianNumber(const long&) const {
+long SpectralOrder::getTruncationFromGaussianNumber(long) const {
     std::ostringstream os;
     os << "SpectralOrder::getTruncationFromGaussianNumber() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
 }
 
 
-long SpectralOrder::getGaussianNumberFromTruncation(const long&) const {
+long SpectralOrder::getGaussianNumberFromTruncation(long) const {
     std::ostringstream os;
     os << "SpectralOrder::getGaussianNumberFromTruncation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());

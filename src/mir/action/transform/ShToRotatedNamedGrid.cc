@@ -29,7 +29,6 @@ namespace transform {
 template <class Invtrans>
 ShToRotatedNamedGrid<Invtrans>::ShToRotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     ShToGridded(parametrisation) {
-
     ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
 
     std::vector<double> value;

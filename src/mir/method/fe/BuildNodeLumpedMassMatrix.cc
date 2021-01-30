@@ -53,13 +53,13 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
 
 
         // North/South pole points
-        std::vector<bool> northPole(nodes.size(), false);
-        std::vector<bool> southPole(nodes.size(), false);
+        std::vector<bool> northPole(size_t(nodes.size()), false);
+        std::vector<bool> southPole(size_t(nodes.size()), false);
 
         for (idx_t n = 0; n < nodes.size(); ++n) {
             if (eckit::types::is_approximately_equal(0., coords(n, 0)) &&
                 eckit::types::is_approximately_equal(0., coords(n, 1))) {
-                (coords(n, 2) > 0 ? northPole : southPole)[n] = true;
+                (coords(n, 2) > 0 ? northPole : southPole)[size_t(n)] = true;
             }
         }
 
@@ -112,7 +112,7 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
             double contribution = 0.;
             size_t nb           = 0;
             for (idx_t i = 0; i < nbRealPts; ++i) {
-                if (pole[i]) {
+                if (pole[size_t(i)]) {
                     contribution += mass[i];
                     nb++;
                 }
@@ -121,7 +121,7 @@ atlas::Field& BuildNodeLumpedMassMatrix::operator()(atlas::Mesh& mesh) const {
             if (nb > 0) {
                 auto nodalDistribution = contribution / double(nb);
                 for (idx_t i = 0; i < nbRealPts; ++i) {
-                    if (pole[i]) {
+                    if (pole[size_t(i)]) {
                         mass[i] = nodalDistribution;
                     }
                 }

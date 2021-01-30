@@ -41,7 +41,9 @@ grib_handle* MIRInput::gribHandle(size_t) const {
     static grib_handle* handle = nullptr;
     if (handle == nullptr) {
         handle = codes_grib_handle_new_from_samples(nullptr, "GRIB1");
-        codes_set_long(handle, "paramId", 255);
+
+        constexpr long MISSING = 255;
+        codes_set_long(handle, "paramId", MISSING);
         ASSERT(handle);
     }
     return handle;

@@ -29,7 +29,7 @@ namespace caching {
 
 inline static double utime() {
     struct timeval t;
-    ::gettimeofday(&t, 0);
+    ::gettimeofday(&t, nullptr);
     return double(t.tv_sec) + double(t.tv_usec) * 0.000001;
 }
 
@@ -71,7 +71,7 @@ T* InMemoryCache<T>::find(const std::string& key) const {
     // if (statistics_) {
     //     statistics_.misses_++;
     // }
-    return 0;
+    return nullptr;
 }
 
 

@@ -80,7 +80,7 @@ protected:
     const std::vector<long>& pls() const;
     static std::vector<long> pls(const std::string&);
 
-    void setNj(const std::vector<long>&, const Latitude& s, const Latitude& n);
+    void setNj(std::vector<long>, const Latitude& s, const Latitude& n);
     void correctWestEast(Longitude& w, Longitude& e) const;
 
     // -- Overridden methods

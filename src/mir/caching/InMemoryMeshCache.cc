@@ -30,8 +30,10 @@ namespace mir {
 namespace caching {
 
 
-static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", 512 * 1024 * 1024, 0, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 static std::mutex local_mutex;
+
+constexpr size_t CAPACITY = 512 * 1024 * 1024;
+static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", CAPACITY, 0, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
 
 
 const InMemoryMeshCache& InMemoryMeshCache::instance() {

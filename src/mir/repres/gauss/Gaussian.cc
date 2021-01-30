@@ -26,6 +26,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Pretty.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
 
@@ -236,7 +237,7 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
     ASSERT(N);
     auto j = ml->find(N);
     if (j == ml->end()) {
-        eckit::Timer timer("Gaussian latitudes " + std::to_string(N), Log::debug());
+        trace::Timer timer("Gaussian latitudes " + std::to_string(N), Log::debug());
 
         // calculate latitudes and insert in known-N-latitudes map
         std::vector<double> latitudes(N * 2);
@@ -264,7 +265,7 @@ const std::vector<double>& Gaussian::weights(size_t N) {
     ASSERT(N);
     auto j = mw->find(N);
     if (j == mw->end()) {
-        eckit::Timer timer("Gaussian quadrature weights " + std::to_string(N), Log::debug());
+        trace::Timer timer("Gaussian quadrature weights " + std::to_string(N), Log::debug());
 
         // calculate quadrature weights and insert in known-N-weights map
         // FIXME: innefficient interface, latitudes are discarded

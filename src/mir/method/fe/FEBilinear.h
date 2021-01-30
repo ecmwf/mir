@@ -80,7 +80,7 @@ private:
     // -- Overridden methods
 
     // From MethodWeighted
-    const char* name() const;
+    const char* name() const override;
 
     // -- Class members
     // None

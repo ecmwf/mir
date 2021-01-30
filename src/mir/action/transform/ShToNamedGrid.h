@@ -33,7 +33,7 @@ public:
 
     // -- Destructor
 
-    ~ShToNamedGrid();
+    ~ShToNamedGrid() override;
 
     // -- Convertors
     // None

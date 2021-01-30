@@ -290,7 +290,7 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         Log::debug() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
     }
 
-    void encode(png_bytep& p, const double& value) const {
+    void encode(png_bytep& p, const double& value) const override {
         if (hasMissing_ && value == missingValue_) {
             // set both colour and alpha channels
             for (int i = 0; i < (N_C_CHANNELS + N_A_CHANNELS) * N_BYTES_PER_CHANNEL; ++i) {
@@ -315,9 +315,9 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
     }
 
-    int bit_depth() const { return N_BYTES_PER_CHANNEL * 8; }
+    int bit_depth() const override { return N_BYTES_PER_CHANNEL * 8; }
 
-    int color_type() const {
+    int color_type() const override {
         return N_C_CHANNELS == 1
                    ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
                    : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;

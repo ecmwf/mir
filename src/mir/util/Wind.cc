@@ -24,11 +24,17 @@ namespace mir {
 namespace util {
 
 
+constexpr long PARAMETER_ID_U  = 131;
+constexpr long PARAMETER_ID_V  = 132;
+constexpr long PARAMETER_ID_VO = 138;
+constexpr long PARAMETER_ID_D  = 155;
+
+
 Wind::Defaults::Defaults() :
-    u(LibMir::instance().configuration().getLong("parameter-id-u", 131)),
-    v(LibMir::instance().configuration().getLong("parameter-id-v", 132)),
-    vo(LibMir::instance().configuration().getLong("parameter-id-vo", 138)),
-    d(LibMir::instance().configuration().getLong("parameter-id-d", 155)) {
+    u(LibMir::instance().configuration().getLong("parameter-id-u", PARAMETER_ID_U)),
+    v(LibMir::instance().configuration().getLong("parameter-id-v", PARAMETER_ID_V)),
+    vo(LibMir::instance().configuration().getLong("parameter-id-vo", PARAMETER_ID_VO)),
+    d(LibMir::instance().configuration().getLong("parameter-id-d", PARAMETER_ID_D)) {
     ASSERT(0 < u && u < 1000);
     ASSERT(0 < v && v < 1000);
     ASSERT(0 < vo && vo < 1000);
@@ -37,6 +43,7 @@ Wind::Defaults::Defaults() :
 
 
 void Wind::paramIds(const param::MIRParametrisation& parametrisation, long& u, long& v) {
+    constexpr long THOUSAND = 1000;
 
     // User input if given
     bool need_u = !parametrisation.userParametrisation().get("paramId.u", u);
@@ -50,16 +57,16 @@ void Wind::paramIds(const param::MIRParametrisation& parametrisation, long& u, l
             ASSERT(id > 0);
         }
 
-        long table = id / 1000;
+        long table = id / THOUSAND;
 
         static const Defaults def;
 
         if (need_u) {
-            u = def.u + table * 1000;
+            u = def.u + table * THOUSAND;
         }
 
         if (need_v) {
-            v = def.v + table * 1000;
+            v = def.v + table * THOUSAND;
         }
     }
 

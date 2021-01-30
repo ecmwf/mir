@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "eckit/log/Seconds.h"
-#include "eckit/log/Timer.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -25,6 +24,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Trace.h"
 
 
 namespace mir {
@@ -87,6 +87,9 @@ ProxyMethod::ProxyMethod(const param::MIRParametrisation& param, std::string typ
 }
 
 
+ProxyMethod::~ProxyMethod() = default;
+
+
 void ProxyMethod::hash(eckit::MD5& md5) const {
     md5.add(options_);
     md5.add(cropping_);
@@ -123,8 +126,8 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
         atlas::FieldSet fields;
     };
 
-    eckit::Timer timer("ProxyMethod::execute", Log::info());
-    auto report = [](eckit::Timer& timer, const std::string& msg) {
+    trace::Timer timer("ProxyMethod::execute", Log::info());
+    auto report = [](trace::Timer& timer, const std::string& msg) {
         timer.report(msg);
         timer.stop();
         timer.start();

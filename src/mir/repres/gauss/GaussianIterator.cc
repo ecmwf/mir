@@ -24,27 +24,40 @@ namespace gauss {
 
 GaussianIterator::GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox& bbox, size_t N,
                                    ni_type Ni, const util::Rotation& rotation) :
-    Iterator(rotation), latitudes_(latitudes), bbox_(bbox), N_(N), pl_(std::move(Ni)), Ni_(0), i_(0), j_(0), count_(0) {
+    Iterator(rotation),
+    latitudes_(latitudes),
+    bbox_(bbox),
+    N_(N),
+    pl_(std::move(Ni)),
+    Ni_(0),
+    Nj_(latitudes.size()),
+    i_(0),
+    j_(0),
+    k_(0),
+    count_(0) {
 
     // position to first latitude and first/last longitude
     // NOTE: latitudes_ span the globe, sorted from North-to-South, k_ positions the North
     // NOTE: pl is global
     ASSERT(N_ * 2 == latitudes_.size());
 
-    k_  = 0;
-    Nj_ = 0;
-    for (auto& lat : latitudes_) {
-        if (bbox_.north() < lat) {
-            ++k_;
+    if (latitudes_.back() < bbox.south() || bbox.north() < latitudes_.front()) {
+        Nj_ = 0;
+
+        for (auto& lat : latitudes_) {
+            if (bbox_.north() < lat) {
+                ++k_;
+            }
+            else if (bbox_.south() <= lat) {
+                ++Nj_;
+            }
+            else {
+                break;
+            }
         }
-        else if (bbox_.south() <= lat) {
-            ++Nj_;
-        }
-        else {
-            break;
-        }
+
+        ASSERT(Nj_ > 0);
     }
-    ASSERT(Nj_ > 0);
 }
 
 
