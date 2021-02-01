@@ -13,9 +13,7 @@
 #include "mir/caching/legendre/LegendreLoader.h"
 
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -34,18 +32,18 @@ LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation,
 LegendreLoader::~LegendreLoader() = default;
 
 
-static pthread_once_t once                              = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                        = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex                = nullptr;
 static std::map<std::string, LegendreLoaderFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, LegendreLoaderFactory*>();
 }
 
 
 LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("LegendreLoaderFactory: duplicate '" + name + "'");
@@ -57,15 +55,15 @@ LegendreLoaderFactory::LegendreLoaderFactory(const std::string& name) : name_(na
 
 
 LegendreLoaderFactory::~LegendreLoaderFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& params, const eckit::PathName& path) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> guard(*local_mutex);
 
     std::string name = "mapped-memory";
     params.get("legendre-loader", name);
@@ -83,8 +81,8 @@ LegendreLoader* LegendreLoaderFactory::build(const param::MIRParametrisation& pa
 
 
 bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& params) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> guard(*local_mutex);
 
     std::string name = "mapped-memory";
     params.get("legendre-loader", name);
@@ -102,8 +100,8 @@ bool LegendreLoaderFactory::inSharedMemory(const param::MIRParametrisation& para
 
 
 void LegendreLoaderFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> guard(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

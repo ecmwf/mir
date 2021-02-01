@@ -14,9 +14,9 @@
 #define mir_caching_InMemoryCache_h
 
 #include <memory>
+#include <mutex>
 
 #include "eckit/config/Resource.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
@@ -68,7 +68,7 @@ private:
     size_t users_;
 
     mutable InMemoryCacheStatistics statistics_;
-    mutable eckit::Mutex mutex_;
+    mutable std::recursive_mutex mutex_;
     mutable std::map<std::string, InMemoryCacheUsage> keys_;
 
     struct Entry {

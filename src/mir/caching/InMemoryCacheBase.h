@@ -18,11 +18,6 @@
 #include "mir/caching/InMemoryCacheUsage.h"
 
 
-namespace eckit {
-class Channel;
-}
-
-
 namespace mir {
 namespace caching {
 

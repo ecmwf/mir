@@ -12,9 +12,9 @@
 
 #include "mir/caching/InMemoryCacheBase.h"
 
+#include <mutex>
+
 #include "eckit/config/Resource.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -24,35 +24,36 @@ namespace mir {
 namespace caching {
 
 
-static eckit::Mutex* local_mutex       = nullptr;
+static std::mutex* local_mutex         = nullptr;
 static std::set<InMemoryCacheBase*>* m = nullptr;
-static pthread_once_t once             = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::set<InMemoryCacheBase*>();
 }
 
 
 InMemoryCacheBase::InMemoryCacheBase() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
+
     ASSERT(m->find(this) == m->end());
     m->insert(this);
 }
 
 InMemoryCacheBase::~InMemoryCacheBase() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
+
     ASSERT(m->find(this) != m->end());
     m->erase(this);
 }
 
 InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
-
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     InMemoryCacheUsage result;
 
@@ -64,8 +65,8 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 }
 
 void InMemoryCacheBase::checkTotalFootprint() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     constexpr size_t CAPACITY_MEMORY = 1024LL * 1024 * 1024 * 1024 * 1024 * 1024;
     constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
@@ -79,14 +80,10 @@ void InMemoryCacheBase::checkTotalFootprint() {
         return;
     }
 
-
-    bool more = true;
-    while (more) {
-
+    for (bool more = true; more;) {
         more = false;
 
         InMemoryCacheUsage totalFootprint;
-
         for (auto& j : *m) {
             totalFootprint += j->footprint();
         }
@@ -95,9 +92,7 @@ void InMemoryCacheBase::checkTotalFootprint() {
                      << std::endl;
 
         if (totalFootprint > maximumCapacity) {
-
             InMemoryCacheUsage p = (totalFootprint - maximumCapacity) / m->size();
-
 
             for (auto& j : *m) {
                 InMemoryCacheUsage purged = j->purge(p);

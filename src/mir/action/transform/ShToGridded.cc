@@ -13,12 +13,11 @@
 #include "mir/action/transform/ShToGridded.h"
 
 #include <iostream>
+#include <mutex>
 #include <sstream>
 
 #include "eckit/system/MemoryInfo.h"
 #include "eckit/system/SystemInfo.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/action/context/Context.h"
@@ -40,8 +39,6 @@ namespace mir {
 namespace action {
 namespace transform {
 
-
-static eckit::Mutex amutex;
 
 constexpr size_t CAPACITY_MEMORY = 8L * 1024 * 1024 * 1024;
 constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;
@@ -141,7 +138,8 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ShToGridded::atlas_config_
 
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation,
                             context::Context& ctx) const {
-    eckit::AutoLock<eckit::Mutex> lock(amutex);  // To protect trans_cache
+    static std::mutex local_mutex;
+    eckit::AutoLock<std::mutex> lock(local_mutex);  // To protect trans_cache
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()
