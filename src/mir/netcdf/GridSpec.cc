@@ -13,11 +13,8 @@
 #include "mir/netcdf/GridSpec.h"
 
 #include <iostream>
+#include <mutex>
 #include <sstream>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Variable.h"
@@ -29,11 +26,11 @@ namespace mir {
 namespace netcdf {
 
 
-static eckit::Mutex* local_mutex             = nullptr;
+static std::mutex* local_mutex               = nullptr;
 static std::map<size_t, GridSpecGuesser*>* m = nullptr;
-static pthread_once_t once                   = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::map<size_t, GridSpecGuesser*>();
 }
 
@@ -58,10 +55,8 @@ GridSpec* GridSpec::create(const Variable& variable) {
 
 
 GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
-
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     ASSERT(m->find(priority) == m->end());
     (*m)[priority] = this;
@@ -69,13 +64,14 @@ GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
 
 
 GridSpecGuesser::~GridSpecGuesser() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> lock(*local_mutex);
+
     m->erase(priority_);
 }
 
 GridSpec* GridSpecGuesser::guess(const Variable& variable) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     // We assume lat/lon are the innermost coordinates
     const Variable& latitudes  = variable.lookupInDataset("latitude", "degrees_north", 2);

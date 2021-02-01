@@ -12,11 +12,9 @@
 
 #include "mir/action/filter/NablaFilter.h"
 
+#include <mutex>
 #include <ostream>
 #include <set>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -43,12 +41,12 @@ void mir::action::NablaFilter::custom(std::ostream& out) const {
 }
 
 
-static pthread_once_t once       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static std::set<std::string>* m  = nullptr;
+static std::once_flag once;
+static std::mutex* local_mutex  = nullptr;
+static std::set<std::string>* m = nullptr;
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::set<std::string>();
 }
 
@@ -57,16 +55,16 @@ NablaFilterFactory::~NablaFilterFactory() = default;
 
 
 NablaFilterFactory::NablaFilterFactory(const std::string& name) : ActionFactory("filter." + name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     m->insert(name);
 }
 
 
 void NablaFilterFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     auto sep = "";
     for (const auto& j : *m) {

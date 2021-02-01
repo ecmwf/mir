@@ -15,9 +15,8 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <mutex>
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -34,12 +33,12 @@ namespace mir {
 namespace repres {
 
 
-static pthread_once_t once                        = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                  = nullptr;
+static std::once_flag once;
+static std::mutex* local_mutex                    = nullptr;
 static std::map<size_t, std::vector<double> >* ml = nullptr;
 static std::map<size_t, std::vector<double> >* mw = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     ml          = new std::map<size_t, std::vector<double> >();
     mw          = new std::map<size_t, std::vector<double> >();
 }
@@ -231,8 +230,8 @@ void Gaussian::fill(api::MIRJob& job) const {
 
 
 const std::vector<double>& Gaussian::latitudes(size_t N) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = ml->find(N);
@@ -259,8 +258,8 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 
 
 const std::vector<double>& Gaussian::weights(size_t N) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = mw->find(N);

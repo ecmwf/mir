@@ -19,11 +19,6 @@
 #include "eckit/linalg/SparseMatrix.h"
 
 
-namespace eckit {
-class Channel;
-}
-
-
 namespace mir {
 namespace caching {
 namespace matrix {

@@ -14,9 +14,8 @@
 #define mir_action_context_Context_h
 
 #include <memory>
+#include <mutex>
 #include <vector>
-
-#include "eckit/thread/Mutex.h"
 
 
 namespace mir {
@@ -132,7 +131,7 @@ protected:
 private:
     // -- Members
 
-    mutable eckit::Mutex mutex_;
+    mutable std::mutex mutex_;
     std::vector<Context> stack_;
 
     input::MIRInput& input_;

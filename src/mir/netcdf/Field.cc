@@ -102,7 +102,7 @@ void Field::print(std::ostream& out) const {
 }
 
 
-static pthread_once_t once = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static eckit::Value standard_names;
 
 
@@ -113,8 +113,7 @@ static void init() {
 
 
 void Field::setMetadata(data::MIRField& mirField, size_t which) const {
-
-    pthread_once(&once, init);
+    std::call_once(once, init);
 
     eckit::Value s = standard_names[standardName_];
     Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;

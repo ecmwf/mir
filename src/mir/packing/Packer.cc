@@ -13,9 +13,7 @@
 #include "mir/packing/Packer.h"
 
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -25,11 +23,11 @@ namespace mir {
 namespace packing {
 
 
-static pthread_once_t once                      = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                = nullptr;
+static std::once_flag once;
+static std::mutex* local_mutex                  = nullptr;
 static std::map<std::string, PackerFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::map<std::string, PackerFactory*>();
 }
 
@@ -41,8 +39,8 @@ Packer::~Packer() = default;
 
 
 PackerFactory::PackerFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("PackerFactory: duplicate '" + name + "'");
@@ -53,7 +51,7 @@ PackerFactory::PackerFactory(const std::string& name) : name_(name) {
 
 
 PackerFactory::~PackerFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -61,8 +59,8 @@ PackerFactory::~PackerFactory() {
 
 Packer* PackerFactory::build(const std::string& name, const param::MIRParametrisation& user,
                              const param::MIRParametrisation& field) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     Log::debug() << "PackerFactory: looking for '" << name << "'" << std::endl;
 
@@ -77,8 +75,8 @@ Packer* PackerFactory::build(const std::string& name, const param::MIRParametris
 
 
 void PackerFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

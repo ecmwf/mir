@@ -164,35 +164,20 @@ Context::~Context() = default;
 
 
 bool Context::isField() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isField();
+    std::lock_guard<std::mutex> lock(mutex_);
+    return content_ ? content_->isField() : false;
 }
 
 
 bool Context::isScalar() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isScalar();
+    std::lock_guard<std::mutex> lock(mutex_);
+    return content_ ? content_->isScalar() : false;
 }
 
+
 bool Context::isExtension() const {
-
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
-    if (!content_) {
-        return false;
-    }
-    return content_->isExtension();
+    std::lock_guard<std::mutex> lock(mutex_);
+    return content_ ? content_->isExtension() : false;
 }
 
 
@@ -212,7 +197,7 @@ util::MIRStatistics& Context::statistics() {
 
 
 data::MIRField& Context::field() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     if (!content_) {
         content_.reset(new FieldContent(input_.field()));
@@ -221,7 +206,7 @@ data::MIRField& Context::field() {
 }
 
 Extension& Context::extension() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     ASSERT(isExtension());
     return content_->extension();
@@ -234,21 +219,21 @@ void Context::extension(Extension* e) {
 
 
 void Context::select(size_t which) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     field().select(which);
 }
 
 
 void Context::scalar(double value) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     content_.reset(new ScalarContent(value));
 }
 
 
 double Context::scalar() const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     ASSERT(content_);
     return content_->scalar();
@@ -256,7 +241,7 @@ double Context::scalar() const {
 
 
 void Context::print(std::ostream& out) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     out << "Context[content=";
     if (content_) {
@@ -270,7 +255,7 @@ void Context::print(std::ostream& out) const {
 
 
 Context& Context::push() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     stack_.emplace_back(Context(*this));
     return stack_.back();
@@ -278,7 +263,7 @@ Context& Context::push() {
 
 
 Context Context::pop() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     ASSERT(stack_.size());
     Context ctx = stack_.back();

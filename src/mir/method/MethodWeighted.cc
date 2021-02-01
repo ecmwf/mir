@@ -13,6 +13,7 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <limits>
+#include <mutex>
 #include <sstream>
 #include <string>
 
@@ -41,7 +42,7 @@ namespace mir {
 namespace method {
 
 
-static eckit::Mutex local_mutex;
+static std::mutex local_mutex;
 
 constexpr size_t CAPACITY = 512 * 1024 * 1024;
 static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", CAPACITY, 0,
@@ -123,8 +124,8 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
                                               const repres::Representation& out) const {
+    std::lock_guard<std::mutex> lock(local_mutex);
 
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
     auto& log = Log::debug();
 
     log << "MethodWeighted::getMatrix " << *this << std::endl;

@@ -14,10 +14,7 @@
 
 #include <iostream>
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+#include <mutex>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/util/Log.h"
@@ -136,18 +133,18 @@ bool Codec::timeAxis() const {
 }
 
 
-static pthread_once_t once                     = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex               = nullptr;
+static std::once_flag once;
+static std::mutex* local_mutex                 = nullptr;
 static std::map<std::string, CodecFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::map<std::string, CodecFactory*>();
 }
 
 
 CodecFactory::CodecFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("CodecFactory: duplicate '" + name + "'");
@@ -159,15 +156,15 @@ CodecFactory::CodecFactory(const std::string& name) : name_(name) {
 
 
 CodecFactory::~CodecFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     Log::debug() << "CodecFactory: looking for '" << name << "'" << std::endl;
 
@@ -182,8 +179,8 @@ Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
 
 
 void CodecFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

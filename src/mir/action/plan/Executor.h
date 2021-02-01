@@ -66,7 +66,7 @@ public:
     // -- Class methods
 
     static const Executor& lookup(const param::MIRParametrisation&);
-    static void list(std::ostream&);
+    static void list(std::ostream&, bool full = false);
 
 protected:
     Executor(const std::string&);

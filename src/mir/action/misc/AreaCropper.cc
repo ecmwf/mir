@@ -13,6 +13,7 @@
 #include "mir/action/misc/AreaCropper.h"
 
 #include <iostream>
+#include <mutex>
 #include <vector>
 
 #include "eckit/utils/MD5.h"
@@ -32,8 +33,6 @@
 namespace mir {
 namespace action {
 
-
-static eckit::Mutex local_mutex;
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
 static caching::InMemoryCache<caching::CroppingCacheEntry> cache("mirArea", CAPACITY, 0,
@@ -175,7 +174,8 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
 static const caching::CroppingCacheEntry& getMapping(const std::string& key,
                                                      const repres::Representation* representation,
                                                      const util::BoundingBox& bbox, bool caching) {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    static std::mutex local_mutex;
+    std::lock_guard<std::mutex> lock(local_mutex);
 
     auto a = cache.find(key);
     if (a != cache.end()) {

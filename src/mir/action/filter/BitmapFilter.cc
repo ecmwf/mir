@@ -13,9 +13,7 @@
 #include "mir/action/filter/BitmapFilter.h"
 
 #include <iostream>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"
@@ -30,8 +28,6 @@
 namespace mir {
 namespace action {
 
-
-static eckit::Mutex local_mutex;
 
 constexpr size_t CAPACITY = 256 * 1024 * 1024;
 static caching::InMemoryCache<util::Bitmap> cache("mirBitmap", CAPACITY, 0, "$MIR_BITMAP_CACHE_MEMORY_FOOTPRINT");
@@ -57,16 +53,17 @@ void BitmapFilter::print(std::ostream& out) const {
 
 
 util::Bitmap& BitmapFilter::bitmap() const {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    static std::mutex local_mutex;
+    std::lock_guard<std::mutex> lock(local_mutex);
+
     auto j = cache.find(path_);
-    if (j == cache.end()) {
-        std::unique_ptr<util::Bitmap> bitmap(new util::Bitmap(path_));
-        size_t footprint     = bitmap->footprint();
-        util::Bitmap& result = cache.insert(path_, bitmap.release());
-        cache.footprint(path_, caching::InMemoryCacheUsage(footprint, 0));
-        return result;
+    if (j != cache.end()) {
+        return *j;
     }
-    return *j;
+
+    auto bitmap = new util::Bitmap(path_);
+    cache.footprint(path_, caching::InMemoryCacheUsage(bitmap->footprint(), 0));
+    return cache.insert(path_, bitmap);
 }
 
 

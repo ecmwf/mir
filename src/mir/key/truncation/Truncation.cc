@@ -16,10 +16,7 @@
 #include <cctype>  // for ::isdigit
 #include <iostream>
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
+#include <mutex>
 
 #include "mir/key/truncation/Ordinal.h"
 #include "mir/util/Exceptions.h"
@@ -31,11 +28,11 @@ namespace key {
 namespace truncation {
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static std::once_flag once;
+static std::mutex* local_mutex                      = nullptr;
 static std::map<std::string, TruncationFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     m           = new std::map<std::string, TruncationFactory*>();
 }
 
@@ -44,9 +41,8 @@ Truncation::Truncation(const param::MIRParametrisation& parametrisation) : param
 
 
 TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("TruncationFactory: duplicate '" + name + "'");
@@ -58,7 +54,7 @@ TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
 
 
 TruncationFactory::~TruncationFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -66,21 +62,23 @@ TruncationFactory::~TruncationFactory() {
 
 Truncation* TruncationFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                      long targetGaussianN) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    {
+        std::call_once(once, init);
+        std::lock_guard<std::mutex> lock(*local_mutex);
 
-    Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
-    ASSERT(!name.empty());
+        Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
+        ASSERT(!name.empty());
 
-    auto j = m->find(name);
-    if (j != m->end()) {
-        return j->second->make(parametrisation, targetGaussianN);
-    }
+        auto j = m->find(name);
+        if (j != m->end()) {
+            return j->second->make(parametrisation, targetGaussianN);
+        }
 
-    // Look for a plain number
-    if (std::all_of(name.begin(), name.end(), ::isdigit)) {
-        long number = std::stol(name);
-        return new truncation::Ordinal(number, parametrisation);
+        // Look for a plain number
+        if (std::all_of(name.begin(), name.end(), ::isdigit)) {
+            long number = std::stol(name);
+            return new truncation::Ordinal(number, parametrisation);
+        }
     }
 
     list(Log::error() << "TruncationFactory: unknown '" << name << "', choices are: ");
@@ -89,8 +87,8 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
 
 
 void TruncationFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

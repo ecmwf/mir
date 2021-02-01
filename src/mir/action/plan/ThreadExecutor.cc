@@ -12,6 +12,8 @@
 
 #include "mir/action/plan/ThreadExecutor.h"
 
+#include <mutex>
+
 #include "eckit/thread/ThreadPool.h"
 
 #include "mir/action/context/Context.h"
@@ -24,8 +26,8 @@ namespace mir {
 namespace action {
 
 
+static std::once_flag once;
 static eckit::ThreadPool* pool = nullptr;
-static pthread_once_t once     = PTHREAD_ONCE_INIT;
 static void init() {
     pool = new eckit::ThreadPool("executor", 2);
 }
@@ -60,19 +62,19 @@ void ThreadExecutor::print(std::ostream& out) const {
 
 
 void ThreadExecutor::wait() const {
-    pthread_once(&once, init);
+    std::call_once(once, init);
     pool->wait();
 }
 
 
 void ThreadExecutor::execute(context::Context& ctx, const ActionNode& node) const {
-    pthread_once(&once, init);
+    std::call_once(once, init);
     pool->push(new ThreadExecutorTask(*this, ctx, node));
 }
 
 
 void ThreadExecutor::parametrisation(const param::MIRParametrisation& parametrisation) {
-    pthread_once(&once, init);
+    std::call_once(once, init);
     size_t threads;
     if (parametrisation.get("executor.threads", threads)) {
         pool->resize(threads);
