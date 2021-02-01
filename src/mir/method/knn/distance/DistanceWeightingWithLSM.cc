@@ -13,9 +13,8 @@
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
 #include <map>
+#include <mutex>
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/param/MIRParametrisation.h"
@@ -28,11 +27,11 @@ namespace knn {
 namespace distance {
 
 
-static eckit::Mutex* local_mutex                                  = nullptr;
+static std::recursive_mutex* local_mutex                          = nullptr;
 static std::map<std::string, DistanceWeightingWithLSMFactory*>* m = nullptr;
-static pthread_once_t once                                        = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, DistanceWeightingWithLSMFactory*>();
 }
 
@@ -78,8 +77,8 @@ void DistanceWeightingWithLSM::hash(eckit::MD5& h) const {
 
 
 DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("DistanceWeightingWithLSMFactory: duplicated DistanceWeightingWithLSM '" + name +
@@ -92,7 +91,8 @@ DistanceWeightingWithLSMFactory::DistanceWeightingWithLSMFactory(const std::stri
 
 
 DistanceWeightingWithLSMFactory::~DistanceWeightingWithLSMFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
@@ -100,15 +100,15 @@ DistanceWeightingWithLSMFactory::~DistanceWeightingWithLSMFactory() {
 const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::string& name,
                                                                 const param::MIRParametrisation& param,
                                                                 const lsm::LandSeaMasks& lsm) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "DistanceWeightingWithLSMFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(Log::error() << "No DistanceWeightingWithLSMFactory '" << name << "', choices are:\n");
-        throw exception::SeriousBug("No DistanceWeightingWithLSMFactory '" + name + "'");
+        list(Log::error() << "DistanceWeightingWithLSMFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("DistanceWeightingWithLSMFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param, lsm);
@@ -116,8 +116,8 @@ const DistanceWeighting* DistanceWeightingWithLSMFactory::build(const std::strin
 
 
 void DistanceWeightingWithLSMFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

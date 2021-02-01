@@ -13,9 +13,7 @@
 #include "mir/data/Space.h"
 
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -31,19 +29,19 @@ Space::Space() = default;
 Space::~Space() = default;
 
 
-static pthread_once_t once                     = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex               = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex       = nullptr;
 static std::map<std::string, SpaceChooser*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, SpaceChooser*>();
 }
 
 
 SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :
     name_(name), choice_(choice), component_(component), dimensions_(dimensions) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("SpaceChooser: duplicate '" + name + "'");
@@ -59,7 +57,7 @@ SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t compon
 
 
 SpaceChooser::~SpaceChooser() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     delete choice_;
     m->erase(name_);
@@ -67,8 +65,8 @@ SpaceChooser::~SpaceChooser() {
 
 
 const Space& SpaceChooser::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "SpaceChooser: looking for '" << name << "'" << std::endl;
 
@@ -83,8 +81,8 @@ const Space& SpaceChooser::lookup(const std::string& name) {
 
 
 void SpaceChooser::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

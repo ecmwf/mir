@@ -13,9 +13,7 @@
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
 #include <map>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -27,11 +25,11 @@ namespace knn {
 namespace distance {
 
 
-static eckit::Mutex* local_mutex                           = nullptr;
+static std::recursive_mutex* local_mutex                   = nullptr;
 static std::map<std::string, DistanceWeightingFactory*>* m = nullptr;
-static pthread_once_t once                                 = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, DistanceWeightingFactory*>();
 }
 
@@ -43,8 +41,8 @@ DistanceWeighting::~DistanceWeighting() = default;
 
 
 DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -55,22 +53,23 @@ DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : na
 
 
 DistanceWeightingFactory::~DistanceWeightingFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+
     m->erase(name_);
 }
 
 
 const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name,
                                                          const param::MIRParametrisation& param) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "DistanceWeightingFactory: looking for '" << name << "'" << std::endl;
 
     auto j = m->find(name);
     if (j == m->end()) {
-        list(Log::error() << "No DistanceWeightingFactory '" << name << "', choices are:\n");
-        throw exception::SeriousBug("No DistanceWeightingFactory '" + name + "'");
+        list(Log::error() << "DistanceWeightingFactory: unknown '" << name << "', choices are:\n");
+        throw exception::SeriousBug("DistanceWeightingFactory: unknown '" + name + "'");
     }
 
     return j->second->make(param);
@@ -78,8 +77,8 @@ const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name
 
 
 void DistanceWeightingFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

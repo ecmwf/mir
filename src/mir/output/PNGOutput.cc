@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <limits>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <utility>
 
@@ -25,9 +26,6 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/action/context/Context.h"
 #include "mir/action/io/Save.h"
@@ -191,18 +189,18 @@ void PNGOutput::print(std::ostream& out) const {
 
 static MIROutputBuilder<PNGOutput> output1("png", {".png"});
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex            = nullptr;
 static std::map<std::string, PNGEncoderFactory*>* m = nullptr;
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, PNGEncoderFactory*>();
 }
 
 PNGEncoderFactory::PNGEncoderFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("PNGEncoderFactory: duplicate '" + name + "'");
@@ -216,8 +214,8 @@ PNGEncoderFactory::~PNGEncoderFactory() = default;
 
 const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametrisation& param,
                                                       const data::MIRField& field) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("png-output-encoder", name = "8-bit/g");
@@ -238,8 +236,8 @@ const PNGOutput::PNGEncoder* PNGEncoderFactory::build(const param::MIRParametris
 }
 
 void PNGEncoderFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

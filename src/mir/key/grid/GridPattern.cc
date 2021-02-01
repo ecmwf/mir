@@ -13,10 +13,8 @@
 #include "mir/key/grid/GridPattern.h"
 
 #include <map>
+#include <mutex>
 #include <sstream>
-
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -27,18 +25,18 @@ namespace key {
 namespace grid {
 
 
-static eckit::Mutex* local_mutex              = nullptr;
+static std::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, GridPattern*>* m = nullptr;
-static pthread_once_t once                    = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, GridPattern*>();
 }
 
 
 GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_(pattern_) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern) == m->end());
     (*m)[pattern] = this;
@@ -46,8 +44,7 @@ GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_
 
 
 GridPattern::~GridPattern() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern_) != m->end());
     m->erase(pattern_);
@@ -55,8 +52,8 @@ GridPattern::~GridPattern() {
 
 
 void GridPattern::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -67,8 +64,8 @@ void GridPattern::list(std::ostream& out) {
 
 
 bool GridPattern::match(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 
@@ -88,8 +85,8 @@ bool GridPattern::match(const std::string& name) {
 
 
 const Grid& GridPattern::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 

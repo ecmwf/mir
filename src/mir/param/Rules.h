@@ -14,10 +14,9 @@
 #define mir_param_Rules_h
 
 #include <map>
+#include <mutex>
 #include <set>
 #include <string>
-
-#include "eckit/thread/Mutex.h"
 
 
 namespace mir {
@@ -56,8 +55,7 @@ public:
 private:
     // -- Members
 
-    eckit::Mutex mutex_;
-
+    std::mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
     std::set<long> warning_;

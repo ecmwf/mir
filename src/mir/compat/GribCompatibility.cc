@@ -12,8 +12,8 @@
 
 #include "mir/compat/GribCompatibility.h"
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
+#include <mutex>
+
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/util/Exceptions.h"
@@ -24,18 +24,18 @@ namespace mir {
 namespace compat {
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex            = nullptr;
 static std::map<std::string, GribCompatibility*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, GribCompatibility*>();
 }
 
 
 GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -43,8 +43,7 @@ GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
 
 
 GribCompatibility::~GribCompatibility() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
@@ -52,8 +51,8 @@ GribCompatibility::~GribCompatibility() {
 
 
 void GribCompatibility::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -61,6 +60,7 @@ void GribCompatibility::list(std::ostream& out) {
         sep = ", ";
     }
 }
+
 
 class CombinedGribCompatibility : public GribCompatibility {
 
@@ -108,7 +108,6 @@ class CombinedGribCompatibility : public GribCompatibility {
         out << "]";
     }
 
-
 public:
     CombinedGribCompatibility(const std::string& name, const std::vector<std::string>& names) :
         GribCompatibility(name) {
@@ -119,9 +118,10 @@ public:
     }
 };
 
+
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {

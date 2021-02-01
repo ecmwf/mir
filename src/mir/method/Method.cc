@@ -13,9 +13,8 @@
 #include "mir/method/Method.h"
 
 #include <map>
+#include <mutex>
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/util/Exceptions.h"
@@ -32,18 +31,18 @@ Method::Method(const param::MIRParametrisation& params) : parametrisation_(param
 Method::~Method() = default;
 
 
-static pthread_once_t once                      = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex        = nullptr;
 static std::map<std::string, MethodFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, MethodFactory*>();
 }
 
 
 MethodFactory::MethodFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("MethodFactory: duplicate '" + name + "'");
@@ -55,15 +54,15 @@ MethodFactory::MethodFactory(const std::string& name) : name_(name) {
 
 
 MethodFactory::~MethodFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 void MethodFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -74,8 +73,8 @@ void MethodFactory::list(std::ostream& out) {
 
 
 Method* MethodFactory::build(std::string& names, const param::MIRParametrisation& param) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     for (const auto& name : eckit::StringTools::split("/", names)) {
         Log::debug() << "MethodFactory: looking for '" << name << "'" << std::endl;
@@ -86,8 +85,8 @@ Method* MethodFactory::build(std::string& names, const param::MIRParametrisation
         }
     }
 
-    list(Log::error() << "MethodFactory: no valid options in '" << names << "', choices are: ");
-    throw exception::SeriousBug("MethodFactory: no valid options in '" + names + "'");
+    list(Log::error() << "MethodFactory: unknown '" << names << "', choices are: ");
+    throw exception::SeriousBug("MethodFactory: unknown '" + names + "'");
 }
 
 

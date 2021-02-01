@@ -16,9 +16,8 @@
 #include <cctype>
 #include <iostream>
 #include <map>
+#include <mutex>
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/GribFileMaskFromMIR.h"
@@ -46,13 +45,13 @@ static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_7("O640", "~mir/share/m
 static NamedMaskBuilder<GribFileMaskFromMIR> __NamedMask_8("O1280", "~mir/share/mir/masks/lsm.O1280.grib");
 
 
-static pthread_once_t once                         = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                   = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, NamedMaskFactory*>* m = nullptr;
 
 
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, NamedMaskFactory*>();
 }
 
@@ -85,8 +84,8 @@ std::string NamedLSM::cacheKey(const param::MIRParametrisation& param, const rep
 
 
 NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& path) : name_(sane(name)), path_(path) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name_) != m->end()) {
         throw exception::SeriousBug("NamedMaskFactory: duplicate '" + name + "'");
@@ -98,7 +97,7 @@ NamedMaskFactory::NamedMaskFactory(const std::string& name, const std::string& p
 
 
 NamedMaskFactory::~NamedMaskFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -106,8 +105,8 @@ NamedMaskFactory::~NamedMaskFactory() {
 
 Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repres::Representation& representation,
                               const std::string& which) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
@@ -126,8 +125,8 @@ Mask* NamedMaskFactory::build(const param::MIRParametrisation& param, const repr
 
 std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
                                        const repres::Representation& representation, const std::string& which) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     param.get("lsm-named-" + which, name) || param.get("lsm-named", name);
@@ -147,8 +146,8 @@ std::string NamedMaskFactory::cacheKey(const param::MIRParametrisation& param,
 
 
 void NamedMaskFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

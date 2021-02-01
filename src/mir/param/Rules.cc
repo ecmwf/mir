@@ -16,7 +16,6 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/param/SimpleParametrisation.h"
@@ -45,7 +44,7 @@ Rules::~Rules() {
 
 
 SimpleParametrisation& Rules::lookup(long paramId) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
@@ -57,8 +56,6 @@ SimpleParametrisation& Rules::lookup(long paramId) {
 
 
 const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-
     ASSERT(ruleName == PARAM_ID);
 
     MIRParametrisation& s = lookup(ruleValue);
