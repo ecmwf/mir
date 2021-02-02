@@ -18,6 +18,7 @@
 #include "eckit/testing/Test.h"
 
 #include "mir/action/misc/AreaCropper.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribMemoryInput.h"
 #include "mir/key/grid/Grid.h"
@@ -334,14 +335,16 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
             test_t{"O1280", {-10.017, -85, -38.981, -56}, 124577},
             test_t{"O1280", {-10.017, 275, -38.981, 304}, 124577}, test_t{"O1280", {-10, -85, -39, -56.1}, 124143},
 
+#if defined(mir_HAVE_ATLAS)
             // ECC-576
             test_t{"N256", {90, 0, -90, 359.6489}, 348528}, test_t{"N256", {90, 0, -90, 359.9}, 348528},
             test_t{"N640", {90, 0, -90, 359.9}, 2140702}, test_t{"N640", {90, 0, -90, 359.99}, 2140702},
             test_t{"N640", {90, -180, -90, 179.99}, 2140702}, test_t{"O640", {90, 0, -90, 359.999}, 1661440},
+#endif
 
-        // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
 #if 0
              // MIR-390: resolution triggers these
+             // FIXME: issues decoding with MIR, because West/East converted to fraction go "inwards"
              test_t{"O1280", {37.6025, -114.891, 27.7626, -105.188}, 12369},
              test_t{"O1280", {27.9, 253, 27.8, 254}, 19},
              test_t{"O1280", {37.5747, 245.109, 27.8032, 254.812}, 12274},

@@ -7,9 +7,13 @@ foreach(_t
 #    MIR-333
     MIR-425
     action_graph
+    bounding_box
+    gaussian_grid
+    grib_encoding
     increments
     iterator
     spectral_order
+    style
     wind)
     ecbuild_add_test(
         TARGET            mir_tests_unit_${_t}
@@ -17,22 +21,6 @@ foreach(_t
         LIBS              mir
         ENVIRONMENT       ${_testEnvironment}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endforeach()
-
-foreach(_t
-    bounding_box
-    gaussian_grid
-    grib_encoding
-    style)
-    ecbuild_add_test(
-        TARGET            mir_tests_unit_${_t}
-        SOURCES           ${_t}.cc
-        LIBS              mir
-        ENVIRONMENT       ${_testEnvironment}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    if(NOT mir_HAVE_ATLAS)
-        set_tests_properties(mir_tests_unit_${_t} PROPERTIES DISABLED TRUE)
-    endif()
 endforeach()
 
 if(mir_HAVE_ATLAS)

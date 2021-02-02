@@ -21,6 +21,7 @@
 #include "mir/action/calc/FormulaAction.h"
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionPlan.h"
+#include "mir/api/mir_config.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
 #include "mir/key/style/MIRStyle.h"
@@ -107,7 +108,11 @@ CASE("ECMWFStyle") {
         const action::FormulaAction CORRECT_ACTION(p4);
 
 
+#if defined(mir_HAVE_ATLAS)
         for (bool input_gridded : _yes_no) {
+#else
+        for (bool input_gridded : {true}) {
+#endif
             TestingInput in(input_gridded);
 
             for (bool output_gridded : _yes_no) {

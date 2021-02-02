@@ -15,6 +15,7 @@
 
 #include "eckit/testing/Test.h"
 
+#include "mir/api/mir_config.h"
 #include "mir/key/grid/Grid.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/BoundingBox.h"
@@ -303,7 +304,11 @@ CASE("Representation::extendBoundingBox") {
 
     SECTION("Gaussian") {
 
-        std::vector<std::string> _name{"F16", "O16", "N16", "F21", "O21"};
+        std::vector<std::string> _name{"F16", "O16", "F21", "O21"};
+#if defined(mir_HAVE_ATLAS)
+        _name.emplace_back("N16");
+#endif
+
         std::vector<BoundingBox> _bbox{{90, 10, -10, 9}, {90, -350, -10, 9}, {-70, -10, -90, 10},
                                        {0, -350, 0, 9},  {60, -350, 20, 9},  {90, -10, 70, 10}};
 
