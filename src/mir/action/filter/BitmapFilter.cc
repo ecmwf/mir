@@ -61,9 +61,9 @@ util::Bitmap& BitmapFilter::bitmap() const {
         return *j;
     }
 
-    auto bitmap = new util::Bitmap(path_);
-    cache.footprint(path_, caching::InMemoryCacheUsage(bitmap->footprint(), 0));
-    return cache.insert(path_, bitmap);
+    auto& bitmap = cache.insert(path_, new util::Bitmap(path_));
+    cache.footprint(path_, caching::InMemoryCacheUsage(bitmap.footprint(), 0));
+    return bitmap;
 }
 
 
