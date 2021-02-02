@@ -16,8 +16,6 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/grid/NamedFromFile.h"
@@ -30,11 +28,11 @@ namespace key {
 namespace grid {
 
 
-static std::map<std::string, Grid*>* m = nullptr;
-static pthread_once_t once             = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex       = nullptr;
+static std::once_flag once;
+static std::map<std::string, Grid*>* m   = nullptr;
+static std::recursive_mutex* local_mutex = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, Grid*>();
 }
 
@@ -74,8 +72,8 @@ static void read_configuration_files() {
 
 
 Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     ASSERT(m->find(key) == m->end());
     (*m)[key] = this;
@@ -83,8 +81,8 @@ Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridT
 
 
 Grid::~Grid() {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(mutex_);
 
     ASSERT(m->find(key_) != m->end());
     m->erase(key_);
@@ -92,8 +90,8 @@ Grid::~Grid() {
 
 
 void Grid::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -140,8 +138,8 @@ size_t Grid::gaussianNumber() const {
 
 
 const Grid& Grid::lookup(const std::string& key) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 
@@ -159,14 +157,14 @@ const Grid& Grid::lookup(const std::string& key) {
         return GridPattern::lookup(key);
     }
 
-    list(Log::error() << "No Grid '" << key << "', choices are:\n");
-    throw exception::SeriousBug("No Grid '" + key + "'");
+    list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");
+    throw exception::SeriousBug("Grid: unknown '" + key + "'");
 }
 
 
 bool Grid::known(const std::string& key) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 

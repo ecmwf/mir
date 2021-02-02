@@ -153,9 +153,10 @@ void Rules::readConfigurationFiles() {
         for (long paramId : paramIds) {
             SimpleParametrisation& pidConfig = Rules::lookup(paramId);
 
-            std::string klasses;
-            klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
-            pidConfig.set(KLASS, klasses);
+            std::string klasses = klass;
+            if (pidConfig.get(KLASS, klasses)) {
+                klasses.insert(0, klass + ", ");
+            }
 
             for (const auto& j : klassConfig) {
                 const std::string& keyName  = j.first;
@@ -208,8 +209,8 @@ void Rules::readConfigurationFiles() {
         SimpleParametrisation& config = Rules::lookup(paramId);
 
         const eckit::ValueList& options = i.second;
-        for (const eckit::ValueMap j : options) {
-            for (const auto& k : j) {
+        for (auto& j : options) {
+            for (const auto& k : eckit::ValueMap(j)) {
                 const std::string& name  = k.first;
                 const std::string& value = k.second;
                 config.set(name, value);

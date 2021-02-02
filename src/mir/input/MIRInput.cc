@@ -14,10 +14,9 @@
 
 #include <cstdio>
 #include <iomanip>
+#include <mutex>
 
 #include "eckit/io/StdFile.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
@@ -85,18 +84,18 @@ size_t MIRInput::dimensions() const {
 }
 
 
-static pthread_once_t once                          = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                    = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex            = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<unsigned long, MIRInputFactory*>();
 }
 
 
 MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(magic) != m->end()) {
         std::ostringstream oss;
@@ -109,7 +108,7 @@ MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
 
 
 MIRInputFactory::~MIRInputFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     m->erase(magic_);
 }
@@ -133,8 +132,8 @@ static void put(std::ostream& out, unsigned long magic) {
 
 
 MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const param::MIRParametrisation& user = parametrisation.userParametrisation();
 
@@ -187,8 +186,8 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
 
 void MIRInputFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

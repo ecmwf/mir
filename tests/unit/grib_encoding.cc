@@ -11,11 +11,11 @@
 
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
 #include "eckit/testing/Test.h"
-#include "eckit/thread/AutoLock.h"
 
 #include "mir/action/misc/AreaCropper.h"
 #include "mir/data/MIRField.h"
@@ -37,8 +37,7 @@ using input::MIRInput;
 using repres::RepresentationHandle;
 using util::BoundingBox;
 
-static eckit::Mutex local_mutex;
-
+static std::recursive_mutex local_mutex;
 static std::vector<bool> _yes_no{true, false};
 static std::vector<long> _one_two{1, 2};
 
@@ -60,7 +59,7 @@ class EncodeTest {
 
 protected:
     grib_handle* gribHandle(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         ASSERT(edition == 1 || edition == 2);
         grib_handle*& handle(edition == 1 ? grib1Handle_ : grib2Handle_);
@@ -103,7 +102,7 @@ protected:
     }
 
     const MIRInput& gribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         ASSERT(edition == 1 || edition == 2);
         MIRInput*& input(edition == 1 ? grib1Input_ : grib2Input_);
@@ -130,7 +129,7 @@ public:
         grib2Input_(nullptr) {}
 
     virtual ~EncodeTest() {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
         grib_handle_delete(grib1Handle_);
         grib_handle_delete(grib2Handle_);
         delete grib1Input_;
@@ -143,7 +142,7 @@ public:
     virtual size_t numberOfValues() const = 0;
 
     size_t numberOfValuesEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "numberOfValues", &n);
@@ -153,7 +152,7 @@ public:
     }
 
     size_t numberOfValuesFromGribIterator(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         int err   = 0;
         auto iter = grib_iterator_new(gribHandle(edition), 0, &err);
@@ -172,7 +171,7 @@ public:
     }
 
     bool compareCoordinates(long edition, double toleranceLat, double toleranceLon) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         std::unique_ptr<repres::Iterator> iter_m(representation_->iterator());
 
@@ -204,8 +203,6 @@ public:
 
 #if 0
     size_t numberOfValuesFromGribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->numberOfPoints();
     }
@@ -213,7 +210,7 @@ public:
 
 #if 0
     BoundingBox boundingBoxEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         grib_handle* handle = gribHandle(edition);
         ASSERT(handle);
@@ -229,8 +226,6 @@ public:
 #endif
 
     BoundingBox boundingBoxFromGribInput(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
         RepresentationHandle rep = gribInput(edition).field().representation();
         return rep->boundingBox();
     }
@@ -275,7 +270,7 @@ public:
     ~EncodeRegular() override = default;
 
     size_t NiEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "Ni", &n);
@@ -285,7 +280,7 @@ public:
     }
 
     size_t NjEncodedInGrib(long edition) {
-        eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+        std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
         long n = 0;
         grib_get_long(gribHandle(edition), "Nj", &n);
@@ -545,7 +540,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     // GRIB1/GRIB2 encoding
     for (bool remove : _yes_no) {
         for (long edition : _one_two) {
-            eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+            std::lock_guard<std::recursive_mutex> lock(local_mutex);
 
             // initialise a new grib handle from samples
             grib_handle* handle(nullptr);

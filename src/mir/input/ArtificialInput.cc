@@ -13,11 +13,10 @@
 #include "mir/input/ArtificialInput.h"
 
 #include <iomanip>
+#include <mutex>
 #include <sstream>
 
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Once.h"
 
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
@@ -29,12 +28,11 @@ namespace mir {
 namespace input {
 
 
-static const param::SimpleParametrisation empty;
-static pthread_once_t once                               = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex                         = nullptr;
+static std::once_flag once;
+static std::recursive_mutex* local_mutex                 = nullptr;
 static std::map<std::string, ArtificialInputFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::recursive_mutex();
     m           = new std::map<std::string, ArtificialInputFactory*>();
 }
 
@@ -185,8 +183,8 @@ bool ArtificialInput::get(const std::string& name, std::vector<std::string>& val
 
 
 ArtificialInputFactory::ArtificialInputFactory(const std::string& name) : name_(name) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         std::ostringstream oss;
@@ -199,14 +197,14 @@ ArtificialInputFactory::ArtificialInputFactory(const std::string& name) : name_(
 
 
 ArtificialInputFactory::~ArtificialInputFactory() {
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
     m->erase(name_);
 }
 
 
 ArtificialInput* ArtificialInputFactory::build(const std::string& name, const param::MIRParametrisation& param) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "ArtificialInputFactory: looking for '" << name << "'" << std::endl;
 
@@ -221,8 +219,8 @@ ArtificialInput* ArtificialInputFactory::build(const std::string& name, const pa
 
 
 void ArtificialInputFactory::list(std::ostream& out) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

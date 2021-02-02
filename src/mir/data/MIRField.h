@@ -15,9 +15,8 @@
 
 #include <iosfwd>
 #include <map>
+#include <mutex>
 #include <string>
-
-#include "eckit/thread/Mutex.h"
 
 #include "mir/data/MIRValuesVector.h"
 
@@ -127,7 +126,7 @@ protected:
 private:
     // -- Members
 
-    mutable eckit::Mutex mutex_;
+    mutable std::mutex mutex_;
     Field* field_;
 
     // -- Methods

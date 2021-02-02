@@ -12,9 +12,9 @@
 
 #include "mir/lsm/Mask.h"
 
+#include <mutex>
+
 #include "eckit/filesystem/PathName.h"
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/NoneLSM.h"
@@ -30,11 +30,11 @@ namespace mir {
 namespace lsm {
 
 
-static eckit::Mutex* local_mutex           = nullptr;
+static std::mutex* local_mutex             = nullptr;
 static std::map<std::string, Mask*>* cache = nullptr;
-static pthread_once_t once                 = PTHREAD_ONCE_INIT;
+static std::once_flag once;
 static void init() {
-    local_mutex = new eckit::Mutex();
+    local_mutex = new std::mutex();
     cache       = new std::map<std::string, Mask*>();
 }
 
@@ -83,23 +83,22 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
         }
     }
 
-    const LSMSelection& chooser = LSMSelection::lookup(name);
-    std::string key             = chooser.cacheKey(parametrisation, representation, which);
+    auto& chooser   = LSMSelection::lookup(name);
+    std::string key = chooser.cacheKey(parametrisation, representation, which);
 
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    {
+        // To protect cache
+        std::call_once(once, init);
+        std::lock_guard<std::mutex> lock(*local_mutex);
 
-    Log::debug() << "Mask::lookup(" << key << ")" << std::endl;
-    auto j = cache->find(key);
-    if (j != cache->end()) {
-        return *(j->second);
+        Log::debug() << "Mask::lookup(" << key << ")" << std::endl;
+        auto j = cache->find(key);
+        if (j != cache->end()) {
+            return *(j->second);
+        }
+
+        return *((*cache)[key] = chooser.create(parametrisation, representation, which));
     }
-
-    Mask* mask = chooser.create(parametrisation, representation, which);
-
-    (*cache)[key] = mask;
-
-    return *(*cache)[key];
 }
 
 
@@ -117,8 +116,8 @@ Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation,
 
 static bool same(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2,
                  const std::string& /*which*/) {
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
+    std::call_once(once, init);
+    std::lock_guard<std::mutex> lock(*local_mutex);
 
     // Check 'master' lsm key
     bool lsm1 = false;

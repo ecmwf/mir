@@ -14,6 +14,7 @@
 #define mir_key_grid_Grid_h
 
 #include <iosfwd>
+#include <mutex>
 #include <string>
 
 
@@ -119,6 +120,7 @@ private:
     // -- Members
 
     grid_t gridType_;
+    mutable std::mutex mutex_;
 
     // -- Methods
     // None

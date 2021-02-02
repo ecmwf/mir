@@ -17,8 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include "eckit/thread/Mutex.h"
-
 
 namespace mir {
 namespace param {
@@ -90,7 +88,6 @@ private:
 
     // -- Members
 
-    eckit::Mutex mutex_;
     std::vector<fix_t> fixes_;
 
     // -- Methods

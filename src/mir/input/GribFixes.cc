@@ -12,12 +12,12 @@
 
 #include "mir/input/GribFixes.h"
 
+#include <mutex>
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/JSON.h"
 #include "eckit/parser/YAMLParser.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/utils/StringTools.h"
 
 #include "mir/param/SimpleParametrisation.h"
@@ -43,13 +43,13 @@ GribFixes::~GribFixes() {
 
 
 bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
-    auto& log = Log::warning();
+    static std::mutex mtx;
+    std::lock_guard<std::mutex> lock(mtx);
 
     for (auto& f : fixes_) {
         if ((f.first)->matches(input)) {
             ASSERT(f.second);
-            log << "GribFixes: applying fixes " << *(f.second) << std::endl;
+            Log::warning() << "GribFixes: applying fixes " << *(f.second) << std::endl;
             f.second->copyValuesTo(fixed);
             return true;
         }
@@ -72,7 +72,8 @@ void GribFixes::print(std::ostream& s) const {
 
 
 void GribFixes::readConfigurationFiles() {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    static std::mutex mtx;
+    std::lock_guard<std::mutex> lock(mtx);
 
     using eckit::StringTools;
 
@@ -108,8 +109,8 @@ void GribFixes::readConfigurationFiles() {
         auto fix = new param::SimpleParametrisation;
         ASSERT(fix);
 
-        for (eckit::ValueMap fixes : static_cast<const eckit::ValueList&>(rule.second)) {
-            for (const auto& keyValue : fixes) {
+        for (auto& fixes : static_cast<const eckit::ValueList&>(rule.second)) {
+            for (const auto& keyValue : eckit::ValueMap(fixes)) {
                 auto key = StringTools::trim(keyValue.first);
 
                 // value type checking prevents lossy conversions (eg. string > double > string > double)
