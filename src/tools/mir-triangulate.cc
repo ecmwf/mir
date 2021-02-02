@@ -253,9 +253,6 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
 #endif
 
 void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
-    using LLCOORDS::LAT;
-    using LLCOORDS::LON;
-
     std::string output = args.getString("output", "");
     // bool alternate     = args.getBool("alternate", false);
 
@@ -330,15 +327,15 @@ void MIRTriangulate::execute(const eckit::option::CmdArgs& args) {
 
 
                 auto row0 = row(0);
-                Point2 p0(coord(row0, LON), coord(row0, LAT));
+                Point2 p0(coord(row0, LLCOORDS::LON), coord(row0, LLCOORDS::LAT));
                 // double val0 = values[row0];
 
                 auto row1 = row(1);
-                Point2 p1(coord(row1, LON), coord(row1, LAT));
+                Point2 p1(coord(row1, LLCOORDS::LON), coord(row1, LLCOORDS::LAT));
                 // double val1 = values[row1];
 
                 auto row2 = row(2);
-                Point2 p2(coord(row2, LON), coord(row2, LAT));
+                Point2 p2(coord(row2, LLCOORDS::LON), coord(row2, LLCOORDS::LAT));
                 // double val2 = values[row2];
                 // p(n, p0, val0, p1, val1, p2, val2);
 
