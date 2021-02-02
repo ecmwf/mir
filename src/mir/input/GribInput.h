@@ -13,7 +13,7 @@
 #ifndef mir_input_GribInput_h
 #define mir_input_GribInput_h
 
-#include "eckit/thread/Mutex.h"
+#include <mutex>
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
@@ -41,7 +41,7 @@ private:
 
     param::CachedParametrisation cache_;
 
-    mutable eckit::Mutex mutex_;
+    mutable std::recursive_mutex mutex_;
     grib_handle* grib_;
 
     // For unstructured grids

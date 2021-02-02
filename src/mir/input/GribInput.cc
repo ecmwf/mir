@@ -24,7 +24,6 @@
 #include "eckit/io/StdFile.h"
 #include "eckit/parser/YAMLParser.h"
 #include "eckit/serialisation/HandleStream.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
 
@@ -624,7 +623,7 @@ const param::MIRParametrisation& GribInput::parametrisation(size_t which) const 
 data::MIRField GribInput::field() const {
 
     // Protect the grib_handle, as eccodes may update its internals
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
 
@@ -739,7 +738,7 @@ data::MIRField GribInput::field() const {
 
 
 grib_handle* GribInput::gribHandle(size_t which) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(which == 0);
     return grib_;
@@ -747,7 +746,7 @@ grib_handle* GribInput::gribHandle(size_t which) const {
 
 
 bool GribInput::has(const std::string& name) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -764,7 +763,7 @@ bool GribInput::has(const std::string& name) const {
 
 
 bool GribInput::get(const std::string& name, bool& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -804,7 +803,7 @@ bool GribInput::get(const std::string& name, int& value) const {
 
 
 bool GribInput::get(const std::string& name, long& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -839,7 +838,7 @@ bool GribInput::get(const std::string& name, float& value) const {
 
 
 bool GribInput::get(const std::string& name, double& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -870,7 +869,7 @@ bool GribInput::get(const std::string&, std::vector<int>&) const {
 
 
 bool GribInput::get(const std::string& name, std::vector<long>& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -931,7 +930,7 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
 
 
 bool GribInput::get(const std::string& name, std::string& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -970,7 +969,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
 
 bool GribInput::get(const std::string& name, std::vector<double>& value) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -1019,7 +1018,7 @@ bool GribInput::get(const std::string&, std::vector<std::string>&) const {
 
 
 bool GribInput::handle(grib_handle* h) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     FieldParametrisation::reset();
     cache_.reset();
@@ -1045,7 +1044,7 @@ bool GribInput::handle(grib_handle* h) {
 
 
 void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     eckit::AutoStdFile f(path);
 
@@ -1080,7 +1079,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
 
 void GribInput::setAuxiliaryInformation(const std::string& yaml) {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     eckit::ValueMap keyValue = eckit::YAMLParser::decodeString(yaml);
     for (const auto& kv : keyValue) {
@@ -1100,7 +1099,7 @@ bool GribInput::only(size_t paramId) {
     auto paramIdOnly = long(paramId);
 
     while (next()) {
-        eckit::AutoLock<eckit::Mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
 
         ASSERT(grib_);
 
@@ -1124,7 +1123,7 @@ size_t GribInput::dimensions() const {
 
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double>& values) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     values.clear();
     values.reserve(latitudes_.size());
@@ -1133,7 +1132,7 @@ void GribInput::latitudes(std::vector<double>& values) const {
 
 
 void GribInput::longitudes(std::vector<double>& values) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     values.clear();
     values.reserve(longitudes_.size());
@@ -1142,7 +1141,7 @@ void GribInput::longitudes(std::vector<double>& values) const {
 
 
 void GribInput::marsRequest(std::ostream& out) const {
-    eckit::AutoLock<eckit::Mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
 

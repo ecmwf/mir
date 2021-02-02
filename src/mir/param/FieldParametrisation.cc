@@ -12,9 +12,6 @@
 
 #include "mir/param/FieldParametrisation.h"
 
-#include "eckit/thread/AutoLock.h"
-#include "eckit/thread/Mutex.h"
-
 #include "mir/param/Rules.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -22,15 +19,6 @@
 
 namespace mir {
 namespace param {
-
-
-static Rules fileRules;
-static pthread_once_t once       = PTHREAD_ONCE_INIT;
-static eckit::Mutex* local_mutex = nullptr;
-static void init() {
-    local_mutex = new eckit::Mutex();
-    fileRules.readConfigurationFiles();
-}
 
 
 FieldParametrisation::FieldParametrisation() : paramId_(-1) {}
@@ -142,10 +130,6 @@ void FieldParametrisation::reset() {
 
 template <class T>
 bool FieldParametrisation::_get(const std::string& name, T& value) const {
-
-    pthread_once(&once, init);
-    eckit::AutoLock<eckit::Mutex> lock(local_mutex);
-
     static std::string PARAM_ID("paramId");
 
     ASSERT(name != PARAM_ID);
@@ -161,7 +145,8 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
         return false;
     }
 
-    return fileRules.lookup(PARAM_ID, paramId_).get(name, value);
+    static Rules rules;
+    return rules.lookup(PARAM_ID, paramId_).get(name, value);
 }
 
 

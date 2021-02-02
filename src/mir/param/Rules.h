@@ -48,20 +48,17 @@ public:
 
     const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
 
-    // -- Methods
-
-    void readConfigurationFiles();
-
 private:
     // -- Members
 
-    std::mutex mutex_;
+    std::recursive_mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
     std::set<long> warning_;
 
     // -- Methods
 
+    void readConfigurationFiles();
     SimpleParametrisation& lookup(long paramId);
     virtual void print(std::ostream&) const;
 

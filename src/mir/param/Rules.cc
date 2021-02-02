@@ -33,7 +33,9 @@ static const std::string WARNING("_warning");
 static const std::string DEFAULT("_default");
 
 
-Rules::Rules() = default;
+Rules::Rules() {
+    readConfigurationFiles();
+}
 
 
 Rules::~Rules() {
@@ -44,7 +46,7 @@ Rules::~Rules() {
 
 
 SimpleParametrisation& Rules::lookup(long paramId) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {
@@ -101,6 +103,7 @@ void Rules::print(std::ostream& s) const {
 
 
 void Rules::readConfigurationFiles() {
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     eckit::Translator<std::string, long> translate_to_long;
     eckit::Translator<std::string, bool> translate_to_bool;
