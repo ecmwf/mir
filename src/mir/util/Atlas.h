@@ -91,6 +91,7 @@ struct Domain {
     inline double west() const { return lon_.min_; }
     inline double east() const { return lon_.max_; }
     bool zonal_band() const;
+    bool global() const;
     bool operator==(const Domain&) const;
     operator bool() const { return true; }
 };

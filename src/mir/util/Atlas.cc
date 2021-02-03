@@ -17,6 +17,7 @@
 
 #include <algorithm>
 
+#include "eckit/types/FloatCompare.h"
 #include "eckit/utils/Translator.h"
 
 #include "mir/util/Exceptions.h"
@@ -38,7 +39,13 @@ Domain::Domain(Domain::Range&& lon, Domain::Range&& lat, const std::string&) : l
 
 
 bool Domain::zonal_band() const {
-    return mir::Longitude(east() - west()) == mir::Longitude::GLOBE;
+    return eckit::types::is_approximately_equal(east() - west(), mir::Longitude::GLOBE.value());
+}
+
+
+bool Domain::global() const {
+    return eckit::types::is_approximately_equal(south(), mir::Latitude::SOUTH_POLE.value()) &&
+           eckit::types::is_approximately_equal(north(), mir::Latitude::NORTH_POLE.value()) && zonal_band();
 }
 
 
