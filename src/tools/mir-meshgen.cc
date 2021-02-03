@@ -14,12 +14,9 @@
 #include <memory>
 #include <sstream>
 
-#include "eckit/log/Log.h"
-#include "eckit/log/Timer.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
 
-#include "mir/api/Atlas.h"
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
@@ -27,20 +24,25 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Atlas.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Trace.h"
 
 #include "mir/caching/InMemoryMeshCache.h"
 #include "mir/util/MIRStatistics.h"
 
 
-class MIRMeshGen : public mir::tools::MIRTool {
+using namespace mir;
+
+
+class MIRMeshGen : public tools::MIRTool {
 private:
     void execute(const eckit::option::CmdArgs&);
     void usage(const std::string& tool) const;
     int minimumPositionalArguments() const { return 0; }
 
 public:
-    MIRMeshGen(int argc, char** argv) : mir::tools::MIRTool(argc, argv) {
+    MIRMeshGen(int argc, char** argv) : tools::MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<std::string>("mesh-generator", "Mesh generator"));
@@ -76,11 +78,11 @@ public:
 
 
 void MIRMeshGen::usage(const std::string& tool) const {
-    eckit::Log::info() << "\nMesh generation, writing .msh files from input GRIBs."
-                          "\n"
-                          "\nUsage:"
-                          "\n\t"
-                       << tool << " [--mesh-generator=delaunay] [...] file.grib [file.grib [...]]" << std::endl;
+    Log::info() << "\nMesh generation, writing .msh files from input GRIBs."
+                   "\n"
+                   "\nUsage:"
+                   "\n\t"
+                << tool << " [--mesh-generator=delaunay] [...] file.grib [file.grib [...]]" << std::endl;
 }
 
 
@@ -95,7 +97,7 @@ eckit::PathName get_path(const eckit::PathName& base, std::string ext, bool over
 }
 
 
-void write_values(const mir::data::MIRField& field, atlas::output::Output out) {
+void write_values(const data::MIRField& field, atlas::output::Output out) {
     for (size_t which = 0; which < field.dimensions(); ++which) {
         auto& v = field.values(which);
         atlas::Field f("values", const_cast<double*>(v.data()), atlas::array::make_shape(v.size()));
@@ -109,13 +111,11 @@ void write_values(const mir::data::MIRField& field, atlas::output::Output out) {
 
 
 void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
-    using namespace mir::param;
-
 
     // Setup options
-    static DefaultParametrisation defaults;
-    const ConfigurationWrapper commandLine(args);
-    mir::util::MIRStatistics statistics;
+    static param::DefaultParametrisation defaults;
+    const param::ConfigurationWrapper commandLine(args);
+    util::MIRStatistics statistics;
 
     auto overwrite       = args.getBool("overwrite", true);
     auto write           = args.getString("write", "mesh-and-values");
@@ -132,8 +132,8 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
     for (size_t a = 0; a < args.count(); ++a) {
         eckit::PathName path = args(a);
 
-        for (std::unique_ptr<mir::input::MIRInput> input(new mir::input::GribFileInput(path)); input->next();) {
-            const CombinedParametrisation param(commandLine, input->parametrisation(), defaults);
+        for (std::unique_ptr<input::MIRInput> input(new input::GribFileInput(path)); input->next();) {
+            const param::CombinedParametrisation param(commandLine, input->parametrisation(), defaults);
 
             // Creating grid
             auto field = input->field();
@@ -141,24 +141,24 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
             atlas::Mesh mesh;
 
             if (writeMesh) {
-                mir::repres::RepresentationHandle rep(field.representation());
+                repres::RepresentationHandle rep(field.representation());
 
                 atlas::Grid grid;
                 {
-                    eckit::Timer time("Creating grid");
+                    trace::Timer time("Creating grid");
                     grid = rep->atlasGrid();
                 }
 
 
                 // Generating mesh
-                mir::util::MeshGeneratorParameters meshGenParams(param);
+                util::MeshGeneratorParameters meshGenParams(param);
                 rep->fill(meshGenParams);
                 meshGenParams.set("invalid_quads", args.getBool("mesh-generator-invalid-quads", false));
                 eckit::Log::info() << meshGenParams << std::endl;
 
                 {
-                    eckit::Timer time("Generating mesh");
-                    mesh = mir::caching::InMemoryMeshCache::atlasMesh(statistics, grid, meshGenParams);
+                    trace::Timer time("Generating mesh");
+                    mesh = caching::InMemoryMeshCache::atlasMesh(statistics, grid, meshGenParams);
                 }
             }
 
@@ -166,14 +166,14 @@ void MIRMeshGen::execute(const eckit::option::CmdArgs& args) {
             if (writeSeparately) {
                 auto a = get_path(path, ".msh", overwrite);
                 auto b = get_path(path, ".values.msh", overwrite);
-                eckit::Timer time("Writing '" + a + "' and '" + b + "'");
+                trace::Timer time("Writing '" + a + "' and '" + b + "'");
 
                 atlas::output::Gmsh(a, config).write(mesh);
                 write_values(field, atlas::output::Gmsh(b, config));
             }
             else {
                 auto out = get_path(path, ".msh", overwrite);
-                eckit::Timer time("Writing '" + out + "'");
+                trace::Timer time("Writing '" + out + "'");
                 atlas::output::Gmsh gmsh(out, config);
 
                 if (writeMesh) {
