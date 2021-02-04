@@ -131,6 +131,8 @@ list(APPEND mir_srcs
     caching/MeshCache.h
     caching/WeightCache.cc
     caching/WeightCache.h
+    caching/legendre/LegendreLoader.cc
+    caching/legendre/LegendreLoader.h
     caching/matrix/FileLoader.cc
     caching/matrix/FileLoader.h
     caching/matrix/MatrixLoader.cc
@@ -718,8 +720,6 @@ if(mir_HAVE_ATLAS)
         caching/LegendreCache.h
         caching/legendre/FileLoader.cc
         caching/legendre/FileLoader.h
-        caching/legendre/LegendreLoader.cc
-        caching/legendre/LegendreLoader.h
         caching/legendre/MappedMemoryLoader.cc
         caching/legendre/MappedMemoryLoader.h
         caching/legendre/NoLoader.cc

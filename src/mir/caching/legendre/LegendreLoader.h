@@ -21,6 +21,12 @@
 #include "mir/util/Types.h"
 
 
+namespace atlas {
+namespace trans {
+class LegendreCache;
+}
+}  // namespace atlas
+
 namespace mir {
 namespace param {
 class MIRParametrisation;
@@ -46,7 +52,7 @@ public:
     virtual size_t size() const         = 0;
     virtual bool inSharedMemory() const = 0;
 
-    atlas::trans::LegendreCache transCache() { return atlas::trans::LegendreCache(address(), size()); }
+    atlas::trans::LegendreCache transCache();
 
 protected:
     const param::MIRParametrisation& parametrisation_;

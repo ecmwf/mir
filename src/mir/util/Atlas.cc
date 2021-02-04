@@ -147,4 +147,9 @@ GaussianGrid::GaussianGrid(const std::vector<long>& pl, const Domain& domain) {
 UnstructuredGrid::UnstructuredGrid(std::vector<PointXY>&& points) : points_(points) {}
 
 
+trans::LegendreCache::LegendreCache(const void*, size_t) {
+    NOTIMP;
+}
+
+
 }  // namespace atlas

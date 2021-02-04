@@ -32,6 +32,11 @@ LegendreLoader::LegendreLoader(const param::MIRParametrisation& parametrisation,
 LegendreLoader::~LegendreLoader() = default;
 
 
+atlas::trans::LegendreCache LegendreLoader::transCache() {
+    return {address(), size()};
+}
+
+
 static std::once_flag once;
 static std::recursive_mutex* local_mutex                = nullptr;
 static std::map<std::string, LegendreLoaderFactory*>* m = nullptr;

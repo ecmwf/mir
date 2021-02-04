@@ -257,6 +257,13 @@ using RegularGaussianGrid = GaussianGrid;
 using ReducedGaussianGrid = GaussianGrid;
 
 
+namespace trans {
+struct LegendreCache {
+    LegendreCache(const void*, size_t);
+};
+}  // namespace trans
+
+
 }  // namespace atlas
 
 
