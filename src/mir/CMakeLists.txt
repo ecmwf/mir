@@ -11,15 +11,8 @@ install(
     DESTINATION ${INSTALL_INCLUDE_DIR}/mir/api)
 
 
-ecbuild_add_library(
-    TARGET             mir
-    INSTALL_HEADERS    LISTED
-    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
-    GENERATED          api/mir_version.cc
-    TEMPLATES          caching/InMemoryCache.cc
-    PUBLIC_LIBS        atlas eckit_linalg eckit_geometry eckit_option eckit eccodes
-    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
-    SOURCES
+unset(mir_srcs)
+list(APPEND mir_srcs
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -674,8 +667,7 @@ ecbuild_add_library(
 
 
 if(mir_HAVE_ATLAS)
-    target_link_libraries(mir PUBLIC atlas)
-    target_sources(mir PRIVATE
+    list(APPEND mir_srcs
         action/filter/NablaFilterFVMT.cc
         action/filter/NablaFilterFVMT.h
         action/transform/InvtransScalar.cc
@@ -757,13 +749,12 @@ if(mir_HAVE_ATLAS)
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
-    target_sources(mir PRIVATE util/Atlas.cc)
+    list(APPEND mir_srcs util/Atlas.cc)
 endif()
 
 
 if(mir_HAVE_NETCDF)
-    target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
-    target_sources(mir PRIVATE
+    list(APPEND mir_srcs
         input/NetcdfFileInput.cc
         input/NetcdfFileInput.h
         netcdf/Attribute.cc
@@ -897,7 +888,26 @@ if(mir_HAVE_NETCDF)
 endif()
 
 if(mir_HAVE_PNG)
+    list(APPEND mir_srcs output/PNGOutput.h output/PNGOutput.cc)
+endif()
+
+ecbuild_add_library(
+    TARGET             mir
+    INSTALL_HEADERS    LISTED
+    HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/mir
+    GENERATED          api/mir_version.cc
+    TEMPLATES          caching/InMemoryCache.cc
+    PUBLIC_LIBS        eckit_linalg eckit_geometry eckit_option eckit eccodes
+    PUBLIC_INCLUDES    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+    SOURCES            ${mir_srcs})
+
+if(mir_HAVE_ATLAS)
+    target_link_libraries(mir PUBLIC atlas)
+endif()
+if(mir_HAVE_NETCDF)
+    target_link_libraries(mir PRIVATE NetCDF::NetCDF_C)
+endif()
+if(mir_HAVE_PNG)
     target_link_libraries(mir PRIVATE PNG::PNG)
-    target_sources(mir PRIVATE output/PNGOutput.h output/PNGOutput.cc)
 endif()
 
