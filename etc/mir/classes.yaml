@@ -142,25 +142,20 @@ spectrum.associated-magnitude:
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
 
-# ORCA grid subtype F
-orca.f_grid:
-    orca-grid-subtype: F
+orca.staggering.f:
+    orca-staggering: F
 
-# ORCA grid subtype T
-orca.t_grid:
-    orca-grid-subtype: T
+orca.staggering.t:
+    orca-staggering: T
 
-# ORCA grid subtype U
-orca.u_grid:
-    orca-grid-subtype: U
+orca.staggering.u:
+    orca-staggering: U
 
-# ORCA grid subtype V
-orca.v_grid:
-    orca-grid-subtype: V
+orca.staggering.v:
+    orca-staggering: V
 
-# ORCA grid subtype W
-orca.w_grid:
-    orca-grid-subtype: W
+orca.staggering.w:
+    orca-staggering: W
 
 unknown.experimental:
     _warning: true

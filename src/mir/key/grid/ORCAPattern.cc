@@ -48,7 +48,7 @@ void ORCAPattern::print(std::ostream& out) const {
 const Grid* ORCAPattern::make(const std::string& name, const param::MIRParametrisation& param) const {
     if (name.find('_') == std::string::npos) {
         std::string subtype;
-        param.get("orca-grid-subtype", subtype = "T");  // arbitrary choice (to review)
+        param.get("orca-staggering", subtype = "T");  // arbitrary choice (to review)
 
         return new NamedORCA(sane_name(name + "_" + subtype), true);
     }
