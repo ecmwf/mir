@@ -27,9 +27,6 @@ namespace grid {
 NamedFromFile::NamedFromFile(const std::string& name) : NamedGrid(name) {}
 
 
-NamedFromFile::~NamedFromFile() = default;
-
-
 void NamedFromFile::print(std::ostream& out) const {
     out << "NamedFromFile[key=" << key_ << ",parametrisation=";
     SimpleParametrisation::print(out);

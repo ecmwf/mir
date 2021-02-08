@@ -32,8 +32,7 @@ public:
     NamedOctahedral(const NamedOctahedral&) = delete;
 
     // -- Destructor
-
-    ~NamedOctahedral() override;
+    // None
 
     // -- Convertors
     // None

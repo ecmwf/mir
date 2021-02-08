@@ -28,12 +28,11 @@ public:
 
     // -- Constructors
 
-    NamedORCA(const std::string& name);
+    NamedORCA(const std::string& name, bool tentative = false);
     NamedORCA(const NamedORCA&) = delete;
 
     // -- Destructor
-
-    ~NamedORCA() override;
+    // None
 
     // -- Convertors
     // None

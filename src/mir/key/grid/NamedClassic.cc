@@ -26,9 +26,6 @@ namespace grid {
 NamedClassic::NamedClassic(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
-NamedClassic::~NamedClassic() = default;
-
-
 void NamedClassic::print(std::ostream& out) const {
     out << "NamedClassic[key=" << key_ << ",N=" << N_ << "]";
 }

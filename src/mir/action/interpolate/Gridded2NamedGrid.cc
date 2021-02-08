@@ -47,7 +47,7 @@ void Gridded2NamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_);
+    const auto& ng = key::grid::Grid::lookup(grid_, parametrisation_);
     return ng.representation();
 }
 

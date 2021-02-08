@@ -44,24 +44,7 @@ public:
 
     // -- Methods
 
-    static const std::string& pattern();
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
+    static std::string sane_name(const std::string&);
 
     // -- Overridden methods
     // None
@@ -80,14 +63,15 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    void print(std::ostream&) const override;
+    const Grid* make(const std::string& name, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
 
     // -- Class methods
-
-    const Grid* make(const std::string& name) const override;
+    // None
 
     // -- Friends
     // None

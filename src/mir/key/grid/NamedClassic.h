@@ -32,8 +32,7 @@ public:
     NamedClassic(const NamedClassic&) = delete;
 
     // -- Destructor
-
-    ~NamedClassic() override;
+    // None
 
     // -- Convertors
     // None

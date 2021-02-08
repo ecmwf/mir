@@ -71,9 +71,14 @@ static void read_configuration_files() {
 }
 
 
-Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
+Grid::Grid(const std::string& key, grid_t gridType, bool tentative) : key_(key), gridType_(gridType) {
     std::call_once(once, init);
     std::lock_guard<std::mutex> lock(mutex_);
+
+    if (tentative) {
+        m->insert({key, this});
+        return;
+    }
 
     ASSERT(m->find(key) == m->end());
     (*m)[key] = this;
@@ -137,7 +142,7 @@ size_t Grid::gaussianNumber() const {
 }
 
 
-const Grid& Grid::lookup(const std::string& key) {
+const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
@@ -154,7 +159,7 @@ const Grid& Grid::lookup(const std::string& key) {
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
     if (GridPattern::match(key)) {
-        return GridPattern::lookup(key);
+        return GridPattern::lookup(key, param);
     }
 
     list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");

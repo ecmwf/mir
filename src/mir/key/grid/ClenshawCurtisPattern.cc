@@ -33,7 +33,7 @@ void ClenshawCurtisPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* ClenshawCurtisPattern::make(const std::string& name) const {
+const Grid* ClenshawCurtisPattern::make(const std::string& name, const param::MIRParametrisation&) const {
     return new NamedClenshawCurtis(name);
 }
 

@@ -26,9 +26,6 @@ namespace grid {
 NamedRegular::NamedRegular(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
-NamedRegular::~NamedRegular() = default;
-
-
 void NamedRegular::print(std::ostream& out) const {
     out << "NamedRegular[key=" << key_ << ",N=" << N_ << "]";
 }
