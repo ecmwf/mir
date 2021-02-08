@@ -1,0 +1,8 @@
+# file
+ORCA.grib2
+# mir
+--grid=eorca1
+# plan
+Copy[...]
+Copy[...]
+Copy[...]
