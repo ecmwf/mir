@@ -73,6 +73,8 @@ public:
     bool isTyped() const { return gridType_ == typed_t; }
     bool isRegularLL() const { return gridType_ == regular_ll_t; }
 
+    const std::string& key() const { return key_; }
+
     // -- Overridden methods
     // None
 
