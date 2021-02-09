@@ -62,6 +62,7 @@ public:
 
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
+    size_t defaultGaussianNumber(const std::string& from) const;
 
     static const Grid& lookup(const std::string& key,
                               const param::MIRParametrisation& = param::SimpleParametrisation());

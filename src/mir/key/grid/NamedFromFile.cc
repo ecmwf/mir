@@ -35,12 +35,8 @@ void NamedFromFile::print(std::ostream& out) const {
 
 
 size_t NamedFromFile::gaussianNumber() const {
-    long N = 64;
-    if (!get("gaussianNumber", N)) {
-        Log::warning() << "NamedFromFile::gaussianNumber: didn't find key 'gaussianNumber', setting N=" << N
-                       << " (hardcoded!)" << std::endl;
-    }
-    return size_t(N);
+    long N;
+    return get("gaussianNumber", N) && N > 0 ? size_t(N) : defaultGaussianNumber("NamedFromFile");
 }
 
 

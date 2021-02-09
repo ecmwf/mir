@@ -42,7 +42,7 @@ const repres::Representation* NamedORCA::representation(const util::Rotation&) c
 
 
 size_t NamedORCA::gaussianNumber() const {
-    return 0;  // FIXME
+    return defaultGaussianNumber("NamedORCA");
 }
 
 

@@ -136,6 +136,13 @@ size_t Grid::gaussianNumber() const {
 }
 
 
+size_t Grid::defaultGaussianNumber(const std::string& from) const {
+    constexpr size_t N = 64;
+    Log::warning() << from << "::gaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
+    return N;
+}
+
+
 const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);

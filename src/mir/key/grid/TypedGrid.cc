@@ -87,14 +87,7 @@ size_t TypedGrid::gaussianNumber() const {
     parametrisation(key_, param);
 
     long N;
-    if (param.get("gaussianNumber", N)) {
-        ASSERT(N >= 0);
-        return size_t(N);
-    }
-
-    constexpr size_t N0 = 64;
-    Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N0 << " (hardcoded!)" << std::endl;
-    return N0;
+    return param.get("gaussianNumber", N) && N > 0 ? size_t(N) : defaultGaussianNumber("TypedGrid");
 }
 
 
