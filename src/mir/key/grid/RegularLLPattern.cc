@@ -33,7 +33,7 @@ void RegularLLPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* RegularLLPattern::make(const std::string& name) const {
+const Grid* RegularLLPattern::make(const std::string& name, const param::MIRParametrisation&) const {
     return new grid::RegularLL(name);
 }
 

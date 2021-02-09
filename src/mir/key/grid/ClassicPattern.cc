@@ -35,7 +35,7 @@ void ClassicPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* ClassicPattern::make(const std::string& name) const {
+const Grid* ClassicPattern::make(const std::string& name, const param::MIRParametrisation&) const {
     return new NamedClassic(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 

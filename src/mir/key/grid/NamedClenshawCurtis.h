@@ -32,8 +32,7 @@ public:
     NamedClenshawCurtis(const NamedClenshawCurtis&) = delete;
 
     // -- Destructor
-
-    ~NamedClenshawCurtis() override;
+    // None
 
     // -- Convertors
     // None

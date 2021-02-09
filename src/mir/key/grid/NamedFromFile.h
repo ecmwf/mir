@@ -30,16 +30,17 @@ public:
     // -- Constructors
 
     NamedFromFile(const std::string& name);
+    NamedFromFile(const NamedFromFile&) = delete;
 
     // -- Destructor
-
-    ~NamedFromFile() override;
+    // None
 
     // -- Convertors
     // None
 
     // -- Operators
 
+    NamedFromFile& operator=(const NamedFromFile&) = delete;
 
     // -- Methods
     // None

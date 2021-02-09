@@ -87,14 +87,7 @@ size_t TypedGrid::gaussianNumber() const {
     parametrisation(key_, param);
 
     long N;
-    if (param.get("gaussianNumber", N)) {
-        ASSERT(N >= 0);
-        return size_t(N);
-    }
-
-    constexpr size_t N0 = 64;
-    Log::warning() << "TypedGrid::gaussianNumber: setting N=" << N0 << " (hardcoded!)" << std::endl;
-    return N0;
+    return param.get("gaussianNumber", N) && N > 0 ? size_t(N) : defaultGaussianNumber("TypedGrid");
 }
 
 
@@ -139,7 +132,9 @@ struct TypedGenericPattern final : public GridPattern {
     TypedGenericPattern(const TypedGenericPattern&) = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
 
-    const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
+    const Grid* make(const std::string& name, const param::MIRParametrisation&) const override {
+        return new TYPE(name, requiredKeys_, optionalKeys_);
+    }
 
     void print(std::ostream& out) const override {
         out << "TypedGenericPattern[pattern=" << pattern_ << ",requiredKeys=[";

@@ -85,8 +85,8 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
 
         // Calculate the mesh cells longest diagonal
         if (meshGeneratorParams.meshCellLongestDiagonal_) {
-            trace::ResourceUsage timer("Mesh: CalculateCellLongestDiagonal");
-            method::fe::CalculateCellLongestDiagonal()(mesh);
+            trace::ResourceUsage usage("CalculateCellLongestDiagonal");
+            method::fe::CalculateCellLongestDiagonal()(mesh, grid.domain().global());
         }
 
         // Calculate node-lumped mass matrix
@@ -109,19 +109,19 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
         if (!meshGeneratorParams.fileLonLat_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileLonLat_);
             log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "lonlat")).write(mesh);
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "lonlat")("ghost", true)).write(mesh);
         }
 
         if (!meshGeneratorParams.fileXY_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileXY_);
             log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xy")).write(mesh);
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xy")("ghost", true)).write(mesh);
         }
 
         if (!meshGeneratorParams.fileXYZ_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileXYZ_);
             log << "Mesh: writing to '" << path << "'" << std::endl;
-            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")).write(mesh);
+            atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")("ghost", true)).write(mesh);
         }
     }
     catch (...) {

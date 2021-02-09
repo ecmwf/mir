@@ -84,7 +84,7 @@ bool GridPattern::match(const std::string& name) {
 }
 
 
-const Grid& GridPattern::lookup(const std::string& name) {
+const Grid* GridPattern::lookup(const std::string& name, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
@@ -110,8 +110,7 @@ const Grid& GridPattern::lookup(const std::string& name) {
 
     if (k != m->cend()) {
         // This adds a new Grid to the map
-        auto gp = k->second->make(name);
-        return *gp;
+        return k->second->make(name, param);
     }
 
 

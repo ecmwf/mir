@@ -23,7 +23,7 @@ namespace mir {
 namespace action {
 
 
-NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_("input", param) {
+NablaFilter::NablaFilter(const param::MIRParametrisation& param) : Action(param), meshGeneratorParams_(param, "input") {
     param.get("nabla-poles-missing-values", polesMissingValues_ = false);
 }
 

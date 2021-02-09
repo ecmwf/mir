@@ -142,6 +142,21 @@ spectrum.associated-magnitude:
 # quantity expressing the internal forces arising from deformation exerted from external forces (typical units: [Pa])
 stress: {}
 
+orca.staggering.f:
+    orca-staggering: F
+
+orca.staggering.t:
+    orca-staggering: T
+
+orca.staggering.u:
+    orca-staggering: U
+
+orca.staggering.v:
+    orca-staggering: V
+
+orca.staggering.w:
+    orca-staggering: W
+
 unknown.experimental:
     _warning: true
 

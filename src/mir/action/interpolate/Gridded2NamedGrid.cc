@@ -26,7 +26,13 @@ namespace interpolate {
 
 Gridded2NamedGrid::Gridded2NamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2UnrotatedGrid(parametrisation) {
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+    std::string grid;
+    ASSERT(parametrisation_.userParametrisation().get("grid", grid));
+
+    // Canonize
+    auto& ng = key::grid::Grid::lookup(grid, parametrisation_);
+    grid_    = ng.key();
+    ASSERT(!grid_.empty());
 }
 
 
@@ -47,7 +53,7 @@ void Gridded2NamedGrid::print(std::ostream& out) const {
 
 
 const repres::Representation* Gridded2NamedGrid::outputRepresentation() const {
-    const auto& ng = key::grid::Grid::lookup(grid_);
+    auto& ng = key::grid::Grid::lookup(grid_, parametrisation_);
     return ng.representation();
 }
 

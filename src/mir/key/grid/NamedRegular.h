@@ -32,8 +32,7 @@ public:
     NamedRegular(const NamedRegular&) = delete;
 
     // -- Destructor
-
-    ~NamedRegular() override;
+    // None
 
     // -- Convertors
     // None

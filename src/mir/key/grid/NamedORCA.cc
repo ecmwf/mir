@@ -23,10 +23,8 @@ namespace key {
 namespace grid {
 
 
-NamedORCA::~NamedORCA() = default;
-
-
-NamedORCA::NamedORCA(const std::string& name) : NamedGrid(name) {}
+NamedORCA::NamedORCA(const std::string& name) :
+    NamedGrid(name, true /*tentative=true for case insensitivity to user option*/) {}
 
 
 void NamedORCA::print(std::ostream& out) const {
@@ -45,7 +43,7 @@ const repres::Representation* NamedORCA::representation(const util::Rotation&) c
 
 
 size_t NamedORCA::gaussianNumber() const {
-    return 0;  // FIXME
+    return defaultGaussianNumber("NamedORCA");
 }
 
 

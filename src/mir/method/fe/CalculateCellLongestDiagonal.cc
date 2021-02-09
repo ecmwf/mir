@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <utility>
 
-#include "atlas/array/MakeView.h"
+#include "atlas/array.h"
 #include "atlas/runtime/Trace.h"
 
 #include "mir/util/Atlas.h"
@@ -33,7 +33,7 @@ CalculateCellLongestDiagonal::CalculateCellLongestDiagonal(std::string name, boo
     name_(std::move(name)), force_recompute_(force_recompute) {}
 
 
-double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
+double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh, bool include_virtual_points) const {
     using atlas::idx_t;
     using atlas::PointXYZ;
 
@@ -76,8 +76,8 @@ double CalculateCellLongestDiagonal::operator()(atlas::Mesh& mesh) const {
                 for (idx_t nj = ni + 1; nj < nb_cols; ++nj) {
                     auto j = connectivity(e, nj);
 
-                    if (i < nbRealPts && j < nbRealPts) {
-                        d = std::max(d, atlas::util::Earth::distance(P[ni], P[nj]));
+                    if (include_virtual_points || (i < nbRealPts && j < nbRealPts)) {
+                        d = std::max(d, util::Earth::distance(P[ni], P[nj]));
                         if (d > dMax) {
                             Log::warning() << "CalculateCellLongestDiagonal: limited to maximum " << dMax << "m";
                             return dMax;

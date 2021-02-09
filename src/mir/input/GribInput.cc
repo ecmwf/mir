@@ -283,31 +283,15 @@ static const char* get_key(const std::string& name, grib_handle* h) {
 }
 
 
-namespace {
-
-
-struct Processing {
-    Processing()          = default;
-    virtual ~Processing() = default;
-
-    Processing(const Processing&) = delete;
-    void operator=(const Processing&) = delete;
-
-    virtual bool eval(grib_handle*, long&) const { NOTIMP; }
-    virtual bool eval(grib_handle*, double&) const { NOTIMP; }
-    virtual bool eval(grib_handle*, std::vector<double>&) const { NOTIMP; }
-};
-
 template <typename T>
-struct ProcessingT : Processing {
+struct ProcessingT {
     using fun_t = std::function<bool(grib_handle*, T&)>;
     fun_t fun_;
     ProcessingT(fun_t&& fun) : fun_(fun) {}
-    bool eval(grib_handle* h, T& v) const override { return fun_(h, v); }
+    ProcessingT(const ProcessingT&) = delete;
+    void operator=(const ProcessingT&) = delete;
+    bool eval(grib_handle* h, T& v) const { return fun_(h, v); }
 };
-
-
-}  // namespace
 
 
 static ProcessingT<long>* is_wind_component_uv() {
@@ -393,7 +377,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
                 if (size_t(plSum) == valuesSize) {
 
                     double eps = 0.;
-                    std::unique_ptr<Processing> precision_in_degrees(angular_precision());
+                    std::unique_ptr<ProcessingT<double>> precision_in_degrees(angular_precision());
                     ASSERT(precision_in_degrees->eval(h, eps));
 
                     eckit::Fraction Lon2_expected(360L * (plMax - 1L), plMax);
@@ -444,15 +428,16 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
 
         // angles are within +-1/2 precision, so (Lon2 - Lon1 + we) uses factor 3*1/2
         double eps = 0.;
-        std::unique_ptr<Processing> precision_in_degrees(angular_precision());
+        std::unique_ptr<ProcessingT<double>> precision_in_degrees(angular_precision());
         ASSERT(precision_in_degrees->eval(h, eps));
         eps *= 1.5;
 
+        auto Nid     = double(Ni);
         double globe = LongitudeDouble::GLOBE.value();
         if (eckit::types::is_approximately_equal(Lon2 - Lon1 + we, globe, eps)) {
-            we = globe / double(Ni);
+            we = globe / Nid;
         }
-        else if (!eckit::types::is_approximately_equal(Lon1 + double(Ni - 1) * we, Lon2, eps)) {
+        else if (!eckit::types::is_approximately_equal(Lon1 + (Nid - 1) * we, Lon2, eps)) {
 
             // TODO refactor, not really specific to "periodic regular grids", but useful
             std::ostringstream msgs;
@@ -495,49 +480,53 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
     });
 }
 
+static ProcessingT<std::string>* unstructured_grid_orca() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        auto get = [](grib_handle* h, const char* key) -> std::string {
+            if (codes_is_defined(h, key) != 0) {
+                char buffer[64];
+                size_t size = sizeof(buffer);
+
+                GRIB_CALL(codes_get_string(h, key, buffer, &size));
+                ASSERT(size < sizeof(buffer) - 1);
+
+                if (::strcmp(buffer, "MISSING") != 0) {
+                    return buffer;
+                }
+            }
+            return "";
+        };
+
+        auto type    = get(h, "unstructuredGridType");
+        auto subtype = get(h, "unstructuredGridSubtype");
+        if (type.empty() || subtype.empty()) {
+            return false;
+        }
+
+        value = type + "_" + subtype[0];
+        return true;
+    });
+}
+
+
 template <typename T>
-static bool get_value(const std::string& name, grib_handle* h, T& value) {
+struct processing_t {
+    const std::string name;
+    const ProcessingT<T>* processing;
+    const Condition* condition;
+};
 
-    static struct {
-        const char* name;
-        const Processing* processing;
-        const Condition* condition;
-    } processings[] = {
 
-        {"angular_precision", angular_precision(), nullptr},
-        {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
-         longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
-        {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
-         iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
-
-        {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
-         _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
-        {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
-         is("gridType", "lambert_azimuthal_equal_area")},
-        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
-         _or(is("gridType", "lambert"), is("gridType", "polar_stereographic"))},
-        {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
-
-        {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
-         _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
-             is("gridType", "reduced_rotated_gg"))},
-
-        {"is_wind_component_uv", is_wind_component_uv(), nullptr},
-        {"is_wind_component_vod", is_wind_component_vod(), nullptr},
-
-        {nullptr, nullptr, nullptr}};
-
-    size_t i = 0;
-    while (processings[i].name) {
-        if (name == processings[i].name) {
-            if (processings[i].condition == nullptr || processings[i].condition->eval(h)) {
-                ASSERT(processings[i].processing);
-                return processings[i].processing->eval(h, value);
+template <typename T>
+static bool get_value(const std::string& name, grib_handle* h, T& value, const std::vector<processing_t<T>>& process) {
+    for (auto& p : process) {
+        if (name == p.name) {
+            if (p.condition == nullptr || p.condition->eval(h)) {
+                ASSERT(p.processing);
+                return p.processing->eval(h, value);
             }
         }
-        i++;
     }
-
     return false;
 }
 
@@ -814,7 +803,10 @@ bool GribInput::get(const std::string& name, long& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
+        static const std::vector<processing_t<long>> process{
+            {"is_wind_component_uv", is_wind_component_uv(), nullptr},
+            {"is_wind_component_vod", is_wind_component_vod(), nullptr}};
+        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
@@ -849,7 +841,13 @@ bool GribInput::get(const std::string& name, double& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        return get_value(key, grib_, value) || FieldParametrisation::get(name, value);
+        static const std::vector<processing_t<double>> process{
+            {"angular_precision", angular_precision(), nullptr},
+            {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
+             longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
+            {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
+             iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr}};
+        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
@@ -943,7 +941,9 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        return FieldParametrisation::get(name, value);
+        static const std::vector<processing_t<std::string>> process{
+            {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")}};
+        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
@@ -979,7 +979,19 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         return false;
     }
 
-    if (get_value(key, grib_, value)) {
+    static const std::vector<processing_t<std::vector<double>>> process{
+        {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
+         _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
+        {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
+         is("gridType", "lambert_azimuthal_equal_area")},
+        {"grid", vector_double({"DxInMetres", "DyInMetres"}),
+         _or(is("gridType", "lambert"), is("gridType", "polar_stereographic"))},
+        {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
+        {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
+         _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
+             is("gridType", "reduced_rotated_gg"))}};
+
+    if (get_value(key, grib_, value, process)) {
         return true;
     }
 
@@ -996,6 +1008,7 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         GRIB_ERROR(err, key);
     }
 
+    ASSERT(count > 0);
     size_t size = count;
 
     value.resize(count);
@@ -1003,12 +1016,10 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
     GRIB_CALL(codes_get_double_array(grib_, key, &value[0], &size));
     ASSERT(count == size);
 
-    ASSERT(value.size());
-
     // Log::debug() << "codes_get_double_array(" << name << ",key=" << key << ") size=" << value.size()
     // << std::endl;
 
-
+    ASSERT(!value.empty());
     return true;
 }
 

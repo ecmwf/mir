@@ -32,8 +32,7 @@ public:
     NamedORCA(const NamedORCA&) = delete;
 
     // -- Destructor
-
-    ~NamedORCA() override;
+    // None
 
     // -- Convertors
     // None

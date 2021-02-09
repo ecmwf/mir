@@ -5109,6 +5109,99 @@ stress:
 - 300193  # Surface zonal wind stress
 - 300195  # Surface meridional wind stress
 
+orca.staggering.f:
+- 250011  # lat_F (coordinate) FIXME
+- 250012  # lon_F (coordinate) FIXME
+
+orca.staggering.t:
+- 212001  # toce FIXME
+- 212002  # soce FIXME
+- 212003  # sigmat FIXME
+- 212004  # sst FIXME
+- 212005  # sss FIXME
+- 212006  # ssh FIXME
+- 212007  # hst FIXME
+- 212008  # hbp FIXME
+- 212009  # empmr FIXME
+- 212010  # runoffs FIXME
+- 212011  # saltflx FIXME
+- 212012  # qt FIXME
+- 212013  # qsr FIXME
+- 212014  # mldr10_1 FIXME
+- 212015  # mldkr125 FIXME
+- 212016  # mldkr03 FIXME
+- 212017  # mldt05 FIXME
+- 212018  # mldt02 FIXME
+- 212019  # ice_cover FIXME
+- 212020  # taum FIXME
+- 212021  # wspd FIXME
+- 212022  # cdn10 FIXME
+- 212023  # qrp FIXME
+- 212024  # erp FIXME
+- 212025  # mldkz5 FIXME
+- 212026  # 14d FIXME
+- 212027  # 17d FIXME
+- 212028  # 20d FIXME
+- 212029  # 26d FIXME
+- 212030  # 28d FIXME
+- 212031  # hc300 FIXME
+- 212032  # sal300 FIXME
+- 212033  # hc700 FIXME
+- 212034  # sal700 FIXME
+- 212035  # hcbtm, salbtm (duplicate paramId) FIXME
+- 212036  # precip FIXME
+- 212037  # uocee FIXME
+- 212038  # vocen FIXME
+- 212039  # uocees FIXME
+- 212040  # vocens FIXME
+- 212041  # utaue FIXME
+- 212042  # vtaun FIXME
+- 212043  # hc26c FIXME
+- 212044  # thetaodmp FIXME
+- 212045  # sodmp FIXME
+- 212211  # icevolu (ice) FIXME
+- 212212  # ice_cover (ice) FIXME
+- 212213  # iceconc_cat (ice) FIXME
+- 212214  # icethic (ice) FIXME
+- 212215  # icethick_cat (ice) FIXME
+- 212216  # snwthic (ice) FIXME
+- 212217  # snwthic_cat (ice) FIXME
+- 212226  # snowpre (ice) FIXME
+- 212227  # icesalt (ice) FIXME
+- 212228  # icetemp (ice) FIXME
+- 212229  # icettop (ice) FIXME
+- 212230  # icesalt_cat (ice) FIXME
+- 250003  # lat_T (coordinate) FIXME
+- 250004  # lon_T (coordinate) FIXME
+
+orca.staggering.u:
+- 212101  # ssu FIXME
+- 212102  # uoce FIXME
+- 212103  # utau FIXME
+- 212218  # uice (ice) FIXME
+- 212220  # iicevelur (ice) FIXME
+- 212222  # utau_ai (ice) FIXME
+- 212224  # iocestrur (ice) FIXME
+- 250005  # lat_U (coordinate) FIXME
+- 250006  # lon_U (coordinate) FIXME
+
+orca.staggering.v:
+- 212151  # ssv FIXME
+- 212152  # voce FIXME
+- 212153  # vtau FIXME
+- 212219  # vice (ice) FIXME
+- 212221  # iicevelvr (ice) FIXME
+- 212223  # vtau_ai (ice) FIXME
+- 212225  # iocestrvr (ice) FIXME
+- 250007  # lat_V (coordinate) FIXME
+- 250008  # lon_V (coordinate) FIXME
+
+orca.staggering.w:
+- 212201  # woce FIXME
+- 212202  # ssw FIXME
+- 250009  # lat_W (coordinate) FIXME
+- 250010  # lon_W (coordinate) FIXME
+
 unknown.experimental:
 - 80  # Experimental product
 - 81  # Experimental product

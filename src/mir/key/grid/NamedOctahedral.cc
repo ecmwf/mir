@@ -26,9 +26,6 @@ namespace grid {
 NamedOctahedral::NamedOctahedral(const std::string& name, size_t N) : NamedGrid(name), N_(N) {}
 
 
-NamedOctahedral::~NamedOctahedral() = default;
-
-
 void NamedOctahedral::print(std::ostream& out) const {
     out << "NamedOctahedral[key=" << key_ << ",N=" << N_ << "]";
 }

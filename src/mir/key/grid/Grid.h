@@ -17,12 +17,10 @@
 #include <mutex>
 #include <string>
 
+#include "mir/param/SimpleParametrisation.h"
+
 
 namespace mir {
-namespace param {
-class MIRParametrisation;
-class SimpleParametrisation;
-}  // namespace param
 namespace repres {
 class Representation;
 }
@@ -61,16 +59,22 @@ public:
     virtual const repres::Representation* representation() const;
     virtual const repres::Representation* representation(const util::Rotation&) const;
     virtual const repres::Representation* representation(const param::MIRParametrisation&) const;
+
     virtual void parametrisation(const std::string& grid, param::SimpleParametrisation&) const;
     virtual size_t gaussianNumber() const;
+    size_t defaultGaussianNumber(const std::string& from) const;
 
-    static const Grid& lookup(const std::string& key);
+    static const Grid& lookup(const std::string& key,
+                              const param::MIRParametrisation& = param::SimpleParametrisation());
+
     static bool known(const std::string& key);
     static void list(std::ostream&);
 
     bool isNamed() const { return gridType_ == named_t; }
     bool isTyped() const { return gridType_ == typed_t; }
     bool isRegularLL() const { return gridType_ == regular_ll_t; }
+
+    const std::string& key() const { return key_; }
 
     // -- Overridden methods
     // None
@@ -93,7 +97,7 @@ protected:
 
     // -- Constructors
 
-    Grid(const std::string& key, grid_t);
+    Grid(const std::string& key, grid_t, bool tentative = false);
 
     // -- Destructor
 

@@ -18,6 +18,8 @@
 
 #include "eckit/utils/Regex.h"
 
+#include "mir/param/SimpleParametrisation.h"
+
 
 namespace mir {
 namespace key {
@@ -54,9 +56,10 @@ public:
 
     // -- Methods
 
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string&);
     static void list(std::ostream&);
+    static bool match(const std::string& name);
+    static const Grid* lookup(const std::string& name,
+                              const param::MIRParametrisation& = param::SimpleParametrisation());
 
     // -- Overridden methods
     // None
@@ -78,8 +81,8 @@ protected:
 
     // -- Methods
 
-    virtual const Grid* make(const std::string&) const = 0;
-    virtual void print(std::ostream&) const            = 0;
+    virtual void print(std::ostream&) const                                                         = 0;
+    virtual const Grid* make(const std::string& name, const param::MIRParametrisation& param) const = 0;
 
     // -- Overridden methods
     // None

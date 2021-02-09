@@ -12,6 +12,8 @@
 
 #include "mir/key/grid/ORCAPattern.h"
 
+#include <algorithm>
+#include <cctype>
 #include <ostream>
 
 #include "mir/key/grid/NamedORCA.h"
@@ -25,15 +27,17 @@ namespace grid {
 ORCAPattern::ORCAPattern(const std::string& name) : GridPattern(name) {}
 
 
-static const std::string __orca_pattern = "^(e?[oO][rR][cC][aA][0-9]+)_([TUVWF])$";
-
-
-const std::string& ORCAPattern::pattern() {
-    return __orca_pattern;
-}
-
-
 ORCAPattern::~ORCAPattern() = default;
+
+
+std::string ORCAPattern::sane_name(const std::string& insane) {
+    auto s = insane;
+    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+    if (s.front() == 'E') {
+        s.front() = 'e';
+    }
+    return s;
+}
 
 
 void ORCAPattern::print(std::ostream& out) const {
@@ -41,12 +45,19 @@ void ORCAPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* ORCAPattern::make(const std::string& name) const {
-    return new NamedORCA(name);
+const Grid* ORCAPattern::make(const std::string& name, const param::MIRParametrisation& param) const {
+    if (name.find('_') == std::string::npos) {
+        std::string subtype;
+        param.get("orca-staggering", subtype = "T");  // arbitrary choice (to review)
+
+        return new NamedORCA(sane_name(name + "_" + subtype));
+    }
+
+    return new NamedORCA(sane_name(name));
 }
 
 
-static ORCAPattern __pattern(__orca_pattern);
+static ORCAPattern __pattern("^[eE]?[oO][rR][cC][aA][0-9]+(|_[tTuUvVwWfF])$");
 
 
 }  // namespace grid

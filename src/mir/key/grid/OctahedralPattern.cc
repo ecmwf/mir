@@ -35,7 +35,7 @@ void OctahedralPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* OctahedralPattern::make(const std::string& name) const {
+const Grid* OctahedralPattern::make(const std::string& name, const param::MIRParametrisation&) const {
     return new NamedOctahedral(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 

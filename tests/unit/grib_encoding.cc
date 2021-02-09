@@ -44,6 +44,7 @@ static std::vector<long> _one_two{1, 2};
 
 namespace {
 
+
 class EncodeTest {
 
     RepresentationHandle representation_;
@@ -232,6 +233,7 @@ public:
     }
 };
 
+
 class EncodeReduced : public EncodeTest {
     size_t numberOfValues_;
     size_t numberOfValues() const override { return numberOfValues_; }
@@ -242,6 +244,7 @@ public:
         ASSERT(numberOfValues_);
     }
 };
+
 
 class EncodeReducedGaussianGrid final : public EncodeReduced {
     size_t gaussianNumber_;
@@ -255,6 +258,7 @@ public:
         ASSERT(gaussianNumber_);
     }
 };
+
 
 class EncodeRegular : public EncodeTest {
     size_t Ni_, Nj_;
@@ -291,6 +295,7 @@ public:
     }
 };
 
+
 class EncodeRegularGaussianGrid final : public EncodeRegular {
     std::string gribSample(long edition) const override {
         return std::string("regular_gg_pl_grib" + std::to_string(edition));
@@ -303,6 +308,7 @@ public:
     }
 };
 
+
 class EncodeRegularLatLonGrid final : public EncodeRegular {
     std::string gribSample(long edition) const override {
         return std::string("regular_ll_pl_grib" + std::to_string(edition));
@@ -312,7 +318,9 @@ public:
     using EncodeRegular::EncodeRegular;
 };
 
+
 }  // namespace
+
 
 CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
     auto& log = Log::info();
@@ -407,6 +415,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of reduced Gaussian grids") {
     }
 }
 
+
 CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     auto& log = Log::info();
 
@@ -473,6 +482,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular Gaussian grids") {
     }
 }
 
+
 CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
     auto& log = Log::info();
 
@@ -533,6 +543,7 @@ CASE("GRIB1/GRIB2 encoding of sub-area of regular lat/lon grids") {
         }
     }
 }
+
 
 CASE("GRIB1/GRIB2 deleteLocalDefinition") {
     auto& log = Log::info();
@@ -606,6 +617,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
         }
     }
 }
+
 
 }  // namespace unit
 }  // namespace tests

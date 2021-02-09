@@ -35,7 +35,7 @@ void RegularPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* RegularPattern::make(const std::string& name) const {
+const Grid* RegularPattern::make(const std::string& name, const param::MIRParametrisation&) const {
     return new NamedRegular(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
 }
 

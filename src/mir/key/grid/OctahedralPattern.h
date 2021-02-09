@@ -54,23 +54,6 @@ public:
     // -- Class methods
     // None
 
-protected:
-    // -- Members
-    // None
-
-    // -- Methods
-
-    void print(std::ostream&) const override;
-
-    // -- Overridden methods
-    // None
-
-    // -- Class members
-    // None
-
-    // -- Class methods
-    // None
-
 private:
     // -- Members
     // None
@@ -79,14 +62,15 @@ private:
     // None
 
     // -- Overridden methods
-    // None
+
+    void print(std::ostream&) const override;
+    const Grid* make(const std::string& name, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None
 
     // -- Class methods
-
-    const Grid* make(const std::string& name) const override;
+    // None
 
     // -- Friends
     // None

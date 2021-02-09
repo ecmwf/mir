@@ -76,7 +76,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
     std::string grid;
     if (user.get("grid", grid)) {
-        auto& g = grid::Grid::lookup(grid);
+        auto& g = grid::Grid::lookup(grid, field);
 
         if (g.isRegularLL()) {
             std::vector<double> grid_v;
@@ -87,8 +87,12 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
 
         if (g.isNamed()) {
-            forced = forced || !field.has("gridded_named");
-            return forced || !same->get("grid", grid) ? prefix + "namedgrid" : "";
+            auto same_name = [](const std::string& name_from_user, const param::MIRParametrisation& field) {
+                std::string name_from_field;  // name from field (assumed canonical)
+                ASSERT(field.get("grid", name_from_field));
+                return name_from_user == name_from_field;
+            };
+            return forced || !field.has("gridded_named") || !same_name(g.key(), field) ? prefix + "namedgrid" : "";
         }
 
         ASSERT(g.isTyped());
