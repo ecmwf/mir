@@ -88,9 +88,11 @@ void ArtificialInput::setAuxiliaryInformation(const std::string& yaml) {
     eckit::ValueMap map = eckit::YAMLParser::decodeString(yaml);
     for (const auto& kv : map) {
         Log::debug() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
-        kv.second.isDouble() ? parametrisation_.set(kv.first, kv.second.as<double>())
-                             : kv.second.isNumber() ? parametrisation_.set(kv.first, kv.second.as<long long>())
-                                                    : parametrisation_.set(kv.first, kv.second.as<std::string>());
+        kv.second.isDouble()
+            ? parametrisation_.set(kv.first, kv.second.as<double>())
+            : kv.second.isNumber() ? parametrisation_.set(kv.first, kv.second.as<long long>())
+                                   : kv.second.isBool() ? parametrisation_.set(kv.first, kv.second.as<bool>())
+                                                        : parametrisation_.set(kv.first, kv.second.as<std::string>());
     }
 
     // set additional keys
