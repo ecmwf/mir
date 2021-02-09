@@ -57,9 +57,9 @@ public:
     // -- Methods
 
     static void list(std::ostream&);
-    static bool match(const std::string&);
-    static const Grid& lookup(const std::string& name,
-                              const param::MIRParametrisation& param = param::SimpleParametrisation());
+    static bool match(const std::string& name);
+    static const Grid* lookup(const std::string& name,
+                              const param::MIRParametrisation& = param::SimpleParametrisation());
 
     // -- Overridden methods
     // None

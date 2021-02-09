@@ -75,13 +75,7 @@ Grid::Grid(const std::string& key, grid_t gridType, bool tentative) : key_(key),
     std::call_once(once, init);
     std::lock_guard<std::mutex> lock(mutex_);
 
-    if (tentative) {
-        m->insert({key, this});
-        return;
-    }
-
-    ASSERT(m->find(key) == m->end());
-    (*m)[key] = this;
+    ASSERT(m->insert({key, this}).second || tentative);
 }
 
 
@@ -159,7 +153,9 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
     if (GridPattern::match(key)) {
-        return GridPattern::lookup(key, param);
+        auto gp = GridPattern::lookup(key, param);
+        ASSERT(gp != nullptr);
+        return *gp;
     }
 
     list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");
