@@ -746,6 +746,8 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredLinear3D.h
         method/structured/StructuredMethod.cc
         method/structured/StructuredMethod.h
+        output/GmshOutput.cc
+        output/GmshOutput.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
