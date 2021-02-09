@@ -50,14 +50,14 @@ const Grid* ORCAPattern::make(const std::string& name, const param::MIRParametri
         std::string subtype;
         param.get("orca-staggering", subtype = "T");  // arbitrary choice (to review)
 
-        return new NamedORCA(sane_name(name + "_" + subtype), true);
+        return new NamedORCA(sane_name(name + "_" + subtype));
     }
 
-    return new NamedORCA(sane_name(name), false);
+    return new NamedORCA(sane_name(name));
 }
 
 
-static ORCAPattern __pattern("^[eE]?[oO][rR][cC][aA][0-9]+(|_[TUVWF])$");
+static ORCAPattern __pattern("^[eE]?[oO][rR][cC][aA][0-9]+(|_[tTuUvVwWfF])$");
 
 
 }  // namespace grid

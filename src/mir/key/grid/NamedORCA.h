@@ -28,7 +28,7 @@ public:
 
     // -- Constructors
 
-    NamedORCA(const std::string& name, bool tentative = false);
+    NamedORCA(const std::string& name);
     NamedORCA(const NamedORCA&) = delete;
 
     // -- Destructor

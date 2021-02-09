@@ -23,7 +23,8 @@ namespace key {
 namespace grid {
 
 
-NamedORCA::NamedORCA(const std::string& name, bool tentative) : NamedGrid(name, tentative) {}
+NamedORCA::NamedORCA(const std::string& name) :
+    NamedGrid(name, true /*tentative=true for case insensitivity to user option*/) {}
 
 
 void NamedORCA::print(std::ostream& out) const {
