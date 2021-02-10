@@ -47,10 +47,10 @@ void ORCAPattern::print(std::ostream& out) const {
 
 const Grid* ORCAPattern::make(const std::string& name, const param::MIRParametrisation& param) const {
     if (name.find('_') == std::string::npos) {
-        std::string subtype;
-        param.get("orca-staggering", subtype = "T");  // arbitrary choice (to review)
+        std::string arrangement;
+        param.get("orca-arrangement", arrangement = "T");  // arbitrary choice (to review)
 
-        return new NamedORCA(sane_name(name + "_" + subtype));
+        return new NamedORCA(sane_name(name + "_" + arrangement));
     }
 
     return new NamedORCA(sane_name(name));

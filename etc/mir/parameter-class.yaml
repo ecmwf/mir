@@ -5109,11 +5109,11 @@ stress:
 - 300193  # Surface zonal wind stress
 - 300195  # Surface meridional wind stress
 
-orca.staggering.f:
+orca.arrangement.f:
 - 250011  # lat_F (coordinate) FIXME
 - 250012  # lon_F (coordinate) FIXME
 
-orca.staggering.t:
+orca.arrangement.t:
 - 212001  # toce FIXME
 - 212002  # soce FIXME
 - 212003  # sigmat FIXME
@@ -5174,7 +5174,7 @@ orca.staggering.t:
 - 250003  # lat_T (coordinate) FIXME
 - 250004  # lon_T (coordinate) FIXME
 
-orca.staggering.u:
+orca.arrangement.u:
 - 212101  # ssu FIXME
 - 212102  # uoce FIXME
 - 212103  # utau FIXME
@@ -5185,7 +5185,7 @@ orca.staggering.u:
 - 250005  # lat_U (coordinate) FIXME
 - 250006  # lon_U (coordinate) FIXME
 
-orca.staggering.v:
+orca.arrangement.v:
 - 212151  # ssv FIXME
 - 212152  # voce FIXME
 - 212153  # vtau FIXME
@@ -5196,7 +5196,7 @@ orca.staggering.v:
 - 250007  # lat_V (coordinate) FIXME
 - 250008  # lon_V (coordinate) FIXME
 
-orca.staggering.w:
+orca.arrangement.w:
 - 212201  # woce FIXME
 - 212202  # ssw FIXME
 - 250009  # lat_W (coordinate) FIXME
