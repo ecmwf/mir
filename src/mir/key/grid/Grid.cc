@@ -65,7 +65,7 @@ static void read_configuration_files() {
                                                               : ng->set(p.first, p.second.as<std::string>());
             }
 
-            Log::debug() << ng << std::endl;
+            Log::debug() << static_cast<const Grid&>(*ng) << std::endl;
         }
     }
 }
