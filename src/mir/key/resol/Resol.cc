@@ -149,10 +149,7 @@ long Resol::getTargetGaussianNumber() const {
 
     // unstructured grids (hardcoded)
     if (user.has("griddef") || user.has("latitudes") || user.has("longitudes")) {
-        N = 64;
-        Log::warning() << "Resol::getTargetGaussianNumber: setting N=" << N << " (hardcoded!)" << std::endl;
-        ASSERT(N >= 0);
-        return N;
+        return long(grid::Grid::default_gaussian_number());
     }
 
     return N;

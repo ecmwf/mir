@@ -264,6 +264,8 @@ static const char* get_key(const std::string& name, grib_handle* h) {
 
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
+        {"uid", "uuidOfHGrid", is("gridType", "unstructured_grid")},
+
         /// FIXME: Find something that does no clash
         {"reduced", "numberOfParallelsBetweenAPoleAndTheEquator", is("isOctahedral", 0L)},
         {"regular", "N", is("gridType", "regular_gg")},

@@ -43,7 +43,7 @@ const repres::Representation* NamedORCA::representation(const util::Rotation&) c
 
 
 size_t NamedORCA::gaussianNumber() const {
-    return defaultGaussianNumber("NamedORCA");
+    return default_gaussian_number();
 }
 
 
