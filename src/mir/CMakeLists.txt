@@ -239,14 +239,10 @@ list(APPEND mir_srcs
     key/grid/NamedFromFile.cc
     key/grid/NamedFromFile.h
     key/grid/NamedGrid.h
-    key/grid/NamedORCA.cc
-    key/grid/NamedORCA.h
     key/grid/NamedOctahedral.cc
     key/grid/NamedOctahedral.h
     key/grid/NamedRegular.cc
     key/grid/NamedRegular.h
-    key/grid/ORCAPattern.cc
-    key/grid/ORCAPattern.h
     key/grid/OctahedralPattern.cc
     key/grid/OctahedralPattern.h
     key/grid/RegularLL.cc
@@ -501,8 +497,6 @@ list(APPEND mir_srcs
     repres/other/ClenshawCurtis.h
     repres/other/None.cc
     repres/other/None.h
-    repres/other/ORCA.cc
-    repres/other/ORCA.h
     repres/other/UnstructuredGrid.cc
     repres/other/UnstructuredGrid.h
     repres/regular/Lambert.cc
@@ -726,6 +720,10 @@ if(mir_HAVE_ATLAS)
         caching/legendre/NoLoader.h
         caching/legendre/SharedMemoryLoader.cc
         caching/legendre/SharedMemoryLoader.h
+        key/grid/NamedORCA.cc
+        key/grid/NamedORCA.h
+        key/grid/ORCAPattern.cc
+        key/grid/ORCAPattern.h
         method/ProxyMethod.cc
         method/ProxyMethod.h
         method/fe/BuildNodeLumpedMassMatrix.cc
@@ -748,6 +746,8 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
+        repres/other/ORCA.cc
+        repres/other/ORCA.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()
