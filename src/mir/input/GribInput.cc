@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <numeric>
 #include <sstream>
 
@@ -128,6 +129,10 @@ class ConditionOR : public Condition {
     const Condition* left_;
     const Condition* right_;
     bool eval(grib_handle* h) const override { return left_->eval(h) || right_->eval(h); }
+    ~ConditionOR() {
+        delete right_;
+        delete left_;
+    }
 
 public:
     ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
@@ -253,8 +258,9 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"gridded_named", "gridName", nullptr},
 
         {"grid", "gridName",
-         _or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
-             is("gridType", "reduced_rotated_gg"))},
+         _or(_or(_or(_or(is("gridType", "regular_gg"), is("gridType", "reduced_gg")), is("gridType", "rotated_gg")),
+                 is("gridType", "reduced_rotated_gg")),
+             is("gridType", "unstructured_grid"))},
 
         {"spectral", "pentagonalResolutionParameterJ", nullptr},
 
@@ -509,17 +515,10 @@ static ProcessingT<std::string>* unstructured_grid_orca() {
 }
 
 
-template <typename T>
-struct processing_t {
-    const std::string name;
-    const ProcessingT<T>* processing;
-    const Condition* condition;
-};
-
-
-template <typename T>
-static bool get_value(const std::string& name, grib_handle* h, T& value, const std::vector<processing_t<T>>& process) {
-    for (auto& p : process) {
+template <typename T, typename P>
+static bool get_value(const std::string& name, grib_handle* h, T& value, const P& process) {
+    for (size_t i = 0; process[i].name != nullptr; ++i) {
+        auto& p = process[i];
         if (name == p.name) {
             if (p.condition == nullptr || p.condition->eval(h)) {
                 ASSERT(p.processing);
@@ -803,9 +802,16 @@ bool GribInput::get(const std::string& name, long& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
     int err = codes_get_long(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        static const std::vector<processing_t<long>> process{
+        static struct {
+            const char* name;
+            const ProcessingT<long>* processing;
+            const Condition* condition;
+        } process[] = {
             {"is_wind_component_uv", is_wind_component_uv(), nullptr},
-            {"is_wind_component_vod", is_wind_component_vod(), nullptr}};
+            {"is_wind_component_vod", is_wind_component_vod(), nullptr},
+            {nullptr, nullptr, nullptr},
+        };
+
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
@@ -841,12 +847,19 @@ bool GribInput::get(const std::string& name, double& value) const {
     // FIXME: make sure that 'value' is not set if CODES_MISSING_DOUBLE
     int err = codes_get_double(grib_, key, &value);
     if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
-        static const std::vector<processing_t<double>> process{
+        static struct {
+            const char* name;
+            const ProcessingT<double>* processing;
+            const Condition* condition;
+        } process[] = {
             {"angular_precision", angular_precision(), nullptr},
             {"longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids",
              longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids(), nullptr},
             {"iDirectionIncrementInDegrees_fix_for_periodic_regular_grids",
-             iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr}};
+             iDirectionIncrementInDegrees_fix_for_periodic_regular_grids(), nullptr},
+            {nullptr, nullptr, nullptr},
+        };
+
         return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
@@ -941,9 +954,16 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        static const std::vector<processing_t<std::string>> process{
-            {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")}};
-        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
+        //        static struct {
+        //            const char* name;
+        //            const ProcessingT<std::string>* processing;
+        //            const Condition* condition;
+        //        } process[] = {
+        //            {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")},
+        //            {nullptr, nullptr, nullptr},
+        //        };
+
+        return /*get_value(key, grib_, value, process) || */ FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
@@ -979,7 +999,11 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         return false;
     }
 
-    static const std::vector<processing_t<std::vector<double>>> process{
+    static struct {
+        const char* name;
+        const ProcessingT<std::vector<double>>* processing;
+        const Condition* condition;
+    } process[] = {
         {"grid", vector_double({"iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees"}),
          _or(is("gridType", "regular_ll"), is("gridType", "rotated_ll"))},
         {"grid", vector_double({"xDirectionGridLengthInMetres", "yDirectionGridLengthInMetres"}),
@@ -989,7 +1013,9 @@ bool GribInput::get(const std::string& name, std::vector<double>& value) const {
         {"grid", vector_double({"DiInMetres", "DjInMetres"}), is("gridType", "mercator")},
         {"rotation", vector_double({"latitudeOfSouthernPoleInDegrees", "longitudeOfSouthernPoleInDegrees"}),
          _or(_or(_or(is("gridType", "rotated_ll"), is("gridType", "rotated_gg")), is("gridType", "rotated_sh")),
-             is("gridType", "reduced_rotated_gg"))}};
+             is("gridType", "reduced_rotated_gg"))},
+        {nullptr, nullptr, nullptr},
+    };
 
     if (get_value(key, grib_, value, process)) {
         return true;
