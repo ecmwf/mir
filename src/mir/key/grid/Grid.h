@@ -98,7 +98,7 @@ protected:
 
     // -- Constructors
 
-    Grid(const std::string& key, grid_t, bool tentative = false);
+    Grid(const std::string& key, grid_t);
 
     // -- Destructor
 

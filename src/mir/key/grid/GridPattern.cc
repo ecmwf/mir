@@ -62,8 +62,7 @@ void GridPattern::list(std::ostream& out) {
     }
 }
 
-
-bool GridPattern::match(const std::string& name) {
+std::string GridPattern::match(const std::string& name, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
@@ -78,13 +77,17 @@ bool GridPattern::match(const std::string& name) {
         }
     }
 
-    bool can = !conflicts && k != m->cend();
-    Log::debug() << "GridPattern: '" << name << "' " << (can ? "can" : "cannot") << " be built" << std::endl;
-    return can;
+    if (!conflicts && k != m->cend()) {
+        Log::debug() << "GridPattern: '" << name << "' can be built" << std::endl;
+        return k->second->canonical(name, param);
+    }
+
+    Log::debug() << "GridPattern: '" << name << "' cannot be built" << std::endl;
+    return "";
 }
 
 
-const Grid* GridPattern::lookup(const std::string& name, const param::MIRParametrisation& param) {
+const Grid* GridPattern::lookup(const std::string& name) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
@@ -110,7 +113,7 @@ const Grid* GridPattern::lookup(const std::string& name, const param::MIRParamet
 
     if (k != m->cend()) {
         // This adds a new Grid to the map
-        return k->second->make(name, param);
+        return k->second->make(name);
     }
 
 

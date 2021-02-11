@@ -132,8 +132,11 @@ struct TypedGenericPattern final : public GridPattern {
     TypedGenericPattern(const TypedGenericPattern&) = delete;
     TypedGenericPattern& operator=(const TypedGenericPattern&) = delete;
 
-    const Grid* make(const std::string& name, const param::MIRParametrisation&) const override {
-        return new TYPE(name, requiredKeys_, optionalKeys_);
+    const Grid* make(const std::string& name) const override { return new TYPE(name, requiredKeys_, optionalKeys_); }
+
+    std::string canonical(const std::string& name, const param::MIRParametrisation&) const override {
+        // FIXME not implemented
+        return name;
     }
 
     void print(std::ostream& out) const override {

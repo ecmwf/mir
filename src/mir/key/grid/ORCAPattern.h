@@ -43,8 +43,7 @@ public:
     ORCAPattern& operator=(const ORCAPattern&) = delete;
 
     // -- Methods
-
-    static std::string sane_name(const std::string&);
+    // None
 
     // -- Overridden methods
     // None
@@ -65,7 +64,8 @@ private:
     // -- Overridden methods
 
     void print(std::ostream&) const override;
-    const Grid* make(const std::string& name, const param::MIRParametrisation&) const override;
+    const Grid* make(const std::string&) const override;
+    std::string canonical(const std::string&, const param::MIRParametrisation&) const override;
 
     // -- Class members
     // None

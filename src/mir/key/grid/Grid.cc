@@ -71,11 +71,11 @@ static void read_configuration_files() {
 }
 
 
-Grid::Grid(const std::string& key, grid_t gridType, bool tentative) : key_(key), gridType_(gridType) {
+Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
     std::call_once(once, init);
     std::lock_guard<std::mutex> lock(mutex_);
 
-    ASSERT(m->insert({key, this}).second || tentative);
+    ASSERT(m->insert({key, this}).second);
 }
 
 
@@ -152,8 +152,9 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
 
     // Look for pattern matchings
     // This will automatically add the new Grid to the map
-    if (GridPattern::match(key)) {
-        auto gp = GridPattern::lookup(key, param);
+    auto match = GridPattern::match(key, param);
+    if (!match.empty()) {
+        auto gp = GridPattern::lookup(match);
         ASSERT(gp != nullptr);
         return *gp;
     }

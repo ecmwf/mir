@@ -15,6 +15,7 @@
 #include <ostream>
 
 #include "mir/key/grid/NamedClenshawCurtis.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -33,8 +34,14 @@ void ClenshawCurtisPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* ClenshawCurtisPattern::make(const std::string& name, const param::MIRParametrisation&) const {
+const Grid* ClenshawCurtisPattern::make(const std::string& name) const {
     return new NamedClenshawCurtis(name);
+}
+
+
+std::string ClenshawCurtisPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+    ASSERT(name.size() > 3);
+    return "RCC" + name.substr(3);
 }
 
 

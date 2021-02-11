@@ -16,9 +16,8 @@
 #include <iosfwd>
 #include <string>
 
-#include "eckit/utils/Regex.h"
-
-#include "mir/param/SimpleParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Regex.h"
 
 
 namespace mir {
@@ -57,9 +56,8 @@ public:
     // -- Methods
 
     static void list(std::ostream&);
-    static bool match(const std::string& name);
-    static const Grid* lookup(const std::string& name,
-                              const param::MIRParametrisation& = param::SimpleParametrisation());
+    static std::string match(const std::string& name, const param::MIRParametrisation&);
+    static const Grid* lookup(const std::string& name);
 
     // -- Overridden methods
     // None
@@ -77,12 +75,13 @@ protected:
     // -- Members
 
     const std::string pattern_;
-    const eckit::Regex regex_;
+    const util::Regex regex_;
 
     // -- Methods
 
-    virtual void print(std::ostream&) const                                                         = 0;
-    virtual const Grid* make(const std::string& name, const param::MIRParametrisation& param) const = 0;
+    virtual void print(std::ostream&) const                                                        = 0;
+    virtual const Grid* make(const std::string&) const                                             = 0;
+    virtual std::string canonical(const std::string& name, const param::MIRParametrisation&) const = 0;
 
     // -- Overridden methods
     // None

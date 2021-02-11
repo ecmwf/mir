@@ -30,30 +30,30 @@ ORCAPattern::ORCAPattern(const std::string& name) : GridPattern(name) {}
 ORCAPattern::~ORCAPattern() = default;
 
 
-std::string ORCAPattern::sane_name(const std::string& insane) {
-    auto s = insane;
-    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-    if (s.front() == 'E') {
-        s.front() = 'e';
-    }
-    return s;
-}
-
-
 void ORCAPattern::print(std::ostream& out) const {
     out << "ORCAPattern[pattern=" << pattern_ << "]";
 }
 
 
-const Grid* ORCAPattern::make(const std::string& name, const param::MIRParametrisation& param) const {
-    if (name.find('_') == std::string::npos) {
-        std::string arrangement;
-        param.get("orca-arrangement", arrangement = "T");  // arbitrary choice (to review)
+const Grid* ORCAPattern::make(const std::string& name) const {
+    return new NamedORCA(name);
+}
 
-        return new NamedORCA(sane_name(name + "_" + arrangement));
+
+std::string ORCAPattern::canonical(const std::string& name, const param::MIRParametrisation& param) const {
+    auto n = name;
+    if (n.find('_') == std::string::npos) {
+        std::string arrangement = "T";  // arbitrary choice (to review)
+        param.get("orca-arrangement", arrangement);
+        n += "_" + arrangement;
     }
 
-    return new NamedORCA(sane_name(name));
+    std::transform(n.begin(), n.end(), n.begin(), ::toupper);
+    if (n.front() == 'E') {
+        n.front() = 'e';
+    }
+
+    return n;
 }
 
 

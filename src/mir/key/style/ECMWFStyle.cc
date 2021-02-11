@@ -62,8 +62,9 @@ static MIRStyleBuilder<ECMWFStyle> __style("ecmwf");
 static MIRStyleBuilder<DeprecatedStyle> __deprecated_style("dissemination");
 
 
-static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& user,
-                                                       const param::MIRParametrisation& field, bool checkRotation) {
+static std::string target_gridded_from_parametrisation(const param::MIRParametrisation& param, bool checkRotation) {
+    auto& user  = param.userParametrisation();
+    auto& field = param.fieldParametrisation();
     std::unique_ptr<const param::MIRParametrisation> same(new param::SameParametrisation(user, field, true));
 
     std::vector<double> rotation;
@@ -75,7 +76,7 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
 
 
     std::string grid;
-    if (user.get("grid", grid)) {
+    if (grid::Grid::get("grid", grid, param)) {
         auto& g = grid::Grid::lookup(grid, field);
 
         if (g.isRegularLL()) {
@@ -87,12 +88,9 @@ static std::string target_gridded_from_parametrisation(const param::MIRParametri
         }
 
         if (g.isNamed()) {
-            auto same_name = [](const std::string& name_from_user, const param::MIRParametrisation& field) {
-                std::string name_from_field;  // name from field (assumed canonical)
-                ASSERT(field.get("grid", name_from_field));
-                return name_from_user == name_from_field;
-            };
-            return forced || !field.has("gridded_named") || !same_name(g.key(), field) ? prefix + "namedgrid" : "";
+            std::string field_grid;
+            field.has("gridded_named") && field.get("grid", field_grid);
+            return forced || grid != field_grid ? prefix + "namedgrid" : "";
         }
 
         ASSERT(g.isTyped());
@@ -194,15 +192,14 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
-    auto& user  = parametrisation_.userParametrisation();
-    auto& field = parametrisation_.fieldParametrisation();
+    auto& user = parametrisation_.userParametrisation();
 
     add_formula(plan, user, {"spectral", "raw"});
 
     resol::Resol resol(parametrisation_, false);
 
     long uv       = 0;
-    bool uv_input = field.get("is_wind_component_uv", uv) && (uv != 0);
+    bool uv_input = parametrisation_.fieldParametrisation().get("is_wind_component_uv", uv) && (uv != 0);
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
@@ -216,7 +213,7 @@ void ECMWFStyle::sh2grid(action::ActionPlan& plan) const {
         resol.prepare(plan);
     }
 
-    auto target = target_gridded_from_parametrisation(user, field, false);
+    auto target = target_gridded_from_parametrisation(parametrisation_, false);
     if (!target.empty()) {
         if (resol.resultIsSpectral()) {
 
@@ -271,8 +268,7 @@ void ECMWFStyle::sh2sh(action::ActionPlan& plan) const {
 
 
 void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
-    auto& user  = parametrisation_.userParametrisation();
-    auto& field = parametrisation_.fieldParametrisation();
+    auto& user = parametrisation_.userParametrisation();
 
     bool rotation = user.has("rotation");
     bool vod2uv   = option(user, "vod2uv", false);
@@ -285,7 +281,7 @@ void ECMWFStyle::grid2grid(action::ActionPlan& plan) const {
 
     add_formula(plan, user, {"gridded", "raw"});
 
-    auto target = target_gridded_from_parametrisation(user, field, rotation);
+    auto target = target_gridded_from_parametrisation(parametrisation_, rotation);
     if (!target.empty()) {
         plan.add("interpolate.grid2" + target);
 

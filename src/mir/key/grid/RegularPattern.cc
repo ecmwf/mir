@@ -17,6 +17,7 @@
 #include "eckit/utils/Translator.h"
 
 #include "mir/key/grid/NamedRegular.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -35,8 +36,14 @@ void RegularPattern::print(std::ostream& out) const {
 }
 
 
-const Grid* RegularPattern::make(const std::string& name, const param::MIRParametrisation&) const {
+const Grid* RegularPattern::make(const std::string& name) const {
     return new NamedRegular(name, eckit::Translator<std::string, size_t>()(name.substr(1)));
+}
+
+
+std::string RegularPattern::canonical(const std::string& name, const param::MIRParametrisation&) const {
+    ASSERT(name.size() > 1);
+    return "F" + name.substr(1);
 }
 
 
