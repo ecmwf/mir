@@ -36,7 +36,7 @@ void NamedFromFile::print(std::ostream& out) const {
 
 size_t NamedFromFile::gaussianNumber() const {
     long N;
-    return get("gaussianNumber", N) && N > 0 ? size_t(N) : default_gaussian_number();
+    return SimpleParametrisation::get("gaussianNumber", N) && N > 0 ? size_t(N) : default_gaussian_number();
 }
 
 

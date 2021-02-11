@@ -183,14 +183,7 @@ void Count::json(eckit::JSON& j, bool enclose) const {
 
 
 void Count::countOnNamedGrid(const std::string& grid) {
-    ASSERT(!grid.empty());
     reset();
-
-    if (!key::grid::Grid::known(grid)) {
-        // avoid 'grid=auto' or 'grid=av' without failure
-        Log::debug() << "Count: unknown grid '" << grid << "', skipping." << std::endl;
-        return;
-    }
 
     repres::RepresentationHandle rep(key::grid::Grid::lookup(grid).representation());
     countOnRepresentation(*rep);

@@ -26,8 +26,7 @@ namespace interpolate {
 
 Gridded2RotatedNamedGrid::Gridded2RotatedNamedGrid(const param::MIRParametrisation& parametrisation) :
     Gridded2RotatedGrid(parametrisation) {
-
-    ASSERT(parametrisation_.userParametrisation().get("grid", grid_));
+    ASSERT(key::grid::Grid::get("grid", grid_, parametrisation) && !grid_.empty());
 }
 
 

@@ -16,6 +16,7 @@
 #include <map>
 #include <mutex>
 
+#include "mir/key/grid/Grid.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/NamedGrid.h"
 #include "mir/util/Exceptions.h"
@@ -71,8 +72,11 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
     }
 
     // Look for NamedGrid pattern matching
-    if (grid::GridPattern::match(name)) {
-        return new intgrid::NamedGrid(name, parametrisation);
+    std::string intgrid;
+    if (grid::Grid::get("intgrid", intgrid, parametrisation)) {
+        if (grid::Grid::lookup(intgrid, parametrisation).isNamed()) {
+            return new intgrid::NamedGrid(intgrid, parametrisation);
+        }
     }
 
     list(Log::error() << "IntgridFactory: unknown '" << name << "', choices are: ");

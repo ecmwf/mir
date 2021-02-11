@@ -64,18 +64,15 @@ public:
     virtual size_t gaussianNumber() const;
 
     static size_t default_gaussian_number() { return 64; }
-
+    static bool get(const std::string& key, std::string& value, const param::MIRParametrisation&);
     static const Grid& lookup(const std::string& key,
                               const param::MIRParametrisation& = param::SimpleParametrisation());
 
-    static bool known(const std::string& key);
     static void list(std::ostream&);
 
     bool isNamed() const { return gridType_ == named_t; }
     bool isTyped() const { return gridType_ == typed_t; }
     bool isRegularLL() const { return gridType_ == regular_ll_t; }
-
-    const std::string& key() const { return key_; }
 
     // -- Overridden methods
     // None

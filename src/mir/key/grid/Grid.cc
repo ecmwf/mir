@@ -136,6 +136,30 @@ size_t Grid::gaussianNumber() const {
 }
 
 
+bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
+    std::call_once(once, init);
+    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+
+    read_configuration_files();
+
+    std::string grid;
+    if (!param.userParametrisation().get(key, grid)) {
+        return false;
+    }
+
+    // Look for specific key matches
+    auto find = m->find(grid);
+    if (find != m->end()) {
+        value = find->first;
+        return true;
+    }
+
+    // Look for pattern matchings
+    value = GridPattern::match(grid, param);
+    return !value.empty();
+}
+
+
 const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
@@ -161,22 +185,6 @@ const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation
 
     list(Log::error() << "Grid: unknown '" << key << "', choices are:\n");
     throw exception::SeriousBug("Grid: unknown '" + key + "'");
-}
-
-
-bool Grid::known(const std::string& key) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
-
-    read_configuration_files();
-
-    // Look for specific key matches
-    if (m->find(key) != m->end()) {
-        return true;
-    }
-
-    // Look for pattern matchings
-    return GridPattern::match(key);
 }
 
 

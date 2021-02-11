@@ -14,12 +14,15 @@
 
 #include "eckit/log/JSON.h"
 #include "eckit/option/CmdArgs.h"
+#include "eckit/option/FactoryOption.h"
 #include "eckit/option/SimpleOption.h"
 #include "eckit/option/VectorOption.h"
 
 #include "mir/data/MIRField.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/key/grid/Grid.h"
+#include "mir/key/grid/GridPattern.h"
+#include "mir/param/ConfigurationWrapper.h"
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"
 #include "mir/repres/latlon/RegularLL.h"
@@ -40,8 +43,8 @@ struct MIRCount : tools::MIRTool {
         // options_.push_back(new SimpleOption< bool >("sizes", "compare sizes of coordinates and values vectors,
         // default false"));
         options_.push_back(new VectorOption<double>("area", "cropping area (North/West/South/East)", 4));
-        options_.push_back(new SimpleOption<std::string>("gridname", "grid name: [FNOfno][1-9][0-9]*"));
-        options_.push_back(new VectorOption<double>("grid", "regular grid increments (West-East/South-North)", 2));
+        options_.push_back(new FactoryOption<key::grid::GridPattern>(
+            "grid", "Interpolate to given grid (following a recognizable regular expression)"));
         options_.push_back(new SimpleOption<prec_t>("precision", "Output precision"));
     }
 
@@ -62,7 +65,7 @@ struct MIRCount : tools::MIRTool {
                     << " [--area=N/W/S/E] --grid=WE/SN --ni-nj"
                        "\n\t"
                     << tool
-                    << " [--area=N/W/S/E] --gridname=[FNOfno][1-9][0-9]*  # ..."
+                    << " [--area=N/W/S/E] --grid=[fFoO][1-9][0-9]*  # ..."
                        "\n"
                        "\n"
                        "Examples:"
@@ -91,34 +94,24 @@ void MIRCount::execute(const eckit::option::CmdArgs& args) {
     auto& log = Log::info();
     eckit::JSON j(log);
 
+    const param::ConfigurationWrapper param(args);
+
+
     prec_t precision;
-    args.get("precision", precision) ? log.precision(precision) : log.precision();
+    param.get("precision", precision) ? log.precision(precision) : log.precision();
 
     std::vector<double> area;
-    args.get("area", area);
+    param.get("area", area);
 
 
-    // setup a regular lat/lon representation and perfom count
-    std::vector<double> grid;
-    if (args.get("grid", grid)) {
-        ASSERT(!args.has("gridname"));
-
-        tools::Count counter(area);
-        counter.countOnGridIncrements(grid);
-
-        counter.json(j);
-        return;
-    }
-
-
-    // setup a representation from gridname and perfom count
-    std::string gridname;
-    if (args.get("gridname", gridname)) {
-        ASSERT(!args.has("grid"));
+    // setup a regular lat/lon representation and perform count
+    std::string grid;
+    if (key::grid::Grid::get("grid", grid, param)) {
+        auto& g = key::grid::Grid::lookup(grid, param);
+        repres::RepresentationHandle rep(g.representation());
 
         tools::Count counter(area);
-        counter.countOnNamedGrid(gridname);
-
+        counter.countOnRepresentation(*rep);
         counter.json(j);
         return;
     }
