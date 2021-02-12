@@ -17,6 +17,8 @@
 #include "mir/util/Regex.h"
 
 
+#if 1
+#else
 namespace mir {
 namespace util {
 
@@ -63,3 +65,4 @@ Regex::match_t Regex::match(const std::string& s) const {
 
 }  // namespace util
 }  // namespace mir
+#endif

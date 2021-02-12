@@ -13,6 +13,21 @@
 #ifndef mir_util_Regex_h
 #define mir_util_Regex_h
 
+#if 1
+// For Intel compilers
+#include "eckit/utils/Regex.h"
+
+
+namespace mir {
+namespace util {
+using Regex = eckit::Regex;
+}
+}  // namespace mir
+
+
+#else
+
+
 #include <regex>
 #include <string>
 
@@ -115,4 +130,5 @@ private:
 }  // namespace mir
 
 
+#endif
 #endif
