@@ -1,0 +1,130 @@
+/*
+ * (C) Copyright 1996- ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+
+#include "mir/method/voronoi/VoronoiMethod.h"
+
+#include <algorithm>
+#include <ostream>
+#include <sstream>
+#include <utility>
+#include <vector>
+
+#include "eckit/utils/MD5.h"
+
+#include "mir/repres/Iterator.h"
+#include "mir/repres/Representation.h"
+#include "mir/search/PointSearch.h"
+#include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
+#include "mir/util/Trace.h"
+
+
+namespace mir {
+namespace method {
+namespace voronoi {
+
+
+namespace {
+
+
+struct Biplet : std::pair<size_t, size_t> {
+    using pair::pair;
+    operator WeightMatrix::Triplet() const { return {first, second, 1. /*non-zero*/}; }
+    bool operator<(const Biplet& other) const {
+        return first < other.first || (first == other.first && second < other.second);
+    }
+};
+
+
+}  // namespace
+
+
+VoronoiMethod::VoronoiMethod(const param::MIRParametrisation& param) : MethodWeighted(param), pick_(1) {}
+
+
+bool VoronoiMethod::sameAs(const Method& other) const {
+    auto o = dynamic_cast<const VoronoiMethod*>(&other);
+    return (o != nullptr) && name() == o->name() && MethodWeighted::sameAs(*o);
+}
+
+
+void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres::Representation& in,
+                             const repres::Representation& out) const {
+    auto& log = Log::debug();
+    log << "VoronoiMethod::assemble (input: " << in << ", output: " << out << ")" << std::endl;
+
+
+    std::unique_ptr<search::PointSearch> tree;
+    {
+        trace::ResourceUsage usage("VoronoiMethod::assemble create k-d tree", log);
+        tree.reset(new search::PointSearch(parametrisation_, out));
+    }
+
+
+    std::vector<Biplet> biplets;
+    biplets.reserve(out.numberOfPoints());
+
+    {
+        trace::ProgressTimer progress("VoronoiMethod::assemble create Voronoi", in.numberOfPoints(), {"point"}, log);
+
+        std::vector<search::PointSearch::PointValueType> closest;
+        size_t j = 0;
+        for (std::unique_ptr<repres::Iterator> it(in.iterator()); it->next(); ++j) {
+            if (++progress) {
+                log << *tree << std::endl;
+            }
+
+            // auto i = tree->closestPoint(it->point3D()).payload();
+            // biplets.emplace_back(i, j);
+            pick_.pick(*tree, it->point3D(), closest);
+            for (auto& c : closest) {
+                auto i = c.payload();
+                biplets.emplace_back(i, j);
+            }
+        }
+    }
+
+
+    {
+        trace::Timer time("VoronoiMethod::assemble fill sparse matrix", log);
+
+        // TODO: triplets, really? why not writing to the matrix directly?
+        std::sort(biplets.begin(), biplets.end());
+        W.setFromTriplets({biplets.begin(), biplets.end()});
+    }
+}
+
+
+void VoronoiMethod::hash(eckit::MD5& md5) const {
+    MethodWeighted::hash(md5);
+    std::stringstream str;
+    print(str);
+    md5.add(str.str());
+}
+
+
+void VoronoiMethod::print(std::ostream& out) const {
+    out << "VoronoiMethod["
+        << "name=" << name() << ",";
+    MethodWeighted::print(out);
+    out << "]";
+}
+
+
+bool VoronoiMethod::validateMatrixWeights() const {
+    return false;
+}
+
+
+}  // namespace voronoi
+}  // namespace method
+}  // namespace mir

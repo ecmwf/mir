@@ -401,6 +401,8 @@ list(APPEND mir_srcs
     method/nonlinear/SimulateMissingValue.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
+    method/voronoi/VoronoiMethod.cc
+    method/voronoi/VoronoiMethod.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
