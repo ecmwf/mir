@@ -19,7 +19,6 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/data/MIRValuesVector.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -31,7 +30,7 @@ namespace nonlinear {
 MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool MissingIfAllMissing::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+bool MissingIfAllMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
                                     const data::MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values

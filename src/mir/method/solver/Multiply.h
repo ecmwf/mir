@@ -10,30 +10,30 @@
  */
 
 
-#ifndef mir_method_nonlinear_MissingIfHeaviestMissing_h
-#define mir_method_nonlinear_MissingIfHeaviestMissing_h
+#ifndef mir_method_solver_Multiply_h
+#define mir_method_solver_Multiply_h
 
-#include "mir/method/nonlinear/NonLinear.h"
+#include "mir/method/solver/Solver.h"
 
 
 namespace mir {
 namespace method {
-namespace nonlinear {
+namespace solver {
 
 
-struct MissingIfHeaviestMissing : NonLinear {
-    MissingIfHeaviestMissing(const param::MIRParametrisation&);
-    bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                   const data::MIRValuesVector& values, const double& missingValue) const override;
+struct Multiply : Solver {
+    using Solver::Solver;
+    void solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
+               const double& missingValue) const override;
 
 private:
-    bool sameAs(const NonLinear&) const override;
+    bool sameAs(const Solver&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
 };
 
 
-}  // namespace nonlinear
+}  // namespace solver
 }  // namespace method
 }  // namespace mir
 

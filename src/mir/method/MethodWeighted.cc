@@ -30,6 +30,7 @@
 #include "mir/lsm/LandSeaMasks.h"
 #include "mir/method/MatrixCacheCreator.h"
 #include "mir/method/nonlinear/NonLinear.h"
+#include "mir/method/solver/Multiply.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
@@ -49,7 +50,8 @@ static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", CAPACITY, 
                                                          "$MIR_MATRIX_CACHE_MEMORY_FOOTPRINT");
 
 
-MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) : Method(parametrisation) {
+MethodWeighted::MethodWeighted(const param::MIRParametrisation& parametrisation) :
+    Method(parametrisation), solver_(new solver::Multiply(parametrisation)) {
     ASSERT(parametrisation_.get("lsm-weight-adjustment", lsmWeightAdjustment_));
 
     pruneEpsilon_ = 0;
@@ -227,8 +229,14 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
 
 void MethodWeighted::addNonLinearTreatment(const nonlinear::NonLinear* n) {
-    ASSERT(n);
-    nonLinear_.push_back(std::unique_ptr<const nonlinear::NonLinear>(n));
+    ASSERT(n != nullptr);
+    nonLinear_.emplace_back(n);
+}
+
+
+void MethodWeighted::setSolver(const solver::Solver* s) {
+    ASSERT(s != nullptr);
+    solver_.reset(s);
 }
 
 
@@ -349,39 +357,39 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
         const data::Space& sp = data::SpaceChooser::lookup(space);
 
         MIRValuesVector result(npts_out);  // field.update() takes ownership with std::swap()
-        WeightMatrix::Matrix mi;
-        WeightMatrix::Matrix mo;
-        setOperandMatricesFromVectors(mo, mi, result, field.values(i), missingValue, sp);
-        ASSERT(mi.rows() == npts_inp);
-        ASSERT(mo.rows() == npts_out);
+        WeightMatrix::Matrix A;
+        WeightMatrix::Matrix B;
+        setOperandMatricesFromVectors(B, A, result, field.values(i), missingValue, sp);
+        ASSERT(A.rows() == npts_inp);
+        ASSERT(B.rows() == npts_out);
 
-        {
+
+        if (matrixCopy) {
             auto timing(ctx.statistics().matrixTimer());
+            WeightMatrix M(W);  // modifiable matrix copy
 
-            if (matrixCopy) {
-                WeightMatrix M(W);  // modifiable matrix copy
+            for (auto& n : nonLinear_) {
+                std::ostringstream str;
+                str << *n;
+                trace::Timer t(str.str());
 
-                for (auto& n : nonLinear_) {
-                    std::ostringstream str;
-                    str << *n;
-                    trace::Timer t(str.str());
-
-                    if (n->treatment(mi, M, mo, field.values(i), missingValue)) {
-                        if (matrixValidate_) {
-                            M.validate(str.str().c_str());
-                        }
+                if (n->treatment(A, M, B, field.values(i), missingValue)) {
+                    if (matrixValidate_) {
+                        M.validate(str.str().c_str());
                     }
                 }
+            }
 
-                M.multiply(mi, mo);
-            }
-            else {
-                W.multiply(mi, mo);
-            }
+            solver_->solve(A, M, B, missingValue);
+        }
+        else {
+            auto timing(ctx.statistics().matrixTimer());
+            solver_->solve(A, W, B, missingValue);
         }
 
+
         // update field values with interpolation result
-        setVectorFromOperandMatrix(mo, result, missingValue, sp);
+        setVectorFromOperandMatrix(B, result, missingValue, sp);
 
         for (auto& r : forceMissing) {
             result[r] = missingValue;

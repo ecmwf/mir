@@ -18,7 +18,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/method/WeightMatrix.h"
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/util/Exceptions.h"
 
@@ -30,8 +29,8 @@ namespace gridbox {
 
 struct NonLinearGridBoxMaximum : nonlinear::NonLinear {
     using NonLinear::NonLinear;
-    bool treatment(Matrix& /*A*/, WeightMatrix& W, Matrix& /*B*/, const data::MIRValuesVector& values,
-                   const double& missingValue) const override {
+    bool treatment(MethodWeighted::Matrix& /*A*/, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& /*B*/,
+                   const data::MIRValuesVector& values, const double& missingValue) const override {
 
         // locate rows referring input maximum value, and set rows to pick only those
         ASSERT(W.cols() == values.size());
