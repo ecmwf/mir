@@ -31,8 +31,8 @@ namespace action {
 
 
 ActionPlan::ActionPlan(const param::MIRParametrisation& parametrisation) : parametrisation_(parametrisation) {
-    parametrisation_.userParametrisation().get("dump-plan-file", dumpPlanFile_);
-    parametrisation_.userParametrisation().get("dump-statistics-file", dumpStatisticsFile_);
+    parametrisation_.get("dump-plan-file", dumpPlanFile_);
+    parametrisation_.get("dump-statistics-file", dumpStatisticsFile_);
 }
 
 
