@@ -171,15 +171,15 @@ void ECMWFStyle::prologue(action::ActionPlan& plan) const {
     auto& user = parametrisation_.userParametrisation();
 
     std::string prologue;
-    if (parametrisation_.get("prologue", prologue)) {
+    if (user.get("prologue", prologue)) {
         plan.add(prologue);
     }
 
-    if (parametrisation_.has("checkerboard")) {
+    if (user.has("checkerboard")) {
         plan.add("misc.checkerboard");
     }
 
-    if (parametrisation_.has("pattern")) {
+    if (user.has("pattern")) {
         plan.add("misc.pattern");
     }
 
@@ -335,7 +335,7 @@ void ECMWFStyle::epilogue(action::ActionPlan& plan) const {
     }
 
     std::string epilogue;
-    if (parametrisation_.get("epilogue", epilogue)) {
+    if (user.get("epilogue", epilogue)) {
         plan.add(epilogue);
     }
 }
