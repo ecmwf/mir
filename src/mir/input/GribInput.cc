@@ -227,7 +227,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
 
         {"truncation", "pentagonalResolutionParameterJ", nullptr},  // Assumes triangular truncation
         {"accuracy", "bitsPerValue", nullptr},
-        {"packing", "packingType", nullptr},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees", nullptr},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees", nullptr},
@@ -517,6 +516,37 @@ static ProcessingT<std::string>* unstructured_grid_orca() {
 }
 
 
+static ProcessingT<std::string>* packing() {
+    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
+        auto get = [](grib_handle* h, const char* key) -> std::string {
+            if (codes_is_defined(h, key) != 0) {
+                char buffer[64];
+                size_t size = sizeof(buffer);
+
+                GRIB_CALL(codes_get_string(h, key, buffer, &size));
+                ASSERT(size < sizeof(buffer) - 1);
+
+                if (::strcmp(buffer, "MISSING") != 0) {
+                    return buffer;
+                }
+            }
+            return "";
+        };
+
+        auto packingType = get(h, "packingType");
+        for (std::string prefix : {"grid_", "spectral_"}) {
+            if (packingType.find(prefix) == 0) {
+                value = packingType.substr(prefix.size());
+                std::replace(value.begin(), value.end(), '_', '-');
+                return true;
+            }
+        }
+
+        return false;
+    });
+}
+
+
 template <typename T, typename P>
 static bool get_value(const std::string& name, grib_handle* h, T& value, const P& process) {
     for (size_t i = 0; process[i].name != nullptr; ++i) {
@@ -796,14 +826,24 @@ bool GribInput::get(const std::string& name, long& value) const {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
-    const char* key = get_key(name, grib_);
-    if (std::string(key).empty()) {
+    std::string key = get_key(name, grib_);
+    if (key.empty()) {
         return false;
     }
 
+    std::string packing;
+    if (key == "bitsPerValue" && get("packing", packing) && packing == "ieee") {
+        // GRIB2 Section 5 Code Table 7
+        // NOTE: has to be done here as GRIBs packingType=grid_ieee ignores bitsPerValue (usually 0?)
+        long precision = 0;
+        GRIB_CALL(codes_get_long(grib_, "precision", &precision));
+        value = precision == 1 ? 32 : precision == 2 ? 64 : precision == 3 ? 128 : 0;
+        return value != 0;
+    }
+
     // FIXME: make sure that 'value' is not set if CODES_MISSING_LONG
-    int err = codes_get_long(grib_, key, &value);
-    if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key, &err) != 0) {
+    int err = codes_get_long(grib_, key.c_str(), &value);
+    if (err == CODES_NOT_FOUND || codes_is_missing(grib_, key.c_str(), &err) != 0) {
         static struct {
             const char* name;
             const ProcessingT<long>* processing;
@@ -814,12 +854,12 @@ bool GribInput::get(const std::string& name, long& value) const {
             {nullptr, nullptr, nullptr},
         };
 
-        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
+        return get_value(key.c_str(), grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
         Log::debug() << "codes_get_long(" << name << ",key=" << key << ") failed " << err << std::endl;
-        GRIB_ERROR(err, key);
+        GRIB_ERROR(err, key.c_str());
     }
 
     // Log::debug() << "codes_get_long(" << name << ",key=" << key << ") " << value << std::endl;
@@ -956,16 +996,17 @@ bool GribInput::get(const std::string& name, std::string& value) const {
     int err     = codes_get_string(grib_, key, buffer, &size);
 
     if (err == CODES_NOT_FOUND) {
-        //        static struct {
-        //            const char* name;
-        //            const ProcessingT<std::string>* processing;
-        //            const Condition* condition;
-        //        } process[] = {
-        //            {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")},
-        //            {nullptr, nullptr, nullptr},
-        //        };
+        static struct {
+            const char* name;
+            const ProcessingT<std::string>* processing;
+            const Condition* condition;
+        } process[] = {
+            // {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")},
+            {"packing", packing(), nullptr},
+            {nullptr, nullptr, nullptr},
+        };
 
-        return /*get_value(key, grib_, value, process) || */ FieldParametrisation::get(name, value);
+        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
