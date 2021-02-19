@@ -56,6 +56,7 @@ public:
     virtual bool eval(grib_handle*) const = 0;
 };
 
+
 template <class T>
 class ConditionT : public Condition {
     const char* key_;
@@ -86,6 +87,7 @@ bool ConditionT<long>::eval(grib_handle* h) const {
     return value_ == value;
 }
 
+
 template <>
 bool ConditionT<double>::eval(grib_handle* h) const {
     double value;
@@ -104,6 +106,7 @@ bool ConditionT<double>::eval(grib_handle* h) const {
 
     return value_ == value;  // Want an epsilon?
 }
+
 
 template <>
 bool ConditionT<std::string>::eval(grib_handle* h) const {
@@ -125,6 +128,7 @@ bool ConditionT<std::string>::eval(grib_handle* h) const {
     return value_ == buffer;
 }
 
+
 class ConditionOR : public Condition {
     const Condition* left_;
     const Condition* right_;
@@ -138,6 +142,7 @@ public:
     ConditionOR(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
 
+
 /*
 class ConditionAND : public Condition {
     const Condition* left_;
@@ -148,6 +153,7 @@ public:
     ConditionAND(const Condition* left, const Condition* right) : left_(left), right_(right) {}
 };
 */
+
 
 /*
 class ConditionNOT : public Condition {
@@ -312,6 +318,7 @@ static ProcessingT<long>* is_wind_component_uv() {
     });
 }
 
+
 static ProcessingT<long>* is_wind_component_vod() {
     return new ProcessingT<long>([](grib_handle* h, long& value) {
         long paramId = 0;
@@ -322,6 +329,7 @@ static ProcessingT<long>* is_wind_component_vod() {
         return value;
     });
 }
+
 
 static ProcessingT<double>* angular_precision() {
     return new ProcessingT<double>([](grib_handle* h, double& value) {
@@ -344,6 +352,7 @@ static ProcessingT<double>* angular_precision() {
         return true;
     });
 }
+
 
 static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_reduced_grids() {
     return new ProcessingT<double>([](grib_handle* h, double& Lon2) {
@@ -413,6 +422,7 @@ static ProcessingT<double>* longitudeOfLastGridPointInDegrees_fix_for_global_red
     });
 };
 
+
 static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regular_grids() {
     return new ProcessingT<double>([](grib_handle* h, double& we) {
         long iScansPositively = 0L;
@@ -470,6 +480,7 @@ static ProcessingT<double>* iDirectionIncrementInDegrees_fix_for_periodic_regula
     });
 };
 
+
 static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std::string> keys) {
     const std::vector<std::string> keys_(keys);
     return new ProcessingT<std::vector<double>>([=](grib_handle* h, std::vector<double>& values) {
@@ -483,34 +494,6 @@ static ProcessingT<std::vector<double>>* vector_double(std::initializer_list<std
             }
             GRIB_CALL(codes_get_double(h, key.c_str(), &values[i++]));
         }
-        return true;
-    });
-}
-
-static ProcessingT<std::string>* unstructured_grid_orca() {
-    return new ProcessingT<std::string>([](grib_handle* h, std::string& value) {
-        auto get = [](grib_handle* h, const char* key) -> std::string {
-            if (codes_is_defined(h, key) != 0) {
-                char buffer[64];
-                size_t size = sizeof(buffer);
-
-                GRIB_CALL(codes_get_string(h, key, buffer, &size));
-                ASSERT(size < sizeof(buffer) - 1);
-
-                if (::strcmp(buffer, "MISSING") != 0) {
-                    return buffer;
-                }
-            }
-            return "";
-        };
-
-        auto type    = get(h, "unstructuredGridType");
-        auto subtype = get(h, "unstructuredGridSubtype");
-        if (type.empty() || subtype.empty()) {
-            return false;
-        }
-
-        value = type + "_" + subtype[0];
         return true;
     });
 }
@@ -1001,7 +984,6 @@ bool GribInput::get(const std::string& name, std::string& value) const {
             const ProcessingT<std::string>* processing;
             const Condition* condition;
         } process[] = {
-            // {"grid", unstructured_grid_orca(), is("gridType", "unstructured_grid")},
             {"packing", packing(), nullptr},
             {nullptr, nullptr, nullptr},
         };
