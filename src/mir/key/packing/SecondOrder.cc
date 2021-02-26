@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/packing/SecondOrder.h"
+#include "mir/key/packing/SecondOrder.h"
 
 #include <iostream>
 
@@ -22,11 +22,12 @@
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-static PackerBuilder<SecondOrder> __packer1("second-order");
-static PackerBuilder<SecondOrder> __packer2("so");  // For the lazy
+static PackingBuilder<SecondOrder> __packer1("second-order");
+static PackingBuilder<SecondOrder> __packer2("so");  // For the lazy
 
 
 SecondOrder::~SecondOrder() = default;
@@ -66,4 +67,5 @@ std::string SecondOrder::type(const repres::Representation* repres) const {
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir

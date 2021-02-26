@@ -10,17 +10,18 @@
  */
 
 
-#include "mir/packing/ArchivedValue.h"
+#include "mir/key/packing/ArchivedValue.h"
 
 #include <iostream>
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-static PackerBuilder<ArchivedValue> __packer1("archived-value");
-static PackerBuilder<ArchivedValue> __packer2("av");  // For the lazy
+static PackingBuilder<ArchivedValue> __packer1("archived-value");
+static PackingBuilder<ArchivedValue> __packer2("av");  // For the lazy
 
 
 ArchivedValue::~ArchivedValue() = default;
@@ -42,4 +43,5 @@ std::string ArchivedValue::type(const repres::Representation*) const {
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir

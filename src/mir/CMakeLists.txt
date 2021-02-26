@@ -263,6 +263,22 @@ list(APPEND mir_srcs
     key/intgrid/None.h
     key/intgrid/Source.cc
     key/intgrid/Source.h
+    key/packing/ArchivedValue.cc
+    key/packing/ArchivedValue.h
+    key/packing/CCSDS.cc
+    key/packing/CCSDS.h
+    key/packing/Complex.cc
+    key/packing/Complex.h
+    key/packing/IEEE.cc
+    key/packing/IEEE.h
+    key/packing/JPEG2000.cc
+    key/packing/JPEG2000.h
+    key/packing/Packing.cc
+    key/packing/Packing.h
+    key/packing/SecondOrder.cc
+    key/packing/SecondOrder.h
+    key/packing/Simple.cc
+    key/packing/Simple.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc
@@ -413,22 +429,6 @@ list(APPEND mir_srcs
     output/ValuesOutput.h
     output/VectorOutput.cc
     output/VectorOutput.h
-    packing/ArchivedValue.cc
-    packing/ArchivedValue.h
-    packing/CCSDS.cc
-    packing/CCSDS.h
-    packing/Complex.cc
-    packing/Complex.h
-    packing/IEEE.cc
-    packing/IEEE.h
-    packing/JPEG2000.cc
-    packing/JPEG2000.h
-    packing/Packer.cc
-    packing/Packer.h
-    packing/SecondOrder.cc
-    packing/SecondOrder.h
-    packing/Simple.cc
-    packing/Simple.h
     param/CachedParametrisation.cc
     param/CachedParametrisation.h
     param/CombinedParametrisation.cc

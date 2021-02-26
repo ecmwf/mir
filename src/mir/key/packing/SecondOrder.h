@@ -10,17 +10,18 @@
  */
 
 
-#ifndef mir_packing_CCSDS_h
-#define mir_packing_CCSDS_h
+#ifndef mir_key_packing_SecondOrder_h
+#define mir_key_packing_SecondOrder_h
 
-#include "mir/packing/Packer.h"
+#include "mir/key/packing/Packing.h"
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-class CCSDS : public Packer {
+class SecondOrder : public Packing {
 public:
     // -- Types
     // None
@@ -30,11 +31,11 @@ public:
 
     // -- Constructors
 
-    using Packer::Packer;
+    using Packing::Packing;
 
     // -- Destructor
 
-    ~CCSDS() override;
+    ~SecondOrder() override;
 
     // -- Convertors
     // None
@@ -59,7 +60,8 @@ protected:
     // None
 
     // -- Methods
-    // None
+
+    bool check(const repres::Representation&) const;
 
     // -- Overridden methods
     // None
@@ -95,6 +97,7 @@ private:
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
 
 

@@ -10,17 +10,18 @@
  */
 
 
-#ifndef mir_packing_JPEG2000_h
-#define mir_packing_JPEG2000_h
+#ifndef mir_key_packing_JPEG2000_h
+#define mir_key_packing_JPEG2000_h
 
-#include "mir/packing/Packer.h"
+#include "mir/key/packing/Packing.h"
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-class JPEG2000 : public Packer {
+class JPEG2000 : public Packing {
 public:
     // -- Types
     // None
@@ -30,7 +31,7 @@ public:
 
     // -- Constructors
 
-    using Packer::Packer;
+    using Packing::Packing;
 
     // -- Destructor
 
@@ -95,6 +96,7 @@ private:
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
 
 

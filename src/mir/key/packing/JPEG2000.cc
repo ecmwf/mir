@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/packing/CCSDS.h"
+#include "mir/key/packing/JPEG2000.h"
 
 #include <iostream>
 
@@ -20,33 +20,35 @@
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-static PackerBuilder<CCSDS> __packer("ccsds");
+static PackingBuilder<JPEG2000> __packer("jpeg");
 
 
-CCSDS::~CCSDS() = default;
+JPEG2000::~JPEG2000() = default;
 
 
-void CCSDS::print(std::ostream& out) const {
-    out << "CCSDS[]";
+void JPEG2000::print(std::ostream& out) const {
+    out << "JPEG2000[]";
 }
 
 
-void CCSDS::fill(grib_info& info, const repres::Representation&) const {
+void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
     info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_CCSDS;
+    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_JPEG;
 }
 
 
-std::string CCSDS::type(const repres::Representation* repres) const {
+std::string JPEG2000::type(const repres::Representation* repres) const {
     if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
-        return "grid_ccsds";
+        return "grid_jpeg";
     }
     NOTIMP;
 }
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir

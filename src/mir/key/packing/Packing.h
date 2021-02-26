@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_packing_Packer_h
-#define mir_packing_Packer_h
+#ifndef mir_key_packing_Packer_h
+#define mir_key_packing_Packer_h
 
 #include <iosfwd>
 #include <string>
@@ -30,29 +30,30 @@ class Representation;
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-class Packer {
+class Packing {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    Packer(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
-    Packer(const Packer&) = delete;
+    Packing(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+    Packing(const Packing&) = delete;
 
     // -- Destructor
 
-    virtual ~Packer();
+    virtual ~Packing();
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    void operator=(const Packer&) = delete;
+    void operator=(const Packing&) = delete;
 
     // -- Methods
 
@@ -106,42 +107,43 @@ private:
 
     // -- Friends
 
-    friend std::ostream& operator<<(std::ostream& s, const Packer& p) {
+    friend std::ostream& operator<<(std::ostream& s, const Packing& p) {
         p.print(s);
         return s;
     }
 };
 
 
-class PackerFactory {
+class PackingFactory {
     std::string name_;
-    virtual Packer* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) = 0;
-    PackerFactory(const PackerFactory&)                                                                 = delete;
-    PackerFactory& operator=(const PackerFactory&) = delete;
+    virtual Packing* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) = 0;
+    PackingFactory(const PackingFactory&)                                                                = delete;
+    PackingFactory& operator=(const PackingFactory&) = delete;
 
 protected:
-    PackerFactory(const std::string&);
-    virtual ~PackerFactory();
+    PackingFactory(const std::string&);
+    virtual ~PackingFactory();
 
 public:
-    static Packer* build(const std::string&, const param::MIRParametrisation& user,
-                         const param::MIRParametrisation& field);
+    static Packing* build(const std::string&, const param::MIRParametrisation& user,
+                          const param::MIRParametrisation& field);
     static void list(std::ostream&);
 };
 
 
 template <class T>
-class PackerBuilder : public PackerFactory {
-    Packer* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) override {
+class PackingBuilder : public PackingFactory {
+    Packing* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) override {
         return new T(user, field);
     }
 
 public:
-    PackerBuilder(const std::string& name) : PackerFactory(name) {}
+    PackingBuilder(const std::string& name) : PackingFactory(name) {}
 };
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
 
 

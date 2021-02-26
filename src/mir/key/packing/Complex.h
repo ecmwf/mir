@@ -10,17 +10,18 @@
  */
 
 
-#ifndef mir_packing_Simple_h
-#define mir_packing_Simple_h
+#ifndef mir_key_packing_Complex_h
+#define mir_key_packing_Complex_h
 
-#include "mir/packing/Packer.h"
+#include "mir/key/packing/Packing.h"
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-class Simple : public Packer {
+class Complex : public Packing {
 public:
     // -- Types
     // None
@@ -30,11 +31,11 @@ public:
 
     // -- Constructors
 
-    using Packer::Packer;
+    using Packing::Packing;
 
     // -- Destructor
 
-    ~Simple() override;
+    ~Complex() override;
 
     // -- Convertors
     // None
@@ -95,6 +96,7 @@ private:
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
 
 

@@ -30,6 +30,7 @@
 #include "mir/input/VectorInput.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
+#include "mir/key/packing/Packing.h"
 #include "mir/key/style/MIRStyle.h"
 #include "mir/key/truncation/Truncation.h"
 #include "mir/lsm/LSMSelection.h"
@@ -40,7 +41,6 @@
 #include "mir/method/knn/pick/Pick.h"
 #include "mir/method/nonlinear/NonLinear.h"
 #include "mir/output/MIROutput.h"
-#include "mir/packing/Packer.h"
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
@@ -258,7 +258,7 @@ struct MIR : tools::MIRTool {
         //==============================================
         options_.push_back(new Separator("GRIB Output"));
         options_.push_back(new SimpleOption<size_t>("accuracy", "Number of bits per value"));
-        options_.push_back(new FactoryOption<packing::PackerFactory>("packing", "GRIB packing method"));
+        options_.push_back(new FactoryOption<key::packing::PackingFactory>("packing", "GRIB packing method"));
         options_.push_back(new SimpleOption<size_t>("edition", "GRIB edition number"));
 
         options_.push_back(new SimpleOption<bool>("delete-local-definition", "Remove GRIB local extension"));

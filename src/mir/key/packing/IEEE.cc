@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/packing/IEEE.h"
+#include "mir/key/packing/IEEE.h"
 
 #include <iostream>
 #include <sstream>
@@ -23,13 +23,14 @@
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-static PackerBuilder<IEEE> __packer("ieee");
+static PackingBuilder<IEEE> __packer("ieee");
 
 
-IEEE::IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field) : Packer(user, field) {
+IEEE::IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field) : Packing(user, field) {
     long bits = -1;
     if ((user.get("accuracy", bits) || field.get("accuracy", bits)) && (bits != 32 && bits != 64)) {
         std::ostringstream msg;
@@ -60,4 +61,5 @@ std::string IEEE::type(const repres::Representation* repres) const {
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir

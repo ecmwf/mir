@@ -10,17 +10,18 @@
  */
 
 
-#ifndef mir_packing_IEEE_h
-#define mir_packing_IEEE_h
+#ifndef mir_key_packing_IEEE_h
+#define mir_key_packing_IEEE_h
 
-#include "mir/packing/Packer.h"
+#include "mir/key/packing/Packing.h"
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-class IEEE : public Packer {
+class IEEE : public Packing {
 public:
     // -- Types
     // None
@@ -95,6 +96,7 @@ private:
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
 
 

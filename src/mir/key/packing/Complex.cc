@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/packing/Simple.h"
+#include "mir/key/packing/Complex.h"
 
 #include <iostream>
 
@@ -20,30 +20,33 @@
 
 
 namespace mir {
+namespace key {
 namespace packing {
 
 
-static PackerBuilder<Simple> __packer("simple");
+static PackingBuilder<Complex> __packer1("complex");
+static PackingBuilder<Complex> __packer2("co");  // For the lazy
 
 
-Simple::~Simple() = default;
+Complex::~Complex() = default;
 
 
-void Simple::print(std::ostream& out) const {
-    out << "Simple[]";
+void Complex::print(std::ostream& out) const {
+    out << "Complex[]";
 }
 
 
-void Simple::fill(grib_info& info, const repres::Representation& repres) const {
+void Complex::fill(grib_info& info, const repres::Representation& repres) const {
     info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
-    repres.setSimplePacking(info);
+    repres.setComplexPacking(info);
 }
 
 
-std::string Simple::type(const repres::Representation* repres) const {
-    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_simple" : "spectral_simple";
+std::string Complex::type(const repres::Representation* repres) const {
+    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_complex" : "spectral_complex";
 }
 
 
 }  // namespace packing
+}  // namespace key
 }  // namespace mir
