@@ -1,8 +1,7 @@
 # input has two GRIB at bitsPerValue=16
-# in ecCodes, for packingType=grid_ieee, bitsPerValue can only be 32 or 64 (128 isn't supported)
 tiny.grib
 # Mir tool options
 --accuracy=64 --packing=ieee
 # grib_get assertions
 packingType=grid_ieee
-bitsPerValue=64
+precision=2
