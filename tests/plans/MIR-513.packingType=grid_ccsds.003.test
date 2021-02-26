@@ -1,0 +1,6 @@
+# mars
+packingType=grid_ccsds.grib2
+# mir
+--packing=ccsds
+# plan
+Copy[...]

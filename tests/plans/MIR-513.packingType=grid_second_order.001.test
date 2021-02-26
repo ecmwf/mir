@@ -1,0 +1,6 @@
+# mars
+packingType=grid_second_order.grib2
+# mir
+--packing=simple
+# plan
+Set[packing=simple,output=...]
