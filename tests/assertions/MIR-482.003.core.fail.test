@@ -3,5 +3,4 @@ tiny.grib
 # Mir tool options
 --accuracy=24 --packing=ieee
 # grib_get assertions
-packingType=grid_simple
-bitsPerValue=24
+packingType=grid_ieee
