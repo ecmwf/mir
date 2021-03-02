@@ -12,7 +12,10 @@
 
 #include "mir/key/packing/ArchivedValue.h"
 
-#include <iostream>
+#include <ostream>
+
+#include "mir/util/Exceptions.h"
+#include "mir/util/Grib.h"
 
 
 namespace mir {
@@ -20,25 +23,21 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<ArchivedValue> __packer1("archived-value");
-static PackingBuilder<ArchivedValue> __packer2("av");  // For the lazy
+static PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
 
 
-ArchivedValue::~ArchivedValue() = default;
+void ArchivedValue::fill(grib_info&) const {
+    NOTIMP;
+}
+
+
+void ArchivedValue::set(grib_handle*) const {
+    NOTIMP;
+}
 
 
 void ArchivedValue::print(std::ostream& out) const {
     out << "ArchivedValue[]";
-}
-
-
-void ArchivedValue::fill(grib_info&, const repres::Representation&) const {
-    // Nothing to do
-}
-
-
-std::string ArchivedValue::type(const repres::Representation*) const {
-    return "";
 }
 
 

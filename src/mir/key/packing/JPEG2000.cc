@@ -12,10 +12,8 @@
 
 #include "mir/key/packing/JPEG2000.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -24,28 +22,25 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<JPEG2000> __packer("jpeg");
+static PackingBuilder<JPEG2000> __packing("jpeg", false, true);
 
 
-JPEG2000::~JPEG2000() = default;
+void JPEG2000::fill(grib_info& info) const {
+    savePacking(info, CODES_UTIL_PACKING_TYPE_JPEG);
+    saveAccuracy(info);
+    saveEdition(info);
+}
+
+
+void JPEG2000::set(grib_handle* handle) const {
+    setPacking(handle, "grid_jpeg");
+    setAccuracy(handle);
+    setEdition(handle);
+}
 
 
 void JPEG2000::print(std::ostream& out) const {
     out << "JPEG2000[]";
-}
-
-
-void JPEG2000::fill(grib_info& info, const repres::Representation&) const {
-    info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_JPEG;
-}
-
-
-std::string JPEG2000::type(const repres::Representation* repres) const {
-    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
-        return "grid_jpeg";
-    }
-    NOTIMP;
 }
 
 

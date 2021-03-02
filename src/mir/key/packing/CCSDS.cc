@@ -12,10 +12,8 @@
 
 #include "mir/key/packing/CCSDS.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "mir/repres/Gridded.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 
 
@@ -24,28 +22,25 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<CCSDS> __packer("ccsds");
+static PackingBuilder<CCSDS> __packing("ccsds", false, true);
 
 
-CCSDS::~CCSDS() = default;
+void CCSDS::fill(grib_info& info) const {
+    savePacking(info, CODES_UTIL_PACKING_TYPE_CCSDS);
+    saveAccuracy(info);
+    saveEdition(info);
+}
+
+
+void CCSDS::set(grib_handle* handle) const {
+    setPacking(handle, "grid_ccsds");
+    setAccuracy(handle);
+    setEdition(handle);
+}
 
 
 void CCSDS::print(std::ostream& out) const {
     out << "CCSDS[]";
-}
-
-
-void CCSDS::fill(grib_info& info, const repres::Representation&) const {
-    info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_CCSDS;
-}
-
-
-std::string CCSDS::type(const repres::Representation* repres) const {
-    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
-        return "grid_ccsds";
-    }
-    NOTIMP;
 }
 
 

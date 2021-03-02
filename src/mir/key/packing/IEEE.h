@@ -31,11 +31,10 @@ public:
 
     // -- Constructors
 
-    IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+    IEEE(const param::MIRParametrisation&, bool gridded);
 
     // -- Destructor
-
-    ~IEEE() override;
+    // None
 
     // -- Convertors
     // None
@@ -73,16 +72,18 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    long precision_;
+    long bitsPerValue_;
 
     // -- Methods
-
-    void print(std::ostream&) const override;
-    void fill(grib_info&, const repres::Representation&) const override;
-    std::string type(const repres::Representation*) const override;
+    // None
 
     // -- Overridden methods
-    // None
+
+    void fill(grib_info&) const override;
+    void set(grib_handle*) const override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None

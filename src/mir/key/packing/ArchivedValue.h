@@ -34,8 +34,7 @@ public:
     using Packing::Packing;
 
     // -- Destructor
-
-    ~ArchivedValue() override;
+    // None
 
     // -- Convertors
     // None
@@ -77,9 +76,9 @@ private:
 
     // -- Methods
 
+    void fill(grib_info&) const override;
+    void set(grib_handle*) const override;
     void print(std::ostream&) const override;
-    void fill(grib_info&, const repres::Representation&) const override;
-    std::string type(const repres::Representation*) const override;
 
     // -- Overridden methods
     // None

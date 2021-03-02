@@ -12,10 +12,8 @@
 
 #include "mir/key/packing/Simple.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "mir/repres/Gridded.h"
-#include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
 
@@ -24,25 +22,25 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<Simple> __packer("simple");
+static PackingBuilder<Simple> __packing("simple", true, true);
 
 
-Simple::~Simple() = default;
+void Simple::fill(grib_info& info) const {
+    savePacking(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
+    saveAccuracy(info);
+    saveEdition(info);
+}
+
+
+void Simple::set(grib_handle* handle) const {
+    setPacking(handle, gridded() ? "grid_simple" : "spectral_simple");
+    setAccuracy(handle);
+    setEdition(handle);
+}
 
 
 void Simple::print(std::ostream& out) const {
     out << "Simple[]";
-}
-
-
-void Simple::fill(grib_info& info, const repres::Representation& repres) const {
-    info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
-    repres.setSimplePacking(info);
-}
-
-
-std::string Simple::type(const repres::Representation* repres) const {
-    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_simple" : "spectral_simple";
 }
 
 

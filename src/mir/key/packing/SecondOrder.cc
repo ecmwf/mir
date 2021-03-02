@@ -12,13 +12,9 @@
 
 #include "mir/key/packing/SecondOrder.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "mir/repres/Gridded.h"
-#include "mir/repres/Representation.h"
-#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
-#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -26,13 +22,10 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<SecondOrder> __packer1("second-order");
-static PackingBuilder<SecondOrder> __packer2("so");  // For the lazy
+static PackingBuilder<SecondOrder> __packing("second-order", "so", false, true);
 
 
-SecondOrder::~SecondOrder() = default;
-
-
+#if 0
 bool SecondOrder::check(const repres::Representation& repres) const {
     auto n = repres.numberOfPoints();
     if (n < 4) {
@@ -43,6 +36,7 @@ bool SecondOrder::check(const repres::Representation& repres) const {
     }
     return true;
 }
+#endif
 
 
 void SecondOrder::print(std::ostream& out) const {
@@ -50,19 +44,17 @@ void SecondOrder::print(std::ostream& out) const {
 }
 
 
-void SecondOrder::fill(grib_info& info, const repres::Representation& repres) const {
-    if (check(repres)) {
-        info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-        info.packing.packing_type = CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER;
-    }
+void SecondOrder::fill(grib_info& info) const {
+    savePacking(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
+    saveAccuracy(info);
+    saveEdition(info);
 }
 
 
-std::string SecondOrder::type(const repres::Representation* repres) const {
-    if (dynamic_cast<const repres::Gridded*>(repres) != nullptr) {
-        return check(*repres) ? "grid_second_order" : "";
-    }
-    NOTIMP;
+void SecondOrder::set(grib_handle* handle) const {
+    setPacking(handle, "grid_second_order");
+    setAccuracy(handle);
+    setEdition(handle);
 }
 
 

@@ -12,11 +12,10 @@
 
 #include "mir/key/packing/IEEE.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "mir/param/MIRParametrisation.h"
-#include "mir/repres/Gridded.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -27,36 +26,56 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<IEEE> __packer("ieee");
+static PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
-IEEE::IEEE(const param::MIRParametrisation& user, const param::MIRParametrisation& field) : Packing(user, field) {
-    long bits = -1;
-    if ((user.get("accuracy", bits) || field.get("accuracy", bits)) && (bits != 32 && bits != 64)) {
+IEEE::IEEE(const param::MIRParametrisation& param, bool gridded) : Packing(param, gridded) {
+    constexpr long L32  = 32;
+    constexpr long L64  = 64;
+    constexpr long L128 = 128;
+
+    long bits = L32;
+    if (!param.userParametrisation().get("accuracy", bits)) {
+        if (param.fieldParametrisation().get("accuracy", bits)) {
+            bits = bits < L32 ? L32 : bits < L64 ? L64 : L128;
+        }
+    }
+
+    bitsPerValue_ = bits;
+    precision_    = bits == L32 ? 1 : bits == L64 ? 2 : bits == L128 ? 3 : 0;
+
+    if (precision_ == 0) {
         std::ostringstream msg;
-        msg << *this << ": only supports bitsPerValue 32 and 64 (from input, or as set by 'accuracy')";
+        msg << *this << ": only supports accuracy 32, 64 and 128";
         Log::error() << msg.str() << std::endl;
         throw exception::UserError(msg.str());
     }
 }
 
 
-IEEE::~IEEE() = default;
+void IEEE::fill(grib_info& info) const {
+    savePacking(info, CODES_UTIL_PACKING_TYPE_IEEE);
+    saveAccuracy(info);
+    saveEdition(info);
+
+    info.extra_set("precision", precision_);
+}
+
+
+void IEEE::set(grib_handle* handle) const {
+    // set bitsPerValue before re-packing, in case current setting is not suitable
+    GRIB_CALL(codes_set_long(handle, "bitsPerValue", bitsPerValue_));
+
+    setPacking(handle, gridded() ? "grid_ieee" : "spectral_ieee");
+
+    GRIB_CALL(codes_set_long(handle, "precision", precision_));
+
+    setEdition(handle);
+}
 
 
 void IEEE::print(std::ostream& out) const {
     out << "IEEE[]";
-}
-
-
-void IEEE::fill(grib_info& info, const repres::Representation&) const {
-    info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
-    info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
-}
-
-
-std::string IEEE::type(const repres::Representation* repres) const {
-    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_ieee" : "spectral_ieee";
 }
 
 

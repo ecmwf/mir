@@ -12,10 +12,8 @@
 
 #include "mir/key/packing/Complex.h"
 
-#include <iostream>
+#include <ostream>
 
-#include "mir/repres/Gridded.h"
-#include "mir/repres/Representation.h"
 #include "mir/util/Grib.h"
 
 
@@ -24,26 +22,25 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<Complex> __packer1("complex");
-static PackingBuilder<Complex> __packer2("co");  // For the lazy
+static PackingBuilder<Complex> __packing("complex", "co", true, true);
 
 
-Complex::~Complex() = default;
+void Complex::fill(grib_info& info) const {
+    savePacking(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_COMPLEX : CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
+    saveAccuracy(info);
+    saveEdition(info);
+}
+
+
+void mir::key::packing::Complex::set(grib_handle* handle) const {
+    setPacking(handle, gridded() ? "grid_complex" : "spectral_complex");
+    setAccuracy(handle);
+    setEdition(handle);
+}
 
 
 void Complex::print(std::ostream& out) const {
     out << "Complex[]";
-}
-
-
-void Complex::fill(grib_info& info, const repres::Representation& repres) const {
-    info.packing.packing = CODES_UTIL_PACKING_USE_PROVIDED;
-    repres.setComplexPacking(info);
-}
-
-
-std::string Complex::type(const repres::Representation* repres) const {
-    return dynamic_cast<const repres::Gridded*>(repres) != nullptr ? "grid_complex" : "spectral_complex";
 }
 
 

@@ -17,6 +17,7 @@
 #include <string>
 
 
+struct grib_handle;
 struct grib_info;
 
 namespace mir {
@@ -41,7 +42,7 @@ public:
 
     // -- Constructors
 
-    Packing(const param::MIRParametrisation& user, const param::MIRParametrisation& field);
+    Packing(const param::MIRParametrisation&, bool gridded);
     Packing(const Packing&) = delete;
 
     // -- Destructor
@@ -57,8 +58,8 @@ public:
 
     // -- Methods
 
-    virtual void fill(grib_info&, const repres::Representation&) const = 0;
-    virtual std::string type(const repres::Representation*) const      = 0;
+    virtual void fill(grib_info&) const  = 0;
+    virtual void set(grib_handle*) const = 0;
 
     // -- Overridden methods
     // None
@@ -80,6 +81,16 @@ protected:
 
     virtual void print(std::ostream&) const = 0;
 
+    bool userPacking() const { return userPacking_; }
+    bool gridded() const { return gridded_; }
+
+    void saveAccuracy(grib_info&) const;
+    void saveEdition(grib_info&) const;
+    void savePacking(grib_info&, long) const;
+    void setAccuracy(grib_handle*) const;
+    void setEdition(grib_handle*) const;
+    void setPacking(grib_handle*, const std::string&) const;
+
     // -- Overridden methods
     // None
 
@@ -91,7 +102,16 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::string packing_;
+    long accuracy_;
+    long edition_;
+
+    const bool userPacking_;
+    const bool userAccuracy_;
+    const bool userEdition_;
+
+    const bool gridded_;
 
     // -- Methods
     // None
@@ -116,29 +136,36 @@ private:
 
 class PackingFactory {
     std::string name_;
-    virtual Packing* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) = 0;
-    PackingFactory(const PackingFactory&)                                                                = delete;
+    std::string alias_;
+    bool spectral_;
+    bool gridded_;
+
+    virtual Packing* make(const param::MIRParametrisation&, bool gridded) = 0;
+
+    PackingFactory(const PackingFactory&) = delete;
     PackingFactory& operator=(const PackingFactory&) = delete;
 
 protected:
-    PackingFactory(const std::string&);
+    PackingFactory(const std::string&, const std::string&, bool spectral, bool gridded);
     virtual ~PackingFactory();
 
 public:
-    static Packing* build(const std::string&, const param::MIRParametrisation& user,
-                          const param::MIRParametrisation& field);
+    static Packing* build(const std::string&, const param::MIRParametrisation&, const repres::Representation*);
+    static Packing* build(const param::MIRParametrisation&, const repres::Representation*);
     static void list(std::ostream&);
+    static bool get(std::string&, const param::MIRParametrisation&);
 };
 
 
 template <class T>
 class PackingBuilder : public PackingFactory {
-    Packing* make(const param::MIRParametrisation& user, const param::MIRParametrisation& field) override {
-        return new T(user, field);
-    }
+    Packing* make(const param::MIRParametrisation& param, bool gridded) override { return new T(param, gridded); }
 
 public:
-    PackingBuilder(const std::string& name) : PackingFactory(name) {}
+    PackingBuilder(const std::string& name, bool spectral, bool gridded) :
+        PackingFactory(name, "", spectral, gridded) {}
+    PackingBuilder(const std::string& name, const std::string& alias, bool spectral, bool gridded) :
+        PackingFactory(name, alias, spectral, gridded) {}
 };
 
 
