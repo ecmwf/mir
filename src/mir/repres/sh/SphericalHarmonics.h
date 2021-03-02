@@ -102,8 +102,6 @@ private:
 
     void validate(const MIRValuesVector&) const override;
 
-    void setComplexPacking(grib_info&) const override;
-    void setSimplePacking(grib_info&) const override;
     void makeName(std::ostream&) const override;
     bool sameAs(const Representation&) const override;
 

@@ -120,10 +120,6 @@ public:
 
     virtual void reorder(long scanningMode, MIRValuesVector&) const;
 
-    virtual void setComplexPacking(grib_info&) const;
-    virtual void setSimplePacking(grib_info&) const;
-    virtual void setGivenPacking(grib_info&) const;
-
     virtual std::vector<util::GridBox> gridBoxes() const;
 
     virtual std::string factory() const;  // Return factory name
