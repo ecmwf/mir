@@ -3,4 +3,4 @@ packingType=grid_simple.grib2
 # mir
 --packing=ccsds
 # plan
-Set[packing=ccsds,...]
+Set[packing=ccsds,output=...]
