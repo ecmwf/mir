@@ -156,10 +156,9 @@ void Rules::readConfigurationFiles() {
         for (long paramId : paramIds) {
             SimpleParametrisation& pidConfig = Rules::lookup(paramId);
 
-            std::string klasses = klass;
-            if (pidConfig.get(KLASS, klasses)) {
-                klasses.insert(0, klass + ", ");
-            }
+            std::string klasses;
+            klasses = klass + (pidConfig.get(KLASS, klasses) ? ", " + klasses : "");
+            pidConfig.set(KLASS, klasses);
 
             for (const auto& j : klassConfig) {
                 const std::string& keyName  = j.first;
