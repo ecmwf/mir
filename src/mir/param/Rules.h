@@ -51,7 +51,7 @@ public:
 private:
     // -- Members
 
-    std::recursive_mutex mutex_;
+    std::mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
     std::set<long> warning_;
