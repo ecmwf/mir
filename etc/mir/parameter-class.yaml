@@ -396,6 +396,7 @@ density.volume:
 - 260211  # Volumetric transpiration stress-onset (soil moisture)
 - 260213  # Volumetric direct evaporation cease (soil moisture)
 - 260216  # Volumetric saturation of soil moisture
+- 260644  # Volumetric soil ice
 
 space.1d.angle.degree.asymmetric:
 - 3031  # Wind direction
@@ -2359,6 +2360,8 @@ numerics.accumulated:
 - 235015  # Time integral of rain flux
 - 235017  # Time integral of surface eastward momentum flux
 - 235018  # Time integral of surface northward momentum flux
+- 235019  # Time integral of surface latent heat evaporation flux
+- 235071  # Time integral of surface latent heat sublimation flux
 - 240020  # Depth of water on soil surface
 - 240021  # Upstream accumulated precipitation
 - 240022  # Upstream accumulated snow melt
@@ -2392,6 +2395,7 @@ numerics.accumulated:
 - 260462  # Water condensate added by precip assimilation
 - 260479  # Land Surface Precipitation Accumulation
 - 260564  # Energy release component (as defined by the U.S Forest Service National Fire-Danger Rating System)
+- 260645  # Time integral of total solid precipitation flux
 - 300065  # Wat equiv acc snow depth
 - 300177  # Potential sfc evaporation
 
@@ -3097,6 +3101,7 @@ rate.energy-flux:
 - 230210  # Surface net solar radiation, clear sky (variable resolution)
 - 230211  # Surface net thermal radiation, clear sky (variable resolution)
 - 230212  # TOA incident solar radiation (variable resolution)
+- 235019  # Time integral of surface latent heat evaporation flux
 - 235022  # Mean surface photosynthetically active radiation flux, clear sky
 - 235027  # Mean surface downward UV radiation flux
 - 235028  # Mean surface photosynthetically active radiation flux
@@ -3121,6 +3126,7 @@ rate.energy-flux:
 - 235061  # Mean surface diffuse short-wave radiation flux, clear sky
 - 235068  # Mean surface downward short-wave radiation flux, clear sky
 - 235069  # Mean surface downward long-wave radiation flux, clear sky
+- 235071  # Time integral of surface latent heat sublimation flux
 - 260002  # Latent heat net flux
 - 260003  # Sensible heat net flux
 - 260007  # Snow phase change heat flux
@@ -3768,6 +3774,7 @@ rate.mass-flux:
 - 260479  # Land Surface Precipitation Accumulation
 - 260621  # Upward mass flux at cloud base
 - 260622  # Upward mass flux
+- 260645  # Time integral of total solid precipitation flux
 - 300057  # Evaporation
 - 300059  # Precipitation rate
 - 300061  # Total precipitation
