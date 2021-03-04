@@ -145,8 +145,7 @@ bool FieldParametrisation::_get(const std::string& name, T& value) const {
         return false;
     }
 
-    static Rules rules;
-    return rules.lookup(PARAM_ID, paramId_).get(name, value);
+    return Rules::lookup(PARAM_ID, paramId_).get(name, value);
 }
 
 

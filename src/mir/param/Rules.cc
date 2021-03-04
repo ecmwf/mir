@@ -60,20 +60,19 @@ SimpleParametrisation& Rules::lookup(long paramId) {
 const MIRParametrisation& Rules::lookup(const std::string& ruleName, long ruleValue) {
     ASSERT(ruleName == PARAM_ID);
 
-    MIRParametrisation& s = lookup(ruleValue);
+    auto& r               = instance();
+    MIRParametrisation& s = r.lookup(ruleValue);
 
     auto msg = [&]() -> std::string { return ruleName + "=" + std::to_string(ruleValue) + ": "; };
 
-    auto w = warning_.find(ruleValue);
-    if (w != warning_.end()) {
-        warning_.erase(w);
-
-        std::string m = msg() + "post-processing defaults might not be appropriate";
-        Log::warning() << "Warning: " << m << std::endl;
+    auto w = r.warning_.find(ruleValue);
+    if (w != r.warning_.end()) {
+        r.warning_.erase(w);
+        Log::warning() << "Warning: " << msg() << "post-processing defaults might not be appropriate" << std::endl;
         return s;
     }
 
-    if (!s.has(KLASS) && noted_.insert(ruleValue).second) {
+    if (!s.has(KLASS) && r.noted_.insert(ruleValue).second) {
         std::string m = msg() + "no class defined";
 
         static bool abortIfUnknownParameterClass =

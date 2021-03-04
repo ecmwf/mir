@@ -32,10 +32,13 @@ namespace param {
 
 
 class Rules {
-protected:
-    // -- Types
-
 public:
+
+    // -- Operators
+
+    static const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
+
+private:
     // -- Constructors
 
     Rules();
@@ -44,11 +47,6 @@ public:
 
     virtual ~Rules();
 
-    // -- Operators
-
-    const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
-
-private:
     // -- Members
 
     std::mutex mutex_;
@@ -57,6 +55,11 @@ private:
     std::set<long> warning_;
 
     // -- Methods
+
+    static Rules& instance() {
+        static Rules fileRules;
+        return fileRules;
+    }
 
     void readConfigurationFiles();
     SimpleParametrisation& lookup(long paramId);

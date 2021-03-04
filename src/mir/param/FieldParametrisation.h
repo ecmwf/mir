@@ -53,6 +53,7 @@ public:
 
 protected:
     // -- Members
+    // None
 
     // -- Methods
 
