@@ -33,7 +33,6 @@ namespace param {
 
 class Rules {
 public:
-
     // -- Operators
 
     static const MIRParametrisation& lookup(const std::string& ruleName, long ruleValue);
