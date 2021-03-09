@@ -27,7 +27,7 @@ static PackingBuilder<PNG> __packing("png", false, true);
 
 
 void PNG::fill(grib_info& info) const {
-    ASSERT(!userPacking());
+    ASSERT(!definePacking_);
     saveAccuracy(info);
     saveEdition(info);
 }

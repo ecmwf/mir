@@ -29,14 +29,14 @@ namespace packing {
 static PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
-IEEE::IEEE(const param::MIRParametrisation& param, bool gridded) : Packing(param, gridded) {
+IEEE::IEEE(const param::MIRParametrisation& param) : Packing(param) {
     constexpr long L32  = 32;
     constexpr long L64  = 64;
     constexpr long L128 = 128;
 
     long bits = L32;
     if (!param.userParametrisation().get("accuracy", bits)) {
-        if (param.fieldParametrisation().get("accuracy", bits)) {
+        if (param.get("accuracy", bits)) {
             bits = bits < L32 ? L32 : bits < L64 ? L64 : L128;
         }
     }
@@ -75,7 +75,7 @@ void IEEE::set(grib_handle* handle) const {
 
 
 void IEEE::print(std::ostream& out) const {
-    out << "IEEE[]";
+    out << "IEEE[precision=" << precision_ << "]";
 }
 
 

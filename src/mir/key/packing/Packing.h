@@ -24,9 +24,6 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
-namespace repres {
-class Representation;
-}
 }  // namespace mir
 
 
@@ -42,8 +39,7 @@ public:
 
     // -- Constructors
 
-    Packing(const param::MIRParametrisation&, bool gridded);
-    Packing(const Packing&) = delete;
+    Packing(const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -53,13 +49,27 @@ public:
     // None
 
     // -- Operators
-
-    void operator=(const Packing&) = delete;
+    // None
 
     // -- Methods
 
     virtual void fill(grib_info&) const  = 0;
     virtual void set(grib_handle*) const = 0;
+
+    virtual bool sameAs(Packing*) const;
+    virtual bool printParametrisation(std::ostream&) const;
+
+    void setAccuracy(long);
+    void setEdition(long);
+    void setPacking(const std::string&);
+
+    bool getAccuracy(long&) const;
+    bool getEdition(long&) const;
+    bool getPacking(std::string&) const;
+
+    void unsetAccuracy() { defineAccuracy_ = false; }
+    void unsetEdition() { defineEdition_ = false; }
+    void unsetPacking() { definePacking_ = false; }
 
     // -- Overridden methods
     // None
@@ -72,21 +82,33 @@ public:
 
 protected:
     // -- Constructors
-    // None
+
+    Packing(const Packing&) = delete;
+
+    // -- Operators
+
+    void operator=(const Packing&) = delete;
 
     // -- Members
-    // None
+
+    long accuracy_;
+    long edition_;
+    std::string packing_;
+
+    bool defineAccuracy_;
+    bool defineEdition_;
+    bool definePacking_;
 
     // -- Methods
 
     virtual void print(std::ostream&) const = 0;
 
-    bool userPacking() const { return userPacking_; }
     bool gridded() const { return gridded_; }
 
     void saveAccuracy(grib_info&) const;
     void saveEdition(grib_info&) const;
     void savePacking(grib_info&, long) const;
+
     void setAccuracy(grib_handle*) const;
     void setEdition(grib_handle*) const;
     void setPacking(grib_handle*, const std::string&) const;
@@ -102,14 +124,6 @@ protected:
 
 private:
     // -- Members
-
-    std::string packing_;
-    long accuracy_;
-    long edition_;
-
-    const bool userPacking_;
-    const bool userAccuracy_;
-    const bool userEdition_;
 
     const bool gridded_;
 
@@ -140,7 +154,7 @@ class PackingFactory {
     bool spectral_;
     bool gridded_;
 
-    virtual Packing* make(const param::MIRParametrisation&, bool gridded) = 0;
+    virtual Packing* make(const param::MIRParametrisation&) = 0;
 
     PackingFactory(const PackingFactory&) = delete;
     PackingFactory& operator=(const PackingFactory&) = delete;
@@ -150,16 +164,14 @@ protected:
     virtual ~PackingFactory();
 
 public:
-    static Packing* build(const std::string&, const param::MIRParametrisation&, const repres::Representation*);
-    static Packing* build(const param::MIRParametrisation&, const repres::Representation*);
+    static Packing* build(const std::string&, const param::MIRParametrisation&);
     static void list(std::ostream&);
-    static bool get(std::string&, const param::MIRParametrisation&);
 };
 
 
 template <class T>
 class PackingBuilder : public PackingFactory {
-    Packing* make(const param::MIRParametrisation& param, bool gridded) override { return new T(param, gridded); }
+    Packing* make(const param::MIRParametrisation& param) override { return new T(param); }
 
 public:
     PackingBuilder(const std::string& name, bool spectral, bool gridded) :

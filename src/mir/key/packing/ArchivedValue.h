@@ -13,7 +13,19 @@
 #ifndef mir_key_packing_ArchivedValue_h
 #define mir_key_packing_ArchivedValue_h
 
-#include "mir/key/packing/Packing.h"
+#include <string>
+
+
+namespace mir {
+namespace key {
+namespace packing {
+class Packing;
+}
+}  // namespace key
+namespace param {
+class MIRParametrisation;
+}
+}  // namespace mir
 
 
 namespace mir {
@@ -21,7 +33,7 @@ namespace key {
 namespace packing {
 
 
-class ArchivedValue : public Packing {
+class ArchivedValue {
 public:
     // -- Types
     // None
@@ -31,7 +43,7 @@ public:
 
     // -- Constructors
 
-    using Packing::Packing;
+    ArchivedValue(const param::MIRParametrisation& field);
 
     // -- Destructor
     // None
@@ -46,7 +58,8 @@ public:
     // None
 
     // -- Overridden methods
-    // None
+
+    bool prepare(Packing&) const;
 
     // -- Class members
     // None
@@ -72,13 +85,17 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    long accuracy_;
+    long edition_;
+    std::string packing_;
+
+    bool defineAccuracy_;
+    bool defineEdition_;
+    bool definePacking_;
 
     // -- Methods
-
-    void fill(grib_info&) const override;
-    void set(grib_handle*) const override;
-    void print(std::ostream&) const override;
+    // None
 
     // -- Overridden methods
     // None

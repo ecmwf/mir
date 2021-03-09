@@ -31,7 +31,7 @@ public:
 
     // -- Constructors
 
-    IEEE(const param::MIRParametrisation&, bool gridded);
+    IEEE(const param::MIRParametrisation&);
 
     // -- Destructor
     // None

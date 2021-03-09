@@ -27,7 +27,7 @@ static PackingBuilder<SimpleLogPreprocessing> __packing("simple-log-preprocessin
 
 
 void SimpleLogPreprocessing::fill(grib_info& info) const {
-    ASSERT(!userPacking());
+    ASSERT(!definePacking_);
     saveAccuracy(info);
     saveEdition(info);
 }

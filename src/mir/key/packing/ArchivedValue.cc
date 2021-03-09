@@ -12,10 +12,8 @@
 
 #include "mir/key/packing/ArchivedValue.h"
 
-#include <ostream>
-
-#include "mir/util/Exceptions.h"
-#include "mir/util/Grib.h"
+#include "mir/key/packing/Packing.h"
+#include "mir/param/MIRParametrisation.h"
 
 
 namespace mir {
@@ -23,21 +21,43 @@ namespace key {
 namespace packing {
 
 
-static PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
+ArchivedValue::ArchivedValue(const param::MIRParametrisation& field) :
+    defineAccuracy_(field.get("accuracy", accuracy_)),
+    defineEdition_(field.get("edition", edition_)),
+    definePacking_(field.get("packing", packing_)) {}
 
 
-void ArchivedValue::fill(grib_info&) const {
-    NOTIMP;
-}
+bool ArchivedValue::prepare(Packing& other) const {
+    bool todo = false;
 
+    long accuracy;
+    if (other.getAccuracy(accuracy) && (!defineAccuracy_ || accuracy_ != accuracy)) {
+        other.setAccuracy(accuracy);
+        todo = true;
+    }
+    else {
+        other.unsetAccuracy();
+    }
 
-void ArchivedValue::set(grib_handle*) const {
-    NOTIMP;
-}
+    long edition;
+    if (other.getEdition(edition) && (!defineEdition_ || edition_ != edition)) {
+        other.setEdition(accuracy);
+        todo = true;
+    }
+    else {
+        other.unsetEdition();
+    }
 
+    std::string packing;
+    if (other.getPacking(packing) && (!definePacking_ || packing_ != packing)) {
+        other.setPacking(packing);
+        todo = true;
+    }
+    else {
+        other.unsetPacking();
+    }
 
-void ArchivedValue::print(std::ostream& out) const {
-    out << "ArchivedValue[]";
+    return todo;
 }
 
 
