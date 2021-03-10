@@ -16,7 +16,6 @@
 #include <mutex>
 #include <ostream>
 #include <set>
-#include <sstream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
@@ -40,11 +39,29 @@ static void init() {
 }
 
 
-Packing::Packing(const param::MIRParametrisation& param) :
-    defineAccuracy_(param.get("accuracy", accuracy_)),
-    defineEdition_(param.get("edition", edition_)),
-    definePacking_(param.get("packing", packing_)),
-    gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {}
+Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
+    defineAccuracy_(false),
+    defineEdition_(false),
+    definePacking_(false),
+    gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
+    auto& user  = param.userParametrisation();
+    auto& field = param.fieldParametrisation();
+
+    if (user.get("accuracy", accuracy_)) {
+        long accuracy;
+        defineAccuracy_ = !field.get("accuracy", accuracy) || accuracy_ != accuracy;
+    }
+
+    if (user.get("edition", edition_)) {
+        long edition;
+        defineEdition_ = !field.get("edition", edition) || edition_ != edition;
+    }
+
+    ASSERT(!name.empty());
+    packing_ = name;
+    std::string packing;
+    definePacking_ = !field.get("packing", packing) || packing_ != packing;
+}
 
 
 Packing::~Packing() = default;
@@ -61,110 +78,82 @@ bool Packing::sameAs(Packing* other) const {
 
 
 bool Packing::printParametrisation(std::ostream& out) const {
-    out << "packing=" << packing_;
+    std::string sep;
+
+    if (definePacking_) {
+        out << sep << "packing=" << packing_;
+        sep = ",";
+    }
+
     if (defineEdition_) {
-        out << ",edition=" << edition_;
+        out << sep << "edition=" << edition_;
+        sep = ",";
     }
+
     if (defineAccuracy_) {
-        out << ",accuracy=" << accuracy_;
+        out << sep << "accuracy=" << accuracy_;
+        sep = ",";
     }
-    return true;
+
+    return !sep.empty();
 }
 
 
-void Packing::setAccuracy(long value) {
-    accuracy_       = value;
-    defineAccuracy_ = true;
+bool Packing::empty() const {
+    return !definePacking_ && !defineAccuracy_ && !defineEdition_;
 }
 
 
-void Packing::setEdition(long value) {
-    accuracy_      = value;
-    defineEdition_ = true;
-}
-
-
-void Packing::setPacking(const std::string& value) {
-    packing_       = value;
-    definePacking_ = true;
-}
-
-
-void Packing::saveAccuracy(grib_info& info) const {
-    if (defineAccuracy_) {
-        info.packing.accuracy     = CODES_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
-        info.packing.bitsPerValue = accuracy_;
-    }
-    else {
-        info.packing.accuracy = CODES_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
-    }
-}
-
-
-void Packing::saveEdition(grib_info& info) const {
+void Packing::requireEdition(const param::MIRParametrisation& param, long edition) {
+    // Define edition if not specified
     if (defineEdition_) {
-        info.packing.editionNumber = edition_;
+        ASSERT(edition_ == edition);
+        return;
     }
-    else {
-        info.packing.editionNumber = 0;
+
+    if (!param.fieldParametrisation().get("edition", edition_) || edition_ != edition) {
+        edition_       = edition;
+        defineEdition_ = true;
     }
 }
 
 
-void Packing::savePacking(grib_info& info, long pack) const {
+void Packing::fill(grib_info& info, long pack) const {
+    info.packing.packing       = CODES_UTIL_PACKING_SAME_AS_INPUT;
+    info.packing.accuracy      = CODES_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
+    info.packing.editionNumber = 0;
+
     if (definePacking_) {
         info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
         info.packing.packing_type = pack;
     }
-    else {
-        info.packing.packing = CODES_UTIL_PACKING_SAME_AS_INPUT;
+
+    if (defineAccuracy_) {
+        info.packing.accuracy     = CODES_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
+        info.packing.bitsPerValue = accuracy_;
+    }
+
+    if (defineEdition_) {
+        info.packing.editionNumber = edition_;
     }
 }
 
 
-void Packing::setAccuracy(grib_handle* h) const {
+void Packing::set(grib_handle* h, const std::string& type) const {
+    // Note: order is important
+
     if (defineAccuracy_) {
         GRIB_CALL(codes_set_long(h, "bitsPerValue", accuracy_));
     }
-}
 
-
-void Packing::setEdition(grib_handle* h) const {
     if (defineEdition_) {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
     }
-}
 
-
-void Packing::setPacking(grib_handle* h, const std::string& type) const {
     if (definePacking_) {
         auto len = type.length();
         GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
     }
-}
-
-
-bool Packing::getAccuracy(long& value) const {
-    if (defineAccuracy_) {
-        value = accuracy_;
-    }
-    return defineAccuracy_;
-}
-
-
-bool Packing::getEdition(long& value) const {
-    if (defineEdition_) {
-        value = edition_;
-    }
-    return defineEdition_;
-}
-
-
-bool Packing::getPacking(std::string& value) const {
-    if (definePacking_) {
-        value = packing_;
-    }
-    return definePacking_;
 }
 
 
@@ -199,36 +188,51 @@ PackingFactory::~PackingFactory() {
 }
 
 
-Packing* PackingFactory::build(const std::string& name, const param::MIRParametrisation& param) {
+Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::mutex> lock(*local_mutex);
 
+    auto& user  = param.userParametrisation();
+    auto& field = param.fieldParametrisation();
+
+
+    // When converting from spectral to gridded, default to simple packing
+    std::string name = user.has("grid") && field.has("spectral") ? "simple" : "av";
+    user.get("packing", name);
+
+
+    std::string packing;
+    field.get("packing", packing);
+
+
+    bool av       = name == "av" || name == "archived-value";
+    bool gridded  = user.has("grid") || field.has("gridded");
+    std::string t = gridded ? "gridded" : "spectral";
+    const auto& m = gridded ? *mg : *ms;
+
+
+    // In case of packing=av, try instantiating specific packing
+    if (av) {
+        Log::debug() << "PackingFactory: looking for '" << packing << "'" << std::endl;
+
+        auto j = m.find(packing);
+        if (j != m.end()) {
+            return j->second->make(packing, param);
+        }
+    }
+
     Log::debug() << "PackingFactory: looking for '" << name << "'" << std::endl;
-
-    auto list = [](std::ostream& out, const std::map<std::string, PackingFactory*>& m) {
-        for (const auto& j : m) {
-            out << ", " << j.first;
-        }
-    };
-
-    bool gridded = param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded");
-    if (gridded) {
-        auto j = mg->find(name);
-        if (j != mg->end()) {
-            return j->second->make(param);
-        }
-
-        list(Log::error() << "PackingFactory: unknown gridded packing '" << name << "', choices are: ", *mg);
-        throw exception::SeriousBug("PackingFactory: unknown gridded packing '" + name + "'");
+    auto j = m.find(name);
+    if (j != m.end()) {
+        return j->second->make(av ? packing : j->second->name_, param);
     }
 
-    auto j = ms->find(name);
-    if (j != ms->end()) {
-        return j->second->make(param);
+    Log::error() << "PackingFactory: unknown " << t << " packing '" << name << "', choices are: ";
+    for (const auto& j : m) {
+        Log::error() << ", " << j.first;
     }
 
-    list(Log::error() << "PackingFactory: unknown spectral packing '" << name << "', choices are: ", *ms);
-    throw exception::SeriousBug("PackingFactory: unknown spectral packing '" + name + "'");
+    throw exception::SeriousBug("PackingFactory: unknown " + t + " packing '" + name + "'");
 }
 
 
@@ -237,9 +241,6 @@ void PackingFactory::list(std::ostream& out) {
     std::lock_guard<std::mutex> lock(*local_mutex);
 
     std::set<std::string> p;
-    p.insert("archived-value");
-    p.insert("av");
-
     for (const auto& j : *ms) {
         p.insert(j.first);
     }

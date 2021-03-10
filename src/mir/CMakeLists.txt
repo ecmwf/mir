@@ -273,18 +273,12 @@ list(APPEND mir_srcs
     key/packing/IEEE.h
     key/packing/JPEG2000.cc
     key/packing/JPEG2000.h
-    key/packing/PNG.cc
-    key/packing/PNG.h
     key/packing/Packing.cc
     key/packing/Packing.h
     key/packing/SecondOrder.cc
     key/packing/SecondOrder.h
     key/packing/Simple.cc
     key/packing/Simple.h
-    key/packing/SimpleLogPreprocessing.cc
-    key/packing/SimpleLogPreprocessing.h
-    key/packing/SimpleMatrix.cc
-    key/packing/SimpleMatrix.h
     key/resol/Resol.cc
     key/resol/Resol.h
     key/style/CustomParametrisation.cc

@@ -12,8 +12,6 @@
 
 #include "mir/key/packing/SecondOrder.h"
 
-#include <ostream>
-
 #include "mir/util/Grib.h"
 
 
@@ -39,22 +37,13 @@ bool SecondOrder::check(const repres::Representation& repres) const {
 #endif
 
 
-void SecondOrder::print(std::ostream& out) const {
-    out << "SecondOrder[]";
-}
-
-
 void SecondOrder::fill(grib_info& info) const {
-    savePacking(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
-    saveAccuracy(info);
-    saveEdition(info);
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
 }
 
 
 void SecondOrder::set(grib_handle* handle) const {
-    setPacking(handle, "grid_second_order");
-    setAccuracy(handle);
-    setEdition(handle);
+    Packing::set(handle, "grid_second_order");
 }
 
 

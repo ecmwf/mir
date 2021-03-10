@@ -12,8 +12,6 @@
 
 #include "mir/key/packing/JPEG2000.h"
 
-#include <ostream>
-
 #include "mir/util/Grib.h"
 
 
@@ -26,21 +24,12 @@ static PackingBuilder<JPEG2000> __packing("jpeg", false, true);
 
 
 void JPEG2000::fill(grib_info& info) const {
-    savePacking(info, CODES_UTIL_PACKING_TYPE_JPEG);
-    saveAccuracy(info);
-    saveEdition(info);
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_JPEG);
 }
 
 
 void JPEG2000::set(grib_handle* handle) const {
-    setPacking(handle, "grid_jpeg");
-    setAccuracy(handle);
-    setEdition(handle);
-}
-
-
-void JPEG2000::print(std::ostream& out) const {
-    out << "JPEG2000[]";
+    Packing::set(handle, "grid_jpeg");
 }
 
 

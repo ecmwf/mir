@@ -39,7 +39,7 @@ public:
 
     // -- Constructors
 
-    Packing(const param::MIRParametrisation&);
+    Packing(const std::string& name, const param::MIRParametrisation&);
 
     // -- Destructor
 
@@ -59,17 +59,7 @@ public:
     virtual bool sameAs(Packing*) const;
     virtual bool printParametrisation(std::ostream&) const;
 
-    void setAccuracy(long);
-    void setEdition(long);
-    void setPacking(const std::string&);
-
-    bool getAccuracy(long&) const;
-    bool getEdition(long&) const;
-    bool getPacking(std::string&) const;
-
-    void unsetAccuracy() { defineAccuracy_ = false; }
-    void unsetEdition() { defineEdition_ = false; }
-    void unsetPacking() { definePacking_ = false; }
+    bool empty() const;
 
     // -- Overridden methods
     // None
@@ -101,17 +91,11 @@ protected:
 
     // -- Methods
 
-    virtual void print(std::ostream&) const = 0;
-
     bool gridded() const { return gridded_; }
+    void requireEdition(const param::MIRParametrisation&, long);
 
-    void saveAccuracy(grib_info&) const;
-    void saveEdition(grib_info&) const;
-    void savePacking(grib_info&, long) const;
-
-    void setAccuracy(grib_handle*) const;
-    void setEdition(grib_handle*) const;
-    void setPacking(grib_handle*, const std::string&) const;
+    void fill(grib_info&, long) const;
+    void set(grib_handle*, const std::string&) const;
 
     // -- Overridden methods
     // None
@@ -129,7 +113,6 @@ private:
 
     // -- Methods
     // None
-
     // -- Overridden methods
     // None
 
@@ -140,21 +123,16 @@ private:
     // None
 
     // -- Friends
-
-    friend std::ostream& operator<<(std::ostream& s, const Packing& p) {
-        p.print(s);
-        return s;
-    }
+    // None
 };
 
 
 class PackingFactory {
     std::string name_;
-    std::string alias_;
     bool spectral_;
     bool gridded_;
 
-    virtual Packing* make(const param::MIRParametrisation&) = 0;
+    virtual Packing* make(const std::string& name, const param::MIRParametrisation&) = 0;
 
     PackingFactory(const PackingFactory&) = delete;
     PackingFactory& operator=(const PackingFactory&) = delete;
@@ -164,14 +142,16 @@ protected:
     virtual ~PackingFactory();
 
 public:
-    static Packing* build(const std::string&, const param::MIRParametrisation&);
+    static Packing* build(const param::MIRParametrisation&);
     static void list(std::ostream&);
 };
 
 
 template <class T>
 class PackingBuilder : public PackingFactory {
-    Packing* make(const param::MIRParametrisation& param) override { return new T(param); }
+    Packing* make(const std::string& name, const param::MIRParametrisation& param) override {
+        return new T(name, param);
+    }
 
 public:
     PackingBuilder(const std::string& name, bool spectral, bool gridded) :

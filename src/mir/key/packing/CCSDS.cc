@@ -12,8 +12,6 @@
 
 #include "mir/key/packing/CCSDS.h"
 
-#include <ostream>
-
 #include "mir/util/Grib.h"
 
 
@@ -26,21 +24,12 @@ static PackingBuilder<CCSDS> __packing("ccsds", false, true);
 
 
 void CCSDS::fill(grib_info& info) const {
-    savePacking(info, CODES_UTIL_PACKING_TYPE_CCSDS);
-    saveAccuracy(info);
-    saveEdition(info);
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_CCSDS);
 }
 
 
 void CCSDS::set(grib_handle* handle) const {
-    setPacking(handle, "grid_ccsds");
-    setAccuracy(handle);
-    setEdition(handle);
-}
-
-
-void CCSDS::print(std::ostream& out) const {
-    out << "CCSDS[]";
+    Packing::set(handle, "grid_ccsds");
 }
 
 

@@ -12,9 +12,6 @@
 
 #include "mir/key/packing/IEEE.h"
 
-#include <ostream>
-#include <sstream>
-
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
@@ -29,53 +26,47 @@ namespace packing {
 static PackingBuilder<IEEE> __packing("ieee", true, true);
 
 
-IEEE::IEEE(const param::MIRParametrisation& param) : Packing(param) {
+IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
+    auto& user  = param.userParametrisation();
+    auto& field = param.fieldParametrisation();
+
     constexpr long L32  = 32;
     constexpr long L64  = 64;
     constexpr long L128 = 128;
 
+    // Accuracy set by user, otherwise by field (rounded up to a supported precision)
     long bits = L32;
-    if (!param.userParametrisation().get("accuracy", bits)) {
-        if (param.get("accuracy", bits)) {
-            bits = bits < L32 ? L32 : bits < L64 ? L64 : L128;
-        }
+    field.get("accuracy", bits);
+
+    if (!user.get("accuracy", accuracy_)) {
+        accuracy_ = bits <= L32 ? L32 : bits <= L64 ? L64 : L128;
     }
 
-    bitsPerValue_ = bits;
-    precision_    = bits == L32 ? 1 : bits == L64 ? 2 : bits == L128 ? 3 : 0;
+    // Note: On IEEE::set, this should set bitsPerValue before re-packing
+    defineAccuracy_ = accuracy_ != bits || !field.has("accuracy");
+    precision_      = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
 
     if (precision_ == 0) {
-        std::ostringstream msg;
-        msg << *this << ": only supports accuracy 32, 64 and 128";
-        Log::error() << msg.str() << std::endl;
-        throw exception::UserError(msg.str());
+        std::string msg = "packing=ieee: only supports accuracy 32, 64 and 128";
+        Log::error() << msg << std::endl;
+        throw exception::UserError(msg);
+    }
+
+    if (gridded()) {
+        requireEdition(param, 2);
     }
 }
 
 
 void IEEE::fill(grib_info& info) const {
-    savePacking(info, CODES_UTIL_PACKING_TYPE_IEEE);
-    saveAccuracy(info);
-    saveEdition(info);
-
+    Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
     info.extra_set("precision", precision_);
 }
 
 
 void IEEE::set(grib_handle* handle) const {
-    // set bitsPerValue before re-packing, in case current setting is not suitable
-    GRIB_CALL(codes_set_long(handle, "bitsPerValue", bitsPerValue_));
-
-    setPacking(handle, gridded() ? "grid_ieee" : "spectral_ieee");
-
+    Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
     GRIB_CALL(codes_set_long(handle, "precision", precision_));
-
-    setEdition(handle);
-}
-
-
-void IEEE::print(std::ostream& out) const {
-    out << "IEEE[precision=" << precision_ << "]";
 }
 
 

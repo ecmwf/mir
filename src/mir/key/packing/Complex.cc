@@ -12,8 +12,6 @@
 
 #include "mir/key/packing/Complex.h"
 
-#include <ostream>
-
 #include "mir/util/Grib.h"
 
 
@@ -25,22 +23,20 @@ namespace packing {
 static PackingBuilder<Complex> __packing("complex", "co", true, true);
 
 
+Complex::Complex(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
+    if (gridded()) {
+        requireEdition(param, 2);
+    }
+}
+
+
 void Complex::fill(grib_info& info) const {
-    savePacking(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_COMPLEX : CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
-    saveAccuracy(info);
-    saveEdition(info);
+    Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_COMPLEX : CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
 }
 
 
 void mir::key::packing::Complex::set(grib_handle* handle) const {
-    setPacking(handle, gridded() ? "grid_complex" : "spectral_complex");
-    setAccuracy(handle);
-    setEdition(handle);
-}
-
-
-void Complex::print(std::ostream& out) const {
-    out << "Complex[]";
+    Packing::set(handle, gridded() ? "grid_complex" : "spectral_complex");
 }
 
 

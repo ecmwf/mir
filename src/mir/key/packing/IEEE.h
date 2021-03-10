@@ -31,7 +31,7 @@ public:
 
     // -- Constructors
 
-    IEEE(const param::MIRParametrisation&);
+    IEEE(const std::string&, const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -74,7 +74,6 @@ private:
     // -- Members
 
     long precision_;
-    long bitsPerValue_;
 
     // -- Methods
     // None
@@ -83,7 +82,6 @@ private:
 
     void fill(grib_info&) const override;
     void set(grib_handle*) const override;
-    void print(std::ostream&) const override;
 
     // -- Class members
     // None

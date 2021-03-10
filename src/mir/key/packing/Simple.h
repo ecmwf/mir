@@ -81,7 +81,6 @@ private:
 
     void fill(grib_info&) const override;
     void set(grib_handle*) const override;
-    void print(std::ostream&) const override;
 
     // -- Class members
     // None

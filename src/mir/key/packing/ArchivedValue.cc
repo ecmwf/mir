@@ -12,8 +12,7 @@
 
 #include "mir/key/packing/ArchivedValue.h"
 
-#include "mir/key/packing/Packing.h"
-#include "mir/param/MIRParametrisation.h"
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -21,43 +20,21 @@ namespace key {
 namespace packing {
 
 
-ArchivedValue::ArchivedValue(const param::MIRParametrisation& field) :
-    defineAccuracy_(field.get("accuracy", accuracy_)),
-    defineEdition_(field.get("edition", edition_)),
-    definePacking_(field.get("packing", packing_)) {}
+static PackingBuilder<ArchivedValue> __packing("archived-value", "av", true, true);
 
 
-bool ArchivedValue::prepare(Packing& other) const {
-    bool todo = false;
+ArchivedValue::ArchivedValue(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
+    ASSERT(!definePacking_);
+}
 
-    long accuracy;
-    if (other.getAccuracy(accuracy) && (!defineAccuracy_ || accuracy_ != accuracy)) {
-        other.setAccuracy(accuracy);
-        todo = true;
-    }
-    else {
-        other.unsetAccuracy();
-    }
 
-    long edition;
-    if (other.getEdition(edition) && (!defineEdition_ || edition_ != edition)) {
-        other.setEdition(accuracy);
-        todo = true;
-    }
-    else {
-        other.unsetEdition();
-    }
+void ArchivedValue::fill(grib_info& info) const {
+    Packing::fill(info, 0 /* dummy, protected by ASSERT */);
+}
 
-    std::string packing;
-    if (other.getPacking(packing) && (!definePacking_ || packing_ != packing)) {
-        other.setPacking(packing);
-        todo = true;
-    }
-    else {
-        other.unsetPacking();
-    }
 
-    return todo;
+void ArchivedValue::set(grib_handle* handle) const {
+    Packing::set(handle, "" /* dummy, protected by ASSERT */);
 }
 
 

@@ -12,8 +12,6 @@
 
 #include "mir/key/packing/Simple.h"
 
-#include <ostream>
-
 #include "mir/util/Grib.h"
 
 
@@ -26,21 +24,12 @@ static PackingBuilder<Simple> __packing("simple", true, true);
 
 
 void Simple::fill(grib_info& info) const {
-    savePacking(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
-    saveAccuracy(info);
-    saveEdition(info);
+    Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
 }
 
 
 void Simple::set(grib_handle* handle) const {
-    setPacking(handle, gridded() ? "grid_simple" : "spectral_simple");
-    setAccuracy(handle);
-    setEdition(handle);
-}
-
-
-void Simple::print(std::ostream& out) const {
-    out << "Simple[]";
+    Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
 }
 
 
