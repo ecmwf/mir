@@ -66,11 +66,10 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
         eckit::ValueMap map = eckit::YAMLParser::decodeString(output);
         for (const auto& kv : map) {
             Log::debug() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
-            kv.second.isDouble()
-                ? config.set(kv.first, kv.second.as<double>())
-                : kv.second.isNumber() ? config.set(kv.first, kv.second.as<long long>())
-                                       : kv.second.isBool() ? config.set(kv.first, kv.second.as<bool>())
-                                                            : config.set(kv.first, kv.second.as<std::string>());
+            kv.second.isDouble()   ? config.set(kv.first, kv.second.as<double>())
+            : kv.second.isNumber() ? config.set(kv.first, kv.second.as<long long>())
+            : kv.second.isBool()   ? config.set(kv.first, kv.second.as<bool>())
+                                   : config.set(kv.first, kv.second.as<std::string>());
         }
     }
 

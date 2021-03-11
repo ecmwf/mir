@@ -316,9 +316,9 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
     int bit_depth() const override { return N_BYTES_PER_CHANNEL * 8; }
 
     int color_type() const override {
-        return N_C_CHANNELS == 1
-                   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
-                   : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB) : NOTIMP;
+        return N_C_CHANNELS == 1   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)
+               : N_C_CHANNELS == 3 ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_RGB_ALPHA : PNG_COLOR_TYPE_RGB)
+                                   : NOTIMP;
     }
 
 private:

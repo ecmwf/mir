@@ -120,13 +120,11 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             parse(line + 8, v);
             ASSERT(v.size() == 1);
 
-            format = v[0] == "XYV"
-                         ? XYV
-                         : v[0] == "XY_VECTOR"
-                               ? XY_VECTOR
-                               : v[0] == "POLAR_VECTOR"
-                                     ? POLAR_VECTOR
-                                     : throw exception::SeriousBug(path_ + " invalid format line '" + line + "'");
+            format = v[0] == "XYV"         ? XYV
+                     : v[0] == "XY_VECTOR" ? XY_VECTOR
+                     : v[0] == "POLAR_VECTOR"
+                         ? POLAR_VECTOR
+                         : throw exception::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
         if (!data && std::strncmp(line, "# ", 2) == 0) {

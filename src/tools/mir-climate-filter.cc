@@ -238,11 +238,10 @@ void MIRClimateFilter::execute(const eckit::option::CmdArgs& args) {
                     double sum = 0.;
                     for (size_t w = 0; w < Nw; ++w) {
                         auto r = Point3::distance(P, closest[w].point());
-                        auto h = r < halfDelta - delta
-                                     ? 1.
-                                     : halfDelta + delta < r
-                                           ? 0.
-                                           : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta + delta) / delta);
+                        auto h = r < halfDelta - delta ? 1.
+                                 : halfDelta + delta < r
+                                     ? 0.
+                                     : 0.5 + 0.5 * std::cos(M_PI_2 * (r - halfDelta + delta) / delta);
                         // h = std::max(0., std::min(0.99, h));
 
                         if (k[0] <= w && h < weightMin * (sum + h)) {
