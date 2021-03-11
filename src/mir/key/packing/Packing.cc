@@ -119,9 +119,9 @@ void Packing::requireEdition(const param::MIRParametrisation& param, long editio
 
 
 void Packing::fill(grib_info& info, long pack) const {
-    info.packing.packing       = CODES_UTIL_PACKING_SAME_AS_INPUT;
-    info.packing.accuracy      = CODES_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
-    info.packing.editionNumber = 0;
+    info.packing.packing  = CODES_UTIL_PACKING_SAME_AS_INPUT;
+    info.packing.accuracy = CODES_UTIL_ACCURACY_SAME_BITS_PER_VALUES_AS_INPUT;
+    // (Representation can set edition, so it isn't reset)
 
     if (definePacking_) {
         info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
@@ -140,11 +140,7 @@ void Packing::fill(grib_info& info, long pack) const {
 
 
 void Packing::set(grib_handle* h, const std::string& type) const {
-    // Note: order is important
-
-    if (defineAccuracy_) {
-        GRIB_CALL(codes_set_long(h, "bitsPerValue", accuracy_));
-    }
+    // Note: order is important, it is not applicable to all packing's.
 
     if (defineEdition_) {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
@@ -153,6 +149,10 @@ void Packing::set(grib_handle* h, const std::string& type) const {
     if (definePacking_) {
         auto len = type.length();
         GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
+    }
+
+    if (defineAccuracy_) {
+        GRIB_CALL(codes_set_long(h, "bitsPerValue", accuracy_));
     }
 }
 
@@ -201,7 +201,8 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
     user.get("packing", name);
 
 
-    std::string packing;
+    // When converting formats, field packing needs a sensible default
+    std::string packing = field.has("spectral") ? "complex" : "simple";
     field.get("packing", packing);
 
 
