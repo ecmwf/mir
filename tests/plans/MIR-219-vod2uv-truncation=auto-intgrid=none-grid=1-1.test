@@ -3,4 +3,4 @@ param=vo_d,level=1000
 # mir
 --vod2uv --truncation=auto --intgrid=none --grid=1/1  --dont-compress-plan
 # plan
-ShTruncate[truncation=179]|ShToRegularLL[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,bbox=BoundingBox[north=90,west=0,south=-90,east=360],increments=Increments[west_east=1,south_north=1]]|Save[output=...]
+ShTruncate[truncation=179]|ShToRegularLL[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<vod2uv>,bbox=BoundingBox[north=90,west=0,south=-90,east=360],increments=Increments[west_east=1,south_north=1]]|Save[packing=simple,output=...]

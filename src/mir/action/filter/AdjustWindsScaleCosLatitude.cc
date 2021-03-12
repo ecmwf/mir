@@ -64,9 +64,9 @@ void AdjustWindsScaleCosLatitude::execute(context::Context& ctx) const {
     for (auto& s : scale) {
         ASSERT(iter->next());
         const auto& p = iter->pointUnrotated();
-        s             = (p.lat() == Latitude::SOUTH_POLE)
-                ? 0.
-                : (p.lat() == Latitude::NORTH_POLE) ? 0. : 1. / std::cos(util::degree_to_radian(p.lat().value()));
+        s             = (p.lat() == Latitude::SOUTH_POLE)   ? 0.
+                        : (p.lat() == Latitude::NORTH_POLE) ? 0.
+                                                            : 1. / std::cos(util::degree_to_radian(p.lat().value()));
     }
     ASSERT(!(iter->next()));
 

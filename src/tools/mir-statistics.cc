@@ -168,11 +168,10 @@ void MIRStatistics::execute(const eckit::option::CmdArgs& args) {
             context::Context ctx(firstGribFile, stats);
 
             auto& f = ctx.field();
-            j == "mean"
-                ? pps->mean(f)
-                : j == "variance"
-                      ? pps->variance(f)
-                      : j == "stddev" ? pps->stddev(f) : throw exception::UserError("Output " + j + "' not supported");
+            j == "mean"       ? pps->mean(f)
+            : j == "variance" ? pps->variance(f)
+            : j == "stddev"   ? pps->stddev(f)
+                              : throw exception::UserError("Output " + j + "' not supported");
 
             std::unique_ptr<output::MIROutput> out(new output::GribFileOutput(j));
             out->save(*param, ctx);

@@ -15,9 +15,19 @@
 
 #include "mir/output/MIROutput.h"
 
+#include <memory>
+
 
 struct grib_info;
 struct grib_handle;
+
+namespace mir {
+namespace key {
+namespace packing {
+class Packing;
+}
+}  // namespace key
+}  // namespace mir
 
 
 namespace mir {
@@ -77,6 +87,7 @@ private:
 
     size_t interpolated_;
     size_t saved_;
+    std::unique_ptr<key::packing::Packing> packing_;
 
     // -- Methods
 

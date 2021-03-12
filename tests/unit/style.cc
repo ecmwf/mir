@@ -129,9 +129,9 @@ CASE("ECMWFStyle") {
 
                     // test correct user formula.<when> and formula.<when>.metadata, then
                     // test extra, inconsistent formula.<when>.metadata options
-                    bool plan_should_have_formula =
-                        when == "gridded" ? (input_gridded || output_gridded)
-                                          : when == "spectral" ? (!input_gridded || !output_gridded) : true;
+                    bool plan_should_have_formula = when == "gridded"    ? (input_gridded || output_gridded)
+                                                    : when == "spectral" ? (!input_gridded || !output_gridded)
+                                                                         : true;
 
                     for (bool addWrongArguments : _no_yes) {
                         if (addWrongArguments) {

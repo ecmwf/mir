@@ -100,11 +100,10 @@ void MIRGridInfo::execute(const eckit::option::CmdArgs& args) {
     }
 
     std::string gridname;
-    repres::RepresentationHandle rep(args.has("grid")
-                                         ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
-                                         : args.get("gridname", gridname)
-                                               ? key::grid::Grid::lookup(gridname).representation()
-                                               : throw exception::UserError("'grid' or 'gridname' should be provided"));
+    repres::RepresentationHandle rep(
+        args.has("grid")                 ? new repres::latlon::RegularLL(util::Increments(value[0], value[1]))
+        : args.get("gridname", gridname) ? key::grid::Grid::lookup(gridname).representation()
+                                         : throw exception::UserError("'grid' or 'gridname' should be provided"));
     ASSERT(rep);
 
     std::unique_ptr<repres::Iterator> iterator(rep->iterator());

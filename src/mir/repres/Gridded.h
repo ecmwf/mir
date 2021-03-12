@@ -86,10 +86,7 @@ private:
     // None
 
     // -- Overridden methods
-
-    void setComplexPacking(grib_info&) const override;
-    void setSimplePacking(grib_info&) const override;
-    void setGivenPacking(grib_info&) const override;
+    // None
 
     // -- Class members
     // None
