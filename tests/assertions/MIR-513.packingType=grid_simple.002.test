@@ -1,0 +1,8 @@
+# mars
+packingType=grid_simple.grib2
+# mir
+--packing=so
+# grib_get assertions
+packingType=grid_second_order
+edition=2
+bitsPerValue=16
