@@ -31,7 +31,8 @@ static bool check(const repres::Representation* repres) {
 
     auto n = repres->numberOfPoints();
     if (n < 4) {
-        Log::warning() << "packing=second-order: does not support less than 4 values, using packing=simple" << std::endl;
+        Log::warning() << "packing=second-order: does not support less than 4 values, using packing=simple"
+                       << std::endl;
         return false;
     }
     return true;

@@ -46,8 +46,8 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
     defineAccuracy_ = accuracy_ != bits || !field.has("accuracy");
     precision_      = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
 
-    if (precision_ == 0 || precision_ == 3) {
-        std::string msg = "packing=ieee: ecCodes only supports accuracy 32 and 64";
+    if (precision_ == 0) {
+        std::string msg = "packing=ieee: only supports accuracy=32, 64 and 128";
         Log::error() << msg << std::endl;
         throw exception::UserError(msg);
     }
@@ -67,6 +67,12 @@ void IEEE::fill(const repres::Representation*, grib_info& info) const {
 void IEEE::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
     GRIB_CALL(codes_set_long(handle, "precision", precision_));
+}
+
+
+bool IEEE::printParametrisation(std::ostream& out) const {
+    out << (Packing::printParametrisation(out) ? "," : "") << "precision=" << precision_;
+    return true;
 }
 
 

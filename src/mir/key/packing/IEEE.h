@@ -82,6 +82,7 @@ private:
 
     void fill(const repres::Representation*, grib_info&) const override;
     void set(const repres::Representation*, grib_handle*) const override;
+    bool printParametrisation(std::ostream&) const override;
 
     // -- Class members
     // None
