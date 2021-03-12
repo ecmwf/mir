@@ -20,13 +20,14 @@ if(MARS_SCRIPT)
 endif()
 
 if(NOT eccodes_HAVE_AEC)
-    foreach(_t
+    foreach(_r
         MIR-513.packingType=grid_ccsds.001.test
         MIR-513.packingType=grid_ccsds.002.test
         MIR-513.packingType=grid_ccsds.004.test
         MIR-513.packingType=grid_ccsds.005.test
         MIR-513.packingType=grid_second_order.003.test
         MIR-513.packingType=grid_simple.003.test)
+        get_filename_component(_t "${_r}" ABSOLUTE)
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()
 endif()
