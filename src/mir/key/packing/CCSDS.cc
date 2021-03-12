@@ -23,12 +23,12 @@ namespace packing {
 static PackingBuilder<CCSDS> __packing("ccsds", false, true);
 
 
-void CCSDS::fill(grib_info& info) const {
+void CCSDS::fill(const repres::Representation*, grib_info& info) const {
     Packing::fill(info, CODES_UTIL_PACKING_TYPE_CCSDS);
 }
 
 
-void CCSDS::set(grib_handle* handle) const {
+void CCSDS::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, "grid_ccsds");
 }
 

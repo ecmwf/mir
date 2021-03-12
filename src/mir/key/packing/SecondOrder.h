@@ -14,6 +14,7 @@
 #define mir_key_packing_SecondOrder_h
 
 #include "mir/key/packing/Packing.h"
+#include "mir/key/packing/Simple.h"
 
 
 namespace mir {
@@ -31,7 +32,7 @@ public:
 
     // -- Constructors
 
-    using Packing::Packing;
+    SecondOrder(const std::string& name, const param::MIRParametrisation&);
 
     // -- Destructor
     // None
@@ -72,15 +73,16 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    Simple simple_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    void fill(grib_info&) const override;
-    void set(grib_handle*) const override;
+    void fill(const repres::Representation*, grib_info&) const override;
+    void set(const repres::Representation*, grib_handle*) const override;
 
     // -- Class members
     // None

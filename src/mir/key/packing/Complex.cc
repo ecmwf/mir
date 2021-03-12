@@ -30,12 +30,12 @@ Complex::Complex(const std::string& name, const param::MIRParametrisation& param
 }
 
 
-void Complex::fill(grib_info& info) const {
+void Complex::fill(const repres::Representation*, grib_info& info) const {
     Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_COMPLEX : CODES_UTIL_PACKING_TYPE_SPECTRAL_COMPLEX);
 }
 
 
-void mir::key::packing::Complex::set(grib_handle* handle) const {
+void mir::key::packing::Complex::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_complex" : "spectral_complex");
 }
 

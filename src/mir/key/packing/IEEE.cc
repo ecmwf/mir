@@ -58,13 +58,13 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
 }
 
 
-void IEEE::fill(grib_info& info) const {
+void IEEE::fill(const repres::Representation*, grib_info& info) const {
     Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
     info.extra_set("precision", precision_);
 }
 
 
-void IEEE::set(grib_handle* handle) const {
+void IEEE::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
     GRIB_CALL(codes_set_long(handle, "precision", precision_));
 }

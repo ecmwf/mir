@@ -24,6 +24,9 @@ namespace mir {
 namespace param {
 class MIRParametrisation;
 }
+namespace repres {
+class Representation;
+}
 }  // namespace mir
 
 
@@ -53,8 +56,8 @@ public:
 
     // -- Methods
 
-    virtual void fill(grib_info&) const  = 0;
-    virtual void set(grib_handle*) const = 0;
+    virtual void fill(const repres::Representation*, grib_info&) const  = 0;
+    virtual void set(const repres::Representation*, grib_handle*) const = 0;
 
     virtual bool sameAs(Packing*) const;
     virtual bool printParametrisation(std::ostream&) const;

@@ -12,7 +12,10 @@
 
 #include "mir/key/packing/SecondOrder.h"
 
+#include "mir/repres/Representation.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -23,26 +26,38 @@ namespace packing {
 static PackingBuilder<SecondOrder> __packing("second-order", "so", false, true);
 
 
-#if 0
-bool SecondOrder::check(const repres::Representation& repres) const {
-    auto n = repres.numberOfPoints();
+static bool check(const repres::Representation* repres) {
+    ASSERT(repres != nullptr);
+
+    auto n = repres->numberOfPoints();
     if (n < 4) {
-        // NOTE: There is a bug in ecCodes if the user asks 1 value and select second-order
-        // Once this fixed, remove this code
-        Log::warning() << "Field has " << Log::Pretty(n, {"value"}) << " < 4, ignoring packer " << *this << std::endl;
+        Log::warning() << "packing=second-order: does not support less than 4 values, using packing=simple" << std::endl;
         return false;
     }
     return true;
 }
-#endif
 
 
-void SecondOrder::fill(grib_info& info) const {
+SecondOrder::SecondOrder(const std::string& name, const param::MIRParametrisation& param) :
+    Packing(name, param), simple_(name, param) {}
+
+
+void SecondOrder::fill(const repres::Representation* repres, grib_info& info) const {
+    if (!check(repres)) {
+        simple_.fill(repres, info);
+        return;
+    }
+
     Packing::fill(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
 }
 
 
-void SecondOrder::set(grib_handle* handle) const {
+void SecondOrder::set(const repres::Representation* repres, grib_handle* handle) const {
+    if (!check(repres)) {
+        simple_.set(repres, handle);
+        return;
+    }
+
     Packing::set(handle, "grid_second_order");
 }
 
