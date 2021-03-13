@@ -25,6 +25,7 @@ if(NOT eccodes_HAVE_AEC)
         MIR-513.packingType=grid_ccsds.002.test
         MIR-513.packingType=grid_ccsds.004.test
         MIR-513.packingType=grid_ccsds.005.test
+        MIR-513.packingType=grid_ieee.003.test
         MIR-513.packingType=grid_second_order.003.test
         MIR-513.packingType=grid_simple.003.test)
         get_filename_component(_t "${_r}" ABSOLUTE)
