@@ -47,7 +47,16 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
     auto& user  = param.userParametrisation();
     auto& field = param.fieldParametrisation();
 
-    if (user.get("accuracy", accuracy_)) {
+    ASSERT(!name.empty());
+    packing_ = name;
+    std::string packing;
+    definePacking_ = !field.get("packing", packing) || packing_ != packing;
+
+    if (definePacking_ && packing == "ieee") {
+        ASSERT(param.get("accuracy", accuracy_));
+        defineAccuracy_ = true;
+    }
+    else if (user.get("accuracy", accuracy_)) {
         long accuracy;
         defineAccuracy_ = !field.get("accuracy", accuracy) || accuracy_ != accuracy;
     }
@@ -56,11 +65,6 @@ Packing::Packing(const std::string& name, const param::MIRParametrisation& param
         long edition;
         defineEdition_ = !field.get("edition", edition) || edition_ != edition;
     }
-
-    ASSERT(!name.empty());
-    packing_ = name;
-    std::string packing;
-    definePacking_ = !field.get("packing", packing) || packing_ != packing;
 }
 
 
