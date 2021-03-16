@@ -1,0 +1,7 @@
+# input
+tiny.grib
+# mir tool options
+--interpolation=voronoi-mean --grid=0.5/0.5
+# grib_get assertions (not checking results)
+Ni=3
+Nj=3
