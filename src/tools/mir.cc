@@ -197,6 +197,9 @@ struct MIR : tools::MIRTool {
                                                       "Generate including South pole on " + which + " mesh"));
         }
 
+        options_.push_back(new SimpleOption<double>("counter-upper-limit", "Count values below lower limit"));
+        options_.push_back(new SimpleOption<double>("counter-lower-limit", "Count values above upper limit"));
+
         //==============================================
         options_.push_back(new Separator("Filtering"));
         options_.push_back(new VectorOption<double>("area", "cropping area: north/west/south/east", 4));

@@ -3,5 +3,5 @@ date=20200308,level=1000,truncation=20,param=z
 # mir
 --grid=1/1 --nabla=scalar-gradient
 # plan
-ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F21]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[method=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|ScalarGradient[meshGeneratorParameters=...]|Save[packing=simple,output=...]
+ShToNamedGrid[type=local,cropping=none,options=[4886829aa871a5c38f41fff09ed0970e],invtrans=<scalar>,grid=F21]|Gridded2RegularLL[increments=Increments[west_east=1,south_north=1],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|ScalarGradient[meshGeneratorParameters=...]|Save[packing=simple,output=...]
 

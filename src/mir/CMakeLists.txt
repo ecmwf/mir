@@ -404,6 +404,8 @@ list(APPEND mir_srcs
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
+    method/voronoi/StatisticsT.cc
+    method/voronoi/StatisticsT.h
     method/voronoi/VoronoiMethod.cc
     method/voronoi/VoronoiMethod.h
     output/EmptyOutput.cc

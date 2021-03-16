@@ -243,7 +243,7 @@ FiniteElement::~FiniteElement() = default;
 
 
 void FiniteElement::print(std::ostream& out) const {
-    out << "FiniteElement[method=" << name() << ",";
+    out << "FiniteElement[name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
 }

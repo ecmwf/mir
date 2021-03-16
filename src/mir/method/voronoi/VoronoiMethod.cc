@@ -83,8 +83,6 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 log << *tree << std::endl;
             }
 
-            // auto i = tree->closestPoint(it->point3D()).payload();
-            // biplets.emplace_back(i, j);
             pick_.pick(*tree, it->point3D(), closest);
             for (auto& c : closest) {
                 auto i = c.payload();
@@ -113,8 +111,7 @@ void VoronoiMethod::hash(eckit::MD5& md5) const {
 
 
 void VoronoiMethod::print(std::ostream& out) const {
-    out << "VoronoiMethod["
-        << "name=" << name() << ",";
+    out << "VoronoiMethod[name=" << name() << ",";
     MethodWeighted::print(out);
     out << "]";
 }
