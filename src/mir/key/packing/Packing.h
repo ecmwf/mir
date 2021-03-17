@@ -62,7 +62,7 @@ public:
     virtual bool sameAs(Packing*) const;
     virtual bool printParametrisation(std::ostream&) const;
 
-    bool empty() const;
+    virtual bool empty() const;
 
     // -- Overridden methods
     // None

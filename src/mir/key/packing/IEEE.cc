@@ -42,9 +42,10 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
         accuracy_ = bits <= L32 ? L32 : bits <= L64 ? L64 : L128;
     }
 
-    // Note: On IEEE::set, this should set bitsPerValue before re-packing
-    defineAccuracy_ = accuracy_ != bits || !field.has("accuracy");
-    precision_      = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
+    // ECC-1219: on IEEE::set, never define bitsPerValue
+    defineAccuracy_  = false;
+    definePrecision_ = accuracy_ != bits || definePacking_ || !field.has("accuracy");
+    precision_       = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
 
     if (precision_ == 0) {
         std::string msg = "packing=ieee: only supports accuracy=32, 64 and 128";
@@ -59,20 +60,44 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
 
 
 void IEEE::fill(const repres::Representation*, grib_info& info) const {
-    Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
-    info.extra_set("precision", precision_);
+    info.packing.packing = CODES_UTIL_PACKING_SAME_AS_INPUT;
+    // (Representation can set edition, so it isn't reset)
+
+    if (definePacking_) {
+        info.packing.packing      = CODES_UTIL_PACKING_USE_PROVIDED;
+        info.packing.packing_type = CODES_UTIL_PACKING_TYPE_IEEE;
+    }
+
+    if (defineEdition_) {
+        info.packing.editionNumber = edition_;
+    }
+
+    if (definePrecision_) {
+        info.extra_set("precision", precision_);
+    }
 }
 
 
 void IEEE::set(const repres::Representation*, grib_handle* handle) const {
     Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
-    GRIB_CALL(codes_set_long(handle, "precision", precision_));
+
+    if (definePrecision_) {
+        GRIB_CALL(codes_set_long(handle, "precision", precision_));
+    }
 }
 
 
 bool IEEE::printParametrisation(std::ostream& out) const {
-    out << (Packing::printParametrisation(out) ? "," : "") << "precision=" << precision_;
+    auto sep = Packing::printParametrisation(out) ? "," : "";
+    if (definePrecision_) {
+        out << sep << "precision=" << precision_;
+    }
     return true;
+}
+
+
+bool IEEE::empty() const {
+    return Packing::empty() && !definePrecision_;
 }
 
 
