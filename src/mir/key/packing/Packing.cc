@@ -150,13 +150,13 @@ void Packing::set(grib_handle* h, const std::string& type) const {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
     }
 
+    if (defineAccuracy_) {
+        GRIB_CALL(codes_set_long(h, "bitsPerValue", accuracy_));
+    }
+
     if (definePacking_) {
         auto len = type.length();
         GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
-    }
-
-    if (defineAccuracy_) {
-        GRIB_CALL(codes_set_long(h, "bitsPerValue", accuracy_));
     }
 }
 
