@@ -89,6 +89,7 @@ protected:
     std::string packing_;
 
     bool defineAccuracy_;
+    bool defineAccuracyBeforePacking_;
     bool defineEdition_;
     bool definePacking_;
 

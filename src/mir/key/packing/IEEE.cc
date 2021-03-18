@@ -42,8 +42,6 @@ IEEE::IEEE(const std::string& name, const param::MIRParametrisation& param) : Pa
         accuracy_ = bits <= L32 ? L32 : bits <= L64 ? L64 : L128;
     }
 
-    // ECC-1219: on IEEE::set, never define bitsPerValue
-    defineAccuracy_  = false;
     definePrecision_ = accuracy_ != bits || definePacking_ || !field.has("accuracy");
     precision_       = accuracy_ == L32 ? 1 : accuracy_ == L64 ? 2 : accuracy_ == L128 ? 3 : 0;
 
