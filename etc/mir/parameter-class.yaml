@@ -887,8 +887,6 @@ intensity:
 - 3106  # Mean period of swell waves
 - 3108  # Primary wave mean period
 - 3110  # Secondary wave mean period
-- 3119  # Radiance (with respect to wave number)
-- 3120  # Radiance (with respect to wave length)
 - 3124  # Momentum flux, u-component
 - 3125  # Momentum flux, v-component
 - 3126  # Wind mixing energy
@@ -1873,8 +1871,6 @@ intensity:
 - 260544  # Initial fire spread index
 - 260545  # Fire buildup index
 - 260546  # Fire daily severity rating
-- 260550  # Cloudy radiance (with respect to wave number)
-- 260551  # Clear-sky radiance (with respect to wave number)
 - 260552  # Wind speed
 - 260556  # Angstrom coefficient
 - 260606  # Square of Brunt-Vaisala frequency
@@ -2034,7 +2030,13 @@ intensity:
 - 300254  # Time mean vorticity
 - 300255  # Time mean zonal wind (u)
 
+intensity.spectral-intensity:
+- 3119  # Radiance (with respect to wave number)
+- 260550  # Cloudy radiance (with respect to wave number)
+- 260551  # Clear-sky radiance (with respect to wave number)
+
 intensity.spectral-radiance:
+- 3120  # Radiance (with respect to wave length)
 - 228105  # Solar induced Chlorophyll fluorescence at 740nm
 - 228106  # Solar induced Chlorophyll fluorescence at 755nm
 - 228107  # Solar induced Chlorophyll fluorescence at 771nm
