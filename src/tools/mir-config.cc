@@ -27,6 +27,7 @@
 #include "mir/param/DefaultParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
 #include "mir/tools/MIRTool.h"
+#include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 
 
@@ -80,6 +81,8 @@ struct MIRConfig : tools::MIRTool {
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
 
+        options_.push_back(new SimpleOption<std::string>(
+            "param-file", "Set classification file (default '~mir/etc/mir/parameter-class.yaml')"));
         options_.push_back(new SimpleOption<std::string>("param-class", "Set class(es) for paramId, /-separated"));
         options_.push_back(new SimpleOption<std::string>("param-name", "Set name for paramId"));
     }
@@ -138,17 +141,21 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
         Map map;
 
-        eckit::LocalPathName to("parameter-class.yaml");
-        eckit::LocalPathName to_tmp(to + ".tmp");
-        auto from(to.exists() ? to : "~mir/etc/mir/parameter-class.yaml");
+        std::string paramFile = "~mir/etc/mir/parameter-class.yaml";
+        args.get("param-file", paramFile);
 
-        // update (temporary) file
+        eckit::LocalPathName file(paramFile);
+        auto tmp = file + ".tmp";
+        Log::info() << "File '" << file.fullName() << "' (read),\nFile '" << tmp.fullName() << "' (temporary)"
+                    << std::endl;
+
         {
-            std::ifstream i(std::string(from).c_str());
-            ASSERT(i);
+            std::ifstream i(file.c_str());
+            std::ofstream o(tmp.c_str());
+            if (!o) {
+                throw exception::WriteError("Cannot write to '" + tmp + "'");
+            }
 
-            std::ofstream o(to_tmp.c_str());
-            ASSERT(o);
             o << "---\n\n";
 
             for (std::string line; std::getline(i, line);) {
@@ -181,8 +188,8 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
             }
         }
 
-        // rename updated file
-        eckit::LocalPathName::rename(to_tmp, to.fullName());
+        Log::info() << "File '" << file.fullName() << "' (write)" << std::endl;
+        eckit::LocalPathName::rename(tmp, file);
         return;
     }
 
