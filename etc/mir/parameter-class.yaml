@@ -129,6 +129,8 @@ density.mass:
 - 215201  # Vertically integrated mass of fine-mode nitrate aerosol
 - 215202  # Vertically integrated mass of coarse-mode nitrate aerosol
 - 215211  # Vertically integrated mass of ammonium aerosol
+- 215218  # Vertically integrated mass of biogenic secondary organic aerosol
+- 215225  # Vertically integrated mass of anthropogenic secondary organic aerosol
 - 218003  # Total column hydrogen peroxide
 - 218004  # Total column methane
 - 218006  # Total column nitric acid
@@ -328,6 +330,18 @@ density.mass:
 - 218204  # Total column of excited oxygen atom
 - 218205  # Total column of ground state oxygen atom
 - 218206  # Total column of stratospheric aerosol
+- 218221  # Column integrated mass density of Volcanic sulfur dioxide
+- 218222  # Column integrated mass density of Aromatic peroxy radical
+- 218223  # Column integrated mass density of Ethyne
+- 218224  # Column integrated mass density of Acetonitrile
+- 218225  # Column integrated mass density of Methyl peroxy nitrate
+- 218226  # Column integrated mass density of Hydrogen cyanide
+- 218227  # Column integrated mass density of Hydroperoxy aldehydes type 1
+- 218228  # Column integrated mass density of Hydroperoxy aldehydes type 2
+- 218229  # Column integrated mass density of Isoprene peroxy type B
+- 218230  # Column integrated mass density of Isoprene peroxy type D
+- 218231  # Column integrated mass density of Anthropogenic volatile organic compounds
+- 218232  # Column integrated mass density of Biomass burning volatile organic compounds
 - 228039  # Soil Moisture
 - 228086  # Soil moisture top 20 cm
 - 228087  # Soil moisture top 100 cm
@@ -1595,6 +1609,7 @@ intensity:
 - 215177  # Total fine mode (r < 0.5 um) aerosol optical depth at 2130 nm
 - 215203  # Fine-mode nitrate aerosol optical depth at 550nm
 - 215204  # Coarse-mode nitrate aerosol optical depth at 550nm
+- 215226  # Secondary organic aerosol optical depth at 550 nm
 - 228001  # Convective inhibition
 - 228002  # Orography
 - 228003  # Friction velocity
@@ -2018,6 +2033,12 @@ intensity:
 - 300253  # Time mean virtual temperature
 - 300254  # Time mean vorticity
 - 300255  # Time mean zonal wind (u)
+
+intensity.spectral-radiance:
+- 228105  # Solar induced Chlorophyll fluorescence at 740nm
+- 228106  # Solar induced Chlorophyll fluorescence at 755nm
+- 228107  # Solar induced Chlorophyll fluorescence at 771nm
+- 228108  # Solar induced Chlorophyll fluorescence at 757nm
 
 numerics.tendency:
 - 162100  # Tendency of short wave radiation
@@ -2576,6 +2597,8 @@ numerics.vertical-integral:
 - 215201  # Vertically integrated mass of fine-mode nitrate aerosol
 - 215202  # Vertically integrated mass of coarse-mode nitrate aerosol
 - 215211  # Vertically integrated mass of ammonium aerosol
+- 215218  # Vertically integrated mass of biogenic secondary organic aerosol
+- 215225  # Vertically integrated mass of anthropogenic secondary organic aerosol
 - 218003  # Total column hydrogen peroxide
 - 218004  # Total column methane
 - 218006  # Total column nitric acid
@@ -2775,6 +2798,18 @@ numerics.vertical-integral:
 - 218204  # Total column of excited oxygen atom
 - 218205  # Total column of ground state oxygen atom
 - 218206  # Total column of stratospheric aerosol
+- 218221  # Column integrated mass density of Volcanic sulfur dioxide
+- 218222  # Column integrated mass density of Aromatic peroxy radical
+- 218223  # Column integrated mass density of Ethyne
+- 218224  # Column integrated mass density of Acetonitrile
+- 218225  # Column integrated mass density of Methyl peroxy nitrate
+- 218226  # Column integrated mass density of Hydrogen cyanide
+- 218227  # Column integrated mass density of Hydroperoxy aldehydes type 1
+- 218228  # Column integrated mass density of Hydroperoxy aldehydes type 2
+- 218229  # Column integrated mass density of Isoprene peroxy type B
+- 218230  # Column integrated mass density of Isoprene peroxy type D
+- 218231  # Column integrated mass density of Anthropogenic volatile organic compounds
+- 218232  # Column integrated mass density of Biomass burning volatile organic compounds
 - 228088  # Total column supercooled liquid water
 - 228089  # Total column rain water
 - 228090  # Total column snow water
@@ -3479,6 +3514,18 @@ rate.mass-flux:
 - 215208  # Wet deposition of ammonium aerosol by large-scale precipitation
 - 215209  # Wet deposition of ammonium aerosol by convective precipitation
 - 215210  # Negative fixer of ammonium aerosol
+- 215212  # Source/gain of biogenic secondary organic aerosol
+- 215213  # Dry deposition of biogenic secondary organic aerosol
+- 215214  # Sedimentation of biogenic secondary organic aerosol
+- 215215  # Wet deposition of biogenic secondary organic aerosol by large-scale precipitation
+- 215216  # Wet deposition of biogenic secondary organic aerosol by convective precipitation
+- 215217  # Negative fixer of biogenic secondary organic aerosol
+- 215219  # Source/gain of anthropogenic secondary organic aerosol
+- 215220  # Dry deposition of anthropogenic secondary organic aerosol
+- 215221  # Sedimentation of anthropogenic secondary organic aerosol
+- 215222  # Wet deposition of anthropogenic secondary organic aerosol by large-scale precipitation
+- 215223  # Wet deposition of anthropogenic secondary organic aerosol by convective precipitation
+- 215224  # Negative fixer of anthropogenic secondary organic aerosol
 - 219001  # Ozone emissions
 - 219002  # Nitrogen oxides emissions
 - 219003  # Hydrogen peroxide emissions
@@ -3699,6 +3746,18 @@ rate.mass-flux:
 - 219218  # Wildfire flux of alkanes high oh rate
 - 219219  # Wildfire flux of hydrogen cyanide
 - 219220  # Wildfire flux of acetonitrile
+- 219221  # Atmosphere emission mass flux of Volcanic sulfur dioxide
+- 219222  # Atmosphere emission mass flux of Aromatic peroxy radical
+- 219223  # Atmosphere emission mass flux of Ethyne
+- 219224  # Atmosphere emission mass flux of Acetonitrile
+- 219225  # Atmosphere emission mass flux of Methyl peroxy nitrate
+- 219226  # Atmosphere emission mass flux of Hydrogen cyanide
+- 219227  # Atmosphere emission mass flux of Hydroperoxy aldehydes type 1
+- 219228  # Atmosphere emission mass flux of Hydroperoxy aldehydes type 2
+- 219229  # Atmosphere emission mass flux of Isoprene peroxy type B
+- 219230  # Atmosphere emission mass flux of Isoprene peroxy type D
+- 219231  # Atmosphere emission mass flux of Anthropogenic volatile organic compounds
+- 219232  # Atmosphere emission mass flux of Biomass burning volatile organic compounds
 - 228038  # Liquid water content in snow pack
 - 228083  # Flux of Carbon Dioxide Net Ecosystem Exchange
 - 228084  # Flux of Carbon Dioxide Gross Primary Production
@@ -3707,6 +3766,7 @@ rate.mass-flux:
 - 228101  # Evaporation from bare soil
 - 228102  # Evaporation from open water surfaces excluding oceans
 - 228103  # Evaporation from vegetation transpiration
+- 228104  # Atmosphere emission mass flux of Methane from Wetlands
 - 228141  # Snow depth water equivalent
 - 228143  # Convective precipitation
 - 228144  # Snow Fall water equivalent
@@ -4056,6 +4116,18 @@ rate.volume-flux:
 - 221204  # Dry deposition velocity of excited oxygen atom
 - 221205  # Dry deposition velocity of ground state oxygen atom
 - 221206  # Dry deposition velocity of stratospheric aerosol
+- 221221  # Dry deposition velocity of Volcanic sulfur dioxide
+- 221222  # Dry deposition velocity of Aromatic peroxy radical
+- 221223  # Dry deposition velocity of Ethyne
+- 221224  # Dry deposition velocity of Acetonitrile
+- 221225  # Dry deposition velocity of Methyl peroxy nitrate
+- 221226  # Dry deposition velocity of Hydrogen cyanide
+- 221227  # Dry deposition velocity of Hydroperoxy aldehydes type 1
+- 221228  # Dry deposition velocity of Hydroperoxy aldehydes type 2
+- 221229  # Dry deposition velocity of Isoprene peroxy type B
+- 221230  # Dry deposition velocity of Isoprene peroxy type D
+- 221231  # Dry deposition velocity of Anthropogenic volatile organic compounds
+- 221232  # Dry deposition velocity of Biomass burning volatile organic compounds
 - 228216  # Accumulated freezing rain
 - 228251  # Potential evaporation
 - 230008  # Surface runoff (variable resolution)
@@ -4488,12 +4560,15 @@ ratio.mass:
 - 210145  # Reactive tracer 8 mass mixing ratio
 - 210147  # Reactive tracer 9 mass mixing ratio
 - 210149  # Reactive tracer 10 mass mixing ratio
+- 210170  # Volcanic sulfur dioxide mass mixing ratio
 - 210181  # Radon
 - 210182  # Sulphur Hexafluoride
 - 210203  # GEMS Ozone
 - 210247  # Nitrate fine mode aerosol mass mixing ratio
 - 210248  # Nitrate coarse mode aerosol mass mixing ratio
 - 210249  # Ammonium aerosol mass mixing ratio
+- 210252  # Biogenic secondary organic aerosol mass mixing ratio
+- 210253  # Anthropogenic secondary organic aerosol mass mixing ratio
 - 211001  # Sea Salt Aerosol (0.03 - 0.5 um) Mixing Ratio
 - 211002  # Sea Salt Aerosol (0.5 - 5 um) Mixing Ratio
 - 211003  # Sea Salt Aerosol (5 - 20 um) Mixing Ratio
@@ -4535,12 +4610,15 @@ ratio.mass:
 - 211145  # Reactive tracer 8 mass mixing ratio
 - 211147  # Reactive tracer 9 mass mixing ratio
 - 211149  # Reactive tracer 10 mass mixing ratio
+- 211170  # Volcanic sulfur dioxide mass mixing ratio increment
 - 211181  # Radon
 - 211182  # Sulphur Hexafluoride
 - 211203  # GEMS Ozone
 - 211247  # Nitrate fine mode aerosol mass mixing ratio
 - 211248  # Nitrate coarse mode aerosol mass mixing ratio
 - 211249  # Ammonium aerosol mass mixing ratio
+- 211252  # Biogenic secondary organic aerosol mass mixing ratio increment
+- 211253  # Anthropogenic secondary organic aerosol mass mixing ratio increment
 - 217003  # Hydrogen peroxide
 - 217004  # Methane
 - 217006  # Nitric acid
@@ -4740,6 +4818,17 @@ ratio.mass:
 - 217204  # Excited oxygen atom
 - 217205  # Ground state oxygen atom
 - 217206  # Stratospheric aerosol
+- 217222  # Aromatic peroxy radical mass mixing ratio
+- 217223  # Ethyne mass mixing ratio
+- 217224  # Acetonitrile mass mixing ratio
+- 217225  # Methyl peroxy nitrate mass mixing ratio
+- 217226  # Hydrogen cyanide mass mixing ratio
+- 217227  # Hydroperoxy aldehydes type 1 mass mixing ratio
+- 217228  # Hydroperoxy aldehydes type 2 mass mixing ratio
+- 217229  # Isoprene peroxy type B mass mixing ratio
+- 217230  # Isoprene peroxy type D mass mixing ratio
+- 217231  # Anthropogenic volatile organic compounds mass mixing ratio
+- 217232  # Biomass burning volatile organic compounds mass mixing ratio
 - 228054  # Unbalanced component of specific humidity
 - 228055  # Unbalanced component of specific cloud liquid water content
 - 228056  # Unbalanced component of specific cloud ice water content
