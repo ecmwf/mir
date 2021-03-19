@@ -1,4 +1,5 @@
 ---
+
 density.mass:
 - 33  # Snow density
 - 78  # Total column cloud liquid water
@@ -1878,6 +1879,7 @@ intensity:
 - 260647  # 10 metre northward wind gust since previous post-processing
 - 260649  # Sea ice surface temperature
 - 260650  # Snow on ice depth
+- 260651  # Surface roughness length for heat
 - 261001  # Universal thermal climate index
 - 261002  # Mean radiant temperature
 - 300001  # Pressure
