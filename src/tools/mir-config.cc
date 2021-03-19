@@ -10,8 +10,17 @@
  */
 
 
+#include <cctype>
+#include <fstream>
+#include <map>
+#include <set>
+#include <sstream>
+#include <string>
+
+#include "eckit/filesystem/LocalPathName.h"
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"
+#include "eckit/utils/StringTools.h"
 
 #include "mir/input/GribFileInput.h"
 #include "mir/param/CombinedParametrisation.h"
@@ -24,12 +33,55 @@
 using namespace mir;
 
 
+struct Param {
+    Param(const std::vector<std::string>& classes_v) : classes(classes_v.begin(), classes_v.end()) {}
+    long id;
+    std::string name;
+    std::set<std::string> classes;
+};
+
+
+struct Map : std::map<long, std::string> {
+    Map& move_or_remove(Param& p) {
+        if (!name.empty() && p.classes.find(name) != p.classes.end()) {
+            operator[](p.id) = p.name;
+        }
+        else {
+            erase(p.id);
+        }
+        p.classes.erase(name);
+
+        return *this;
+    }
+
+    void reset(const std::string& _name) {
+        ASSERT(!_name.empty());
+        name = _name;
+        clear();
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const Map& m) {
+        out << m.name << ":\n";
+        for (auto& p : m) {
+            p.second.empty() ? (out << "- " << p.first << "\n")
+                             : (out << "- " << p.first << "  # " << p.second << "\n");
+        }
+        return out;
+    }
+
+    std::string name;
+};
+
+
 struct MIRConfig : tools::MIRTool {
     MIRConfig(int argc, char** argv) : MIRTool(argc, argv) {
         using eckit::option::SimpleOption;
 
         options_.push_back(new SimpleOption<long>("param-id", "Display configuration with paramId"));
         options_.push_back(new SimpleOption<std::string>("key", "Display configuration with specific key"));
+
+        options_.push_back(new SimpleOption<std::string>("param-class", "Set class(es) for paramId, /-separated"));
+        options_.push_back(new SimpleOption<std::string>("param-name", "Set name for paramId"));
     }
 
     int minimumPositionalArguments() const override { return 0; }
@@ -77,6 +129,62 @@ void MIRConfig::execute(const eckit::option::CmdArgs& args) {
 
     std::string key("interpolation");
     args.get("key", key);
+
+    std::string klass;
+    if (args.get("param-class", klass)) {
+        Param param(eckit::StringTools::split("/", klass));
+        ASSERT(args.get("param-id", param.id));
+        args.get("param-name", param.name);
+
+        Map map;
+
+        eckit::LocalPathName to("parameter-class.yaml");
+        eckit::LocalPathName to_tmp(to + ".tmp");
+        auto from(to.exists() ? to : "~mir/etc/mir/parameter-class.yaml");
+
+        // update (temporary) file
+        {
+            std::ifstream i(std::string(from).c_str());
+            ASSERT(i);
+
+            std::ofstream o(to_tmp.c_str());
+            ASSERT(o);
+            o << "---\n\n";
+
+            for (std::string line; std::getline(i, line);) {
+                if (!line.empty() && std::isalpha(line[0]) != 0) {
+                    if (!map.name.empty()) {
+                        o << map.move_or_remove(param) << "\n";
+                    }
+
+                    map.reset(line.substr(0, line.find_first_of(':')));
+                    continue;
+                }
+
+                if (!line.empty() && line.substr(0, 2) == "- ") {
+                    auto c = line.find_first_of('#');
+                    long id;
+                    std::istringstream(line.substr(2, c)) >> id;
+                    std::string name(c != std::string::npos ? eckit::StringTools::trim(line.substr(c + 1)) : "");
+
+                    map[id] = name;
+                }
+            }
+
+            if (!map.name.empty()) {
+                o << map.move_or_remove(param) << "\n";
+            }
+
+            for (auto& name : param.classes) {
+                map.reset(name);
+                o << map.move_or_remove(param) << "\n";
+            }
+        }
+
+        // rename updated file
+        eckit::LocalPathName::rename(to_tmp, to.fullName());
+        return;
+    }
 
 
     // Display configuration for a paramId
