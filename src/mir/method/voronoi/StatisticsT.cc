@@ -61,12 +61,9 @@ struct SolveStatisticsT final : solver::Solver {
     }
 
 private:
-    bool sameAs(const Solver& other) const override {
-        auto o = dynamic_cast<const SolveStatisticsT*>(&other);
-        return (o != nullptr);
-    }
+    bool sameAs(const Solver&) const override { return false; /* data-dependant */ }
 
-    void print(std::ostream& out) const override { out << "SolveStatisticsT[]"; }
+    void print(std::ostream& out) const override { out << "SolveStatisticsT[name=" << stats_.name() << "]"; }
 
     void hash(eckit::MD5& h) const override {
         std::ostringstream s;
@@ -79,60 +76,65 @@ private:
 
 
 /// Simple statistics on values (min, max, etc.)
-template <typename T>
-struct CounterStatsT : stats::detail::Counter {
+struct CounterStats : stats::detail::Counter {
     using Counter::Counter;
-    double value() const { NOTIMP; /*ensure specialization*/ }
+    ~CounterStats() override = default;
+
+    virtual double value() const     = 0;
+    virtual const char* name() const = 0;
 };
 
 
-struct Maximum {};
-struct Minimum {};
-struct CountAboveUpperLimit {};
-struct CountBelowLowerLimit {};
-struct Count {};
+struct Maximum final : CounterStats {
+    using CounterStats::CounterStats;
+    double value() const override { return max(); }
+    const char* name() const override { return "maximum"; }
+};
 
 
-template <>
-double CounterStatsT<Maximum>::value() const {
-    return max();
-}
+struct Minimum final : CounterStats {
+    using CounterStats::CounterStats;
+    double value() const override { return min(); }
+    const char* name() const override { return "minimum"; }
+};
 
 
-template <>
-double CounterStatsT<Minimum>::value() const {
-    return min();
-}
+struct CountAboveUpperLimit final : CounterStats {
+    using CounterStats::CounterStats;
+    double value() const override { return double(countAboveUpperLimit()); }
+    const char* name() const override { return "count-above-upper-limit"; }
+};
 
 
-template <>
-double CounterStatsT<CountAboveUpperLimit>::value() const {
-    return double(countAboveUpperLimit());
-}
+struct CountBelowLowerLimit final : CounterStats {
+    using CounterStats::CounterStats;
+    double value() const override { return double(countBelowLowerLimit()); }
+    const char* name() const override { return "count-below-lower-limit"; }
+};
 
 
-template <>
-double CounterStatsT<CountBelowLowerLimit>::value() const {
-    return double(countBelowLowerLimit());
-}
-
-
-template <>
-double CounterStatsT<Count>::value() const {
-    return double(count() - missing());
-}
+struct Count final : CounterStats {
+    using CounterStats::CounterStats;
+    double value() const override { return double(count() - missing()); }
+    const char* name() const override { return "count"; }
+};
 
 
 /// Central moment statistics on values (mean, stddev, etc.)
 template <typename STATS>
 struct StatsT : stats::detail::Counter, STATS {
     using Counter::Counter;
-    virtual double value() const = 0;
+    ~StatsT() override = default;
+
+    virtual double value() const     = 0;
+    virtual const char* name() const = 0;
+
     void count(const double& value) {
         if (Counter::count(value)) {
             STATS::operator()(value);
         }
     }
+
     void reset(double missingValue, bool hasMissing) {
         Counter::reset(missingValue, hasMissing);
         STATS::reset();
@@ -140,33 +142,38 @@ struct StatsT : stats::detail::Counter, STATS {
 };
 
 
-struct Mean : StatsT<stats::detail::CentralMomentsT<double>> {
+struct Mean final : StatsT<stats::detail::CentralMomentsT<double>> {
     using StatsT::StatsT;
     double value() const override { return mean(); }
+    const char* name() const override { return "mean"; }
 };
 
 
-struct Variance : StatsT<stats::detail::CentralMomentsT<double>> {
+struct Variance final : StatsT<stats::detail::CentralMomentsT<double>> {
     using StatsT::StatsT;
     double value() const override { return variance(); }
+    const char* name() const override { return "variance"; }
 };
 
 
-struct Skewness : StatsT<stats::detail::CentralMomentsT<double>> {
+struct Skewness final : StatsT<stats::detail::CentralMomentsT<double>> {
     using StatsT::StatsT;
     double value() const override { return skewness(); }
+    const char* name() const override { return "skewness"; }
 };
 
 
-struct Kurtosis : StatsT<stats::detail::CentralMomentsT<double>> {
+struct Kurtosis final : StatsT<stats::detail::CentralMomentsT<double>> {
     using StatsT::StatsT;
     double value() const override { return kurtosis(); }
+    const char* name() const override { return "kurtosis"; }
 };
 
 
-struct StandardDeviation : StatsT<stats::detail::CentralMomentsT<double>> {
+struct StandardDeviation final : StatsT<stats::detail::CentralMomentsT<double>> {
     using StatsT::StatsT;
     double value() const override { return standardDeviation(); }
+    const char* name() const override { return "stddev"; }
 };
 
 
@@ -176,72 +183,11 @@ StatisticsT<T>::StatisticsT(const param::MIRParametrisation& param) : VoronoiMet
 }
 
 
-template <>
-const char* StatisticsT<CounterStatsT<Maximum>>::name() const {
-    return "voronoi-maximum";
-}
-
-
-template <>
-const char* StatisticsT<CounterStatsT<Minimum>>::name() const {
-    return "voronoi-minimum";
-}
-
-
-template <>
-const char* StatisticsT<CounterStatsT<CountAboveUpperLimit>>::name() const {
-    return "voronoi-count-above-upper-limit";
-}
-
-
-template <>
-const char* StatisticsT<CounterStatsT<CountBelowLowerLimit>>::name() const {
-    return "voronoi-count-below-lower-limit";
-}
-
-
-template <>
-const char* StatisticsT<CounterStatsT<Count>>::name() const {
-    return "voronoi-count";
-}
-
-
-template <>
-const char* StatisticsT<Mean>::name() const {
-    return "voronoi-mean";
-}
-
-
-template <>
-const char* StatisticsT<Variance>::name() const {
-    return "voronoi-variance";
-}
-
-
-template <>
-const char* StatisticsT<Skewness>::name() const {
-    return "voronoi-skewness";
-}
-
-
-template <>
-const char* StatisticsT<Kurtosis>::name() const {
-    return "voronoi-kurtosis";
-}
-
-
-template <>
-const char* StatisticsT<StandardDeviation>::name() const {
-    return "voronoi-stddev";
-}
-
-
-static MethodBuilder<StatisticsT<CounterStatsT<Maximum>>> __builder_1("voronoi-maximum");
-static MethodBuilder<StatisticsT<CounterStatsT<Minimum>>> __builder_2("voronoi-minimum");
-static MethodBuilder<StatisticsT<CounterStatsT<CountAboveUpperLimit>>> __builder_3("voronoi-count-above-upper-limit");
-static MethodBuilder<StatisticsT<CounterStatsT<CountBelowLowerLimit>>> __builder_4("voronoi-count-below-lower-limit");
-static MethodBuilder<StatisticsT<CounterStatsT<Count>>> __builder_5("voronoi-count");
-
+static MethodBuilder<StatisticsT<Maximum>> __builder_1("voronoi-maximum");
+static MethodBuilder<StatisticsT<Minimum>> __builder_2("voronoi-minimum");
+static MethodBuilder<StatisticsT<CountAboveUpperLimit>> __builder_3("voronoi-count-above-upper-limit");
+static MethodBuilder<StatisticsT<CountBelowLowerLimit>> __builder_4("voronoi-count-below-lower-limit");
+static MethodBuilder<StatisticsT<Count>> __builder_5("voronoi-count");
 static MethodBuilder<StatisticsT<Mean>> __builder_6("voronoi-mean");
 static MethodBuilder<StatisticsT<Variance>> __builder_7("voronoi-variance");
 static MethodBuilder<StatisticsT<Skewness>> __builder_8("voronoi-skewness");

@@ -99,6 +99,7 @@ protected:
     // -- Methods
 
     virtual const char* name() const = 0;
+    const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
     void setSolver(const solver::Solver*);
 

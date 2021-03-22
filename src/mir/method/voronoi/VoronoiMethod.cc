@@ -122,6 +122,11 @@ bool VoronoiMethod::validateMatrixWeights() const {
 }
 
 
+const char* VoronoiMethod::name() const {
+    return "voronoi";
+}
+
+
 }  // namespace voronoi
 }  // namespace method
 }  // namespace mir

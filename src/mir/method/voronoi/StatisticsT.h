@@ -27,7 +27,6 @@ struct StatisticsT final : VoronoiMethod {
     explicit StatisticsT(const param::MIRParametrisation&);
     StatisticsT(const StatisticsT&) = delete;
     void operator=(const StatisticsT&) = delete;
-    const char* name() const override { NOTIMP; /*ensure specialization*/ }
 };
 
 

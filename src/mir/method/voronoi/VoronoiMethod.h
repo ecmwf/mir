@@ -89,7 +89,7 @@ private:
     bool sameAs(const Method&) const override;
     void print(std::ostream&) const override;
     bool validateMatrixWeights() const override;
-    const char* name() const override = 0;
+    const char* name() const override;
 
     // -- Class members
     // None

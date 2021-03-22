@@ -102,7 +102,7 @@ bool MethodWeighted::sameAs(const Method& other) const {
 
     auto o = dynamic_cast<const MethodWeighted*>(&other);
     return (o != nullptr) && (lsmWeightAdjustment_ == o->lsmWeightAdjustment_) && (pruneEpsilon_ == o->pruneEpsilon_) &&
-           (sameNonLinearities(nonLinear_, o->nonLinear_)) &&
+           (sameNonLinearities(nonLinear_, o->nonLinear_)) && solver().sameAs(o->solver()) &&
            lsm::LandSeaMasks::sameLandSeaMasks(parametrisation_, o->parametrisation_) && cropping_.sameAs(o->cropping_);
 }
 
@@ -225,6 +225,12 @@ const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repre
 
     matrix_cache.footprint(memory_key, usage);
     return w;
+}
+
+
+const solver::Solver& MethodWeighted::solver() const {
+    ASSERT(solver_);
+    return *solver_;
 }
 
 
