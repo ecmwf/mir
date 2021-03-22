@@ -21,13 +21,13 @@ endif()
 
 if(NOT eccodes_HAVE_AEC)
     foreach(_r
-        MIR-513.packingType=grid_ccsds.001.test
-        MIR-513.packingType=grid_ccsds.002.test
-        MIR-513.packingType=grid_ccsds.004.test
-        MIR-513.packingType=grid_ccsds.005.test
-        MIR-513.packingType=grid_ieee.003.test
-        MIR-513.packingType=grid_second_order.003.test
-        MIR-513.packingType=grid_simple.003.test)
+        MIR-513.packingType=grid_ccsds.001.core.test
+        MIR-513.packingType=grid_ccsds.002.core.test
+        MIR-513.packingType=grid_ccsds.004.core.test
+        MIR-513.packingType=grid_ccsds.005.core.test
+        MIR-513.packingType=grid_ieee.003.core.test
+        MIR-513.packingType=grid_second_order.003.core.test
+        MIR-513.packingType=grid_simple.003.core.test)
         get_filename_component(_t "${_r}" ABSOLUTE)
         set_tests_properties(${_t} PROPERTIES WILL_FAIL TRUE)
     endforeach()
