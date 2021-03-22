@@ -10,11 +10,13 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_GaussianIterator_h
-#define mir_repres_gauss_reduced_GaussianIterator_h
+#ifndef mir_repres_gauss_GaussianIterator_h
+#define mir_repres_gauss_GaussianIterator_h
 
-#include <functional>
+#include <vector>
+
 #include "eckit/types/Fraction.h"
+
 #include "mir/repres/Iterator.h"
 #include "mir/util/BoundingBox.h"
 
@@ -26,16 +28,15 @@ namespace gauss {
 
 class GaussianIterator : public Iterator {
 public:
-    using ni_type = std::function<long(size_t)>;
-    GaussianIterator(const std::vector<double>& latitudes, const util::BoundingBox&, size_t N, ni_type Ni,
-                     const util::Rotation& = util::Rotation());
+    GaussianIterator(const std::vector<double>& latitudes, std::vector<long>&& pl, const util::BoundingBox&, size_t N,
+                     size_t Nj, size_t k, const util::Rotation& = util::Rotation());
     ~GaussianIterator() override;
 
 private:
     const std::vector<double>& latitudes_;
+    const std::vector<long> pl_;
     const util::BoundingBox& bbox_;
     const size_t N_;
-    ni_type pl_;
     size_t Ni_;
     size_t Nj_;
     eckit::Fraction lon_;

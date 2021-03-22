@@ -14,7 +14,6 @@
 #define mir_repres_gauss_Gaussian_h
 
 #include "mir/repres/Gridded.h"
-#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/BoundingBox.h"
 
 
@@ -77,9 +76,6 @@ protected:
     bool angleApproximatelyEqual(const Longitude&, const Longitude&) const;
 
     void correctSouthNorth(Latitude& s, Latitude& n, bool in = true) const;
-
-    Iterator* unrotatedIterator(gauss::GaussianIterator::ni_type) const;
-    Iterator* rotatedIterator(gauss::GaussianIterator::ni_type, const util::Rotation&) const;
 
     std::vector<double> calculateUnrotatedGridBoxLatitudeEdges() const;
 

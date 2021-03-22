@@ -13,7 +13,9 @@
 #include "mir/repres/gauss/regular/RegularGG.h"
 
 #include <iostream>
+#include <utility>
 
+#include "mir/repres/gauss/GaussianIterator.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/GridBox.h"
 
@@ -48,8 +50,8 @@ bool RegularGG::sameAs(const Representation& other) const {
 
 
 Iterator* RegularGG::iterator() const {
-    auto Ni = [=](size_t) { return long(4 * N_); };
-    return Gaussian::unrotatedIterator(Ni);
+    std::vector<long> pl(N_ * 2, long(4 * N_));
+    return new gauss::GaussianIterator(latitudes(), std::move(pl), bbox_, N_, Nj_, 0);
 }
 
 
