@@ -3,4 +3,4 @@ regular_ll.2-2.grib1
 # mir
 --grid=3/3 --dont-compress-plan --interpolation=k-nearest --distance-weighting=shepard --distance-weighting-shepard-power=3
 # plan
-Gridded2RegularLL[increments=Increments[west_east=3,south_north=3],bbox=BoundingBox[north=90,west=0,south=-90,east=357],interpolation=k-nearest,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeighting[power=3]]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=3,south_north=3],bbox=BoundingBox[north=90,west=0,south=-90,east=357],interpolation=k-nearest,method=KNearestNeighbours[nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,nearestMethod=NearestNeighbourWithLowestIndex[nclosest=4],distanceWeighting=InverseDistanceWeighting[power=3]]]|Save[output=...]

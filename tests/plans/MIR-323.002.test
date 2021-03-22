@@ -3,4 +3,4 @@ stream=espd,param=ci,class=e2,date=19600201,expver=0003,levtype=sfc,number=0
 # mir
 --grid=1/0.25
 # plan
-Gridded2RegularLL[increments=Increments[west_east=1,south_north=0.25],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+Gridded2RegularLL[increments=Increments[west_east=1,south_north=0.25],bbox=BoundingBox[north=90,west=0,south=-90,east=359],interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
