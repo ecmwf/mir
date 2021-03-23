@@ -12,11 +12,11 @@
 
 #include "mir/method/voronoi/VoronoiMethod.h"
 
-#include <algorithm>
+#include <memory>
 #include <ostream>
+#include <set>
 #include <sstream>
 #include <utility>
-#include <vector>
 
 #include "eckit/utils/MD5.h"
 
@@ -66,27 +66,26 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::unique_ptr<search::PointSearch> tree;
     {
         trace::ResourceUsage usage("VoronoiMethod::assemble create k-d tree", log);
-        tree.reset(new search::PointSearch(parametrisation_, out));
+        tree.reset(new search::PointSearch(parametrisation_, in));
     }
 
 
-    std::vector<Biplet> biplets;
-    biplets.reserve(out.numberOfPoints());
+    std::set<Biplet> biplets;
 
     {
-        trace::ProgressTimer progress("VoronoiMethod::assemble create Voronoi", in.numberOfPoints(), {"point"}, log);
+        trace::ProgressTimer progress("VoronoiMethod::assemble create Voronoi", out.numberOfPoints(), {"point"}, log);
 
         std::vector<search::PointSearch::PointValueType> closest;
-        size_t j = 0;
-        for (std::unique_ptr<repres::Iterator> it(in.iterator()); it->next(); ++j) {
+        size_t i = 0;
+        for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++i) {
             if (++progress) {
                 log << *tree << std::endl;
             }
 
             pick_.pick(*tree, it->point3D(), closest);
             for (auto& c : closest) {
-                auto i = c.payload();
-                biplets.emplace_back(i, j);
+                auto j = c.payload();
+                biplets.emplace_hint(biplets.end(), i, j);
             }
         }
     }
@@ -96,7 +95,6 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
         trace::Timer time("VoronoiMethod::assemble fill sparse matrix", log);
 
         // TODO: triplets, really? why not writing to the matrix directly?
-        std::sort(biplets.begin(), biplets.end());
         W.setFromTriplets({biplets.begin(), biplets.end()});
     }
 }
