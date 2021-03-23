@@ -93,7 +93,13 @@ do
             eccodes)
             ok=0
             set $(echo $n | tr '=' ' ')
-            g=$($grib_get -wcount=1  -p $1 data.out.$t)
+            if [[ $1 =~ values\[([0-9]+)\] ]]
+            then
+                g=$($grib_get -wcount=1 -i ${BASH_REMATCH[1]} data.out.$t)
+                g="$(echo $g | tr -d '[:space:]')"
+            else
+                g=$($grib_get -wcount=1 -p $1 data.out.$t)
+            fi
             if [ "$g" != "$2" ]  # compares strings not floats (( $(echo "$g != $2" | bc) ))
             then
                 echo "$1: expected [$2], got [$g]" 1>&2
