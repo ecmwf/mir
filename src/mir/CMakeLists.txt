@@ -580,6 +580,8 @@ list(APPEND mir_srcs
     stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
+    stats/detail/ModeT.cc
+    stats/detail/ModeT.h
     stats/detail/PNormsT.cc
     stats/detail/PNormsT.h
     stats/detail/ScalarT.cc
