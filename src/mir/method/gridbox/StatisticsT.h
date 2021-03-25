@@ -10,26 +10,26 @@
  */
 
 
-#ifndef mir_method_voronoi_StatisticsT_h
-#define mir_method_voronoi_StatisticsT_h
+#ifndef mir_method_gridbox_StatisticsT_h
+#define mir_method_gridbox_StatisticsT_h
 
-#include "mir/method/voronoi/VoronoiMethod.h"
+#include "mir/method/gridbox/GridBoxMethod.h"
 
 
 namespace mir {
 namespace method {
-namespace voronoi {
+namespace gridbox {
 
 
 template <typename T>
-struct StatisticsT final : VoronoiMethod {
+struct StatisticsT final : GridBoxMethod {
     explicit StatisticsT(const param::MIRParametrisation&);
     StatisticsT(const StatisticsT&) = delete;
     void operator=(const StatisticsT&) = delete;
 };
 
 
-}  // namespace voronoi
+}  // namespace gridbox
 }  // namespace method
 }  // namespace mir
 

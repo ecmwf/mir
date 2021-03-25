@@ -207,9 +207,9 @@ struct MIR : tools::MIRTool {
         options_.push_back(new VectorOption<double>("mode-boolean-min",
                                                     "Statistics mode boolean threshold min <= value (default 0.5)", 0));
         options_.push_back(
-            new VectorOption<double>("mode-range-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
+            new VectorOption<double>("mode-real-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
         options_.push_back(
-            new VectorOption<double>("mode-range-values", "Statistics mode bin ranges value (default 0/1)", 0));
+            new VectorOption<double>("mode-real-values", "Statistics mode bin ranges value (default 0/1)", 0));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

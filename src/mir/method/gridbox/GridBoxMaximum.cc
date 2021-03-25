@@ -89,7 +89,7 @@ GridBoxMaximum::GridBoxMaximum(const param::MIRParametrisation& param) : GridBox
 }
 
 
-static MethodBuilder<GridBoxMaximum> __builder("grid-box-maximum");
+static MethodBuilder<GridBoxMaximum> __builder("grid-box-maximum-REFERENCE");
 
 
 }  // namespace gridbox

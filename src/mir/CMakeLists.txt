@@ -333,12 +333,16 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
+    method/detail/CounterStats.h
+    method/detail/GeneralStatsT.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
     method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
+    method/gridbox/StatisticsT.cc
+    method/gridbox/StatisticsT.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -404,6 +408,7 @@ list(APPEND mir_srcs
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
+    method/solver/StatisticsT.h
     method/voronoi/StatisticsT.cc
     method/voronoi/StatisticsT.h
     method/voronoi/VoronoiMethod.cc
