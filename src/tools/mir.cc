@@ -197,8 +197,19 @@ struct MIR : tools::MIRTool {
                                                       "Generate including South pole on " + which + " mesh"));
         }
 
-        options_.push_back(new SimpleOption<double>("counter-upper-limit", "Count values below lower limit"));
-        options_.push_back(new SimpleOption<double>("counter-lower-limit", "Count values above upper limit"));
+        options_.push_back(
+            new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
+        options_.push_back(
+            new SimpleOption<double>("counter-lower-limit", "Statistics count values above upper limit"));
+
+        options_.push_back(new SimpleOption<bool>(
+            "mode-disambiguate-max", "Statistics mode disambiguate with maximum (default, otherwise minimum)"));
+        options_.push_back(new VectorOption<double>("mode-boolean-min",
+                                                    "Statistics mode boolean threshold min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-range-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-range-values", "Statistics mode bin ranges value (default 0/1)", 0));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

@@ -12,16 +12,24 @@
 
 #include "mir/method/voronoi/StatisticsT.h"
 
+#include <algorithm>
+#include <cmath>
+#include <map>
 #include <ostream>
+#include <set>
 #include <sstream>
+#include <utility>
 
 #include "eckit/utils/MD5.h"
 
 #include "mir/method/WeightMatrix.h"
 #include "mir/method/solver/Solver.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/stats/detail/CentralMomentsT.h"
 #include "mir/stats/detail/Counter.h"
 #include "mir/util/Exceptions.h"
+
+#include "mir/util/Log.h"
 
 
 namespace mir {
@@ -177,6 +185,123 @@ struct StandardDeviation final : StatsT<stats::detail::CentralMomentsT<double>> 
 };
 
 
+/// Mode statistics
+template <typename T>
+struct Mode : stats::detail::Counter {
+    Mode(const param::MIRParametrisation& param) : Counter(param) {
+        param.get("mode-disambiguate-max", disambiguateMax_);
+    }
+
+    virtual const char* name() const        = 0;
+    virtual double value() const            = 0;
+    virtual void count(const double& value) = 0;
+
+    void reset(double missingValue, bool hasMissing) {
+        Counter::reset(missingValue, hasMissing);
+        binCount_.clear();
+    }
+
+    T mode() const {
+        ASSERT(!binCount_.empty());
+        auto i = binCount_.begin();
+        auto j = i++;
+        for (; i != binCount_.end(); ++i) {
+            if ((j->second < i->second) || (j->second == i->second && disambiguateMax_)) {
+                j = i;
+            }
+        }
+        return j->first;
+    }
+
+    std::map<T, size_t> binCount_;
+    bool disambiguateMax_ = true;
+};
+
+
+struct ModeInteger final : Mode<int> {
+    using Mode::Mode;
+    const char* name() const override { return "mode-integer"; }
+    double value() const override { return binCount_.empty() ? missingValue() : static_cast<double>(mode()); }
+    void count(const double& value) override {
+        if (Counter::count(value)) {
+            binCount_[static_cast<int>(std::lround(value))]++;
+        }
+    }
+};
+
+
+struct ModeRange final : Mode<size_t> {
+    ModeRange(const param::MIRParametrisation& param) : Mode(param) {
+        param.get("mode-range-min", mins_);
+        param.get("mode-range-values", values_);
+
+        ASSERT(!mins_.empty());
+
+        if (values_.size() != mins_.size() + 1) {
+            throw exception::UserError(
+                "ModeRange: size mismatch: N+1 = #mode-range-values = " + std::to_string(values_.size()) +
+                ", N = #mode-range-min = " + std::to_string(mins_.size()));
+        }
+
+        if (!std::is_sorted(values_.begin(), values_.end()) || !std::is_sorted(mins_.begin(), mins_.end())) {
+            throw exception::UserError("ModeRange: mode-range-values and mode-range-min most be sorted");
+        }
+    }
+
+    const char* name() const override { return "mode-range"; }
+
+    double value() const override {
+        if (binCount_.empty()) {
+            return missingValue();
+        }
+
+        auto bin = mode();
+        ASSERT(bin < values_.size());
+        return values_[bin];
+    }
+
+    void count(const double& value) override {
+        if (Counter::count(value)) {
+            size_t bin = 0;
+            while (bin < mins_.size() && mins_[bin] < value) {
+                ++bin;
+            }
+            binCount_[bin]++;
+        }
+    }
+
+    std::vector<double> mins_{0.5};
+    std::vector<double> values_{0, 1};
+};
+
+
+struct ModeBoolean {
+    ModeBoolean(const param::MIRParametrisation& param) {
+        param.get("mode-disambiguate-max", disambiguateMax_);
+        param.get("mode-boolean-min", min_);
+    }
+
+    const char* name() const { return "mode-boolean"; }
+
+    double value() const { return majority_ > 0 || (majority_ == 0 && disambiguateMax_) ? 1 : 0; }
+
+    void count(const double& value) {
+        if (min_ <= value) {
+            majority_++;
+        }
+        else {
+            majority_--;
+        }
+    }
+
+    void reset(double /*missingValue*/, bool /*hasMissing*/) { majority_ = 0; }
+
+    long long majority_;
+    double min_           = 0.5;
+    bool disambiguateMax_ = true;
+};
+
+
 template <typename T>
 StatisticsT<T>::StatisticsT(const param::MIRParametrisation& param) : VoronoiMethod(param) {
     setSolver(new SolveStatisticsT<T>(param));
@@ -188,11 +313,15 @@ static MethodBuilder<StatisticsT<Minimum>> __builder_2("voronoi-minimum");
 static MethodBuilder<StatisticsT<CountAboveUpperLimit>> __builder_3("voronoi-count-above-upper-limit");
 static MethodBuilder<StatisticsT<CountBelowLowerLimit>> __builder_4("voronoi-count-below-lower-limit");
 static MethodBuilder<StatisticsT<Count>> __builder_5("voronoi-count");
+
 static MethodBuilder<StatisticsT<Mean>> __builder_6("voronoi-mean");
 static MethodBuilder<StatisticsT<Variance>> __builder_7("voronoi-variance");
 static MethodBuilder<StatisticsT<Skewness>> __builder_8("voronoi-skewness");
 static MethodBuilder<StatisticsT<Kurtosis>> __builder_9("voronoi-kurtosis");
 static MethodBuilder<StatisticsT<StandardDeviation>> __builder_10("voronoi-stddev");
+
+static MethodBuilder<StatisticsT<ModeInteger>> __builder_11("voronoi-mode-integer");
+static MethodBuilder<StatisticsT<ModeRange>> __builder_12("voronoi-mode-range");
 
 
 }  // namespace voronoi
