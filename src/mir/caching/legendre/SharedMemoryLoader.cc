@@ -167,7 +167,7 @@ SharedMemoryLoader::SharedMemoryLoader(const param::MIRParametrisation& parametr
             << util::Error() << std::endl;
         throw exception::FailedSystemCall(msg.str());
     }
-    msg << ", shmid=" << shmid << std::endl;
+    msg << ", shmid=" << shmid;
 
 #ifdef SHM_PAGESIZE
     {
