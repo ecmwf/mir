@@ -333,16 +333,14 @@ list(APPEND mir_srcs
     method/MethodWeighted.h
     method/WeightMatrix.cc
     method/WeightMatrix.h
-    method/detail/CounterStats.h
-    method/detail/GeneralStatsT.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
     method/gridbox/GridBoxMaximum.cc
     method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
-    method/gridbox/StatisticsT.cc
-    method/gridbox/StatisticsT.h
+    method/gridbox/GridBoxStatistics.cc
+    method/gridbox/GridBoxStatistics.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -408,11 +406,12 @@ list(APPEND mir_srcs
     method/solver/Multiply.cc
     method/solver/Multiply.h
     method/solver/Solver.h
-    method/solver/StatisticsT.h
-    method/voronoi/StatisticsT.cc
-    method/voronoi/StatisticsT.h
+    method/solver/Statistics.cc
+    method/solver/Statistics.h
     method/voronoi/VoronoiMethod.cc
     method/voronoi/VoronoiMethod.h
+    method/voronoi/VoronoiStatistics.cc
+    method/voronoi/VoronoiStatistics.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -565,6 +564,8 @@ list(APPEND mir_srcs
     stats/Comparator.h
     stats/Distribution.cc
     stats/Distribution.h
+    stats/Field.cc
+    stats/Field.h
     stats/Method.cc
     stats/Method.h
     stats/Statistics.cc
@@ -593,6 +594,12 @@ list(APPEND mir_srcs
     stats/detail/ScalarT.h
     stats/distribution/DistributionT.cc
     stats/distribution/DistributionT.h
+    stats/field/CentralMomentStats.cc
+    stats/field/CentralMomentStats.h
+    stats/field/CounterStats.cc
+    stats/field/CounterStats.h
+    stats/field/ModeStats.cc
+    stats/field/ModeStats.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc

@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_voronoi_StatisticsT_h
-#define mir_method_voronoi_StatisticsT_h
+#ifndef mir_method_voronoi_VoronoiStatistics_h
+#define mir_method_voronoi_VoronoiStatistics_h
 
 #include "mir/method/voronoi/VoronoiMethod.h"
 
@@ -21,11 +21,10 @@ namespace method {
 namespace voronoi {
 
 
-template <typename T>
-struct StatisticsT final : VoronoiMethod {
-    explicit StatisticsT(const param::MIRParametrisation&);
-    StatisticsT(const StatisticsT&) = delete;
-    void operator=(const StatisticsT&) = delete;
+struct VoronoiStatistics final : VoronoiMethod {
+    explicit VoronoiStatistics(const param::MIRParametrisation&);
+    VoronoiStatistics(const VoronoiStatistics&) = delete;
+    void operator=(const VoronoiStatistics&) = delete;
 };
 
 

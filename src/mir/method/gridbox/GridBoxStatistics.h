@@ -10,8 +10,8 @@
  */
 
 
-#ifndef mir_method_gridbox_StatisticsT_h
-#define mir_method_gridbox_StatisticsT_h
+#ifndef mir_method_gridbox_GridBoxStatistics_h
+#define mir_method_gridbox_GridBoxStatistics_h
 
 #include "mir/method/gridbox/GridBoxMethod.h"
 
@@ -21,11 +21,10 @@ namespace method {
 namespace gridbox {
 
 
-template <typename T>
-struct StatisticsT final : GridBoxMethod {
-    explicit StatisticsT(const param::MIRParametrisation&);
-    StatisticsT(const StatisticsT&) = delete;
-    void operator=(const StatisticsT&) = delete;
+struct GridBoxStatistics final : GridBoxMethod {
+    explicit GridBoxStatistics(const param::MIRParametrisation&);
+    GridBoxStatistics(const GridBoxStatistics&) = delete;
+    void operator=(const GridBoxStatistics&) = delete;
 };
 
 
