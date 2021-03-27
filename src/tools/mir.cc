@@ -44,6 +44,7 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
+#include "mir/stats/Field.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -109,6 +110,9 @@ struct MIR : tools::MIRTool {
 
         options_.push_back(
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+
+        options_.push_back(
+            new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
