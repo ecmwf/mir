@@ -1,7 +1,0 @@
-# input
-tiny.grib
-# mir tool options
---interpolation=grid-box-count --grid=0.5/0.5
-# grib_get assertions (not checking results)
-Ni=3
-Nj=3
