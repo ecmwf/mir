@@ -1636,6 +1636,7 @@ intensity:
 - 228035  # maximum CAPE in the last 6 hours
 - 228036  # maximum CAPES in the last 6 hours
 - 228044  # Convective available potential energy shear
+- 228045  # Tropopause pressure
 - 228046  # Height of convective cloud top
 - 228047  # Height of zero-degree wet-bulb temperature
 - 228048  # Height of one-degree wet-bulb temperature
