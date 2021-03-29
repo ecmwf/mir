@@ -12,11 +12,11 @@
 
 #include "mir/method/voronoi/VoronoiMethod.h"
 
-#include <memory>
+#include <algorithm>
 #include <ostream>
-#include <set>
 #include <sstream>
 #include <utility>
+#include <vector>
 
 #include "eckit/utils/MD5.h"
 
@@ -65,36 +65,80 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
     std::unique_ptr<search::PointSearch> tree;
     {
-        trace::ResourceUsage usage("VoronoiMethod::assemble create k-d tree", log);
-        tree.reset(new search::PointSearch(parametrisation_, in));
+        trace::ResourceUsage usage("assemble: create output k-d tree", log);
+        tree.reset(new search::PointSearch(parametrisation_, out));
     }
 
 
-    std::set<Biplet> biplets;
+    auto Nin  = in.numberOfPoints();
+    auto Nout = out.numberOfPoints();
+
+    std::vector<bool> assigned;
+    assigned.assign(Nout, false);
+
+    std::vector<Biplet> biplets;
+    biplets.reserve(Nout);
+
 
     {
-        trace::ProgressTimer progress("VoronoiMethod::assemble create Voronoi", out.numberOfPoints(), {"point"}, log);
+        trace::ProgressTimer progress("assemble: input-based assign", Nin, {"point"}, log);
 
         std::vector<search::PointSearch::PointValueType> closest;
-        size_t i = 0;
-        for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++i) {
+        size_t j = 0;
+        for (std::unique_ptr<repres::Iterator> it(in.iterator()); it->next(); ++j) {
             if (++progress) {
                 log << *tree << std::endl;
             }
 
             pick_.pick(*tree, it->point3D(), closest);
             for (auto& c : closest) {
-                auto j = c.payload();
-                biplets.emplace_hint(biplets.end(), i, j);
+                auto i = c.payload();
+                biplets.emplace_back(i, j);
+                assigned[i] = true;
+            }
+        }
+    }
+
+
+    auto Nassigned = size_t(std::count(assigned.cbegin(), assigned.cend(), true));
+    if (Nassigned < Nout) {
+        Log::debug() << "assemble: input-based assignment: " << Nassigned << " of "
+                     << Log::Pretty(Nout, {"output point"}) << ", complete with output-based assignment" << std::endl;
+
+        {
+            trace::ResourceUsage usage("assemble: create input k-d tree", log);
+            tree.reset(new search::PointSearch(parametrisation_, in));
+        }
+
+        {
+            trace::ProgressTimer progress("assemble: output-based assign", Nout - Nassigned, {"point"}, log);
+
+            std::vector<search::PointSearch::PointValueType> closest;
+            size_t i = 0;
+            for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++i) {
+                if (assigned[i]) {
+                    continue;
+                }
+
+                if (++progress) {
+                    log << *tree << std::endl;
+                }
+
+                pick_.pick(*tree, it->point3D(), closest);
+                for (auto& c : closest) {
+                    auto j = c.payload();
+                    biplets.emplace_back(i, j);
+                }
             }
         }
     }
 
 
     {
-        trace::Timer time("VoronoiMethod::assemble fill sparse matrix", log);
+        trace::Timer time("assemble: fill sparse matrix", log);
 
         // TODO: triplets, really? why not writing to the matrix directly?
+        std::sort(biplets.begin(), biplets.end());
         W.setFromTriplets({biplets.begin(), biplets.end()});
     }
 }
