@@ -44,6 +44,7 @@
 #include "mir/param/ConfigurationWrapper.h"
 #include "mir/search/Tree.h"
 #include "mir/stats/Distribution.h"
+#include "mir/stats/Field.h"
 #include "mir/stats/Statistics.h"
 #include "mir/tools/MIRTool.h"
 #include "mir/util/Exceptions.h"
@@ -109,6 +110,9 @@ struct MIR : tools::MIRTool {
 
         options_.push_back(
             new FactoryOption<method::MethodFactory>("interpolation", "Grid to grid interpolation method"));
+
+        options_.push_back(
+            new FactoryOption<stats::FieldFactory>("interpolation-statistics", "Statistics interpolation method"));
 
         options_.push_back(
             new SimpleOption<bool>("interpolation-matrix-free", "Matrix-free interpolation (proxy methods)"));
@@ -196,6 +200,20 @@ struct MIR : tools::MIRTool {
             options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
                                                       "Generate including South pole on " + which + " mesh"));
         }
+
+        options_.push_back(
+            new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
+        options_.push_back(
+            new SimpleOption<double>("counter-lower-limit", "Statistics count values above upper limit"));
+
+        options_.push_back(new SimpleOption<bool>(
+            "mode-disambiguate-max", "Statistics mode disambiguate with maximum (default, otherwise minimum)"));
+        options_.push_back(new VectorOption<double>("mode-boolean-min",
+                                                    "Statistics mode boolean threshold min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-real-min", "Statistics mode bin ranges min <= value (default 0.5)", 0));
+        options_.push_back(
+            new VectorOption<double>("mode-real-values", "Statistics mode bin ranges value (default 0/1)", 0));
 
         //==============================================
         options_.push_back(new Separator("Filtering"));

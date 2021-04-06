@@ -17,8 +17,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/method/WeightMatrix.h"
-
 
 namespace mir {
 namespace method {
@@ -28,7 +26,7 @@ namespace nonlinear {
 Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
-bool Heaviest::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+bool Heaviest::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
                          const data::MIRValuesVector&, const double&) const {
 
     auto data = const_cast<WeightMatrix::Scalar*>(W.data());

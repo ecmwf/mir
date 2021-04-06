@@ -339,6 +339,8 @@ list(APPEND mir_srcs
     method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
+    method/gridbox/GridBoxStatistics.cc
+    method/gridbox/GridBoxStatistics.h
     method/knn/KNearest.cc
     method/knn/KNearest.h
     method/knn/KNearestNeighbours.cc
@@ -401,6 +403,15 @@ list(APPEND mir_srcs
     method/nonlinear/SimulateMissingValue.h
     method/other/PseudoLaplace.cc
     method/other/PseudoLaplace.h
+    method/solver/Multiply.cc
+    method/solver/Multiply.h
+    method/solver/Solver.h
+    method/solver/Statistics.cc
+    method/solver/Statistics.h
+    method/voronoi/VoronoiMethod.cc
+    method/voronoi/VoronoiMethod.h
+    method/voronoi/VoronoiStatistics.cc
+    method/voronoi/VoronoiStatistics.h
     output/EmptyOutput.cc
     output/EmptyOutput.h
     output/GeoPointsFileOutput.cc
@@ -553,6 +564,8 @@ list(APPEND mir_srcs
     stats/Comparator.h
     stats/Distribution.cc
     stats/Distribution.h
+    stats/Field.cc
+    stats/Field.h
     stats/Method.cc
     stats/Method.h
     stats/Statistics.cc
@@ -573,12 +586,18 @@ list(APPEND mir_srcs
     stats/detail/Counter.h
     stats/detail/CounterBinary.cc
     stats/detail/CounterBinary.h
-    stats/detail/PNormsT.cc
+    stats/detail/ModeT.cc
+    stats/detail/ModeT.h
     stats/detail/PNormsT.h
-    stats/detail/ScalarT.cc
     stats/detail/ScalarT.h
     stats/distribution/DistributionT.cc
     stats/distribution/DistributionT.h
+    stats/field/CentralMomentStats.cc
+    stats/field/CentralMomentStats.h
+    stats/field/CounterStats.cc
+    stats/field/CounterStats.h
+    stats/field/ModeStats.cc
+    stats/field/ModeStats.h
     stats/method/MethodT.cc
     stats/method/MethodT.h
     stats/statistics/GridBoxIntegral.cc

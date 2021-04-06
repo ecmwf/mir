@@ -33,6 +33,9 @@ namespace method {
 namespace nonlinear {
 class NonLinear;
 }
+namespace solver {
+class Solver;
+}
 }  // namespace method
 namespace repres {
 class Representation;
@@ -50,7 +53,9 @@ namespace method {
 class MethodWeighted : public Method {
 public:
     // -- Types
-    // None
+
+    using WeightMatrix = method::WeightMatrix;
+    using Matrix       = eckit::linalg::Matrix;
 
     // -- Exceptions
     // None
@@ -94,7 +99,9 @@ protected:
     // -- Methods
 
     virtual const char* name() const = 0;
+    const solver::Solver& solver() const;
     void addNonLinearTreatment(const nonlinear::NonLinear*);
+    void setSolver(const solver::Solver*);
 
     // -- Overridden methods
 
@@ -116,6 +123,7 @@ private:
     Cropping cropping_;
 
     std::vector<std::unique_ptr<const nonlinear::NonLinear>> nonLinear_;
+    std::unique_ptr<const solver::Solver> solver_;
 
     bool matrixValidate_;
     bool matrixAssemble_;

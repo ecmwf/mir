@@ -19,7 +19,6 @@
 #include "eckit/utils/MD5.h"
 
 #include "mir/data/MIRValuesVector.h"
-#include "mir/method/WeightMatrix.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -35,7 +34,7 @@ SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& para
 }
 
 
-bool SimulateMissingValue::treatment(NonLinear::Matrix&, NonLinear::WeightMatrix& W, NonLinear::Matrix&,
+bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
                                      const data::MIRValuesVector& values, const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 

@@ -27,6 +27,15 @@ namespace knn {
 namespace pick {
 
 
+NClosestOrNearest::NClosestOrNearest(size_t nClosest, double distanceTolerance) :
+    nClosest_(nClosest), distanceTolerance_(distanceTolerance) {
+    ASSERT(nClosest_ > 0);
+    ASSERT(distanceTolerance_ >= 0.);
+
+    distanceTolerance2_ = distanceTolerance_ * distanceTolerance_;
+}
+
+
 NClosestOrNearest::NClosestOrNearest(const param::MIRParametrisation& param) {
     nClosest_ = 4;
     param.get("nclosest", nClosest_);

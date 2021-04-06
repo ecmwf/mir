@@ -13,6 +13,7 @@ foreach(_t
     increments
     iterator
     spectral_order
+    statistics
     style
     wind)
     ecbuild_add_test(
