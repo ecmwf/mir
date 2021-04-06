@@ -14,9 +14,9 @@
 
 #include <algorithm>
 #include <ostream>
+#include <set>
 #include <sstream>
 #include <utility>
-#include <vector>
 
 #include "eckit/utils/MD5.h"
 
@@ -76,8 +76,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     std::vector<bool> assigned;
     assigned.assign(Nout, false);
 
-    std::vector<Biplet> biplets;
-    biplets.reserve(Nout);
+    std::set<Biplet> biplets;
 
 
     {
@@ -93,7 +92,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
             pick_.pick(*tree, it->point3D(), closest);
             for (auto& c : closest) {
                 auto i = c.payload();
-                biplets.emplace_back(i, j);
+                biplets.emplace(i, j);
                 assigned[i] = true;
             }
         }
@@ -103,7 +102,8 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
     auto Nassigned = size_t(std::count(assigned.cbegin(), assigned.cend(), true));
     if (Nassigned < Nout) {
         Log::debug() << "assemble: input-based assignment: " << Nassigned << " of "
-                     << Log::Pretty(Nout, {"output point"}) << ", complete with output-based assignment" << std::endl;
+                     << Log::Pretty(Nout, {"output point"}) << " (completing with output-based assignment)"
+                     << std::endl;
 
         {
             trace::ResourceUsage usage("assemble: create input k-d tree", log);
@@ -127,18 +127,16 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
                 pick_.pick(*tree, it->point3D(), closest);
                 for (auto& c : closest) {
                     auto j = c.payload();
-                    biplets.emplace_back(i, j);
+                    biplets.emplace(i, j);  // won't insert biplet if existing
                 }
             }
         }
     }
 
-
     {
         trace::Timer time("assemble: fill sparse matrix", log);
 
         // TODO: triplets, really? why not writing to the matrix directly?
-        std::sort(biplets.begin(), biplets.end());
         W.setFromTriplets({biplets.begin(), biplets.end()});
     }
 }
