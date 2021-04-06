@@ -74,7 +74,6 @@ CASE("mir::stats::Field") {
                               case_t{7, 4, 3, 3., 6., 5.285714, 4.5, 1., 9., true, {1, 3, 3, 6, 7, 8, 9}}};
 
 
-#if 1
     SECTION("ModeIntegral") {
         for (auto& c : cases) {
             param::SimpleParametrisation param;
@@ -127,7 +126,6 @@ CASE("mir::stats::Field") {
             EXPECT_APPROX_V(mean->value(), c.mean);
         }
     }
-#endif
 
 
     SECTION("Counter") {
