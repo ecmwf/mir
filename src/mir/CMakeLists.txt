@@ -335,8 +335,6 @@ list(APPEND mir_srcs
     method/WeightMatrix.h
     method/gridbox/GridBoxAverage.cc
     method/gridbox/GridBoxAverage.h
-    method/gridbox/GridBoxMaximum.cc
-    method/gridbox/GridBoxMaximum.h
     method/gridbox/GridBoxMethod.cc
     method/gridbox/GridBoxMethod.h
     method/gridbox/GridBoxStatistics.cc
@@ -592,7 +590,7 @@ list(APPEND mir_srcs
     stats/detail/ScalarT.h
     stats/distribution/DistributionT.cc
     stats/distribution/DistributionT.h
-    stats/field/CentralMomentStats.cc
+    stats/field/CentralMomentStats.c
     stats/field/CentralMomentStats.h
     stats/field/CounterStats.cc
     stats/field/CounterStats.h
