@@ -590,7 +590,7 @@ list(APPEND mir_srcs
     stats/detail/ScalarT.h
     stats/distribution/DistributionT.cc
     stats/distribution/DistributionT.h
-    stats/field/CentralMomentStats.c
+    stats/field/CentralMomentStats.cc
     stats/field/CentralMomentStats.h
     stats/field/CounterStats.cc
     stats/field/CounterStats.h
