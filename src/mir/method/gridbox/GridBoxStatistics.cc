@@ -23,7 +23,7 @@ namespace gridbox {
 
 
 GridBoxStatistics::GridBoxStatistics(const param::MIRParametrisation& param) : GridBoxMethod(param) {
-    std::string stats;
+    std::string stats = "maximum";
     param.get("interpolation-statistics", stats);
 
     setSolver(new solver::Statistics(param, stats::FieldFactory::build(stats, param)));
