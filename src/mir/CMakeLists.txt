@@ -568,8 +568,6 @@ list(APPEND mir_srcs
     stats/Method.h
     stats/Statistics.cc
     stats/Statistics.h
-    stats/ValueStatistics.cc
-    stats/ValueStatistics.h
     stats/comparator/ComparatorT.cc
     stats/comparator/ComparatorT.h
     stats/comparator/MissingValues.cc

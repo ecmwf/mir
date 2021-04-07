@@ -30,8 +30,8 @@ constexpr double EPS = 1e-6;
     Log::info() << "EXPECT(" << #a << ")" << std::endl; \
     EXPECT(a)
 
-#define EXPECT_APPROX_V(a, b)                                                \
-    Log::info() << "EXPECT_APPROX(" << #a << ", " << #b << ")" << std::endl; \
+#define EXPECT_APPROX_V(a, b)                                           \
+    Log::info() << "EXPECT(" << #a << " ~= " << #b << ")" << std::endl; \
     EXPECT(eckit::types::is_approximately_equal(static_cast<double>(a), static_cast<double>(b), EPS))
 
 
