@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_NoMask_h
-#define mir_lsm_NoMask_h
+#pragma once
 
 #include "mir/lsm/Mask.h"
 
@@ -38,6 +37,3 @@ class NoMask : public Mask {
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

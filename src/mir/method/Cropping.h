@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_Cropping_h
-#define mir_method_Cropping_h
+#pragma once
 
 #include <iosfwd>
 
@@ -55,6 +54,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

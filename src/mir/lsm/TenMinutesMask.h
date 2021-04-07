@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_TenMinutesMask_h
-#define mir_lsm_TenMinutesMask_h
+#pragma once
 
 #include <iosfwd>
 
@@ -94,6 +93,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

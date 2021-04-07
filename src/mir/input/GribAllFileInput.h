@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribAllFileInput_h
-#define mir_input_GribAllFileInput_h
+#pragma once
 
 
 #include <string>
@@ -106,6 +105,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

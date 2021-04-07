@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_NablaFilter_h
-#define mir_action_NablaFilter_h
+#pragma once
 
 #include <string>
 
@@ -116,6 +115,3 @@ public:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

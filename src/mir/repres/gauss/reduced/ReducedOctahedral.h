@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_ReducedOctahedral_h
-#define mir_repres_gauss_reduced_ReducedOctahedral_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 
@@ -99,6 +98,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

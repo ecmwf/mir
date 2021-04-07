@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_TypedGrid_h
-#define mir_key_grid_TypedGrid_h
+#pragma once
 
 #include <set>
 
@@ -99,6 +98,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

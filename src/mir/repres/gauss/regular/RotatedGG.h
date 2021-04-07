@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_regular_RotatedGG_h
-#define mir_repres_gauss_regular_RotatedGG_h
+#pragma once
 
 #include "mir/repres/gauss/regular/Regular.h"
 #include "mir/util/Rotation.h"
@@ -107,6 +106,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

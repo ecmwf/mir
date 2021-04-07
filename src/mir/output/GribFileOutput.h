@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GribFileOutput_h
-#define mir_output_GribFileOutput_h
+#pragma once
 
 #include "eckit/filesystem/PathName.h"
 
@@ -101,6 +100,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

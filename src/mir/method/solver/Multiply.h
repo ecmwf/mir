@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_solver_Multiply_h
-#define mir_method_solver_Multiply_h
+#pragma once
 
 #include "mir/method/solver/Solver.h"
 
@@ -36,6 +35,3 @@ private:
 }  // namespace solver
 }  // namespace method
 }  // namespace mir
-
-
-#endif

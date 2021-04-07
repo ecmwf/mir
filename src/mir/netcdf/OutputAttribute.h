@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputAttribute_h
-#define mir_netcdf_OutputAttribute_h
+#pragma once
 
 #include "mir/netcdf/Attribute.h"
 
@@ -41,6 +40,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

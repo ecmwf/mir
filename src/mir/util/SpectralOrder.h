@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_SpectralOrder_h
-#define mir_util_SpectralOrder_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -126,6 +125,3 @@ public:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

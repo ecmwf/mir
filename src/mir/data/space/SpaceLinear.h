@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_SpaceLinear_h
-#define mir_data_dimension_SpaceLinear_h
+#pragma once
 
 #include "mir/data/Space.h"
 
@@ -80,6 +79,3 @@ private:
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

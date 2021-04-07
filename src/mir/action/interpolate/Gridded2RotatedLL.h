@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2RotatedLL_h
-#define mir_action_interpolate_Gridded2RotatedLL_h
+#pragma once
 
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 #include "mir/util/BoundingBox.h"
@@ -107,6 +106,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

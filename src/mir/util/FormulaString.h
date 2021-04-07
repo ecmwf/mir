@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaString_h
-#define mir_util_FormulaString_h
+#pragma once
 
 #include <string>
 
@@ -40,6 +39,3 @@ private:  // members
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_misc_SetMetadata_h
-#define mir_action_misc_SetMetadata_h
+#pragma once
 
 #include <map>
 
@@ -100,6 +99,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

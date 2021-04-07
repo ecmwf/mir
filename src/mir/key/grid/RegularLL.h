@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_RegularLL_h
-#define mir_key_grid_RegularLL_h
+#pragma once
 
 #include "mir/key/grid/Grid.h"
 
@@ -88,6 +87,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

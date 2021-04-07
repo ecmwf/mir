@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_GridSpec_h
-#define mir_netcdf_GridSpec_h
+#pragma once
 
 #include <iosfwd>
 #include <vector>
@@ -102,6 +101,3 @@ public:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

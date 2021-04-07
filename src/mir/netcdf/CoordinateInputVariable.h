@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CoordinateInputVariable_h
-#define mir_netcdf_CoordinateInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -39,6 +38,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

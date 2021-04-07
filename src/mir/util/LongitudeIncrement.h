@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_LongitudeIncrement_h
-#define mir_util_LongitudeIncrement_h
+#pragma once
 
 #include "mir/util/Types.h"
 
@@ -32,6 +31,3 @@ private:
 
 
 }  // namespace mir
-
-
-#endif

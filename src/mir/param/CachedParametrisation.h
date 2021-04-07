@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_CachedParametrisation_h
-#define mir_param_CachedParametrisation_h
+#pragma once
 
 #include <string>
 
@@ -132,6 +131,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

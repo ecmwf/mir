@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_GribFileMaskFromUser_h
-#define mir_lsm_GribFileMaskFromUser_h
+#pragma once
 
 #include "mir/lsm/GribFileMask.h"
 
@@ -32,6 +31,3 @@ public:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

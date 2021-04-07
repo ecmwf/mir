@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_MultiScalarInput_h
-#define mir_input_MultiScalarInput_h
+#pragma once
 
 #include <vector>
 
@@ -110,6 +109,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

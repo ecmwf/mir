@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_other_UnstructuredGrid_h
-#define mir_repres_other_UnstructuredGrid_h
+#pragma once
 
 #include <vector>
 
@@ -131,6 +130,3 @@ private:
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

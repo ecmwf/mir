@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_ReducedFromPL_h
-#define mir_repres_gauss_reduced_ReducedFromPL_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/FromPL.h"
 
@@ -101,6 +100,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

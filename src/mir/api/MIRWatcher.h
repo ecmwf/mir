@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_api_MIRWatcher_h
-#define mir_api_MIRWatcher_h
+#pragma once
 
 #include <exception>
 #include <iosfwd>
@@ -107,6 +106,3 @@ private:
 
 }  // namespace api
 }  // namespace mir
-
-
-#endif

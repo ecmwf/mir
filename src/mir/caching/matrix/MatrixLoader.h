@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_matrix_MatrixLoader_h
-#define mir_caching_matrix_MatrixLoader_h
+#pragma once
 
 #include <iosfwd>
 
@@ -74,6 +73,3 @@ public:
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

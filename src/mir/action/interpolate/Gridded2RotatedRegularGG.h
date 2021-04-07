@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2RotatedRegularGG_h
-#define mir_action_interpolate_Gridded2RotatedRegularGG_h
+#pragma once
 
 #include "mir/action/interpolate/Gridded2RotatedGrid.h"
 
@@ -103,6 +102,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

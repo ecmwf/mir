@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_intgrid_Source_h
-#define mir_key_intgrid_Source_h
+#pragma once
 
 #include "mir/key/intgrid/Intgrid.h"
 
@@ -77,6 +76,3 @@ private:
 }  // namespace intgrid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

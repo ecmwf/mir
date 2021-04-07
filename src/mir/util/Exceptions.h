@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Exceptions_h
-#define mir_util_Exceptions_h
+#pragma once
 
 #include "eckit/exception/Exceptions.h"
 
@@ -50,6 +49,3 @@ public:
 
 }  // namespace exception
 }  // namespace mir
-
-
-#endif

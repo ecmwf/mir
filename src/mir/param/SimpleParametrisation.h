@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_SimpleParametrisation_h
-#define mir_param_SimpleParametrisation_h
+#pragma once
 
 #include <map>
 #include <string>
@@ -163,6 +162,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

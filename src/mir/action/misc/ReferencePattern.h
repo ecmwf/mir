@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_ReferencePattern_h
-#define mir_action_ReferencePattern_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -97,6 +96,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

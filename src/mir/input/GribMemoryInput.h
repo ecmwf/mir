@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribMemoryInput_h
-#define mir_input_GribMemoryInput_h
+#pragma once
 
 #include "mir/input/GribInput.h"
 
@@ -92,6 +91,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_Method_h
-#define mir_method_Method_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -106,6 +105,3 @@ public:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

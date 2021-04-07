@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_Grid_h
-#define mir_key_grid_Grid_h
+#pragma once
 
 #include <iosfwd>
 #include <mutex>
@@ -148,6 +147,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_nonlinear_SimulateMissingValue_h
-#define mir_method_nonlinear_SimulateMissingValue_h
+#pragma once
 
 #include "mir/method/nonlinear/NonLinear.h"
 
@@ -40,6 +39,3 @@ private:
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-
-
-#endif

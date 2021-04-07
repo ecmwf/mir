@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_voronoi_VoronoiStatistics_h
-#define mir_method_voronoi_VoronoiStatistics_h
+#pragma once
 
 #include "mir/method/voronoi/VoronoiMethod.h"
 
@@ -31,6 +30,3 @@ struct VoronoiStatistics final : VoronoiMethod {
 }  // namespace voronoi
 }  // namespace method
 }  // namespace mir
-
-
-#endif

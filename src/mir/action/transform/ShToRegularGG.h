@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToRegularGG_h
-#define mir_action_transform_ShToRegularGG_h
+#pragma once
 
 #include "mir/action/transform/ShToGridded.h"
 
@@ -83,6 +82,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

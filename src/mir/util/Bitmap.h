@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Bitmap_h
-#define mir_util_Bitmap_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -111,6 +110,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

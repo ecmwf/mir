@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_RotatedFromPL_h
-#define mir_repres_gauss_reduced_RotatedFromPL_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/FromPL.h"
 #include "mir/util/Rotation.h"
@@ -106,6 +105,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

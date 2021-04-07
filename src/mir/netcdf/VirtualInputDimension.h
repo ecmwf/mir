@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_VirtualInputDimension_h
-#define mir_netcdf_VirtualInputDimension_h
+#pragma once
 
 #include "mir/netcdf/Dimension.h"
 
@@ -40,6 +39,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

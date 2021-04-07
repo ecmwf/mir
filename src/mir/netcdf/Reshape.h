@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Reshape_h
-#define mir_netcdf_Reshape_h
+#pragma once
 
 #include "eckit/memory/Counted.h"
 
@@ -58,6 +57,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

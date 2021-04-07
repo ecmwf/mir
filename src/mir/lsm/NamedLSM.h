@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_NamedLSM_h
-#define mir_lsm_NamedLSM_h
+#pragma once
 
 #include "mir/lsm/LSMSelection.h"
 
@@ -123,6 +122,3 @@ public:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

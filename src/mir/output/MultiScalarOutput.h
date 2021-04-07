@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_MultiScalarOutput_h
-#define mir_output_MultiScalarOutput_h
+#pragma once
 
 #include <vector>
 
@@ -102,6 +101,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

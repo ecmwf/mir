@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_PointLatLonT_h
-#define mir_util_PointLatLonT_h
+#pragma once
 
 #include <iostream>
 
@@ -53,6 +52,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

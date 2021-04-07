@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedFromFile_h
-#define mir_key_grid_NamedFromFile_h
+#pragma once
 
 #include "mir/key/grid/NamedGrid.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -98,6 +97,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_calcl_FormulaAction_h
-#define mir_action_calcl_FormulaAction_h
+#pragma once
 
 #include <map>
 #include <memory>
@@ -108,6 +107,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

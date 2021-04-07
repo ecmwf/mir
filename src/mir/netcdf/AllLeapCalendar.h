@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_GregorianDateCodec_h
-#define mir_netcdf_GregorianDateCodec_h
+#pragma once
 
 #include "mir/netcdf/Calendar.h"
 
@@ -32,6 +31,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_EmptyInput_h
-#define mir_input_EmptyInput_h
+#pragma once
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
@@ -104,6 +103,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

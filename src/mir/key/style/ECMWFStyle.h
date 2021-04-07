@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_style_ECMWFStyle_h
-#define mir_key_style_ECMWFStyle_h
+#pragma once
 
 #include "mir/key/style/MIRStyle.h"
 
@@ -99,6 +98,3 @@ private:
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

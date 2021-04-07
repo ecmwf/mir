@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToRotatedRegularLL_h
-#define mir_action_transform_ShToRotatedRegularLL_h
+#pragma once
 
 #include "mir/action/transform/ShToGridded.h"
 #include "mir/util/Increments.h"
@@ -87,6 +86,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

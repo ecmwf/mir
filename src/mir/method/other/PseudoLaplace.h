@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_other_PseudoLaplace_h
-#define mir_method_other_PseudoLaplace_h
+#pragma once
 
 #include "mir/method/MethodWeighted.h"
 
@@ -45,6 +44,3 @@ private:
 }  // namespace other
 }  // namespace method
 }  // namespace mir
-
-
-#endif

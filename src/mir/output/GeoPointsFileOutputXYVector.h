@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GeoPointsFileOutputXYVector_h
-#define mir_output_GeoPointsFileOutputXYVector_h
+#pragma once
 
 #include "mir/output/GeoPointsFileOutput.h"
 
@@ -92,6 +91,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

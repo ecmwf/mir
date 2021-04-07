@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_FieldInfo_h
-#define mir_compare_FieldInfo_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -58,6 +57,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

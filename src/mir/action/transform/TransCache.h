@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_TransCache_h
-#define mir_action_transform_TransCache_h
+#pragma once
 
 #include <iosfwd>
 
@@ -53,6 +52,3 @@ struct TransCache {
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

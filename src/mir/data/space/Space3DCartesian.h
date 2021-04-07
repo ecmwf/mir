@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_Space3DCartesian_h
-#define mir_data_dimension_Space3DCartesian_h
+#pragma once
 
 #include "mir/data/space/SpaceLinear.h"
 
@@ -32,6 +31,3 @@ class Space3DCartesian : public SpaceLinear {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_RegularLL_h
-#define mir_netcdf_RegularLL_h
+#pragma once
 
 #include "mir/netcdf/GridSpec.h"
 
@@ -68,6 +67,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

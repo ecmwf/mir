@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_FieldSet_h
-#define mir_compare_FieldSet_h
+#pragma once
 
 #include <set>
 
@@ -44,6 +43,3 @@ private:  // members
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_regular_RegularGrid_h
-#define mir_repres_regular_RegularGrid_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Atlas.h"
@@ -117,6 +116,3 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

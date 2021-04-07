@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GeoPointsFileInput_h
-#define mir_input_GeoPointsFileInput_h
+#pragma once
 
 #include <algorithm>  // FIXME: temporary, for pgen/src/pgen/data/WeatherParameter.cc using std::sort
 #include <iosfwd>
@@ -126,6 +125,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

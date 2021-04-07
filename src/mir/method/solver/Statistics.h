@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_solver_Statistics_h
-#define mir_method_solver_Statistics_h
+#pragma once
 
 #include <memory>
 
@@ -54,6 +53,3 @@ private:
 }  // namespace solver
 }  // namespace method
 }  // namespace mir
-
-
-#endif

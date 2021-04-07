@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_WeightCache_h
-#define mir_caching_WeightCache_h
+#pragma once
 
 #include "eckit/container/CacheManager.h"
 
@@ -55,6 +54,3 @@ private:  // members
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

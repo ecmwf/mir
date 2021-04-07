@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_style_MIRStyle_h
-#define mir_style_MIRStyle_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -144,6 +143,3 @@ public:
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

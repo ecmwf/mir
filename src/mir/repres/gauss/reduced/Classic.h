@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_Classic_h
-#define mir_repres_gauss_reduced_Classic_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/Reduced.h"
 #include "mir/util/BoundingBox.h"
@@ -99,6 +98,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

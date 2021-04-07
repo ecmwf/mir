@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_MappedMemoryLoader_h
-#define mir_caching_legendre_MappedMemoryLoader_h
+#pragma once
 
 #include "mir/caching/legendre/LegendreLoader.h"
 
@@ -47,6 +46,3 @@ private:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

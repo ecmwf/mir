@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_GribField_h
-#define mir_compare_GribField_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -151,5 +150,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-#endif

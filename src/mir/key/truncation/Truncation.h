@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_truncation_Truncation_h
-#define mir_key_truncation_Truncation_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -132,6 +131,3 @@ public:
 }  // namespace truncation
 }  // namespace key
 }  // namespace mir
-
-
-#endif

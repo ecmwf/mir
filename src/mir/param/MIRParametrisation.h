@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_MIRParametrisation_h
-#define mir_param_MIRParametrisation_h
+#pragma once
 
 #include <iosfwd>
 
@@ -121,6 +120,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

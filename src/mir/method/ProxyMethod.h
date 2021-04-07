@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_ProxyMethod_h
-#define mir_method_ProxyMethod_h
+#pragma once
 
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
@@ -117,6 +116,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

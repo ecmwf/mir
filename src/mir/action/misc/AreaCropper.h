@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AreaCropper_h
-#define mir_action_AreaCropper_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/BoundingBox.h"
@@ -110,6 +109,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

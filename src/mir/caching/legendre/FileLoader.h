@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_FileLoader_h
-#define mir_caching_legendre_FileLoader_h
+#pragma once
 
 #include "eckit/io/Buffer.h"
 
@@ -46,6 +45,3 @@ private:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

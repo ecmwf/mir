@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_VectorOutput_h
-#define mir_output_VectorOutput_h
+#pragma once
 
 #include "mir/output/MIROutput.h"
 
@@ -102,6 +101,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

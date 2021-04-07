@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Latitude_h
-#define mir_util_Latitude_h
+#pragma once
 
 #include <iosfwd>
 #include "eckit/types/Fraction.h"
@@ -170,6 +169,3 @@ private:
 
 
 }  // namespace mir
-
-
-#endif

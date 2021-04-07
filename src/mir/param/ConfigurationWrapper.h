@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_ConfigurationWrapper_h
-#define mir_param_ConfigurationWrapper_h
+#pragma once
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -60,6 +59,3 @@ private:  // members
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

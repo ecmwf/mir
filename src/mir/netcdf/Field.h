@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Field_h
-#define mir_netcdf_Field_h
+#pragma once
 
 #include <cstddef>
 #include <iosfwd>
@@ -91,6 +90,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

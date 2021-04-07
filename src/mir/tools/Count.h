@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_tools_Count_h
-#define mir_tools_Count_h
+#pragma once
 
 #include <iosfwd>
 #include <set>
@@ -122,6 +121,3 @@ private:
 
 }  // namespace tools
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DataInputVariable_h
-#define mir_netcdf_DataInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -50,6 +49,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

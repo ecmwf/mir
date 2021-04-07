@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribDataHandleInput_h
-#define mir_input_GribDataHandleInput_h
+#pragma once
 
 #include "mir/input/GribStreamInput.h"
 
@@ -99,6 +98,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

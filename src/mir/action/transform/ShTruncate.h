@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShTruncate_h
-#define mir_action_transform_ShTruncate_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -101,6 +100,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

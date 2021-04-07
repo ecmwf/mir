@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_MethodWeighted_h
-#define mir_method_MethodWeighted_h
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -175,6 +174,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

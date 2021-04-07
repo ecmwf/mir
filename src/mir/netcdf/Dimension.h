@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Dimension_h
-#define mir_netcdf_Dimension_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -71,6 +70,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

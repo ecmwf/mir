@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Matrix_h
-#define mir_netcdf_Matrix_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -107,6 +106,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

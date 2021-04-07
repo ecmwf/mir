@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_intgrid_Intgrid_h
-#define mir_key_intgrid_Intgrid_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -133,6 +132,3 @@ public:
 }  // namespace intgrid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

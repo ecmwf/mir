@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_RuntimeParametrisation_h
-#define mir_param_RuntimeParametrisation_h
+#pragma once
 
 #include <set>
 #include <string>
@@ -142,6 +141,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

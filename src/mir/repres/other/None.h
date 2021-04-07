@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_other_None_h
-#define mir_repres_other_None_h
+#pragma once
 
 #include "mir/repres/Representation.h"
 
@@ -97,6 +96,3 @@ private:
 }  // namespace other
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Dataset_h
-#define mir_netcdf_Dataset_h
+#pragma once
 
 #include "mir/netcdf/Endowed.h"
 
@@ -89,6 +88,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

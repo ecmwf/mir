@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_packing_Packer_h
-#define mir_key_packing_Packer_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -168,6 +167,3 @@ public:
 }  // namespace packing
 }  // namespace key
 }  // namespace mir
-
-
-#endif

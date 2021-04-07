@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_PNGOutput_h
-#define mir_output_PNGOutput_h
+#pragma once
 
 #include "mir/data/MIRValuesVector.h"
 #include "mir/output/MIROutput.h"
@@ -141,6 +140,3 @@ public:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

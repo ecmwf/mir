@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_MIROutput_h
-#define mir_output_MIROutput_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -157,6 +156,3 @@ public:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

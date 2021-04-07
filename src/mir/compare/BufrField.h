@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_BufrField_h
-#define mir_compare_BufrField_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -112,6 +111,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

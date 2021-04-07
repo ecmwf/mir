@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_UnstructuredGrid_h
-#define mir_netcdf_UnstructuredGrid_h
+#pragma once
 
 #include "mir/netcdf/GridSpec.h"
 
@@ -62,6 +61,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

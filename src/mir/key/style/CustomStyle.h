@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_style_CustomStyle_h
-#define mir_key_style_CustomStyle_h
+#pragma once
 
 #include "mir/key/style/MIRStyle.h"
 
@@ -94,6 +93,3 @@ private:
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

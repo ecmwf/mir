@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Endowned_h
-#define mir_netcdf_Endowned_h
+#pragma once
 
 #include <map>
 #include <string>
@@ -61,6 +60,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

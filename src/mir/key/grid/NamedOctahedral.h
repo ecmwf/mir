@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedOctahedral_h
-#define mir_key_grid_NamedOctahedral_h
+#pragma once
 
 #include "mir/key/grid/NamedGrid.h"
 
@@ -98,6 +97,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_MeshGeneratorParameters_h
-#define mir_util_MeshGeneratorParameters_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -124,6 +123,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToGridDef_h
-#define mir_action_transform_ShToGridDef_h
+#pragma once
 
 #include <string>
 
@@ -86,6 +85,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compat_GribCompatibility_h
-#define mir_compat_GribCompatibility_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -77,6 +76,3 @@ private:
 
 }  // namespace compat
 }  // namespace mir
-
-
-#endif

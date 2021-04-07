@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_DummyVariable_h
-#define mir_netcdf_DummyVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -47,6 +46,3 @@ protected:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

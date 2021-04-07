@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_Iterator_h
-#define mir_repres_Iterator_h
+#pragma once
 
 #include <iosfwd>
 
@@ -112,6 +111,3 @@ private:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

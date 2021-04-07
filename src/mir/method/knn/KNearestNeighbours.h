@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_KNearestNeighbours_h
-#define mir_method_knn_KNearestNeighbours_h
+#pragma once
 
 #include <memory>
 
@@ -69,6 +68,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

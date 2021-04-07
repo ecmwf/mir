@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_RawInput_h
-#define mir_input_RawInput_h
+#pragma once
 
 #include "mir/input/MIRInput.h"
 #include "mir/param/MIRParametrisation.h"
@@ -121,6 +120,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

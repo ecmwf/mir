@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_pick_Pick_h
-#define mir_method_knn_pick_Pick_h
+#pragma once
 
 #include <iosfwd>
 
@@ -85,6 +84,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

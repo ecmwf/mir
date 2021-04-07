@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_RegularLL_h
-#define mir_repres_latlon_RegularLL_h
+#pragma once
 
 #include "mir/repres/latlon/LatLon.h"
 
@@ -95,6 +94,3 @@ private:
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

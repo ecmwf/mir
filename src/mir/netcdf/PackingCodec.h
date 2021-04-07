@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_PackingCodec_h
-#define mir_netcdf_PackingCodec_h
+#pragma once
 
 #include "mir/netcdf/Codec.h"
 
@@ -37,6 +36,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_NCFile_h
-#define mir_netcdf_NCFile_h
+#pragma once
 
 #include <string>
 
@@ -54,6 +53,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

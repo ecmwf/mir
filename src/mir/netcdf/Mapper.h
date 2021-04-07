@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Mapper_h
-#define mir_netcdf_Mapper_h
+#pragma once
 
 #include <iostream>
 
@@ -109,6 +108,3 @@ void Mapper<T>::set(size_t i, T v) {
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

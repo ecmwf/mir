@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AdjustWindsScaleCosLatitude_h
-#define mir_action_AdjustWindsScaleCosLatitude_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -95,6 +94,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_gridbox_GridBoxMethod_h
-#define mir_method_gridbox_GridBoxMethod_h
+#pragma once
 
 #include "mir/method/MethodWeighted.h"
 
@@ -103,6 +102,3 @@ private:
 }  // namespace gridbox
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_lsm_LandSeaMasks_h
-#define mir_lsm_LandSeaMasks_h
+#pragma once
 
 #include <iosfwd>
 #include <vector>
@@ -142,6 +141,3 @@ private:
 
 }  // namespace lsm
 }  // namespace mir
-
-
-#endif

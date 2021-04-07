@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_Key_h
-#define mir_key_Key_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -93,6 +92,3 @@ private:
 
 }  // namespace key
 }  // namespace mir
-
-
-#endif

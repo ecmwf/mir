@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_resol_Resol_h
-#define mir_key_resol_Resol_h
+#pragma once
 
 #include <iosfwd>
 #include <memory>
@@ -123,6 +122,3 @@ private:
 }  // namespace resol
 }  // namespace key
 }  // namespace mir
-
-
-#endif

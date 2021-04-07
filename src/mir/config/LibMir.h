@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_config_LibMir_h
-#define mir_config_LibMir_h
+#pragma once
 
 #include <string>
 
@@ -37,6 +36,3 @@ protected:
 
 
 }  // namespace mir
-
-
-#endif

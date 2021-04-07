@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_ActionPlan_h
-#define mir_action_plan_ActionPlan_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -156,6 +155,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

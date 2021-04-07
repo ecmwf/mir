@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_DefaultParametrisation_h
-#define mir_param_DefaultParametrisation_h
+#pragma once
 
 #include "mir/param/SimpleParametrisation.h"
 
@@ -90,6 +89,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

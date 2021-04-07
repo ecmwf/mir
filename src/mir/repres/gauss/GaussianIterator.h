@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_GaussianIterator_h
-#define mir_repres_gauss_GaussianIterator_h
+#pragma once
 
 #include <vector>
 
@@ -57,6 +56,3 @@ protected:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

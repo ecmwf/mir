@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_RotatedLL_h
-#define mir_repres_latlon_RotatedLL_h
+#pragma once
 
 #include "mir/repres/latlon/LatLon.h"
 #include "mir/util/Rotation.h"
@@ -93,6 +92,3 @@ private:
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

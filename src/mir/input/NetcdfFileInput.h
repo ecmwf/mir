@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_NetcdfFileInput_h
-#define mir_input_NetcdfFileInput_h
+#pragma once
 
 #include "mir/api/mir_config.h"
 #if defined(mir_HAVE_NETCDF)
@@ -137,5 +136,4 @@ private:
 }  // namespace mir
 
 
-#endif
 #endif

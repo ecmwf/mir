@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_InMemoryMeshCache_h
-#define mir_caching_InMemoryMeshCache_h
+#pragma once
 
 #include "mir/caching/InMemoryCache.h"
 
@@ -124,6 +123,3 @@ private:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

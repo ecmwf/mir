@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribFixes_h
-#define mir_input_GribFixes_h
+#pragma once
 
 #include <iosfwd>
 #include <utility>
@@ -115,6 +114,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

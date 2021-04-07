@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_structured_StructuredBilinearLatLon_h
-#define mir_method_structured_StructuredBilinearLatLon_h
+#pragma once
 
 #include "mir/method/structured/StructuredMethod.h"
 
@@ -43,6 +42,3 @@ private:
 }  // namespace structured
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_matrix_SharedMemoryLoader_h
-#define mir_caching_matrix_SharedMemoryLoader_h
+#pragma once
 
 #include "mir/caching/matrix/MatrixLoader.h"
 
@@ -47,6 +46,3 @@ private:
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

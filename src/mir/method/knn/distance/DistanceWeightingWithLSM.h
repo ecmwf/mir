@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_DistanceWeightingWithLSM_h
-#define mir_method_knn_distance_DistanceWeightingWithLSM_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
@@ -85,6 +84,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

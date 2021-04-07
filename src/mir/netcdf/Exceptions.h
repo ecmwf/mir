@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Exceptions_h
-#define mir_netcdf_Exceptions_h
+#pragma once
 
 #include "mir/util/Exceptions.h"
 
@@ -51,6 +50,3 @@ inline int _nc_call(int e, const char* call, const std::string& path) {
 }  // namespace exception
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

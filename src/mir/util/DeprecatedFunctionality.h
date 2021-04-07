@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_DeprecatedFunctionality_h
-#define mir_util_DeprecatedFunctionality_h
+#pragma once
 
 #include <string>
 
@@ -32,6 +31,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_MergePlan_h
-#define mir_netcdf_MergePlan_h
+#pragma once
 
 #include "mir/netcdf/Step.h"
 
@@ -60,6 +59,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

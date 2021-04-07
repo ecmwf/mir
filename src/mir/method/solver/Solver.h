@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_solver_Solver_h
-#define mir_method_solver_Solver_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -65,6 +64,3 @@ private:
 }  // namespace solver
 }  // namespace method
 }  // namespace mir
-
-
-#endif

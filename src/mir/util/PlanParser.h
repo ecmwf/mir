@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_PlanParser_h
-#define mir_util_PlanParser_h
+#pragma once
 
 #include <map>
 #include <vector>
@@ -51,6 +50,3 @@ private:  // methods
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

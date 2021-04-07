@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CoordinateOutputVariable_h
-#define mir_netcdf_CoordinateOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -34,6 +33,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

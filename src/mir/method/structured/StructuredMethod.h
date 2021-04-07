@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_structured_StructuredMethod_h
-#define mir_method_structured_StructuredMethod_h
+#pragma once
 
 #include <vector>
 
@@ -79,6 +78,3 @@ private:
 }  // namespace structured
 }  // namespace method
 }  // namespace mir
-
-
-#endif

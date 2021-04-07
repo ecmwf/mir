@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputVariable_h
-#define mir_netcdf_OutputVariable_h
+#pragma once
 
 #include "mir/netcdf/Variable.h"
 
@@ -45,6 +44,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

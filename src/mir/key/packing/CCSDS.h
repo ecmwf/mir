@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_packing_CCSDS_h
-#define mir_key_packing_CCSDS_h
+#pragma once
 
 #include "mir/key/packing/Packing.h"
 
@@ -96,6 +95,3 @@ private:
 }  // namespace packing
 }  // namespace key
 }  // namespace mir
-
-
-#endif

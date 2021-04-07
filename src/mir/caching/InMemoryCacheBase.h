@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_InMemoryCacheBase_h
-#define mir_caching_InMemoryCacheBase_h
+#pragma once
 
 #include <string>
 
@@ -48,6 +47,3 @@ private:
 
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

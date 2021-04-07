@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_reduced_h
-#define mir_repres_gauss_reduced_reduced_h
+#pragma once
 
 #include "mir/repres/gauss/Gaussian.h"
 
@@ -131,6 +130,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

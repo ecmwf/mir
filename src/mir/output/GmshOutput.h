@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GmshOutput_h
-#define mir_output_GmshOutput_h
+#pragma once
 
 #include "mir/output/MIROutput.h"
 
@@ -112,6 +111,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

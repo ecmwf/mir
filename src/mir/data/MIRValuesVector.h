@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_MIRValuesVector_h
-#define mir_data_MIRValuesVector_h
+#pragma once
 
 #define VEC_IS_STL_VECTOR
 //#define VEC_IS_SPECIAL_VECTOR
@@ -278,6 +277,3 @@ using data::MIRValuesVectorT;
 
 
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_FELinear_h
-#define mir_method_fe_FELinear_h
+#pragma once
 
 #include "mir/method/fe/FiniteElement.h"
 
@@ -96,6 +95,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

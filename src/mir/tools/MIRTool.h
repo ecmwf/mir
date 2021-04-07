@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_tools_MIRTool_h
-#define mir_tools_MIRTool_h
+#pragma once
 
 #include <vector>
 
@@ -57,6 +56,3 @@ public:
 
 }  // namespace tools
 }  // namespace mir
-
-
-#endif

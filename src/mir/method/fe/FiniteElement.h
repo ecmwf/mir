@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_FiniteElement_h
-#define mir_method_fe_FiniteElement_h
+#pragma once
 
 #include "mir/method/MethodWeighted.h"
 #include "mir/util/MeshGeneratorParameters.h"
@@ -143,6 +142,3 @@ public:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

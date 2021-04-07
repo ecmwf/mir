@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_context_Context_h
-#define mir_action_context_Context_h
+#pragma once
 
 #include <memory>
 #include <mutex>
@@ -161,6 +160,3 @@ private:
 
 }  // namespace context
 }  // namespace mir
-
-
-#endif

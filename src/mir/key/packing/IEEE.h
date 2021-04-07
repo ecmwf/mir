@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_packing_IEEE_h
-#define mir_key_packing_IEEE_h
+#pragma once
 
 #include "mir/key/packing/Packing.h"
 
@@ -100,6 +99,3 @@ private:
 }  // namespace packing
 }  // namespace key
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_regular_Regular_h
-#define mir_repres_gauss_regular_Regular_h
+#pragma once
 
 #include "mir/repres/gauss/Gaussian.h"
 
@@ -117,6 +116,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

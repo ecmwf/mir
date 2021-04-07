@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_MergeCoordinateMatrix_h
-#define mir_netcdf_MergeCoordinateMatrix_h
+#pragma once
 
 #include "mir/netcdf/Matrix.h"
 
@@ -37,6 +36,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_InMemoryCache_h
-#define mir_caching_InMemoryCache_h
+#pragma once
 
 #include <memory>
 #include <mutex>
@@ -114,6 +113,3 @@ public:
 
 
 #include "mir/caching/InMemoryCache.cc"
-
-
-#endif

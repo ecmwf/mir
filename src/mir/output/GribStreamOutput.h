@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GribStreamOutput_h
-#define mir_output_GribStreamOutput_h
+#pragma once
 
 #include "mir/output/GribOutput.h"
 
@@ -97,6 +96,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

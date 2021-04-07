@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Step_h
-#define mir_netcdf_Step_h
+#pragma once
 
 #include <iosfwd>
 
@@ -54,6 +53,3 @@ struct CompareSteps {
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_ConstantInput_h
-#define mir_input_ConstantInput_h
+#pragma once
 
 #include "mir/input/ArtificialInput.h"
 
@@ -96,6 +95,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToRotatedReducedGG_h
-#define mir_action_transform_ShToRotatedReducedGG_h
+#pragma once
 
 #include "mir/action/transform/ShToGridded.h"
 #include "mir/util/Rotation.h"
@@ -85,6 +84,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

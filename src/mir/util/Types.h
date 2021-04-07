@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Types_h
-#define mir_util_Types_h
+#pragma once
 
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
@@ -37,6 +36,3 @@ using XYZCOORDS = eckit::geometry::XYZCOORDS;
 
 
 }  // namespace mir
-
-
-#endif

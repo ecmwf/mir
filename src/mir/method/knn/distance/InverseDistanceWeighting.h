@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_InverseDistanceWeighting_h
-#define mir_method_knn_distance_InverseDistanceWeighting_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
@@ -40,6 +39,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_Space3DVectorZonalMeridionalVertical_h
-#define mir_data_dimension_Space3DVectorZonalMeridionalVertical_h
+#pragma once
 
 #include "mir/data/space/SpaceLinear.h"
 
@@ -32,6 +31,3 @@ class Space3DVectorZonalMeridionalVertical : public SpaceLinear {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

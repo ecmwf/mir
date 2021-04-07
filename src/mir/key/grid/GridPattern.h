@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_GridPattern_h
-#define mir_key_grid_GridPattern_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -120,6 +119,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

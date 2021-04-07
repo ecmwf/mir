@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_L2Projection_h
-#define mir_method_fe_L2Projection_h
+#pragma once
 
 #include <memory>
 
@@ -122,6 +121,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

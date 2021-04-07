@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToRegularLL_h
-#define mir_action_transform_ShToRegularLL_h
+#pragma once
 
 #include "mir/action/transform/ShToGridded.h"
 #include "mir/util/BoundingBox.h"
@@ -86,6 +85,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

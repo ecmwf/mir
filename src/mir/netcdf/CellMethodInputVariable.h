@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodInputVariable_h
-#define mir_netcdf_CellMethodInputVariable_h
+#pragma once
 
 #include "mir/netcdf/InputVariable.h"
 
@@ -40,6 +39,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_NearestNeighbour_h
-#define mir_method_knn_distance_NearestNeighbour_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
@@ -38,6 +37,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_gridbox_GridBoxStatistics_h
-#define mir_method_gridbox_GridBoxStatistics_h
+#pragma once
 
 #include "mir/method/gridbox/GridBoxMethod.h"
 
@@ -31,6 +30,3 @@ struct GridBoxStatistics final : GridBoxMethod {
 }  // namespace gridbox
 }  // namespace method
 }  // namespace mir
-
-
-#endif

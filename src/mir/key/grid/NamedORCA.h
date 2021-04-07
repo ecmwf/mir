@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_grid_NamedORCA_h
-#define mir_key_grid_NamedORCA_h
+#pragma once
 
 #include "mir/key/grid/NamedGrid.h"
 
@@ -97,6 +96,3 @@ private:
 }  // namespace grid
 }  // namespace key
 }  // namespace mir
-
-
-#endif

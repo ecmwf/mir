@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_OutputField_h
-#define mir_netcdf_OutputField_h
+#pragma once
 
 #include "mir/netcdf/Dataset.h"
 
@@ -56,6 +55,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_NearestLSMWithLowestIndex_h
-#define mir_method_knn_distance_NearestLSMWithLowestIndex_h
+#pragma once
 
 #include "mir/method/knn/distance/DistanceWeightingWithLSM.h"
 
@@ -49,6 +48,3 @@ private:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

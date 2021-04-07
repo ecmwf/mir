@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_LatLon_h
-#define mir_repres_latlon_LatLon_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/Increments.h"
@@ -161,6 +160,3 @@ private:
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

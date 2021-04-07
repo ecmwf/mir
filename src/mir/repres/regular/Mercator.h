@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_regular_Mercator_h
-#define mir_repres_regular_Mercator_h
+#pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
 #include "mir/util/Types.h"
@@ -79,6 +78,3 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Regex_h
-#define mir_util_Regex_h
+#pragma once
 
 #if 1
 // For Intel compilers
@@ -130,5 +129,4 @@ private:
 }  // namespace mir
 
 
-#endif
 #endif

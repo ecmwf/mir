@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_regular_Lambert_h
-#define mir_repres_regular_Lambert_h
+#pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
 
@@ -81,6 +80,3 @@ protected:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

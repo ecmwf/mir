@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_Gaussian_h
-#define mir_repres_gauss_Gaussian_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 #include "mir/util/BoundingBox.h"
@@ -119,6 +118,3 @@ private:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

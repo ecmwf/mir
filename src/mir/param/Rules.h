@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_Rules_h
-#define mir_param_Rules_h
+#pragma once
 
 #include <map>
 #include <mutex>
@@ -75,6 +74,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

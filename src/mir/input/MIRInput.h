@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_MIRInput_h
-#define mir_input_MIRInput_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -151,6 +150,3 @@ public:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Atlas_h
-#define mir_util_Atlas_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -279,6 +278,3 @@ using atlas::util::Earth;
 
 }
 }  // namespace mir
-
-
-#endif

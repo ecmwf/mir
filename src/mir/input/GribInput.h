@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribInput_h
-#define mir_input_GribInput_h
+#pragma once
 
 #include <mutex>
 
@@ -86,6 +85,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

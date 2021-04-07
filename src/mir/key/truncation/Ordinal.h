@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_truncation_Ordinal_h
-#define mir_key_truncation_Ordinal_h
+#pragma once
 
 #include "mir/key/truncation/Truncation.h"
 
@@ -77,6 +76,3 @@ private:
 }  // namespace truncation
 }  // namespace key
 }  // namespace mir
-
-
-#endif

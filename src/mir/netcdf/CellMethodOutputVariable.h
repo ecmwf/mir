@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_CellMethodOutputVariable_h
-#define mir_netcdf_CellMethodOutputVariable_h
+#pragma once
 
 #include "mir/netcdf/OutputVariable.h"
 
@@ -33,6 +32,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

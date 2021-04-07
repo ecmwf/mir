@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_transform_ShToReducedGGPLGiven_h
-#define mir_action_transform_ShToReducedGGPLGiven_h
+#pragma once
 
 #include <vector>
 
@@ -85,6 +84,3 @@ private:
 }  // namespace transform
 }  // namespace action
 }  // namespace mir
-
-
-#endif

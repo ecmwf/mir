@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_Executor_h
-#define mir_action_plan_Executor_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -116,6 +115,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

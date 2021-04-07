@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Trace_h
-#define mir_util_Trace_h
+#pragma once
 
 #include "eckit/log/Timer.h"
 
@@ -73,6 +72,3 @@ private:
 
 }  // namespace trace
 }  // namespace mir
-
-
-#endif

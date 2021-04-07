@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_Job_h
-#define mir_action_Job_h
+#pragma once
 
 #include <memory>
 
@@ -123,6 +122,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_voronoi_VoronoiMethod_h
-#define mir_method_voronoi_VoronoiMethod_h
+#pragma once
 
 #include "mir/method/MethodWeighted.h"
 #include "mir/method/knn/pick/NClosestOrNearest.h"
@@ -105,6 +104,3 @@ private:
 }  // namespace voronoi
 }  // namespace method
 }  // namespace mir
-
-
-#endif

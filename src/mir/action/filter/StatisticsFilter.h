@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_filter_StatisticsFilter_h
-#define mir_action_filter_StatisticsFilter_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 
@@ -113,6 +112,3 @@ private:
 }  // namespace filter
 }  // namespace action
 }  // namespace mir
-
-
-#endif

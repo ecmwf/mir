@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_TransverseMercator_h
-#define mir_repres_TransverseMercator_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 
@@ -92,6 +91,3 @@ private:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_latlon_ReducedLL_h
-#define mir_repres_latlon_ReducedLL_h
+#pragma once
 
 #include "mir/repres/Gridded.h"
 
@@ -116,6 +115,3 @@ private:
 }  // namespace latlon
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

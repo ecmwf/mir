@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Domain_h
-#define mir_util_Domain_h
+#pragma once
 
 #include "mir/util/Atlas.h"
 #include "mir/util/BoundingBox.h"
@@ -105,6 +104,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2ReducedGGPLGiven_h
-#define mir_action_interpolate_Gridded2ReducedGGPLGiven_h
+#pragma once
 
 #include <vector>
 
@@ -103,6 +102,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_dimension_Space1DLinear_h
-#define mir_data_dimension_Space1DLinear_h
+#pragma once
 
 #include "mir/data/space/SpaceLinear.h"
 
@@ -32,6 +31,3 @@ class Space1DLinear : public SpaceLinear {
 }  // namespace space
 }  // namespace data
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_nonlinear_NonLinear_h
-#define mir_method_nonlinear_NonLinear_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -101,6 +100,3 @@ public:
 }  // namespace nonlinear
 }  // namespace method
 }  // namespace mir
-
-
-#endif

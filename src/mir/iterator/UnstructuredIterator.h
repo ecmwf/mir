@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_iterator_UnstructuredIterator_h
-#define mir_iterator_UnstructuredIterator_h
+#pragma once
 
 #include "mir/repres/Iterator.h"
 #include "mir/util/Exceptions.h"
@@ -100,6 +99,3 @@ private:
 
 }  // namespace iterator
 }  // namespace mir
-
-
-#endif

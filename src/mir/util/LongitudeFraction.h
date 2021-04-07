@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_LongitudeFraction_h
-#define mir_util_LongitudeFraction_h
+#pragma once
 
 #include <iosfwd>
 
@@ -188,6 +187,3 @@ private:
 
 
 }  // namespace mir
-
-
-#endif

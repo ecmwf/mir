@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GlobaliseUnstructured_h
-#define mir_input_GlobaliseUnstructured_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -53,6 +52,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

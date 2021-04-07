@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Codec_h
-#define mir_netcdf_Codec_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -101,6 +100,3 @@ public:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

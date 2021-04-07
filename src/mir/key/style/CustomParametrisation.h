@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_style_CustomParametrisation_h
-#define mir_key_style_CustomParametrisation_h
+#pragma once
 
 #include <map>
 #include <vector>
@@ -121,6 +120,3 @@ private:
 }  // namespace style
 }  // namespace key
 }  // namespace mir
-
-
-#endif

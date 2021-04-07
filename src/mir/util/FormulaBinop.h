@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaBinop_h
-#define mir_util_FormulaBinop_h
+#pragma once
 
 #include <string>
 
@@ -36,6 +35,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

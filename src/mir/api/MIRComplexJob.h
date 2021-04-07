@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_api_MIRComplexJob_h
-#define mir_api_MIRComplexJob_h
+#pragma once
 
 #include <vector>
 
@@ -123,6 +122,3 @@ private:
 
 }  // namespace api
 }  // namespace mir
-
-
-#endif

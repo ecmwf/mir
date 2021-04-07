@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_plan_ActionGraph_h
-#define mir_action_plan_ActionGraph_h
+#pragma once
 
 
 #include <iosfwd>
@@ -131,6 +130,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

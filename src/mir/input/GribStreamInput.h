@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribStreamInput_h
-#define mir_input_GribStreamInput_h
+#pragma once
 
 #include "eckit/io/Buffer.h"
 
@@ -106,6 +105,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_AdjustWindsDirections_h
-#define mir_action_AdjustWindsDirections_h
+#pragma once
 
 #include "mir/action/plan/Action.h"
 #include "mir/util/Rotation.h"
@@ -96,6 +95,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

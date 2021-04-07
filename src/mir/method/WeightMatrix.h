@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_WeightMatrix_h
-#define mir_method_WeightMatrix_h
+#pragma once
 
 #include <iosfwd>
 #include <vector>
@@ -76,6 +75,3 @@ private:  // members
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

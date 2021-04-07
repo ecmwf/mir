@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_MatrixCacheCreator_h
-#define mir_method_MatrixCacheCreator_h
+#pragma once
 
 #include "mir/caching/WeightCache.h"
 
@@ -65,6 +64,3 @@ private:
 
 }  // namespace method
 }  // namespace mir
-
-
-#endif

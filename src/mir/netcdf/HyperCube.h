@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_eckityperCube_h
-#define mir_netcdf_eckityperCube_h
+#pragma once
 
 #include <functional>
 #include <numeric>
@@ -115,6 +114,3 @@ std::ostream& operator<<(std::ostream&, const HyperCube&);
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

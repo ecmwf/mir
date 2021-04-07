@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_key_packing_SecondOrder_h
-#define mir_key_packing_SecondOrder_h
+#pragma once
 
 #include "mir/key/packing/Packing.h"
 #include "mir/key/packing/Simple.h"
@@ -98,6 +97,3 @@ private:
 }  // namespace packing
 }  // namespace key
 }  // namespace mir
-
-
-#endif

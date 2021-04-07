@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_api_MIRJob_h
-#define mir_api_MIRJob_h
+#pragma once
 
 #include <string>
 
@@ -151,6 +150,3 @@ private:
 
 }  // namespace api
 }  // namespace mir
-
-
-#endif

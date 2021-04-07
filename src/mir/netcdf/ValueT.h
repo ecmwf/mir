@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_ValueT_h
-#define mir_netcdf_ValueT_h
+#pragma once
 
 #include <sstream>
 #include <string>
@@ -122,6 +121,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

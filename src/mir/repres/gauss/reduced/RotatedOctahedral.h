@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_gauss_reduced_RotatedOctahedral_h
-#define mir_repres_gauss_reduced_RotatedOctahedral_h
+#pragma once
 
 #include "mir/repres/gauss/reduced/Octahedral.h"
 #include "mir/util/Rotation.h"
@@ -105,6 +104,3 @@ private:
 }  // namespace gauss
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

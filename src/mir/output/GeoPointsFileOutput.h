@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_output_GeoPointsFileOutput_h
-#define mir_output_GeoPointsFileOutput_h
+#pragma once
 
 #include <memory>
 
@@ -100,6 +99,3 @@ private:
 
 }  // namespace output
 }  // namespace mir
-
-
-#endif

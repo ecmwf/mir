@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_regular_PolarStereographic_h
-#define mir_repres_regular_PolarStereographic_h
+#pragma once
 
 #include "mir/repres/regular/RegularGrid.h"
 
@@ -78,6 +77,3 @@ private:
 }  // namespace regular
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

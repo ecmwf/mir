@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Log_h
-#define mir_util_Log_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -93,6 +92,3 @@ struct Log final : protected eckit::Log {
 
 
 }  // namespace mir
-
-
-#endif

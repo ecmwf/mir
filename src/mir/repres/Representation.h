@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_Representation_h
-#define mir_repres_Representation_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -231,6 +230,3 @@ public:
 
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

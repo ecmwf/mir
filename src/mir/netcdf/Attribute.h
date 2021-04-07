@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_netcdf_Attribute_h
-#define mir_netcdf_Attribute_h
+#pragma once
 
 #include <iosfwd>
 #include <string>
@@ -74,6 +73,3 @@ private:
 
 }  // namespace netcdf
 }  // namespace mir
-
-
-#endif

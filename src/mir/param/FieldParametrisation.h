@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_FieldParametrisation_h
-#define mir_param_FieldParametrisation_h
+#pragma once
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -112,6 +111,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

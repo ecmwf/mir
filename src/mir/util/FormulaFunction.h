@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_FormulaFunction_h
-#define mir_util_FormulaFunction_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -55,6 +54,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

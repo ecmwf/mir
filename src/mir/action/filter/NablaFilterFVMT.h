@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_NablaFilterFVMT_h
-#define mir_action_NablaFilterFVMT_h
+#pragma once
 
 #include "mir/action/filter/NablaFilter.h"
 
@@ -94,6 +93,3 @@ private:
 
 }  // namespace action
 }  // namespace mir
-
-
-#endif

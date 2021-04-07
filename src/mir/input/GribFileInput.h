@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_GribFileInput_h
-#define mir_input_GribFileInput_h
+#pragma once
 
 #include "eckit/filesystem/PathName.h"
 
@@ -102,6 +101,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

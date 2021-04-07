@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_iterator_detail_RegularIterator_h
-#define mir_iterator_detail_RegularIterator_h
+#pragma once
 
 #include "eckit/types/Fraction.h"
 
@@ -112,6 +111,3 @@ private:
 }  // namespace detail
 }  // namespace iterator
 }  // namespace mir
-
-
-#endif

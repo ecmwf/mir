@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_compare_MultiFile_h
-#define mir_compare_MultiFile_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -77,6 +76,3 @@ private:
 
 }  // namespace compare
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Increments_h
-#define mir_util_Increments_h
+#pragma once
 
 #include <iosfwd>
 
@@ -144,6 +143,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

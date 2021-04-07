@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_param_CombinedParametrisation_h
-#define mir_param_CombinedParametrisation_h
+#pragma once
 
 #include "mir/param/MIRParametrisation.h"
 
@@ -117,6 +116,3 @@ private:
 
 }  // namespace param
 }  // namespace mir
-
-
-#endif

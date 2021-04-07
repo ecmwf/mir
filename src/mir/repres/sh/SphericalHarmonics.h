@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_repres_sh_SphericalHarmonics_h
-#define mir_repres_sh_SphericalHarmonics_h
+#pragma once
 
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
@@ -123,6 +122,3 @@ private:
 }  // namespace sh
 }  // namespace repres
 }  // namespace mir
-
-
-#endif

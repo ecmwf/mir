@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_action_interpolate_Gridded2GriddedInterpolation_h
-#define mir_action_interpolate_Gridded2GriddedInterpolation_h
+#pragma once
 
 #include <memory>
 
@@ -119,6 +118,3 @@ private:
 }  // namespace interpolate
 }  // namespace action
 }  // namespace mir
-
-
-#endif

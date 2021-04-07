@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_knn_distance_DistanceWeighting_h
-#define mir_method_knn_distance_DistanceWeighting_h
+#pragma once
 
 #include <iosfwd>
 
@@ -88,6 +87,3 @@ public:
 }  // namespace knn
 }  // namespace method
 }  // namespace mir
-
-
-#endif

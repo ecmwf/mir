@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_Angles_h
-#define mir_util_Angles_h
+#pragma once
 
 #include <cmath>
 
@@ -42,6 +41,3 @@ inline double normalise_longitude(const double& lon, const double& minimum) {
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

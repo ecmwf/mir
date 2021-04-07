@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_util_SpectralOrderT_h
-#define mir_util_SpectralOrderT_h
+#pragma once
 
 #include <cmath>
 
@@ -110,6 +109,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_data_Field_h
-#define mir_data_Field_h
+#pragma once
 
 #include <iosfwd>
 #include <map>
@@ -166,6 +165,3 @@ private:
 
 }  // namespace data
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_VectorInput_h
-#define mir_input_VectorInput_h
+#pragma once
 
 #include "mir/input/MIRInput.h"
 
@@ -108,6 +107,3 @@ private:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_method_fe_BuildNodeLumpedMassMatrix_h
-#define mir_method_fe_BuildNodeLumpedMassMatrix_h
+#pragma once
 
 #include <string>
 
@@ -103,6 +102,3 @@ private:
 }  // namespace fe
 }  // namespace method
 }  // namespace mir
-
-
-#endif

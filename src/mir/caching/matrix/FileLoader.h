@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_matrix_FileLoader_h
-#define mir_caching_matrix_FileLoader_h
+#pragma once
 
 #include "eckit/memory/MemoryBuffer.h"
 
@@ -46,6 +45,3 @@ private:
 }  // namespace matrix
 }  // namespace caching
 }  // namespace mir
-
-
-#endif

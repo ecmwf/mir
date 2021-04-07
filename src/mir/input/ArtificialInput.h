@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_input_ArtificialInput_h
-#define mir_input_ArtificialInput_h
+#pragma once
 
 #include "mir/data/MIRField.h"
 #include "mir/input/MIRInput.h"
@@ -147,6 +146,3 @@ public:
 
 }  // namespace input
 }  // namespace mir
-
-
-#endif

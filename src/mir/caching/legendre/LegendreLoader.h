@@ -10,8 +10,7 @@
  */
 
 
-#ifndef mir_caching_legendre_LegendreLoader_h
-#define mir_caching_legendre_LegendreLoader_h
+#pragma once
 
 #include <iosfwd>
 
@@ -104,6 +103,3 @@ public:
 }  // namespace legendre
 }  // namespace caching
 }  // namespace mir
-
-
-#endif
