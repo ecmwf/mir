@@ -32,7 +32,7 @@ constexpr double EPS = 1e-6;
 
 #define EXPECT_APPROX_V(a, b)                                                \
     Log::info() << "EXPECT_APPROX(" << #a << ", " << #b << ")" << std::endl; \
-    EXPECT(eckit::types::is_approximately_equal<double>(static_cast<double>(a), static_cast<double>(b), EPS))
+    EXPECT(eckit::types::is_approximately_equal(static_cast<double>(a), static_cast<double>(b), EPS))
 
 
 namespace mir {
@@ -41,13 +41,9 @@ namespace unit {
 
 
 struct case_t {
-    size_t count;
-    size_t above;
-    size_t below;
     double mode;
     double median;
     double mean;
-    double limit;
     double min;
     double max;
     bool disambiguateMax;
@@ -66,12 +62,12 @@ struct case_t {
 
 
 CASE("mir::stats::Field") {
-    std::vector<case_t> cases{case_t{1, 1, 0, 42., 42., 42, 4.5, 42., 42., true, {42}},
-                              case_t{5, 0, 5, 4., 2., 2.4, 4.5, 1., 4., true, {1, 1, 2, 4, 4}},
-                              case_t{5, 0, 5, 1., 2., 2.4, 4.5, 1., 4., false, {1, 1, 2, 4, 4}},
-                              case_t{11, 9, 2, 6., 6., 8., 4.5, 1., 22., true, {22, 1, 3, 6, 6, 6, 6, 7, 7, 12, 12}},
-                              case_t{7, 2, 5, 2., 3., 4., 4.5, 1., 9., true, {1, 2, 2, 3, 4, 7, 9}},
-                              case_t{7, 4, 3, 3., 6., 5.285714, 4.5, 1., 9., true, {1, 3, 3, 6, 7, 8, 9}}};
+    std::vector<case_t> cases{case_t{42., 42., 42, 42., 42., true, {42}},
+                              case_t{4., 2., 2.4, 1., 4., true, {1, 1, 2, 4, 4}},
+                              case_t{1., 2., 2.4, 1., 4., false, {1, 1, 2, 4, 4}},
+                              case_t{6., 6., 8., 1., 22., true, {22, 1, 3, 6, 6, 6, 6, 7, 7, 12, 12}},
+                              case_t{2., 3., 4., 1., 9., true, {1, 2, 2, 3, 4, 7, 9}},
+                              case_t{3., 6., 5.285714, 1., 9., true, {1, 3, 3, 6, 7, 8, 9}}};
 
 
     SECTION("ModeIntegral") {
@@ -81,7 +77,7 @@ CASE("mir::stats::Field") {
 
             std::unique_ptr<stats::Field> mode(stats::FieldFactory::build("mode-integral", param));
 
-            Log::info() << "Test " << c << std::endl;
+            Log::info() << "Test " << c << ':' << std::endl;
 
             for (auto d : c.data) {
                 mode->count(d);
@@ -100,7 +96,7 @@ CASE("mir::stats::Field") {
 
             std::unique_ptr<stats::Field> median(stats::FieldFactory::build("median-integral", param));
 
-            Log::info() << "Test " << c << std::endl;
+            Log::info() << "Test " << c << ':' << std::endl;
 
             for (auto d : c.data) {
                 median->count(d);
@@ -116,7 +112,7 @@ CASE("mir::stats::Field") {
         for (auto& c : cases) {
             param::SimpleParametrisation param;
             std::unique_ptr<stats::Field> mean(stats::FieldFactory::build("mean", param));
-            Log::info() << "Test " << c << std::endl;
+            Log::info() << "Test " << c << ':' << std::endl;
 
             for (auto d : c.data) {
                 mean->count(d);
@@ -130,19 +126,22 @@ CASE("mir::stats::Field") {
 
     SECTION("Counter") {
         for (auto& c : cases) {
+            const std::vector<double> modeValues{4., 5.};
+            const std::vector<double> modeLimits{4.5};
+
             param::SimpleParametrisation param;
-            param.set("counter-lower-limit", c.limit);
-            param.set("counter-upper-limit", c.limit);
+            param.set("counter-lower-limit", modeLimits.back());
+            param.set("counter-upper-limit", modeLimits.back());
 
             param.set("mode-disambiguate-max", c.disambiguateMax);
-            param.set("mode-real-values", std::vector<double>{4., 5.});
-            param.set("mode-real-min", std::vector<double>{c.limit});
+            param.set("mode-real-values", modeValues);
+            param.set("mode-real-min", modeLimits);
 
             std::unique_ptr<stats::Field> above(stats::FieldFactory::build("count-above-upper-limit", param));
             std::unique_ptr<stats::Field> below(stats::FieldFactory::build("count-below-lower-limit", param));
             std::unique_ptr<stats::Field> mode(stats::FieldFactory::build("mode-real", param));
 
-            Log::info() << "Test " << c << std::endl;
+            Log::info() << "Test " << c << ':' << std::endl;
 
             for (auto d : c.data) {
                 above->count(d);
@@ -152,12 +151,10 @@ CASE("mir::stats::Field") {
 
             Log::info() << "above=" << *above << std::endl;
             Log::info() << "below=" << *below << std::endl;
-            EXPECT_APPROX_V(above->value(), c.above);
-            EXPECT_APPROX_V(below->value(), c.below);
-            EXPECT_APPROX_V(above->value() + below->value(), c.count);
+            EXPECT_APPROX_V(above->value() + below->value(), c.data.size());
 
             Log::info() << "mode=" << *mode << std::endl;
-            EXPECT_APPROX_V(mode->value(), above->value() < below->value() ? 4. : 5.);
+            EXPECT_APPROX_V(mode->value(), above->value() < below->value() ? modeValues.front() : modeValues.back());
         }
     }
 }
