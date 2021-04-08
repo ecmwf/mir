@@ -43,8 +43,8 @@ namespace output {
 GmshOutput::GmshOutput(std::string path) : path_(std::move(path)) {}
 
 
-size_t GmshOutput::copy(const param::MIRParametrisation&, context::Context&) {
-    NOTIMP;
+size_t GmshOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
+    return save(param, ctx);
 }
 
 
