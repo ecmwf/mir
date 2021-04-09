@@ -271,11 +271,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
 
-    const atlas::Mesh& inMesh    = atlasMesh(statistics, in);
-    const util::Domain& inDomain = in.domain();
+    const auto& inMesh   = atlasMesh(statistics, in);
+    const auto& inDomain = in.domain();
 
-    const atlas::mesh::Nodes& inNodes = inMesh.nodes();
-    auto icoords                      = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
+    auto& inNodes = inMesh.nodes();
+    auto icoords  = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
 
     size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
     if (inNodes.metadata().has("NbRealPts")) {
@@ -315,7 +315,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     {
         trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
-        const atlas::mesh::HybridElements::Connectivity& connectivity = inMesh.cells().node_connectivity();
+        auto& connectivity = inMesh.cells().node_connectivity();
 
 
         // output points
@@ -332,11 +332,11 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
                 Point3 p(it->point3D());
 
                 // 3D projection, trying elements closest to p first
-                element_tree_t::NodeList closest = eTree->findInSphere(p, R);
-
                 size_t nbProjectionAttempts = 0;
-                triplet_vector_t triplets   = projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip,
-                                                                     firstVirtualPoint, nbProjectionAttempts, closest);
+
+                auto closest  = eTree->findInSphere(p, R);
+                auto triplets = projectPointTo3DElements(nbInputPoints, icoords, connectivity, p, ip, firstVirtualPoint,
+                                                         nbProjectionAttempts, closest);
 
                 nbMaxElementsSearched   = std::max(nbMaxElementsSearched, closest.size());
                 nbMinElementsSearched   = std::min(nbMinElementsSearched, closest.size());
@@ -344,7 +344,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
                 if (triplets.empty()) {
                     // If this fails, consider lowering parametricEpsilon
-                    failures.push_front(failed_projection_t(ip, it->pointUnrotated()));
+                    failures.emplace_front(ip, it->pointUnrotated());
                     ++nbFailures;
                 }
                 else {
