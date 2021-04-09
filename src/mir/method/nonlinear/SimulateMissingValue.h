@@ -29,7 +29,7 @@ private:
     bool sameAs(const NonLinear&) const override;
     void print(std::ostream&) const override;
     void hash(eckit::MD5&) const override;
-    bool canIntroduceMissingValues() const override;
+    bool modifiesMatrix() const override;
 
     double missingValue_;
     double epsilon_;

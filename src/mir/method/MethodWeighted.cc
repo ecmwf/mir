@@ -336,7 +336,7 @@ void MethodWeighted::execute(context::Context& ctx, const repres::Representation
     bool matrixCopy = hasMissing;
     if (!matrixCopy) {
         for (auto& n : nonLinear_) {
-            if ((matrixCopy = n->canIntroduceMissingValues())) {
+            if ((matrixCopy = n->modifiesMatrix())) {
                 break;
             }
         }

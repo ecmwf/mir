@@ -125,7 +125,7 @@ void SimulateMissingValue::hash(eckit::MD5& h) const {
 }
 
 
-bool SimulateMissingValue::canIntroduceMissingValues() const {
+bool SimulateMissingValue::modifiesMatrix() const {
     return true;
 }
 

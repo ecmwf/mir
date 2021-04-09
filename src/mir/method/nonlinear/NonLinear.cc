@@ -36,7 +36,7 @@ static void init() {
 NonLinear::NonLinear(const param::MIRParametrisation&) {}
 
 
-bool NonLinear::canIntroduceMissingValues() const {
+bool NonLinear::modifiesMatrix() const {
     return false;
 }
 
