@@ -74,7 +74,7 @@ public:
     const repres::Representation* representation() const;
 
     /// @warning Takes ownership of the vector
-    void update(MIRValuesVector&, size_t which, bool recomputeHasMissing = false);
+    void update(MIRValuesVector&, size_t which);
 
     const MIRValuesVector& values(size_t which) const;
     MIRValuesVector& direct(size_t which);  // Non-const version for direct update (Filter)

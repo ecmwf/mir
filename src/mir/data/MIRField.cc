@@ -53,13 +53,13 @@ void MIRField::copyOnWrite() {
 
 
 // Warning: take ownership of values
-void MIRField::update(MIRValuesVector& values, size_t which, bool recomputeHasMissing) {
+void MIRField::update(MIRValuesVector& values, size_t which) {
     std::lock_guard<std::mutex> lock(mutex_);
 
     // Log::info() << "MIRField::update " << *field_ << std::endl;
 
     copyOnWrite();
-    field_->update(values, which, recomputeHasMissing);
+    field_->update(values, which);
 }
 
 
