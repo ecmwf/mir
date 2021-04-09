@@ -3,6 +3,6 @@ ORCA.grib2
 # mir
 --grid=eorca1_u
 # plan
-Gridded2NamedGrid[grid=eORCA1_U,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+Gridded2NamedGrid[grid=eORCA1_U,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,validateMesh=0,missingValueOnProjectionFail=1]]|Save[output=...]
 Copy[...]
-Gridded2NamedGrid[grid=eORCA1_U,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10]]|Save[output=...]
+Gridded2NamedGrid[grid=eORCA1_U,interpolation=linear,method=FiniteElement[name=linear,nonLinear[MissingIfHeaviestMissing[]],Solver=[Multiply[]],cropping=none,lsmWeightAdjustment=0.2,pruneEpsilon=1e-10,validateMesh=0,missingValueOnProjectionFail=1]]|Save[output=...]
