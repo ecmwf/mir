@@ -56,10 +56,9 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
     // Options
     atlas::util::Config config;
     config.set("coordinates", "xyz");    // Atlas option
-    config.set("ghost", true);           // ...
+    config.set("ghost", false);          // ...
     config.set("write_mesh", true);      // non-Atlas option
     config.set("write_values", true);    // ...
-    config.set("invalid_quads", false);  // ... (?)
 
     std::string output;
     if (param.get("output", output)) {
@@ -89,9 +88,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
     if (writeMesh) {
         util::MeshGeneratorParameters meshGenParams(param);
         rep->fill(meshGenParams);
-
-        meshGenParams.set("invalid_quads", config.getBool("invalid_quads"));
-        eckit::Log::info() << meshGenParams << std::endl;
+        meshGenParams.set("3d", config.getString("coordinates")=="xyz");
 
         trace::Timer time("Generating mesh");
         mesh = caching::InMemoryMeshCache::atlasMesh(ctx.statistics(), grid, meshGenParams);

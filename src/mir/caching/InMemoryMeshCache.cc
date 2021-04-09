@@ -108,19 +108,19 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
         // Write file(s)
         if (!meshGeneratorParams.fileLonLat_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileLonLat_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
+            log << "Mesh: writing lonlat to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "lonlat")("ghost", true)).write(mesh);
         }
 
         if (!meshGeneratorParams.fileXY_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileXY_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
+            log << "Mesh: writing xy to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xy")("ghost", true)).write(mesh);
         }
 
         if (!meshGeneratorParams.fileXYZ_.empty()) {
             atlas::output::PathName path(meshGeneratorParams.fileXYZ_);
-            log << "Mesh: writing to '" << path << "'" << std::endl;
+            log << "Mesh: writing xyz to '" << path << "'" << std::endl;
             atlas::output::Gmsh(path, atlas::util::Config("coordinates", "xyz")("ghost", true)).write(mesh);
         }
     }
