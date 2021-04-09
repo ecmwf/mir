@@ -158,8 +158,6 @@ private:
     bool hasCropping() const override;
     const util::BoundingBox& getCropping() const override;
 
-
-    /// Update matrix to account for field masked values
     // -- Class members
     // None
 
