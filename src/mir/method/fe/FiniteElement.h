@@ -80,6 +80,8 @@ private:
     // -- Members
 
     util::MeshGeneratorParameters meshGeneratorParams_;
+    bool validateMesh_;
+    bool missingValueOnProjectionFail_;
 
     // -- Methods
     // None

@@ -119,9 +119,14 @@ struct MIR : tools::MIRTool {
 
 #if defined(mir_HAVE_ATLAS)
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-input-method",
-                                                                               "L2 Projection FEM method for input"));
+                                                                               "L2 Projection FE method for input"));
         options_.push_back(new FactoryOption<method::fe::FiniteElementFactory>("l2-projection-output-method",
-                                                                               "L2 Projection FEM method for output"));
+                                                                               "L2 Projection FE method for output"));
+        options_.push_back(new SimpleOption<bool>("finite-element-validate-mesh",
+                                                  "FE method check mesh quadrilaterals validity (default false)"));
+        options_.push_back(
+            new SimpleOption<bool>("finite-element-missing-value-on-projection-fail",
+                                   "FE method sets missing value when interpolation isn't possible (default true)"));
 #endif
 
         options_.push_back(new FactoryOption<method::nonlinear::NonLinearFactory>(
@@ -170,6 +175,7 @@ struct MIR : tools::MIRTool {
             "backend", "Linear algebra backend (default '" + eckit::linalg::LinearAlgebra::backend().name() + "')"));
         options_.push_back(new FactoryOption<search::TreeFactory>("point-search-trees", "k-d tree control"));
 
+#if defined(mir_HAVE_ATLAS)
         for (const std::string& which : {"input", "output"}) {
             options_.push_back(
                 new SimpleOption<std::string>(which + "-mesh-generator", "Mesh generator for " + which + " grid"));
@@ -200,6 +206,7 @@ struct MIR : tools::MIRTool {
             options_.push_back(new SimpleOption<bool>(which + "-mesh-generator-force-include-south-pole",
                                                       "Generate including South pole on " + which + " mesh"));
         }
+#endif
 
         options_.push_back(
             new SimpleOption<double>("counter-upper-limit", "Statistics count values below lower limit"));
