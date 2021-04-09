@@ -81,7 +81,7 @@ void MethodWeighted::print(std::ostream& out) const {
     }
     out << "]";
 
-    out << ",Solver=[" << *solver_ << "],cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
+    out << ",Solver=" << *solver_ << ",cropping=" << cropping_ << ",lsmWeightAdjustment=" << lsmWeightAdjustment_
         << ",pruneEpsilon=" << pruneEpsilon_;
 }
 
