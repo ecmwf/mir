@@ -57,7 +57,8 @@ std::string ORCAPattern::canonical(const std::string& name, const param::MIRPara
 }
 
 
-static ORCAPattern __pattern("^[eE]?[oO][rR][cC][aA][0-9]+(|_[tTuUvVwWfF])$");
+static ORCAPattern __pattern1("^[eE]?[oO][rR][cC][aA][0-9]+$");
+static ORCAPattern __pattern2("^[eE]?[oO][rR][cC][aA][0-9]+_[tTuUvVwWfF]$");
 
 
 }  // namespace grid
