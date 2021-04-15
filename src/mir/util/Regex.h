@@ -12,21 +12,6 @@
 
 #pragma once
 
-#if 1
-// For Intel compilers
-#include "eckit/utils/Regex.h"
-
-
-namespace mir {
-namespace util {
-using Regex = eckit::Regex;
-}
-}  // namespace mir
-
-
-#else
-
-
 #include <regex>
 #include <string>
 
@@ -127,6 +112,3 @@ private:
 
 }  // namespace util
 }  // namespace mir
-
-
-#endif

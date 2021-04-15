@@ -10,15 +10,13 @@
  */
 
 
-#include <map>
-
-
-#include "mir/util/Log.h"
 #include "mir/util/Regex.h"
 
+#include <map>
 
-#if 1
-#else
+#include "mir/util/Log.h"
+
+
 namespace mir {
 namespace util {
 
@@ -65,4 +63,3 @@ Regex::match_t Regex::match(const std::string& s) const {
 
 }  // namespace util
 }  // namespace mir
-#endif
