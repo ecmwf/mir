@@ -18,7 +18,6 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -31,7 +30,7 @@ MissingIfHeaviestMissing::MissingIfHeaviestMissing(const param::MIRParametrisati
 
 
 bool MissingIfHeaviestMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W,
-                                         MethodWeighted::Matrix&, const data::MIRValuesVector& values,
+                                         MethodWeighted::Matrix&, const MIRValuesVector& values,
                                          const double& missingValue) const {
 
     // correct matrix weigths for the missing values

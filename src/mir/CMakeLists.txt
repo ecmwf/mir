@@ -165,8 +165,6 @@ list(APPEND mir_srcs
     data/MIRField.h
     data/MIRFieldStats.cc
     data/MIRFieldStats.h
-    data/MIRValuesVector.cc
-    data/MIRValuesVector.h
     data/Space.cc
     data/Space.h
     data/space/Space1DAngleT.cc

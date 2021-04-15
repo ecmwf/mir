@@ -15,9 +15,9 @@
 #include <algorithm>  // FIXME: temporary, for pgen/src/pgen/data/WeatherParameter.cc using std::sort
 #include <iosfwd>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/MIRInput.h"
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

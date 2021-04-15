@@ -114,7 +114,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
             std::copy_n(values.begin(), n, view.data());
         }
 
-        void appendFieldWrapped(data::MIRValuesVector& values) {
+        void appendFieldWrapped(MIRValuesVector& values) {
             ASSERT(n == values.size());
             auto field = fields.add(atlas::Field("?", values.data(), atlas::array::make_shape(n)));
             field.set_functionspace(fs);
@@ -147,7 +147,7 @@ void ProxyMethod::execute(context::Context& ctx, const repres::Representation& i
     report(timer, type_ + ": copy input");
 
 
-    std::vector<data::MIRValuesVector> result(field.dimensions(), data::MIRValuesVector(output.n));
+    std::vector<MIRValuesVector> result(field.dimensions(), MIRValuesVector(output.n));
     for (auto& v : result) {
         output.appendFieldWrapped(v);
     }

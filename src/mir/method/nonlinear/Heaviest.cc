@@ -27,7 +27,7 @@ Heaviest::Heaviest(const param::MIRParametrisation& param) : NonLinear(param) {}
 
 
 bool Heaviest::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                         const data::MIRValuesVector&, const double&) const {
+                         const MIRValuesVector&, const double&) const {
 
     auto data = const_cast<WeightMatrix::Scalar*>(W.data());
 

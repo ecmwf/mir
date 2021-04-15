@@ -27,7 +27,7 @@ NoNonLinear::NoNonLinear(const param::MIRParametrisation& param) : NonLinear(par
 
 
 bool NoNonLinear::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix&, MethodWeighted::Matrix&,
-                            const mir::data::MIRValuesVector&, const double&) const {
+                            const MIRValuesVector&, const double&) const {
     // no non-linear treatment
     return false;
 }

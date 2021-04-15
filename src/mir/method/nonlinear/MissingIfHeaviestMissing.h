@@ -23,7 +23,7 @@ namespace nonlinear {
 struct MissingIfHeaviestMissing : NonLinear {
     MissingIfHeaviestMissing(const param::MIRParametrisation&);
     bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                   const data::MIRValuesVector& values, const double& missingValue) const override;
+                   const MIRValuesVector& values, const double& missingValue) const override;
 
 private:
     bool sameAs(const NonLinear&) const override;

@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/netcdf/Endowed.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

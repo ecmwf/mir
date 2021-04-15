@@ -56,7 +56,7 @@ protected:
 
     // -- Methods
 
-    virtual data::MIRValuesVector fill(size_t) const = 0;
+    virtual MIRValuesVector fill(size_t) const = 0;
     param::SimpleParametrisation& parametrisation(size_t which = 0);
 
     // -- Overridden methods

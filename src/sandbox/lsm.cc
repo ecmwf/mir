@@ -14,9 +14,9 @@
 #include "eckit/runtime/Tool.h"
 
 #include "mir/data/MIRField.h"
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Log.h"
+#include "mir/util/Types.h"
 
 
 using namespace mir;

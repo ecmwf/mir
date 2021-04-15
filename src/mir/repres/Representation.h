@@ -17,7 +17,7 @@
 
 #include "eckit/memory/Counted.h"
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 struct grib_info;

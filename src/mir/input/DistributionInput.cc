@@ -45,7 +45,7 @@ void DistributionInput::print(std::ostream& out) const {
 }
 
 
-data::MIRValuesVector DistributionInput::fill(size_t n) const {
+MIRValuesVector DistributionInput::fill(size_t n) const {
     auto& dis = *distribution_;
 
     MIRValuesVector values(n);

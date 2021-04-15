@@ -62,7 +62,7 @@ void DummyInput::print(std::ostream& out) const {
 }
 
 
-data::MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
+MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
     MIRValuesVector values(360 * 181, 42.);
     size_t k = 0;
     for (size_t i = 0; i < 360; ++i) {

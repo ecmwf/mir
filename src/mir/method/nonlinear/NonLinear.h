@@ -15,7 +15,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/method/MethodWeighted.h"
 
 
@@ -52,7 +51,7 @@ public:
 
     /// Update interpolation linear system to account for non-linearities
     virtual bool treatment(MethodWeighted::Matrix& A, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
-                           const data::MIRValuesVector& values, const double& missingValue) const = 0;
+                           const MIRValuesVector& values, const double& missingValue) const = 0;
 
     virtual bool sameAs(const NonLinear&) const = 0;
 

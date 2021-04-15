@@ -18,8 +18,8 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {
@@ -31,7 +31,7 @@ MissingIfAllMissing::MissingIfAllMissing(const param::MIRParametrisation& param)
 
 
 bool MissingIfAllMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                                    const data::MIRValuesVector& values, const double& missingValue) const {
+                                    const MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if all row values are missing)

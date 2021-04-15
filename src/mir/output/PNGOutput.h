@@ -12,8 +12,8 @@
 
 #pragma once
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/output/MIROutput.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

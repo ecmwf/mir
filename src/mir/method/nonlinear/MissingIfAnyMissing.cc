@@ -17,7 +17,6 @@
 
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -30,7 +29,7 @@ MissingIfAnyMissing::MissingIfAnyMissing(const param::MIRParametrisation& param)
 
 
 bool MissingIfAnyMissing::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                                    const data::MIRValuesVector& values, const double& missingValue) const {
+                                    const MIRValuesVector& values, const double& missingValue) const {
 
     // correct matrix weigths for the missing values
     // (force a missing value only if any row values is missing)

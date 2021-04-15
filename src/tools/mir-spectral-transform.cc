@@ -21,7 +21,6 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/data/MIRValuesVector.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/input/MultiScalarInput.h"
 #include "mir/key/grid/Grid.h"

@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "eckit/geometry/Point2.h"
 #include "eckit/geometry/Point3.h"
 
@@ -33,6 +35,8 @@ using eckit::geometry::Point3;
 
 using LLCOORDS  = eckit::geometry::LLCOORDS;
 using XYZCOORDS = eckit::geometry::XYZCOORDS;
+
+using MIRValuesVector = std::vector<double>;
 
 
 }  // namespace mir

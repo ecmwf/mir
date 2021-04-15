@@ -18,7 +18,6 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 
@@ -35,7 +34,7 @@ SimulateMissingValue::SimulateMissingValue(const param::MIRParametrisation& para
 
 
 bool SimulateMissingValue::treatment(MethodWeighted::Matrix&, MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix&,
-                                     const data::MIRValuesVector& values, const double& /*ignored*/) const {
+                                     const MIRValuesVector& values, const double& /*ignored*/) const {
     using eckit::types::is_approximately_equal;
 
     auto missingValue = [this](double value) { return is_approximately_equal(value, missingValue_, epsilon_); };

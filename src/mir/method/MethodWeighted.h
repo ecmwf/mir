@@ -15,7 +15,6 @@
 #include <memory>
 #include <vector>
 
-#include "mir/data/MIRValuesVector.h"
 #include "mir/method/Cropping.h"
 #include "mir/method/Method.h"
 #include "mir/method/WeightMatrix.h"

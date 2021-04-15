@@ -17,7 +17,7 @@
 #include <mutex>
 #include <string>
 
-#include "mir/data/MIRValuesVector.h"
+#include "mir/util/Types.h"
 
 
 namespace mir {

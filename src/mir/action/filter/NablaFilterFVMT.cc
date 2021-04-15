@@ -93,7 +93,7 @@ protected:
 
         // Copy results (not great, but there you go)
         for (atlas::idx_t v = 0; v < variables; ++v) {
-            data::MIRValuesVector values;
+            MIRValuesVector values;
             values.reserve(points);
 
             for (atlas::idx_t n = 0; n < nodes_.size(); ++n) {

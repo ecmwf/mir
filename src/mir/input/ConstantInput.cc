@@ -42,7 +42,7 @@ void ConstantInput::print(std::ostream& out) const {
 }
 
 
-data::MIRValuesVector ConstantInput::fill(size_t n) const {
+MIRValuesVector ConstantInput::fill(size_t n) const {
     MIRValuesVector values(n, constant_);
     return values;
 }
