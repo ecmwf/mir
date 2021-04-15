@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedFromFile.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"

@@ -12,7 +12,8 @@
 
 #include "mir/netcdf/Dimension.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"

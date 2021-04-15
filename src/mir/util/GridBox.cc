@@ -13,7 +13,7 @@
 #include "mir/util/GridBox.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 #include "eckit/types/FloatCompare.h"
 

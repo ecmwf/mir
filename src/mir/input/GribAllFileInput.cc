@@ -12,7 +12,7 @@
 
 #include "mir/input/GribAllFileInput.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/io/Buffer.h"
 #include "eckit/io/StdFile.h"

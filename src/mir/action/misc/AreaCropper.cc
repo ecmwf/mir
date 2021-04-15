@@ -12,8 +12,9 @@
 
 #include "mir/action/misc/AreaCropper.h"
 
-#include <iostream>
 #include <mutex>
+#include <ostream>
+#include <sstream>
 #include <vector>
 
 #include "eckit/utils/MD5.h"

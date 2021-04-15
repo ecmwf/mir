@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/SimpleOutputVariable.h"
 
-#include <iostream>
+#include <ostream>
 
 namespace mir {
 namespace netcdf {

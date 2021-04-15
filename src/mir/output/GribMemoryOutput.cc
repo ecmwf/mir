@@ -11,7 +11,7 @@
 
 
 #include <cstring>
-#include <iostream>
+#include <ostream>
 
 #include "mir/output/GribMemoryOutput.h"
 #include "mir/util/Exceptions.h"

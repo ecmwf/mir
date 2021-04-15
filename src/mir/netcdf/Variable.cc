@@ -12,7 +12,8 @@
 
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Codec.h"

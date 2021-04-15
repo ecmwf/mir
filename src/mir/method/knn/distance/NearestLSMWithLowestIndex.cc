@@ -13,6 +13,7 @@
 #include "mir/method/knn/distance/NearestLSMWithLowestIndex.h"
 
 #include <limits>
+#include <sstream>
 
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"

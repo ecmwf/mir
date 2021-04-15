@@ -13,8 +13,8 @@
 #include "mir/action/misc/ReferencePattern.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

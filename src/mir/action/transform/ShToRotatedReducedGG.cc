@@ -12,7 +12,7 @@
 
 #include "mir/action/transform/ShToRotatedReducedGG.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/transform/InvtransScalar.h"
 #include "mir/action/transform/InvtransVodTouv.h"

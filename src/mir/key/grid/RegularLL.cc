@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/RegularLL.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/types/Fraction.h"
 #include "eckit/utils/StringTools.h"

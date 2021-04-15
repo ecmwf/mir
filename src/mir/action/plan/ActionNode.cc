@@ -10,7 +10,7 @@
  */
 
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/plan/Action.h"
 #include "mir/action/plan/ActionNode.h"

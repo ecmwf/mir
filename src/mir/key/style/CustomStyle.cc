@@ -13,6 +13,7 @@
 #include "mir/key/style/CustomStyle.h"
 
 #include <fstream>
+#include <ostream>
 #include <sstream>
 
 #include "mir/action/io/Copy.h"

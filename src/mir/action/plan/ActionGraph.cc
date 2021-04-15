@@ -12,7 +12,7 @@
 
 #include "mir/action/plan/ActionGraph.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/action/plan/Action.h"

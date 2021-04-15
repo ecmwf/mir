@@ -12,7 +12,7 @@
 
 #include "mir/api/MIRJob.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Tokenizer.h"
 

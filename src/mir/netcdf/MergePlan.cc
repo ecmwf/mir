@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/MergePlan.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Variable.h"

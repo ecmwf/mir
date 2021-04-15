@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/DummyInputVariable.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/DummyMatrix.h"

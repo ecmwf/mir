@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/ReshapeVariableStep.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/Exceptions.h"

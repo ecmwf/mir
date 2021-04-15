@@ -14,7 +14,7 @@
 #include "mir/netcdf/CoordinateOutputVariable.h"
 #include "mir/netcdf/ScalarCoordinateInputVariable.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

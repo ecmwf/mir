@@ -13,7 +13,8 @@
 #include "mir/action/transform/ShVodToUV.h"
 
 #include <complex>
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "atlas/trans/VorDivToUV.h"
 

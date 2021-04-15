@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <sstream>
+
 #include "eckit/exception/Exceptions.h"
 
 #define ASSERT_KEYWORD_GRID_SIZE(size) ASSERT_MSG(size == 2, "keyword 'grid' expected size=2")

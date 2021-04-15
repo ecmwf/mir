@@ -10,7 +10,8 @@
  */
 
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
 

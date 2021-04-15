@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedClassic.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/gauss/reduced/ReducedClassic.h"
 #include "mir/repres/gauss/reduced/RotatedClassic.h"

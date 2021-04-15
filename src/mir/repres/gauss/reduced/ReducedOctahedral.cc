@@ -12,7 +12,7 @@
 
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

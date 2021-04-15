@@ -99,7 +99,7 @@ const Grid* GridPattern::lookup(const std::string& name) {
             Log::debug() << "GridPattern: '" << j->second->pattern_ << "' match" << std::endl;
 
             if (k != m->cend()) {
-                std::stringstream os;
+                std::ostringstream os;
                 os << "GridPattern: '" << name << "' matches '" << k->second << "' and '" << j->second << "'"
                    << std::endl;
                 throw exception::SeriousBug(os.str());

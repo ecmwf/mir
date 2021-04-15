@@ -14,6 +14,7 @@
 
 #include <map>
 #include <mutex>
+#include <sstream>
 
 #include "eckit/utils/MD5.h"
 

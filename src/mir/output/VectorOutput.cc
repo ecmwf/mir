@@ -12,7 +12,8 @@
 
 #include "mir/output/VectorOutput.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <typeinfo>  // bad_cast exception
 
 #include "mir/action/context/Context.h"
@@ -27,6 +28,7 @@ namespace output {
 
 VectorOutput::VectorOutput(MIROutput& component1, MIROutput& component2) :
     component1_(component1), component2_(component2) {}
+
 
 VectorOutput::~VectorOutput() = default;
 

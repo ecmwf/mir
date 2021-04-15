@@ -12,7 +12,7 @@
 
 #include "mir/repres/unsupported/AzimuthRange.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

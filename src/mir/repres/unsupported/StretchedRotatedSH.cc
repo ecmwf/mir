@@ -12,7 +12,7 @@
 
 #include "mir/repres/unsupported/StretchedRotatedSH.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

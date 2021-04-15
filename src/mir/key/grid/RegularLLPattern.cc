@@ -48,7 +48,7 @@ std::string RegularLLPattern::canonical(const std::string& name, const param::MI
     ASSERT(split.size() == 2);
 
     eckit::Translator<std::string, double> d;
-    std::stringstream str;
+    std::ostringstream str;
     str << d(split[0]) << '/' << d(split[1]);  // better than using std::to_string
     return str.str();
 }

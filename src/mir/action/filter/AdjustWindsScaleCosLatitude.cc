@@ -15,8 +15,8 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
-#include <iostream>
 #include <memory>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

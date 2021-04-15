@@ -10,6 +10,8 @@
  */
 
 
+#include <sstream>
+
 #include "mir/action/context/Context.h"
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/tools/MIRTool.h"

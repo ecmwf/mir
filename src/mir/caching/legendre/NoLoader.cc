@@ -12,7 +12,7 @@
 
 #include "mir/caching/legendre/NoLoader.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

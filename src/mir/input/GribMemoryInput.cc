@@ -12,7 +12,7 @@
 
 #include "mir/input/GribMemoryInput.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"

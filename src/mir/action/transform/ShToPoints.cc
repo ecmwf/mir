@@ -12,7 +12,7 @@
 
 #include "mir/action/transform/ShToPoints.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/action/transform/InvtransScalar.h"

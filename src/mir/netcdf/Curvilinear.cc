@@ -13,7 +13,7 @@
 #include "mir/netcdf/Curvilinear.h"
 
 #include <cmath>
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Dimension.h"
 #include "mir/netcdf/HyperCube.h"

@@ -12,7 +12,7 @@
 
 #include "mir/lsm/NoMask.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 

@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2ReducedLL.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 

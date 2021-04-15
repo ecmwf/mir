@@ -12,6 +12,7 @@
 
 #include <map>
 #include <mutex>
+#include <sstream>
 
 #include "mir/action/plan/Action.h"
 #include "mir/api/MIREstimation.h"

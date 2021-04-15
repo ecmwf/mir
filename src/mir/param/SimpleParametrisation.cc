@@ -14,7 +14,7 @@
 
 #include <algorithm>
 #include <ios>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/log/JSON.h"

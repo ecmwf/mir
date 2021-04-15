@@ -144,7 +144,7 @@ void VoronoiMethod::assemble(util::MIRStatistics&, WeightMatrix& W, const repres
 
 void VoronoiMethod::hash(eckit::MD5& md5) const {
     MethodWeighted::hash(md5);
-    std::stringstream str;
+    std::ostringstream str;
     print(str);
     md5.add(str.str());
 }

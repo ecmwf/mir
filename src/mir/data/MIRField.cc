@@ -12,7 +12,7 @@
 
 #include "mir/data/MIRField.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/data/Field.h"
 #include "mir/data/MIRFieldStats.h"

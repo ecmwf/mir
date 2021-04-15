@@ -12,6 +12,8 @@
 
 #include "mir/param/FieldParametrisation.h"
 
+#include <sstream>
+
 #include "mir/param/Rules.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"

@@ -12,9 +12,10 @@
 
 #include "mir/netcdf/Codec.h"
 
-#include <iostream>
 #include <map>
 #include <mutex>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/util/Log.h"

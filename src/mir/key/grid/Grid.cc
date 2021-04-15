@@ -13,6 +13,7 @@
 #include "mir/key/grid/Grid.h"
 
 #include <map>
+#include <sstream>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/YAMLParser.h"

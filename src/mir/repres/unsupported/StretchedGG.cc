@@ -12,7 +12,7 @@
 
 #include "mir/repres/unsupported/StretchedGG.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

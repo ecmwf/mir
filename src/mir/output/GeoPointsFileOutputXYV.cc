@@ -14,6 +14,7 @@
 
 #include <limits>
 #include <memory>
+#include <sstream>
 
 #include "eckit/io/HandleBuf.h"
 #include "eckit/serialisation/HandleStream.h"

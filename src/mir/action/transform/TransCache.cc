@@ -12,7 +12,7 @@
 
 #include "mir/action/transform/TransCache.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

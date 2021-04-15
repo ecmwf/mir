@@ -13,6 +13,7 @@
 #include "mir/method/knn/pick/NearestNeighbourWithLowestIndex.h"
 
 #include <ostream>
+#include <sstream>
 
 #include "eckit/types/FloatCompare.h"
 #include "eckit/utils/MD5.h"

@@ -12,7 +12,7 @@
 
 #include "mir/method/nonlinear/NoNonLinear.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/utils/MD5.h"

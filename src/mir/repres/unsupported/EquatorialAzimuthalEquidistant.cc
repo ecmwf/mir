@@ -12,7 +12,7 @@
 
 #include "mir/repres/unsupported/EquatorialAzimuthalEquidistant.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

@@ -12,8 +12,8 @@
 
 #include "mir/key/style/ECMWFStyle.h"
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
 

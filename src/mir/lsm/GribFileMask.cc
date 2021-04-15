@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <sstream>
 
 #include "eckit/utils/MD5.h"
 

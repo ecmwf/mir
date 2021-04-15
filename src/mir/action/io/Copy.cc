@@ -12,7 +12,7 @@
 
 #include "mir/action/io/Copy.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"

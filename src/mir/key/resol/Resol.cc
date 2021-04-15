@@ -13,8 +13,8 @@
 #include "mir/key/resol/Resol.h"
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
+#include <ostream>
 
 #include "mir/action/plan/ActionPlan.h"
 #include "mir/key/grid/Grid.h"

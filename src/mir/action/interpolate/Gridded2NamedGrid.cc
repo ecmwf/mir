@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2NamedGrid.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/key/grid/Grid.h"
 #include "mir/param/MIRParametrisation.h"

@@ -12,7 +12,8 @@
 
 #include "mir/action/calc/FormulaAction.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"

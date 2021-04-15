@@ -14,9 +14,9 @@
 
 #include <algorithm>
 #include <cctype>  // for ::isdigit
-#include <iostream>
 #include <map>
 #include <mutex>
+#include <ostream>
 
 #include "mir/key/truncation/Ordinal.h"
 #include "mir/util/Exceptions.h"

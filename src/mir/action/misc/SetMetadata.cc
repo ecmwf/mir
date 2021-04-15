@@ -12,7 +12,7 @@
 
 #include "mir/action/misc/SetMetadata.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/types/Types.h"
 #include "eckit/utils/Tokenizer.h"

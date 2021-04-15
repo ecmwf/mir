@@ -12,7 +12,7 @@
 
 #include "mir/param/RuntimeParametrisation.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Log.h"
 

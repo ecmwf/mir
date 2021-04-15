@@ -12,10 +12,6 @@
 
 #include "mir/caching/legendre/SharedMemoryLoader.h"
 
-#include <cerrno>
-#include <cstdio>
-#include <cstring>
-
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -25,6 +21,11 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <sstream>
 
 //#include "eckit/config/Resource.h"
 #include "eckit/io/StdFile.h"

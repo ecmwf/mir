@@ -12,7 +12,7 @@
 
 #include "mir/param/ConfigurationWrapper.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/config/Configuration.h"
 

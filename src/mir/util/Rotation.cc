@@ -12,7 +12,7 @@
 
 #include "mir/util/Rotation.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "eckit/types/FloatCompare.h"

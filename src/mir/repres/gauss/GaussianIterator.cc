@@ -12,7 +12,7 @@
 
 #include "mir/repres/gauss/GaussianIterator.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 

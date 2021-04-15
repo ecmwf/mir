@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/UpdateCoordinateStep.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Dataset.h"
 #include "mir/netcdf/Exceptions.h"

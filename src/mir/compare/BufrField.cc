@@ -16,6 +16,7 @@
 #include <cmath>
 #include <iomanip>
 #include <ostream>
+#include <sstream>
 
 #include "eckit/log/Colour.h"
 #include "eckit/log/JSON.h"

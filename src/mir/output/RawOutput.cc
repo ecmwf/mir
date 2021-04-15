@@ -13,7 +13,7 @@
 #include "mir/output/RawOutput.h"
 
 #include <cstring>
-#include <istream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

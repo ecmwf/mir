@@ -12,8 +12,9 @@
 
 #include "mir/action/filter/BitmapFilter.h"
 
-#include <iostream>
 #include <mutex>
+#include <ostream>
+#include <sstream>
 
 #include "mir/action/context/Context.h"
 #include "mir/api/MIREstimation.h"

@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/Remapping.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Exceptions.h"
 

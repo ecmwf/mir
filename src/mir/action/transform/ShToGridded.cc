@@ -12,8 +12,8 @@
 
 #include "mir/action/transform/ShToGridded.h"
 
-#include <iostream>
 #include <mutex>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/system/MemoryInfo.h"

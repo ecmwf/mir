@@ -12,6 +12,8 @@
 
 #include "mir/caching/WeightCache.h"
 
+#include <sstream>
+
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/config/LibMir.h"
 #include "mir/method/WeightMatrix.h"

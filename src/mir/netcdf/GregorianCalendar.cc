@@ -12,10 +12,11 @@
 
 #include "mir/netcdf/GregorianCalendar.h"
 
+#include <netcdf.h>
+
 #include <algorithm>
 #include <ostream>
-
-#include <netcdf.h>
+#include <sstream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/OutputAttribute.h"
@@ -153,7 +154,7 @@ void GregorianCalendar::addAttributes(Variable& v) const {
 
 
 void GregorianCalendar::updateAttributes(int nc, int varid, const std::string& path) {
-    std::stringstream s;
+    std::ostringstream s;
     eckit::DateTime dt = reference_ + eckit::Second(zero_);
     s << "seconds since " << dt.date() << " " << dt.time();
     std::string value = s.str();

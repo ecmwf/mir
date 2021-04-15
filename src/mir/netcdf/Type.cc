@@ -12,11 +12,13 @@
 
 #include <netcdf.h>
 
+#include <sstream>
+
 #include "mir/netcdf/Type.h"
 
 #include <algorithm>
 #include <cstring>
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/netcdf/Codec.h"
@@ -140,7 +142,7 @@ Type& Type::lookup(Type& type1, Type& type2) {
         }
     }
 
-    std::stringstream s;
+    std::ostringstream s;
     s << "Cannot find a common super-type to " << type1 << " and " << type2;
     throw exception::MergeError(s.str());
 }

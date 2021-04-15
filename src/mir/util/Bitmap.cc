@@ -12,7 +12,7 @@
 
 #include <cstring>
 #include <fstream>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/io/StdFile.h"

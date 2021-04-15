@@ -17,7 +17,7 @@
 #include "mir/netcdf/Type.h"
 #include "mir/netcdf/Variable.h"
 
-#include <iostream>
+#include <ostream>
 
 namespace mir {
 namespace netcdf {

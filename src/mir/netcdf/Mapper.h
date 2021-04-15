@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/netcdf/Reshape.h"

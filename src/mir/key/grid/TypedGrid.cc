@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/TypedGrid.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/utils/StringTools.h"

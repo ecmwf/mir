@@ -14,9 +14,9 @@
 
 #include <algorithm>
 #include <cctype>
-#include <iostream>
 #include <map>
 #include <mutex>
+#include <ostream>
 
 #include "eckit/utils/MD5.h"
 

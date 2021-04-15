@@ -12,7 +12,7 @@
 
 #include "mir/action/filter/AdjustWindsDirections.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/action/context/Context.h"

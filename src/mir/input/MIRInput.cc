@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <mutex>
+#include <sstream>
 
 #include "eckit/io/StdFile.h"
 

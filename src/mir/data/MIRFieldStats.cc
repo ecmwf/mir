@@ -13,7 +13,7 @@
 #include "mir/data/MIRFieldStats.h"
 
 #include <cmath>
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

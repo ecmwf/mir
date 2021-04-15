@@ -12,8 +12,8 @@
 
 #include "mir/action/filter/UnstructuredFilter.h"
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <vector>
 
 #include "mir/action/context/Context.h"

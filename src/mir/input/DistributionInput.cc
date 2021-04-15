@@ -13,7 +13,7 @@
 #include "mir/input/DistributionInput.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/stats/Distribution.h"

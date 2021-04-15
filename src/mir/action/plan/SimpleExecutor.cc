@@ -12,7 +12,7 @@
 
 #include "mir/action/plan/SimpleExecutor.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/plan/ActionNode.h"
 

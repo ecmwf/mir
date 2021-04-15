@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2Points.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/other/UnstructuredGrid.h"

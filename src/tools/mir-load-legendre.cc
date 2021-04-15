@@ -11,8 +11,8 @@
 
 
 #include <ios>
-#include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 
 #include "eckit/option/CmdArgs.h"

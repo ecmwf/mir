@@ -14,7 +14,7 @@
 
 #include <netcdf.h>
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Attribute.h"
 #include "mir/netcdf/Dimension.h"

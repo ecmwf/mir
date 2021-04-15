@@ -12,6 +12,8 @@
 
 #include "mir/method/knn/distance/NearestLSM.h"
 
+#include <sstream>
+
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/LandSeaMasks.h"

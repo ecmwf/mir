@@ -12,7 +12,8 @@
 
 #include "mir/output/MultiScalarOutput.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <typeinfo>  // bad_cast exception
 
 #include "mir/action/context/Context.h"

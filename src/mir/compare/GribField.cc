@@ -17,6 +17,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <sstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/log/JSON.h"

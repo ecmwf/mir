@@ -12,7 +12,7 @@
 
 #include "mir/key/style/CustomParametrisation.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/Translator.h"
 

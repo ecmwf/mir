@@ -12,7 +12,7 @@
 
 #include "mir/action/misc/SelectField.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

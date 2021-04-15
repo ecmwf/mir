@@ -14,7 +14,8 @@
 
 #include <cstring>
 #include <fstream>
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/serialisation/IfstreamStream.h"
@@ -30,12 +31,16 @@ namespace mir {
 namespace input {
 
 
+static constexpr double missingValueGeoPoints = 3e38;
+static constexpr double missingValueDefault   = 999.;
+
+
 // See https://software.ecmwf.int/wiki/display/METV/Geopoints
 GeoPointsFileInput::GeoPointsFileInput(const std::string& path, int which) :
     path_(path),
     next_(0),
     footprint_(size_t(eckit::PathName(path).size())),
-    missingValue_(3e38),
+    missingValue_(missingValueGeoPoints),
     which_(which),
     hasMissing_(false) {  // For now, this should overestimate the memory footprint
 
@@ -78,12 +83,17 @@ GeoPointsFileInput::~GeoPointsFileInput() = default;
 
 
 size_t GeoPointsFileInput::readText(std::ifstream& in) {
+    constexpr size_t lenGEO        = 4;
+    constexpr size_t lenFORMAT     = 8;
+    constexpr size_t lenCOMMENT    = 2;
+    constexpr size_t lenDATA       = 5;
+    constexpr size_t lenLineBuffer = 10240;
 
     eckit::Tokenizer parse2("=");
     eckit::Tokenizer parse(" \t");
     eckit::Translator<std::string, double> s2d;
 
-    char line[10240];
+    char line[lenLineBuffer];
     bool data = false;
     int count = 0;
 
@@ -97,7 +107,7 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
 
     while (in.getline(line, sizeof(line))) {
 
-        if (std::strncmp(line, "#GEO", 4) == 0) {
+        if (std::strncmp(line, "#GEO", lenGEO) == 0) {
             count++;
 
             if (which_ >= 0 && count > which_ + 1) {
@@ -115,9 +125,9 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
             continue;
         }
 
-        if (!data && std::strncmp(line, "#FORMAT ", 8) == 0) {
+        if (!data && std::strncmp(line, "#FORMAT ", lenFORMAT) == 0) {
             std::vector<std::string> v;
-            parse(line + 8, v);
+            parse(line + lenFORMAT, v);
             ASSERT(v.size() == 1);
 
             format = v[0] == "XYV"         ? XYV
@@ -127,14 +137,14 @@ size_t GeoPointsFileInput::readText(std::ifstream& in) {
                          : throw exception::SeriousBug(path_ + " invalid format line '" + line + "'");
         }
 
-        if (!data && std::strncmp(line, "# ", 2) == 0) {
+        if (!data && std::strncmp(line, "# ", lenCOMMENT) == 0) {
             std::vector<std::string> v;
             parse2(line + 2, v);
             ASSERT(v.size() == 2);
             fieldParametrisation_.set(v[0], v[1]);
         }
 
-        if (!data && std::strncmp(line, "#DATA", 5) == 0) {
+        if (!data && std::strncmp(line, "#DATA", lenDATA) == 0) {
             data = (which_ < 0) || (count == which_ + 1);
             continue;
         }
@@ -217,7 +227,7 @@ size_t GeoPointsFileInput::readBinary(std::ifstream& in) {
 bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
     // geopoints hard-coded value, all values have to be below
-    missingValue    = 3e38;
+    missingValue    = missingValueGeoPoints;
     bool hasMissing = (values_.end() != std::find(values_.begin(), values_.end(), missingValue));
 
     // find the non-missing max value
@@ -235,7 +245,7 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
 
     // if all values are missing set an acceptable value, otherwise use max + 1
     if (allMissing) {
-        missingValue = 999.;
+        missingValue = missingValueDefault;
         values_.assign(values_.size(), missingValue);
         return true;
     }
@@ -252,7 +262,7 @@ bool GeoPointsFileInput::resetMissingValue(double& missingValue) {
     }
 
     missingValue = tempMissingValue;
-    ASSERT(missingValue_ < 3e38);
+    ASSERT(missingValue_ < missingValueGeoPoints);
 
     return hasMissing;
 }

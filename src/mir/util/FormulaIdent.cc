@@ -12,7 +12,8 @@
 
 #include "mir/util/FormulaIdent.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/action/context/Context.h"
 #include "mir/util/Exceptions.h"

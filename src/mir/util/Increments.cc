@@ -12,7 +12,7 @@
 
 #include "mir/util/Increments.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/types/Fraction.h"
 

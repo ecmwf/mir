@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/RegularLL.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Variable.h"
 #include "mir/util/Exceptions.h"

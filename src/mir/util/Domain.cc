@@ -12,7 +12,7 @@
 
 #include "mir/util/Domain.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

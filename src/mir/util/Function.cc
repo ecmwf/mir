@@ -12,9 +12,9 @@
 
 #include "mir/util/Function.h"
 
-#include <iostream>
 #include <map>
 #include <mutex>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"

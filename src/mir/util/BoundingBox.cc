@@ -13,7 +13,7 @@
 #include "mir/util/BoundingBox.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"

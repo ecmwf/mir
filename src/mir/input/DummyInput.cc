@@ -13,7 +13,7 @@
 #include "mir/input/DummyInput.h"
 
 #include <cmath>
-#include <iostream>
+#include <ostream>
 
 #include "mir/data/MIRField.h"
 

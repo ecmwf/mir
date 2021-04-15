@@ -14,9 +14,9 @@
 
 #include <algorithm>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <numeric>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/config/Resource.h"

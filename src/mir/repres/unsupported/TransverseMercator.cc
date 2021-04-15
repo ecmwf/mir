@@ -12,7 +12,7 @@
 
 #include "mir/repres/unsupported/TransverseMercator.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

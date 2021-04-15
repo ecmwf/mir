@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2RotatedReducedGGPLGiven.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/param/MIRParametrisation.h"

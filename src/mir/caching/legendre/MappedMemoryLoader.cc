@@ -12,9 +12,10 @@
 
 #include "mir/caching/legendre/MappedMemoryLoader.h"
 
+#include <ostream>
+
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <iostream>
 
 #include "eckit/memory/MMap.h"
 #include "eckit/os/Stat.h"

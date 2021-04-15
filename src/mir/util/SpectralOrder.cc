@@ -14,6 +14,7 @@
 
 #include <map>
 #include <mutex>
+#include <sstream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"

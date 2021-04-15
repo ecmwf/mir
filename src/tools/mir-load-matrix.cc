@@ -12,8 +12,8 @@
 
 #include <fstream>
 #include <ios>
-#include <iostream>
 #include <limits>
+#include <ostream>
 #include <sstream>
 #include <string>
 

@@ -10,7 +10,7 @@
  */
 
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/testing/Test.h"
 #include "eckit/types/Fraction.h"

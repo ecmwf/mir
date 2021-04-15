@@ -10,8 +10,8 @@
  */
 
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"

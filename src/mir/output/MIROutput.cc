@@ -13,6 +13,7 @@
 #include "mir/output/MIROutput.h"
 
 #include <mutex>
+#include <sstream>
 
 #include "eckit/filesystem/PathName.h"
 

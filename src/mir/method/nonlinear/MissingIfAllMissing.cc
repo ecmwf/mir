@@ -12,7 +12,7 @@
 
 #include "mir/method/nonlinear/MissingIfAllMissing.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/types/FloatCompare.h"

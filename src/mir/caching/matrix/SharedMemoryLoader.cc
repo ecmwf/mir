@@ -12,9 +12,6 @@
 
 #include "mir/caching/matrix/SharedMemoryLoader.h"
 
-#include <cerrno>
-#include <cstring>
-
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -24,6 +21,10 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+
+#include <cerrno>
+#include <cstring>
+#include <sstream>
 
 //#include "eckit/config/Resource.h"
 #include "eckit/maths/Functions.h"

@@ -12,7 +12,7 @@
 
 #include "mir/input/ConstantInput.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 

@@ -12,7 +12,7 @@
 
 #include "mir/action/transform/InvtransScalar.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "mir/data/MIRField.h"

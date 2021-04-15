@@ -12,7 +12,7 @@
 
 #include "mir/util/Log.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/log/BigNum.h"
 

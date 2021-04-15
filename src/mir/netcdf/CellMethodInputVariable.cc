@@ -13,7 +13,7 @@
 #include "mir/netcdf/CellMethodInputVariable.h"
 #include "mir/netcdf/CellMethodOutputVariable.h"
 
-#include <iostream>
+#include <ostream>
 
 namespace mir {
 namespace netcdf {

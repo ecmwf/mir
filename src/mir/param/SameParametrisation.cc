@@ -12,7 +12,7 @@
 
 #include "mir/param/SameParametrisation.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/util/Exceptions.h"
 

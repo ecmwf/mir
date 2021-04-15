@@ -12,7 +12,7 @@
 
 #include "mir/input/EmptyInput.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/data/MIRField.h"
 #include "mir/util/Exceptions.h"

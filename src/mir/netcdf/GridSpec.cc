@@ -12,8 +12,8 @@
 
 #include "mir/netcdf/GridSpec.h"
 
-#include <iostream>
 #include <mutex>
+#include <ostream>
 #include <sstream>
 
 #include "mir/netcdf/Dataset.h"

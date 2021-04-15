@@ -12,7 +12,7 @@
 
 #include "mir/lsm/LandSeaMasks.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/utils/MD5.h"
 

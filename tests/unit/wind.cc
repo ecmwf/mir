@@ -10,7 +10,7 @@
  */
 
 
-#include <iostream>
+#include <ostream>
 #include <vector>
 
 #include "eckit/config/Configuration.h"

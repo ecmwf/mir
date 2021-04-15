@@ -12,7 +12,7 @@
 
 #include "mir/action/context/Context.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/thread/AutoLock.h"

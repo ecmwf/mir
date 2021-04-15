@@ -13,8 +13,8 @@
 #include "mir/data/CartesianVector2DField.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
+#include <ostream>
 
 #include "mir/repres/Iterator.h"
 #include "mir/repres/Representation.h"

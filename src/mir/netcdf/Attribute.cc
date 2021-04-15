@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/Attribute.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/netcdf/Endowed.h"
 #include "mir/netcdf/Exceptions.h"

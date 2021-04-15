@@ -12,7 +12,8 @@
 
 #include "mir/netcdf/Matrix.h"
 
-#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #include "mir/netcdf/Codec.h"
 #include "mir/netcdf/Exceptions.h"

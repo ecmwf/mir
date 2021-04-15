@@ -12,7 +12,7 @@
 
 #include "mir/param/CombinedParametrisation.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

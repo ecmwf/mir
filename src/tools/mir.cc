@@ -10,8 +10,8 @@
  */
 
 
-#include <iostream>
 #include <memory>
+#include <ostream>
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/option/CmdArgs.h"

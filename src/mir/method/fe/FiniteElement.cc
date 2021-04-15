@@ -350,7 +350,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
         << Log::Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
 
     if (nbFailures > 0) {
-        std::stringstream msg;
+        std::ostringstream msg;
         msg << "Failed to project " << Log::Pretty(nbFailures, {"point"});
         log << msg.str() << ":";
         size_t count = 0;

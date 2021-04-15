@@ -12,7 +12,7 @@
 
 #include "mir/key/grid/NamedOctahedral.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"
 #include "mir/repres/gauss/reduced/RotatedOctahedral.h"

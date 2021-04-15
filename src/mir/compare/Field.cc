@@ -11,7 +11,7 @@
 
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 #include "eckit/option/CmdArgs.h"
 #include "eckit/option/SimpleOption.h"

@@ -13,7 +13,7 @@
 #include "mir/input/RawInput.h"
 
 #include <cstring>
-#include <iostream>
+#include <ostream>
 
 #include "mir/data/MIRField.h"
 #include "mir/input/RawMetadata.h"

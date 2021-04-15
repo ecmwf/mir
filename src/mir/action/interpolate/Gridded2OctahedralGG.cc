@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2OctahedralGG.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/gauss/reduced/ReducedOctahedral.h"

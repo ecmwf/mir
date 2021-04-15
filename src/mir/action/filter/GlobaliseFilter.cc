@@ -12,7 +12,7 @@
 
 #include "mir/action/filter/GlobaliseFilter.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"

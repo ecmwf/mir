@@ -12,7 +12,7 @@
 
 #include "mir/repres/other/None.h"
 
-#include <iostream>
+#include <ostream>
 
 
 namespace mir {

@@ -12,9 +12,9 @@
 
 #include "mir/key/intgrid/Intgrid.h"
 
-#include <iostream>
 #include <map>
 #include <mutex>
+#include <ostream>
 
 #include "mir/key/grid/Grid.h"
 #include "mir/key/grid/GridPattern.h"

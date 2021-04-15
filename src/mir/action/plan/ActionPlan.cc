@@ -13,7 +13,7 @@
 #include "mir/action/plan/ActionPlan.h"
 
 #include <fstream>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
 #include "eckit/log/JSON.h"

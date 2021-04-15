@@ -12,7 +12,7 @@
 
 #include "mir/action/interpolate/Gridded2GridDef.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/filesystem/PathName.h"
 

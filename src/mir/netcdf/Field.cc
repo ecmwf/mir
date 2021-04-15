@@ -12,7 +12,7 @@
 
 #include "mir/netcdf/Field.h"
 
-#include <iostream>
+#include <ostream>
 
 #include "eckit/parser/YAMLParser.h"
 
