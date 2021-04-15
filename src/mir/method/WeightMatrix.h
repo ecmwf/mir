@@ -33,17 +33,13 @@ public:  // types
     using Size    = eckit::linalg::Size;
 
 public:  // methods
-    WeightMatrix(SparseMatrix::Allocator* alloc = nullptr);
+    WeightMatrix(SparseMatrix::Allocator* = nullptr);
 
     WeightMatrix(const eckit::PathName&);
 
     WeightMatrix(Size rows, Size cols);
 
     void setFromTriplets(const std::vector<Triplet>&);
-
-    void multiply(const Vector& values, Vector& result) const;
-
-    void multiply(const Matrix& values, Matrix& result) const;
 
     void cleanup(const double& pruneEpsilon = 0);
 

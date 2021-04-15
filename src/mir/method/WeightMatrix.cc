@@ -14,8 +14,6 @@
 
 #include <cmath>
 
-#include "eckit/linalg/LinearAlgebra.h"
-#include "eckit/linalg/Vector.h"
 #include "eckit/types/FloatCompare.h"
 
 #include "mir/util/Exceptions.h"
@@ -55,45 +53,7 @@ void WeightMatrix::print(std::ostream& os) const {
 }
 
 
-void WeightMatrix::multiply(const WeightMatrix::Vector& values, WeightMatrix::Vector& result) const {
-
-    /// @todo linear algebra backend should depend on parametrisation
-    eckit::linalg::LinearAlgebra::backend().spmv(*this, values, result);
-}
-
-
-void WeightMatrix::multiply(const WeightMatrix::Matrix& values, WeightMatrix::Matrix& result) const {
-
-    // Log::debug() << "MethodWeighted::multiply: "
-    //                                "A[" << rows()        << ',' << cols()        << "] * "
-    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
-    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
-
-    // Log::info() << "Multiply: "
-    //                                "A[" << rows()        << ',' << cols()        << "] * "
-    //                                "B[" << values.rows() << ',' << values.cols() << "] = "
-    //                                "C[" << result.rows() << ',' << result.cols() << "]" << std::endl;
-
-    ASSERT(values.rows() == cols());
-    ASSERT(result.rows() == rows());
-    ASSERT(values.cols() == result.cols());
-
-    // when interpolating, the general case is for single-column values/result vectors
-    if (values.cols() == 1) {
-        // FIXME: remove this const cast once Vector provides read-only view
-        eckit::linalg::Vector vi(const_cast<double*>(values.data()), values.rows());
-        eckit::linalg::Vector vo(result.data(), result.rows());
-
-        eckit::linalg::LinearAlgebra::backend().spmv(*this, vi, vo);
-    }
-    else {
-        eckit::linalg::LinearAlgebra::backend().spmm(*this, values, result);
-    }
-}
-
-
 void WeightMatrix::cleanup(const double& pruneEpsilon) {
-
     size_t fixed = 0;
     size_t count = 0;
 
@@ -103,9 +63,9 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         size_t non_zero = 0;
 
         for (iterator it = begin(i); it != end(i); ++it) {
-            const double a = *it;
-            if (fabs(a) < pruneEpsilon) {
-                if (fabs(a) > 0) {
+            double a = *it;
+            if (std::fabs(a) < pruneEpsilon) {
+                if (std::fabs(a) > 0) {
                     removed += a;
                     *it = 0;
                     fixed++;
@@ -120,7 +80,7 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
         if ((removed != 0.) && (non_zero > 0)) {
             double d = removed / double(non_zero);
             for (iterator it = begin(i); it != end(i); ++it) {
-                const double a = *it;
+                double a = *it;
                 if (a != 0.) {
                     *it = a + d;
                 }
@@ -142,19 +102,19 @@ void WeightMatrix::cleanup(const double& pruneEpsilon) {
 
 
 void WeightMatrix::validate(const char* when) const {
-
-    bool logErrors = (Log::debug());
+    constexpr size_t Nerrors = 50;
+    constexpr size_t Nvalues = 10;
 
     size_t errors = 0;
 
-    for (Size i = 0; i < rows(); i++) {
+    for (Size r = 0; r < rows(); r++) {
 
         // check for W(i,j)<0, or W(i,j)>1, or sum(W(i,:))!=(0,1)
         double sum = 0.;
         bool ok    = true;
 
-        for (const_iterator it = begin(i); it != end(i); ++it) {
-            const double& a = *it;
+        for (const_iterator it = begin(r); it != end(r); ++it) {
+            double a = *it;
             ok &= eckit::types::is_approximately_greater_or_equal(a, 0.) &&
                   eckit::types::is_approximately_greater_or_equal(1., a);
             sum += a;
@@ -163,17 +123,17 @@ void WeightMatrix::validate(const char* when) const {
         ok &= (eckit::types::is_approximately_equal(sum, 0.) || eckit::types::is_approximately_equal(sum, 1.));
 
         // log issues, per row
-        if (!ok && logErrors) {
+        if (!ok && Log::debug()) {
 
-            if (errors < 50) {
+            if (errors < Nerrors) {
                 if (errors == 0) {
                     Log::debug() << "WeightMatrix::validate(" << when << ") failed " << std::endl;
                 }
 
-                Log::debug() << "Row: " << i;
+                Log::debug() << "Row: " << r;
                 size_t n = 0;
-                for (const_iterator it = begin(i); it != end(i); ++it, ++n) {
-                    if (n > 10) {
+                for (const_iterator it = begin(r); it != end(r); ++it, ++n) {
+                    if (n > Nvalues) {
                         Log::debug() << " ...";
                         break;
                     }
@@ -182,7 +142,7 @@ void WeightMatrix::validate(const char* when) const {
 
                 Log::debug() << " sum=" << sum << ", 1-sum " << (1 - sum) << std::endl;
             }
-            else if (errors == 50) {
+            else if (errors == Nerrors) {
                 Log::debug() << "..." << std::endl;
             }
             errors++;

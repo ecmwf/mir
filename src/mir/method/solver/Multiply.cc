@@ -12,10 +12,14 @@
 
 #include "mir/method/solver/Multiply.h"
 
-#include <iostream>
+#include <ostream>
 #include <sstream>
 
+#include "eckit/linalg/LinearAlgebra.h"
+#include "eckit/linalg/Vector.h"
 #include "eckit/utils/MD5.h"
+
+#include "mir/util/Exceptions.h"
 
 
 namespace mir {
@@ -25,7 +29,21 @@ namespace solver {
 
 void Multiply::solve(const MethodWeighted::Matrix& A, const MethodWeighted::WeightMatrix& W, MethodWeighted::Matrix& B,
                      const double&) const {
-    W.multiply(A, B);
+    ASSERT(A.rows() == W.cols());
+    ASSERT(B.rows() == W.rows());
+    ASSERT(A.cols() == B.cols());
+
+    // The general case is for single-column values/result vectors
+    // FIXME remove const_cast once Vector provides read-only view
+    if (A.cols() == 1) {
+        eckit::linalg::Vector a(const_cast<double*>(A.data()), A.rows());
+        eckit::linalg::Vector b(B.data(), B.rows());
+
+        eckit::linalg::LinearAlgebra::backend().spmv(W, a, b);
+    }
+    else {
+        eckit::linalg::LinearAlgebra::backend().spmm(W, A, B);
+    }
 }
 
 
