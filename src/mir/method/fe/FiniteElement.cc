@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cmath>
 #include <forward_list>
-#include <iterator>
 #include <limits>
 #include <map>
 #include <memory>
@@ -42,7 +41,7 @@ namespace fe {
 
 
 // epsilon used to scale edge tolerance when projecting ray to intesect element
-static const double parametricEpsilon = 1e-15;
+static constexpr double parametricEpsilon = 1e-15;
 
 static std::once_flag once;
 static std::recursive_mutex* mtx                       = nullptr;
@@ -57,162 +56,86 @@ using element_tree_t      = atlas::interpolation::method::ElemIndex3;
 using failed_projection_t = std::pair<size_t, PointLatLon>;
 
 
-static void normalise(triplet_vector_t& triplets) {
-    ASSERT(!triplets.empty());
+struct element_t : std::vector<size_t> {
+    using vector::vector;
 
-    // sum all calculated weights for normalisation
-    double sum = 0.;
-    for (auto& t : triplets) {
-        sum += t.value();
-    }
+    virtual bool intersects(const atlas::interpolation::method::Ray&) = 0;
 
-    // normalise all weights according to the total
-    if (sum > std::numeric_limits<double>::epsilon()) {
-        const double invSum = 1. / sum;
-        for (auto& t : triplets) {
-            t.value() *= invSum;
+    void append_triplets(size_t i, size_t nbRealPoints, triplet_vector_t& t) const {
+        ASSERT(size() == weights.size());
+
+        bool normalise = std::any_of(cbegin(), cend(), [nbRealPoints](size_t i) { return i >= nbRealPoints; });
+        if (normalise) {
+            // sum all calculated weights for normalisation
+            double sum = 0.;
+            size_t n   = 0;
+            for (size_t j = 0; j < size(); ++j) {
+                if (operator[](j) < nbRealPoints) {
+                    sum += weights[j];
+                    ++n;
+                }
+            }
+
+            // normalise all weights according to the total (if no reasonable sum is found, distribute equitably)
+            if (n > 0) {
+                bool equitable = sum <= std::numeric_limits<double>::epsilon();
+                auto invSum    = 1. / (equitable ? double(n) : sum);
+
+                for (size_t j = 0; j < size() && 0 < n; ++j) {
+                    if (operator[](j) < nbRealPoints) {
+                        t.emplace_back(i, operator[](j), equitable ? invSum : (weights[j] * invSum));
+                    }
+                }
+            }
+
+            return;
         }
-        return;
+
+        for (size_t j = 0; j < size(); ++j) {
+            t.emplace_back(i, operator[](j), weights[j]);
+        }
     }
 
-    // if no reasonable weight sum is found, distribute equitably
-    const double invSum = 1. / double(triplets.size());
-    for (auto& t : triplets) {
-        t.value() = invSum;
-    }
-}
-
-
-struct Triag3D : atlas::interpolation::element::Triag3D {
-    Triag3D(const atlas::array::ArrayView<double, 2>& icoords, size_t i1, size_t i2, size_t i3) :
-        atlas::interpolation::element::Triag3D(
-            atlas::PointXYZ{icoords(i1, XYZCOORDS::XX), icoords(i1, XYZCOORDS::YY), icoords(i1, XYZCOORDS::ZZ)},
-            atlas::PointXYZ{icoords(i2, XYZCOORDS::XX), icoords(i2, XYZCOORDS::YY), icoords(i2, XYZCOORDS::ZZ)},
-            atlas::PointXYZ{icoords(i3, XYZCOORDS::XX), icoords(i3, XYZCOORDS::YY), icoords(i3, XYZCOORDS::ZZ)}) {}
+    std::vector<double>
+        weights;  //< weights (per element vertex) are the linear Lagrange function at u,v (barycentric coordinates)
 };
 
 
-struct Quad3D : atlas::interpolation::element::Quad3D {
-    Quad3D(const atlas::array::ArrayView<double, 2>& icoords, size_t i1, size_t i2, size_t i3, size_t i4) :
-        atlas::interpolation::element::Quad3D(
-            atlas::PointXYZ{icoords(i1, XYZCOORDS::XX), icoords(i1, XYZCOORDS::YY), icoords(i1, XYZCOORDS::ZZ)},
-            atlas::PointXYZ{icoords(i2, XYZCOORDS::XX), icoords(i2, XYZCOORDS::YY), icoords(i2, XYZCOORDS::ZZ)},
-            atlas::PointXYZ{icoords(i3, XYZCOORDS::XX), icoords(i3, XYZCOORDS::YY), icoords(i3, XYZCOORDS::ZZ)},
-            atlas::PointXYZ{icoords(i4, XYZCOORDS::XX), icoords(i4, XYZCOORDS::YY), icoords(i4, XYZCOORDS::ZZ)}) {}
+struct triag_t : element_t, atlas::interpolation::element::Triag3D {
+    triag_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3) :
+        element_t{i1, i2, i3},
+        Triag3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
+                atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
+                atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)}) {}
+
+    bool intersects(const atlas::interpolation::method::Ray& r) override {
+        auto is = Triag3D::intersects(r, parametricEpsilon * std::sqrt(area()));
+        if (is) {
+            weights.assign({1. - is.u - is.v, is.u, is.v});
+            return true;
+        }
+        return false;
+    }
 };
 
 
-/// Find in which element the point is contained by projecting the point with each nearest element
-static triplet_vector_t projectPointTo3DElements(size_t nbInputPoints,
-                                                 const atlas::array::ArrayView<double, 2>& icoords,
-                                                 const atlas::mesh::HybridElements::Connectivity& connectivity,
-                                                 const Point3& p, size_t ip, size_t firstVirtualPoint,
-                                                 size_t& nbProjectionAttempts,
-                                                 const element_tree_t::NodeList& closest) {
-    if (closest.empty()) {
-        return {};
+struct quad_t : element_t, atlas::interpolation::element::Quad3D {
+    quad_t(const atlas::array::ArrayView<double, 2>& coords, size_t i1, size_t i2, size_t i3, size_t i4) :
+        element_t{i1, i2, i3, i4},
+        Quad3D(atlas::PointXYZ{coords(i1, XYZCOORDS::XX), coords(i1, XYZCOORDS::YY), coords(i1, XYZCOORDS::ZZ)},
+               atlas::PointXYZ{coords(i2, XYZCOORDS::XX), coords(i2, XYZCOORDS::YY), coords(i2, XYZCOORDS::ZZ)},
+               atlas::PointXYZ{coords(i3, XYZCOORDS::XX), coords(i3, XYZCOORDS::YY), coords(i3, XYZCOORDS::ZZ)},
+               atlas::PointXYZ{coords(i4, XYZCOORDS::XX), coords(i4, XYZCOORDS::YY), coords(i4, XYZCOORDS::ZZ)}) {}
+
+    bool intersects(const atlas::interpolation::method::Ray& r) override {
+        auto is = Quad3D::intersects(r, parametricEpsilon * std::sqrt(area()));
+        if (is) {
+            weights.assign({(1. - is.u) * (1. - is.v), is.u * (1. - is.v), is.u * is.v, (1. - is.u) * is.v});
+            return true;
+        }
+        return false;
     }
-
-    triplet_vector_t triplets;
-
-    bool mustNormalise = false;
-    size_t idx[4];
-    double w[4];
-
-    atlas::interpolation::method::Ray ray(p.data());
-
-    nbProjectionAttempts = 0;
-    for (const auto& close : closest) {
-        ++nbProjectionAttempts;
-
-        const auto elem_id = atlas::idx_t(close.value().payload());
-        ASSERT(elem_id < connectivity.rows());
-
-        /* assumes:
-         * - nb_cols == 3 implies triangle
-         * - nb_cols == 4 implies quadrilateral
-         * - no other element is supported at the time
-         */
-        const auto nb_cols = connectivity.cols(elem_id);
-        ASSERT(nb_cols == 3 || nb_cols == 4);
-
-        for (atlas::idx_t i = 0; i < nb_cols; ++i) {
-            idx[i] = size_t(connectivity(elem_id, i));
-            ASSERT(idx[i] < nbInputPoints);
-        }
-
-        if (nb_cols == 3) {
-
-            /* triangle */
-            Triag3D triag(icoords, idx[0], idx[1], idx[2]);
-
-            // pick an epsilon based on a characteristic length (sqrt(area))
-            // (this scales linearly so it better compares with linear weights u,v,w)
-            const double edgeEpsilon = parametricEpsilon * std::sqrt(triag.area());
-            ASSERT(edgeEpsilon >= 0);
-
-            auto is = triag.intersects(ray, edgeEpsilon);
-            if (is) {
-
-                // weights are the linear Lagrange function evaluated at u,v (aka barycentric coordinates)
-                w[0] = 1. - is.u - is.v;
-                w[1] = is.u;
-                w[2] = is.v;
-
-                for (size_t i = 0; i < 3; ++i) {
-                    if (idx[i] < firstVirtualPoint) {
-                        triplets.push_back(WeightMatrix::Triplet(ip, idx[i], w[i]));
-                    }
-                    else {
-                        mustNormalise = true;
-                    }
-                }
-
-                break;  // stop looking for elements
-            }
-        }
-        else {
-
-            /* quadrilateral */
-            Quad3D quad(icoords, idx[0], idx[1], idx[2], idx[3]);
-
-            // pick an epsilon based on a characteristic length (sqrt(area))
-            // (this scales linearly so it better compares with linear weights u,v,w)
-            const double edgeEpsilon = parametricEpsilon * std::sqrt(quad.area());
-            ASSERT(edgeEpsilon >= 0);
-
-            auto is = quad.intersects(ray, edgeEpsilon);
-            if (is) {
-
-                // weights are the bilinear Lagrange function evaluated at u,v
-                w[0] = (1. - is.u) * (1. - is.v);
-                w[1] = is.u * (1. - is.v);
-                w[2] = is.u * is.v;
-                w[3] = (1. - is.u) * is.v;
-
-
-                for (size_t i = 0; i < 4; ++i) {
-                    if (idx[i] < firstVirtualPoint) {
-                        triplets.push_back(WeightMatrix::Triplet(ip, idx[i], w[i]));
-                    }
-                    else {
-                        mustNormalise = true;
-                    }
-                }
-
-                break;  // stop looking for elements
-            }
-        }
-
-    }  // loop over nearest elements
-
-    // at least one of the nodes of element shouldn't be virtual
-    if (!triplets.empty() && mustNormalise) {
-        normalise(triplets);
-    }
-
-    return triplets;
-}
+};
 
 
 FiniteElement::FiniteElement(const param::MIRParametrisation& param, const std::string& label) :
@@ -240,6 +163,38 @@ atlas::Mesh FiniteElement::atlasMesh(util::MIRStatistics& statistics, const repr
     if (!params.meshCellLongestDiagonal_) {
         ASSERT(d > 0.);
         msh.metadata().set("cell_longest_diagonal", d);
+    }
+
+    if (validateMesh_) {
+        auto& connectivity = msh.cells().node_connectivity();
+        auto& nodes        = msh.nodes();
+        auto nb_nodes      = size_t(nodes.size());
+        auto coords        = atlas::array::make_view<double, 2>(nodes.field("xyz"));
+
+        size_t idx[4];
+        for (atlas::idx_t i = 0; i < connectivity.rows(); ++i) {
+            /*
+             * Somewhat expensive sanity check, assumes:
+             * - nb_cols == 3 implies triangle
+             * - nb_cols == 4 implies quadrilateral (these are validated)
+             * - no other element is supported at the time
+             */
+            const auto nb_cols = connectivity.cols(i);
+            ASSERT(nb_cols == 3 || nb_cols == 4);
+
+            for (atlas::idx_t j = 0; j < nb_cols; ++j) {
+                idx[j] = size_t(connectivity(i, j));
+                ASSERT(idx[j] < nb_nodes);
+            }
+
+            if (nb_cols == 4) {
+                quad_t quad(coords, idx[0], idx[1], idx[2], idx[3]);
+                if (!quad.validate()) {
+                    Log::warning() << "Invalid Quad : " << quad << std::endl;
+                    throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
+                }
+            }
+        }
     }
 
     return msh;
@@ -284,49 +239,7 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
     // get input mesh
     ASSERT(meshGeneratorParams().meshCellCentres_);  // required for the k-d tree
-
     const auto& inMesh = atlasMesh(statistics, in);
-
-    auto& connectivity       = inMesh.cells().node_connectivity();
-    auto& inNodes            = inMesh.nodes();
-    const auto nbInputPoints = size_t(inNodes.size());
-    auto inCoords            = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
-
-    if (validateMesh_) {
-        size_t idx[4];
-        for (atlas::idx_t i = 0; i < connectivity.rows(); ++i) {
-            /*
-             * Somewhat expensive sanity check, assumes:
-             * - nb_cols == 3 implies triangle
-             * - nb_cols == 4 implies quadrilateral (these are validated)
-             * - no other element is supported at the time
-             */
-            const auto nb_cols = connectivity.cols(i);
-            ASSERT(nb_cols == 3 || nb_cols == 4);
-
-            if (nb_cols == 4) {
-                idx[0] = size_t(connectivity(i, 0));
-                idx[1] = size_t(connectivity(i, 1));
-                idx[2] = size_t(connectivity(i, 2));
-                idx[3] = size_t(connectivity(i, 3));
-                ASSERT(idx[0] < nbInputPoints);
-                ASSERT(idx[1] < nbInputPoints);
-                ASSERT(idx[2] < nbInputPoints);
-                ASSERT(idx[3] < nbInputPoints);
-
-                Quad3D quad(inCoords, idx[0], idx[1], idx[2], idx[3]);
-                if (!quad.validate()) {
-                    Log::warning() << "Invalid Quad : " << quad << std::endl;
-                    throw exception::SeriousBug("Found invalid quadrilateral in mesh", Here());
-                }
-            }
-        }
-    }
-
-    size_t firstVirtualPoint = std::numeric_limits<size_t>::max();
-    if (inNodes.metadata().has("NbRealPts")) {
-        firstVirtualPoint = inNodes.metadata().get<size_t>("NbRealPts");
-    }
 
 
     // generate k-d tree with cell centres
@@ -341,69 +254,97 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
     log << "k-d tree: search radius R=" << R << "m" << std::endl;
 
 
+    // grid/mesh properties
+    const auto inDomain      = in.domain();
+    const auto& connectivity = inMesh.cells().node_connectivity();
+    const auto& inNodes      = inMesh.nodes();
+    const auto inCoords      = atlas::array::make_view<double, 2>(inNodes.field("xyz"));
+
+    const auto nbOutputPoints = out.numberOfPoints();
+    const auto nbInputPoints  = size_t(inNodes.size());
+    const auto nbRealPts =
+        inNodes.metadata().has("NbRealPts") ? inNodes.metadata().get<size_t>("NbRealPts") : nbInputPoints;
+
+
     // some statistics
-    const size_t nbOutputPoints    = out.numberOfPoints();
-    size_t nbMinElementsSearched   = std::numeric_limits<size_t>::max();
     size_t nbMaxElementsSearched   = 0;
+    size_t nbMinElementsSearched   = std::numeric_limits<size_t>::max();
     size_t nbMaxProjectionAttempts = 0;
     size_t nbProjections           = 0;
+    size_t nbFailures              = 0;
 
-    size_t nbFailures = 0;
     std::forward_list<failed_projection_t> failures;
-
-
-    // weights -- one per vertex of element, triangles (3) or quads (4)
     triplet_vector_t weights_triplets;             // structure to fill-in sparse matrix
     weights_triplets.reserve(nbOutputPoints * 4);  // preallocate space as if all elements where quads
+
 
     {
         trace::ProgressTimer progress("Projecting", nbOutputPoints, {"point"}, log);
 
-        const auto& inDomain = in.domain();
-
-        // output points
-        const std::unique_ptr<repres::Iterator> it(out.iterator());
+        // iterate over output points
         size_t ip = 0;
-
-        while (it->next()) {
+        for (std::unique_ptr<repres::Iterator> it(out.iterator()); it->next(); ++ip, ++progress) {
             ASSERT(ip < nbOutputPoints);
-            ++progress;
 
             if (inDomain.contains(it->pointRotated())) {
 
-                // 3D point to lookup
+                // 3D projection, trying elements closest to p (if this fails, consider lowering parametricEpsilon)
                 Point3 p(it->point3D());
-
-                // 3D projection, trying elements closest to p first
                 size_t nbProjectionAttempts = 0;
 
-                auto closest  = eTree->findInSphere(p, R);
-                auto triplets = projectPointTo3DElements(nbInputPoints, inCoords, connectivity, p, ip,
-                                                         firstVirtualPoint, nbProjectionAttempts, closest);
+                auto closest = eTree->findInSphere(p, R);
+
+                atlas::interpolation::method::Ray ray(p.data());
+
+                bool success = false;
+                for (const auto& close : closest) {
+                    ++nbProjectionAttempts;
+
+                    /*
+                     * Assumes:
+                     * - nb_cols == 3 implies triangle
+                     * - nb_cols == 4 implies quadrilateral
+                     * - no other element is supported at the time
+                     */
+                    const auto e = close.value().payload();
+                    ASSERT(e < size_t(connectivity.rows()));
+
+                    auto idx = [e, nbInputPoints, &connectivity](size_t j) {
+                        auto x = size_t(connectivity(e, j));
+                        ASSERT(x < nbInputPoints);
+                        return x;
+                    };
+
+                    const auto nb_cols = connectivity.cols(e);
+
+                    std::unique_ptr<element_t> elem(
+                        nb_cols == 3   ? static_cast<element_t*>(new triag_t(inCoords, idx(0), idx(1), idx(2)))
+                        : nb_cols == 4 ? new quad_t(inCoords, idx(0), idx(1), idx(2), idx(3))
+                                       : NOTIMP);
+
+                    if (elem->intersects(ray)) {
+                        elem->append_triplets(ip, nbRealPts, weights_triplets);
+                        success = true;
+                        break;
+                    }
+                }
 
                 nbMaxElementsSearched   = std::max(nbMaxElementsSearched, closest.size());
                 nbMinElementsSearched   = std::min(nbMinElementsSearched, closest.size());
                 nbMaxProjectionAttempts = std::max(nbMaxProjectionAttempts, nbProjectionAttempts);
 
-                if (triplets.empty()) {
-                    if (!missingValueOnProjectionFail_) {
-                        // If this fails, consider lowering parametricEpsilon
-                        failures.emplace_front(ip, it->pointUnrotated());
-                        ++nbFailures;
-                    }
-                }
-                else {
-                    std::copy(triplets.begin(), triplets.end(), std::back_inserter(weights_triplets));
+                if (success) {
                     ++nbProjections;
                 }
+                else if (!missingValueOnProjectionFail_) {
+                    failures.emplace_front(ip, it->pointUnrotated());
+                    ++nbFailures;
+                }
             }
-
-            ++ip;
         }
     }
 
-    log << "Projected " << Log::Pretty(nbProjections) << " of " << Log::Pretty(nbOutputPoints, {"point"}) << " ("
-        << Log::Pretty(nbFailures, {"failure"}) << ")\n"
+    log << "Projected " << Log::Pretty(nbProjections) << " of " << Log::Pretty(nbOutputPoints, {"point"}) << "\n"
         << "k-d tree: searched between " << Log::Pretty(nbMinElementsSearched) << " and "
         << Log::Pretty(nbMaxElementsSearched, {"element"}) << ", with up to "
         << Log::Pretty(nbMaxProjectionAttempts, {"projection attempt"}) << " (per point)" << std::endl;
