@@ -27,6 +27,9 @@ class MIRField;
 namespace param {
 class MIRParametrisation;
 }
+namespace util {
+class ValueMap;
+}
 }  // namespace mir
 
 
@@ -65,7 +68,7 @@ public:
     virtual const param::MIRParametrisation& parametrisation(size_t which = 0) const = 0;
     virtual data::MIRField field() const                                             = 0;
     virtual grib_handle* gribHandle(size_t which = 0) const;
-    virtual void setAuxiliaryInformation(const std::string&);
+    virtual void setAuxiliaryInformation(const util::ValueMap&);
     virtual size_t copy(double* values, size_t size) const;
     virtual bool sameAs(const MIRInput&) const = 0;
 

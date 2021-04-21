@@ -16,12 +16,11 @@
 #include <mutex>
 #include <sstream>
 
-#include "eckit/parser/YAMLParser.h"
-
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -83,9 +82,7 @@ data::MIRField ArtificialInput::field() const {
 }
 
 
-void ArtificialInput::setAuxiliaryInformation(const std::string& yaml) {
-
-    eckit::ValueMap map = eckit::YAMLParser::decodeString(yaml);
+void ArtificialInput::setAuxiliaryInformation(const util::ValueMap& map) {
     for (const auto& kv : map) {
         Log::debug() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
         kv.second.isDouble()   ? parametrisation_.set(kv.first, kv.second.as<double>())

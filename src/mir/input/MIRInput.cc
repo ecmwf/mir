@@ -18,12 +18,14 @@
 #include <sstream>
 
 #include "eckit/io/StdFile.h"
+#include "eckit/parser/YAMLParser.h"
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -50,7 +52,7 @@ grib_handle* MIRInput::gribHandle(size_t) const {
 }
 
 
-void MIRInput::setAuxiliaryInformation(const std::string&) {
+void MIRInput::setAuxiliaryInformation(const util::ValueMap&) {
     std::ostringstream os;
     os << "MIRInput::setAuxiliaryInformation() not implemented for " << *this;
     throw exception::SeriousBug(os.str());
@@ -136,23 +138,27 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
-    const param::MIRParametrisation& user = parametrisation.userParametrisation();
+    auto& user = parametrisation.userParametrisation();
 
+    util::ValueMap map;
     std::string input;
-    user.get("input", input);
+    if (user.get("input", input) && !input.empty()) {
+        map = eckit::YAMLParser::decodeString(input);
+    }
 
     // attach information after construction (pe. extra files), so virtual methods are specific to child class
-    auto aux = [&input](MIRInput* in) {
+    auto aux = [&map](MIRInput* in) {
         ASSERT(in);
-        if (!input.empty()) {
-            in->setAuxiliaryInformation(input);
+        if (!map.empty()) {
+            in->setAuxiliaryInformation(map);
         }
         return in;
     };
 
-    std::string synth;
-    if (user.get("artificial-input", synth)) {
-        return aux(ArtificialInputFactory::build(synth, user));
+    // Special case: artificial input
+    std::string artificialInput;
+    if (user.get("artificial-input", artificialInput)) {
+        return aux(ArtificialInputFactory::build(artificialInput, user));
     }
 
     eckit::AutoStdFile f(path);

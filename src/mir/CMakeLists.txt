@@ -671,6 +671,7 @@ list(APPEND mir_srcs
     util/Trace.cc
     util/Trace.h
     util/Types.h
+    util/ValueMap.h
     util/Wind.cc
     util/Wind.h)
 

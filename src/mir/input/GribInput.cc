@@ -23,7 +23,6 @@
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/StdFile.h"
-#include "eckit/parser/YAMLParser.h"
 #include "eckit/serialisation/HandleStream.h"
 #include "eckit/types/FloatCompare.h"
 #include "eckit/types/Fraction.h"
@@ -35,6 +34,7 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/LongitudeDouble.h"
+#include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
 
 
@@ -1140,11 +1140,10 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 }
 
 
-void GribInput::setAuxiliaryInformation(const std::string& yaml) {
+void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
 
-    eckit::ValueMap keyValue = eckit::YAMLParser::decodeString(yaml);
-    for (const auto& kv : keyValue) {
+    for (const auto& kv : map) {
         if (kv.first == "latitudes") {
             Log::debug() << "Loading auxilary file '" << kv.second << "'" << std::endl;
             auxilaryValues(kv.second, latitudes_);
