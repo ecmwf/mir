@@ -767,12 +767,12 @@ bool SimpleParametrisation::empty() const {
 bool SimpleParametrisation::matches(const MIRParametrisation& other) const {
     for (const auto& j : settings_) {
         if (!j.second->match(j.first, other)) {
-            Log::debug() << "SimpleParametrisation::matches: no (" << j.first << " different to " << *(j.second) << ")"
-                         << std::endl;
+            // Log::debug() << "SimpleParametrisation::matches: no (" << j.first << " different to " << *(j.second) <<
+            // ")" << std::endl;
             return false;
         }
     }
-    Log::debug() << "SimpleParametrisation::matches: yes" << std::endl;
+    // Log::debug() << "SimpleParametrisation::matches: yes" << std::endl;
     return true;
 }
 
