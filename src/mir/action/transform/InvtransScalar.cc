@@ -22,18 +22,22 @@
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
+
 namespace mir {
 namespace action {
 namespace transform {
+
 
 void InvtransScalar::print(std::ostream& out) const {
     out << "invtrans=<scalar>";
 }
 
+
 void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_trans_t& trans,
                              const param::MIRParametrisation&) const {
     auto& log = Log::debug();
     trace::Timer mainTimer("InvtransScalar::sh2grid", log);
+
 
     // set invtrans options
     atlas::util::Config config;
@@ -41,6 +45,7 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
     size_t F = field.dimensions();
     ASSERT(F > 0);
+
 
     // set input working area (avoid copies for one field only)
     MIRValuesVector input;
@@ -55,37 +60,51 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
         input.resize(F * N * 2);
 
-        for (size_t i = 0; i < F; ++i) {
-            repres::sh::SphericalHarmonics::interlace_spectra(input, field.values(i), T, N, i, F);
+        for (size_t f = 0; f < F; ++f) {
+            repres::sh::SphericalHarmonics::interlace_spectra(input, field.values(f), T, N, f, F);
+            field.direct(f).clear();
         }
     }
+    else {
+        input.swap(field.direct(0));
+    }
+
 
     // set output working area
     auto Ngp = size_t(trans.grid().size());
+    ASSERT(Ngp > 0);
+
     MIRValuesVector output(F * Ngp);
+
 
     // inverse transform
     {
         trace::Timer timer("InvtransScalar: invtrans", log);
-        trans.invtrans(int(F), F > 1 ? input.data() : field.values(0).data(), output.data(), config);
+        trans.invtrans(int(F), input.data(), output.data(), config);
+
+        input.clear();
     }
+
 
     // set field values (again, avoid copies for one field only)
     if (F > 1) {
         trace::Timer timer("InvtransScalar: copying grid-point values", log);
 
+        MIRValuesVector values;
         auto here = output.cbegin();
-        for (size_t i = 0; i < F; ++i) {
-            MIRValuesVector output_field(here, here + int(Ngp));
 
-            field.update(output_field, i);
-            here += int(Ngp);
+        for (size_t f = 0; f < F; ++f) {
+            values.assign(here, here + Ngp);
+
+            field.update(values, f);
+            here += Ngp;
         }
     }
     else {
         field.update(output, 0);
     }
 }
+
 
 }  // namespace transform
 }  // namespace action
