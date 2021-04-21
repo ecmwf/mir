@@ -117,9 +117,9 @@ bool MultiScalarInput::sameAs(const MIRInput& other) const {
 void MultiScalarInput::print(std::ostream& out) const {
     out << "MultiScalarInput[";
 
-    const char* sep = "";
+    auto sep = "";
     for (auto& c : components_) {
-        out << sep << c;
+        out << sep << *c;
         sep = ",";
     }
 
