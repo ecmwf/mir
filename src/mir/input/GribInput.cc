@@ -133,7 +133,7 @@ class ConditionOR : public Condition {
     const Condition* left_;
     const Condition* right_;
     bool eval(grib_handle* h) const override { return left_->eval(h) || right_->eval(h); }
-    ~ConditionOR() {
+    ~ConditionOR() override {
         delete right_;
         delete left_;
     }
@@ -837,7 +837,7 @@ bool GribInput::get(const std::string& name, long& value) const {
             {nullptr, nullptr, nullptr},
         };
 
-        return get_value(key.c_str(), grib_, value, process) || FieldParametrisation::get(name, value);
+        return get_value(key, grib_, value, process) || FieldParametrisation::get(name, value);
     }
 
     if (err != 0) {
