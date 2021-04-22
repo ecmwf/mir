@@ -25,12 +25,16 @@ list(APPEND mir_srcs
     action/filter/AdjustWindsScaleCosLatitude.h
     action/filter/BitmapFilter.cc
     action/filter/BitmapFilter.h
+    action/filter/CesaroSummationFilter.cc
+    action/filter/CesaroSummationFilter.h
     action/filter/FrameFilter.cc
     action/filter/FrameFilter.h
     action/filter/GlobaliseFilter.cc
     action/filter/GlobaliseFilter.h
     action/filter/NablaFilter.cc
     action/filter/NablaFilter.h
+    action/filter/ShTruncate.cc
+    action/filter/ShTruncate.h
     action/filter/StatisticsFilter.cc
     action/filter/StatisticsFilter.h
     action/filter/UnstructuredFilter.cc
@@ -716,8 +720,6 @@ if(mir_HAVE_ATLAS)
         action/transform/ShToRotatedRegularLL.h
         action/transform/ShToTypedGrid.cc
         action/transform/ShToTypedGrid.h
-        action/transform/ShTruncate.cc
-        action/transform/ShTruncate.h
         action/transform/ShVodToUV.cc
         action/transform/ShVodToUV.h
         action/transform/TransCache.cc

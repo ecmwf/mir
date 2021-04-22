@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/action/transform/ShTruncate.h"
+#include "mir/action/filter/ShTruncate.h"
 
 #include <ostream>
 
@@ -25,7 +25,7 @@
 
 namespace mir {
 namespace action {
-namespace transform {
+namespace filter {
 
 
 ShTruncate::ShTruncate(const param::MIRParametrisation& parametrisation) : Action(parametrisation), truncation_(0) {
@@ -83,9 +83,9 @@ const char* ShTruncate::name() const {
 }
 
 
-static ActionBuilder<ShTruncate> __action("transform.sh-truncate");
+static ActionBuilder<ShTruncate> __action("filter.sh-truncate");
 
 
-}  // namespace transform
+}  // namespace filter
 }  // namespace action
 }  // namespace mir

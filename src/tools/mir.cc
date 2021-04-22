@@ -244,6 +244,11 @@ struct MIR : tools::MIRTool {
             "Unstructured grid globalise minimum distance to insert missing values if needed (default 555975. [m])"));
         options_.push_back(new SimpleOption<bool>("unstructured", "Convert to unstructured grid"));
 
+        options_.push_back(new SimpleOption<bool>("cesaro", "Cesàro summation filtering"));
+        options_.push_back(new SimpleOption<double>("cesaro-k", "Cesàro summation k (default 2.)"));
+        options_.push_back(new SimpleOption<size_t>(
+            "cesaro-truncation", "Cesàro summation filtering minimum truncation (1 <= Tmin < T, default 1)"));
+
         //==============================================
         options_.push_back(new Separator("Compute"));
         options_.push_back(new SimpleOption<std::string>("formula", "Formula to apply on field"));
