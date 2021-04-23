@@ -12,7 +12,6 @@
 
 #include "mir/input/GribFixes.h"
 
-#include <mutex>
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
@@ -23,6 +22,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -43,8 +43,8 @@ GribFixes::~GribFixes() {
 
 
 bool GribFixes::fix(const param::MIRParametrisation& input, param::SimpleParametrisation& fixed) {
-    static std::mutex mtx;
-    std::lock_guard<std::mutex> lock(mtx);
+    static util::recursive_mutex mtx;
+    util::lock_guard<util::recursive_mutex> lock(mtx);
 
     for (auto& f : fixes_) {
         if ((f.first)->matches(input)) {
@@ -72,8 +72,8 @@ void GribFixes::print(std::ostream& s) const {
 
 
 void GribFixes::readConfigurationFiles() {
-    static std::mutex mtx;
-    std::lock_guard<std::mutex> lock(mtx);
+    static util::recursive_mutex mtx;
+    util::lock_guard<util::recursive_mutex> lock(mtx);
 
     using eckit::StringTools;
 

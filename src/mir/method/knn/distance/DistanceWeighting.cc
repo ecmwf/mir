@@ -13,10 +13,10 @@
 #include "mir/method/knn/distance/DistanceWeighting.h"
 
 #include <map>
-#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -25,11 +25,11 @@ namespace knn {
 namespace distance {
 
 
-static std::recursive_mutex* local_mutex                   = nullptr;
+static util::recursive_mutex* local_mutex                  = nullptr;
 static std::map<std::string, DistanceWeightingFactory*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, DistanceWeightingFactory*>();
 }
 
@@ -41,8 +41,8 @@ DistanceWeighting::~DistanceWeighting() = default;
 
 
 DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -53,7 +53,7 @@ DistanceWeightingFactory::DistanceWeightingFactory(const std::string& name) : na
 
 
 DistanceWeightingFactory::~DistanceWeightingFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -61,8 +61,8 @@ DistanceWeightingFactory::~DistanceWeightingFactory() {
 
 const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name,
                                                          const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "DistanceWeightingFactory: looking for '" << name << "'" << std::endl;
 
@@ -77,8 +77,8 @@ const DistanceWeighting* DistanceWeightingFactory::build(const std::string& name
 
 
 void DistanceWeightingFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

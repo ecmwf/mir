@@ -13,11 +13,11 @@
 #include "mir/key/style/MIRStyle.h"
 
 #include <map>
-#include <mutex>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -31,18 +31,18 @@ MIRStyle::MIRStyle(const param::MIRParametrisation& parametrisation) : parametri
 MIRStyle::~MIRStyle() = default;
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex          = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex         = nullptr;
 static std::map<std::string, MIRStyleFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, MIRStyleFactory*>();
 }
 
 
 MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("MIRStyleFactory: duplicate '" + name + "'");
@@ -54,15 +54,15 @@ MIRStyleFactory::MIRStyleFactory(const std::string& name) : name_(name) {
 
 
 MIRStyleFactory::~MIRStyleFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     if (!params.get("style", name)) {
@@ -82,8 +82,8 @@ MIRStyle* MIRStyleFactory::build(const param::MIRParametrisation& params) {
 
 
 void MIRStyleFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

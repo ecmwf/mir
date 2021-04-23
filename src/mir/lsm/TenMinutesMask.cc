@@ -14,7 +14,6 @@
 
 #include <cstdio>
 #include <memory>
-#include <mutex>
 
 #include "eckit/io/StdFile.h"
 #include "eckit/utils/MD5.h"
@@ -23,10 +22,11 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 
 
-static std::mutex local_mutex;
+static mir::util::recursive_mutex local_mutex;
 static std::vector<std::vector<bool> > ten_minutes_;
 
 
@@ -55,7 +55,7 @@ TenMinutesMask::TenMinutesMask(const std::string& name, const eckit::PathName& p
     if (ten_minutes_.empty()) {
         trace::Timer timer("Load 10 minutes LSM");
 
-        std::lock_guard<std::mutex> lock(local_mutex);
+        util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
         Log::debug() << "TenMinutesMask loading " << path_ << std::endl;
 

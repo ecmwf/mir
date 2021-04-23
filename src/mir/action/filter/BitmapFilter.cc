@@ -12,7 +12,6 @@
 
 #include "mir/action/filter/BitmapFilter.h"
 
-#include <mutex>
 #include <ostream>
 #include <sstream>
 
@@ -24,6 +23,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Bitmap.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -54,8 +54,8 @@ void BitmapFilter::print(std::ostream& out) const {
 
 
 util::Bitmap& BitmapFilter::bitmap() const {
-    static std::mutex local_mutex;
-    std::lock_guard<std::mutex> lock(local_mutex);
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     auto j = cache.find(path_);
     if (j != cache.end()) {

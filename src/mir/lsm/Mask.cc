@@ -12,13 +12,12 @@
 
 #include "mir/lsm/Mask.h"
 
-#include <mutex>
-
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/MD5.h"
 
 #include "mir/lsm/NoneLSM.h"
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Mutex.h"
 //#include "mir/param/RuntimeParametrisation.h"
 //#include "mir/repres/latlon/RegularLL.h"
 #include "mir/repres/Representation.h"
@@ -30,11 +29,11 @@ namespace mir {
 namespace lsm {
 
 
-static std::mutex* local_mutex             = nullptr;
+static util::recursive_mutex* local_mutex  = nullptr;
 static std::map<std::string, Mask*>* cache = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     cache       = new std::map<std::string, Mask*>();
 }
 
@@ -88,8 +87,8 @@ Mask& Mask::lookup(const param::MIRParametrisation& parametrisation, const repre
 
     {
         // To protect cache
-        std::call_once(once, init);
-        std::lock_guard<std::mutex> lock(*local_mutex);
+        util::call_once(once, init);
+        util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
         Log::debug() << "Mask::lookup(" << key << ")" << std::endl;
         auto j = cache->find(key);
@@ -116,8 +115,8 @@ Mask& Mask::lookupOutput(const param::MIRParametrisation& parametrisation,
 
 static bool same(const param::MIRParametrisation& parametrisation1, const param::MIRParametrisation& parametrisation2,
                  const std::string& /*which*/) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     // Check 'master' lsm key
     bool lsm1 = false;

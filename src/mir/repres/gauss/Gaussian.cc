@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
-#include <mutex>
 
 #include "eckit/types/FloatCompare.h"
 
@@ -25,6 +24,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -33,12 +33,12 @@ namespace mir {
 namespace repres {
 
 
-static std::once_flag once;
-static std::mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex         = nullptr;
 static std::map<size_t, std::vector<double> >* ml = nullptr;
 static std::map<size_t, std::vector<double> >* mw = nullptr;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     ml          = new std::map<size_t, std::vector<double> >();
     mw          = new std::map<size_t, std::vector<double> >();
 }
@@ -220,8 +220,8 @@ void Gaussian::fill(api::MIRJob& job) const {
 
 
 const std::vector<double>& Gaussian::latitudes(size_t N) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = ml->find(N);
@@ -248,8 +248,8 @@ const std::vector<double>& Gaussian::latitudes(size_t N) {
 
 
 const std::vector<double>& Gaussian::weights(size_t N) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(N);
     auto j = mw->find(N);

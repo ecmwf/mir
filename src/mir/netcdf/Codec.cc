@@ -13,12 +13,12 @@
 #include "mir/netcdf/Codec.h"
 
 #include <map>
-#include <mutex>
 #include <ostream>
 #include <sstream>
 
 #include "mir/netcdf/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -134,18 +134,18 @@ bool Codec::timeAxis() const {
 }
 
 
-static std::once_flag once;
-static std::mutex* local_mutex                 = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, CodecFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, CodecFactory*>();
 }
 
 
 CodecFactory::CodecFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("CodecFactory: duplicate '" + name + "'");
@@ -157,15 +157,15 @@ CodecFactory::CodecFactory(const std::string& name) : name_(name) {
 
 
 CodecFactory::~CodecFactory() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "CodecFactory: looking for '" << name << "'" << std::endl;
 
@@ -180,8 +180,8 @@ Codec* CodecFactory::build(const std::string& name, const Variable& variable) {
 
 
 void CodecFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

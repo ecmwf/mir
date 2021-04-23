@@ -13,8 +13,9 @@
 #pragma once
 
 #include <memory>
-#include <mutex>
 #include <vector>
+
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -130,7 +131,7 @@ protected:
 private:
     // -- Members
 
-    mutable std::mutex mutex_;
+    mutable util::recursive_mutex mutex_;
     std::vector<Context> stack_;
 
     input::MIRInput& input_;

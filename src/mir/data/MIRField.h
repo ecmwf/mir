@@ -14,9 +14,9 @@
 
 #include <iosfwd>
 #include <map>
-#include <mutex>
 #include <string>
 
+#include "mir/util/Mutex.h"
 #include "mir/util/Types.h"
 
 
@@ -125,7 +125,7 @@ protected:
 private:
     // -- Members
 
-    mutable std::mutex mutex_;
+    mutable util::recursive_mutex mutex_;
     Field* field_;
 
     // -- Methods

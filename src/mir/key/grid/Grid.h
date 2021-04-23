@@ -13,10 +13,10 @@
 #pragma once
 
 #include <iosfwd>
-#include <mutex>
 #include <string>
 
 #include "mir/param/SimpleParametrisation.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -121,7 +121,7 @@ private:
     // -- Members
 
     grid_t gridType_;
-    mutable std::mutex mutex_;
+    mutable util::recursive_mutex mutex_;
 
     // -- Methods
     // None

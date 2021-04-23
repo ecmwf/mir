@@ -54,7 +54,7 @@ void MIRField::copyOnWrite() {
 
 // Warning: take ownership of values
 void MIRField::update(MIRValuesVector& values, size_t which) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     // Log::info() << "MIRField::update " << *field_ << std::endl;
 
@@ -64,14 +64,14 @@ void MIRField::update(MIRValuesVector& values, size_t which) {
 
 
 size_t MIRField::dimensions() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->dimensions();
 }
 
 
 void MIRField::dimensions(size_t size) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     copyOnWrite();
     field_->dimensions(size);
@@ -79,7 +79,7 @@ void MIRField::dimensions(size_t size) {
 
 
 void MIRField::select(size_t which) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
     // TODO: Check the if we can select() without copying everything first
     copyOnWrite();
     field_->select(which);
@@ -87,49 +87,49 @@ void MIRField::select(size_t which) {
 
 
 MIRField::~MIRField() {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     field_->detach();
 }
 
 
 void MIRField::print(std::ostream& out) const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     out << *field_;
 }
 
 
 const repres::Representation* MIRField::representation() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->representation();
 }
 
 
 void MIRField::validate() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     field_->validate();
 }
 
 
 void MIRField::handle(size_t which, size_t handle) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     field_->handle(which, handle);
 }
 
 
 size_t MIRField::handle(size_t which) const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->handle(which);
 }
 
 
 MIRFieldStats MIRField::statistics(size_t i) const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->statistics(i);
 }
@@ -137,7 +137,7 @@ MIRFieldStats MIRField::statistics(size_t i) const {
 
 void MIRField::representation(const repres::Representation* representation) {
     // Log::info() << "MIRField::representation " << *field_ << " => " << *representation << std::endl;
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     copyOnWrite();
     field_->representation(representation);
@@ -145,14 +145,14 @@ void MIRField::representation(const repres::Representation* representation) {
 
 
 const MIRValuesVector& MIRField::values(size_t which) const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->values(which);
 }
 
 
 MIRValuesVector& MIRField::direct(size_t which) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     // Log::info() << "MIRField::direct " << *field_ << std::endl;
     copyOnWrite();
@@ -161,7 +161,7 @@ MIRValuesVector& MIRField::direct(size_t which) {
 
 
 void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     // Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
@@ -170,7 +170,7 @@ void MIRField::metadata(size_t which, const std::map<std::string, long>& md) {
 }
 
 void MIRField::metadata(size_t which, const std::string& name, long value) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     // Log::info() << "MIRField::paramId " << *field_ << std::endl;
 
@@ -179,28 +179,28 @@ void MIRField::metadata(size_t which, const std::string& name, long value) {
 }
 
 const std::map<std::string, long>& MIRField::metadata(size_t which) const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->metadata(which);
 }
 
 
 bool MIRField::hasMissing() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->hasMissing();
 }
 
 
 double MIRField::missingValue() const {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     return field_->missingValue();
 }
 
 
 void MIRField::hasMissing(bool on) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     if (on != field_->hasMissing()) {
         copyOnWrite();
@@ -210,7 +210,7 @@ void MIRField::hasMissing(bool on) {
 
 
 void MIRField::missingValue(double value) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     if (value != missingValue()) {
         copyOnWrite();
@@ -219,18 +219,18 @@ void MIRField::missingValue(double value) {
 }
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex       = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, FieldFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, FieldFactory*>();
 }
 
 
 FieldFactory::FieldFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -238,15 +238,15 @@ FieldFactory::FieldFactory(const std::string& name) : name_(name) {
 
 
 FieldFactory::~FieldFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 void FieldFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -258,8 +258,8 @@ void FieldFactory::list(std::ostream& out) {
 
 MIRField* FieldFactory::build(const std::string& name, const param::MIRParametrisation& params, bool hasMissing,
                               double missingValue) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "FieldFactory: looking for '" << name << "'" << std::endl;
 

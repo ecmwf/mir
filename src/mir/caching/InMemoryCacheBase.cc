@@ -12,48 +12,47 @@
 
 #include "mir/caching/InMemoryCacheBase.h"
 
-#include <mutex>
-
 #include "eckit/config/Resource.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace caching {
 
 
-static std::mutex* local_mutex         = nullptr;
-static std::set<InMemoryCacheBase*>* m = nullptr;
-static std::once_flag once;
+static util::recursive_mutex* local_mutex = nullptr;
+static std::set<InMemoryCacheBase*>* m    = nullptr;
+static util::once_flag once;
 
 
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::set<InMemoryCacheBase*>();
 }
 
 
 InMemoryCacheBase::InMemoryCacheBase() {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(this) == m->end());
     m->insert(this);
 }
 
 InMemoryCacheBase::~InMemoryCacheBase() {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(this) != m->end());
     m->erase(this);
 }
 
 InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     InMemoryCacheUsage result;
 
@@ -65,8 +64,8 @@ InMemoryCacheUsage InMemoryCacheBase::totalFootprint() {
 }
 
 void InMemoryCacheBase::checkTotalFootprint() {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     constexpr size_t CAPACITY_MEMORY = 1024LL * 1024 * 1024 * 1024 * 1024 * 1024;
     constexpr size_t CAPACITY_SHARED = CAPACITY_MEMORY;

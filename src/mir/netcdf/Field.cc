@@ -20,6 +20,7 @@
 #include "mir/netcdf/GridSpec.h"
 #include "mir/netcdf/Variable.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -102,7 +103,7 @@ void Field::print(std::ostream& out) const {
 }
 
 
-static std::once_flag once;
+static util::once_flag once;
 static eckit::Value standard_names;
 
 
@@ -113,7 +114,7 @@ static void init() {
 
 
 void Field::setMetadata(data::MIRField& mirField, size_t which) const {
-    std::call_once(once, init);
+    util::call_once(once, init);
 
     eckit::Value s = standard_names[standardName_];
     Log::info() << "NETCDF " << standardName_ << " => " << s << " " << s.isMap() << std::endl;

@@ -13,7 +13,6 @@
 #include "mir/method/MethodWeighted.h"
 
 #include <limits>
-#include <mutex>
 #include <sstream>
 #include <string>
 
@@ -35,6 +34,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -43,7 +43,7 @@ namespace mir {
 namespace method {
 
 
-static std::mutex local_mutex;
+static util::recursive_mutex local_mutex;
 
 constexpr size_t CAPACITY = 512 * 1024 * 1024;
 static caching::InMemoryCache<WeightMatrix> matrix_cache("mirMatrix", CAPACITY, 0,
@@ -126,7 +126,7 @@ void MethodWeighted::createMatrix(context::Context& ctx, const repres::Represent
 // This returns a 'const' matrix so we ensure that we don't change it and break the in-memory cache
 const WeightMatrix& MethodWeighted::getMatrix(context::Context& ctx, const repres::Representation& in,
                                               const repres::Representation& out) const {
-    std::lock_guard<std::mutex> lock(local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     auto& log = Log::debug();
 

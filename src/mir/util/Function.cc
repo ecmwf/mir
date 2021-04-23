@@ -13,29 +13,29 @@
 #include "mir/util/Function.h"
 
 #include <map>
-#include <mutex>
 #include <ostream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace util {
 
 
-static std::recursive_mutex* local_mutex   = nullptr;
+static util::recursive_mutex* local_mutex  = nullptr;
 static std::map<std::string, Function*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Function*>();
 }
 
 
 Function::Function(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -43,15 +43,15 @@ Function::Function(const std::string& name) : name_(name) {
 
 
 Function::~Function() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 const Function& Function::lookup(const std::string& name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {
@@ -64,8 +64,8 @@ const Function& Function::lookup(const std::string& name) {
 
 
 void Function::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {

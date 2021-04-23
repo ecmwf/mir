@@ -12,7 +12,6 @@
 
 #include "mir/action/transform/ShToGridded.h"
 
-#include <mutex>
 #include <ostream>
 #include <sstream>
 
@@ -32,6 +31,7 @@
 #include "mir/util/Domain.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 
 
@@ -138,8 +138,8 @@ static eckit::Hash::digest_t atlasOptionsDigest(const ShToGridded::atlas_config_
 
 void ShToGridded::transform(data::MIRField& field, const repres::Representation& representation,
                             context::Context& ctx) const {
-    static std::mutex local_mutex;
-    eckit::AutoLock<std::mutex> lock(local_mutex);  // To protect trans_cache
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);  // To protect trans_cache
 
     // Make sure another thread to no evict anything from the cache while we are using it
     // FIXME check if it should be in ::execute()

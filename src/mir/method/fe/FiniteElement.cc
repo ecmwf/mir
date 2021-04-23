@@ -18,7 +18,6 @@
 #include <limits>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <ostream>
 #include <sstream>
 #include <utility>
@@ -32,6 +31,7 @@
 #include "mir/repres/Representation.h"
 #include "mir/util/Domain.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 
 
@@ -43,11 +43,11 @@ namespace fe {
 // epsilon used to scale edge tolerance when projecting ray to intesect element
 static constexpr double parametricEpsilon = 1e-15;
 
-static std::once_flag once;
-static std::recursive_mutex* mtx                       = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* mtx                      = nullptr;
 static std::map<std::string, FiniteElementFactory*>* m = nullptr;
 static void init() {
-    mtx = new std::recursive_mutex();
+    mtx = new util::recursive_mutex();
     m   = new std::map<std::string, FiniteElementFactory*>();
 }
 
@@ -372,8 +372,8 @@ void FiniteElement::assemble(util::MIRStatistics& statistics, WeightMatrix& W, c
 
 
 FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFactory(name), name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*mtx);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*mtx);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("FiniteElementFactory: duplicate '" + name + "'");
@@ -385,16 +385,16 @@ FiniteElementFactory::FiniteElementFactory(const std::string& name) : MethodFact
 
 
 FiniteElementFactory::~FiniteElementFactory() {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*mtx);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*mtx);
 
     m->erase(name_);
 }
 
 
 void FiniteElementFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*mtx);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*mtx);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -406,8 +406,8 @@ void FiniteElementFactory::list(std::ostream& out) {
 
 FiniteElement* FiniteElementFactory::build(std::string& names, const std::string& label,
                                            const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*mtx);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*mtx);
 
     for (const auto& name : eckit::StringTools::split("/", names)) {
         Log::debug() << "FiniteElementFactory: looking for '" << name << "'" << std::endl;

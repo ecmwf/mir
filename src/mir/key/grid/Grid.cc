@@ -29,11 +29,11 @@ namespace key {
 namespace grid {
 
 
-static std::once_flag once;
-static std::map<std::string, Grid*>* m   = nullptr;
-static std::recursive_mutex* local_mutex = nullptr;
+static util::once_flag once;
+static std::map<std::string, Grid*>* m    = nullptr;
+static util::recursive_mutex* local_mutex = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Grid*>();
 }
 
@@ -72,16 +72,16 @@ static void read_configuration_files() {
 
 
 Grid::Grid(const std::string& key, grid_t gridType) : key_(key), gridType_(gridType) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(m->insert({key, this}).second);
 }
 
 
 Grid::~Grid() {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(m->find(key_) != m->end());
     m->erase(key_);
@@ -89,8 +89,8 @@ Grid::~Grid() {
 
 
 void Grid::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -137,8 +137,8 @@ size_t Grid::gaussianNumber() const {
 
 
 bool Grid::get(const std::string& key, std::string& value, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 
@@ -161,8 +161,8 @@ bool Grid::get(const std::string& key, std::string& value, const param::MIRParam
 
 
 const Grid& Grid::lookup(const std::string& key, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     read_configuration_files();
 
