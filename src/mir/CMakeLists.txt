@@ -213,6 +213,10 @@ list(APPEND mir_srcs
     input/GribStreamInput.h
     input/MIRInput.cc
     input/MIRInput.h
+    input/MultiDimensionalGribFileInput.cc
+    input/MultiDimensionalGribFileInput.h
+    input/MultiDimensionalInput.cc
+    input/MultiDimensionalInput.h
     input/MultiScalarInput.cc
     input/MultiScalarInput.h
     input/RawInput.cc

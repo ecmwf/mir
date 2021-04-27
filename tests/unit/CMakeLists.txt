@@ -11,7 +11,7 @@ foreach(_t
     gaussian_grid
     grib_encoding
     increments
-    input_MultiScalarInput
+    input_MultiDimensionalInput
     iterator
     spectral_order
     statistics
