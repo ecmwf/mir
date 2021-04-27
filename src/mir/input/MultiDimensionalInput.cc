@@ -50,15 +50,13 @@ void MultiDimensionalInput::append(MIRInput* in) {
 
 const param::MIRParametrisation& MultiDimensionalInput::parametrisation(size_t which) const {
     // Assumes all components have the same parametrisation
-    ASSERT(which < dimensions());
-    return components_[which]->parametrisation();
+    return components_.at(which)->parametrisation();
 }
 
 
 grib_handle* MultiDimensionalInput::gribHandle(size_t which) const {
     // Assumes all components have the same parametrisation
-    ASSERT(which < dimensions());
-    return components_[which]->gribHandle();
+    return components_.at(which)->gribHandle();
 }
 
 
@@ -66,12 +64,12 @@ data::MIRField MultiDimensionalInput::field() const {
     ASSERT(!components_.empty());
 
     // Assumes all components have the same parametrisation
-    data::MIRField field = components_[0]->field();
+    auto field = components_[0]->field();
 
     size_t which = 1;
     for (auto c = components_.begin() + 1; c != components_.end(); ++c, ++which) {
         ASSERT(*c != nullptr);
-        data::MIRField another = (*c)->field();
+        auto another = (*c)->field();
 
         ASSERT(another.dimensions() == 1);
         field.update(another.direct(0), which);
@@ -82,11 +80,11 @@ data::MIRField MultiDimensionalInput::field() const {
 
 
 bool MultiDimensionalInput::next() {
-    for (auto c = components_.begin(); c != components_.end(); ++c) {
-        ASSERT(*c != nullptr);
-        if (!(*c)->next()) {
-            delete *c;
-            *c = nullptr;
+    for (auto& c : components_) {
+        ASSERT(c != nullptr);
+        if (!c->next()) {
+            delete c;
+            c = nullptr;
         }
     }
 
