@@ -32,7 +32,7 @@ void CachedParametrisation::print(std::ostream& out) const {
 
 template <class T>
 bool CachedParametrisation::_get(const std::string& name, T& value) const {
-    auto& cache = cache_;
+    const MIRParametrisation& cache = cache_;
 
     if (cache.get(name, value)) {
         return true;
@@ -54,7 +54,7 @@ void CachedParametrisation::_set(const std::string& name, const T& value) const 
 
 
 bool CachedParametrisation::has(const std::string& name) const {
-    auto& cache = cache_;
+    const MIRParametrisation& cache = cache_;
     return cache.has(name) || parametrisation_.has(name);
 }
 
