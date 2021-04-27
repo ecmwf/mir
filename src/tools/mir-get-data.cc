@@ -38,7 +38,7 @@
 using namespace mir;
 using coord_t      = std::vector<double>;
 using neighbours_t = std::vector<search::PointSearch::PointValueType>;
-using prec_t       = decltype(std::cout.precision());
+using prec_t       = decltype(Log::info().precision());
 
 
 struct MIRGetData : tools::MIRTool {

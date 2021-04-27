@@ -218,17 +218,17 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
               Point2 p2, double val2) {
 
 
-    std::cout << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
+    Log::info() << n << " " << val0 << " " << val1 << " " << val2 << std::endl;
     return;
-    std::cout << "                    [" << n << "]" << std::endl;
+    Log::info() << "                    [" << n << "]" << std::endl;
 
     if (p0.y() > p1.y() && p0.y() > p2.y()) {
-        std::cout << "            " << p0 << " (" << val0 << ")" << std::endl;
+        Log::info() << "            " << p0 << " (" << val0 << ")" << std::endl;
         if (p1.x() < p2.x()) {
-            std::cout << p1 << " (" << val1 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
+            Log::info() << p1 << " (" << val1 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
-            std::cout << p2 << " (" << val2 << ") --- " << p1 << " (" << val1 << ")" << std::endl;
+            Log::info() << p2 << " (" << val2 << ") --- " << p1 << " (" << val1 << ")" << std::endl;
         }
         return;
     }
@@ -236,17 +236,17 @@ static void p(int n, Point2 p0, double val0, Point2 p1, double val1,
 
     if (p0.y() > p1.y() && p0.y() == p2.y()) {
         if (p0.x() < p2.x()) {
-            std::cout << p0 << " (" << val0 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
+            Log::info() << p0 << " (" << val0 << ") --- " << p2 << " (" << val2 << ")" << std::endl;
         }
         else {
-            std::cout << p2 << " (" << val2 << ") --- " << p0 << " (" << val0 << ")" << std::endl;
+            Log::info() << p2 << " (" << val2 << ") --- " << p0 << " (" << val0 << ")" << std::endl;
         }
-        std::cout << "            " << p1 << " (" << val1 << ")" << std::endl;
+        Log::info() << "            " << p1 << " (" << val1 << ")" << std::endl;
 
         return;
     }
 
-    std::cout << "+++ " << p0.y() << "  " << p1.y() << " " << p2.y() << std::endl;
+    Log::info() << "+++ " << p0.y() << "  " << p1.y() << " " << p2.y() << std::endl;
 
     NOTIMP;
 }
