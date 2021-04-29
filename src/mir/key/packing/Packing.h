@@ -132,8 +132,6 @@ private:
 
 class PackingFactory {
     std::string name_;
-    bool spectral_;
-    bool gridded_;
 
     virtual Packing* make(const std::string& name, const param::MIRParametrisation&) = 0;
 

@@ -85,8 +85,7 @@ struct OutputFromExtension : public MIROutputFactory {
 } static _extension;
 
 
-MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) :
-    name_(name), extensions_(extensions) {
+MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) : name_(name) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*fmt_mutex);
 

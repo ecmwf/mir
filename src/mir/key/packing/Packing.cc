@@ -167,7 +167,7 @@ void Packing::set(grib_handle* h, const std::string& type) const {
 
 
 PackingFactory::PackingFactory(const std::string& name, const std::string& alias, bool spectral, bool gridded) :
-    name_(name), spectral_(spectral), gridded_(gridded) {
+    name_(name) {
     std::call_once(once, init);
     std::lock_guard<std::mutex> lock(*local_mutex);
 

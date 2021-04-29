@@ -55,10 +55,6 @@ class EncodeTest {
 
     virtual std::string gribSample(long edition) const = 0;
 
-    friend std::ostream& operator<<(std::ostream& out, const EncodeTest& test) {
-        return out << "Test " << *(test.representation_) << ", expected # values: " << test.numberOfValues();
-    }
-
 protected:
     grib_handle* gribHandle(long edition) {
         std::lock_guard<std::recursive_mutex> lock(local_mutex);
@@ -261,10 +257,10 @@ public:
 
 
 class EncodeRegular : public EncodeTest {
-    size_t Ni_, Nj_;
+    size_t Ni_;
+    size_t Nj_;
+
     size_t numberOfValues() const override { return Ni_ * Nj_; }
-    size_t Ni() const { return Ni_; }
-    size_t Nj() const { return Nj_; }
 
 public:
     EncodeRegular(const repres::Representation* rep, size_t Ni, size_t Nj) : EncodeTest(rep), Ni_(Ni), Nj_(Nj) {

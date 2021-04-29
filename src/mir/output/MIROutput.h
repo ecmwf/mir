@@ -126,7 +126,6 @@ private:
 
 class MIROutputFactory {
     const std::string name_;
-    const std::vector<std::string>& extensions_;
 
     MIROutputFactory(const MIROutputFactory&) = delete;
     MIROutputFactory& operator=(const MIROutputFactory&) = delete;
