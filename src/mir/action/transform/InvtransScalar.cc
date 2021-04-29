@@ -92,12 +92,12 @@ void InvtransScalar::sh2grid(data::MIRField& field, const ShToGridded::atlas_tra
 
         MIRValuesVector values;
         auto here = output.cbegin();
+        auto ngp  = MIRValuesVector::difference_type(Ngp);
 
-        for (size_t f = 0; f < F; ++f) {
-            values.assign(here, here + Ngp);
+        for (size_t f = 0; f < F; ++f, here += ngp) {
+            values.assign(here, here + ngp);
 
             field.update(values, f);
-            here += Ngp;
         }
     }
     else {

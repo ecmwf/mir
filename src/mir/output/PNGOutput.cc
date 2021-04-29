@@ -44,6 +44,8 @@
 namespace mir {
 namespace output {
 
+constexpr int N_BITS_PER_BYTE = 8;
+
 void call_zero(int bad, const std::string& msg) {
     if (bad != 0) {
         Log::error() << "PNGOutput: " << msg << " failed" << std::endl;
@@ -282,13 +284,15 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
         ASSERT(min_ == min_ && max_ == max_ && min_ <= max_);
 
-        maxEncode_ = (UINT_T(1) << N_C_CHANNELS * N_BYTES_PER_CHANNEL * 8) - 1;
+        maxEncode_ = (UINT_T(1) << N_C_CHANNELS * N_BYTES_PER_CHANNEL * N_BITS_PER_BYTE) - 1;
         maxScale_  = double(maxEncode_) / (max_ - min_);
 
         Log::debug() << "PNGEncoder: min/max = " << min_ << " / " << max_ << std::endl;
     }
 
     void encode(png_bytep& p, const double& value) const override {
+        constexpr int FF = 0xFF;
+
         if (hasMissing_ && value == missingValue_) {
             // set both colour and alpha channels
             for (int i = 0; i < (N_C_CHANNELS + N_A_CHANNELS) * N_BYTES_PER_CHANNEL; ++i) {
@@ -298,22 +302,22 @@ struct PNGEncoderT : PNGOutput::PNGEncoder {
         }
 
         // set colour channels
-        UINT_T colour = value <= min_ ? 0 : value >= max_ ? maxEncode_ : (value - min_) * maxScale_;
-        UINT_T mask(UINT_T(0xFF) << 8 * (N_C_CHANNELS * N_BYTES_PER_CHANNEL - 1));
+        UINT_T colour = value <= min_ ? 0 : value >= max_ ? maxEncode_ : UINT_T((value - min_) * maxScale_);
+        UINT_T mask(UINT_T(FF) << N_BITS_PER_BYTE * (N_C_CHANNELS * N_BYTES_PER_CHANNEL - 1));
 
-        for (int byte = N_C_CHANNELS * N_BYTES_PER_CHANNEL - 1; byte >= 0; --byte, mask = (mask >> 8)) {
-            *(p++) = png_byte((colour & mask) >> (byte * 8));
+        for (int byte = N_C_CHANNELS * N_BYTES_PER_CHANNEL - 1; byte >= 0; --byte, mask = (mask >> N_BITS_PER_BYTE)) {
+            *(p++) = png_byte((colour & mask) >> (byte * N_BITS_PER_BYTE));
         }
 
         // set alpha channel
         if (N_A_CHANNELS != 0) {
             for (int i = 0; i < N_BYTES_PER_CHANNEL; ++i) {
-                *(p++) = 0xFF;
+                *(p++) = FF;
             }
         }
     }
 
-    int bit_depth() const override { return N_BYTES_PER_CHANNEL * 8; }
+    int bit_depth() const override { return N_BYTES_PER_CHANNEL * N_BITS_PER_BYTE; }
 
     int color_type() const override {
         return N_C_CHANNELS == 1   ? (N_A_CHANNELS != 0 ? PNG_COLOR_TYPE_GRAY_ALPHA : PNG_COLOR_TYPE_GRAY)

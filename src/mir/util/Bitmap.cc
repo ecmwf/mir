@@ -205,7 +205,7 @@ void Bitmap::prodgenBitmap(const std::string& path, const std::string& destinati
         for (const char* c = line + 10; c != line + 20; ++c) {
             if (::isdigit(*c) != 0) {
                 size *= 10;
-                size += *c - '0';
+                size += size_t(*c - '0');
             }
         }
 

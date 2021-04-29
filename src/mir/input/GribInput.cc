@@ -517,7 +517,7 @@ static ProcessingT<std::string>* packing() {
         };
 
         auto packingType = get(h, "packingType");
-        for (std::string prefix : {"grid_", "spectral_"}) {
+        for (auto& prefix : std::vector<std::string>{"grid_", "spectral_"}) {
             if (packingType.find(prefix) == 0) {
                 value = packingType.substr(prefix.size());
                 std::replace(value.begin(), value.end(), '_', '-');

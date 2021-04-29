@@ -35,9 +35,9 @@ struct Timer : public eckit::Timer {
 
 
 struct ResourceUsage : public Timer {
-    explicit ResourceUsage(const std::string& name, Log::Channel& out = Log::debug()) :
-        ResourceUsage(name.c_str(), out) {}
-    explicit ResourceUsage(const char* name, Log::Channel& out = Log::debug());
+    explicit ResourceUsage(const std::string& name, Log::Channel& log = Log::debug()) :
+        ResourceUsage(name.c_str(), log) {}
+    explicit ResourceUsage(const char* name, Log::Channel& log = Log::debug());
     ~ResourceUsage();
 
 private:

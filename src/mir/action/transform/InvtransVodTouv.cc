@@ -106,21 +106,20 @@ void InvtransVodTouv::sh2grid(data::MIRField& field, const ShToGridded::atlas_tr
 
         MIRValuesVector values;
         auto here = output.cbegin();
+        auto ngp  = MIRValuesVector::difference_type(Ngp);
 
-        for (size_t f = 0, which = 0; f < F; ++f, which += 2) {
-            values.assign(here, here + Ngp);
+        for (size_t f = 0, which = 0; f < F; ++f, which += 2, here += ngp) {
+            values.assign(here, here + ngp);
 
             field.update(values, which);
             field.metadata(which, "paramId", id_u);
-            here += Ngp;
         }
 
-        for (size_t f = 0, which = 1; f < F; ++f, which += 2) {
-            values.assign(here, here + Ngp);
+        for (size_t f = 0, which = 1; f < F; ++f, which += 2, here += ngp) {
+            values.assign(here, here + ngp);
 
             field.update(values, which);
             field.metadata(which, "paramId", id_v);
-            here += Ngp;
         }
     }
 }

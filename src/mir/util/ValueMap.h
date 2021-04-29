@@ -19,7 +19,8 @@ namespace mir {
 namespace util {
 
 
-struct ValueMap : eckit::ValueMap {
+class ValueMap : public eckit::ValueMap {
+public:
     using eckit::ValueMap::ValueMap;
     using eckit::ValueMap::operator=;
 };
