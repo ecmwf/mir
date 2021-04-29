@@ -33,8 +33,7 @@ public:
                       double angularPrecision = 0);
 
     // -- Destructor
-
-    ~RotatedOctahedral() override;
+    // None
 
     // -- Convertors
     // None

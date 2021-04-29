@@ -32,8 +32,7 @@ public:
     RegularGG(size_t N, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
-
-    ~RegularGG() override;
+    // None
 
     // -- Convertors
     // None

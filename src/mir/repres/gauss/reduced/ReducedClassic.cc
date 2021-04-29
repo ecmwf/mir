@@ -25,9 +25,6 @@ ReducedClassic::ReducedClassic(size_t N, const util::BoundingBox& bbox, double a
     Classic(N, bbox, angularPrecision) {}
 
 
-ReducedClassic::~ReducedClassic() = default;
-
-
 void ReducedClassic::print(std::ostream& out) const {
     out << "ReducedClassic[N=" << N_ << ",bbox=" << bbox_ << "]";
 }

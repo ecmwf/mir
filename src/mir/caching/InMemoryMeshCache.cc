@@ -138,7 +138,7 @@ atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const 
 
 
 void InMemoryMeshCache::print(std::ostream& s) const {
-    s << "InMemoryMeshCache[totalFootprint=" << mesh_cache.totalFootprint() << "]";
+    s << "InMemoryMeshCache[totalFootprint=" << InMemoryCache<atlas::Mesh>::totalFootprint() << "]";
 }
 
 

@@ -50,7 +50,6 @@ public:
 
     MatrixCacheCreator(const MatrixCacheCreator&) = delete;
     MatrixCacheCreator& operator=(const MatrixCacheCreator&) = delete;
-    virtual ~MatrixCacheCreator()                            = default;
 
 private:
     const MethodWeighted& owner_;

@@ -31,8 +31,7 @@ public:
     ReducedClassic(size_t, const util::BoundingBox& = util::BoundingBox(), double angularPrecision = 0);
 
     // -- Destructor
-
-    ~ReducedClassic() override;
+    // None
 
     // -- Convertors
     // None

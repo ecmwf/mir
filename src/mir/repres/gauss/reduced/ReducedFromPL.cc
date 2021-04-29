@@ -29,9 +29,6 @@ ReducedFromPL::ReducedFromPL(size_t N, const std::vector<long>& pl, const util::
     FromPL(N, pl, bbox, angularPrecision) {}
 
 
-ReducedFromPL::~ReducedFromPL() = default;
-
-
 void ReducedFromPL::print(std::ostream& out) const {
     out << "ReducedFromPL[N=" << N_ << ",bbox=" << bbox_ << "]";
 }

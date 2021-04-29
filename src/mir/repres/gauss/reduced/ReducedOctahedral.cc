@@ -25,9 +25,6 @@ ReducedOctahedral::ReducedOctahedral(size_t N, const util::BoundingBox& bbox, do
     Octahedral(N, bbox, angularPrecision) {}
 
 
-ReducedOctahedral::~ReducedOctahedral() = default;
-
-
 void ReducedOctahedral::print(std::ostream& out) const {
     out << "ReducedOctahedral[N=" << N_ << ",bbox=" << bbox_ << "]";
 }
