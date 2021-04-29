@@ -60,6 +60,7 @@ struct element_t : std::vector<size_t> {
     using vector::vector;
 
     virtual ~element_t() = default;
+
     virtual bool intersects(const atlas::interpolation::method::Ray&) = 0;
 
     void append_triplets(size_t i, size_t nbRealPoints, triplet_vector_t& t) const {
