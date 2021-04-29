@@ -124,7 +124,7 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
         }
 
         if (writeValues) {
-            for (size_t which = 0; which < writeValues && field.dimensions(); ++which) {
+            for (size_t which = 0; which < field.dimensions(); ++which) {
                 auto& v = field.values(which);
                 atlas::Field f("values", const_cast<double*>(v.data()), atlas::array::make_shape(v.size()));
                 if (field.hasMissing()) {
