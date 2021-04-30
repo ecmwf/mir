@@ -30,14 +30,15 @@ MultiDimensionalOutput::MultiDimensionalOutput() = default;
 
 
 MultiDimensionalOutput::~MultiDimensionalOutput() {
-    for (auto c = components_.rbegin(); c != components_.rend(); ++c) {
-        delete *c;
+    for (auto& d : dimensions_) {
+        delete d;
     }
 }
 
 
 void MultiDimensionalOutput::appendDimensionalOutput(MIROutput* out) {
-    components_.push_back(out);
+    ASSERT(out != nullptr);
+    dimensions_.push_back(out);
 }
 
 
@@ -49,9 +50,9 @@ size_t MultiDimensionalOutput::copy(const param::MIRParametrisation& param, cont
         size_t size  = 0;
         size_t count = 0;
 
-        for (auto& c : components_) {
+        for (auto& d : dimensions_) {
             context::Context componentCtx(*(multi.dimensions_[count++]), ctx.statistics());
-            size += c->copy(param, componentCtx);
+            size += d->copy(param, componentCtx);
         }
 
         return size;
@@ -75,7 +76,7 @@ size_t MultiDimensionalOutput::save(const param::MIRParametrisation& param, cont
         size_t size  = 0;
         size_t count = 0;
 
-        for (auto& c : components_) {
+        for (auto& d : dimensions_) {
             context::Context componentCtx(*(multi.dimensions_[count]), ctx.statistics());
 
             data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
@@ -83,7 +84,7 @@ size_t MultiDimensionalOutput::save(const param::MIRParametrisation& param, cont
             u.metadata(0, field.metadata(0));
             componentCtx.field(u);
 
-            size += c->save(param, componentCtx);
+            size += d->save(param, componentCtx);
             count++;
         }
 
@@ -108,7 +109,7 @@ size_t MultiDimensionalOutput::set(const param::MIRParametrisation& param, conte
         size_t size  = 0;
         size_t count = 0;
 
-        for (auto& c : components_) {
+        for (auto& d : dimensions_) {
             context::Context componentCtx(*(multi.dimensions_[count]), ctx.statistics());
 
             data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
@@ -116,7 +117,7 @@ size_t MultiDimensionalOutput::set(const param::MIRParametrisation& param, conte
             u.metadata(0, field.metadata(0));
             componentCtx.field(u);
 
-            size += c->set(param, componentCtx);
+            size += d->set(param, componentCtx);
             count++;
         }
 
@@ -133,12 +134,12 @@ size_t MultiDimensionalOutput::set(const param::MIRParametrisation& param, conte
 bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
     auto o = dynamic_cast<const MultiDimensionalOutput*>(&other);
 
-    if ((o == nullptr) || (components_.size() != o->components_.size())) {
+    if ((o == nullptr) || (dimensions_.size() != o->dimensions_.size())) {
         return false;
     }
 
-    for (auto c1 = components_.begin(), c2 = o->components_.begin(); c1 != components_.end(); ++c1, ++c2) {
-        if ((*c1)->sameAs(*(*c2))) {
+    for (auto d1 = dimensions_.begin(), d2 = o->dimensions_.begin(); d1 != dimensions_.end(); ++d1, ++d2) {
+        if ((*d1)->sameAs(*(*d2))) {
             return false;
         }
     }
@@ -148,10 +149,9 @@ bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
 
 
 bool MultiDimensionalOutput::sameParametrisation(const param::MIRParametrisation& param1,
-                                            const param::MIRParametrisation& param2) const {
-
-    for (auto& c : components_) {
-        if (!(c->sameParametrisation(param1, param2))) {
+                                                 const param::MIRParametrisation& param2) const {
+    for (auto& d : dimensions_) {
+        if (!(d->sameParametrisation(param1, param2))) {
             return false;
         }
     }
@@ -161,16 +161,16 @@ bool MultiDimensionalOutput::sameParametrisation(const param::MIRParametrisation
 
 
 bool MultiDimensionalOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
-    ASSERT(!components_.empty());
-    return components_[0]->printParametrisation(out, param);
+    ASSERT(!dimensions_.empty());
+    return dimensions_[0]->printParametrisation(out, param);
 }
 
 
 void MultiDimensionalOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
-                                input::MIRInput& input, MIROutput& output) {
-    ASSERT(!components_.empty());
-    for (auto& c : components_) {
-        c->prepare(parametrisation, plan, input, output);
+                                     input::MIRInput& input, MIROutput& output) {
+    ASSERT(!dimensions_.empty());
+    for (auto& d : dimensions_) {
+        d->prepare(parametrisation, plan, input, output);
     }
 }
 
@@ -178,9 +178,9 @@ void MultiDimensionalOutput::prepare(const param::MIRParametrisation& parametris
 void MultiDimensionalOutput::print(std::ostream& out) const {
     out << "MultiDimensionalOutput[";
 
-    const char* sep = "";
-    for (auto& c : components_) {
-        out << sep << c;
+    auto sep = "";
+    for (auto& d : dimensions_) {
+        out << sep << d;
         sep = ",";
     }
 

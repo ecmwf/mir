@@ -55,8 +55,7 @@ public:
 
 protected:
     // -- Members
-
-    std::vector<MIROutput*> components_;
+    // None
 
     // -- Methods
     // None
@@ -72,7 +71,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::vector<MIROutput*> dimensions_;
 
     // -- Methods
     // None
