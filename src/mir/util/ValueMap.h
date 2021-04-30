@@ -15,6 +15,17 @@
 #include "eckit/value/Value.h"
 
 
+namespace eckit {
+class Configured;
+}  // namespace eckit
+
+namespace mir {
+namespace param {
+class SimpleParametrisation;
+}
+}  // namespace mir
+
+
 namespace mir {
 namespace util {
 
@@ -22,7 +33,11 @@ namespace util {
 class ValueMap : public eckit::ValueMap {
 public:
     using eckit::ValueMap::ValueMap;
-    using eckit::ValueMap::operator=;
+
+    ValueMap(const eckit::Value&);
+
+    void set(eckit::Configured&) const;
+    void set(param::SimpleParametrisation&) const;
 };
 
 
