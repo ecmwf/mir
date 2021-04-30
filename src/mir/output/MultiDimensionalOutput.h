@@ -14,32 +14,25 @@
 
 #include <vector>
 
-#include "mir/input/MIRInput.h"
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
 namespace output {
-class MultiScalarOutput;
-}
-}  // namespace mir
 
 
-namespace mir {
-namespace input {
-
-
-class MultiScalarInput : public MIRInput {
+class MultiDimensionalOutput : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    MultiScalarInput();
+    MultiDimensionalOutput();
 
     // -- Destructor
 
-    ~MultiScalarInput() override;
+    ~MultiDimensionalOutput() override;
 
     // -- Convertors
     // None
@@ -49,11 +42,10 @@ public:
 
     // -- Methods
 
-    void appendScalarInput(MIRInput*);
+    void appendDimensionalOutput(MIROutput*);
 
     // -- Overridden methods
-
-    size_t dimensions() const override;
+    // None
 
     // -- Class members
     // None
@@ -64,7 +56,7 @@ public:
 protected:
     // -- Members
 
-    std::vector<MIRInput*> components_;
+    std::vector<MIROutput*> components_;
 
     // -- Methods
     // None
@@ -87,13 +79,15 @@ private:
 
     // -- Overridden methods
 
-    // From MIRInput
-    const param::MIRParametrisation& parametrisation(size_t which) const override;
-    data::MIRField field() const override;
-    bool next() override;
-    bool sameAs(const MIRInput&) const override;
+    // From MIROutput
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t set(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
     void print(std::ostream&) const override;
-    grib_handle* gribHandle(size_t which = 0) const override;
 
     // -- Class members
     // None
@@ -102,10 +96,8 @@ private:
     // None
 
     // -- Friends
-
-    friend class output::MultiScalarOutput;
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir

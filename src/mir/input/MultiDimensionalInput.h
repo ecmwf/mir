@@ -63,8 +63,7 @@ public:
 
 protected:
     // -- Members
-
-    std::vector<MIRInput*> components_;
+    // None
 
     // -- Methods
     // None
@@ -80,7 +79,8 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::vector<MIRInput*> dimensions_;
 
     // -- Methods
     // None

@@ -217,8 +217,8 @@ list(APPEND mir_srcs
     input/MultiDimensionalGribFileInput.h
     input/MultiDimensionalInput.cc
     input/MultiDimensionalInput.h
-    input/MultiScalarInput.cc
-    input/MultiScalarInput.h
+    input/MultiStreamInput.cc
+    input/MultiStreamInput.h
     input/RawInput.cc
     input/RawInput.h
     input/RawMetadata.cc
@@ -436,8 +436,8 @@ list(APPEND mir_srcs
     output/GribStreamOutput.h
     output/MIROutput.cc
     output/MIROutput.h
-    output/MultiScalarOutput.cc
-    output/MultiScalarOutput.h
+    output/MultiDimensionalOutput.cc
+    output/MultiDimensionalOutput.h
     output/RawOutput.cc
     output/RawOutput.h
     output/ValuesOutput.cc

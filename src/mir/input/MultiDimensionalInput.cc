@@ -27,49 +27,49 @@ MultiDimensionalInput::MultiDimensionalInput() = default;
 
 
 MultiDimensionalInput::~MultiDimensionalInput() {
-    for (auto c = components_.rbegin(); c != components_.rend(); ++c) {
+    for (auto c = dimensions_.rbegin(); c != dimensions_.rend(); ++c) {
         delete *c;
     }
 }
 
 
 size_t MultiDimensionalInput::dimensions() const {
-    return components_.size();
+    return dimensions_.size();
 }
 
 
 void MultiDimensionalInput::append(MIRInput* in) {
     ASSERT(in);
-    for (const auto& c : components_) {
+    for (const auto& d : dimensions_) {
         // Because MIRInput keeps some state
-        ASSERT(c != in);
+        ASSERT(d != in);
     }
-    components_.push_back(in);
+    dimensions_.push_back(in);
 }
 
 
 const param::MIRParametrisation& MultiDimensionalInput::parametrisation(size_t which) const {
     // Assumes all components have the same parametrisation
-    return components_.at(which)->parametrisation();
+    return dimensions_.at(which)->parametrisation();
 }
 
 
 grib_handle* MultiDimensionalInput::gribHandle(size_t which) const {
     // Assumes all components have the same parametrisation
-    return components_.at(which)->gribHandle();
+    return dimensions_.at(which)->gribHandle();
 }
 
 
 data::MIRField MultiDimensionalInput::field() const {
-    ASSERT(!components_.empty());
+    ASSERT(!dimensions_.empty());
 
     // Assumes all components have the same parametrisation
-    auto field = components_[0]->field();
+    auto field = dimensions_[0]->field();
 
     size_t which = 1;
-    for (auto c = components_.begin() + 1; c != components_.end(); ++c, ++which) {
-        ASSERT(*c != nullptr);
-        auto another = (*c)->field();
+    for (auto d = dimensions_.begin() + 1; d != dimensions_.end(); ++d, ++which) {
+        ASSERT(*d != nullptr);
+        auto another = (*d)->field();
 
         ASSERT(another.dimensions() == 1);
         field.update(another.direct(0), which);
@@ -80,18 +80,21 @@ data::MIRField MultiDimensionalInput::field() const {
 
 
 bool MultiDimensionalInput::next() {
-    for (auto& c : components_) {
-        ASSERT(c != nullptr);
-        if (!c->next()) {
-            delete c;
-            c = nullptr;
+    for (auto& d : dimensions_) {
+        ASSERT(d != nullptr);
+        if (d->next()) {
+            ASSERT(d->dimensions() == 1);
+        }
+        else {
+            delete d;
+            d = nullptr;
         }
     }
 
-    components_.erase(std::remove_if(components_.begin(), components_.end(), [](MIRInput* c) { return c == nullptr; }),
-                      components_.end());
+    dimensions_.erase(std::remove_if(dimensions_.begin(), dimensions_.end(), [](MIRInput* d) { return d == nullptr; }),
+                      dimensions_.end());
 
-    return !components_.empty();
+    return !dimensions_.empty();
 }
 
 
@@ -102,8 +105,8 @@ bool MultiDimensionalInput::sameAs(const MIRInput& other) const {
         return false;
     }
 
-    for (auto c1 = components_.begin(), c2 = o->components_.begin(); c1 != components_.end(); ++c1, ++c2) {
-        if ((*c1)->sameAs(*(*c2))) {
+    for (auto d1 = dimensions_.cbegin(), d2 = o->dimensions_.cbegin(); d1 != dimensions_.cend(); ++d1, ++d2) {
+        if (!(*d1)->sameAs(*(*d2))) {
             return false;
         }
     }
@@ -116,8 +119,8 @@ void MultiDimensionalInput::print(std::ostream& out) const {
     out << "MultiDimensionalInput[";
 
     auto sep = "";
-    for (auto& c : components_) {
-        out << sep << *c;
+    for (auto& d : dimensions_) {
+        out << sep << *d;
         sep = ",";
     }
 

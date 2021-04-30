@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/output/MultiScalarOutput.h"
+#include "mir/output/MultiDimensionalOutput.h"
 
 #include <ostream>
 #include <sstream>
@@ -18,7 +18,7 @@
 
 #include "mir/action/context/Context.h"
 #include "mir/data/MIRField.h"
-#include "mir/input/MultiScalarInput.h"
+#include "mir/input/MultiDimensionalInput.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -26,31 +26,31 @@ namespace mir {
 namespace output {
 
 
-MultiScalarOutput::MultiScalarOutput() = default;
+MultiDimensionalOutput::MultiDimensionalOutput() = default;
 
 
-MultiScalarOutput::~MultiScalarOutput() {
+MultiDimensionalOutput::~MultiDimensionalOutput() {
     for (auto c = components_.rbegin(); c != components_.rend(); ++c) {
         delete *c;
     }
 }
 
 
-void MultiScalarOutput::appendScalarOutput(MIROutput* out) {
+void MultiDimensionalOutput::appendDimensionalOutput(MIROutput* out) {
     components_.push_back(out);
 }
 
 
-size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t MultiDimensionalOutput::copy(const param::MIRParametrisation& param, context::Context& ctx) {
     auto& input = ctx.input();
 
     try {
-        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        auto& multi  = dynamic_cast<input::MultiDimensionalInput&>(input);
         size_t size  = 0;
         size_t count = 0;
 
         for (auto& c : components_) {
-            context::Context componentCtx(*(multi.components_[count++]), ctx.statistics());
+            context::Context componentCtx(*(multi.dimensions_[count++]), ctx.statistics());
             size += c->copy(param, componentCtx);
         }
 
@@ -58,25 +58,25 @@ size_t MultiScalarOutput::copy(const param::MIRParametrisation& param, context::
     }
     catch (std::bad_cast&) {
         std::ostringstream os;
-        os << "MultiScalarOutput::copy() not implemented for input of type: " << input;
+        os << "MultiDimensionalOutput::copy() not implemented for input of type: " << input;
         throw exception::SeriousBug(os.str());
     }
 }
 
 
-size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t MultiDimensionalOutput::save(const param::MIRParametrisation& param, context::Context& ctx) {
     auto& field = ctx.field();
     auto& input = ctx.input();
 
     ASSERT(field.dimensions() > 0);
 
     try {
-        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        auto& multi  = dynamic_cast<input::MultiDimensionalInput&>(input);
         size_t size  = 0;
         size_t count = 0;
 
         for (auto& c : components_) {
-            context::Context componentCtx(*(multi.components_[count]), ctx.statistics());
+            context::Context componentCtx(*(multi.dimensions_[count]), ctx.statistics());
 
             data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
             u.update(field.direct(count), 0);
@@ -91,25 +91,25 @@ size_t MultiScalarOutput::save(const param::MIRParametrisation& param, context::
     }
     catch (std::bad_cast&) {
         std::ostringstream os;
-        os << "MultiScalarOutput::save() not implemented for input of type: " << input;
+        os << "MultiDimensionalOutput::save() not implemented for input of type: " << input;
         throw exception::SeriousBug(os.str());
     }
 }
 
 
-size_t MultiScalarOutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
+size_t MultiDimensionalOutput::set(const param::MIRParametrisation& param, context::Context& ctx) {
     auto& field = ctx.field();
     auto& input = ctx.input();
 
     ASSERT(field.dimensions() > 0);
 
     try {
-        auto& multi  = dynamic_cast<input::MultiScalarInput&>(input);
+        auto& multi  = dynamic_cast<input::MultiDimensionalInput&>(input);
         size_t size  = 0;
         size_t count = 0;
 
         for (auto& c : components_) {
-            context::Context componentCtx(*(multi.components_[count]), ctx.statistics());
+            context::Context componentCtx(*(multi.dimensions_[count]), ctx.statistics());
 
             data::MIRField u(field.representation(), field.hasMissing(), field.missingValue());
             u.update(field.direct(count), 0);
@@ -124,14 +124,14 @@ size_t MultiScalarOutput::set(const param::MIRParametrisation& param, context::C
     }
     catch (std::bad_cast&) {
         std::ostringstream os;
-        os << "MultiScalarOutput::set() not implemented for input of type: " << input;
+        os << "MultiDimensionalOutput::set() not implemented for input of type: " << input;
         throw exception::SeriousBug(os.str());
     }
 }
 
 
-bool MultiScalarOutput::sameAs(const MIROutput& other) const {
-    auto o = dynamic_cast<const MultiScalarOutput*>(&other);
+bool MultiDimensionalOutput::sameAs(const MIROutput& other) const {
+    auto o = dynamic_cast<const MultiDimensionalOutput*>(&other);
 
     if ((o == nullptr) || (components_.size() != o->components_.size())) {
         return false;
@@ -147,7 +147,7 @@ bool MultiScalarOutput::sameAs(const MIROutput& other) const {
 }
 
 
-bool MultiScalarOutput::sameParametrisation(const param::MIRParametrisation& param1,
+bool MultiDimensionalOutput::sameParametrisation(const param::MIRParametrisation& param1,
                                             const param::MIRParametrisation& param2) const {
 
     for (auto& c : components_) {
@@ -160,13 +160,13 @@ bool MultiScalarOutput::sameParametrisation(const param::MIRParametrisation& par
 }
 
 
-bool MultiScalarOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
+bool MultiDimensionalOutput::printParametrisation(std::ostream& out, const param::MIRParametrisation& param) const {
     ASSERT(!components_.empty());
     return components_[0]->printParametrisation(out, param);
 }
 
 
-void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
+void MultiDimensionalOutput::prepare(const param::MIRParametrisation& parametrisation, action::ActionPlan& plan,
                                 input::MIRInput& input, MIROutput& output) {
     ASSERT(!components_.empty());
     for (auto& c : components_) {
@@ -175,8 +175,8 @@ void MultiScalarOutput::prepare(const param::MIRParametrisation& parametrisation
 }
 
 
-void MultiScalarOutput::print(std::ostream& out) const {
-    out << "MultiScalarOutput[";
+void MultiDimensionalOutput::print(std::ostream& out) const {
+    out << "MultiDimensionalOutput[";
 
     const char* sep = "";
     for (auto& c : components_) {
