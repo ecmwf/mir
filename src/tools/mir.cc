@@ -26,7 +26,6 @@
 #include "mir/api/MIRJob.h"
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
-#include "mir/input/ArtificialInput.h"
 #include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
@@ -312,7 +311,6 @@ struct MIR : tools::MIRTool {
             new FactoryOption<key::style::MIRStyleFactory>("style", "Select how the interpolations are performed"));
         options_.push_back(new FactoryOption<data::SpaceChooser>("dimension", "Select dimension"));
         options_.push_back(new SimpleOption<size_t>("precision", "Statistics methods output precision"));
-        options_.push_back(new SimpleOption<double>("constant", "Set input to constant value"));
         options_.push_back(new SimpleOption<std::string>("input", "Input options YAML (lat, lon, etc.)"));
         options_.push_back(new SimpleOption<std::string>("output", "Output options YAML"));
         options_.push_back(new FactoryOption<action::Executor>("executor", "Select whether threads are used or not"));
@@ -344,8 +342,6 @@ struct MIR : tools::MIRTool {
             options_.push_back(new SimpleOption<std::string>("dump-statistics-file",
                                                              "Write statistics to file (after plan execution)"));
             options_.push_back(new SimpleOption<bool>("dont-compress-plan", "Don't compress plan"));
-            options_.push_back(
-                new FactoryOption<input::ArtificialInputFactory>("artificial-input", "Use artificial data for input"));
             options_.push_back(new FactoryOption<output::MIROutputFactory>("format", "Output format"));
 #if defined(mir_HAVE_PNG)
             options_.push_back(

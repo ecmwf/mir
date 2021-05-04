@@ -49,19 +49,6 @@ DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : Artificia
 }
 
 
-bool DummyInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const DummyInput*>(&other);
-    return (o != nullptr) && ArtificialInput::sameAs(other);
-}
-
-
-void DummyInput::print(std::ostream& out) const {
-    out << "DummyInput[";
-    ArtificialInput::print(out);
-    out << "]";
-}
-
-
 MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
     MIRValuesVector values(360 * 181, 42.);
     size_t k = 0;

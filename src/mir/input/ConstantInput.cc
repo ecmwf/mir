@@ -14,8 +14,6 @@
 
 #include <ostream>
 
-#include "mir/param/MIRParametrisation.h"
-
 
 namespace mir {
 namespace input {
@@ -24,26 +22,11 @@ namespace input {
 static ArtificialInputBuilder<ConstantInput> __artificial("constant");
 
 
-ConstantInput::ConstantInput(const param::MIRParametrisation& parametrisation) : ArtificialInput(parametrisation) {
-    parametrisation.get("constant", constant_ = 0.);
-}
-
-
-bool ConstantInput::sameAs(const MIRInput& other) const {
-    auto o = dynamic_cast<const ConstantInput*>(&other);
-    return (o != nullptr) && constant_ == constant_ && ArtificialInput::sameAs(other);
-}
-
-
-void ConstantInput::print(std::ostream& out) const {
-    out << "ConstantInput[constant=" << constant_ << ",";
-    ArtificialInput::print(out);
-    out << "]";
-}
-
-
 MIRValuesVector ConstantInput::fill(size_t n) const {
-    MIRValuesVector values(n, constant_);
+    double constant = 0;
+    parametrisation().get("constant", constant);
+
+    MIRValuesVector values(n, constant);
     return values;
 }
 
