@@ -94,6 +94,7 @@ private:
     bool sameAs(const MIRInput&) const override;
     void print(std::ostream&) const override;
     grib_handle* gribHandle(size_t which = 0) const override;
+    void setAuxiliaryInformation(const util::ValueMap&) override;
 
     // -- Class members
     // None

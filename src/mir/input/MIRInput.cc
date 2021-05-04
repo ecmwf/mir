@@ -22,6 +22,7 @@
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -159,6 +160,25 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     std::string artificialInput;
     if (user.get("artificial-input", artificialInput)) {
         return aux(ArtificialInputFactory::build(artificialInput, user));
+    }
+
+    // Special case: multi-dimensional input
+    auto md  = map.find("multiDimensional");
+    size_t N = md != map.end() && md->second.isNumber() ? size_t(md->second) : 1;
+    ASSERT(N > 0);
+
+    bool uv2uv  = false;
+    bool vod2uv = false;
+    user.get("uv2uv", uv2uv);
+    user.get("vod2uv", vod2uv);
+
+    if (uv2uv || vod2uv) {
+        ASSERT(uv2uv != vod2uv);
+        N *= 2;
+    }
+
+    if (N > 1) {
+        return aux(new MultiDimensionalGribFileInput(path, N));
     }
 
     eckit::AutoStdFile f(path);

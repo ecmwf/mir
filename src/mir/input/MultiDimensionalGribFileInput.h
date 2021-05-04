@@ -34,7 +34,7 @@ public:
 
     // -- Constructors
 
-    MultiDimensionalGribFileInput(const eckit::PathName&, size_t dim=1, size_t skip=0);
+    MultiDimensionalGribFileInput(const eckit::PathName&, size_t dim = 1, size_t skip = 0);
 
     // -- Destructor
     // None

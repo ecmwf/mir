@@ -60,6 +60,14 @@ grib_handle* MultiDimensionalInput::gribHandle(size_t which) const {
 }
 
 
+void MultiDimensionalInput::setAuxiliaryInformation(const util::ValueMap& map) {
+    for (const auto& d : dimensions_) {
+        ASSERT(d != nullptr);
+        d->setAuxiliaryInformation(map);
+    }
+}
+
+
 data::MIRField MultiDimensionalInput::field() const {
     ASSERT(!dimensions_.empty());
 

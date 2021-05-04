@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <ostream>
+#include <string>
 
 #include "eckit/linalg/LinearAlgebra.h"
 #include "eckit/option/CmdArgs.h"
@@ -26,8 +27,7 @@
 #include "mir/caching/matrix/MatrixLoader.h"
 #include "mir/data/Space.h"
 #include "mir/input/ArtificialInput.h"
-#include "mir/input/GribFileInput.h"
-#include "mir/input/VectorInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/key/grid/GridPattern.h"
 #include "mir/key/intgrid/Intgrid.h"
 #include "mir/key/packing/Packing.h"
@@ -385,7 +385,7 @@ struct MIR : tools::MIRTool {
 
     void process(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&);
 
-    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, size_t);
+    void only(const api::MIRJob&, input::MIRInput&, output::MIROutput&, const std::string&, size_t);
 };
 
 
@@ -414,11 +414,6 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     }
 
 
-    bool uv2uv  = false;
-    bool vod2uv = false;
-    args.get("uv2uv", uv2uv);
-    args.get("vod2uv", vod2uv);
-
     if (args.has("plan") || args.has("plan-script")) {
         job.set("style", "custom");
     }
@@ -427,28 +422,18 @@ void MIR::execute(const eckit::option::CmdArgs& args) {
     std::unique_ptr<output::MIROutput> output(output::MIROutputFactory::build(args(1), args_wrap));
     ASSERT(output);
 
-    if (vod2uv || uv2uv) {
-        ASSERT(vod2uv != uv2uv);
-        ASSERT(!args.has("latitudes") && !args.has("longitudes"));
-
-        input::GribFileInput input1(args(0), 0, 2);
-        input::GribFileInput input2(args(0), 1, 2);
-        input::VectorInput input(input1, input2);
-
-        process(job, input, *output, "wind");
-        return;
-    }
-
-
     std::unique_ptr<input::MIRInput> input(input::MIRInputFactory::build(args(0), args_wrap));
     ASSERT(input);
 
+    auto what = std::to_string(input->dimensions()) + "-dimensional field";
+
     size_t onlyParamId = 0;
     if (args.get("only", onlyParamId)) {
-        only(job, *input, *output, onlyParamId);
+        only(job, *input, *output, what, onlyParamId);
+        return;
     }
 
-    process(job, *input, *output, "field");
+    process(job, *input, *output, what);
 }
 
 
@@ -471,10 +456,9 @@ void MIR::process(const api::MIRJob& job, input::MIRInput& input, output::MIROut
 }
 
 
-void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, size_t paramId) {
+void MIR::only(const api::MIRJob& job, input::MIRInput& input, output::MIROutput& output, const std::string& what,
+               size_t paramId) {
     trace::Timer timer("Total time");
-
-    std::string what = "field";
 
     util::MIRStatistics statistics;
     Log::debug() << "Using '" << eckit::linalg::LinearAlgebra::backend().name() << "' backend." << std::endl;
