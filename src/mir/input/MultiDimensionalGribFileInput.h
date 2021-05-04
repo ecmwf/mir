@@ -15,6 +15,11 @@
 #include "mir/input/MultiDimensionalInput.h"
 
 
+namespace eckit {
+class PathName;
+}
+
+
 namespace mir {
 namespace input {
 
@@ -29,7 +34,7 @@ public:
 
     // -- Constructors
 
-    MultiDimensionalGribFileInput();
+    MultiDimensionalGribFileInput(const eckit::PathName&, size_t dim=1, size_t skip=0);
 
     // -- Destructor
     // None

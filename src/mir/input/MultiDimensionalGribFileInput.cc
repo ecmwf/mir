@@ -12,14 +12,18 @@
 
 #include "mir/input/MultiDimensionalGribFileInput.h"
 
-//#include <>
+#include "mir/input/GribFileInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-MultiDimensionalGribFileInput::MultiDimensionalGribFileInput() = default;
+MultiDimensionalGribFileInput::MultiDimensionalGribFileInput(const eckit::PathName& path, size_t dim, size_t skip) {
+    for (size_t which = 0; which < dim; ++which) {
+        append(new GribFileInput(path, skip + which, dim));
+    }
+}
 
 
 }  // namespace input
