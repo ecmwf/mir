@@ -12,31 +12,27 @@
 
 #pragma once
 
-#include "mir/input/ArtificialInput.h"
+#include <vector>
+
+#include "mir/output/MIROutput.h"
 
 
 namespace mir {
-namespace stats {
-class Distribution;
-}
-}  // namespace mir
+namespace output {
 
 
-namespace mir {
-namespace input {
-
-
-class DistributionInput : public ArtificialInput {
+class MultiDimensionalOutput : public MIROutput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    DistributionInput(const param::MIRParametrisation& param) : ArtificialInput(param) {}
+    MultiDimensionalOutput();
 
     // -- Destructor
-    // None
+
+    ~MultiDimensionalOutput() override;
 
     // -- Convertors
     // None
@@ -45,7 +41,8 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void appendDimensionalOutput(MIROutput*);
 
     // -- Overridden methods
     // None
@@ -75,15 +72,22 @@ protected:
 private:
     // -- Members
 
-    std::string name_;
+    std::vector<MIROutput*> dimensions_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From ArtificialInput
-    MIRValuesVector fill(size_t) const override;
+    // From MIROutput
+    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
+    size_t save(const param::MIRParametrisation&, context::Context&) override;
+    size_t set(const param::MIRParametrisation&, context::Context&) override;
+    bool sameAs(const MIROutput&) const override;
+    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
+    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
+    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    void print(std::ostream&) const override;
 
     // -- Class members
     // None
@@ -92,9 +96,8 @@ private:
     // None
 
     // -- Friends
-    // None
 };
 
 
-}  // namespace input
+}  // namespace output
 }  // namespace mir

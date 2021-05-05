@@ -34,6 +34,7 @@
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
 #include "mir/util/Trace.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -60,16 +61,10 @@ size_t GmshOutput::save(const param::MIRParametrisation& param, context::Context
     config.set("write_mesh", true);    // non-Atlas option
     config.set("write_values", true);  // ...
 
-    std::string output;
-    if (param.get("output", output)) {
-        eckit::ValueMap map = eckit::YAMLParser::decodeString(output);
-        for (const auto& kv : map) {
-            Log::debug() << "setting '" << kv.first << "'='" << kv.second << "'" << std::endl;
-            kv.second.isDouble()   ? config.set(kv.first, kv.second.as<double>())
-            : kv.second.isNumber() ? config.set(kv.first, kv.second.as<long long>())
-            : kv.second.isBool()   ? config.set(kv.first, kv.second.as<bool>())
-                                   : config.set(kv.first, kv.second.as<std::string>());
-        }
+    std::string yaml;
+    if (param.get("output", yaml)) {
+        util::ValueMap map(eckit::YAMLParser::decodeString(yaml));
+        map.set(config);
     }
 
     auto writeMesh   = config.getBool("write_mesh", true);

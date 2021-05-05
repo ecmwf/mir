@@ -22,6 +22,7 @@
 
 #include "mir/input/ArtificialInput.h"
 #include "mir/input/GribFileInput.h"
+#include "mir/input/MultiDimensionalGribFileInput.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
@@ -134,15 +135,13 @@ static void put(std::ostream& out, unsigned long magic) {
 }
 
 
-MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
+MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& param) {
     std::call_once(once, init);
     std::lock_guard<std::recursive_mutex> lock(*local_mutex);
 
-    auto& user = parametrisation.userParametrisation();
-
     util::ValueMap map;
     std::string input;
-    if (user.get("input", input) && !input.empty()) {
+    if (param.get("input", input) && !input.empty()) {
         map = eckit::YAMLParser::decodeString(input);
     }
 
@@ -156,9 +155,28 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
     };
 
     // Special case: artificial input
-    std::string artificialInput;
-    if (user.get("artificial-input", artificialInput)) {
-        return aux(ArtificialInputFactory::build(artificialInput, user));
+    auto ai = map.find("artificialInput");
+    if (ai != map.end() && ai->second.isString()) {
+        return aux(ArtificialInputFactory::build(ai->second, param));
+    }
+
+    // Special case: multi-dimensional input
+    auto md  = map.find("multiDimensional");
+    size_t N = md != map.end() && md->second.isNumber() ? size_t(md->second) : 1;
+    ASSERT(N > 0);
+
+    bool uv2uv  = false;
+    bool vod2uv = false;
+    param.get("uv2uv", uv2uv);
+    param.get("vod2uv", vod2uv);
+
+    if (uv2uv || vod2uv) {
+        ASSERT(uv2uv != vod2uv);
+        N *= 2;
+    }
+
+    if (N > 1) {
+        return aux(new MultiDimensionalGribFileInput(path, N));
     }
 
     eckit::AutoStdFile f(path);

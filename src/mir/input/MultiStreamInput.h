@@ -12,31 +12,26 @@
 
 #pragma once
 
-#include "mir/input/ArtificialInput.h"
+#include <deque>
 
-
-namespace mir {
-namespace stats {
-class Distribution;
-}
-}  // namespace mir
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
 namespace input {
 
 
-class DistributionInput : public ArtificialInput {
+class MultiStreamInput : public MIRInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
-
-    DistributionInput(const param::MIRParametrisation& param) : ArtificialInput(param) {}
+    MultiStreamInput();
 
     // -- Destructor
-    // None
+
+    ~MultiStreamInput() override;
 
     // -- Convertors
     // None
@@ -45,10 +40,12 @@ public:
     // None
 
     // -- Methods
-    // None
+
+    void append(MIRInput*);
 
     // -- Overridden methods
-    // None
+
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -75,15 +72,20 @@ protected:
 private:
     // -- Members
 
-    std::string name_;
+    std::deque<MIRInput*> streams_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From ArtificialInput
-    MIRValuesVector fill(size_t) const override;
+    // From MIRInput
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    bool sameAs(const MIRInput&) const override;
+    void print(std::ostream&) const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
 
     // -- Class members
     // None

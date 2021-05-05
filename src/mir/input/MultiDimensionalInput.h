@@ -14,25 +14,32 @@
 
 #include <vector>
 
-#include "mir/output/MIROutput.h"
+#include "mir/input/MIRInput.h"
 
 
 namespace mir {
 namespace output {
+class MultiDimensionalOutput;
+}
+}  // namespace mir
 
 
-class MultiScalarOutput : public MIROutput {
+namespace mir {
+namespace input {
+
+
+class MultiDimensionalInput : public MIRInput {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    MultiScalarOutput();
+    MultiDimensionalInput();
 
     // -- Destructor
 
-    ~MultiScalarOutput() override;
+    ~MultiDimensionalInput() override;
 
     // -- Convertors
     // None
@@ -42,10 +49,11 @@ public:
 
     // -- Methods
 
-    void appendScalarOutput(MIROutput*);
+    void append(MIRInput*);
 
     // -- Overridden methods
-    // None
+
+    size_t dimensions() const override;
 
     // -- Class members
     // None
@@ -55,8 +63,7 @@ public:
 
 protected:
     // -- Members
-
-    std::vector<MIROutput*> components_;
+    // None
 
     // -- Methods
     // None
@@ -72,22 +79,22 @@ protected:
 
 private:
     // -- Members
-    // None
+
+    std::vector<MIRInput*> dimensions_;
 
     // -- Methods
     // None
 
     // -- Overridden methods
 
-    // From MIROutput
-    size_t copy(const param::MIRParametrisation&, context::Context&) override;  // No interpolation performed
-    size_t save(const param::MIRParametrisation&, context::Context&) override;
-    size_t set(const param::MIRParametrisation&, context::Context&) override;
-    bool sameAs(const MIROutput&) const override;
-    bool sameParametrisation(const param::MIRParametrisation&, const param::MIRParametrisation&) const override;
-    bool printParametrisation(std::ostream&, const param::MIRParametrisation&) const override;
-    void prepare(const param::MIRParametrisation&, action::ActionPlan&, input::MIRInput&, output::MIROutput&) override;
+    // From MIRInput
+    const param::MIRParametrisation& parametrisation(size_t which) const override;
+    data::MIRField field() const override;
+    bool next() override;
+    bool sameAs(const MIRInput&) const override;
     void print(std::ostream&) const override;
+    grib_handle* gribHandle(size_t which = 0) const override;
+    void setAuxiliaryInformation(const util::ValueMap&) override;
 
     // -- Class members
     // None
@@ -96,8 +103,10 @@ private:
     // None
 
     // -- Friends
+
+    friend class output::MultiDimensionalOutput;
 };
 
 
-}  // namespace output
+}  // namespace input
 }  // namespace mir

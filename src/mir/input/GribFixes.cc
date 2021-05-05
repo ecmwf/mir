@@ -23,6 +23,7 @@
 #include "mir/param/SimpleParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/ValueMap.h"
 
 
 namespace mir {
@@ -77,13 +78,15 @@ void GribFixes::readConfigurationFiles() {
 
     using eckit::StringTools;
 
+    ASSERT(fixes_.empty());
+
     const eckit::PathName path = "~mir/etc/mir/GRIB.yaml";
     if (!path.exists()) {
         return;
     }
 
-    ASSERT(fixes_.empty());
-    for (const auto& rule : eckit::ValueMap(eckit::YAMLParser::decodeFile(path))) {
+    eckit::ValueMap rules(eckit::YAMLParser::decodeFile(path));
+    for (const auto& rule : rules) {
 
         // how the input is to be identified
         auto id = new param::SimpleParametrisation;
@@ -110,18 +113,11 @@ void GribFixes::readConfigurationFiles() {
         ASSERT(fix);
 
         for (auto& fixes : static_cast<const eckit::ValueList&>(rule.second)) {
-            for (const auto& keyValue : eckit::ValueMap(fixes)) {
-                auto key = StringTools::trim(keyValue.first);
-
-                // value type checking prevents lossy conversions (eg. string > double > string > double)
-                keyValue.second.isDouble()   ? fix->set(key, keyValue.second.as<double>())
-                : keyValue.second.isNumber() ? fix->set(key, keyValue.second.as<long long>())
-                : keyValue.second.isBool()   ? fix->set(key, keyValue.second.as<bool>())
-                                             : fix->set(key, keyValue.second.as<std::string>());
-            }
+            util::ValueMap map(fixes);
+            map.set(*fix);
         }
 
-        fixes_.emplace_back(fix_t(id, fix));
+        fixes_.emplace_back(id, fix);
     }
 }
 
