@@ -18,12 +18,14 @@ cdef init():
     free(argv)
 init()
 
-cdef class GribFileInput:
-    cdef mir.GribFileInput* g
+cdef class MIRInput:
+    cdef mir.MIRInput* _input
+
+cdef class GribFileInput(MIRInput):
     def __cinit__(self, string path):
-        self.g = new mir.GribFileInput(eckit.PathName(path))
+        self._input = new mir.GribFileInput(eckit.PathName(path))
     def __dealloc__(self):
-        del self.g
+        del self._input
 
 cdef class GribFileOutput:
     cdef mir.GribFileOutput* g
@@ -31,6 +33,12 @@ cdef class GribFileOutput:
         self.g = new mir.GribFileOutput(eckit.PathName(path))
     def __dealloc__(self):
         del self.g
+
+cdef class GribMemoryInput(MIRInput):
+    def __cinit__(self, const unsigned char[::1] data):
+        self._input = new mir.GribMemoryInput(&data[0], data.nbytes)
+    def __dealloc__(self):
+        del self._input
 
 cdef class MIRJob:
     cdef mir.MIRJob j
@@ -53,9 +61,12 @@ cdef class MIRJob:
     #             raise ValueError('Invalid value: %s' % value)
     #     return self
 
-    def execute(self, GribFileInput input, GribFileOutput output):
-        while input.g.next():
-            self.j.execute(dereference(input.g), dereference(output.g))
+    def execute(self, MIRInput input, GribFileOutput output):
+        if isinstance(input, GribFileInput):
+            while input._input.next():
+                self.j.execute(dereference(input._input), dereference(output.g))
+        else:
+            self.j.execute(dereference(input._input), dereference(output.g))
 
     # def execute(self, input, output):
     #     in_ = new mir.GribFileInput(eckit.PathName(input))
