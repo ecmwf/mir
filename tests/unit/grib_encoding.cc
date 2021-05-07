@@ -89,7 +89,7 @@ protected:
 
             int err   = 0;
             int flags = 0;
-            handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
+            handle = codes_grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
 
             //            grib_write_message(handle,("error.grib" + std::to_string(edition)).c_str(),"w");
@@ -585,7 +585,7 @@ CASE("GRIB1/GRIB2 deleteLocalDefinition") {
 
             int err   = 0;
             int flags = 0;
-            handle = grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
+            handle = codes_grib_util_set_spec(sample, &info.grid, &info.packing, flags, values.data(), values.size(), &err);
             GRIB_CALL(err);
 
             ASSERT(handle != nullptr);
