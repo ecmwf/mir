@@ -38,3 +38,4 @@ cdef extern from "mir/output/GribFileOutput.h" namespace "mir::output":
 cdef extern from "mir/output/GribMemoryOutput.h" namespace "mir::output":
     cdef cppclass GribMemoryOutput(MIROutput):
         GribMemoryOutput(void*, size_t)
+        size_t length()
