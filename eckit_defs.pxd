@@ -5,7 +5,7 @@ cdef extern from "eckit/filesystem/PathName.h" namespace "eckit":
     cdef cppclass PathName:
         PathName(string)
 
-cdef extern from "eckit/parser/JSON.h" namespace "eckit":
+cdef extern from "eckit/log/JSON.h" namespace "eckit":
     cdef cppclass JSON:
         JSON(std.ostream&)
 
