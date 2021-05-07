@@ -13,7 +13,6 @@
 #include "mir/input/DummyInput.h"
 
 #include <cmath>
-#include <ostream>
 
 #include "mir/data/MIRField.h"
 
@@ -28,29 +27,23 @@ static ArtificialInputBuilder<DummyInput> __artificial("dummy");
 static const param::SimpleParametrisation empty;
 
 
-struct dummy_t : public param::SimpleParametrisation {
-    dummy_t() {
-        set("gridded", true);
-        set("gridType", "regular_ll");
-        set("north", 90.0);
-        set("south", -90.0);
-        set("west", 0.0);
-        set("east", 359.0);
-        set("west_east_increment", 1.0);
-        set("south_north_increment", 1.0);
-        set("Ni", 360);
-        set("Nj", 181);
-    }
-} static const dummy;
-
-
 DummyInput::DummyInput(const param::MIRParametrisation& /*ignored*/) : ArtificialInput(empty) {
-    dummy.copyValuesTo(parametrisation());
+    parametrisation().set("gridded", true);
+    parametrisation().set("gridType", "regular_ll");
+    parametrisation().set("north", 90.0);
+    parametrisation().set("south", -90.0);
+    parametrisation().set("west", 0.0);
+    parametrisation().set("east", 359.0);
+    parametrisation().set("west_east_increment", 1.0);
+    parametrisation().set("south_north_increment", 1.0);
+    parametrisation().set("Ni", 360);
+    parametrisation().set("Nj", 181);
 }
 
 
 MIRValuesVector DummyInput::fill(size_t /*ignored*/) const {
     MIRValuesVector values(360 * 181, 42.);
+
     size_t k = 0;
     for (size_t i = 0; i < 360; ++i) {
         for (size_t j = 0; j < 181; ++j) {

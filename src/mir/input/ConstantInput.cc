@@ -12,8 +12,6 @@
 
 #include "mir/input/ConstantInput.h"
 
-#include <ostream>
-
 
 namespace mir {
 namespace input {

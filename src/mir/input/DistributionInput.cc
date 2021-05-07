@@ -14,7 +14,6 @@
 
 #include <algorithm>
 #include <memory>
-#include <ostream>
 
 #include "mir/stats/Distribution.h"
 #include "mir/util/Exceptions.h"
