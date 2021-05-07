@@ -8,5 +8,5 @@ import mir
 job = mir.MIRJob().set('grid', '1.0/1.0')
 
 # Run the job on the retrieved GRIB file
-print 'Running', job
+print('Running', job)
 job.execute(mir.GribFileInput('z.grib'), mir.GribFileOutput('z_ll.grib'))

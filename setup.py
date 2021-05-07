@@ -28,7 +28,7 @@ setup(
             include_dirs = mir_include_dirs,
             extra_compile_args = ["-std=c++11"],
             extra_link_args = ["-std=c++11"],
-            cmdclass = {'build_ext': build_ext}
-        )
+        ),
+        compiler_directives={'language_level': 3, 'c_string_encoding': 'default'}
     )
 )

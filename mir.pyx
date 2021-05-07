@@ -77,6 +77,7 @@ cdef class MIRJob:
     def __str__(self):
         cdef mir.ostringstream oss
         oss << self.j
-        return oss.to_string()
+        cdef str jstr = oss.to_string()
+        return jstr
 
     __repr__ = __str__
