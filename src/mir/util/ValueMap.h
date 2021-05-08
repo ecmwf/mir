@@ -35,6 +35,7 @@ public:
     using eckit::ValueMap::ValueMap;
 
     ValueMap(const eckit::Value&);
+    ValueMap() = default;
 
     void set(eckit::Configured&) const;
     void set(param::SimpleParametrisation&) const;
