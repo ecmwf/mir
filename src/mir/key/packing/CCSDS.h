@@ -30,7 +30,7 @@ public:
 
     // -- Constructors
 
-    using Packing::Packing;
+    CCSDS(const std::string&, const param::MIRParametrisation&);
 
     // -- Destructor
     // None
