@@ -23,7 +23,9 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/repres/sh/SphericalHarmonics.h"
 #include "mir/util/Exceptions.h"
+#include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Trace.h"
 #include "mir/util/Wind.h"
 
 
@@ -65,59 +67,91 @@ void ShVodToUV::print(std::ostream& out) const {
 
 
 void ShVodToUV::execute(context::Context& ctx) const {
-    auto timing(ctx.statistics().vod2uvTimer());
+    auto& log = Log::debug();
+    auto mainTimer(ctx.statistics().vod2uvTimer());
+
+    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
+
 
     // get field properties
-    data::MIRField& field = ctx.field();
-    ASSERT(sizeof(std::complex<double>) == 2 * sizeof(double));
-    ASSERT(field.dimensions() == 2);
+    auto& field = ctx.field();
 
-    size_t truncation = field.representation()->truncation();
-    size_t size       = repres::sh::SphericalHarmonics::number_of_complex_coefficients(truncation) * 2;
-    ASSERT(truncation);
-    ASSERT(size);
+    ASSERT(0 < field.dimensions() && field.dimensions() % 2 == 0);
+    size_t F = field.dimensions() / 2;
+
+    auto T = field.representation()->truncation();
+    ASSERT(T > 0);
+
+    auto N = repres::sh::SphericalHarmonics::number_of_complex_coefficients(T);
+    ASSERT(N > 0);
 
 
-    // get vo/d, allocate U/V
-    const MIRValuesVector& field_vo = field.values(0);
-    const MIRValuesVector& field_d  = field.values(1);
+    // set input working area (avoid copies for one field pair only)
+    MIRValuesVector input_vo;
+    MIRValuesVector input_d;
+    if (F > 1) {
+        trace::Timer timer("ShVodToUV: interlacing spectra", log);
 
-    Log::debug() << "ShVodToUV truncation=" << truncation << ", size=" << size << ", values=" << field_vo.size()
-                 << std::endl;
+        input_vo.resize(F * N * 2);
+        input_d.resize(F * N * 2);
 
-    if (field_vo.size() != field_d.size()) {
-        Log::error() << "ShVodToUV: input fields have different truncation: " << field_vo.size() << "/"
-                     << field_d.size() << std::endl;
-        ASSERT(field_vo.size() == field_d.size());
+        for (size_t f = 0, which = 0; f < F; ++f, which += 2) {
+            repres::sh::SphericalHarmonics::interlace_spectra(input_vo, field.values(which + 0), T, N, f, F);
+            repres::sh::SphericalHarmonics::interlace_spectra(input_d, field.values(which + 1), T, N, f, F);
+
+            field.direct(which + 0).clear();
+            field.direct(which + 1).clear();
+        }
+    }
+    else {
+        input_vo.swap(field.direct(0));
+        input_d.swap(field.direct(1));
+    }
+    ASSERT(input_vo.size() == input_d.size());
+
+
+    // set output working area
+    MIRValuesVector output_U(F * N * 2, 0.);
+    MIRValuesVector output_V(F * N * 2, 0.);
+
+
+    // convert
+    {
+        trace::Timer timer("ShVodToUV: convert", log);
+
+        atlas::trans::VorDivToUV vordiv_to_UV(int(T), options_);
+        vordiv_to_UV.execute(int(N * 2), int(F), input_vo.data(), input_d.data(), output_U.data(), output_V.data());
+
+        input_vo.clear();
+        input_d.clear();
     }
 
-    MIRValuesVector result_U(size, 0.);
-    MIRValuesVector result_V(size, 0.);
 
+    // set field values
+    {
+        trace::Timer timer("ShVodToUV: copying spectra", log);
 
-    // transform
-    const int T         = int(truncation);
-    const int nb_coeff  = int(size);
-    const int nb_fields = 1;
+        long id_u = 0;
+        long id_v = 0;
+        util::Wind::paramIds(parametrisation_, id_u, id_v);
 
-    atlas::trans::VorDivToUV vordiv_to_UV(T, options_);
-    ASSERT(vordiv_to_UV.truncation() == T);
+        MIRValuesVector values;
+        auto here_U = output_U.cbegin();
+        auto here_V = output_V.cbegin();
+        auto n2     = MIRValuesVector::difference_type(2 * N);
 
-    vordiv_to_UV.execute(nb_coeff, nb_fields, field_vo.data(), field_d.data(), result_U.data(), result_V.data());
+        for (size_t f = 0, which = 0; f < F; ++f, which += 2, here_U += n2, here_V += n2) {
+            values.assign(here_U, here_U + n2);
+            field.update(values, which);
+            field.metadata(which, "paramId", id_u);
 
-
-    // configure paramIds for U/V
-    long id_u = 0;
-    long id_v = 0;
-    util::Wind::paramIds(parametrisation_, id_u, id_v);
-
-
-    field.update(result_U, 0);
-    field.metadata(0, "paramId", id_u);
-
-    field.update(result_V, 1);
-    field.metadata(1, "paramId", id_v);
+            values.assign(here_V, here_V + n2);
+            field.update(values, which + 1);
+            field.metadata(which + 1, "paramId", id_v);
+        }
+    }
 }
+
 
 const char* ShVodToUV::name() const {
     return "ShVodToUV";
