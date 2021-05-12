@@ -11,7 +11,6 @@
 
 
 #include <map>
-#include <mutex>
 #include <sstream>
 
 #include "mir/action/plan/Action.h"
@@ -20,6 +19,7 @@
 #include "mir/util/BoundingBox.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 
 
@@ -121,19 +121,19 @@ void Action::estimateMissingValues(context::Context& /*ctx*/, api::MIREstimation
 }
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex        = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex       = nullptr;
 static std::map<std::string, ActionFactory*>* m = nullptr;
 static std::map<std::string, std::string> aliases;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, ActionFactory*>();
 }
 
 
 ActionFactory::ActionFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("ActionFactory: duplicate '" + name + "'");
@@ -145,15 +145,15 @@ ActionFactory::ActionFactory(const std::string& name) : name_(name) {
 
 
 ActionFactory::~ActionFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 Action* ActionFactory::build(const std::string& name, const param::MIRParametrisation& params, bool exact) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*local_mutex);
 
     Log::debug() << "ActionFactory: looking for '" << name << "'" << std::endl;
 
@@ -200,8 +200,8 @@ Action* ActionFactory::build(const std::string& name, const param::MIRParametris
 
 
 void ActionFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> guard(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> guard(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

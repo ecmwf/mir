@@ -12,11 +12,10 @@
 
 #pragma once
 
-#include <mutex>
-
 #include "mir/input/MIRInput.h"
 #include "mir/param/CachedParametrisation.h"
 #include "mir/param/FieldParametrisation.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -40,7 +39,8 @@ private:
 
     param::CachedParametrisation cache_;
 
-    mutable std::recursive_mutex mutex_;
+    mutable util::recursive_mutex mutex_;
+
     grib_handle* grib_;
 
     // For unstructured grids

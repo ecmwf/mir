@@ -13,12 +13,12 @@
 #pragma once
 
 #include <memory>
-#include <mutex>
 
 #include "eckit/config/Resource.h"
 
 #include "mir/caching/InMemoryCacheBase.h"
 #include "mir/caching/InMemoryCacheStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -63,15 +63,12 @@ private:
 
     std::string name_;
     eckit::Resource<InMemoryCacheUsage> capacity_;
-
     size_t users_;
-
     mutable InMemoryCacheStatistics statistics_;
-    mutable std::recursive_mutex mutex_;
     mutable std::map<std::string, InMemoryCacheUsage> keys_;
+    mutable util::recursive_mutex mutex_;
 
     struct Entry {
-
         std::unique_ptr<T> ptr_;
         size_t hits_;
         double last_;

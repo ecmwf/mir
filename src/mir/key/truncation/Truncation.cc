@@ -15,12 +15,12 @@
 #include <algorithm>
 #include <cctype>  // for ::isdigit
 #include <map>
-#include <mutex>
 #include <ostream>
 
 #include "mir/key/truncation/Ordinal.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -28,11 +28,11 @@ namespace key {
 namespace truncation {
 
 
-static std::once_flag once;
-static std::mutex* local_mutex                      = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, TruncationFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, TruncationFactory*>();
 }
 
@@ -41,8 +41,8 @@ Truncation::Truncation(const param::MIRParametrisation& parametrisation) : param
 
 
 TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("TruncationFactory: duplicate '" + name + "'");
@@ -54,7 +54,7 @@ TruncationFactory::TruncationFactory(const std::string& name) : name_(name) {
 
 
 TruncationFactory::~TruncationFactory() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -63,8 +63,8 @@ TruncationFactory::~TruncationFactory() {
 Truncation* TruncationFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                      long targetGaussianN) {
     {
-        std::call_once(once, init);
-        std::lock_guard<std::mutex> lock(*local_mutex);
+        util::call_once(once, init);
+        util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
         Log::debug() << "TruncationFactory: looking for '" << name << "'" << std::endl;
         ASSERT(!name.empty());
@@ -87,8 +87,8 @@ Truncation* TruncationFactory::build(const std::string& name, const param::MIRPa
 
 
 void TruncationFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

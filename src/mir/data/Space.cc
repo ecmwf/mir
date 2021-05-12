@@ -13,10 +13,10 @@
 #include "mir/data/Space.h"
 
 #include <map>
-#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -29,19 +29,19 @@ Space::Space() = default;
 Space::~Space() = default;
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex       = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex      = nullptr;
 static std::map<std::string, SpaceChooser*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, SpaceChooser*>();
 }
 
 
 SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t component, size_t dimensions) :
     name_(name), choice_(choice), component_(component), dimensions_(dimensions) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("SpaceChooser: duplicate '" + name + "'");
@@ -57,7 +57,7 @@ SpaceChooser::SpaceChooser(const std::string& name, Space* choice, size_t compon
 
 
 SpaceChooser::~SpaceChooser() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     delete choice_;
     m->erase(name_);
@@ -65,8 +65,8 @@ SpaceChooser::~SpaceChooser() {
 
 
 const Space& SpaceChooser::lookup(const std::string& name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "SpaceChooser: looking for '" << name << "'" << std::endl;
 
@@ -81,8 +81,8 @@ const Space& SpaceChooser::lookup(const std::string& name) {
 
 
 void SpaceChooser::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

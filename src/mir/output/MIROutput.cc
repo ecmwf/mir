@@ -12,7 +12,6 @@
 
 #include "mir/output/MIROutput.h"
 
-#include <mutex>
 #include <sstream>
 
 #include "eckit/filesystem/PathName.h"
@@ -21,6 +20,7 @@
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -33,14 +33,14 @@ MIROutput::MIROutput() = default;
 MIROutput::~MIROutput() = default;
 
 
-static std::once_flag once;
-static std::recursive_mutex* fmt_mutex                        = nullptr;
-static std::recursive_mutex* ext_mutex                        = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* fmt_mutex                       = nullptr;
+static util::recursive_mutex* ext_mutex                       = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_formats    = nullptr;
 static std::map<std::string, MIROutputFactory*>* m_extensions = nullptr;
 static void init() {
-    fmt_mutex    = new std::recursive_mutex();
-    ext_mutex    = new std::recursive_mutex();
+    fmt_mutex    = new util::recursive_mutex();
+    ext_mutex    = new util::recursive_mutex();
     m_formats    = new std::map<std::string, MIROutputFactory*>();
     m_extensions = new std::map<std::string, MIROutputFactory*>();
 }
@@ -65,8 +65,8 @@ struct OutputFromExtension : public MIROutputFactory {
     }
 
     static void list(std::ostream& out) {
-        std::call_once(once, init);
-        std::lock_guard<std::recursive_mutex> lock(*ext_mutex);
+        util::call_once(once, init);
+        util::lock_guard<util::recursive_mutex> lock(*ext_mutex);
 
         const char* sep = "";
         for (const auto& j : *m_extensions) {
@@ -78,7 +78,7 @@ struct OutputFromExtension : public MIROutputFactory {
     OutputFromExtension() : MIROutputFactory("extension") {}
 
     ~OutputFromExtension() override {
-        std::lock_guard<std::recursive_mutex> lock(*ext_mutex);
+        util::lock_guard<util::recursive_mutex> lock(*ext_mutex);
         m_extensions->clear();
     }
 
@@ -86,8 +86,8 @@ struct OutputFromExtension : public MIROutputFactory {
 
 
 MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<std::string>& extensions) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*fmt_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     if (m_formats->find(name) != m_formats->end()) {
         throw exception::SeriousBug("MIROutputFactory: duplicate '" + name + "'");
@@ -109,7 +109,7 @@ MIROutputFactory::MIROutputFactory(const std::string& name, const std::vector<st
 
 
 MIROutputFactory::~MIROutputFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*fmt_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     if (m_formats != nullptr) {
         m_formats->erase(name_);
@@ -118,8 +118,8 @@ MIROutputFactory::~MIROutputFactory() {
 
 
 MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRParametrisation& parametrisation) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*fmt_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     const auto& user   = parametrisation.userParametrisation();
     std::string format = user.has("griddef") || user.has("latitudes") || user.has("longitudes")
@@ -141,8 +141,8 @@ MIROutput* MIROutputFactory::build(const std::string& path, const param::MIRPara
 
 
 void MIROutputFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*fmt_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*fmt_mutex);
 
     const char* sep = "";
     for (const auto& j : *m_formats) {

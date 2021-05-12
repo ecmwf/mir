@@ -13,10 +13,10 @@
 #include "mir/method/nonlinear/NonLinear.h"
 
 #include <map>
-#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -24,11 +24,11 @@ namespace method {
 namespace nonlinear {
 
 
-static std::recursive_mutex* local_mutex           = nullptr;
+static util::recursive_mutex* local_mutex          = nullptr;
 static std::map<std::string, NonLinearFactory*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, NonLinearFactory*>();
 }
 
@@ -45,8 +45,8 @@ NonLinear::~NonLinear() = default;
 
 
 NonLinearFactory::NonLinearFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -57,15 +57,15 @@ NonLinearFactory::NonLinearFactory(const std::string& name) : name_(name) {
 
 
 NonLinearFactory::~NonLinearFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 const NonLinear* NonLinearFactory::build(const std::string& name, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "NonLinearFactory: looking for '" << name << "'" << std::endl;
 
@@ -80,8 +80,8 @@ const NonLinear* NonLinearFactory::build(const std::string& name, const param::M
 
 
 void NonLinearFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

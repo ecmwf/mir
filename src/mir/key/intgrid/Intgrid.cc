@@ -13,7 +13,6 @@
 #include "mir/key/intgrid/Intgrid.h"
 
 #include <map>
-#include <mutex>
 #include <ostream>
 
 #include "mir/key/grid/Grid.h"
@@ -21,6 +20,7 @@
 #include "mir/key/intgrid/NamedGrid.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -28,19 +28,19 @@ namespace key {
 namespace intgrid {
 
 
-static std::once_flag once;
-static std::mutex* local_mutex                   = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex        = nullptr;
 static std::map<std::string, IntgridFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, IntgridFactory*>();
 }
 
 
 IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
+    util::call_once(once, init);
 
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("IntgridFactory: duplicate '" + name + "'");
@@ -52,7 +52,7 @@ IntgridFactory::IntgridFactory(const std::string& name) : name_(name) {
 
 
 IntgridFactory::~IntgridFactory() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
@@ -60,8 +60,8 @@ IntgridFactory::~IntgridFactory() {
 
 Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametrisation& parametrisation,
                                long targetGaussianN) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "IntgridFactory: looking for '" << name << "'" << std::endl;
     ASSERT(!name.empty());
@@ -85,8 +85,8 @@ Intgrid* IntgridFactory::build(const std::string& name, const param::MIRParametr
 
 
 void IntgridFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

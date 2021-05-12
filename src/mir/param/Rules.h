@@ -13,9 +13,10 @@
 #pragma once
 
 #include <map>
-#include <mutex>
 #include <set>
 #include <string>
+
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -47,7 +48,7 @@ private:
 
     // -- Members
 
-    std::mutex mutex_;
+    util::recursive_mutex mutex_;
     std::map<long, SimpleParametrisation*> rules_;
     std::set<long> noted_;
     std::set<long> warning_;

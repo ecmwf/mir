@@ -13,7 +13,6 @@
 #include "mir/key/packing/Packing.h"
 
 #include <map>
-#include <mutex>
 #include <ostream>
 #include <set>
 
@@ -21,6 +20,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -28,12 +28,12 @@ namespace key {
 namespace packing {
 
 
-static std::once_flag once;
-static std::mutex* local_mutex                    = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex         = nullptr;
 static std::map<std::string, PackingFactory*>* ms = nullptr;
 static std::map<std::string, PackingFactory*>* mg = nullptr;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     ms          = new std::map<std::string, PackingFactory*>();
     mg          = new std::map<std::string, PackingFactory*>();
 }
@@ -168,8 +168,8 @@ void Packing::set(grib_handle* h, const std::string& type) const {
 
 PackingFactory::PackingFactory(const std::string& name, const std::string& alias, bool spectral, bool gridded) :
     name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(gridded || spectral);
 
@@ -190,7 +190,7 @@ PackingFactory::PackingFactory(const std::string& name, const std::string& alias
 
 
 PackingFactory::~PackingFactory() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     mg->erase(name_);
     ms->erase(name_);
@@ -198,8 +198,8 @@ PackingFactory::~PackingFactory() {
 
 
 Packing* PackingFactory::build(const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto& user  = param.userParametrisation();
     auto& field = param.fieldParametrisation();
@@ -247,8 +247,8 @@ Packing* PackingFactory::build(const param::MIRParametrisation& param) {
 
 
 void PackingFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::set<std::string> p;
     for (const auto& j : *ms) {

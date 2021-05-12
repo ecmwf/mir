@@ -12,30 +12,29 @@
 
 #include "mir/compat/GribCompatibility.h"
 
-#include <mutex>
-
 #include "eckit/utils/Tokenizer.h"
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace compat {
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex            = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<std::string, GribCompatibility*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, GribCompatibility*>();
 }
 
 
 GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
@@ -43,7 +42,7 @@ GribCompatibility::GribCompatibility(const std::string& name) : name_(name) {
 
 
 GribCompatibility::~GribCompatibility() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
@@ -51,8 +50,8 @@ GribCompatibility::~GribCompatibility() {
 
 
 void GribCompatibility::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {
@@ -120,8 +119,8 @@ public:
 
 
 const GribCompatibility& GribCompatibility::lookup(const std::string& name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto j = m->find(name);
     if (j == m->end()) {

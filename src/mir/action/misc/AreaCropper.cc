@@ -12,7 +12,6 @@
 
 #include "mir/action/misc/AreaCropper.h"
 
-#include <mutex>
 #include <ostream>
 #include <sstream>
 #include <vector>
@@ -29,6 +28,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -175,8 +175,8 @@ static void createCroppingCacheEntry(caching::CroppingCacheEntry& c, const repre
 static const caching::CroppingCacheEntry& getMapping(const std::string& key,
                                                      const repres::Representation* representation,
                                                      const util::BoundingBox& bbox, bool caching) {
-    static std::mutex local_mutex;
-    std::lock_guard<std::mutex> lock(local_mutex);
+    static util::recursive_mutex local_mutex;
+    util::lock_guard<util::recursive_mutex> lock(local_mutex);
 
     auto a = cache.find(key);
     if (a != cache.end()) {

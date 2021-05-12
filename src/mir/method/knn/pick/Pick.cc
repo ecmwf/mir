@@ -13,10 +13,10 @@
 #include "mir/method/knn/pick/Pick.h"
 
 #include <map>
-#include <mutex>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -25,11 +25,11 @@ namespace knn {
 namespace pick {
 
 
-static std::recursive_mutex* local_mutex      = nullptr;
+static util::recursive_mutex* local_mutex     = nullptr;
 static std::map<std::string, PickFactory*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, PickFactory*>();
 }
 
@@ -41,8 +41,8 @@ Pick::~Pick() = default;
 
 
 PickFactory::PickFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) == m->end()) {
         (*m)[name] = this;
@@ -53,15 +53,15 @@ PickFactory::PickFactory(const std::string& name) : name_(name) {
 
 
 PickFactory::~PickFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 const Pick* PickFactory::build(const std::string& name, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "PickFactory: looking for '" << name << "'" << std::endl;
 
@@ -76,8 +76,8 @@ const Pick* PickFactory::build(const std::string& name, const param::MIRParametr
 
 
 void PickFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (auto& j : *m) {

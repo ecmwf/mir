@@ -34,6 +34,7 @@
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
 #include "mir/util/LongitudeDouble.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 #include "mir/util/Wind.h"
 
@@ -626,7 +627,7 @@ const param::MIRParametrisation& GribInput::parametrisation(size_t which) const 
 data::MIRField GribInput::field() const {
 
     // Protect the grib_handle, as eccodes may update its internals
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
 
@@ -741,7 +742,7 @@ data::MIRField GribInput::field() const {
 
 
 grib_handle* GribInput::gribHandle(size_t which) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(which == 0);
     return grib_;
@@ -749,7 +750,7 @@ grib_handle* GribInput::gribHandle(size_t which) const {
 
 
 bool GribInput::has(const std::string& name) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -766,7 +767,7 @@ bool GribInput::has(const std::string& name) const {
 
 
 bool GribInput::get(const std::string& name, bool& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -806,7 +807,7 @@ bool GribInput::get(const std::string& name, int& value) const {
 
 
 bool GribInput::get(const std::string& name, long& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     std::string key = get_key(name, grib_);
@@ -861,7 +862,7 @@ bool GribInput::get(const std::string& name, float& value) const {
 
 
 bool GribInput::get(const std::string& name, double& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -905,7 +906,7 @@ bool GribInput::get(const std::string&, std::vector<int>&) const {
 
 
 bool GribInput::get(const std::string& name, std::vector<long>& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -966,7 +967,7 @@ bool GribInput::get(const std::string& name, std::vector<float>& value) const {
 
 
 bool GribInput::get(const std::string& name, std::string& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -1014,7 +1015,7 @@ bool GribInput::get(const std::string& name, std::string& value) const {
 
 
 bool GribInput::get(const std::string& name, std::vector<double>& value) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
     const char* key = get_key(name, grib_);
@@ -1080,7 +1081,7 @@ bool GribInput::get(const std::string&, std::vector<std::string>&) const {
 
 
 bool GribInput::handle(grib_handle* h) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     FieldParametrisation::reset();
     cache_.reset();
@@ -1106,7 +1107,7 @@ bool GribInput::handle(grib_handle* h) {
 
 
 void GribInput::auxilaryValues(const std::string& path, std::vector<double>& values) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     eckit::AutoStdFile f(path);
 
@@ -1141,7 +1142,7 @@ void GribInput::auxilaryValues(const std::string& path, std::vector<double>& val
 
 
 void GribInput::setAuxiliaryInformation(const util::ValueMap& map) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     for (const auto& kv : map) {
         if (kv.first == "latitudes") {
@@ -1160,7 +1161,7 @@ bool GribInput::only(size_t paramId) {
     auto paramIdOnly = long(paramId);
 
     while (next()) {
-        std::lock_guard<std::recursive_mutex> lock(mutex_);
+        util::lock_guard<util::recursive_mutex> lock(mutex_);
 
         ASSERT(grib_);
 
@@ -1184,7 +1185,7 @@ size_t GribInput::dimensions() const {
 
 // TODO: some caching, also next() should maybe advance the auxilary files
 void GribInput::latitudes(std::vector<double>& values) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     values.clear();
     values.reserve(latitudes_.size());
@@ -1193,7 +1194,7 @@ void GribInput::latitudes(std::vector<double>& values) const {
 
 
 void GribInput::longitudes(std::vector<double>& values) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     values.clear();
     values.reserve(longitudes_.size());
@@ -1202,7 +1203,7 @@ void GribInput::longitudes(std::vector<double>& values) const {
 
 
 void GribInput::marsRequest(std::ostream& out) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(grib_);
 

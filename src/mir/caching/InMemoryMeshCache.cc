@@ -12,7 +12,6 @@
 
 #include "mir/caching/InMemoryMeshCache.h"
 
-#include <mutex>
 #include <ostream>
 
 #include "eckit/utils/MD5.h"
@@ -22,6 +21,7 @@
 #include "mir/util/Log.h"
 #include "mir/util/MIRStatistics.h"
 #include "mir/util/MeshGeneratorParameters.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/Trace.h"
 #include "mir/util/Types.h"
 
@@ -30,7 +30,7 @@ namespace mir {
 namespace caching {
 
 
-static std::mutex local_mutex;
+static util::recursive_mutex local_mutex;
 
 constexpr size_t CAPACITY = 512 * 1024 * 1024;
 static InMemoryCache<atlas::Mesh> mesh_cache("mirMesh", CAPACITY, 0, "$MIR_MESH_CACHE_MEMORY_FOOTPRINT");
@@ -44,7 +44,7 @@ const InMemoryMeshCache& InMemoryMeshCache::instance() {
 
 atlas::Mesh InMemoryMeshCache::atlasMesh(util::MIRStatistics& statistics, const atlas::Grid& grid,
                                          const util::MeshGeneratorParameters& meshGeneratorParams) {
-    std::lock_guard<std::mutex> guard(local_mutex);
+    util::lock_guard<util::recursive_mutex> guard(local_mutex);
 
     auto& log = Log::debug();
     trace::ResourceUsage usage_mesh("Mesh for grid " + grid.name() + " (" + grid.uid() + ")", log);

@@ -13,11 +13,11 @@
 #include "mir/key/grid/GridPattern.h"
 
 #include <map>
-#include <mutex>
 #include <sstream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -25,18 +25,18 @@ namespace key {
 namespace grid {
 
 
-static std::recursive_mutex* local_mutex      = nullptr;
+static util::recursive_mutex* local_mutex     = nullptr;
 static std::map<std::string, GridPattern*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, GridPattern*>();
 }
 
 
 GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_(pattern_) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern) == m->end());
     (*m)[pattern] = this;
@@ -44,7 +44,7 @@ GridPattern::GridPattern(const std::string& pattern) : pattern_(pattern), regex_
 
 
 GridPattern::~GridPattern() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(pattern_) != m->end());
     m->erase(pattern_);
@@ -52,8 +52,8 @@ GridPattern::~GridPattern() {
 
 
 void GridPattern::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (auto& j : *m) {
@@ -63,8 +63,8 @@ void GridPattern::list(std::ostream& out) {
 }
 
 std::string GridPattern::match(const std::string& name, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 
@@ -88,8 +88,8 @@ std::string GridPattern::match(const std::string& name, const param::MIRParametr
 
 
 const Grid* GridPattern::lookup(const std::string& name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "GridPattern: looking for '" << name << "'" << std::endl;
 

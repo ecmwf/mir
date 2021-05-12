@@ -13,11 +13,11 @@
 #include "mir/util/SpectralOrder.h"
 
 #include <map>
-#include <mutex>
 #include <sstream>
 
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -38,19 +38,19 @@ long SpectralOrder::getGaussianNumberFromTruncation(long) const {
 }
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex               = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex              = nullptr;
 static std::map<std::string, SpectralOrderFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
-    m           = new std::map<std::string, SpectralOrderFactory*>();
+    util::local_mutex = new util::recursive_mutex();
+    m                 = new std::map<std::string, SpectralOrderFactory*>();
 }
 
 
 SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name) {
-    std::call_once(once, init);
+    util::call_once(once, init);
 
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(name) != m->end()) {
         throw exception::SeriousBug("SpectralOrderFactory: duplicate '" + name + "'");
@@ -62,15 +62,15 @@ SpectralOrderFactory::SpectralOrderFactory(const std::string& name) : name_(name
 
 
 SpectralOrderFactory::~SpectralOrderFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(name_);
 }
 
 
 SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     Log::debug() << "SpectralOrderFactory: looking for '" << name << "'" << std::endl;
 
@@ -85,8 +85,8 @@ SpectralOrder* SpectralOrderFactory::build(const std::string& name) {
 
 
 void SpectralOrderFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

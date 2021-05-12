@@ -12,7 +12,6 @@
 
 #include "mir/netcdf/GridSpec.h"
 
-#include <mutex>
 #include <ostream>
 #include <sstream>
 
@@ -20,17 +19,18 @@
 #include "mir/netcdf/Variable.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace netcdf {
 
 
-static std::mutex* local_mutex               = nullptr;
+static util::recursive_mutex* local_mutex    = nullptr;
 static std::map<size_t, GridSpecGuesser*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<size_t, GridSpecGuesser*>();
 }
 
@@ -55,8 +55,8 @@ GridSpec* GridSpec::create(const Variable& variable) {
 
 
 GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(priority) == m->end());
     (*m)[priority] = this;
@@ -64,14 +64,14 @@ GridSpecGuesser::GridSpecGuesser(size_t priority) : priority_(priority) {
 
 
 GridSpecGuesser::~GridSpecGuesser() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(priority_);
 }
 
 GridSpec* GridSpecGuesser::guess(const Variable& variable) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     // We assume lat/lon are the innermost coordinates
     const Variable& latitudes  = variable.lookupInDataset("latitude", "degrees_north", 2);

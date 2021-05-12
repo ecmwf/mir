@@ -676,6 +676,7 @@ list(APPEND mir_srcs
     util/SpectralOrder.h
     util/SpectralOrderT.cc
     util/SpectralOrderT.h
+    util/Mutex.h
     util/Trace.cc
     util/Trace.h
     util/Types.h

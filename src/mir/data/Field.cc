@@ -15,9 +15,9 @@
 #include <algorithm>
 #include <ostream>
 
+#include "eckit/thread/AutoLock.h"
 #include "eckit/types/Types.h"
 
-#include "eckit/thread/AutoLock.h"
 #include "mir/data/MIRFieldStats.h"
 #include "mir/repres/Representation.h"
 #include "mir/util/Exceptions.h"

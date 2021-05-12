@@ -14,7 +14,6 @@
 
 #include <cstdio>
 #include <iomanip>
-#include <mutex>
 #include <sstream>
 
 #include "eckit/io/StdFile.h"
@@ -26,6 +25,7 @@
 #include "mir/util/Exceptions.h"
 #include "mir/util/Grib.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 #include "mir/util/ValueMap.h"
 
 
@@ -88,18 +88,18 @@ size_t MIRInput::dimensions() const {
 }
 
 
-static std::once_flag once;
-static std::recursive_mutex* local_mutex            = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex           = nullptr;
 static std::map<unsigned long, MIRInputFactory*>* m = nullptr;
 static void init() {
-    local_mutex = new std::recursive_mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<unsigned long, MIRInputFactory*>();
 }
 
 
 MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     if (m->find(magic) != m->end()) {
         std::ostringstream oss;
@@ -112,7 +112,7 @@ MIRInputFactory::MIRInputFactory(unsigned long magic) : magic_(magic) {
 
 
 MIRInputFactory::~MIRInputFactory() {
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->erase(magic_);
 }
@@ -136,8 +136,8 @@ static void put(std::ostream& out, unsigned long magic) {
 
 
 MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParametrisation& param) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     util::ValueMap map;
     std::string input;
@@ -211,8 +211,8 @@ MIRInput* MIRInputFactory::build(const std::string& path, const param::MIRParame
 
 
 void MIRInputFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::recursive_mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     const char* sep = "";
     for (const auto& j : *m) {

@@ -13,45 +13,46 @@
 #include "mir/action/plan/Executor.h"
 
 #include <map>
-#include <mutex>
 #include <set>
 
 #include "mir/param/MIRParametrisation.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
 namespace action {
 
 
-static std::mutex* local_mutex             = nullptr;
+static util::recursive_mutex* local_mutex  = nullptr;
 static std::map<std::string, Executor*>* m = nullptr;
-static std::once_flag once;
+static util::once_flag once;
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::map<std::string, Executor*>();
 }
 
 
 Executor::Executor(const std::string& name) : name_(name) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name) == m->end());
     (*m)[name] = this;
 }
 
 Executor::~Executor() {
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     ASSERT(m->find(name_) != m->end());
     m->erase(name_);
 }
 
+
 void Executor::list(std::ostream& out, bool full) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::set<std::string> seen;
     const char* sep = "";
@@ -65,9 +66,10 @@ void Executor::list(std::ostream& out, bool full) {
     }
 }
 
+
 const Executor& Executor::lookup(const param::MIRParametrisation& params) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     std::string name;
     if (!params.get("executor", name)) {

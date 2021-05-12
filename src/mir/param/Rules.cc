@@ -46,7 +46,7 @@ Rules::~Rules() {
 
 
 SimpleParametrisation& Rules::lookup(long paramId) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto p = rules_.find(paramId);
     if (p == rules_.end()) {

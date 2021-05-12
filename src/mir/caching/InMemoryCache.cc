@@ -54,7 +54,7 @@ InMemoryCache<T>::~InMemoryCache() {
 
 template <class T>
 T* InMemoryCache<T>::find(const std::string& key) const {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {
@@ -73,7 +73,7 @@ T* InMemoryCache<T>::find(const std::string& key) const {
 
 template <class T>
 void InMemoryCache<T>::footprint(const std::string& key, const InMemoryCacheUsage& usage) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     Log::debug() << "CACHE-FOOTPRINT-" << name_ << " " << key << " => " << usage << std::endl;
 
@@ -106,7 +106,7 @@ void InMemoryCache<T>::reserve(size_t size, bool inSharedMemory) {
 
 template <class T>
 void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto f = footprint();
     auto c = capacity();
@@ -126,7 +126,7 @@ void InMemoryCache<T>::reserve(const InMemoryCacheUsage& usage) {
 
 template <class T>
 T& InMemoryCache<T>::operator[](const std::string& key) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     T* ptr = find(key);
     return ptr == nullptr ? create(key) : *ptr;
@@ -147,7 +147,7 @@ static inline double score(size_t /*count*/, double recent, double /*age*/) {
 
 template <class T>
 T& InMemoryCache<T>::insert(const std::string& key, T* ptr) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(ptr);
 
@@ -207,13 +207,13 @@ T& InMemoryCache<T>::create(const std::string& key) {
 
 template <class T>
 void InMemoryCache<T>::startUsing() {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
     users_++;
 }
 
 template <class T>
 void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     ASSERT(users_);
     users_--;
@@ -230,7 +230,7 @@ void InMemoryCache<T>::stopUsing(InMemoryCacheStatistics& statistics) {
 
 template <class T>
 void InMemoryCache<T>::erase(const std::string& key) {
-    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    util::lock_guard<util::recursive_mutex> lock(mutex_);
 
     auto j = cache_.find(key);
     if (j != cache_.end()) {

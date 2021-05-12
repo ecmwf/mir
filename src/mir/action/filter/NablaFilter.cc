@@ -12,11 +12,11 @@
 
 #include "mir/action/filter/NablaFilter.h"
 
-#include <mutex>
 #include <ostream>
 #include <set>
 
 #include "mir/param/MIRParametrisation.h"
+#include "mir/util/Mutex.h"
 
 
 namespace mir {
@@ -41,12 +41,12 @@ void mir::action::NablaFilter::custom(std::ostream& out) const {
 }
 
 
-static std::once_flag once;
-static std::mutex* local_mutex  = nullptr;
-static std::set<std::string>* m = nullptr;
+static util::once_flag once;
+static util::recursive_mutex* local_mutex = nullptr;
+static std::set<std::string>* m           = nullptr;
 
 static void init() {
-    local_mutex = new std::mutex();
+    local_mutex = new util::recursive_mutex();
     m           = new std::set<std::string>();
 }
 
@@ -55,16 +55,16 @@ NablaFilterFactory::~NablaFilterFactory() = default;
 
 
 NablaFilterFactory::NablaFilterFactory(const std::string& name) : ActionFactory("filter." + name) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     m->insert(name);
 }
 
 
 void NablaFilterFactory::list(std::ostream& out) {
-    std::call_once(once, init);
-    std::lock_guard<std::mutex> lock(*local_mutex);
+    util::call_once(once, init);
+    util::lock_guard<util::recursive_mutex> lock(*local_mutex);
 
     auto sep = "";
     for (const auto& j : *m) {
